@@ -1,0 +1,27 @@
+***** merge_renames_2 ******
+/Users/rahul/Projects/gossil/.jlog/bin/fossil add file1
+/Users/rahul/Projects/gossil/.jlog/bin/fossil commit -m {added file1}
+/Users/rahul/Projects/gossil/.jlog/bin/fossil add file2
+/Users/rahul/Projects/gossil/.jlog/bin/fossil commit -m {added file2} --branch added
+/Users/rahul/Projects/gossil/.jlog/bin/fossil commit -m {edited file2}
+/Users/rahul/Projects/gossil/.jlog/bin/fossil mv --hard file2 file2.renamed
+/Users/rahul/Projects/gossil/.jlog/bin/fossil commit -m {renamed file2} --branch renamed
+/Users/rahul/Projects/gossil/.jlog/bin/fossil branch new branched current
+/Users/rahul/Projects/gossil/.jlog/bin/fossil commit -m {edited file2.renamed}
+/Users/rahul/Projects/gossil/.jlog/bin/fossil update trunk
+/Users/rahul/Projects/gossil/.jlog/bin/fossil merge renamed
+/Users/rahul/Projects/gossil/.jlog/bin/fossil commit -m {merged from renamed}
+/Users/rahul/Projects/gossil/.jlog/bin/fossil commit -m {edited file2.renamed on trunk (1)}
+/Users/rahul/Projects/gossil/.jlog/bin/fossil update branched
+/Users/rahul/Projects/gossil/.jlog/bin/fossil merge trunk
+test merge_renames_2-1.1 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil commit -m {merged edit from trunk (1:this merge succeeded)}
+/Users/rahul/Projects/gossil/.jlog/bin/fossil update trunk
+/Users/rahul/Projects/gossil/.jlog/bin/fossil commit -m {edited file2.renamed on trunk (2)}
+/Users/rahul/Projects/gossil/.jlog/bin/fossil update branched
+/Users/rahul/Projects/gossil/.jlog/bin/fossil merge trunk
+test merge_renames_2-1.2 OK
+test test-framework-merge_renames_2 OK
+***** End of merge_renames_2: 0 errors so far ******
+***** Final results: 0 errors out of 3 tests
+***** Ignored results: 0 ignored errors out of 3 tests

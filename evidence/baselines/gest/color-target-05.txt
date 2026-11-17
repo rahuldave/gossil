@@ -1,0 +1,149 @@
+
+running 120 tests
+test ui::components::atoms::id::tests::fmt::it_renders_short_id_without_padding ... ok
+test ui::components::atoms::id::tests::unique_prefix_length_for_id_fn::it_caps_at_eight_when_full_short_id_collides ... ok
+test ui::components::atoms::id::tests::min_unique_prefix_fn::it_returns_1_when_all_ids_differ_at_first_char ... ok
+test ui::components::atoms::id::tests::prefix_lengths_two_tier_fn::it_gives_active_ids_shorter_prefixes_than_archived ... ok
+test ui::components::atoms::title::tests::it_truncates_then_pads ... ok
+test ui::components::atoms::column::tests::it_creates_fixed_column ... ok
+test ui::components::atoms::column::tests::it_creates_flex_column ... ok
+test ui::components::atoms::column::tests::it_creates_natural_column ... ok
+test ui::components::atoms::icon::tests::it_renders_blocked_icon ... ok
+test ui::components::atoms::icon::tests::it_renders_phase_icon ... ok
+test ui::components::atoms::icon::tests::it_renders_status_icons ... ok
+test ui::components::atoms::id::tests::fmt::it_truncates_to_8_characters ... ok
+test ui::components::atoms::icon::tests::it_renders_blocking_icon ... ok
+test ui::components::atoms::column::tests::it_displays_content ... ok
+test ui::components::atoms::id::tests::fmt::it_respects_custom_prefix_len ... ok
+test ui::components::atoms::id::tests::min_unique_prefix_fn::it_increases_when_ids_share_a_prefix ... ok
+test ui::components::atoms::id::tests::min_unique_prefix_fn::it_returns_1_for_a_single_id ... ok
+test ui::components::atoms::id::tests::min_unique_prefix_fn::it_returns_1_for_empty_list ... ok
+test ui::components::atoms::id::tests::min_unique_prefix_fn::it_handles_identical_ids ... ok
+test ui::components::atoms::id::tests::unique_prefix_length_for_id_fn::it_matches_unique_prefix_lengths_for_same_pool ... ok
+test ui::components::atoms::id::tests::unique_prefix_length_for_id_fn::it_returns_1_for_empty_pool ... ok
+test ui::components::atoms::id::tests::unique_prefix_length_for_id_fn::it_returns_1_when_pool_shares_no_first_char ... ok
+test ui::components::atoms::id::tests::unique_prefix_length_for_id_fn::it_skips_target_entry_in_pool ... ok
+test ui::components::atoms::id::tests::unique_prefix_lengths_fn::it_returns_1_for_a_single_id ... ok
+test ui::components::atoms::id::tests::unique_prefix_lengths_fn::it_returns_empty_vec_for_empty_list ... ok
+test ui::components::atoms::id::tests::unique_prefix_lengths_fn::it_returns_8_for_all_identical_ids ... ok
+test ui::components::atoms::label::tests::fmt::it_does_not_truncate_when_pad_is_smaller_than_text ... ok
+test ui::components::atoms::label::tests::fmt::it_pads_to_requested_width ... ok
+test ui::components::atoms::id::tests::unique_prefix_lengths_fn::it_produces_per_id_variable_lengths ... ok
+test ui::components::atoms::title::tests::it_pads_to_minimum_width ... ok
+test ui::components::atoms::tag::tests::it_uses_double_space_between_tags ... ok
+test ui::components::atoms::id::tests::unique_prefix_length_for_id_fn::it_returns_common_plus_one_for_sibling_in_pool ... ok
+test ui::components::atoms::tag::tests::it_renders_single_tag_without_spacing ... ok
+test ui::components::atoms::title::tests::it_truncates_with_ellipsis ... ok
+test ui::components::molecules::banner::tests::fg_color_fn::it_defaults_to_white_when_no_foreground ... ok
+test ui::components::molecules::banner::tests::fg_color_fn::it_extracts_the_foreground_color ... ok
+test ui::components::molecules::banner::tests::fmt::it_does_not_include_version_by_default ... ok
+test ui::components::molecules::banner::tests::lerp_color_fn::it_falls_back_to_start_for_non_rgb_colors ... ok
+test ui::components::molecules::banner::tests::lerp_color_fn::it_falls_back_when_only_end_is_non_rgb ... ok
+test ui::components::molecules::banner::tests::lerp_color_fn::it_falls_back_when_only_start_is_non_rgb ... ok
+test ui::components::molecules::banner::tests::lerp_color_fn::it_interpolates_at_midpoint ... ok
+test ui::components::molecules::banner::tests::lerp_color_fn::it_returns_end_at_t_one ... ok
+test ui::components::molecules::banner::tests::lerp_color_fn::it_returns_start_at_t_zero ... ok
+test ui::components::molecules::field_list::tests::fmt::it_aligns_labels_across_fields ... ok
+test ui::components::molecules::field_list::tests::fmt::it_pads_shorter_labels_to_match_longest ... ok
+test ui::components::molecules::field_list::tests::fmt::it_renders_nothing_when_empty ... ok
+test ui::components::molecules::field_list::tests::fmt::it_renders_styled_field_values_without_theme_styling ... ok
+test ui::components::molecules::grid::tests::it_preserves_flex_columns ... ok
+test ui::components::molecules::grid::tests::it_aligns_natural_columns_across_rows ... ok
+test ui::components::molecules::grid::tests::it_renders_empty_grid ... ok
+test ui::components::molecules::indicators::tests::it_renders_blocking_only ... ok
+test ui::components::molecules::indicators::tests::it_renders_empty_for_no_indicators ... ok
+test ui::components::molecules::phase_header::tests::it_renders_icon_label_and_separator ... ok
+test ui::components::molecules::indicators::tests::it_renders_blocked_by ... FAILED
+test ui::components::molecules::row::tests::display_width_fn::it_returns_zero_for_empty ... ok
+test ui::components::molecules::row::tests::display_width_fn::it_strips_ansi_from_width ... ok
+test ui::components::molecules::row::tests::row::it_distributes_flex_proportionally ... ok
+test ui::components::molecules::row::tests::row::it_pads_fixed_columns ... ok
+test ui::components::molecules::row::tests::display_width_fn::it_counts_ascii_width ... ok
+test ui::components::molecules::banner::tests::fmt::it_renders_all_ascii_art_rows ... ok
+test ui::components::molecules::banner::tests::fmt::it_includes_both_author_and_version_when_enabled ... ok
+test ui::components::molecules::row::tests::row::it_renders_empty ... ok
+test ui::components::molecules::row::tests::row::it_renders_natural_columns ... ok
+test ui::components::molecules::banner::tests::fmt::it_includes_version_when_enabled ... ok
+test ui::components::molecules::banner::tests::fmt::it_includes_author_when_enabled ... ok
+test ui::components::molecules::status_badge::tests::it_renders_blocked_with_blocked_icon ... ok
+test ui::components::molecules::status_badge::tests::it_renders_icon_only ... ok
+test ui::components::molecules::banner::tests::fmt::it_does_not_include_author_by_default ... ok
+test ui::components::molecules::status_badge::tests::it_renders_in_progress_with_space ... ok
+test ui::components::molecules::success_message::tests::fmt::it_renders_action_only ... ok
+test ui::components::molecules::status_badge::tests::it_renders_open_status ... ok
+test ui::components::molecules::success_message::tests::fmt::it_renders_action_with_fields ... ok
+test ui::components::molecules::success_message::tests::fmt::it_renders_action_with_id ... ok
+test ui::components::molecules::success_message::tests::fmt::it_renders_with_styled_field ... ok
+test ui::components::molecules::success_message::tests::fmt::it_renders_action_with_id_and_fields ... ok
+test ui::components::molecules::summary::tests::fmt::it_renders_empty_message_with_zero_rows ... ok
+test ui::components::molecules::summary::tests::fmt::it_renders_nothing_when_nothing_is_configured ... ok
+test ui::components::molecules::summary::tests::fmt::it_renders_rows_without_title ... ok
+test ui::components::molecules::summary::tests::fmt::it_renders_success_message_after_rows ... ok
+test ui::components::molecules::summary::tests::fmt::it_renders_title_and_rows_with_details ... ok
+test ui::components::molecules::summary::tests::is_empty::it_returns_false_when_rows_are_present ... ok
+test ui::components::molecules::summary::tests::is_empty::it_returns_true_when_no_rows_are_present ... ok
+test ui::components::molecules::summary::tests::fmt::it_renders_success_message_after_empty_message ... ok
+test ui::components::molecules::task_row::tests::it_renders_blocked_icon_when_task_has_blockers ... ok
+test ui::components::molecules::update_notice::tests::it_renders_the_new_version ... ok
+test ui::components::molecules::task_row::tests::it_renders_priority_badge_when_present ... ok
+test ui::components::molecules::task_row::tests::it_renders_pipes_in_sibling_columns ... FAILED
+test ui::components::molecules::update_notice::tests::it_renders_the_update_message ... ok
+test ui::components::molecules::update_notice::tests::it_renders_the_upgrade_hint ... ok
+test ui::components::views::artifact_detail::tests::it_omits_content_section_when_no_body ... ok
+test ui::components::views::artifact_detail::tests::it_omits_tag_line_when_no_tags ... ok
+test ui::components::views::artifact_detail::tests::it_renders_multiple_tags ... ok
+test ui::components::views::artifact_detail::tests::it_shows_id_on_first_line ... ok
+test ui::components::views::iteration_detail::tests::display::it_renders_blank_line_after_id ... ok
+test ui::components::molecules::summary::tests::fmt::it_separates_hint_from_preceding_content_with_blank_line ... ok
+test ui::components::views::artifact_detail::tests::it_renders_body_with_separators ... ok
+test ui::components::views::artifact_detail::tests::it_renders_notes_section ... FAILED
+test ui::components::views::artifact_detail::tests::it_renders_id_and_metadata ... ok
+test ui::components::views::artifact_detail::tests::it_inserts_blank_line_after_id ... ok
+test ui::components::views::iteration_detail::tests::display::it_renders_five_lines_of_output ... ok
+test ui::components::views::iteration_detail::tests::display::it_renders_id_on_first_line ... ok
+test ui::components::views::iteration_detail::tests::display::it_renders_phases_field ... ok
+test ui::components::views::iteration_detail::tests::display::it_renders_task_counts_separated_by_dot ... ok
+test ui::components::views::iteration_detail::tests::display::it_renders_tasks_field_with_counts ... ok
+test ui::components::views::task_detail::tests::it_aligns_labels ... ok
+test ui::components::views::task_detail::tests::it_omits_description_when_none ... ok
+test ui::components::views::iteration_detail::tests::display::it_renders_zero_counts ... ok
+test ui::components::views::iteration_detail::tests::display::it_renders_title_field ... ok
+test ui::components::views::task_detail::tests::it_includes_status_icon ... ok
+test ui::components::views::task_detail::tests::it_renders_assigned ... ok
+test ui::components::views::task_detail::tests::it_renders_description_section ... ok
+test ui::components::views::task_detail::tests::it_renders_full_detail ... ok
+test ui::components::views::task_detail::tests::it_renders_id_on_first_line ... ok
+test ui::components::views::task_detail::tests::it_renders_links ... ok
+test ui::components::views::task_detail::tests::it_renders_multiple_links ... ok
+test ui::components::views::task_detail::tests::it_renders_phase_with_name ... ok
+test ui::components::views::task_detail::tests::it_renders_phase_without_name ... ok
+test ui::components::views::task_detail::tests::it_renders_priority ... ok
+test ui::components::views::task_detail::tests::it_renders_tags ... ok
+test ui::components::views::task_detail::tests::it_renders_title_and_status ... ok
+
+failures:
+
+---- ui::components::molecules::indicators::tests::it_renders_blocked_by stdout ----
+
+thread 'ui::components::molecules::indicators::tests::it_renders_blocked_by' (302232239) panicked at src/ui/components/molecules/indicators.rs:114:5:
+assertion failed: out.contains("hpvrlbme")
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+---- ui::components::molecules::task_row::tests::it_renders_pipes_in_sibling_columns stdout ----
+
+thread 'ui::components::molecules::task_row::tests::it_renders_pipes_in_sibling_columns' (302232272) panicked at src/ui/components/molecules/task_row.rs:208:5:
+assertion failed: out.starts_with("\u{2502} \u{25CB} \u{2502}")
+
+---- ui::components::views::artifact_detail::tests::it_renders_notes_section stdout ----
+
+thread 'ui::components::views::artifact_detail::tests::it_renders_notes_section' (302232284) panicked at src/ui/components/views/artifact_detail.rs:307:5:
+should contain note id
+
+
+failures:
+    ui::components::molecules::indicators::tests::it_renders_blocked_by
+    ui::components::molecules::task_row::tests::it_renders_pipes_in_sibling_columns
+    ui::components::views::artifact_detail::tests::it_renders_notes_section
+
+test result: FAILED. 117 passed; 3 failed; 0 ignored; 0 measured; 747 filtered out; finished in 0.08s
+

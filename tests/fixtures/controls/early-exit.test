@@ -1,0 +1,3 @@
+set marker [file join $::testrundir escaped-child.txt]
+exec /bin/sh -c {sleep 2; echo alive > "$1"} sh $marker &
+test runner-before-exit 1

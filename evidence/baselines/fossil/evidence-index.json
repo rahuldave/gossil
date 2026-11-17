@@ -1,0 +1,422 @@
+{
+  "01-enable.patch": {
+    "path": "/tmp/gossil-fossil-baseline-20261117/01-enable.patch",
+    "sha256": "954533dd023b4e120eddfe2f595c9d9c53d3f21144e9a5d1ec5d0c3e70b0af8b"
+  },
+  "baseline-240s.json": {
+    "path": "/tmp/gossil-fossil-baseline-20261117/baseline-240s.json",
+    "sha256": "d33b2f4329b6b1237b92b48c35e1f25618c2063b9be5b6d63c6e2b933828f3d3"
+  },
+  "baseline-report.json": {
+    "path": "/tmp/gossil-fossil-baseline-20261117/baseline-report.json",
+    "sha256": "d33b2f4329b6b1237b92b48c35e1f25618c2063b9be5b6d63c6e2b933828f3d3"
+  },
+  "capability-inventory.json": {
+    "path": "/tmp/gossil-fossil-baseline-20261117/capability-inventory.json",
+    "sha256": "43c0e686fe8cac7a006993e21e119852bea7f715565ff2a68c72917d3793a9c2"
+  },
+  "case-identities.json": {
+    "path": "/tmp/gossil-fossil-baseline-20261117/case-identities.json",
+    "sha256": "1d16a6894ea11423f586fbed488d408730884ce66210784570fe1a90e1855525"
+  },
+  "controls.json": {
+    "path": "/tmp/gossil-fossil-baseline-20261117/controls.json",
+    "sha256": "01f1de0b846295cbd69b36593f7e3d4670e315549d933b65259f81105a82ff92"
+  },
+  "controls_gate.py": {
+    "path": "/tmp/gossil-fossil-baseline-20261117/controls_gate.py",
+    "sha256": "1536081fe319456ccbd3f01befdb2c8372fea8ca72edfdbeb1e7c6ff5d7c18a7"
+  },
+  "diff-investigation.json": {
+    "path": "/tmp/gossil-fossil-baseline-20261117/diff-investigation.json",
+    "sha256": "22222723f587fc982879f869d7ddff372e4a7c5eda973acc4b30f3734ec4ad85"
+  },
+  "failure-characterization.json": {
+    "path": "/tmp/gossil-fossil-baseline-20261117/failure-characterization.json",
+    "sha256": "1b2bfa13290dd7c0a11706b323fa8a62bd8423fef9442cbe4ad5b80dbca26f60"
+  },
+  "failure-diagnostics.json": {
+    "path": "/tmp/gossil-fossil-baseline-20261117/failure-diagnostics.json",
+    "sha256": "0002c2913fbf1db207425f3919fd29f4a1d83cece8195f6646bb602fb5f96b7b"
+  },
+  "final-source-integrity.json": {
+    "path": "/tmp/gossil-fossil-baseline-20261117/final-source-integrity.json",
+    "sha256": "08b6eadeb2bd5ac6dcaf16352752fca30231fffbc7da7ecac5ebcf2aef6dc265"
+  },
+  "finalize.py": {
+    "path": "/tmp/gossil-fossil-baseline-20261117/finalize.py",
+    "sha256": "ef69de2c5e60d056b55a62c6b2cb94c4149691760d8d53ef95782e56c04cbcab"
+  },
+  "identities.py": {
+    "path": "/tmp/gossil-fossil-baseline-20261117/identities.py",
+    "sha256": "6aeacfd20093a2b9a24f1f1deb3b92fe961fe4b1c6c785c0a5e08aa63d6991da"
+  },
+  "inventory-parity.json": {
+    "path": "/tmp/gossil-fossil-baseline-20261117/inventory-parity.json",
+    "sha256": "1fdaeae6b9b221266a5a32e8c78c33c7e3b89fa8f5015d9b2cfe6769076857fc"
+  },
+  "launch.tcl": {
+    "path": "/tmp/gossil-fossil-baseline-20261117/launch.tcl",
+    "sha256": "e53ab9944ada709b0de96f4217921c62523c85f77d244ae2eb0c0f6af189ae6f"
+  },
+  "parallel_remaining.py": {
+    "path": "/tmp/gossil-fossil-baseline-20261117/parallel_remaining.py",
+    "sha256": "ff6a0e443ee2f4995c5ae4a0267b9e1334ecd348de6ed30aeab02bb7c6aaa15b"
+  },
+  "preliminary-controls.json": {
+    "path": "/tmp/gossil-fossil-baseline-20261117/preliminary-controls.json",
+    "sha256": "2d217f6807401dfbe1a1d4275d34cddc79a849ea04e22219d47398d2027d627a"
+  },
+  "prepare.py": {
+    "path": "/tmp/gossil-fossil-baseline-20261117/prepare.py",
+    "sha256": "d3e29dde668fbab6e8c70d01546c4dad298ece6d5eb81e2344fd9809c9e35f27"
+  },
+  "pristine-files.json": {
+    "path": "/tmp/gossil-fossil-baseline-20261117/pristine-files.json",
+    "sha256": "592de9816bc307c6cf2c09aaeb9aa230682c5398daba50b3c834f420bcc34989"
+  },
+  "provenance.json": {
+    "path": "/tmp/gossil-fossil-baseline-20261117/provenance.json",
+    "sha256": "a72e2527c3d533bb042cec5452ce18508dea860fd90c7a52acd00af1d0e6f73e"
+  },
+  "redundant-loop-stop.json": {
+    "path": "/tmp/gossil-fossil-baseline-20261117/redundant-loop-stop.json",
+    "sha256": "f2e3b44c3679b16acaf3146c9ed45a0fb4dba60a3f322a56fde6133453ed545a"
+  },
+  "report.py": {
+    "path": "/tmp/gossil-fossil-baseline-20261117/report.py",
+    "sha256": "6c008f36ecc3bdd34cc988a805d456bbf25ae9106197aa63be7733e1f978cd2d"
+  },
+  "run.py": {
+    "path": "/tmp/gossil-fossil-baseline-20261117/run.py",
+    "sha256": "6684994aaa14737ad7d4381f0edb18ab86f1d0722ba7bdc9555afd2448a24baf"
+  },
+  "runner-design.json": {
+    "path": "/tmp/gossil-fossil-baseline-20261117/runner-design.json",
+    "sha256": "b2f08f9002e835adaef4f0a5152ffd91f34c63e0f018ebe9bd7ae817be0ad0de"
+  },
+  "runtime-features.json": {
+    "path": "/tmp/gossil-fossil-baseline-20261117/runtime-features.json",
+    "sha256": "684e9b40b7e11a6d9c5018746045969b97fadf8c094f7c118f75bf08736ea7ad"
+  },
+  "runtime-receipts.json": {
+    "path": "/tmp/gossil-fossil-baseline-20261117/runtime-receipts.json",
+    "sha256": "bb0eab5d5dc36971b262edacac20614402accefb8c1ca7895990e3ac5707d286"
+  },
+  "safety-surface-review.json": {
+    "path": "/tmp/gossil-fossil-baseline-20261117/safety-surface-review.json",
+    "sha256": "ce119f25edb2f3e999fb61bd784c6ac0942afc6c4229d418957827d5d2bd425a"
+  },
+  "supplemental-delta.json": {
+    "path": "/tmp/gossil-fossil-baseline-20261117/supplemental-delta.json",
+    "sha256": "c2261d528aabaf8a41e49b58e2c19e323188be009954fc82fb6d39e383976498"
+  },
+  "tool-identities.json": {
+    "path": "/tmp/gossil-fossil-baseline-20261117/tool-identities.json",
+    "sha256": "d607d9c8898501ffeebad680dd4a225e3f9261e05ab3f55db4d87080a726dff4"
+  },
+  "runs/amend/output.log": {
+    "path": "/tmp/gossil-fossil-baseline-20261117/runs/amend/output.log",
+    "sha256": "6afcff1499d41d56445dd6ef4ddc4a0880c4d8bca32a91fd807cc97e6e2e5e38"
+  },
+  "runs/amend/result.json": {
+    "path": "/tmp/gossil-fossil-baseline-20261117/runs/amend/result.json",
+    "sha256": "49dbd3eccb143d417421fbd8ad8dcec5fc554049266eb2334fa24e8866ac645f"
+  },
+  "runs/clean/output.log": {
+    "path": "/tmp/gossil-fossil-baseline-20261117/runs/clean/output.log",
+    "sha256": "8cae011c9d035db1eab40cf76742e28c6e31b379779a1eb5345317518de2ad9f"
+  },
+  "runs/clean/result.json": {
+    "path": "/tmp/gossil-fossil-baseline-20261117/runs/clean/result.json",
+    "sha256": "e5fd1008d13968a47e5c5f3b82c6eabbb2313409b52e08bf3d041d82d441da9d"
+  },
+  "runs/cmdline/output.log": {
+    "path": "/tmp/gossil-fossil-baseline-20261117/runs/cmdline/output.log",
+    "sha256": "b7f2d20dca4f5626a2c94aa658cb00a4f11b682af97a14fc506dfaba564bacf6"
+  },
+  "runs/cmdline/result.json": {
+    "path": "/tmp/gossil-fossil-baseline-20261117/runs/cmdline/result.json",
+    "sha256": "0bc3c9402c04fc71c9a1396c11ddc634ed11653707d6f39d0be18cdd88d7b807"
+  },
+  "runs/commit-warning/output.log": {
+    "path": "/tmp/gossil-fossil-baseline-20261117/runs/commit-warning/output.log",
+    "sha256": "56ee5162e80ddb59bcade58aa40226496a099f6fdc03d3be05d96399df113797"
+  },
+  "runs/commit-warning/result.json": {
+    "path": "/tmp/gossil-fossil-baseline-20261117/runs/commit-warning/result.json",
+    "sha256": "dc58d5ee91316981e3c462bae868ebc13530baef3af8ac82536bfefe134b8a90"
+  },
+  "runs/contains-selector/output.log": {
+    "path": "/tmp/gossil-fossil-baseline-20261117/runs/contains-selector/output.log",
+    "sha256": "10d29a60f53fc377dcb00334f3ece179dbf9bd16ed7b76ad1c4e74aac11f3f08"
+  },
+  "runs/contains-selector/result.json": {
+    "path": "/tmp/gossil-fossil-baseline-20261117/runs/contains-selector/result.json",
+    "sha256": "da0ce885baec4a7fdc962c1823a4e33fcfed7c56537e1bb6dd2a6ee6f39c5889"
+  },
+  "runs/delta1/output.log": {
+    "path": "/tmp/gossil-fossil-baseline-20261117/runs/delta1/output.log",
+    "sha256": "d43199c5bb820c12c8b420ca055f7ba5ef0697e7d98b1a86d66a51ac55c196ea"
+  },
+  "runs/delta1/result.json": {
+    "path": "/tmp/gossil-fossil-baseline-20261117/runs/delta1/result.json",
+    "sha256": "3af0059fa34be6e3e5f06d22201a5b9ccf4c58fe07c22fd1ba8f2605659876f8"
+  },
+  "runs/diff/output.log": {
+    "path": "/tmp/gossil-fossil-baseline-20261117/runs/diff/output.log",
+    "sha256": "202c4aaac55c8e06b297ac13b40b49ff64072b92e90a03f79b5094812041704f"
+  },
+  "runs/diff/result.json": {
+    "path": "/tmp/gossil-fossil-baseline-20261117/runs/diff/result.json",
+    "sha256": "2704055e1bb3e96463af78eb9567247383217e23ae0ac63e45f0658fe5f8cf1c"
+  },
+  "runs/file1/output.log": {
+    "path": "/tmp/gossil-fossil-baseline-20261117/runs/file1/output.log",
+    "sha256": "4382c23b3e9b28733b7895dd941631f71c77a30a515b63cbac889eed60a26528"
+  },
+  "runs/file1/result.json": {
+    "path": "/tmp/gossil-fossil-baseline-20261117/runs/file1/result.json",
+    "sha256": "f9917758d1bbf5316344ba7bdcf3801993725a2f2cfd957de3240a94dca7a943"
+  },
+  "runs/glob/output.log": {
+    "path": "/tmp/gossil-fossil-baseline-20261117/runs/glob/output.log",
+    "sha256": "3fd54ad94c63a6535eb52bc47b22e71ca813343f07c567b5129cb0d814377069"
+  },
+  "runs/glob/result.json": {
+    "path": "/tmp/gossil-fossil-baseline-20261117/runs/glob/result.json",
+    "sha256": "d6ab3bf0023c4b6e7fbf2bba79bed022721e2e8180ed248f7ea8df239adc3410"
+  },
+  "runs/json/output.log": {
+    "path": "/tmp/gossil-fossil-baseline-20261117/runs/json/output.log",
+    "sha256": "4d2aa51b6ba11a3257f982a467b676e45aee5a52e097621d29970181c8b7bd65"
+  },
+  "runs/json/result.json": {
+    "path": "/tmp/gossil-fossil-baseline-20261117/runs/json/result.json",
+    "sha256": "d39bef11cb4594aaaec966008b7aa1d273ed627ef12a75948af5eb10cfcd12b2"
+  },
+  "runs/merge1/output.log": {
+    "path": "/tmp/gossil-fossil-baseline-20261117/runs/merge1/output.log",
+    "sha256": "ce5db9ba10bea62202af4fcf1182584dc2c9085014eb53ccbd8f6a393818a7b3"
+  },
+  "runs/merge1/result.json": {
+    "path": "/tmp/gossil-fossil-baseline-20261117/runs/merge1/result.json",
+    "sha256": "859b921ae7e96032c3ab11446d7cef46702aebbfc6a7dc98805e590c83f4ea8c"
+  },
+  "runs/merge2/output.log": {
+    "path": "/tmp/gossil-fossil-baseline-20261117/runs/merge2/output.log",
+    "sha256": "8b10fda2cbaa3d5de3560a4a2872559f3c66fcc27d0ba70c40e8ad02b693f16c"
+  },
+  "runs/merge2/result.json": {
+    "path": "/tmp/gossil-fossil-baseline-20261117/runs/merge2/result.json",
+    "sha256": "83398247c57488561e31cbc201278c8256a38a566b7b152a893b98aef8a53f5c"
+  },
+  "runs/merge3/output.log": {
+    "path": "/tmp/gossil-fossil-baseline-20261117/runs/merge3/output.log",
+    "sha256": "fe3a37987ba0ee7de27bae3b49ddca6dd982d22d65dd690c8c99564b1ac71326"
+  },
+  "runs/merge3/result.json": {
+    "path": "/tmp/gossil-fossil-baseline-20261117/runs/merge3/result.json",
+    "sha256": "4cc5ccba85b3f2726256fd12cc6695fda78d9853fa149b7c4a7f1abdaf25a2d4"
+  },
+  "runs/merge4/output.log": {
+    "path": "/tmp/gossil-fossil-baseline-20261117/runs/merge4/output.log",
+    "sha256": "6158f1aaea53e0e01964a60d66c5bbe3d65c976c5d8f08da2df82541a71d10ed"
+  },
+  "runs/merge4/result.json": {
+    "path": "/tmp/gossil-fossil-baseline-20261117/runs/merge4/result.json",
+    "sha256": "98c55a4b05dfe0ed91e31d939d729fa3a9dc6a9258c4a7aa3d75f20a0b327035"
+  },
+  "runs/merge5/output.log": {
+    "path": "/tmp/gossil-fossil-baseline-20261117/runs/merge5/output.log",
+    "sha256": "78e090bf3d704790290743be2724b3916bf14f0a1a99ad8f4a80db9295de0a41"
+  },
+  "runs/merge5/result.json": {
+    "path": "/tmp/gossil-fossil-baseline-20261117/runs/merge5/result.json",
+    "sha256": "791dd2dbc6516e4eb43ec4b9127bfce6fd997af7c919e75f693af72e1750db17"
+  },
+  "runs/merge6/output.log": {
+    "path": "/tmp/gossil-fossil-baseline-20261117/runs/merge6/output.log",
+    "sha256": "e0b3dbfdf0f79639f2138876e936f0ecdc37044af5194d332fc1c79debdb05cd"
+  },
+  "runs/merge6/result.json": {
+    "path": "/tmp/gossil-fossil-baseline-20261117/runs/merge6/result.json",
+    "sha256": "3f8d4b309578adcac6bfd41c9f3f9ddc38e6cfc54e576d0f55c80d6bfc6f4c09"
+  },
+  "runs/merge_exe/output.log": {
+    "path": "/tmp/gossil-fossil-baseline-20261117/runs/merge_exe/output.log",
+    "sha256": "9e25f4f5870d02367223b3730ac99013be156d85e1bc1e3283f0e83fb95d2374"
+  },
+  "runs/merge_exe/result.json": {
+    "path": "/tmp/gossil-fossil-baseline-20261117/runs/merge_exe/result.json",
+    "sha256": "7632dc687b3785d8eb396bfb42dab50c6945563d2453b55e156d8f85d48f3aa9"
+  },
+  "runs/merge_renames/output.log": {
+    "path": "/tmp/gossil-fossil-baseline-20261117/runs/merge_renames/output.log",
+    "sha256": "e62988e9c697eb3e5333575b405ae97312f78003edaeeb65e1a31bf9e57da84a"
+  },
+  "runs/merge_renames/result.json": {
+    "path": "/tmp/gossil-fossil-baseline-20261117/runs/merge_renames/result.json",
+    "sha256": "fdfe98ad9bc06b95317da727b35236bde25d001823407e24001395aacf710a4c"
+  },
+  "runs/merge_renames_2/output.log": {
+    "path": "/tmp/gossil-fossil-baseline-20261117/runs/merge_renames_2/output.log",
+    "sha256": "b927c4169b27513d941df6eee2c0f7896653f358b19a8fe4ce35515ae386d094"
+  },
+  "runs/merge_renames_2/result.json": {
+    "path": "/tmp/gossil-fossil-baseline-20261117/runs/merge_renames_2/result.json",
+    "sha256": "3dbceac9195050f6e995229e650c10c518dc621153bf121ff80caed6a31485b5"
+  },
+  "runs/merge_warn/output.log": {
+    "path": "/tmp/gossil-fossil-baseline-20261117/runs/merge_warn/output.log",
+    "sha256": "3473932d5179ac573a855365e4b5e8f0f0141b2a524499ee3143a3c80f79a60c"
+  },
+  "runs/merge_warn/result.json": {
+    "path": "/tmp/gossil-fossil-baseline-20261117/runs/merge_warn/result.json",
+    "sha256": "b66f3e1e34709ad768aff1c400dfff27ec2373fec2da147eff6d0f7d152dbbc6"
+  },
+  "runs/mv-rm/output.log": {
+    "path": "/tmp/gossil-fossil-baseline-20261117/runs/mv-rm/output.log",
+    "sha256": "5d2c7d1d74a8af579bd8577ea7fa0b085e2246c54f8b9c3b8afc66287d7c8cd3"
+  },
+  "runs/mv-rm/result.json": {
+    "path": "/tmp/gossil-fossil-baseline-20261117/runs/mv-rm/result.json",
+    "sha256": "342bacebaa01762cc4c8aad0aa0ce60da46c5c9a7a86a93932ac3d16c79d50bf"
+  },
+  "runs/reserved-names/output.log": {
+    "path": "/tmp/gossil-fossil-baseline-20261117/runs/reserved-names/output.log",
+    "sha256": "a4ec48db334653b240957021685599bb756749f3763a90de121c7e6e689cbf10"
+  },
+  "runs/reserved-names/result.json": {
+    "path": "/tmp/gossil-fossil-baseline-20261117/runs/reserved-names/result.json",
+    "sha256": "f9caa3f708a56344c334753d71ac5c369e9662c07f822a6ce2fd7c68dde40e99"
+  },
+  "runs/parallel-revert/output.log": {
+    "path": "/private/tmp/gossil-fossil-baseline-20261117/runs/parallel-revert/output.log",
+    "sha256": "ab2a18b55ab4a3899f34a5ce4735bf5434051e66810c788c3618ed94d1201600"
+  },
+  "runs/parallel-revert/result.json": {
+    "path": "/tmp/gossil-fossil-baseline-20261117/runs/parallel-revert/result.json",
+    "sha256": "09491c76ed539359e14cb30f1542a10bed944592ecad431a83c6da3f24e60e50"
+  },
+  "runs/parallel-set-manifest/output.log": {
+    "path": "/private/tmp/gossil-fossil-baseline-20261117/runs/parallel-set-manifest/output.log",
+    "sha256": "0723207020f7cdedc4738713dc0f2cc987d2d357c238cf00f5fe93bdff0ce00a"
+  },
+  "runs/parallel-set-manifest/result.json": {
+    "path": "/tmp/gossil-fossil-baseline-20261117/runs/parallel-set-manifest/result.json",
+    "sha256": "1bccb882f288bfd576bba846f55f8891e75a45248f141e6de27891dfa6e830cd"
+  },
+  "runs/parallel-settings-repo/output.log": {
+    "path": "/private/tmp/gossil-fossil-baseline-20261117/runs/parallel-settings-repo/output.log",
+    "sha256": "8b7b73bc5f929fa53b11ab5feab483e3656dd521dba12462aa555288dd66b505"
+  },
+  "runs/parallel-settings-repo/result.json": {
+    "path": "/tmp/gossil-fossil-baseline-20261117/runs/parallel-settings-repo/result.json",
+    "sha256": "f1e5672313b8f9c8c2ec850dd7be6104fcb5fac81d34947f72bae9ce1be41b80"
+  },
+  "runs/parallel-stash/output.log": {
+    "path": "/private/tmp/gossil-fossil-baseline-20261117/runs/parallel-stash/output.log",
+    "sha256": "df077c2a3aca21b51f44589d0c50d242dcb1a8eee5f2738424457440675cffac"
+  },
+  "runs/parallel-stash/result.json": {
+    "path": "/tmp/gossil-fossil-baseline-20261117/runs/parallel-stash/result.json",
+    "sha256": "b47c8994239a3bc991343d3c62868056e8cd14144f36c0229abdca745dfedfae"
+  },
+  "runs/parallel-symlinks/output.log": {
+    "path": "/private/tmp/gossil-fossil-baseline-20261117/runs/parallel-symlinks/output.log",
+    "sha256": "198f25da7a8daf6459db35d72fb6be8fa9dd459f2be2476bbcd5f148cc93a34d"
+  },
+  "runs/parallel-symlinks/result.json": {
+    "path": "/tmp/gossil-fossil-baseline-20261117/runs/parallel-symlinks/result.json",
+    "sha256": "2c94027681cb58c3a96470f736755634e1fde4013a4d963605b56c96f5756278"
+  },
+  "runs/parallel-th1/output.log": {
+    "path": "/private/tmp/gossil-fossil-baseline-20261117/runs/parallel-th1/output.log",
+    "sha256": "5d259740a3f093bb12ce790e2a818e5c1d2c801b06e0ab210b681c3d97d95e37"
+  },
+  "runs/parallel-th1/result.json": {
+    "path": "/tmp/gossil-fossil-baseline-20261117/runs/parallel-th1/result.json",
+    "sha256": "afeeca25f55402f01d3a0e8f0ef9c8d19d88ee7581c463204619113ff8dc5af8"
+  },
+  "runs/parallel-th1-docs/output.log": {
+    "path": "/private/tmp/gossil-fossil-baseline-20261117/runs/parallel-th1-docs/output.log",
+    "sha256": "6af49f68ffb947ee9a9d569a260a919dc133e1d31226014009833adb4113a059"
+  },
+  "runs/parallel-th1-docs/result.json": {
+    "path": "/tmp/gossil-fossil-baseline-20261117/runs/parallel-th1-docs/result.json",
+    "sha256": "682f2df63943b437c883160f56a45883346964e441bd2fa6b12749b9948b2bae"
+  },
+  "runs/parallel-th1-hooks/output.log": {
+    "path": "/private/tmp/gossil-fossil-baseline-20261117/runs/parallel-th1-hooks/output.log",
+    "sha256": "ca3fd6bc69a9dfaabe29411bdefcf7f4fb1030f6489415367c6f3972b4970f0b"
+  },
+  "runs/parallel-th1-hooks/result.json": {
+    "path": "/tmp/gossil-fossil-baseline-20261117/runs/parallel-th1-hooks/result.json",
+    "sha256": "2255d514fe4cde1347ba37eba3adea3e94a7f41fdf111999e1b644ec8f5f0cc3"
+  },
+  "runs/parallel-th1-repo/output.log": {
+    "path": "/private/tmp/gossil-fossil-baseline-20261117/runs/parallel-th1-repo/output.log",
+    "sha256": "44da63ae75ddbd4f63d949c3d6a1f53e4b2823ea3620810e525e0b78bbc5361c"
+  },
+  "runs/parallel-th1-repo/result.json": {
+    "path": "/tmp/gossil-fossil-baseline-20261117/runs/parallel-th1-repo/result.json",
+    "sha256": "ca679bb1b1fd03a828085d0011362169b2e538b91a538982a11c83df86391dbd"
+  },
+  "runs/parallel-th1-taint/output.log": {
+    "path": "/private/tmp/gossil-fossil-baseline-20261117/runs/parallel-th1-taint/output.log",
+    "sha256": "418192a5dcb0aa33f3b3fbca599e018d813b0c75a49ebe38a3ea9ab31ec24c94"
+  },
+  "runs/parallel-th1-taint/result.json": {
+    "path": "/tmp/gossil-fossil-baseline-20261117/runs/parallel-th1-taint/result.json",
+    "sha256": "45c3bdc199fbb15faf861754711c3ea40cd2b7dc5334e92044339ab21f8d7a7d"
+  },
+  "runs/parallel-th1-tcl/output.log": {
+    "path": "/private/tmp/gossil-fossil-baseline-20261117/runs/parallel-th1-tcl/output.log",
+    "sha256": "099318153c80ee05520c554e2364489bf52a33a4ff887f76e602b05e683831dc"
+  },
+  "runs/parallel-th1-tcl/result.json": {
+    "path": "/tmp/gossil-fossil-baseline-20261117/runs/parallel-th1-tcl/result.json",
+    "sha256": "e8bd8ce8eb21bf26dc1cab1dab7762f91493ad6f08a129841b88b1627d1979fc"
+  },
+  "runs/parallel-unversioned/output.log": {
+    "path": "/private/tmp/gossil-fossil-baseline-20261117/runs/parallel-unversioned/output.log",
+    "sha256": "d1414fab81f8f7c59328703df0227f9f64fdcc0a807ea21add9a29aa5e4f2246"
+  },
+  "runs/parallel-unversioned/result.json": {
+    "path": "/tmp/gossil-fossil-baseline-20261117/runs/parallel-unversioned/result.json",
+    "sha256": "fffd2e33f662e92f401c15d90c80976e2f421c1b40b24bf1b72fe11a24b57e52"
+  },
+  "runs/parallel-update/output.log": {
+    "path": "/private/tmp/gossil-fossil-baseline-20261117/runs/parallel-update/output.log",
+    "sha256": "7a9ba98e1f14633d58dd87b11291fc0bf0991216ae476849d8fd3b05884a6d92"
+  },
+  "runs/parallel-update/result.json": {
+    "path": "/tmp/gossil-fossil-baseline-20261117/runs/parallel-update/result.json",
+    "sha256": "e8dfbe2c911f66e106378d64bb4b7741aef03509e2b80af96810624f4058b775"
+  },
+  "runs/parallel-utf/output.log": {
+    "path": "/private/tmp/gossil-fossil-baseline-20261117/runs/parallel-utf/output.log",
+    "sha256": "98f77a0e553e37a921e318efdeae5b47ce849f6991b2234abf621a044b280c9e"
+  },
+  "runs/parallel-utf/result.json": {
+    "path": "/tmp/gossil-fossil-baseline-20261117/runs/parallel-utf/result.json",
+    "sha256": "6613bf1d4ed4e3ce21c50962f3113638b0bef42f257164b94739a7dd8518b739"
+  },
+  "runs/parallel-wiki/output.log": {
+    "path": "/private/tmp/gossil-fossil-baseline-20261117/runs/parallel-wiki/output.log",
+    "sha256": "572f9d332c37987b58edbfc0ab47105eadfb6207c1b1ac8c2231dd3d158208a8"
+  },
+  "runs/parallel-wiki/result.json": {
+    "path": "/tmp/gossil-fossil-baseline-20261117/runs/parallel-wiki/result.json",
+    "sha256": "c4d6f006679eb840ae926c7843c37e9eae4c51244c7a1a64b6c1a625ff027545"
+  },
+  "enabled/test/tester.tcl": {
+    "path": "/tmp/gossil-fossil-baseline-20261117/enabled/test/tester.tcl",
+    "sha256": "3e26debfaf0be4dd425b21da6537511e345ffc1687721fd0ee2c30840ab21783"
+  },
+  "pristine/test/tester.tcl": {
+    "path": "/tmp/gossil-fossil-baseline-20261117/pristine/test/tester.tcl",
+    "sha256": "458608cb05bf10381a0ceff95aedfcb406f33aeba7e07b00244b3b5e70ea4561"
+  }
+}

@@ -1,0 +1,8 @@
+***** th1-tcl ******
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval {hasfeature tcl}
+Fossil was not compiled with Tcl support.
+test test-framework-th1-tcl OK
+***** End of th1-tcl: 0 errors so far ******
+***** Final results: 0 errors out of 1 tests
+***** Ignored results: 0 ignored errors out of 1 tests
+***** Skipped tests: th1-tcl

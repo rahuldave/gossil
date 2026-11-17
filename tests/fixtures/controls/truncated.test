@@ -1,0 +1,2 @@
+puts {test runner-before-crash OK}
+exit 0

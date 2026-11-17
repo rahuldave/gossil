@@ -1,0 +1,2 @@
+# Deliberately false; the runner must preserve this failed inherited result.
+test runner-deliberate-failure 0

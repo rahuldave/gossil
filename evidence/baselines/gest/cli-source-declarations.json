@@ -1,0 +1,2717 @@
+[
+  {
+    "path": "src/cli.rs",
+    "line": 10,
+    "text": "use std::process::ExitCode;"
+  },
+  {
+    "path": "src/cli.rs",
+    "line": 26,
+    "text": "#[command("
+  },
+  {
+    "path": "src/cli.rs",
+    "line": 35,
+    "text": "  #[command(subcommand)]"
+  },
+  {
+    "path": "src/cli.rs",
+    "line": 38,
+    "text": "  #[arg(long, global = true)]"
+  },
+  {
+    "path": "src/cli.rs",
+    "line": 42,
+    "text": "  #[arg(long, global = true)]"
+  },
+  {
+    "path": "src/cli.rs",
+    "line": 45,
+    "text": "  #[arg(long = \"version\", short = 'V')]"
+  },
+  {
+    "path": "src/cli.rs",
+    "line": 49,
+    "text": "  #[arg(short = 'v', long = \"verbose\", action = ArgAction::Count, global = true)]"
+  },
+  {
+    "path": "src/cli.rs",
+    "line": 188,
+    "text": "  /// The code from the table, as an `ExitCode`."
+  },
+  {
+    "path": "src/cli.rs",
+    "line": 189,
+    "text": "  pub fn exit_code(&self) -> ExitCode {"
+  },
+  {
+    "path": "src/cli.rs",
+    "line": 190,
+    "text": "    ExitCode::from(self.exit_code_u8())"
+  },
+  {
+    "path": "src/cli.rs",
+    "line": 193,
+    "text": "  /// The raw sysexits code as a `u8`. Exposed alongside [`Self::exit_code`]"
+  },
+  {
+    "path": "src/cli.rs",
+    "line": 195,
+    "text": "  /// through `ExitCode` (which does not implement `PartialEq`)."
+  },
+  {
+    "path": "src/cli.rs",
+    "line": 199,
+    "text": "  /// The code from the table in [`Self::exit_code`], from 64 to 78."
+  },
+  {
+    "path": "src/cli.rs",
+    "line": 200,
+    "text": "  pub fn exit_code_u8(&self) -> u8 {"
+  },
+  {
+    "path": "src/cli.rs",
+    "line": 227,
+    "text": "  #[command(alias = \"a\")]"
+  },
+  {
+    "path": "src/cli.rs",
+    "line": 236,
+    "text": "  #[command(alias = \"i\")]"
+  },
+  {
+    "path": "src/cli.rs",
+    "line": 241,
+    "text": "  #[command(visible_alias = \"p\")]"
+  },
+  {
+    "path": "src/cli.rs",
+    "line": 246,
+    "text": "  #[command(alias = \"grep\")]"
+  },
+  {
+    "path": "src/cli.rs",
+    "line": 249,
+    "text": "  #[command(name = \"self-update\")]"
+  },
+  {
+    "path": "src/cli.rs",
+    "line": 252,
+    "text": "  #[command(alias = \"s\")]"
+  },
+  {
+    "path": "src/cli.rs",
+    "line": 257,
+    "text": "  #[command(alias = \"t\")]"
+  },
+  {
+    "path": "src/cli.rs",
+    "line": 260,
+    "text": "  #[command(alias = \"u\")]"
+  },
+  {
+    "path": "src/cli.rs",
+    "line": 510,
+    "text": "  mod error_exit_code {"
+  },
+  {
+    "path": "src/cli.rs",
+    "line": 513,
+    "text": "    fn assert_exit_code(err: Error, expected: u8) {"
+  },
+  {
+    "path": "src/cli.rs",
+    "line": 514,
+    "text": "      let actual = err.exit_code_u8();"
+  },
+  {
+    "path": "src/cli.rs",
+    "line": 521,
+    "text": "      assert_exit_code(Error::Argument(\"bad flag\".into()), 64);"
+  },
+  {
+    "path": "src/cli.rs",
+    "line": 528,
+    "text": "      assert_exit_code(err, 78);"
+  },
+  {
+    "path": "src/cli.rs",
+    "line": 533,
+    "text": "      assert_exit_code(Error::Editor(\"editor failed\".into()), 70);"
+  },
+  {
+    "path": "src/cli.rs",
+    "line": 538,
+    "text": "      assert_exit_code(Error::InvalidState(\"iteration is not active\".into()), 69);"
+  },
+  {
+    "path": "src/cli.rs",
+    "line": 545,
+    "text": "      assert_exit_code(Error::Io(io_err), 74);"
+  },
+  {
+    "path": "src/cli.rs",
+    "line": 550,
+    "text": "      assert_exit_code(Error::MetaKeyNotFound(\"foo.bar\".into()), 66);"
+  },
+  {
+    "path": "src/cli.rs",
+    "line": 555,
+    "text": "      assert_exit_code(Error::NoTasksAvailable, 75);"
+  },
+  {
+    "path": "src/cli.rs",
+    "line": 560,
+    "text": "      assert_exit_code(Error::NotFound(\"project not found\".into()), 66);"
+  },
+  {
+    "path": "src/cli.rs",
+    "line": 565,
+    "text": "      let json_err = serde_json::from_str::<serde_json::Value>(\"{not json\").unwrap_err();"
+  },
+  {
+    "path": "src/cli.rs",
+    "line": 567,
+    "text": "      assert_exit_code(Error::Serialize(json_err), 65);"
+  },
+  {
+    "path": "src/cli.rs",
+    "line": 575,
+    "text": "      assert_exit_code(Error::Store(store_err), 74);"
+  },
+  {
+    "path": "src/cli.rs",
+    "line": 580,
+    "text": "      assert_exit_code(Error::Store(crate::store::Error::InvalidValue(\"bad row\".into())), 74);"
+  },
+  {
+    "path": "src/cli.rs",
+    "line": 585,
+    "text": "      assert_exit_code(Error::Store(crate::store::Error::InvalidPrefix(\"xx\".into())), 64);"
+  },
+  {
+    "path": "src/cli.rs",
+    "line": 590,
+    "text": "      assert_exit_code(Error::Store(crate::store::Error::NotFound(\"task abc\".into())), 66);"
+  },
+  {
+    "path": "src/cli.rs",
+    "line": 595,
+    "text": "      assert_exit_code(Error::Store(crate::store::Error::Ambiguous(\"abc\".into(), 3)), 66);"
+  },
+  {
+    "path": "src/cli.rs",
+    "line": 600,
+    "text": "      assert_exit_code(Error::Store(crate::store::Error::NothingToUndo), 69);"
+  },
+  {
+    "path": "src/cli.rs",
+    "line": 605,
+    "text": "      let json_err = serde_json::from_str::<serde_json::Value>(\"{not json\").unwrap_err();"
+  },
+  {
+    "path": "src/cli.rs",
+    "line": 607,
+    "text": "      assert_exit_code(Error::Store(crate::store::Error::Serialization(json_err)), 65);"
+  },
+  {
+    "path": "src/cli.rs",
+    "line": 614,
+    "text": "      assert_exit_code(Error::Store(crate::store::Error::Config(cfg_err)), 78);"
+  },
+  {
+    "path": "src/cli.rs",
+    "line": 623,
+    "text": "      assert_exit_code(Error::TomlSerialize(toml_err), 65);"
+  },
+  {
+    "path": "src/cli.rs",
+    "line": 628,
+    "text": "      assert_exit_code(Error::UninitializedProject, 78);"
+  },
+  {
+    "path": "src/cli/commands/artifact.rs",
+    "line": 22,
+    "text": "  #[command(subcommand)]"
+  },
+  {
+    "path": "src/cli/commands/artifact.rs",
+    "line": 32,
+    "text": "  #[command(visible_alias = \"new\")]"
+  },
+  {
+    "path": "src/cli/commands/artifact.rs",
+    "line": 35,
+    "text": "  #[command(visible_alias = \"rm\")]"
+  },
+  {
+    "path": "src/cli/commands/artifact.rs",
+    "line": 38,
+    "text": "  #[command(visible_alias = \"ls\")]"
+  },
+  {
+    "path": "src/cli/commands/artifact.rs",
+    "line": 45,
+    "text": "  #[command(visible_alias = \"view\")]"
+  },
+  {
+    "path": "src/cli/commands/artifact.rs",
+    "line": 52,
+    "text": "  #[command(visible_alias = \"edit\")]"
+  },
+  {
+    "path": "src/cli/commands/artifact/archive.rs",
+    "line": 9,
+    "text": "  ui::{components::SuccessMessage, envelope::Envelope, json},"
+  },
+  {
+    "path": "src/cli/commands/artifact/archive.rs",
+    "line": 17,
+    "text": "  /// The output mode: normal, `--json`, `--quiet` or `--raw`."
+  },
+  {
+    "path": "src/cli/commands/artifact/archive.rs",
+    "line": 18,
+    "text": "  #[command(flatten)]"
+  },
+  {
+    "path": "src/cli/commands/artifact/archive.rs",
+    "line": 19,
+    "text": "  output: json::Flags,"
+  },
+  {
+    "path": "src/cli/commands/artifact/create.rs",
+    "line": 21,
+    "text": "  ui::{components::SuccessMessage, envelope::Envelope, json},"
+  },
+  {
+    "path": "src/cli/commands/artifact/create.rs",
+    "line": 34,
+    "text": "  #[arg(long, conflicts_with_all = [\"title\", \"body\", \"iteration\", \"metadata\", \"metadata_json\", \"source\", \"tag\"])]"
+  },
+  {
+    "path": "src/cli/commands/artifact/create.rs",
+    "line": 37,
+    "text": "  #[arg(long, short)]"
+  },
+  {
+    "path": "src/cli/commands/artifact/create.rs",
+    "line": 40,
+    "text": "  #[arg(long, short)]"
+  },
+  {
+    "path": "src/cli/commands/artifact/create.rs",
+    "line": 43,
+    "text": "  #[arg(long = \"metadata\", short = 'm', value_name = \"KEY=VALUE\")]"
+  },
+  {
+    "path": "src/cli/commands/artifact/create.rs",
+    "line": 46,
+    "text": "  #[arg(long = \"metadata-json\", value_name = \"JSON\")]"
+  },
+  {
+    "path": "src/cli/commands/artifact/create.rs",
+    "line": 49,
+    "text": "  #[arg(long, short, conflicts_with = \"body\")]"
+  },
+  {
+    "path": "src/cli/commands/artifact/create.rs",
+    "line": 52,
+    "text": "  #[arg(long, short, value_delimiter = ',', value_parser = tag_arg::trim_tag)]"
+  },
+  {
+    "path": "src/cli/commands/artifact/create.rs",
+    "line": 54,
+    "text": "  /// The output mode: normal, `--json`, `--quiet` or `--raw`."
+  },
+  {
+    "path": "src/cli/commands/artifact/create.rs",
+    "line": 55,
+    "text": "  #[command(flatten)]"
+  },
+  {
+    "path": "src/cli/commands/artifact/create.rs",
+    "line": 56,
+    "text": "  output: json::Flags,"
+  },
+  {
+    "path": "src/cli/commands/artifact/create.rs",
+    "line": 202,
+    "text": "  /// Build the metadata from the `--metadata` and `--metadata-json` options."
+  },
+  {
+    "path": "src/cli/commands/artifact/delete.rs",
+    "line": 13,
+    "text": "  ui::{components::SuccessMessage, envelope::Envelope, json},"
+  },
+  {
+    "path": "src/cli/commands/artifact/delete.rs",
+    "line": 23,
+    "text": "  #[arg(long)]"
+  },
+  {
+    "path": "src/cli/commands/artifact/delete.rs",
+    "line": 25,
+    "text": "  /// The output mode: normal, `--json`, `--quiet` or `--raw`."
+  },
+  {
+    "path": "src/cli/commands/artifact/delete.rs",
+    "line": 26,
+    "text": "  #[command(flatten)]"
+  },
+  {
+    "path": "src/cli/commands/artifact/delete.rs",
+    "line": 27,
+    "text": "  output: json::Flags,"
+  },
+  {
+    "path": "src/cli/commands/artifact/delete.rs",
+    "line": 29,
+    "text": "  #[arg(long)]"
+  },
+  {
+    "path": "src/cli/commands/artifact/list.rs",
+    "line": 18,
+    "text": "    json,"
+  },
+  {
+    "path": "src/cli/commands/artifact/list.rs",
+    "line": 26,
+    "text": "  #[arg(long, short)]"
+  },
+  {
+    "path": "src/cli/commands/artifact/list.rs",
+    "line": 29,
+    "text": "  #[arg(long, visible_alias = \"archived-only\")]"
+  },
+  {
+    "path": "src/cli/commands/artifact/list.rs",
+    "line": 32,
+    "text": "  #[command(flatten)]"
+  },
+  {
+    "path": "src/cli/commands/artifact/list.rs",
+    "line": 35,
+    "text": "  #[arg(long, short)]"
+  },
+  {
+    "path": "src/cli/commands/artifact/list.rs",
+    "line": 37,
+    "text": "  /// The output mode: normal, `--json`, `--quiet` or `--raw`."
+  },
+  {
+    "path": "src/cli/commands/artifact/list.rs",
+    "line": 38,
+    "text": "  #[command(flatten)]"
+  },
+  {
+    "path": "src/cli/commands/artifact/list.rs",
+    "line": 39,
+    "text": "  output: json::Flags,"
+  },
+  {
+    "path": "src/cli/commands/artifact/list.rs",
+    "line": 68,
+    "text": "    if self.output.json {"
+  },
+  {
+    "path": "src/cli/commands/artifact/list.rs",
+    "line": 71,
+    "text": "      let json = serde_json::to_string_pretty(&envelopes)?;"
+  },
+  {
+    "path": "src/cli/commands/artifact/list.rs",
+    "line": 72,
+    "text": "      println!(\"{json}\");"
+  },
+  {
+    "path": "src/cli/commands/artifact/meta.rs",
+    "line": 9,
+    "text": "use crate::{AppContext, actions, cli::Error, ui::json};"
+  },
+  {
+    "path": "src/cli/commands/artifact/meta.rs",
+    "line": 17,
+    "text": "  #[command(subcommand)]"
+  },
+  {
+    "path": "src/cli/commands/artifact/meta.rs",
+    "line": 19,
+    "text": "  /// The output mode: normal, `--json`, `--quiet` or `--raw`."
+  },
+  {
+    "path": "src/cli/commands/artifact/meta.rs",
+    "line": 20,
+    "text": "  #[command(flatten)]"
+  },
+  {
+    "path": "src/cli/commands/artifact/meta.rs",
+    "line": 21,
+    "text": "  output: json::Flags,"
+  },
+  {
+    "path": "src/cli/commands/artifact/meta.rs",
+    "line": 32,
+    "text": "  #[command(alias = \"delete\")]"
+  },
+  {
+    "path": "src/cli/commands/artifact/meta/get.rs",
+    "line": 5,
+    "text": "use crate::{AppContext, actions, cli::Error, ui::json};"
+  },
+  {
+    "path": "src/cli/commands/artifact/meta/get.rs",
+    "line": 14,
+    "text": "  /// The output mode: normal, `--json`, `--quiet` or `--raw`."
+  },
+  {
+    "path": "src/cli/commands/artifact/meta/get.rs",
+    "line": 15,
+    "text": "  #[command(flatten)]"
+  },
+  {
+    "path": "src/cli/commands/artifact/meta/get.rs",
+    "line": 16,
+    "text": "  output: json::Flags,"
+  },
+  {
+    "path": "src/cli/commands/artifact/meta/set.rs",
+    "line": 5,
+    "text": "use crate::{AppContext, actions, cli::Error, ui::json};"
+  },
+  {
+    "path": "src/cli/commands/artifact/meta/set.rs",
+    "line": 14,
+    "text": "  /// The metadata value (auto-detected scalar unless --as-json is set)."
+  },
+  {
+    "path": "src/cli/commands/artifact/meta/set.rs",
+    "line": 17,
+    "text": "  #[arg(long)]"
+  },
+  {
+    "path": "src/cli/commands/artifact/meta/set.rs",
+    "line": 19,
+    "text": "  /// The output mode: normal, `--json`, `--quiet` or `--raw`."
+  },
+  {
+    "path": "src/cli/commands/artifact/meta/set.rs",
+    "line": 20,
+    "text": "  #[command(flatten)]"
+  },
+  {
+    "path": "src/cli/commands/artifact/meta/set.rs",
+    "line": 21,
+    "text": "  output: json::Flags,"
+  },
+  {
+    "path": "src/cli/commands/artifact/meta/unset.rs",
+    "line": 5,
+    "text": "use crate::{AppContext, actions, cli::Error, ui::json};"
+  },
+  {
+    "path": "src/cli/commands/artifact/meta/unset.rs",
+    "line": 14,
+    "text": "  /// The output mode: normal, `--json`, `--quiet` or `--raw`."
+  },
+  {
+    "path": "src/cli/commands/artifact/meta/unset.rs",
+    "line": 15,
+    "text": "  #[command(flatten)]"
+  },
+  {
+    "path": "src/cli/commands/artifact/meta/unset.rs",
+    "line": 16,
+    "text": "  output: json::Flags,"
+  },
+  {
+    "path": "src/cli/commands/artifact/note.rs",
+    "line": 17,
+    "text": "  #[command(subcommand)]"
+  },
+  {
+    "path": "src/cli/commands/artifact/note/add.rs",
+    "line": 5,
+    "text": "use crate::{AppContext, actions, cli::Error, ui::json};"
+  },
+  {
+    "path": "src/cli/commands/artifact/note/add.rs",
+    "line": 13,
+    "text": "  #[arg(short, long)]"
+  },
+  {
+    "path": "src/cli/commands/artifact/note/add.rs",
+    "line": 16,
+    "text": "  #[arg(long)]"
+  },
+  {
+    "path": "src/cli/commands/artifact/note/add.rs",
+    "line": 18,
+    "text": "  /// The output mode: normal, `--json`, `--quiet` or `--raw`."
+  },
+  {
+    "path": "src/cli/commands/artifact/note/add.rs",
+    "line": 19,
+    "text": "  #[command(flatten)]"
+  },
+  {
+    "path": "src/cli/commands/artifact/note/add.rs",
+    "line": 20,
+    "text": "  output: json::Flags,"
+  },
+  {
+    "path": "src/cli/commands/artifact/note/delete.rs",
+    "line": 5,
+    "text": "use crate::{AppContext, actions, cli::Error, ui::json};"
+  },
+  {
+    "path": "src/cli/commands/artifact/note/delete.rs",
+    "line": 12,
+    "text": "  /// The output mode: normal, `--json`, `--quiet` or `--raw`."
+  },
+  {
+    "path": "src/cli/commands/artifact/note/delete.rs",
+    "line": 13,
+    "text": "  #[command(flatten)]"
+  },
+  {
+    "path": "src/cli/commands/artifact/note/delete.rs",
+    "line": 14,
+    "text": "  output: json::Flags,"
+  },
+  {
+    "path": "src/cli/commands/artifact/note/delete.rs",
+    "line": 16,
+    "text": "  #[arg(long)]"
+  },
+  {
+    "path": "src/cli/commands/artifact/note/list.rs",
+    "line": 8,
+    "text": "  ui::json,"
+  },
+  {
+    "path": "src/cli/commands/artifact/note/list.rs",
+    "line": 17,
+    "text": "  #[command(flatten)]"
+  },
+  {
+    "path": "src/cli/commands/artifact/note/list.rs",
+    "line": 19,
+    "text": "  /// The output mode: normal, `--json`, `--quiet` or `--raw`."
+  },
+  {
+    "path": "src/cli/commands/artifact/note/list.rs",
+    "line": 20,
+    "text": "  #[command(flatten)]"
+  },
+  {
+    "path": "src/cli/commands/artifact/note/list.rs",
+    "line": 21,
+    "text": "  output: json::Flags,"
+  },
+  {
+    "path": "src/cli/commands/artifact/note/show.rs",
+    "line": 5,
+    "text": "use crate::{AppContext, actions, cli::Error, ui::json};"
+  },
+  {
+    "path": "src/cli/commands/artifact/note/show.rs",
+    "line": 12,
+    "text": "  /// The output mode: normal, `--json`, `--quiet` or `--raw`."
+  },
+  {
+    "path": "src/cli/commands/artifact/note/show.rs",
+    "line": 13,
+    "text": "  #[command(flatten)]"
+  },
+  {
+    "path": "src/cli/commands/artifact/note/show.rs",
+    "line": 14,
+    "text": "  output: json::Flags,"
+  },
+  {
+    "path": "src/cli/commands/artifact/note/update.rs",
+    "line": 5,
+    "text": "use crate::{AppContext, actions, cli::Error, ui::json};"
+  },
+  {
+    "path": "src/cli/commands/artifact/note/update.rs",
+    "line": 13,
+    "text": "  #[arg(long, short)]"
+  },
+  {
+    "path": "src/cli/commands/artifact/note/update.rs",
+    "line": 15,
+    "text": "  /// The output mode: normal, `--json`, `--quiet` or `--raw`."
+  },
+  {
+    "path": "src/cli/commands/artifact/note/update.rs",
+    "line": 16,
+    "text": "  #[command(flatten)]"
+  },
+  {
+    "path": "src/cli/commands/artifact/note/update.rs",
+    "line": 17,
+    "text": "  output: json::Flags,"
+  },
+  {
+    "path": "src/cli/commands/artifact/show.rs",
+    "line": 9,
+    "text": "  ui::{components::ArtifactDetail, envelope::Envelope, json},"
+  },
+  {
+    "path": "src/cli/commands/artifact/show.rs",
+    "line": 17,
+    "text": "  /// The output mode: normal, `--json`, `--quiet` or `--raw`."
+  },
+  {
+    "path": "src/cli/commands/artifact/show.rs",
+    "line": 18,
+    "text": "  #[command(flatten)]"
+  },
+  {
+    "path": "src/cli/commands/artifact/show.rs",
+    "line": 19,
+    "text": "  output: json::Flags,"
+  },
+  {
+    "path": "src/cli/commands/artifact/show.rs",
+    "line": 41,
+    "text": "    if self.output.json || self.output.quiet {"
+  },
+  {
+    "path": "src/cli/commands/artifact/tag.rs",
+    "line": 5,
+    "text": "use crate::{AppContext, actions, cli::Error, ui::json};"
+  },
+  {
+    "path": "src/cli/commands/artifact/tag.rs",
+    "line": 14,
+    "text": "  /// The output mode: normal, `--json`, `--quiet` or `--raw`."
+  },
+  {
+    "path": "src/cli/commands/artifact/tag.rs",
+    "line": 15,
+    "text": "  #[command(flatten)]"
+  },
+  {
+    "path": "src/cli/commands/artifact/tag.rs",
+    "line": 16,
+    "text": "  output: json::Flags,"
+  },
+  {
+    "path": "src/cli/commands/artifact/untag.rs",
+    "line": 5,
+    "text": "use crate::{AppContext, actions, cli::Error, ui::json};"
+  },
+  {
+    "path": "src/cli/commands/artifact/untag.rs",
+    "line": 14,
+    "text": "  /// The output mode: normal, `--json`, `--quiet` or `--raw`."
+  },
+  {
+    "path": "src/cli/commands/artifact/untag.rs",
+    "line": 15,
+    "text": "  #[command(flatten)]"
+  },
+  {
+    "path": "src/cli/commands/artifact/untag.rs",
+    "line": 16,
+    "text": "  output: json::Flags,"
+  },
+  {
+    "path": "src/cli/commands/artifact/update.rs",
+    "line": 13,
+    "text": "  ui::{components::SuccessMessage, envelope::Envelope, json},"
+  },
+  {
+    "path": "src/cli/commands/artifact/update.rs",
+    "line": 22,
+    "text": "  #[arg(long, short)]"
+  },
+  {
+    "path": "src/cli/commands/artifact/update.rs",
+    "line": 25,
+    "text": "  #[arg(long, short, conflicts_with = \"body\")]"
+  },
+  {
+    "path": "src/cli/commands/artifact/update.rs",
+    "line": 28,
+    "text": "  #[arg(long = \"metadata\", short = 'm', value_name = \"KEY=VALUE\")]"
+  },
+  {
+    "path": "src/cli/commands/artifact/update.rs",
+    "line": 31,
+    "text": "  #[arg(long = \"metadata-json\", value_name = \"JSON\")]"
+  },
+  {
+    "path": "src/cli/commands/artifact/update.rs",
+    "line": 34,
+    "text": "  #[arg(long, short, value_delimiter = ',', value_parser = tag_arg::trim_tag)]"
+  },
+  {
+    "path": "src/cli/commands/artifact/update.rs",
+    "line": 37,
+    "text": "  #[arg(long, short = 'T')]"
+  },
+  {
+    "path": "src/cli/commands/artifact/update.rs",
+    "line": 39,
+    "text": "  /// The output mode: normal, `--json`, `--quiet` or `--raw`."
+  },
+  {
+    "path": "src/cli/commands/artifact/update.rs",
+    "line": 40,
+    "text": "  #[command(flatten)]"
+  },
+  {
+    "path": "src/cli/commands/artifact/update.rs",
+    "line": 41,
+    "text": "  output: json::Flags,"
+  },
+  {
+    "path": "src/cli/commands/artifact/update.rs",
+    "line": 114,
+    "text": "  /// Merge the `--metadata` and `--metadata-json` options over the artifact's metadata."
+  },
+  {
+    "path": "src/cli/commands/config.rs",
+    "line": 15,
+    "text": "  #[command(subcommand)]"
+  },
+  {
+    "path": "src/cli/commands/config/get.rs",
+    "line": 6,
+    "text": "use crate::{AppContext, cli::Error, ui::json};"
+  },
+  {
+    "path": "src/cli/commands/config/get.rs",
+    "line": 13,
+    "text": "  /// The output mode: normal, `--json`, `--quiet` or `--raw`."
+  },
+  {
+    "path": "src/cli/commands/config/get.rs",
+    "line": 14,
+    "text": "  #[command(flatten)]"
+  },
+  {
+    "path": "src/cli/commands/config/get.rs",
+    "line": 15,
+    "text": "  output: json::Flags,"
+  },
+  {
+    "path": "src/cli/commands/config/set.rs",
+    "line": 23,
+    "text": "  #[arg(short, long)]"
+  },
+  {
+    "path": "src/cli/commands/config/show.rs",
+    "line": 9,
+    "text": "  ui::{components::FieldList, json},"
+  },
+  {
+    "path": "src/cli/commands/config/show.rs",
+    "line": 15,
+    "text": "  /// The output mode: normal, `--json`, `--quiet` or `--raw`."
+  },
+  {
+    "path": "src/cli/commands/config/show.rs",
+    "line": 16,
+    "text": "  #[command(flatten)]"
+  },
+  {
+    "path": "src/cli/commands/config/show.rs",
+    "line": 17,
+    "text": "  output: json::Flags,"
+  },
+  {
+    "path": "src/cli/commands/generate.rs",
+    "line": 14,
+    "text": "  #[command(subcommand)]"
+  },
+  {
+    "path": "src/cli/commands/generate/man_pages.rs",
+    "line": 18,
+    "text": "  #[arg(default_value = \"man\")]"
+  },
+  {
+    "path": "src/cli/commands/init.rs",
+    "line": 10,
+    "text": "  /// Create a `.gest` directory in the current project with a local `project.json`"
+  },
+  {
+    "path": "src/cli/commands/init.rs",
+    "line": 12,
+    "text": "  #[arg(long)]"
+  },
+  {
+    "path": "src/cli/commands/iteration.rs",
+    "line": 31,
+    "text": "  #[command(subcommand)]"
+  },
+  {
+    "path": "src/cli/commands/iteration.rs",
+    "line": 47,
+    "text": "  #[command(visible_alias = \"new\")]"
+  },
+  {
+    "path": "src/cli/commands/iteration.rs",
+    "line": 56,
+    "text": "  #[command(visible_alias = \"ls\")]"
+  },
+  {
+    "path": "src/cli/commands/iteration.rs",
+    "line": 63,
+    "text": "  #[command(visible_alias = \"rm\")]"
+  },
+  {
+    "path": "src/cli/commands/iteration.rs",
+    "line": 68,
+    "text": "  #[command(visible_alias = \"view\")]"
+  },
+  {
+    "path": "src/cli/commands/iteration.rs",
+    "line": 79,
+    "text": "  #[command(visible_alias = \"edit\")]"
+  },
+  {
+    "path": "src/cli/commands/iteration/add.rs",
+    "line": 12,
+    "text": "  ui::{components::SuccessMessage, json},"
+  },
+  {
+    "path": "src/cli/commands/iteration/add.rs",
+    "line": 21,
+    "text": "  #[arg(conflicts_with = \"batch\")]"
+  },
+  {
+    "path": "src/cli/commands/iteration/add.rs",
+    "line": 24,
+    "text": "  #[arg(long, conflicts_with_all = [\"task\", \"phase\"])]"
+  },
+  {
+    "path": "src/cli/commands/iteration/add.rs",
+    "line": 27,
+    "text": "  #[arg(long, short, conflicts_with = \"batch\")]"
+  },
+  {
+    "path": "src/cli/commands/iteration/add.rs",
+    "line": 29,
+    "text": "  /// The output mode: normal, `--json`, `--quiet` or `--raw`."
+  },
+  {
+    "path": "src/cli/commands/iteration/add.rs",
+    "line": 30,
+    "text": "  #[command(flatten)]"
+  },
+  {
+    "path": "src/cli/commands/iteration/add.rs",
+    "line": 31,
+    "text": "  output: json::Flags,"
+  },
+  {
+    "path": "src/cli/commands/iteration/add.rs",
+    "line": 83,
+    "text": "    let result = serde_json::json!({"
+  },
+  {
+    "path": "src/cli/commands/iteration/add.rs",
+    "line": 155,
+    "text": "    let result = serde_json::json!({"
+  },
+  {
+    "path": "src/cli/commands/iteration/advance.rs",
+    "line": 13,
+    "text": "  ui::{components::SuccessMessage, envelope::Envelope, json},"
+  },
+  {
+    "path": "src/cli/commands/iteration/advance.rs",
+    "line": 22,
+    "text": "  #[arg(long)]"
+  },
+  {
+    "path": "src/cli/commands/iteration/advance.rs",
+    "line": 24,
+    "text": "  /// The output mode: normal, `--json`, `--quiet` or `--raw`."
+  },
+  {
+    "path": "src/cli/commands/iteration/advance.rs",
+    "line": 25,
+    "text": "  #[command(flatten)]"
+  },
+  {
+    "path": "src/cli/commands/iteration/advance.rs",
+    "line": 26,
+    "text": "  output: json::Flags,"
+  },
+  {
+    "path": "src/cli/commands/iteration/cancel.rs",
+    "line": 10,
+    "text": "  ui::json,"
+  },
+  {
+    "path": "src/cli/commands/iteration/cancel.rs",
+    "line": 18,
+    "text": "  /// The output mode: normal, `--json`, `--quiet` or `--raw`."
+  },
+  {
+    "path": "src/cli/commands/iteration/cancel.rs",
+    "line": 19,
+    "text": "  #[command(flatten)]"
+  },
+  {
+    "path": "src/cli/commands/iteration/cancel.rs",
+    "line": 20,
+    "text": "  output: json::Flags,"
+  },
+  {
+    "path": "src/cli/commands/iteration/complete.rs",
+    "line": 10,
+    "text": "  ui::json,"
+  },
+  {
+    "path": "src/cli/commands/iteration/complete.rs",
+    "line": 18,
+    "text": "  /// The output mode: normal, `--json`, `--quiet` or `--raw`."
+  },
+  {
+    "path": "src/cli/commands/iteration/complete.rs",
+    "line": 19,
+    "text": "  #[command(flatten)]"
+  },
+  {
+    "path": "src/cli/commands/iteration/complete.rs",
+    "line": 20,
+    "text": "  output: json::Flags,"
+  },
+  {
+    "path": "src/cli/commands/iteration/create.rs",
+    "line": 13,
+    "text": "  ui::{components::SuccessMessage, envelope::Envelope, json},"
+  },
+  {
+    "path": "src/cli/commands/iteration/create.rs",
+    "line": 22,
+    "text": "  #[arg(long, short)]"
+  },
+  {
+    "path": "src/cli/commands/iteration/create.rs",
+    "line": 25,
+    "text": "  #[arg(long = \"metadata\", short = 'm', value_name = \"KEY=VALUE\")]"
+  },
+  {
+    "path": "src/cli/commands/iteration/create.rs",
+    "line": 28,
+    "text": "  #[arg(long = \"metadata-json\", value_name = \"JSON\")]"
+  },
+  {
+    "path": "src/cli/commands/iteration/create.rs",
+    "line": 31,
+    "text": "  #[arg(long, short)]"
+  },
+  {
+    "path": "src/cli/commands/iteration/create.rs",
+    "line": 34,
+    "text": "  #[arg(long, short, value_delimiter = ',', value_parser = tag_arg::trim_tag)]"
+  },
+  {
+    "path": "src/cli/commands/iteration/create.rs",
+    "line": 36,
+    "text": "  /// The output mode: normal, `--json`, `--quiet` or `--raw`."
+  },
+  {
+    "path": "src/cli/commands/iteration/create.rs",
+    "line": 37,
+    "text": "  #[command(flatten)]"
+  },
+  {
+    "path": "src/cli/commands/iteration/create.rs",
+    "line": 38,
+    "text": "  output: json::Flags,"
+  },
+  {
+    "path": "src/cli/commands/iteration/delete.rs",
+    "line": 13,
+    "text": "  ui::{components::SuccessMessage, envelope::Envelope, json},"
+  },
+  {
+    "path": "src/cli/commands/iteration/delete.rs",
+    "line": 24,
+    "text": "  #[arg(long)]"
+  },
+  {
+    "path": "src/cli/commands/iteration/delete.rs",
+    "line": 26,
+    "text": "  /// The output mode: normal, `--json`, `--quiet` or `--raw`."
+  },
+  {
+    "path": "src/cli/commands/iteration/delete.rs",
+    "line": 27,
+    "text": "  #[command(flatten)]"
+  },
+  {
+    "path": "src/cli/commands/iteration/delete.rs",
+    "line": 28,
+    "text": "  output: json::Flags,"
+  },
+  {
+    "path": "src/cli/commands/iteration/delete.rs",
+    "line": 30,
+    "text": "  #[arg(long)]"
+  },
+  {
+    "path": "src/cli/commands/iteration/graph.rs",
+    "line": 11,
+    "text": "    json,"
+  },
+  {
+    "path": "src/cli/commands/iteration/graph.rs",
+    "line": 20,
+    "text": "  /// The output mode: normal, `--json`, `--quiet` or `--raw`."
+  },
+  {
+    "path": "src/cli/commands/iteration/graph.rs",
+    "line": 21,
+    "text": "  #[command(flatten)]"
+  },
+  {
+    "path": "src/cli/commands/iteration/graph.rs",
+    "line": 22,
+    "text": "  output: json::Flags,"
+  },
+  {
+    "path": "src/cli/commands/iteration/graph.rs",
+    "line": 44,
+    "text": "    if self.output.json {"
+  },
+  {
+    "path": "src/cli/commands/iteration/graph.rs",
+    "line": 48,
+    "text": "          serde_json::json!({"
+  },
+  {
+    "path": "src/cli/commands/iteration/graph.rs",
+    "line": 59,
+    "text": "      let json = serde_json::json!({"
+  },
+  {
+    "path": "src/cli/commands/iteration/graph.rs",
+    "line": 64,
+    "text": "      println!(\"{}\", serde_json::to_string_pretty(&json)?);"
+  },
+  {
+    "path": "src/cli/commands/iteration/link.rs",
+    "line": 15,
+    "text": "  ui::{components::SuccessMessage, envelope::Envelope, json},"
+  },
+  {
+    "path": "src/cli/commands/iteration/link.rs",
+    "line": 24,
+    "text": "  #[arg(value_name = \"[REL] TARGET\", num_args = 1..=2)]"
+  },
+  {
+    "path": "src/cli/commands/iteration/link.rs",
+    "line": 27,
+    "text": "  #[arg(long)]"
+  },
+  {
+    "path": "src/cli/commands/iteration/link.rs",
+    "line": 30,
+    "text": "  #[arg(long = \"rel\")]"
+  },
+  {
+    "path": "src/cli/commands/iteration/link.rs",
+    "line": 32,
+    "text": "  /// The output mode: normal, `--json`, `--quiet` or `--raw`."
+  },
+  {
+    "path": "src/cli/commands/iteration/link.rs",
+    "line": 33,
+    "text": "  #[command(flatten)]"
+  },
+  {
+    "path": "src/cli/commands/iteration/link.rs",
+    "line": 34,
+    "text": "  output: json::Flags,"
+  },
+  {
+    "path": "src/cli/commands/iteration/list.rs",
+    "line": 18,
+    "text": "    json,"
+  },
+  {
+    "path": "src/cli/commands/iteration/list.rs",
+    "line": 26,
+    "text": "  #[arg(long, short)]"
+  },
+  {
+    "path": "src/cli/commands/iteration/list.rs",
+    "line": 29,
+    "text": "  #[arg(long)]"
+  },
+  {
+    "path": "src/cli/commands/iteration/list.rs",
+    "line": 32,
+    "text": "  #[command(flatten)]"
+  },
+  {
+    "path": "src/cli/commands/iteration/list.rs",
+    "line": 35,
+    "text": "  #[arg(long, short)]"
+  },
+  {
+    "path": "src/cli/commands/iteration/list.rs",
+    "line": 38,
+    "text": "  #[arg(long, short)]"
+  },
+  {
+    "path": "src/cli/commands/iteration/list.rs",
+    "line": 40,
+    "text": "  /// The output mode: normal, `--json`, `--quiet` or `--raw`."
+  },
+  {
+    "path": "src/cli/commands/iteration/list.rs",
+    "line": 41,
+    "text": "  #[command(flatten)]"
+  },
+  {
+    "path": "src/cli/commands/iteration/list.rs",
+    "line": 42,
+    "text": "  output: json::Flags,"
+  },
+  {
+    "path": "src/cli/commands/iteration/list.rs",
+    "line": 73,
+    "text": "    if self.output.json {"
+  },
+  {
+    "path": "src/cli/commands/iteration/list.rs",
+    "line": 76,
+    "text": "      let json = serde_json::to_string_pretty(&envelopes)?;"
+  },
+  {
+    "path": "src/cli/commands/iteration/list.rs",
+    "line": 77,
+    "text": "      println!(\"{json}\");"
+  },
+  {
+    "path": "src/cli/commands/iteration/meta.rs",
+    "line": 9,
+    "text": "use crate::{AppContext, actions, cli::Error, ui::json};"
+  },
+  {
+    "path": "src/cli/commands/iteration/meta.rs",
+    "line": 17,
+    "text": "  #[command(subcommand)]"
+  },
+  {
+    "path": "src/cli/commands/iteration/meta.rs",
+    "line": 19,
+    "text": "  /// The output mode: normal, `--json`, `--quiet` or `--raw`."
+  },
+  {
+    "path": "src/cli/commands/iteration/meta.rs",
+    "line": 20,
+    "text": "  #[command(flatten)]"
+  },
+  {
+    "path": "src/cli/commands/iteration/meta.rs",
+    "line": 21,
+    "text": "  output: json::Flags,"
+  },
+  {
+    "path": "src/cli/commands/iteration/meta.rs",
+    "line": 32,
+    "text": "  #[command(alias = \"delete\")]"
+  },
+  {
+    "path": "src/cli/commands/iteration/meta/get.rs",
+    "line": 5,
+    "text": "use crate::{AppContext, actions, cli::Error, ui::json};"
+  },
+  {
+    "path": "src/cli/commands/iteration/meta/get.rs",
+    "line": 14,
+    "text": "  /// The output mode: normal, `--json`, `--quiet` or `--raw`."
+  },
+  {
+    "path": "src/cli/commands/iteration/meta/get.rs",
+    "line": 15,
+    "text": "  #[command(flatten)]"
+  },
+  {
+    "path": "src/cli/commands/iteration/meta/get.rs",
+    "line": 16,
+    "text": "  output: json::Flags,"
+  },
+  {
+    "path": "src/cli/commands/iteration/meta/set.rs",
+    "line": 5,
+    "text": "use crate::{AppContext, actions, cli::Error, ui::json};"
+  },
+  {
+    "path": "src/cli/commands/iteration/meta/set.rs",
+    "line": 14,
+    "text": "  /// The metadata value (auto-detected scalar unless --as-json is set)."
+  },
+  {
+    "path": "src/cli/commands/iteration/meta/set.rs",
+    "line": 17,
+    "text": "  #[arg(long)]"
+  },
+  {
+    "path": "src/cli/commands/iteration/meta/set.rs",
+    "line": 19,
+    "text": "  /// The output mode: normal, `--json`, `--quiet` or `--raw`."
+  },
+  {
+    "path": "src/cli/commands/iteration/meta/set.rs",
+    "line": 20,
+    "text": "  #[command(flatten)]"
+  },
+  {
+    "path": "src/cli/commands/iteration/meta/set.rs",
+    "line": 21,
+    "text": "  output: json::Flags,"
+  },
+  {
+    "path": "src/cli/commands/iteration/meta/unset.rs",
+    "line": 5,
+    "text": "use crate::{AppContext, actions, cli::Error, ui::json};"
+  },
+  {
+    "path": "src/cli/commands/iteration/meta/unset.rs",
+    "line": 14,
+    "text": "  /// The output mode: normal, `--json`, `--quiet` or `--raw`."
+  },
+  {
+    "path": "src/cli/commands/iteration/meta/unset.rs",
+    "line": 15,
+    "text": "  #[command(flatten)]"
+  },
+  {
+    "path": "src/cli/commands/iteration/meta/unset.rs",
+    "line": 16,
+    "text": "  output: json::Flags,"
+  },
+  {
+    "path": "src/cli/commands/iteration/next.rs",
+    "line": 14,
+    "text": "  ui::{components::FieldList, json},"
+  },
+  {
+    "path": "src/cli/commands/iteration/next.rs",
+    "line": 23,
+    "text": "  #[arg(long)]"
+  },
+  {
+    "path": "src/cli/commands/iteration/next.rs",
+    "line": 26,
+    "text": "  #[arg(long)]"
+  },
+  {
+    "path": "src/cli/commands/iteration/next.rs",
+    "line": 28,
+    "text": "  /// The output mode: normal, `--json`, `--quiet` or `--raw`."
+  },
+  {
+    "path": "src/cli/commands/iteration/next.rs",
+    "line": 29,
+    "text": "  #[command(flatten)]"
+  },
+  {
+    "path": "src/cli/commands/iteration/next.rs",
+    "line": 30,
+    "text": "  output: json::Flags,"
+  },
+  {
+    "path": "src/cli/commands/iteration/next.rs",
+    "line": 159,
+    "text": "      &serde_json::json!({"
+  },
+  {
+    "path": "src/cli/commands/iteration/remove.rs",
+    "line": 9,
+    "text": "  ui::{components::SuccessMessage, envelope::Envelope, json},"
+  },
+  {
+    "path": "src/cli/commands/iteration/remove.rs",
+    "line": 19,
+    "text": "  /// The output mode: normal, `--json`, `--quiet` or `--raw`."
+  },
+  {
+    "path": "src/cli/commands/iteration/remove.rs",
+    "line": 20,
+    "text": "  #[command(flatten)]"
+  },
+  {
+    "path": "src/cli/commands/iteration/remove.rs",
+    "line": 21,
+    "text": "  output: json::Flags,"
+  },
+  {
+    "path": "src/cli/commands/iteration/remove.rs",
+    "line": 42,
+    "text": "    let before = serde_json::json!({"
+  },
+  {
+    "path": "src/cli/commands/iteration/reopen.rs",
+    "line": 10,
+    "text": "  ui::json,"
+  },
+  {
+    "path": "src/cli/commands/iteration/reopen.rs",
+    "line": 18,
+    "text": "  /// The output mode: normal, `--json`, `--quiet` or `--raw`."
+  },
+  {
+    "path": "src/cli/commands/iteration/reopen.rs",
+    "line": 19,
+    "text": "  #[command(flatten)]"
+  },
+  {
+    "path": "src/cli/commands/iteration/reopen.rs",
+    "line": 20,
+    "text": "  output: json::Flags,"
+  },
+  {
+    "path": "src/cli/commands/iteration/show.rs",
+    "line": 13,
+    "text": "    json,"
+  },
+  {
+    "path": "src/cli/commands/iteration/show.rs",
+    "line": 22,
+    "text": "  /// The output mode: normal, `--json`, `--quiet` or `--raw`."
+  },
+  {
+    "path": "src/cli/commands/iteration/show.rs",
+    "line": 23,
+    "text": "  #[command(flatten)]"
+  },
+  {
+    "path": "src/cli/commands/iteration/show.rs",
+    "line": 24,
+    "text": "  output: json::Flags,"
+  },
+  {
+    "path": "src/cli/commands/iteration/show.rs",
+    "line": 46,
+    "text": "    if self.output.json || self.output.quiet {"
+  },
+  {
+    "path": "src/cli/commands/iteration/status.rs",
+    "line": 9,
+    "text": "  ui::{components::FieldList, json},"
+  },
+  {
+    "path": "src/cli/commands/iteration/status.rs",
+    "line": 17,
+    "text": "  /// The output mode: normal, `--json`, `--quiet` or `--raw`."
+  },
+  {
+    "path": "src/cli/commands/iteration/status.rs",
+    "line": 18,
+    "text": "  #[command(flatten)]"
+  },
+  {
+    "path": "src/cli/commands/iteration/status.rs",
+    "line": 19,
+    "text": "  output: json::Flags,"
+  },
+  {
+    "path": "src/cli/commands/iteration/status.rs",
+    "line": 46,
+    "text": "    let status_json = serde_json::json!({"
+  },
+  {
+    "path": "src/cli/commands/iteration/tag.rs",
+    "line": 5,
+    "text": "use crate::{AppContext, actions, cli::Error, ui::json};"
+  },
+  {
+    "path": "src/cli/commands/iteration/tag.rs",
+    "line": 14,
+    "text": "  /// The output mode: normal, `--json`, `--quiet` or `--raw`."
+  },
+  {
+    "path": "src/cli/commands/iteration/tag.rs",
+    "line": 15,
+    "text": "  #[command(flatten)]"
+  },
+  {
+    "path": "src/cli/commands/iteration/tag.rs",
+    "line": 16,
+    "text": "  output: json::Flags,"
+  },
+  {
+    "path": "src/cli/commands/iteration/unlink.rs",
+    "line": 17,
+    "text": "  ui::{components::SuccessMessage, envelope::Envelope, json},"
+  },
+  {
+    "path": "src/cli/commands/iteration/unlink.rs",
+    "line": 28,
+    "text": "  #[arg(long)]"
+  },
+  {
+    "path": "src/cli/commands/iteration/unlink.rs",
+    "line": 31,
+    "text": "  #[arg(long = \"rel\")]"
+  },
+  {
+    "path": "src/cli/commands/iteration/unlink.rs",
+    "line": 33,
+    "text": "  /// The output mode: normal, `--json`, `--quiet` or `--raw`."
+  },
+  {
+    "path": "src/cli/commands/iteration/unlink.rs",
+    "line": 34,
+    "text": "  #[command(flatten)]"
+  },
+  {
+    "path": "src/cli/commands/iteration/unlink.rs",
+    "line": 35,
+    "text": "  output: json::Flags,"
+  },
+  {
+    "path": "src/cli/commands/iteration/untag.rs",
+    "line": 5,
+    "text": "use crate::{AppContext, actions, cli::Error, ui::json};"
+  },
+  {
+    "path": "src/cli/commands/iteration/untag.rs",
+    "line": 14,
+    "text": "  /// The output mode: normal, `--json`, `--quiet` or `--raw`."
+  },
+  {
+    "path": "src/cli/commands/iteration/untag.rs",
+    "line": 15,
+    "text": "  #[command(flatten)]"
+  },
+  {
+    "path": "src/cli/commands/iteration/untag.rs",
+    "line": 16,
+    "text": "  output: json::Flags,"
+  },
+  {
+    "path": "src/cli/commands/iteration/update.rs",
+    "line": 13,
+    "text": "  ui::{components::SuccessMessage, envelope::Envelope, json},"
+  },
+  {
+    "path": "src/cli/commands/iteration/update.rs",
+    "line": 22,
+    "text": "  #[arg(long, short)]"
+  },
+  {
+    "path": "src/cli/commands/iteration/update.rs",
+    "line": 25,
+    "text": "  #[arg(long = \"metadata\", short = 'm', value_name = \"KEY=VALUE\")]"
+  },
+  {
+    "path": "src/cli/commands/iteration/update.rs",
+    "line": 28,
+    "text": "  #[arg(long = \"metadata-json\", value_name = \"JSON\")]"
+  },
+  {
+    "path": "src/cli/commands/iteration/update.rs",
+    "line": 31,
+    "text": "  #[arg(long, short)]"
+  },
+  {
+    "path": "src/cli/commands/iteration/update.rs",
+    "line": 33,
+    "text": "  /// The output mode: normal, `--json`, `--quiet` or `--raw`."
+  },
+  {
+    "path": "src/cli/commands/iteration/update.rs",
+    "line": 34,
+    "text": "  #[command(flatten)]"
+  },
+  {
+    "path": "src/cli/commands/iteration/update.rs",
+    "line": 35,
+    "text": "  output: json::Flags,"
+  },
+  {
+    "path": "src/cli/commands/migrate.rs",
+    "line": 24,
+    "text": "  #[arg(long)]"
+  },
+  {
+    "path": "src/cli/commands/migrate.rs",
+    "line": 28,
+    "text": "  #[arg(long)]"
+  },
+  {
+    "path": "src/cli/commands/migrate/v0_4.rs",
+    "line": 1162,
+    "text": "      let json = toml_table_to_json(&table).unwrap();"
+  },
+  {
+    "path": "src/cli/commands/migrate/v0_4.rs",
+    "line": 1163,
+    "text": "      assert_eq!(json[\"key\"], \"value\");"
+  },
+  {
+    "path": "src/cli/commands/project.rs",
+    "line": 18,
+    "text": "  #[arg(long)]"
+  },
+  {
+    "path": "src/cli/commands/project.rs",
+    "line": 19,
+    "text": "  json: bool,"
+  },
+  {
+    "path": "src/cli/commands/project.rs",
+    "line": 21,
+    "text": "  #[command(subcommand)]"
+  },
+  {
+    "path": "src/cli/commands/project.rs",
+    "line": 33,
+    "text": "  #[command(visible_alias = \"rm\")]"
+  },
+  {
+    "path": "src/cli/commands/project.rs",
+    "line": 38,
+    "text": "  #[command(visible_alias = \"ls\")]"
+  },
+  {
+    "path": "src/cli/commands/project.rs",
+    "line": 67,
+    "text": "  /// Show the current project's ID and root, as a view or as JSON with `--json`."
+  },
+  {
+    "path": "src/cli/commands/project.rs",
+    "line": 84,
+    "text": "    if self.json {"
+  },
+  {
+    "path": "src/cli/commands/project.rs",
+    "line": 85,
+    "text": "      let json = serde_json::to_string_pretty(&project)?;"
+  },
+  {
+    "path": "src/cli/commands/project.rs",
+    "line": 86,
+    "text": "      println!(\"{json}\");"
+  },
+  {
+    "path": "src/cli/commands/project/archive.rs",
+    "line": 9,
+    "text": "  ui::{components::SuccessMessage, envelope::Envelope, json},"
+  },
+  {
+    "path": "src/cli/commands/project/archive.rs",
+    "line": 17,
+    "text": "  /// The output mode: normal, `--json`, `--quiet` or `--raw`."
+  },
+  {
+    "path": "src/cli/commands/project/archive.rs",
+    "line": 18,
+    "text": "  #[command(flatten)]"
+  },
+  {
+    "path": "src/cli/commands/project/archive.rs",
+    "line": 19,
+    "text": "  output: json::Flags,"
+  },
+  {
+    "path": "src/cli/commands/project/archive.rs",
+    "line": 21,
+    "text": "  #[arg(long)]"
+  },
+  {
+    "path": "src/cli/commands/project/delete.rs",
+    "line": 9,
+    "text": "  ui::{components::SuccessMessage, envelope::Envelope, json},"
+  },
+  {
+    "path": "src/cli/commands/project/delete.rs",
+    "line": 22,
+    "text": "  /// The output mode: normal, `--json`, `--quiet` or `--raw`."
+  },
+  {
+    "path": "src/cli/commands/project/delete.rs",
+    "line": 23,
+    "text": "  #[command(flatten)]"
+  },
+  {
+    "path": "src/cli/commands/project/delete.rs",
+    "line": 24,
+    "text": "  output: json::Flags,"
+  },
+  {
+    "path": "src/cli/commands/project/delete.rs",
+    "line": 26,
+    "text": "  #[arg(long)]"
+  },
+  {
+    "path": "src/cli/commands/project/list.rs",
+    "line": 11,
+    "text": "    json,"
+  },
+  {
+    "path": "src/cli/commands/project/list.rs",
+    "line": 19,
+    "text": "  #[arg(long, short)]"
+  },
+  {
+    "path": "src/cli/commands/project/list.rs",
+    "line": 22,
+    "text": "  #[command(flatten)]"
+  },
+  {
+    "path": "src/cli/commands/project/list.rs",
+    "line": 24,
+    "text": "  /// The output mode: normal, `--json`, `--quiet` or `--raw`."
+  },
+  {
+    "path": "src/cli/commands/project/list.rs",
+    "line": 25,
+    "text": "  #[command(flatten)]"
+  },
+  {
+    "path": "src/cli/commands/project/list.rs",
+    "line": 26,
+    "text": "  output: json::Flags,"
+  },
+  {
+    "path": "src/cli/commands/project/list.rs",
+    "line": 47,
+    "text": "    if self.output.json {"
+  },
+  {
+    "path": "src/cli/commands/project/list.rs",
+    "line": 48,
+    "text": "      let json = serde_json::to_string_pretty(&projects)?;"
+  },
+  {
+    "path": "src/cli/commands/project/list.rs",
+    "line": 49,
+    "text": "      println!(\"{json}\");"
+  },
+  {
+    "path": "src/cli/commands/project/unarchive.rs",
+    "line": 9,
+    "text": "  ui::{components::SuccessMessage, envelope::Envelope, json},"
+  },
+  {
+    "path": "src/cli/commands/project/unarchive.rs",
+    "line": 17,
+    "text": "  /// The output mode: normal, `--json`, `--quiet` or `--raw`."
+  },
+  {
+    "path": "src/cli/commands/project/unarchive.rs",
+    "line": 18,
+    "text": "  #[command(flatten)]"
+  },
+  {
+    "path": "src/cli/commands/project/unarchive.rs",
+    "line": 19,
+    "text": "  output: json::Flags,"
+  },
+  {
+    "path": "src/cli/commands/purge.rs",
+    "line": 33,
+    "text": "  #[arg(long)]"
+  },
+  {
+    "path": "src/cli/commands/purge.rs",
+    "line": 36,
+    "text": "  #[arg(long)]"
+  },
+  {
+    "path": "src/cli/commands/purge.rs",
+    "line": 39,
+    "text": "  #[arg(long)]"
+  },
+  {
+    "path": "src/cli/commands/purge.rs",
+    "line": 42,
+    "text": "  #[arg(long)]"
+  },
+  {
+    "path": "src/cli/commands/purge.rs",
+    "line": 45,
+    "text": "  #[arg(long)]"
+  },
+  {
+    "path": "src/cli/commands/purge.rs",
+    "line": 48,
+    "text": "  #[arg(long)]"
+  },
+  {
+    "path": "src/cli/commands/purge.rs",
+    "line": 51,
+    "text": "  #[arg(long)]"
+  },
+  {
+    "path": "src/cli/commands/purge.rs",
+    "line": 54,
+    "text": "  #[arg(long)]"
+  },
+  {
+    "path": "src/cli/commands/purge.rs",
+    "line": 57,
+    "text": "  #[arg(long)]"
+  },
+  {
+    "path": "src/cli/commands/search.rs",
+    "line": 18,
+    "text": "  #[arg(short, long)]"
+  },
+  {
+    "path": "src/cli/commands/search.rs",
+    "line": 21,
+    "text": "  #[arg(short, long)]"
+  },
+  {
+    "path": "src/cli/commands/search.rs",
+    "line": 22,
+    "text": "  json: bool,"
+  },
+  {
+    "path": "src/cli/commands/search.rs",
+    "line": 24,
+    "text": "  #[command(flatten)]"
+  },
+  {
+    "path": "src/cli/commands/search.rs",
+    "line": 27,
+    "text": "  #[arg(short = 'a', long = \"all\")]"
+  },
+  {
+    "path": "src/cli/commands/search.rs",
+    "line": 52,
+    "text": "    if self.json {"
+  },
+  {
+    "path": "src/cli/commands/search.rs",
+    "line": 53,
+    "text": "      let json_value = serde_json::json!({"
+  },
+  {
+    "path": "src/cli/commands/search.rs",
+    "line": 59,
+    "text": "      let json = serde_json::to_string_pretty(&json_value)?;"
+  },
+  {
+    "path": "src/cli/commands/search.rs",
+    "line": 60,
+    "text": "      println!(\"{json}\");"
+  },
+  {
+    "path": "src/cli/commands/self_update.rs",
+    "line": 12,
+    "text": "  #[arg(long)]"
+  },
+  {
+    "path": "src/cli/commands/serve.rs",
+    "line": 24,
+    "text": "  #[arg(long = \"bind\", short = 'b', alias = \"host\")]"
+  },
+  {
+    "path": "src/cli/commands/serve.rs",
+    "line": 27,
+    "text": "  #[arg(long)]"
+  },
+  {
+    "path": "src/cli/commands/serve.rs",
+    "line": 30,
+    "text": "  #[arg(long)]"
+  },
+  {
+    "path": "src/cli/commands/serve.rs",
+    "line": 33,
+    "text": "  #[arg(long, short)]"
+  },
+  {
+    "path": "src/cli/commands/tag.rs",
+    "line": 15,
+    "text": "  #[command(subcommand)]"
+  },
+  {
+    "path": "src/cli/commands/tag/add.rs",
+    "line": 9,
+    "text": "  ui::{components::SuccessMessage, json},"
+  },
+  {
+    "path": "src/cli/commands/tag/add.rs",
+    "line": 18,
+    "text": "  #[arg(required = true, value_delimiter = ',', value_parser = tag_arg::trim_tag)]"
+  },
+  {
+    "path": "src/cli/commands/tag/add.rs",
+    "line": 20,
+    "text": "  /// The output mode: normal, `--json`, `--quiet` or `--raw`."
+  },
+  {
+    "path": "src/cli/commands/tag/add.rs",
+    "line": 21,
+    "text": "  #[command(flatten)]"
+  },
+  {
+    "path": "src/cli/commands/tag/add.rs",
+    "line": 22,
+    "text": "  output: json::Flags,"
+  },
+  {
+    "path": "src/cli/commands/tag/list.rs",
+    "line": 9,
+    "text": "  ui::json,"
+  },
+  {
+    "path": "src/cli/commands/tag/list.rs",
+    "line": 16,
+    "text": "  #[arg(long, conflicts_with_all = [\"task\", \"iteration\"])]"
+  },
+  {
+    "path": "src/cli/commands/tag/list.rs",
+    "line": 19,
+    "text": "  #[arg(long, conflicts_with_all = [\"task\", \"artifact\"])]"
+  },
+  {
+    "path": "src/cli/commands/tag/list.rs",
+    "line": 22,
+    "text": "  #[command(flatten)]"
+  },
+  {
+    "path": "src/cli/commands/tag/list.rs",
+    "line": 25,
+    "text": "  #[arg(long, conflicts_with_all = [\"artifact\", \"iteration\"])]"
+  },
+  {
+    "path": "src/cli/commands/tag/list.rs",
+    "line": 27,
+    "text": "  /// The output mode: normal, `--json`, `--quiet` or `--raw`."
+  },
+  {
+    "path": "src/cli/commands/tag/list.rs",
+    "line": 28,
+    "text": "  #[command(flatten)]"
+  },
+  {
+    "path": "src/cli/commands/tag/list.rs",
+    "line": 29,
+    "text": "  output: json::Flags,"
+  },
+  {
+    "path": "src/cli/commands/tag/list.rs",
+    "line": 51,
+    "text": "    if self.output.json {"
+  },
+  {
+    "path": "src/cli/commands/tag/list.rs",
+    "line": 52,
+    "text": "      let json = serde_json::to_string_pretty(&tags)?;"
+  },
+  {
+    "path": "src/cli/commands/tag/list.rs",
+    "line": 53,
+    "text": "      println!(\"{json}\");"
+  },
+  {
+    "path": "src/cli/commands/tag/remove.rs",
+    "line": 9,
+    "text": "  ui::{components::SuccessMessage, json},"
+  },
+  {
+    "path": "src/cli/commands/tag/remove.rs",
+    "line": 18,
+    "text": "  #[arg(required = true, value_delimiter = ',', value_parser = tag_arg::trim_tag)]"
+  },
+  {
+    "path": "src/cli/commands/tag/remove.rs",
+    "line": 20,
+    "text": "  /// The output mode: normal, `--json`, `--quiet` or `--raw`."
+  },
+  {
+    "path": "src/cli/commands/tag/remove.rs",
+    "line": 21,
+    "text": "  #[command(flatten)]"
+  },
+  {
+    "path": "src/cli/commands/tag/remove.rs",
+    "line": 22,
+    "text": "  output: json::Flags,"
+  },
+  {
+    "path": "src/cli/commands/task.rs",
+    "line": 28,
+    "text": "  #[command(subcommand)]"
+  },
+  {
+    "path": "src/cli/commands/task.rs",
+    "line": 44,
+    "text": "  #[command(visible_alias = \"new\")]"
+  },
+  {
+    "path": "src/cli/commands/task.rs",
+    "line": 47,
+    "text": "  #[command(visible_alias = \"rm\")]"
+  },
+  {
+    "path": "src/cli/commands/task.rs",
+    "line": 52,
+    "text": "  #[command(visible_alias = \"ls\")]"
+  },
+  {
+    "path": "src/cli/commands/task.rs",
+    "line": 59,
+    "text": "  #[command(visible_alias = \"view\")]"
+  },
+  {
+    "path": "src/cli/commands/task.rs",
+    "line": 68,
+    "text": "  #[command(visible_alias = \"edit\")]"
+  },
+  {
+    "path": "src/cli/commands/task/block.rs",
+    "line": 12,
+    "text": "  ui::{components::SuccessMessage, envelope::Envelope, json},"
+  },
+  {
+    "path": "src/cli/commands/task/block.rs",
+    "line": 22,
+    "text": "  /// The output mode: normal, `--json`, `--quiet` or `--raw`."
+  },
+  {
+    "path": "src/cli/commands/task/block.rs",
+    "line": 23,
+    "text": "  #[command(flatten)]"
+  },
+  {
+    "path": "src/cli/commands/task/block.rs",
+    "line": 24,
+    "text": "  output: json::Flags,"
+  },
+  {
+    "path": "src/cli/commands/task/cancel.rs",
+    "line": 10,
+    "text": "  ui::json,"
+  },
+  {
+    "path": "src/cli/commands/task/cancel.rs",
+    "line": 18,
+    "text": "  /// The output mode: normal, `--json`, `--quiet` or `--raw`."
+  },
+  {
+    "path": "src/cli/commands/task/cancel.rs",
+    "line": 19,
+    "text": "  #[command(flatten)]"
+  },
+  {
+    "path": "src/cli/commands/task/cancel.rs",
+    "line": 20,
+    "text": "  output: json::Flags,"
+  },
+  {
+    "path": "src/cli/commands/task/claim.rs",
+    "line": 16,
+    "text": "  ui::{components::SuccessMessage, envelope::Envelope, json},"
+  },
+  {
+    "path": "src/cli/commands/task/claim.rs",
+    "line": 25,
+    "text": "  #[arg(long = \"as\")]"
+  },
+  {
+    "path": "src/cli/commands/task/claim.rs",
+    "line": 27,
+    "text": "  /// The output mode: normal, `--json`, `--quiet` or `--raw`."
+  },
+  {
+    "path": "src/cli/commands/task/claim.rs",
+    "line": 28,
+    "text": "  #[command(flatten)]"
+  },
+  {
+    "path": "src/cli/commands/task/claim.rs",
+    "line": 29,
+    "text": "  output: json::Flags,"
+  },
+  {
+    "path": "src/cli/commands/task/complete.rs",
+    "line": 10,
+    "text": "  ui::json,"
+  },
+  {
+    "path": "src/cli/commands/task/complete.rs",
+    "line": 18,
+    "text": "  /// The output mode: normal, `--json`, `--quiet` or `--raw`."
+  },
+  {
+    "path": "src/cli/commands/task/complete.rs",
+    "line": 19,
+    "text": "  #[command(flatten)]"
+  },
+  {
+    "path": "src/cli/commands/task/complete.rs",
+    "line": 20,
+    "text": "  output: json::Flags,"
+  },
+  {
+    "path": "src/cli/commands/task/create.rs",
+    "line": 25,
+    "text": "  ui::{components::SuccessMessage, envelope::Envelope, json},"
+  },
+  {
+    "path": "src/cli/commands/task/create.rs",
+    "line": 38,
+    "text": "  #[arg(long)]"
+  },
+  {
+    "path": "src/cli/commands/task/create.rs",
+    "line": 41,
+    "text": "  #[arg(long)]"
+  },
+  {
+    "path": "src/cli/commands/task/create.rs",
+    "line": 44,
+    "text": "  #[arg(long, short)]"
+  },
+  {
+    "path": "src/cli/commands/task/create.rs",
+    "line": 47,
+    "text": "  #[arg(long, short)]"
+  },
+  {
+    "path": "src/cli/commands/task/create.rs",
+    "line": 50,
+    "text": "  #[arg(long, short)]"
+  },
+  {
+    "path": "src/cli/commands/task/create.rs",
+    "line": 53,
+    "text": "  #[arg(long = \"metadata\", short = 'm', value_name = \"KEY=VALUE\")]"
+  },
+  {
+    "path": "src/cli/commands/task/create.rs",
+    "line": 56,
+    "text": "  #[arg(long = \"metadata-json\", value_name = \"JSON\")]"
+  },
+  {
+    "path": "src/cli/commands/task/create.rs",
+    "line": 59,
+    "text": "  #[arg(long, requires = \"iteration\")]"
+  },
+  {
+    "path": "src/cli/commands/task/create.rs",
+    "line": 62,
+    "text": "  #[arg(long, short, value_parser = parse_priority)]"
+  },
+  {
+    "path": "src/cli/commands/task/create.rs",
+    "line": 65,
+    "text": "  #[arg(long, short)]"
+  },
+  {
+    "path": "src/cli/commands/task/create.rs",
+    "line": 68,
+    "text": "  #[arg(long, value_delimiter = ',', value_parser = tag_arg::trim_tag)]"
+  },
+  {
+    "path": "src/cli/commands/task/create.rs",
+    "line": 70,
+    "text": "  /// The output mode: normal, `--json`, `--quiet` or `--raw`."
+  },
+  {
+    "path": "src/cli/commands/task/create.rs",
+    "line": 71,
+    "text": "  #[command(flatten)]"
+  },
+  {
+    "path": "src/cli/commands/task/create.rs",
+    "line": 72,
+    "text": "  output: json::Flags,"
+  },
+  {
+    "path": "src/cli/commands/task/delete.rs",
+    "line": 13,
+    "text": "  ui::{components::SuccessMessage, envelope::Envelope, json},"
+  },
+  {
+    "path": "src/cli/commands/task/delete.rs",
+    "line": 25,
+    "text": "  #[arg(long)]"
+  },
+  {
+    "path": "src/cli/commands/task/delete.rs",
+    "line": 27,
+    "text": "  /// The output mode: normal, `--json`, `--quiet` or `--raw`."
+  },
+  {
+    "path": "src/cli/commands/task/delete.rs",
+    "line": 28,
+    "text": "  #[command(flatten)]"
+  },
+  {
+    "path": "src/cli/commands/task/delete.rs",
+    "line": 29,
+    "text": "  output: json::Flags,"
+  },
+  {
+    "path": "src/cli/commands/task/delete.rs",
+    "line": 31,
+    "text": "  #[arg(long)]"
+  },
+  {
+    "path": "src/cli/commands/task/link.rs",
+    "line": 12,
+    "text": "  ui::{components::SuccessMessage, envelope::Envelope, json},"
+  },
+  {
+    "path": "src/cli/commands/task/link.rs",
+    "line": 19,
+    "text": "  #[arg(long, conflicts_with = \"target_type\")]"
+  },
+  {
+    "path": "src/cli/commands/task/link.rs",
+    "line": 24,
+    "text": "  #[arg(long, default_value = \"relates-to\")]"
+  },
+  {
+    "path": "src/cli/commands/task/link.rs",
+    "line": 29,
+    "text": "  #[arg(long, default_value = \"task\")]"
+  },
+  {
+    "path": "src/cli/commands/task/link.rs",
+    "line": 31,
+    "text": "  /// The output mode: normal, `--json`, `--quiet` or `--raw`."
+  },
+  {
+    "path": "src/cli/commands/task/link.rs",
+    "line": 32,
+    "text": "  #[command(flatten)]"
+  },
+  {
+    "path": "src/cli/commands/task/link.rs",
+    "line": 33,
+    "text": "  output: json::Flags,"
+  },
+  {
+    "path": "src/cli/commands/task/list.rs",
+    "line": 18,
+    "text": "    json,"
+  },
+  {
+    "path": "src/cli/commands/task/list.rs",
+    "line": 26,
+    "text": "  #[arg(long, short)]"
+  },
+  {
+    "path": "src/cli/commands/task/list.rs",
+    "line": 29,
+    "text": "  #[arg(long)]"
+  },
+  {
+    "path": "src/cli/commands/task/list.rs",
+    "line": 32,
+    "text": "  #[command(flatten)]"
+  },
+  {
+    "path": "src/cli/commands/task/list.rs",
+    "line": 35,
+    "text": "  #[arg(long, short)]"
+  },
+  {
+    "path": "src/cli/commands/task/list.rs",
+    "line": 38,
+    "text": "  #[arg(long, short)]"
+  },
+  {
+    "path": "src/cli/commands/task/list.rs",
+    "line": 40,
+    "text": "  /// The output mode: normal, `--json`, `--quiet` or `--raw`."
+  },
+  {
+    "path": "src/cli/commands/task/list.rs",
+    "line": 41,
+    "text": "  #[command(flatten)]"
+  },
+  {
+    "path": "src/cli/commands/task/list.rs",
+    "line": 42,
+    "text": "  output: json::Flags,"
+  },
+  {
+    "path": "src/cli/commands/task/list.rs",
+    "line": 75,
+    "text": "    if self.output.json {"
+  },
+  {
+    "path": "src/cli/commands/task/list.rs",
+    "line": 80,
+    "text": "        || unreachable!(\"json flag is set\"),"
+  },
+  {
+    "path": "src/cli/commands/task/list.rs",
+    "line": 81,
+    "text": "        || unreachable!(\"json flag is set\"),"
+  },
+  {
+    "path": "src/cli/commands/task/meta.rs",
+    "line": 12,
+    "text": "use crate::{AppContext, actions, cli::Error, ui::json};"
+  },
+  {
+    "path": "src/cli/commands/task/meta.rs",
+    "line": 20,
+    "text": "  #[command(subcommand)]"
+  },
+  {
+    "path": "src/cli/commands/task/meta.rs",
+    "line": 22,
+    "text": "  /// The output mode: normal, `--json`, `--quiet` or `--raw`."
+  },
+  {
+    "path": "src/cli/commands/task/meta.rs",
+    "line": 23,
+    "text": "  #[command(flatten)]"
+  },
+  {
+    "path": "src/cli/commands/task/meta.rs",
+    "line": 24,
+    "text": "  output: json::Flags,"
+  },
+  {
+    "path": "src/cli/commands/task/meta.rs",
+    "line": 35,
+    "text": "  #[command(alias = \"delete\")]"
+  },
+  {
+    "path": "src/cli/commands/task/meta/get.rs",
+    "line": 5,
+    "text": "use crate::{AppContext, actions, cli::Error, ui::json};"
+  },
+  {
+    "path": "src/cli/commands/task/meta/get.rs",
+    "line": 14,
+    "text": "  /// The output mode: normal, `--json`, `--quiet` or `--raw`."
+  },
+  {
+    "path": "src/cli/commands/task/meta/get.rs",
+    "line": 15,
+    "text": "  #[command(flatten)]"
+  },
+  {
+    "path": "src/cli/commands/task/meta/get.rs",
+    "line": 16,
+    "text": "  output: json::Flags,"
+  },
+  {
+    "path": "src/cli/commands/task/meta/set.rs",
+    "line": 5,
+    "text": "use crate::{AppContext, actions, cli::Error, ui::json};"
+  },
+  {
+    "path": "src/cli/commands/task/meta/set.rs",
+    "line": 14,
+    "text": "  /// The metadata value (auto-detected scalar unless --as-json is set)."
+  },
+  {
+    "path": "src/cli/commands/task/meta/set.rs",
+    "line": 17,
+    "text": "  #[arg(long)]"
+  },
+  {
+    "path": "src/cli/commands/task/meta/set.rs",
+    "line": 19,
+    "text": "  /// The output mode: normal, `--json`, `--quiet` or `--raw`."
+  },
+  {
+    "path": "src/cli/commands/task/meta/set.rs",
+    "line": 20,
+    "text": "  #[command(flatten)]"
+  },
+  {
+    "path": "src/cli/commands/task/meta/set.rs",
+    "line": 21,
+    "text": "  output: json::Flags,"
+  },
+  {
+    "path": "src/cli/commands/task/meta/unset.rs",
+    "line": 5,
+    "text": "use crate::{AppContext, actions, cli::Error, ui::json};"
+  },
+  {
+    "path": "src/cli/commands/task/meta/unset.rs",
+    "line": 14,
+    "text": "  /// The output mode: normal, `--json`, `--quiet` or `--raw`."
+  },
+  {
+    "path": "src/cli/commands/task/meta/unset.rs",
+    "line": 15,
+    "text": "  #[command(flatten)]"
+  },
+  {
+    "path": "src/cli/commands/task/meta/unset.rs",
+    "line": 16,
+    "text": "  output: json::Flags,"
+  },
+  {
+    "path": "src/cli/commands/task/note.rs",
+    "line": 17,
+    "text": "  #[command(subcommand)]"
+  },
+  {
+    "path": "src/cli/commands/task/note/add.rs",
+    "line": 5,
+    "text": "use crate::{AppContext, actions, cli::Error, ui::json};"
+  },
+  {
+    "path": "src/cli/commands/task/note/add.rs",
+    "line": 13,
+    "text": "  #[arg(short, long)]"
+  },
+  {
+    "path": "src/cli/commands/task/note/add.rs",
+    "line": 16,
+    "text": "  #[arg(long)]"
+  },
+  {
+    "path": "src/cli/commands/task/note/add.rs",
+    "line": 18,
+    "text": "  /// The output mode: normal, `--json`, `--quiet` or `--raw`."
+  },
+  {
+    "path": "src/cli/commands/task/note/add.rs",
+    "line": 19,
+    "text": "  #[command(flatten)]"
+  },
+  {
+    "path": "src/cli/commands/task/note/add.rs",
+    "line": 20,
+    "text": "  output: json::Flags,"
+  },
+  {
+    "path": "src/cli/commands/task/note/delete.rs",
+    "line": 5,
+    "text": "use crate::{AppContext, actions, cli::Error, ui::json};"
+  },
+  {
+    "path": "src/cli/commands/task/note/delete.rs",
+    "line": 12,
+    "text": "  /// The output mode: normal, `--json`, `--quiet` or `--raw`."
+  },
+  {
+    "path": "src/cli/commands/task/note/delete.rs",
+    "line": 13,
+    "text": "  #[command(flatten)]"
+  },
+  {
+    "path": "src/cli/commands/task/note/delete.rs",
+    "line": 14,
+    "text": "  output: json::Flags,"
+  },
+  {
+    "path": "src/cli/commands/task/note/delete.rs",
+    "line": 16,
+    "text": "  #[arg(long)]"
+  },
+  {
+    "path": "src/cli/commands/task/note/list.rs",
+    "line": 8,
+    "text": "  ui::json,"
+  },
+  {
+    "path": "src/cli/commands/task/note/list.rs",
+    "line": 17,
+    "text": "  #[command(flatten)]"
+  },
+  {
+    "path": "src/cli/commands/task/note/list.rs",
+    "line": 19,
+    "text": "  /// The output mode: normal, `--json`, `--quiet` or `--raw`."
+  },
+  {
+    "path": "src/cli/commands/task/note/list.rs",
+    "line": 20,
+    "text": "  #[command(flatten)]"
+  },
+  {
+    "path": "src/cli/commands/task/note/list.rs",
+    "line": 21,
+    "text": "  output: json::Flags,"
+  },
+  {
+    "path": "src/cli/commands/task/note/show.rs",
+    "line": 5,
+    "text": "use crate::{AppContext, actions, cli::Error, ui::json};"
+  },
+  {
+    "path": "src/cli/commands/task/note/show.rs",
+    "line": 12,
+    "text": "  /// The output mode: normal, `--json`, `--quiet` or `--raw`."
+  },
+  {
+    "path": "src/cli/commands/task/note/show.rs",
+    "line": 13,
+    "text": "  #[command(flatten)]"
+  },
+  {
+    "path": "src/cli/commands/task/note/show.rs",
+    "line": 14,
+    "text": "  output: json::Flags,"
+  },
+  {
+    "path": "src/cli/commands/task/note/update.rs",
+    "line": 5,
+    "text": "use crate::{AppContext, actions, cli::Error, ui::json};"
+  },
+  {
+    "path": "src/cli/commands/task/note/update.rs",
+    "line": 13,
+    "text": "  #[arg(long, short)]"
+  },
+  {
+    "path": "src/cli/commands/task/note/update.rs",
+    "line": 15,
+    "text": "  /// The output mode: normal, `--json`, `--quiet` or `--raw`."
+  },
+  {
+    "path": "src/cli/commands/task/note/update.rs",
+    "line": 16,
+    "text": "  #[command(flatten)]"
+  },
+  {
+    "path": "src/cli/commands/task/note/update.rs",
+    "line": 17,
+    "text": "  output: json::Flags,"
+  },
+  {
+    "path": "src/cli/commands/task/show.rs",
+    "line": 9,
+    "text": "  ui::{components::TaskDetail, envelope::Envelope, json},"
+  },
+  {
+    "path": "src/cli/commands/task/show.rs",
+    "line": 17,
+    "text": "  /// The output mode: normal, `--json`, `--quiet` or `--raw`."
+  },
+  {
+    "path": "src/cli/commands/task/show.rs",
+    "line": 18,
+    "text": "  #[command(flatten)]"
+  },
+  {
+    "path": "src/cli/commands/task/show.rs",
+    "line": 19,
+    "text": "  output: json::Flags,"
+  },
+  {
+    "path": "src/cli/commands/task/tag.rs",
+    "line": 5,
+    "text": "use crate::{AppContext, actions, cli::Error, ui::json};"
+  },
+  {
+    "path": "src/cli/commands/task/tag.rs",
+    "line": 14,
+    "text": "  /// The output mode: normal, `--json`, `--quiet` or `--raw`."
+  },
+  {
+    "path": "src/cli/commands/task/tag.rs",
+    "line": 15,
+    "text": "  #[command(flatten)]"
+  },
+  {
+    "path": "src/cli/commands/task/tag.rs",
+    "line": 16,
+    "text": "  output: json::Flags,"
+  },
+  {
+    "path": "src/cli/commands/task/unlink.rs",
+    "line": 12,
+    "text": "  ui::{components::SuccessMessage, envelope::Envelope, json},"
+  },
+  {
+    "path": "src/cli/commands/task/unlink.rs",
+    "line": 19,
+    "text": "  #[arg(long, conflicts_with = \"target_type\")]"
+  },
+  {
+    "path": "src/cli/commands/task/unlink.rs",
+    "line": 25,
+    "text": "  #[arg(long)]"
+  },
+  {
+    "path": "src/cli/commands/task/unlink.rs",
+    "line": 30,
+    "text": "  #[arg(long, default_value = \"task\")]"
+  },
+  {
+    "path": "src/cli/commands/task/unlink.rs",
+    "line": 32,
+    "text": "  /// The output mode: normal, `--json`, `--quiet` or `--raw`."
+  },
+  {
+    "path": "src/cli/commands/task/unlink.rs",
+    "line": 33,
+    "text": "  #[command(flatten)]"
+  },
+  {
+    "path": "src/cli/commands/task/unlink.rs",
+    "line": 34,
+    "text": "  output: json::Flags,"
+  },
+  {
+    "path": "src/cli/commands/task/untag.rs",
+    "line": 5,
+    "text": "use crate::{AppContext, actions, cli::Error, ui::json};"
+  },
+  {
+    "path": "src/cli/commands/task/untag.rs",
+    "line": 14,
+    "text": "  /// The output mode: normal, `--json`, `--quiet` or `--raw`."
+  },
+  {
+    "path": "src/cli/commands/task/untag.rs",
+    "line": 15,
+    "text": "  #[command(flatten)]"
+  },
+  {
+    "path": "src/cli/commands/task/untag.rs",
+    "line": 16,
+    "text": "  output: json::Flags,"
+  },
+  {
+    "path": "src/cli/commands/task/update.rs",
+    "line": 15,
+    "text": "  ui::{components::SuccessMessage, envelope::Envelope, json},"
+  },
+  {
+    "path": "src/cli/commands/task/update.rs",
+    "line": 24,
+    "text": "  #[arg(long)]"
+  },
+  {
+    "path": "src/cli/commands/task/update.rs",
+    "line": 27,
+    "text": "  #[arg(long, short)]"
+  },
+  {
+    "path": "src/cli/commands/task/update.rs",
+    "line": 30,
+    "text": "  #[arg(long = \"metadata\", short = 'm', value_name = \"KEY=VALUE\")]"
+  },
+  {
+    "path": "src/cli/commands/task/update.rs",
+    "line": 33,
+    "text": "  #[arg(long = \"metadata-json\", value_name = \"JSON\")]"
+  },
+  {
+    "path": "src/cli/commands/task/update.rs",
+    "line": 36,
+    "text": "  #[arg(long)]"
+  },
+  {
+    "path": "src/cli/commands/task/update.rs",
+    "line": 39,
+    "text": "  #[arg(long, short, value_parser = parse_priority)]"
+  },
+  {
+    "path": "src/cli/commands/task/update.rs",
+    "line": 42,
+    "text": "  #[arg(long, short)]"
+  },
+  {
+    "path": "src/cli/commands/task/update.rs",
+    "line": 45,
+    "text": "  #[arg(long, value_delimiter = ',', value_parser = tag_arg::trim_tag)]"
+  },
+  {
+    "path": "src/cli/commands/task/update.rs",
+    "line": 48,
+    "text": "  #[arg(long, short)]"
+  },
+  {
+    "path": "src/cli/commands/task/update.rs",
+    "line": 50,
+    "text": "  /// The output mode: normal, `--json`, `--quiet` or `--raw`."
+  },
+  {
+    "path": "src/cli/commands/task/update.rs",
+    "line": 51,
+    "text": "  #[command(flatten)]"
+  },
+  {
+    "path": "src/cli/commands/task/update.rs",
+    "line": 52,
+    "text": "  output: json::Flags,"
+  },
+  {
+    "path": "src/cli/commands/undo.rs",
+    "line": 11,
+    "text": "  #[arg(default_value = \"1\")]"
+  },
+  {
+    "path": "src/cli/limit.rs",
+    "line": 9,
+    "text": "  #[arg(long, value_name = \"N\")]"
+  },
+  {
+    "path": "src/cli/meta_args.rs",
+    "line": 1,
+    "text": "//! Shared `--metadata` / `--metadata-json` flag parsing for create/update commands."
+  },
+  {
+    "path": "src/cli/meta_args.rs",
+    "line": 8,
+    "text": "/// `--metadata-json '<json-object>'` strings, layered on top of an optional base."
+  },
+  {
+    "path": "src/cli/meta_args.rs",
+    "line": 11,
+    "text": "/// `--metadata-json` objects are then merged shallow on top so they can override."
+  },
+  {
+    "path": "src/cli/meta_args.rs",
+    "line": 18,
+    "text": "/// * `json_blobs` - the `--metadata-json` values, each a JSON object"
+  },
+  {
+    "path": "src/cli/meta_args.rs",
+    "line": 47,
+    "text": "      serde_json::from_str(blob).map_err(|e| Error::Argument(format!(\"invalid --metadata-json: {e}\")))?;"
+  },
+  {
+    "path": "src/cli/meta_args.rs",
+    "line": 51,
+    "text": "        return Err(Error::Argument(\"--metadata-json must be a JSON object\".to_string()));"
+  },
+  {
+    "path": "src/cli/meta_args.rs",
+    "line": 66,
+    "text": "  use serde_json::json;"
+  },
+  {
+    "path": "src/cli/meta_args.rs",
+    "line": 96,
+    "text": "      assert_eq!(out, json!({\"a\": {\"b\": \"deep\"}, \"c\": 42}));"
+  },
+  {
+    "path": "src/cli/meta_args.rs",
+    "line": 107,
+    "text": "      assert_eq!(out, json!({\"k\": 2, \"extra\": true}));"
+  },
+  {
+    "path": "src/cli/meta_args.rs",
+    "line": 112,
+    "text": "      let base = Some(json!({\"keep\": \"yes\", \"k\": 1}));"
+  },
+  {
+    "path": "src/cli/meta_args.rs",
+    "line": 117,
+    "text": "      assert_eq!(out, json!({\"keep\": \"yes\", \"k\": 2}));"
+  },
+  {
+    "path": "src/cli/meta_args.rs",
+    "line": 122,
+    "text": "      let base = Some(json!({\"k\": 1}));"
+  }
+]

@@ -1,0 +1,11 @@
+--- a/test/tester.tcl
++++ b/test/tester.tcl
+@@ -35,8 +35,6 @@
+ # If somebody wants to volunteer to fix it, then great.  But without a
+ # volunteer to do so, it is disabled.
+ #
+-puts Ok
+-exit
+ 
+ # We use some things introduced in 8.6 such as lmap.  auto.def should
+ # have found us a suitable Tcl installation.

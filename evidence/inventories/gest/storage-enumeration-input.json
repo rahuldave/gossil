@@ -1,0 +1,392 @@
+{
+  "pin": "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8",
+  "schema_migrations": [
+    {
+      "source": "src/store/migration/m00001_create_projects.rs",
+      "sql": "\n    CREATE TABLE projects (\n      id         TEXT PRIMARY KEY NOT NULL,\n      root       TEXT NOT NULL UNIQUE,\n      created_at TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ', 'now')),\n      updated_at TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))\n    );\n  ",
+      "version": 1
+    },
+    {
+      "source": "src/store/migration/m00002_create_project_workspaces.rs",
+      "sql": "\n    CREATE TABLE project_workspaces (\n      id         TEXT PRIMARY KEY NOT NULL,\n      project_id TEXT NOT NULL REFERENCES projects(id),\n      path       TEXT NOT NULL,\n      created_at TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ', 'now')),\n      updated_at TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ', 'now')),\n      UNIQUE(path, project_id)\n    );\n\n    CREATE INDEX idx_project_workspaces_path ON project_workspaces(path);\n  ",
+      "version": 2
+    },
+    {
+      "source": "src/store/migration/m00003_create_authors.rs",
+      "sql": "\n    CREATE TABLE authors (\n      id          TEXT PRIMARY KEY,\n      author_type TEXT NOT NULL DEFAULT 'human',\n      name        TEXT NOT NULL,\n      email       TEXT,\n      created_at  TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ', 'now')),\n      updated_at  TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))\n    );\n    CREATE UNIQUE INDEX idx_authors_name_email ON authors (name, email);\n  ",
+      "version": 3
+    },
+    {
+      "source": "src/store/migration/m00004_create_tasks.rs",
+      "sql": "\n    CREATE TABLE tasks (\n      id          TEXT PRIMARY KEY,\n      project_id  TEXT NOT NULL REFERENCES projects(id),\n      title       TEXT NOT NULL,\n      priority    INTEGER,\n      status      TEXT NOT NULL DEFAULT 'open',\n      description TEXT NOT NULL DEFAULT '',\n      assigned_to TEXT REFERENCES authors(id),\n      metadata    TEXT NOT NULL DEFAULT '{}',\n      resolved_at TEXT,\n      created_at  TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ', 'now')),\n      updated_at  TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))\n    );\n    CREATE INDEX idx_tasks_project_id ON tasks (project_id);\n    CREATE INDEX idx_tasks_status ON tasks (project_id, status);\n  ",
+      "version": 4
+    },
+    {
+      "source": "src/store/migration/m00005_create_artifacts.rs",
+      "sql": "\n    CREATE TABLE artifacts (\n      id          TEXT PRIMARY KEY,\n      project_id  TEXT NOT NULL REFERENCES projects(id),\n      title       TEXT NOT NULL,\n      body        TEXT NOT NULL DEFAULT '',\n      metadata    TEXT NOT NULL DEFAULT '{}',\n      archived_at TEXT,\n      created_at  TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ', 'now')),\n      updated_at  TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))\n    );\n    CREATE INDEX idx_artifacts_project_id ON artifacts (project_id);\n  ",
+      "version": 5
+    },
+    {
+      "source": "src/store/migration/m00006_create_iterations.rs",
+      "sql": "\n    CREATE TABLE iterations (\n      id           TEXT PRIMARY KEY,\n      project_id   TEXT NOT NULL REFERENCES projects(id),\n      title        TEXT NOT NULL,\n      status       TEXT NOT NULL DEFAULT 'active',\n      description  TEXT NOT NULL DEFAULT '',\n      metadata     TEXT NOT NULL DEFAULT '{}',\n      completed_at TEXT,\n      created_at   TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ', 'now')),\n      updated_at   TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))\n    );\n    CREATE INDEX idx_iterations_project_id ON iterations (project_id);\n    CREATE INDEX idx_iterations_status ON iterations (project_id, status);\n  ",
+      "version": 6
+    },
+    {
+      "source": "src/store/migration/m00007_create_tags.rs",
+      "sql": "\n    CREATE TABLE tags (\n      id         TEXT PRIMARY KEY,\n      label      TEXT NOT NULL UNIQUE,\n      created_at TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ', 'now')),\n      updated_at TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))\n    );\n  ",
+      "version": 7
+    },
+    {
+      "source": "src/store/migration/m00008_create_entity_tags.rs",
+      "sql": "\n    CREATE TABLE entity_tags (\n      entity_id   TEXT NOT NULL,\n      entity_type TEXT NOT NULL,\n      tag_id      TEXT NOT NULL REFERENCES tags(id),\n      created_at  TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ', 'now')),\n      PRIMARY KEY (entity_type, entity_id, tag_id)\n    );\n    CREATE INDEX idx_entity_tags_tag_id ON entity_tags (tag_id);\n  ",
+      "version": 8
+    },
+    {
+      "source": "src/store/migration/m00009_create_notes.rs",
+      "sql": "\n    CREATE TABLE notes (\n      id          TEXT PRIMARY KEY,\n      entity_id   TEXT NOT NULL,\n      entity_type TEXT NOT NULL,\n      author_id   TEXT REFERENCES authors(id),\n      body        TEXT NOT NULL,\n      created_at  TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ', 'now')),\n      updated_at  TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))\n    );\n    CREATE INDEX idx_notes_entity ON notes (entity_type, entity_id);\n  ",
+      "version": 9
+    },
+    {
+      "source": "src/store/migration/m00010_create_relationships.rs",
+      "sql": "\n    CREATE TABLE relationships (\n      id          TEXT PRIMARY KEY,\n      rel_type    TEXT NOT NULL,\n      source_id   TEXT NOT NULL,\n      source_type TEXT NOT NULL,\n      target_id   TEXT NOT NULL,\n      target_type TEXT NOT NULL,\n      created_at  TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ', 'now')),\n      updated_at  TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))\n    );\n    CREATE INDEX idx_relationships_source ON relationships (source_type, source_id);\n    CREATE INDEX idx_relationships_target ON relationships (target_type, target_id);\n    CREATE UNIQUE INDEX idx_relationships_unique\n      ON relationships (rel_type, source_type, source_id, target_type, target_id);\n  ",
+      "version": 10
+    },
+    {
+      "source": "src/store/migration/m00011_create_iteration_tasks.rs",
+      "sql": "\n    CREATE TABLE iteration_tasks (\n      iteration_id TEXT NOT NULL REFERENCES iterations(id),\n      task_id      TEXT NOT NULL REFERENCES tasks(id),\n      phase        INTEGER NOT NULL DEFAULT 1,\n      created_at   TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ', 'now')),\n      PRIMARY KEY (iteration_id, task_id)\n    );\n    CREATE INDEX idx_iteration_tasks_task_id ON iteration_tasks (task_id);\n  ",
+      "version": 11
+    },
+    {
+      "source": "src/store/migration/m00012_create_transactions.rs",
+      "sql": "\n    CREATE TABLE transactions (\n      id         TEXT PRIMARY KEY,\n      project_id TEXT NOT NULL REFERENCES projects(id),\n      author_id  TEXT REFERENCES authors(id),\n      command    TEXT NOT NULL,\n      undone_at  TEXT,\n      created_at TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))\n    );\n    CREATE INDEX idx_transactions_project_id ON transactions (project_id);\n  ",
+      "version": 12
+    },
+    {
+      "source": "src/store/migration/m00013_create_transaction_events.rs",
+      "sql": "\n    CREATE TABLE transaction_events (\n        id             TEXT PRIMARY KEY,\n        transaction_id TEXT NOT NULL REFERENCES transactions(id),\n        before_data    TEXT,\n        event_type     TEXT NOT NULL,\n        row_id         TEXT NOT NULL,\n        table_name     TEXT NOT NULL,\n        semantic_type  TEXT,\n        old_value      TEXT,\n        new_value      TEXT,\n        created_at     TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))\n      );\n      CREATE INDEX idx_transaction_events_transaction_id ON transaction_events (transaction_id);\n  ",
+      "version": 13
+    },
+    {
+      "source": "src/store/migration/m00014_create_sync_digests.rs",
+      "sql": "\n    CREATE TABLE sync_digests (\n      project_id    TEXT NOT NULL REFERENCES projects(id) ON DELETE CASCADE,\n      relative_path TEXT NOT NULL,\n      digest        TEXT NOT NULL,\n      created_at    TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ', 'now')),\n      synced_at     TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ', 'now')),\n      PRIMARY KEY (project_id, relative_path)\n    );\n  ",
+      "version": 14
+    },
+    {
+      "source": "src/store/migration/m00015_add_projects_archived_at.rs",
+      "sql": "ALTER TABLE projects ADD COLUMN archived_at TEXT;",
+      "version": 15
+    }
+  ],
+  "mutation_families": [
+    {
+      "family": "task",
+      "source": "src/store/repo/task.rs",
+      "functions": [
+        {
+          "function": "create",
+          "line": 95
+        },
+        {
+          "function": "delete",
+          "line": 148
+        },
+        {
+          "function": "update",
+          "line": 390
+        }
+      ],
+      "unit_tests": "inline #[cfg(test)] in owner",
+      "integration_test_files": [
+        "tests/integration/commands/task/when_adding_notes.rs",
+        "tests/integration/commands/task/when_batch_creating.rs",
+        "tests/integration/commands/task/when_blocking.rs",
+        "tests/integration/commands/task/when_cancelling.rs",
+        "tests/integration/commands/task/when_claiming.rs",
+        "tests/integration/commands/task/when_completing.rs",
+        "tests/integration/commands/task/when_creating.rs",
+        "tests/integration/commands/task/when_deleting.rs",
+        "tests/integration/commands/task/when_deleting_notes.rs",
+        "tests/integration/commands/task/when_emitting_envelope_json.rs",
+        "tests/integration/commands/task/when_limiting.rs",
+        "tests/integration/commands/task/when_linking.rs",
+        "tests/integration/commands/task/when_listing.rs",
+        "tests/integration/commands/task/when_listing_notes.rs",
+        "tests/integration/commands/task/when_managing_metadata.rs",
+        "tests/integration/commands/task/when_note_delete_prompt.rs",
+        "tests/integration/commands/task/when_prefix_highlighting.rs",
+        "tests/integration/commands/task/when_setting_priority.rs",
+        "tests/integration/commands/task/when_showing.rs",
+        "tests/integration/commands/task/when_showing_notes.rs",
+        "tests/integration/commands/task/when_unlinking.rs",
+        "tests/integration/commands/task/when_untagging.rs",
+        "tests/integration/commands/task/when_updating.rs",
+        "tests/integration/commands/task/when_updating_notes.rs"
+      ]
+    },
+    {
+      "family": "artifact",
+      "source": "src/store/repo/artifact.rs",
+      "functions": [
+        {
+          "function": "archive",
+          "line": 81
+        },
+        {
+          "function": "create",
+          "line": 113
+        },
+        {
+          "function": "update",
+          "line": 338
+        }
+      ],
+      "unit_tests": "inline #[cfg(test)] in owner",
+      "integration_test_files": [
+        "tests/integration/commands/artifact/when_adding_notes.rs",
+        "tests/integration/commands/artifact/when_batch_creating.rs",
+        "tests/integration/commands/artifact/when_creating.rs",
+        "tests/integration/commands/artifact/when_deleting.rs",
+        "tests/integration/commands/artifact/when_deleting_notes.rs",
+        "tests/integration/commands/artifact/when_envelope_json.rs",
+        "tests/integration/commands/artifact/when_limiting.rs",
+        "tests/integration/commands/artifact/when_listing.rs",
+        "tests/integration/commands/artifact/when_listing_notes.rs",
+        "tests/integration/commands/artifact/when_managing_metadata.rs",
+        "tests/integration/commands/artifact/when_note_delete_prompt.rs",
+        "tests/integration/commands/artifact/when_prefix_highlighting.rs",
+        "tests/integration/commands/artifact/when_showing.rs",
+        "tests/integration/commands/artifact/when_untagging.rs",
+        "tests/integration/commands/artifact/when_updating.rs"
+      ]
+    },
+    {
+      "family": "iteration",
+      "source": "src/store/repo/iteration.rs",
+      "functions": [
+        {
+          "function": "add_task",
+          "line": 82
+        },
+        {
+          "function": "create",
+          "line": 169
+        },
+        {
+          "function": "remove_task",
+          "line": 474
+        },
+        {
+          "function": "update",
+          "line": 700
+        },
+        {
+          "function": "update_task_phase",
+          "line": 795
+        }
+      ],
+      "unit_tests": "inline #[cfg(test)] in owner",
+      "integration_test_files": [
+        "tests/integration/commands/iteration/when_adding.rs",
+        "tests/integration/commands/iteration/when_advancing.rs",
+        "tests/integration/commands/iteration/when_batch_adding.rs",
+        "tests/integration/commands/iteration/when_creating.rs",
+        "tests/integration/commands/iteration/when_deleting.rs",
+        "tests/integration/commands/iteration/when_graphing.rs",
+        "tests/integration/commands/iteration/when_json_envelope.rs",
+        "tests/integration/commands/iteration/when_limiting.rs",
+        "tests/integration/commands/iteration/when_linking.rs",
+        "tests/integration/commands/iteration/when_listing.rs",
+        "tests/integration/commands/iteration/when_managing_metadata.rs",
+        "tests/integration/commands/iteration/when_next.rs",
+        "tests/integration/commands/iteration/when_prefix_highlighting.rs",
+        "tests/integration/commands/iteration/when_removing.rs",
+        "tests/integration/commands/iteration/when_reopening.rs",
+        "tests/integration/commands/iteration/when_showing.rs",
+        "tests/integration/commands/iteration/when_unlinking.rs",
+        "tests/integration/commands/iteration/when_untagging.rs",
+        "tests/integration/commands/iteration/when_updating.rs"
+      ]
+    },
+    {
+      "family": "project",
+      "source": "src/store/repo/project.rs",
+      "functions": [
+        {
+          "function": "archive",
+          "line": 76
+        },
+        {
+          "function": "attach_workspace",
+          "line": 104
+        },
+        {
+          "function": "create",
+          "line": 170
+        },
+        {
+          "function": "find_or_create_from_synced_project",
+          "line": 230
+        },
+        {
+          "function": "delete",
+          "line": 294
+        },
+        {
+          "function": "detach_workspace",
+          "line": 393
+        },
+        {
+          "function": "unarchive",
+          "line": 512
+        }
+      ],
+      "unit_tests": "inline #[cfg(test)] in owner",
+      "integration_test_files": [
+        "tests/integration/commands/project/when_archiving.rs",
+        "tests/integration/commands/project/when_attaching.rs",
+        "tests/integration/commands/project/when_deleting.rs",
+        "tests/integration/commands/project/when_detaching.rs",
+        "tests/integration/commands/project/when_limiting.rs",
+        "tests/integration/commands/project/when_listing.rs",
+        "tests/integration/commands/project/when_showing.rs",
+        "tests/integration/commands/project/when_unarchiving.rs"
+      ]
+    },
+    {
+      "family": "author",
+      "source": "src/store/repo/author.rs",
+      "functions": [
+        {
+          "function": "create",
+          "line": 42
+        },
+        {
+          "function": "find_or_create",
+          "line": 140
+        }
+      ],
+      "unit_tests": "inline #[cfg(test)] in owner",
+      "integration_test_files": []
+    },
+    {
+      "family": "note",
+      "source": "src/store/repo/note.rs",
+      "functions": [
+        {
+          "function": "create",
+          "line": 34
+        },
+        {
+          "function": "delete",
+          "line": 73
+        },
+        {
+          "function": "update",
+          "line": 237
+        }
+      ],
+      "unit_tests": "inline #[cfg(test)] in owner",
+      "integration_test_files": []
+    },
+    {
+      "family": "tag",
+      "source": "src/store/repo/tag.rs",
+      "functions": [
+        {
+          "function": "attach",
+          "line": 58
+        },
+        {
+          "function": "create",
+          "line": 115
+        },
+        {
+          "function": "detach",
+          "line": 147
+        },
+        {
+          "function": "detach_all",
+          "line": 172
+        },
+        {
+          "function": "find_or_create",
+          "line": 244
+        }
+      ],
+      "unit_tests": "inline #[cfg(test)] in owner",
+      "integration_test_files": [
+        "tests/integration/commands/tag/when_adding.rs",
+        "tests/integration/commands/tag/when_listing.rs",
+        "tests/integration/commands/tag/when_removing.rs"
+      ]
+    },
+    {
+      "family": "relationship",
+      "source": "src/store/repo/relationship.rs",
+      "functions": [
+        {
+          "function": "create",
+          "line": 37
+        },
+        {
+          "function": "delete",
+          "line": 79
+        }
+      ],
+      "unit_tests": "inline #[cfg(test)] in owner",
+      "integration_test_files": []
+    },
+    {
+      "family": "transaction",
+      "source": "src/store/repo/transaction.rs",
+      "functions": [
+        {
+          "function": "begin",
+          "line": 33
+        },
+        {
+          "function": "begin_with_author",
+          "line": 50
+        },
+        {
+          "function": "record_event",
+          "line": 188
+        },
+        {
+          "function": "record_semantic_event",
+          "line": 234
+        },
+        {
+          "function": "undo",
+          "line": 392
+        }
+      ],
+      "unit_tests": "inline #[cfg(test)] in owner",
+      "integration_test_files": []
+    },
+    {
+      "family": "entity/delete",
+      "source": "src/store/repo/entity/delete.rs",
+      "functions": [
+        {
+          "function": "delete_with_cascade",
+          "line": 293
+        },
+        {
+          "function": "delete_many_with_cascade",
+          "line": 362
+        }
+      ],
+      "unit_tests": "inline #[cfg(test)] in owner",
+      "integration_test_files": []
+    }
+  ],
+  "infrastructure_mutations": [
+    "src/store/migration.rs:run (_migrations and schema)",
+    "src/store/sync/digest.rs:invalidate,record (sync_digests)",
+    "src/store/sync/entities/{author,project,tag,task,artifact,iteration,relationship,event}.rs:read_all,write_all",
+    "src/store/sync/tombstone.rs:tombstone_artifact,tombstone_iteration,tombstone_project,tombstone_task",
+    "src/cli/commands/migrate.rs (legacy flat-file import)",
+    "src/cli/commands/purge.rs (entity cascade, dangling relationships, tombstone cleanup)"
+  ]
+}

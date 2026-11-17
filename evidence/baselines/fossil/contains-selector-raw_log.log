@@ -1,0 +1,21 @@
+***** contains-selector ******
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-contains-selector /private/tmp/gossil-fossil-baseline-20261117/runs/contains-selector/tmp/compare-selector.css .a
+test contains-selector 1 .a OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-contains-selector /private/tmp/gossil-fossil-baseline-20261117/runs/contains-selector/tmp/compare-selector.css .b
+test contains-selector 1 .b OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-contains-selector /private/tmp/gossil-fossil-baseline-20261117/runs/contains-selector/tmp/compare-selector.css .a.b
+test contains-selector 1 .a.b OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-contains-selector /private/tmp/gossil-fossil-baseline-20261117/runs/contains-selector/tmp/compare-selector.css .c
+test contains-selector 1 .c OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-contains-selector /private/tmp/gossil-fossil-baseline-20261117/runs/contains-selector/tmp/compare-selector.css .d
+test contains-selector 1 .d OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-contains-selector /private/tmp/gossil-fossil-baseline-20261117/runs/contains-selector/tmp/compare-selector.css .c.d
+test contains-selector 1 .c.d OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-contains-selector /private/tmp/gossil-fossil-baseline-20261117/runs/contains-selector/tmp/compare-selector.css {.c .d}
+test contains-selector 1 .c .d OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-contains-selector /private/tmp/gossil-fossil-baseline-20261117/runs/contains-selector/tmp/compare-selector.css .e
+test contains-selector 1 .e OK
+test test-framework-contains-selector OK
+***** End of contains-selector: 0 errors so far ******
+***** Final results: 0 errors out of 9 tests
+***** Ignored results: 0 ignored errors out of 9 tests

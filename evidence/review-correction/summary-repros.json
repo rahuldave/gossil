@@ -1,0 +1,44 @@
+[
+  {
+    "case": "bad-total",
+    "exit": 0,
+    "accepted": true,
+    "malformed": false,
+    "status": "pass"
+  },
+  {
+    "case": "overflow-total",
+    "exit": 0,
+    "accepted": true,
+    "malformed": false,
+    "status": "pass"
+  },
+  {
+    "case": "bad-errors",
+    "exit": 1,
+    "accepted": false,
+    "malformed": true,
+    "status": "blocked"
+  },
+  {
+    "case": "bad-both",
+    "exit": 0,
+    "accepted": true,
+    "malformed": false,
+    "status": "pass"
+  },
+  {
+    "case": "valid-duplicate",
+    "exit": 1,
+    "accepted": false,
+    "malformed": true,
+    "status": "blocked"
+  },
+  {
+    "case": "bad-total-alone",
+    "exit": 1,
+    "accepted": false,
+    "malformed": false,
+    "status": "blocked"
+  }
+]

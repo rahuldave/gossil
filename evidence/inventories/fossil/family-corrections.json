@@ -1,0 +1,113 @@
+{
+  "schema_version": 1,
+  "kind": "PORT-02 correction overlay; planning only",
+  "source_revision": "b3a1c8efb2731dffbd5cc38c58ac349746de6da6",
+  "archived_inventory_sha256": "a87d9a81e1f30da54eacacb6f00f7af06aa3970f0ca1b21017039336d6ee9b7c",
+  "application": "Overlay only the listed contract_families fields. Preserve every other archived field. All effective disposition fields must use the normative enum.",
+  "normative_disposition_enum": [
+    "port",
+    "replace-with-equivalent",
+    "supporting-source"
+  ],
+  "contract_families": {
+    "database": {
+      "original_disposition": "adapt",
+      "disposition": "replace-with-equivalent",
+      "adaptation_action": "adapt",
+      "status": "required contract mapping pending",
+      "explanation": "Preserve the archived destination, required contract, candidate tests and missing-test followup. Replacement mapping and behavioral equivalence remain pending."
+    },
+    "server": {
+      "original_disposition": "adapt",
+      "disposition": "replace-with-equivalent",
+      "adaptation_action": "adapt",
+      "status": "required contract mapping pending",
+      "explanation": "Preserve the archived destination, required contract, candidate tests and missing-test followup. Replacement mapping and behavioral equivalence remain pending."
+    },
+    "render": {
+      "original_disposition": "adapt",
+      "disposition": "replace-with-equivalent",
+      "adaptation_action": "adapt",
+      "status": "required contract mapping pending",
+      "explanation": "Preserve the archived destination, required contract, candidate tests and missing-test followup. Replacement mapping and behavioral equivalence remain pending."
+    },
+    "ui-workflows": {
+      "original_disposition": "adapt",
+      "disposition": "replace-with-equivalent",
+      "adaptation_action": "adapt",
+      "status": "required contract mapping pending",
+      "explanation": "Preserve the archived destination, required contract, candidate tests and missing-test followup. Replacement mapping and behavioral equivalence remain pending."
+    },
+    "platform-windows": {
+      "original_disposition": "defer-required",
+      "disposition": "port",
+      "adaptation_action": "defer-required",
+      "status": "required contract mapping pending",
+      "explanation": "Port Windows HTTP/service/process transport behavior. Windows remains required platform scope; current macOS evidence does not qualify it. Support and equivalent behavior decisions remain open before full port acceptance."
+    },
+    "test-infrastructure": {
+      "original_disposition": "adapt",
+      "disposition": "replace-with-equivalent",
+      "adaptation_action": "adapt",
+      "status": "required contract mapping pending",
+      "explanation": "Preserve the archived destination, required contract, candidate tests and missing-test followup. Replacement mapping and behavioral equivalence remain pending."
+    },
+    "build-generation": {
+      "original_disposition": "adapt",
+      "disposition": "replace-with-equivalent",
+      "adaptation_action": "adapt",
+      "status": "required contract mapping pending",
+      "explanation": "Preserve the archived destination, required contract, candidate tests and missing-test followup. Replacement mapping and behavioral equivalence remain pending."
+    },
+    "json-api": {
+      "original_disposition": "adapt",
+      "disposition": "replace-with-equivalent",
+      "adaptation_action": "adapt",
+      "status": "required contract mapping pending",
+      "explanation": "Preserve the archived destination, required contract, candidate tests and missing-test followup. Replacement mapping and behavioral equivalence remain pending."
+    },
+    "build": {
+      "original_disposition": "reference",
+      "disposition": "supporting-source",
+      "adaptation_action": "reference",
+      "status": "required contract mapping pending",
+      "explanation": "Preserve the archived destination, required contract, candidate tests and missing-test followup. Retain the documented supporting role; dependent engine mechanisms remain required."
+    },
+    "docs": {
+      "original_disposition": "reference",
+      "disposition": "supporting-source",
+      "adaptation_action": "reference",
+      "status": "required contract mapping pending",
+      "explanation": "Preserve the archived destination, required contract, candidate tests and missing-test followup. Retain the documented supporting role; dependent engine mechanisms remain required."
+    },
+    "assets": {
+      "original_disposition": "reference",
+      "disposition": "supporting-source",
+      "adaptation_action": "reference",
+      "status": "required contract mapping pending",
+      "explanation": "Preserve the archived destination, required contract, candidate tests and missing-test followup. Retain the documented supporting role; dependent engine mechanisms remain required."
+    },
+    "dependency": {
+      "original_disposition": "reference",
+      "disposition": "supporting-source",
+      "adaptation_action": "reference",
+      "status": "required contract mapping pending",
+      "explanation": "Preserve the archived destination, required contract, candidate tests and missing-test followup. Retain the documented supporting role; dependent engine mechanisms remain required."
+    },
+    "migration-tools": {
+      "original_disposition": "reference",
+      "disposition": "supporting-source",
+      "adaptation_action": "reference",
+      "status": "required contract mapping pending",
+      "explanation": "Preserve the archived destination, required contract, candidate tests and missing-test followup. Retain the documented supporting role; dependent engine mechanisms remain required."
+    },
+    "test-surfaces": {
+      "original_disposition": "reference",
+      "disposition": "supporting-source",
+      "adaptation_action": "reference",
+      "status": "required contract mapping pending",
+      "explanation": "Preserve the archived destination, required contract, candidate tests and missing-test followup. Retain the documented supporting role; dependent engine mechanisms remain required."
+    }
+  },
+  "review_status": "prepared for independent exact-tree review; no compatibility acceptance"
+}

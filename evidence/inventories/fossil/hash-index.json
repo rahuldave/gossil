@@ -1,0 +1,30 @@
+{
+  "consistency.json": {
+    "sha256": "4081856e49a82f7b79d6722a33ca22abd5f3c1b3298dcefd47620ea98a8087b0",
+    "bytes": 3204
+  },
+  "short-report.json": {
+    "sha256": "5a088010418d146fa768335485644d527c73c3df9014e5df7b0ad53ee0cf372b",
+    "bytes": 12465
+  },
+  "inputs.json": {
+    "sha256": "7022e4de5527340d58d648cf242b96ff4f01aaeb75224d32d151f615f2a8d537",
+    "bytes": 1039
+  },
+  "inventory.json": {
+    "sha256": "a87d9a81e1f30da54eacacb6f00f7af06aa3970f0ca1b21017039336d6ee9b7c",
+    "bytes": 3094262
+  },
+  "COPYRIGHT-BSD2.txt": {
+    "sha256": "f65c4693891811303213aad3cc737d85114fc0ede82ec65bc0b923069b646c55",
+    "bytes": 1516
+  },
+  "check_inventory.py": {
+    "sha256": "1366f9e6bbd6d1a8579e35d8820a25d85230e95a21c44776c66f0a7aab87b15c",
+    "bytes": 5635
+  },
+  "build_inventory.py": {
+    "sha256": "726a92913ccdf03aaedc87b778031c9674847fea2318f64d363207be3c6af070",
+    "bytes": 40718
+  }
+}

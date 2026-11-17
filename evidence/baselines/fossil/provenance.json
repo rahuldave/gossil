@@ -1,0 +1,9 @@
+{
+  "source": "/var/folders/wq/mr3zj9r14dzgjnq9rjx_vqbc0000gn/T/gossil-source-review-1sgum5ox/fossil",
+  "git_pin": "b3a1c8efb2731dffbd5cc38c58ac349746de6da6",
+  "native_pin": "7e8ecf0ce4a3c05aa39de7ffe2828d23e334efe446ef2387e09f205ef00b2227",
+  "pristine_file_count": 984,
+  "pristine_tester_sha256": "458608cb05bf10381a0ceff95aedfcb406f33aeba7e07b00244b3b5e70ea4561",
+  "enabled_tester_sha256": "3e26debfaf0be4dd425b21da6537511e345ffc1687721fd0ee2c30840ab21783",
+  "enable_patch_sha256": "954533dd023b4e120eddfe2f595c9d9c53d3f21144e9a5d1ec5d0c3e70b0af8b"
+}

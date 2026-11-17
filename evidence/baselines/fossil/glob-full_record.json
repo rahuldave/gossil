@@ -1,0 +1,132 @@
+{
+  "name": "glob",
+  "suites": [
+    "glob"
+  ],
+  "command": [
+    "jlog",
+    "run",
+    "tclsh",
+    "/tmp/gossil-fossil-baseline-20261117/launch.tcl",
+    "/tmp/gossil-fossil-baseline-20261117/runs/glob/cwd",
+    "/tmp/gossil-fossil-baseline-20261117/enabled/test/tester.tcl",
+    "/Users/rahul/Projects/gossil/.jlog/bin/fossil",
+    "glob",
+    "-keep"
+  ],
+  "cwd": "/Users/rahul/Projects/gossil",
+  "environment": {
+    "FOSSIL_HOME": "/tmp/gossil-fossil-baseline-20261117/runs/glob/home",
+    "FOSSIL_TEST_TEMP": "/tmp/gossil-fossil-baseline-20261117/runs/glob/tmp",
+    "TEMP": "/tmp/gossil-fossil-baseline-20261117/runs/glob/tmp",
+    "TMP": "/tmp/gossil-fossil-baseline-20261117/runs/glob/tmp",
+    "TMPDIR": "/tmp/gossil-fossil-baseline-20261117/runs/glob/tmp",
+    "HOME": "/tmp/gossil-fossil-baseline-20261117/runs/glob/home",
+    "USER": "gossil-baseline",
+    "LOGNAME": "gossil-baseline",
+    "LC_ALL": "C",
+    "TZ": "UTC"
+  },
+  "exit_code": 0,
+  "timeout": false,
+  "seconds": 0.543,
+  "results": [
+    {
+      "name": "glob-parse-100.1",
+      "result": "pass"
+    },
+    {
+      "name": "glob-parse-101.1",
+      "result": "pass"
+    },
+    {
+      "name": "glob-parse-102.1",
+      "result": "pass"
+    },
+    {
+      "name": "glob-parse-103.1",
+      "result": "pass"
+    },
+    {
+      "name": "glob-parse-104.1",
+      "result": "pass"
+    },
+    {
+      "name": "glob-parse-105.1",
+      "result": "pass"
+    },
+    {
+      "name": "glob-parse-106.1",
+      "result": "pass"
+    },
+    {
+      "name": "glob-parse-107.1",
+      "result": "pass"
+    },
+    {
+      "name": "glob-parse-108.1",
+      "result": "pass"
+    },
+    {
+      "name": "glob-parse-109.1",
+      "result": "pass"
+    },
+    {
+      "name": "glob-parse-110.1",
+      "result": "pass"
+    },
+    {
+      "name": "glob-parse-111.1",
+      "result": "pass"
+    },
+    {
+      "name": "glob-parse-112.1",
+      "result": "pass"
+    },
+    {
+      "name": "glob-parse-113.1",
+      "result": "pass"
+    },
+    {
+      "name": "glob-parse-114.1",
+      "result": "pass"
+    },
+    {
+      "name": "glob-parse-115.1",
+      "result": "pass"
+    },
+    {
+      "name": "glob-parse-116.1",
+      "result": "pass"
+    },
+    {
+      "name": "glob-parse-117.1",
+      "result": "pass"
+    },
+    {
+      "name": "glob-parse-118.1",
+      "result": "pass"
+    },
+    {
+      "name": "glob-parse-119.1",
+      "result": "pass"
+    },
+    {
+      "name": "test-framework-glob",
+      "result": "pass"
+    }
+  ],
+  "counts": {
+    "pass": 21,
+    "fail": 0,
+    "ignored": 0
+  },
+  "upstream_summary": {
+    "errors": 0,
+    "tests": 21
+  },
+  "count_matches": true,
+  "skips": [],
+  "log": "/tmp/gossil-fossil-baseline-20261117/runs/glob/output.log",
+  "gate_pass": true
+}

@@ -1,0 +1,60 @@
+{
+  "name": "merge_renames_2",
+  "suites": [
+    "merge_renames_2"
+  ],
+  "command": [
+    "jlog",
+    "run",
+    "tclsh",
+    "/tmp/gossil-fossil-baseline-20261117/launch.tcl",
+    "/tmp/gossil-fossil-baseline-20261117/runs/merge_renames_2/cwd",
+    "/tmp/gossil-fossil-baseline-20261117/enabled/test/tester.tcl",
+    "/Users/rahul/Projects/gossil/.jlog/bin/fossil",
+    "merge_renames_2",
+    "-keep"
+  ],
+  "cwd": "/Users/rahul/Projects/gossil",
+  "environment": {
+    "FOSSIL_HOME": "/tmp/gossil-fossil-baseline-20261117/runs/merge_renames_2/home",
+    "FOSSIL_TEST_TEMP": "/tmp/gossil-fossil-baseline-20261117/runs/merge_renames_2/tmp",
+    "TEMP": "/tmp/gossil-fossil-baseline-20261117/runs/merge_renames_2/tmp",
+    "TMP": "/tmp/gossil-fossil-baseline-20261117/runs/merge_renames_2/tmp",
+    "TMPDIR": "/tmp/gossil-fossil-baseline-20261117/runs/merge_renames_2/tmp",
+    "HOME": "/tmp/gossil-fossil-baseline-20261117/runs/merge_renames_2/home",
+    "USER": "gossil-baseline",
+    "LOGNAME": "gossil-baseline",
+    "LC_ALL": "C",
+    "TZ": "UTC"
+  },
+  "exit_code": 0,
+  "timeout": false,
+  "seconds": 1.214,
+  "results": [
+    {
+      "name": "merge_renames_2-1.1",
+      "result": "pass"
+    },
+    {
+      "name": "merge_renames_2-1.2",
+      "result": "pass"
+    },
+    {
+      "name": "test-framework-merge_renames_2",
+      "result": "pass"
+    }
+  ],
+  "counts": {
+    "pass": 3,
+    "fail": 0,
+    "ignored": 0
+  },
+  "upstream_summary": {
+    "errors": 0,
+    "tests": 3
+  },
+  "count_matches": true,
+  "skips": [],
+  "log": "/tmp/gossil-fossil-baseline-20261117/runs/merge_renames_2/output.log",
+  "gate_pass": true
+}

@@ -1,0 +1,116 @@
+***** mv-rm ******
+/Users/rahul/Projects/gossil/.jlog/bin/fossil add f1 f2 f3 f4 f5 f6 f7 f8 subdirB/f9 subdirC/f10 subdirC/f11 f12
+/Users/rahul/Projects/gossil/.jlog/bin/fossil add subdirE/a/f14
+/Users/rahul/Projects/gossil/.jlog/bin/fossil commit -m c1
+/Users/rahul/Projects/gossil/.jlog/bin/fossil mv ../f1 .
+test mv-soft-relative-1 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil revert
+test mv-soft-relative-2 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil mv ../f2 ./f2
+test mv-soft-relative-3 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil revert
+test mv-soft-relative-4 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil mv --hard ../f3 .
+test mv-hard-relative-1 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil revert
+test mv-hard-relative-2 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil mv --hard ../f4 ./f4
+test mv-hard-relative-3 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil revert
+test mv-hard-relative-4 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil mv /private/tmp/gossil-fossil-baseline-20261117/runs/mv-rm/tmp/repo_61536/1794944082_1/mv-rm.test/f5 /private/tmp/gossil-fossil-baseline-20261117/runs/mv-rm/tmp/repo_61536/1794944082_1/mv-rm.test/subdir5
+test mv-soft-absolute-1 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil revert
+test mv-soft-absolute-2 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil mv /private/tmp/gossil-fossil-baseline-20261117/runs/mv-rm/tmp/repo_61536/1794944082_1/mv-rm.test/f6 /private/tmp/gossil-fossil-baseline-20261117/runs/mv-rm/tmp/repo_61536/1794944082_1/mv-rm.test/subdir6/f6
+test mv-soft-absolute-3 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil revert
+test mv-soft-absolute-4 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil mv --hard /private/tmp/gossil-fossil-baseline-20261117/runs/mv-rm/tmp/repo_61536/1794944082_1/mv-rm.test/f7 /private/tmp/gossil-fossil-baseline-20261117/runs/mv-rm/tmp/repo_61536/1794944082_1/mv-rm.test/subdir7
+test mv-hard-absolute-1 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil revert
+test mv-hard-absolute-2 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil mv --hard /private/tmp/gossil-fossil-baseline-20261117/runs/mv-rm/tmp/repo_61536/1794944082_1/mv-rm.test/f8 /private/tmp/gossil-fossil-baseline-20261117/runs/mv-rm/tmp/repo_61536/1794944082_1/mv-rm.test/subdir8/f8
+test mv-hard-absolute-3 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil revert
+test mv-hard-absolute-4 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil rm ../subdirA
+test rm-soft-relative-1 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil rm ../subdirB
+test rm-soft-relative-2 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil rm ../subdirC
+test rm-soft-relative-3 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil revert
+test rm-soft-relative-4 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil rm ../f2
+test rm-soft-relative-5 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil revert
+test rm-soft-relative-6 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil rm --hard ../subdirA
+test rm-hard-relative-1 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil rm --hard ../subdirB
+test rm-hard-relative-2 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil rm --hard ../subdirC
+test rm-hard-relative-3 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil revert
+test rm-hard-relative-4 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil rm --hard ../f4
+test rm-hard-relative-5 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil revert
+test rm-hard-relative-6 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil rm /private/tmp/gossil-fossil-baseline-20261117/runs/mv-rm/tmp/repo_61536/1794944082_1/mv-rm.test/subdirA
+test rm-soft-absolute-1 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil rm /private/tmp/gossil-fossil-baseline-20261117/runs/mv-rm/tmp/repo_61536/1794944082_1/mv-rm.test/subdirB
+test rm-soft-absolute-2 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil rm /private/tmp/gossil-fossil-baseline-20261117/runs/mv-rm/tmp/repo_61536/1794944082_1/mv-rm.test/subdirC
+test rm-soft-absolute-3 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil revert
+test rm-soft-absolute-4 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil rm /private/tmp/gossil-fossil-baseline-20261117/runs/mv-rm/tmp/repo_61536/1794944082_1/mv-rm.test/f6
+test rm-soft-absolute-5 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil revert
+test rm-soft-absolute-6 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil rm --hard /private/tmp/gossil-fossil-baseline-20261117/runs/mv-rm/tmp/repo_61536/1794944082_1/mv-rm.test/subdirA
+test rm-hard-absolute-1 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil rm --hard /private/tmp/gossil-fossil-baseline-20261117/runs/mv-rm/tmp/repo_61536/1794944082_1/mv-rm.test/subdirB
+test rm-hard-absolute-2 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil rm --hard /private/tmp/gossil-fossil-baseline-20261117/runs/mv-rm/tmp/repo_61536/1794944082_1/mv-rm.test/subdirC
+test rm-hard-absolute-3 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil revert
+test rm-hard-absolute-4 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil rm --hard /private/tmp/gossil-fossil-baseline-20261117/runs/mv-rm/tmp/repo_61536/1794944082_1/mv-rm.test/f8
+test rm-hard-absolute-5 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil revert
+test rm-hard-absolute-6 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil mv --hard f12 d2/f13
+test mv-file-new-directory-1 OK
+test mv-file-new-directory-2 OK
+test mv-file-new-directory-3 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil revert
+test mv-file-new-directory-4 OK
+test mv-file-new-directory-5 OK
+test mv-file-new-directory-6 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil mv --hard subdirC subdirD
+test mv-file-new-directory-7 OK
+test mv-file-new-directory-8 OK
+test mv-file-new-directory-9 OK
+test mv-file-new-directory-10 OK
+test mv-file-new-directory-11 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil revert
+test mv-file-new-directory-12 OK
+test mv-file-new-directory-13 OK
+test mv-file-new-directory-14 OK
+test mv-file-new-directory-15 OK
+test mv-file-new-directory-16 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil mv subdirE/a subdirE/a_renamed
+test mv-soft-already-renamed-directory-1 OK
+test mv-soft-already-renamed-directory-2 OK
+test mv-soft-already-renamed-directory-3 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil revert
+test mv-soft-already-renamed-directory-4 OK
+test mv-soft-already-renamed-directory-5 OK
+test mv-soft-already-renamed-directory-6 OK
+test test-framework-mv-rm OK
+***** End of mv-rm: 0 errors so far ******
+***** Final results: 0 errors out of 63 tests
+***** Ignored results: 0 ignored errors out of 63 tests

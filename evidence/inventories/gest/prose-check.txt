@@ -1,0 +1,15 @@
+/tmp/gossil-gest-dispositions-20261117/report.txt: 0 hard, 14 soft
+  soft 3: 30 words (usually at most 25): Observed: pinned Gest revision and all 544 tracked entries match the pin; 541 re
+  soft 3: 'prior': try before
+  soft 3: a semicolon
+  soft 5: 38 words (usually at most 25): Mapped API surfaces: 93 canonical CLI nodes including root, 72 JSON nodes, 29 al
+  soft 5: an -ing form: including
+  soft 5: a semicolon
+  soft 7: an -ing form: routing
+  soft 7: maybe passive: is omitted
+  soft 9: 'Prior': try before
+  soft 9: an -ing form: styling
+  soft 9: a semicolon
+  soft 11: 'provides': try gives
+  soft 11: an -ing form: mapping
+  soft 15: an -ing form: claiming

@@ -1,0 +1,251 @@
+***** merge_renames ******
+/Users/rahul/Projects/gossil/.jlog/bin/fossil add f1
+/Users/rahul/Projects/gossil/.jlog/bin/fossil commit -m c1
+/Users/rahul/Projects/gossil/.jlog/bin/fossil tag add pivot current
+/Users/rahul/Projects/gossil/.jlog/bin/fossil commit -m c2
+/Users/rahul/Projects/gossil/.jlog/bin/fossil commit -m c3
+/Users/rahul/Projects/gossil/.jlog/bin/fossil commit -m c4
+/Users/rahul/Projects/gossil/.jlog/bin/fossil commit -m c4
+/Users/rahul/Projects/gossil/.jlog/bin/fossil commit -m c4
+/Users/rahul/Projects/gossil/.jlog/bin/fossil update pivot
+/Users/rahul/Projects/gossil/.jlog/bin/fossil mv --hard f1 f2
+/Users/rahul/Projects/gossil/.jlog/bin/fossil commit -b rename -m c5
+/Users/rahul/Projects/gossil/.jlog/bin/fossil merge trunk
+/Users/rahul/Projects/gossil/.jlog/bin/fossil commit -m {trunk merged}
+/Users/rahul/Projects/gossil/.jlog/bin/fossil update pivot
+/Users/rahul/Projects/gossil/.jlog/bin/fossil add f3
+/Users/rahul/Projects/gossil/.jlog/bin/fossil commit -b branch2 -m newbranch
+/Users/rahul/Projects/gossil/.jlog/bin/fossil merge trunk
+test merge_renames-1 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil add f1
+/Users/rahul/Projects/gossil/.jlog/bin/fossil commit -m {base file}
+/Users/rahul/Projects/gossil/.jlog/bin/fossil tag add pivot current
+/Users/rahul/Projects/gossil/.jlog/bin/fossil add f2
+/Users/rahul/Projects/gossil/.jlog/bin/fossil commit -m newfile
+/Users/rahul/Projects/gossil/.jlog/bin/fossil mv --hard f2 f2new
+/Users/rahul/Projects/gossil/.jlog/bin/fossil commit -m rename
+/Users/rahul/Projects/gossil/.jlog/bin/fossil update pivot
+/Users/rahul/Projects/gossil/.jlog/bin/fossil commit -b branch -m change
+/Users/rahul/Projects/gossil/.jlog/bin/fossil merge trunk
+/Users/rahul/Projects/gossil/.jlog/bin/fossil commit -m {trunk merged}
+/Users/rahul/Projects/gossil/.jlog/bin/fossil update trunk
+/Users/rahul/Projects/gossil/.jlog/bin/fossil merge branch
+test merge_renames-2 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil add f1
+/Users/rahul/Projects/gossil/.jlog/bin/fossil commit -m {base file}
+/Users/rahul/Projects/gossil/.jlog/bin/fossil tag add pivot current
+/Users/rahul/Projects/gossil/.jlog/bin/fossil add f2
+/Users/rahul/Projects/gossil/.jlog/bin/fossil commit -m newfile
+/Users/rahul/Projects/gossil/.jlog/bin/fossil mv --hard f2 f2new
+/Users/rahul/Projects/gossil/.jlog/bin/fossil commit -m rename
+/Users/rahul/Projects/gossil/.jlog/bin/fossil update pivot
+/Users/rahul/Projects/gossil/.jlog/bin/fossil commit -b branch -m change
+/Users/rahul/Projects/gossil/.jlog/bin/fossil merge trunk
+/Users/rahul/Projects/gossil/.jlog/bin/fossil commit -m {trunk merged}
+/Users/rahul/Projects/gossil/.jlog/bin/fossil update trunk
+/Users/rahul/Projects/gossil/.jlog/bin/fossil merge branch
+test merge_renames-3 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil add f1
+/Users/rahul/Projects/gossil/.jlog/bin/fossil commit -m {add f1}
+/Users/rahul/Projects/gossil/.jlog/bin/fossil commit --branch b -m {change f1}
+/Users/rahul/Projects/gossil/.jlog/bin/fossil update trunk
+/Users/rahul/Projects/gossil/.jlog/bin/fossil mv --hard f1 f2
+/Users/rahul/Projects/gossil/.jlog/bin/fossil commit -m {f1 -> f2}
+/Users/rahul/Projects/gossil/.jlog/bin/fossil merge b
+test merge_renames-4-1 OK
+test merge_renames-4-2 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil add f1
+/Users/rahul/Projects/gossil/.jlog/bin/fossil commit -m {base file}
+/Users/rahul/Projects/gossil/.jlog/bin/fossil add f3
+/Users/rahul/Projects/gossil/.jlog/bin/fossil commit -m {branch file} -b branch_for_f3
+/Users/rahul/Projects/gossil/.jlog/bin/fossil update trunk
+/Users/rahul/Projects/gossil/.jlog/bin/fossil mv --hard f1 f2
+/Users/rahul/Projects/gossil/.jlog/bin/fossil add f1
+/Users/rahul/Projects/gossil/.jlog/bin/fossil commit -m {rename and add file with old name}
+/Users/rahul/Projects/gossil/.jlog/bin/fossil update branch_for_f3
+/Users/rahul/Projects/gossil/.jlog/bin/fossil merge trunk
+test merge_renames-5-1 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil commit -m {trunk merged, should have 3 files}
+/Users/rahul/Projects/gossil/.jlog/bin/fossil ls
+test merge_renames-5-2 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil add f1
+/Users/rahul/Projects/gossil/.jlog/bin/fossil commit -m {add f1}
+/Users/rahul/Projects/gossil/.jlog/bin/fossil mv --hard f1 f2
+/Users/rahul/Projects/gossil/.jlog/bin/fossil commit -b b -m {f1 -> f2}
+/Users/rahul/Projects/gossil/.jlog/bin/fossil update trunk
+/Users/rahul/Projects/gossil/.jlog/bin/fossil add f3 f4
+/Users/rahul/Projects/gossil/.jlog/bin/fossil ci -m {add f3, f4}
+/Users/rahul/Projects/gossil/.jlog/bin/fossil mv --hard f3 f3-old
+/Users/rahul/Projects/gossil/.jlog/bin/fossil mv --hard f4 f3
+/Users/rahul/Projects/gossil/.jlog/bin/fossil mv --hard f3-old f4
+/Users/rahul/Projects/gossil/.jlog/bin/fossil ci -m {swap f3 and f4}
+/Users/rahul/Projects/gossil/.jlog/bin/fossil commit -m {edit f1}
+/Users/rahul/Projects/gossil/.jlog/bin/fossil update b
+/Users/rahul/Projects/gossil/.jlog/bin/fossil merge trunk
+/Users/rahul/Projects/gossil/.jlog/bin/fossil commit -m {merge trunk}
+/Users/rahul/Projects/gossil/.jlog/bin/fossil update trunk
+/Users/rahul/Projects/gossil/.jlog/bin/fossil commit -m {edit f1, f4}
+/Users/rahul/Projects/gossil/.jlog/bin/fossil update b
+/Users/rahul/Projects/gossil/.jlog/bin/fossil merge trunk
+test merge_renames-6-1 OK
+test merge_renames-6-2 OK
+test merge_renames-6-3 OK
+test merge_renames-6-4 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil add f1
+/Users/rahul/Projects/gossil/.jlog/bin/fossil commit -m {add f1}
+/Users/rahul/Projects/gossil/.jlog/bin/fossil mv --hard f1 f2
+/Users/rahul/Projects/gossil/.jlog/bin/fossil commit -b b -m {f1 -> f2, edit f2}
+/Users/rahul/Projects/gossil/.jlog/bin/fossil update trunk
+/Users/rahul/Projects/gossil/.jlog/bin/fossil mv --hard f1 f3
+/Users/rahul/Projects/gossil/.jlog/bin/fossil add f1
+/Users/rahul/Projects/gossil/.jlog/bin/fossil merge b
+test merge_renames-7-1 OK
+test merge_renames-7-2 OK
+test merge_renames-7-3 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil add f1
+/Users/rahul/Projects/gossil/.jlog/bin/fossil commit -b b1 -m {add f1}
+/Users/rahul/Projects/gossil/.jlog/bin/fossil update trunk
+/Users/rahul/Projects/gossil/.jlog/bin/fossil add f1
+/Users/rahul/Projects/gossil/.jlog/bin/fossil commit -b b2 -m {add f1}
+/Users/rahul/Projects/gossil/.jlog/bin/fossil update trunk
+/Users/rahul/Projects/gossil/.jlog/bin/fossil merge b1
+/Users/rahul/Projects/gossil/.jlog/bin/fossil merge b2
+test merge_renames-8-1 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil revert
+/Users/rahul/Projects/gossil/.jlog/bin/fossil merge --integrate b1
+/Users/rahul/Projects/gossil/.jlog/bin/fossil merge b2
+test merge_renames-8-2 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil add f1 f2
+/Users/rahul/Projects/gossil/.jlog/bin/fossil commit -m {add files}
+/Users/rahul/Projects/gossil/.jlog/bin/fossil rm --hard f2
+/Users/rahul/Projects/gossil/.jlog/bin/fossil commit -b b -m {delete f2}
+/Users/rahul/Projects/gossil/.jlog/bin/fossil mv --hard f1 f2
+/Users/rahul/Projects/gossil/.jlog/bin/fossil commit -m {f1 -> f2}
+/Users/rahul/Projects/gossil/.jlog/bin/fossil add f1
+/Users/rahul/Projects/gossil/.jlog/bin/fossil commit -m {add new f1}
+/Users/rahul/Projects/gossil/.jlog/bin/fossil update trunk
+/Users/rahul/Projects/gossil/.jlog/bin/fossil merge b
+test merge_renames-9-1 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil changes
+/Users/rahul/Projects/gossil/.jlog/bin/fossil whatis b
+test merge_renames-9-2 OK
+test merge_renames-9-3 OK
+test merge_renames-9-4 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil undo
+test merge_renames-9-5 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil merge -n b
+test merge_renames-9-6 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil changes
+test merge_renames-9-7 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil add f1 f2
+/Users/rahul/Projects/gossil/.jlog/bin/fossil commit -m {add files}
+/Users/rahul/Projects/gossil/.jlog/bin/fossil mv --hard f1 f1-tmp
+/Users/rahul/Projects/gossil/.jlog/bin/fossil mv --hard f2 f1
+/Users/rahul/Projects/gossil/.jlog/bin/fossil mv --hard f1-tmp f2
+/Users/rahul/Projects/gossil/.jlog/bin/fossil commit -b b -m {swap f1, f2}
+/Users/rahul/Projects/gossil/.jlog/bin/fossil update trunk
+/Users/rahul/Projects/gossil/.jlog/bin/fossil merge b
+test merge_renames-10-1 OK
+test merge_renames-10-2 OK
+test merge_renames-10-3 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil commit -m {merge b}
+/Users/rahul/Projects/gossil/.jlog/bin/fossil update b
+/Users/rahul/Projects/gossil/.jlog/bin/fossil commit -m edit
+/Users/rahul/Projects/gossil/.jlog/bin/fossil update trunk
+/Users/rahul/Projects/gossil/.jlog/bin/fossil merge --backout trunk
+test merge_renames-10-4 OK
+test merge_renames-10-5 OK
+test merge_renames-10-6 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil changes
+/Users/rahul/Projects/gossil/.jlog/bin/fossil whatis trunk
+test merge_renames-10-7 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil commit -m {swap back}
+/Users/rahul/Projects/gossil/.jlog/bin/fossil merge b
+test merge_renames-10-8 OK
+test merge_renames-10-9 OK
+test merge_renames-10-10 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil add f1
+/Users/rahul/Projects/gossil/.jlog/bin/fossil commit -m {add f1}
+/Users/rahul/Projects/gossil/.jlog/bin/fossil commit -b b -m {edit f2} --tag p1
+/Users/rahul/Projects/gossil/.jlog/bin/fossil mv --hard f1 f2
+/Users/rahul/Projects/gossil/.jlog/bin/fossil commit -m {f1 -> f2}
+/Users/rahul/Projects/gossil/.jlog/bin/fossil commit -m {edit f2} --tag p2
+/Users/rahul/Projects/gossil/.jlog/bin/fossil commit -m {edit f2}
+/Users/rahul/Projects/gossil/.jlog/bin/fossil update trunk
+/Users/rahul/Projects/gossil/.jlog/bin/fossil merge --baseline p1 b
+test merge_renames-11-1 OK
+test merge_renames-11-2 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil revert
+/Users/rahul/Projects/gossil/.jlog/bin/fossil merge --baseline p2 b
+test merge_renames-11-3 OK
+test merge_renames-11-4 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil add f1
+/Users/rahul/Projects/gossil/.jlog/bin/fossil commit -m {add f1} --tag n
+/Users/rahul/Projects/gossil/.jlog/bin/fossil mv --hard f1 f1n
+/Users/rahul/Projects/gossil/.jlog/bin/fossil commit -m {f1 -> f1n}
+/Users/rahul/Projects/gossil/.jlog/bin/fossil mv --hard f1n f1v
+/Users/rahul/Projects/gossil/.jlog/bin/fossil commit -b v -m {f1n -> f1v, edit f1v}
+/Users/rahul/Projects/gossil/.jlog/bin/fossil update trunk
+/Users/rahul/Projects/gossil/.jlog/bin/fossil mv --hard f1n f1m
+/Users/rahul/Projects/gossil/.jlog/bin/fossil commit -b m -m {f1n -> f1m}
+/Users/rahul/Projects/gossil/.jlog/bin/fossil update n
+/Users/rahul/Projects/gossil/.jlog/bin/fossil mv --hard f1 f1p
+/Users/rahul/Projects/gossil/.jlog/bin/fossil commit -b p -m {f1 -> f1p, edit f1p}
+/Users/rahul/Projects/gossil/.jlog/bin/fossil update m
+/Users/rahul/Projects/gossil/.jlog/bin/fossil merge p
+test merge_renames-12-1 OK
+test merge_renames-12-2 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil commit -m {merge p}
+/Users/rahul/Projects/gossil/.jlog/bin/fossil commit -m {edit f1m}
+/Users/rahul/Projects/gossil/.jlog/bin/fossil update v
+/Users/rahul/Projects/gossil/.jlog/bin/fossil merge p
+test merge_renames-12-3 OK
+test merge_renames-12-4 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil commit -m {merge p}
+/Users/rahul/Projects/gossil/.jlog/bin/fossil merge m
+test merge_renames-12-5 OK
+test merge_renames-12-6 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil commit -m {merge m}
+/Users/rahul/Projects/gossil/.jlog/bin/fossil add f1
+/Users/rahul/Projects/gossil/.jlog/bin/fossil commit -m {add f1} --tag c1
+/Users/rahul/Projects/gossil/.jlog/bin/fossil add f2
+/Users/rahul/Projects/gossil/.jlog/bin/fossil commit -m {add f2 on branch} -b b --tag c2
+/Users/rahul/Projects/gossil/.jlog/bin/fossil update trunk
+test merge_renames_13-1 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil commit -m {edit f1 on trunk} --tag c3
+/Users/rahul/Projects/gossil/.jlog/bin/fossil update b
+test merge_renames_13-2 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil merge trunk
+/Users/rahul/Projects/gossil/.jlog/bin/fossil commit -m {merge trunk} --tag c4
+/Users/rahul/Projects/gossil/.jlog/bin/fossil mv --hard f2 f2n
+test merge_renames-13-3 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil commit -m {renamed f2->f2n} --tag c5
+/Users/rahul/Projects/gossil/.jlog/bin/fossil update trunk
+/Users/rahul/Projects/gossil/.jlog/bin/fossil merge b
+test merge_renames-13-4 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil commit -m {merge f2n} --tag m1 --tag c6
+/Users/rahul/Projects/gossil/.jlog/bin/fossil update b
+/Users/rahul/Projects/gossil/.jlog/bin/fossil commit -m {edit f1 on b} --tag c7
+/Users/rahul/Projects/gossil/.jlog/bin/fossil update trunk
+/Users/rahul/Projects/gossil/.jlog/bin/fossil commit -m {edit f1 on trunk} --tag c8
+/Users/rahul/Projects/gossil/.jlog/bin/fossil update b
+/Users/rahul/Projects/gossil/.jlog/bin/fossil merge trunk
+test merge_renames-13-5 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil commit -m {merge trunk} --tag c9
+/Users/rahul/Projects/gossil/.jlog/bin/fossil commit -m {edit f1 on b} --tag c10
+/Users/rahul/Projects/gossil/.jlog/bin/fossil update m1
+/Users/rahul/Projects/gossil/.jlog/bin/fossil merge b
+test merge_renames-13-6 OK
+test merge_renames-13-7 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil revert
+test merge_renames-13-8 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil update trunk
+/Users/rahul/Projects/gossil/.jlog/bin/fossil merge --integrate b
+test merge_renames-13-9 OK
+test merge_renames-13-10 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil revert
+test merge_renames-13-11 OK
+test test-framework-merge_renames OK
+***** End of merge_renames: 0 errors so far ******
+***** Final results: 0 errors out of 55 tests
+***** Ignored results: 0 ignored errors out of 55 tests

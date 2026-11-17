@@ -1,0 +1,160 @@
+{
+  "name": "parallel-update",
+  "suites": [
+    "update"
+  ],
+  "command": [
+    "jlog",
+    "run",
+    "tclsh",
+    "/private/tmp/gossil-fossil-baseline-20261117/launch.tcl",
+    "/private/tmp/gossil-fossil-baseline-20261117/runs/parallel-update/cwd",
+    "/private/tmp/gossil-fossil-baseline-20261117/enabled/test/tester.tcl",
+    "/Users/rahul/Projects/gossil/.jlog/bin/fossil",
+    "update",
+    "-keep"
+  ],
+  "cwd": "/Users/rahul/Projects/gossil",
+  "environment": {
+    "FOSSIL_HOME": "/private/tmp/gossil-fossil-baseline-20261117/runs/parallel-update/home",
+    "FOSSIL_TEST_TEMP": "/private/tmp/gossil-fossil-baseline-20261117/runs/parallel-update/tmp",
+    "TEMP": "/private/tmp/gossil-fossil-baseline-20261117/runs/parallel-update/tmp",
+    "TMP": "/private/tmp/gossil-fossil-baseline-20261117/runs/parallel-update/tmp",
+    "TMPDIR": "/private/tmp/gossil-fossil-baseline-20261117/runs/parallel-update/tmp",
+    "HOME": "/private/tmp/gossil-fossil-baseline-20261117/runs/parallel-update/home",
+    "USER": "gossil-baseline",
+    "LOGNAME": "gossil-baseline",
+    "LC_ALL": "C",
+    "TZ": "UTC"
+  },
+  "exit_code": 1,
+  "timeout": false,
+  "seconds": 6.189,
+  "results": [
+    {
+      "name": "update-already-up-to-date",
+      "result": "pass"
+    },
+    {
+      "name": "update-message-conflict-standard",
+      "result": "pass"
+    },
+    {
+      "name": "update-changes-conflict-standard",
+      "result": "pass"
+    },
+    {
+      "name": "update-message-add-overwrites",
+      "result": "fail"
+    },
+    {
+      "name": "update-changes-add-overwrites",
+      "result": "pass"
+    },
+    {
+      "name": "update-message-add-standard",
+      "result": "pass"
+    },
+    {
+      "name": "update-changes-add-standard",
+      "result": "pass"
+    },
+    {
+      "name": "update-message-update-change",
+      "result": "pass"
+    },
+    {
+      "name": "update-changes-update-change",
+      "result": "pass"
+    },
+    {
+      "name": "update-message-update-standard",
+      "result": "pass"
+    },
+    {
+      "name": "update-changes-update-standard",
+      "result": "pass"
+    },
+    {
+      "name": "update-message-update-missing",
+      "result": "pass"
+    },
+    {
+      "name": "update-changes-update-missing",
+      "result": "pass"
+    },
+    {
+      "name": "update-message-conflict-deleted",
+      "result": "pass"
+    },
+    {
+      "name": "update-changes-conflict-deleted",
+      "result": "pass"
+    },
+    {
+      "name": "update-message-remove",
+      "result": "pass"
+    },
+    {
+      "name": "update-changes-remove",
+      "result": "pass"
+    },
+    {
+      "name": "update-message-merge-renamed",
+      "result": "pass"
+    },
+    {
+      "name": "update-changes-merge-renamed",
+      "result": "pass"
+    },
+    {
+      "name": "update-message-merge-standard",
+      "result": "pass"
+    },
+    {
+      "name": "update-changes-merge-standard",
+      "result": "pass"
+    },
+    {
+      "name": "update-message-merge-conflict",
+      "result": "pass"
+    },
+    {
+      "name": "update-changes-merge-conflict",
+      "result": "pass"
+    },
+    {
+      "name": "update-message-edited",
+      "result": "pass"
+    },
+    {
+      "name": "update-changes-edited",
+      "result": "pass"
+    },
+    {
+      "name": "update-message-unchanged",
+      "result": "pass"
+    },
+    {
+      "name": "update-changes-unchanged",
+      "result": "pass"
+    },
+    {
+      "name": "test-framework-update",
+      "result": "pass"
+    }
+  ],
+  "counts": {
+    "pass": 27,
+    "fail": 1,
+    "ignored": 0
+  },
+  "upstream_summary": {
+    "errors": 1,
+    "tests": 28
+  },
+  "count_matches": true,
+  "skips": [],
+  "log": "/private/tmp/gossil-fossil-baseline-20261117/runs/parallel-update/output.log",
+  "gate_pass": false
+}

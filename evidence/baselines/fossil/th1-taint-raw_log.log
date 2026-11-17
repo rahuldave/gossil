@@ -1,0 +1,28 @@
+***** th1-taint ******
+test th1-taint-10 OK
+test th1-taint-20 OK
+test th1-taint-30 OK
+test th1-taint-40 OK
+test th1-taint-50 OK
+test th1-taint-60 OK
+test th1-taint-100 OK
+test th1-taint-110 OK
+test th1-taint-200 OK
+test th1-taint-210 OK
+test th1-taint-220 OK
+test th1-taint-230 OK
+test th1-taint-300 OK
+test th1-taint-310 OK
+test th1-taint-400 OK
+test th1-taint-410 OK
+test th1-taint-420 OK
+test th1-taint-430 OK
+test th1-taint-500 OK
+test th1-taint-600 OK
+test th1-taint-700 OK
+test th1-taint-710 OK
+test th1-taint-720 OK
+test test-framework-th1-taint OK
+***** End of th1-taint: 0 errors so far ******
+***** Final results: 0 errors out of 24 tests
+***** Ignored results: 0 ignored errors out of 24 tests

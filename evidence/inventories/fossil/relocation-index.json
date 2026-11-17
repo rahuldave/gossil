@@ -1,0 +1,59 @@
+{
+  "kind": "exact historical inventory artifact capture, separate from runtime code",
+  "original_directory": "/tmp/gossil-fossil-dispositions-20261117",
+  "files": {
+    "/tmp/gossil-fossil-dispositions-20261117/COPYRIGHT-BSD2.txt": {
+      "archive": "COPYRIGHT-BSD2.txt",
+      "sha256": "f65c4693891811303213aad3cc737d85114fc0ede82ec65bc0b923069b646c55",
+      "bytes": 1516
+    },
+    "/tmp/gossil-fossil-dispositions-20261117/build_inventory.py": {
+      "archive": "build_inventory.py",
+      "sha256": "726a92913ccdf03aaedc87b778031c9674847fea2318f64d363207be3c6af070",
+      "bytes": 40718
+    },
+    "/tmp/gossil-fossil-dispositions-20261117/check_inventory.py": {
+      "archive": "check_inventory.py",
+      "sha256": "1366f9e6bbd6d1a8579e35d8820a25d85230e95a21c44776c66f0a7aab87b15c",
+      "bytes": 5635
+    },
+    "/tmp/gossil-fossil-dispositions-20261117/consistency.json": {
+      "archive": "consistency.json",
+      "sha256": "4081856e49a82f7b79d6722a33ca22abd5f3c1b3298dcefd47620ea98a8087b0",
+      "bytes": 3204
+    },
+    "/tmp/gossil-fossil-dispositions-20261117/hash-index.json": {
+      "archive": "hash-index.json",
+      "sha256": "5b041f2d16fffea34809e0524c26cad0b667f5a2fc63069282ff977421e71559",
+      "bytes": 910
+    },
+    "/tmp/gossil-fossil-dispositions-20261117/inputs.json": {
+      "archive": "inputs.json",
+      "sha256": "7022e4de5527340d58d648cf242b96ff4f01aaeb75224d32d151f615f2a8d537",
+      "bytes": 1039
+    },
+    "/tmp/gossil-fossil-dispositions-20261117/inventory.json": {
+      "archive": "inventory.json.gz",
+      "sha256": "a87d9a81e1f30da54eacacb6f00f7af06aa3970f0ca1b21017039336d6ee9b7c",
+      "bytes": 3094262,
+      "compression": "gzip",
+      "sha256_covers": "uncompressed original bytes"
+    },
+    "/tmp/gossil-fossil-dispositions-20261117/short-report.json": {
+      "archive": "short-report.json",
+      "sha256": "5a088010418d146fa768335485644d527c73c3df9014e5df7b0ad53ee0cf372b",
+      "bytes": 12465
+    },
+    "/tmp/gossil-fossil-baseline-20261117/capability-inventory.json": {
+      "archive": "capability-inventory-input.json",
+      "sha256": "43c0e686fe8cac7a006993e21e119852bea7f715565ff2a68c72917d3793a9c2",
+      "bytes": 33683
+    },
+    "/Users/rahul/Projects/AIProjectInfra/docs/gossil/evidence/fossil-inventory.json": {
+      "archive": "source-inventory-input.json",
+      "sha256": "0c3448b082c88662f37343dbdd0e6853b582065002c9c29fb487ba228609ffaf",
+      "bytes": 218719
+    }
+  },
+  "reproduction_limit": "Generation/check scripts retain their original absolute source, scratch, pinned-build and specification inputs. Restore those inputs to reproduce historical measurements; archived scripts are evidence, not installed runtime dependencies. No scripts were modified or re-executed during relocation."
+}

@@ -1,0 +1,41 @@
+just --justfile '/Users/rahul/Projects/gossil/Justfile' rust integration "$@"
+uv run --no-project --quiet --python '>=3.11' python '/Users/rahul/Projects/gossil/.agents/just/rust/steps.py' run integration "$@"
+WARN `--no-project` was provided, but no project was found
+cargo llvm-cov test --all-features --locked --include-build-script --workspace --test conformance --lcov --output-path target/llvm-cov/integration.part0.lcov malformed_summary
+info: cargo-llvm-cov currently setting cfg(coverage); you can opt-out it by passing --no-cfg-coverage
+   Compiling gossil v0.1.0 (/Users/rahul/Projects/gossil)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 5.08s
+     Running tests/conformance.rs (target/llvm-cov-target/debug/deps/conformance-88e26bdb9b559e30)
+
+running 2 tests
+test malformed_summary_numbers_are_permanently_rejected ... FAILED
+test malformed_summary_controls_never_exit_successfully ... FAILED
+
+failures:
+
+---- malformed_summary_numbers_are_permanently_rejected stdout ----
+
+thread 'malformed_summary_numbers_are_permanently_rejected' (304269252) panicked at tests/conformance.rs:51:13:
+test real OK
+***** Final results: 9 errors out of broken tests
+
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+---- malformed_summary_controls_never_exit_successfully stdout ----
+
+thread 'malformed_summary_controls_never_exit_successfully' (304269251) panicked at tests/conformance.rs:65:9:
+assertion `left == right` failed: bad-total: Output { status: ExitStatus(unix_wait_status(0)), stdout: "/var/folders/wq/mr3zj9r14dzgjnq9rjx_vqbc0000gn/T/.tmpyIWPZe/bad-total/report.json\n", stderr: "" }
+  left: Some(0)
+ right: Some(1)
+
+
+failures:
+    malformed_summary_controls_never_exit_successfully
+    malformed_summary_numbers_are_permanently_rejected
+
+test result: FAILED. 0 passed; 2 failed; 0 ignored; 0 measured; 6 filtered out; finished in 2.49s
+
+error: test failed, to rerun pass `--test conformance`
+error: process didn't exit successfully: `/Users/rahul/.rustup/toolchains/stable-aarch64-apple-darwin/bin/cargo test --manifest-path /Users/rahul/Projects/gossil/Cargo.toml --target-dir /Users/rahul/Projects/gossil/target/llvm-cov-target --all-features --locked --workspace --test conformance malformed_summary` (exit status: 101)
+error: Recipe `integration` failed on line 6 with exit code 101
+error: Recipe `integration` failed on line 49 with exit code 101

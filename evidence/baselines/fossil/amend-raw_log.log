@@ -1,0 +1,295 @@
+***** amend ******
+/Users/rahul/Projects/gossil/.jlog/bin/fossil status
+/Users/rahul/Projects/gossil/.jlog/bin/fossil add datafile
+/Users/rahul/Projects/gossil/.jlog/bin/fossil commit -m c1
+/Users/rahul/Projects/gossil/.jlog/bin/fossil commit -m c2
+/Users/rahul/Projects/gossil/.jlog/bin/fossil amend 0fa059c4ca11380812a7630cf98bfb2c2fa03003 -branch amended-branch
+test amend-branch-1.1 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil branch ls
+test amend-branch-1.2 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil tag list
+test amend-branch-1.3 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil tag list --raw 0fa059c4ca11380812a7630cf98bfb2c2fa03003
+test amend-branch-1.4 OK
+test amend-branch-1.5 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil timeline -n 1
+test amend-branch-1.6 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil amend 3827905addba90b1507d849e5126cf3ece011303 -bgcolor 0
+test amend-bgcolor-1.1.a OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil tag list --raw 3827905addba90b1507d849e5126cf3ece011303
+test amend-bgcolor-1.1.b OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil timeline -n 1
+test amend-bgcolor-1.1.c OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil artifact bae079c03e
+test amend-bgcolor-1.1.d OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil amend 3827905addba90b1507d849e5126cf3ece011303 -bgcolor a
+test amend-bgcolor-1.2.a OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil tag list --raw 3827905addba90b1507d849e5126cf3ece011303
+test amend-bgcolor-1.2.b OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil timeline -n 1
+test amend-bgcolor-1.2.c OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil artifact d771f9f324
+test amend-bgcolor-1.2.d OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil amend 3827905addba90b1507d849e5126cf3ece011303 -bgcolor abcdef
+test amend-bgcolor-1.3.a OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil tag list --raw 3827905addba90b1507d849e5126cf3ece011303
+test amend-bgcolor-1.3.b OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil timeline -n 1
+test amend-bgcolor-1.3.c OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil artifact 2245e534f7
+test amend-bgcolor-1.3.d OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil amend 3827905addba90b1507d849e5126cf3ece011303 -bgcolor abc123
+test amend-bgcolor-1.4.a OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil tag list --raw 3827905addba90b1507d849e5126cf3ece011303
+test amend-bgcolor-1.4.b OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil timeline -n 1
+test amend-bgcolor-1.4.c OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil artifact 9ee18eaf93
+test amend-bgcolor-1.4.d OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil amend 3827905addba90b1507d849e5126cf3ece011303 -bgcolor 123efg
+test amend-bgcolor-1.5.a OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil tag list --raw 3827905addba90b1507d849e5126cf3ece011303
+test amend-bgcolor-1.5.b OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil timeline -n 1
+test amend-bgcolor-1.5.c OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil artifact 6bc8db2253
+test amend-bgcolor-1.5.d OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil amend 3827905addba90b1507d849e5126cf3ece011303 -bgcolor abcdefg
+test amend-bgcolor-1.6.a OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil tag list --raw 3827905addba90b1507d849e5126cf3ece011303
+test amend-bgcolor-1.6.b OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil timeline -n 1
+test amend-bgcolor-1.6.c OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil artifact 7d2c19d56e
+test amend-bgcolor-1.6.d OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil amend 3827905addba90b1507d849e5126cf3ece011303 -bgcolor abcdeg
+test amend-bgcolor-1.7.a OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil tag list --raw 3827905addba90b1507d849e5126cf3ece011303
+test amend-bgcolor-1.7.b OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil timeline -n 1
+test amend-bgcolor-1.7.c OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil artifact b30342dc7f
+test amend-bgcolor-1.7.d OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil amend 3827905addba90b1507d849e5126cf3ece011303 -bgcolor blue
+test amend-bgcolor-1.8.a OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil tag list --raw 3827905addba90b1507d849e5126cf3ece011303
+test amend-bgcolor-1.8.b OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil timeline -n 1
+test amend-bgcolor-1.8.c OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil artifact b7f4625527
+test amend-bgcolor-1.8.d OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil amend 3827905addba90b1507d849e5126cf3ece011303 -bgcolor acf
+test amend-bgcolor-1.9.a OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil tag list --raw 3827905addba90b1507d849e5126cf3ece011303
+test amend-bgcolor-1.9.b OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil timeline -n 1
+test amend-bgcolor-1.9.c OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil artifact fc31ef6235
+test amend-bgcolor-1.9.d OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil amend 3827905addba90b1507d849e5126cf3ece011303 -bgcolor 123
+test amend-bgcolor-1.10.a OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil tag list --raw 3827905addba90b1507d849e5126cf3ece011303
+test amend-bgcolor-1.10.b OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil timeline -n 1
+test amend-bgcolor-1.10.c OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil artifact cef671cf2c
+test amend-bgcolor-1.10.d OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil amend 3827905addba90b1507d849e5126cf3ece011303 -bgcolor #1234
+test amend-bgcolor-1.11.a OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil tag list --raw 3827905addba90b1507d849e5126cf3ece011303
+test amend-bgcolor-1.11.b OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil timeline -n 1
+test amend-bgcolor-1.11.c OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil artifact 4318f40650
+test amend-bgcolor-1.11.d OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil amend 3827905addba90b1507d849e5126cf3ece011303 -bgcolor 1234
+test amend-bgcolor-1.12.a OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil tag list --raw 3827905addba90b1507d849e5126cf3ece011303
+test amend-bgcolor-1.12.b OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil timeline -n 1
+test amend-bgcolor-1.12.c OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil artifact 13ef4e10de
+test amend-bgcolor-1.12.d OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil amend 3827905addba90b1507d849e5126cf3ece011303 -bgcolor 123456
+test amend-bgcolor-1.13.a OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil tag list --raw 3827905addba90b1507d849e5126cf3ece011303
+test amend-bgcolor-1.13.b OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil timeline -n 1
+test amend-bgcolor-1.13.c OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil artifact 484b2c9c8b
+test amend-bgcolor-1.13.d OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil amend 3827905addba90b1507d849e5126cf3ece011303 -bgcolor {}
+test amend-bgcolor-2.1 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil tag list --raw 3827905addba90b1507d849e5126cf3ece011303
+test amend-bgcolor-2.2 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil timeline -n 1
+test amend-bgcolor-2.3 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil artifact aef994c22c
+test amend-bgcolor-2.4 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil branch new brclr 3827905addba90b1507d849e5126cf3ece011303
+/Users/rahul/Projects/gossil/.jlog/bin/fossil update 02c6ce45ce379595409e47e0534e50c89c0560e0
+/Users/rahul/Projects/gossil/.jlog/bin/fossil amend 02c6ce45ce379595409e47e0534e50c89c0560e0 -branchcolor yellow
+test amend-branchcolor-1.1 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil tag ls --raw 02c6ce45ce379595409e47e0534e50c89c0560e0
+test amend-branchcolor-1.2 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil timeline -n 1
+test amend-branchcolor-1.3 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil artifact bfa5f9cc0f
+test amend-branchcolor-1.4 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil commit -m brclr
+/Users/rahul/Projects/gossil/.jlog/bin/fossil commit -m mc1
+/Users/rahul/Projects/gossil/.jlog/bin/fossil commit -m mc2
+/Users/rahul/Projects/gossil/.jlog/bin/fossil amend dcf8fd1fc334304721526e17afa35788579526a8 -branchcolor deadbe
+test amend-branchcolor-2.1 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil tag ls --raw current
+test amend-branchcolor-2.2 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil timeline -n 1
+test amend-branchcolor-2.3 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil amend 3827905addba90b1507d849e5126cf3ece011303 -author author-test
+test amend-author-1.1 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil tag ls --raw 3827905addba90b1507d849e5126cf3ece011303
+test amend-author-1.2 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil timeline -n 1
+test amend-author-1.3 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil amend 57ccbb9fb272c51c4d1880a5f4c0fb6fa2d77f62 -date {2026-11-16 00:00:00}
+test amend-date-1.1 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil tag ls --raw 57ccbb9fb272c51c4d1880a5f4c0fb6fa2d77f62
+test amend-date-1.2 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil timeline -n 1
+test amend-date-1.3 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil amend 57ccbb9fb272c51c4d1880a5f4c0fb6fa2d77f62 -date {Mon Nov 16 00:00:00 GMT 2026}
+test amend-date-2.1 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil amend 57ccbb9fb272c51c4d1880a5f4c0fb6fa2d77f62 -date {2026-11-16 00:00%:00 GMT}
+test amend-date-2.2 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil amend 57ccbb9fb272c51c4d1880a5f4c0fb6fa2d77f62 -date {16/11/2026 00:00%:00 GMT}
+test amend-date-2.3 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil amend 57ccbb9fb272c51c4d1880a5f4c0fb6fa2d77f62 -date {16/11/2026 00:00%:00}
+test amend-date-2.4 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil amend 57ccbb9fb272c51c4d1880a5f4c0fb6fa2d77f62 -date 16/11/2026
+test amend-date-2.5 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil revert
+/Users/rahul/Projects/gossil/.jlog/bin/fossil update trunk
+/Users/rahul/Projects/gossil/.jlog/bin/fossil branch new tohide current
+/Users/rahul/Projects/gossil/.jlog/bin/fossil amend c0f2594e9986362badfb218bdce04d5eac332517 -hide
+test amend-hide-1.1 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil tag ls --raw c0f2594e9986362badfb218bdce04d5eac332517
+test amend-hide-1.2 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil timeline -n 1
+test amend-hide-1.3 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil branch new cllf 3827905addba90b1507d849e5126cf3ece011303
+/Users/rahul/Projects/gossil/.jlog/bin/fossil update 7f9e280ccaa534f0a390ef0e3837120eceb57f5e
+/Users/rahul/Projects/gossil/.jlog/bin/fossil amend 7f9e280ccaa534f0a390ef0e3837120eceb57f5e -close
+test amend-close-1.1.a OK
+test amend-close-1.1.b OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil tag ls --raw 7f9e280ccaa534f0a390ef0e3837120eceb57f5e
+test amend-close-1.2 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil timeline -n 1
+test amend-close-1.3 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil commit -m {should fail}
+test amend-close-2 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil revert
+/Users/rahul/Projects/gossil/.jlog/bin/fossil update trunk
+/Users/rahul/Projects/gossil/.jlog/bin/fossil commit -m closed-branch --branch closebranch
+/Users/rahul/Projects/gossil/.jlog/bin/fossil commit -m m1
+/Users/rahul/Projects/gossil/.jlog/bin/fossil commit -m m2
+/Users/rahul/Projects/gossil/.jlog/bin/fossil amend 8f297549394b1df296edde644b9d91a798cb1cf8 --close
+test amend-close-3.1 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil tag ls --raw current
+test amend-close-3.2 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil timeline -n 1
+test amend-close-3.3 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil commit -m {should fail}
+test amend-close-3.4 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil amend 3827905addba90b1507d849e5126cf3ece011303 -tag tagged
+test amend-tag-1.1 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil tag ls --raw 3827905addba90b1507d849e5126cf3ece011303
+test amend-tag-1.2 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil timeline -n 1
+test amend-tag-1.3 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil amend 3827905addba90b1507d849e5126cf3ece011303 -cancel tagged
+test amend-tag-1.4 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil timeline -n 1
+test amend-tag-1.5 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil amend 3827905addba90b1507d849e5126cf3ece011303 -tag 000000 -tag lower -tag Upper -tag alpha -tag 0alpha
+test amend-tag-2.1 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil tag ls --raw 3827905addba90b1507d849e5126cf3ece011303
+test amend-tag-2.2 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil timeline -n 1
+test amend-tag-2.3 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil amend 3827905addba90b1507d849e5126cf3ece011303 -cancel 000000 -cancel lower -cancel Upper -cancel alpha -cancel 0alpha
+test amend-tag-2.4 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil timeline -n 1
+test amend-tag-2.5 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil revert
+/Users/rahul/Projects/gossil/.jlog/bin/fossil update trunk
+/Users/rahul/Projects/gossil/.jlog/bin/fossil commit -m {revision 1}
+/Users/rahul/Projects/gossil/.jlog/bin/fossil amend 756982cc81cd0b208a25cc79d9529745350eb0a6 -comment {revised revision 1}
+test amend-comment-1.1 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil timeline -n 1
+/Users/rahul/Projects/gossil/.jlog/bin/fossil artifact 760ca227f0
+test amend-comment-1.2 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil timeline -n 1
+test amend-comment-1.3 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil info 756982cc81cd0b208a25cc79d9529745350eb0a6
+test amend-comment-1.4 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil revert
+/Users/rahul/Projects/gossil/.jlog/bin/fossil update trunk
+/Users/rahul/Projects/gossil/.jlog/bin/fossil commit -m {revision 2}
+/Users/rahul/Projects/gossil/.jlog/bin/fossil amend 1fe2a0da91426a0121db92dc836d63dbe5eb1e56 -m {revised revision 2 with -m}
+test amend-comment-2.1 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil timeline -n 1
+/Users/rahul/Projects/gossil/.jlog/bin/fossil artifact fe43f8d6f4
+test amend-comment-2.2 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil timeline -n 1
+test amend-comment-2.3 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil info 1fe2a0da91426a0121db92dc836d63dbe5eb1e56
+test amend-comment-2.4 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil revert
+/Users/rahul/Projects/gossil/.jlog/bin/fossil update trunk
+/Users/rahul/Projects/gossil/.jlog/bin/fossil commit -m {revision 3}
+/Users/rahul/Projects/gossil/.jlog/bin/fossil amend aa49400b94c941720af5185b5f35c80e3e670d47 -message-file commitmsg
+test amend-comment-3.1 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil timeline -n 1
+/Users/rahul/Projects/gossil/.jlog/bin/fossil artifact 300341b87e
+test amend-comment-3.2 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil timeline -n 1
+test amend-comment-3.3 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil info aa49400b94c941720af5185b5f35c80e3e670d47
+test amend-comment-3.4 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil revert
+/Users/rahul/Projects/gossil/.jlog/bin/fossil update trunk
+/Users/rahul/Projects/gossil/.jlog/bin/fossil commit -m {revision 4}
+/Users/rahul/Projects/gossil/.jlog/bin/fossil amend 597aa807fd486880dcdef0802c410c2fd407b319 -M commitmsg
+test amend-comment-4.1 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil timeline -n 1
+/Users/rahul/Projects/gossil/.jlog/bin/fossil artifact c90ea82307
+test amend-comment-4.2 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil timeline -n 1
+test amend-comment-4.3 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil info 597aa807fd486880dcdef0802c410c2fd407b319
+test amend-comment-4.4 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil revert
+/Users/rahul/Projects/gossil/.jlog/bin/fossil update trunk
+/Users/rahul/Projects/gossil/.jlog/bin/fossil commit -m {final content}
+/Users/rahul/Projects/gossil/.jlog/bin/fossil settings editor {ed -s}
+/Users/rahul/Projects/gossil/.jlog/bin/fossil amend ce17aa2c52df475fd9df33532bbe7a9af8600b9e --edit-comment
+a
+interactive edited comment
+.
+w
+q
+
+test amend-comment-5.1 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil timeline -n 1
+/Users/rahul/Projects/gossil/.jlog/bin/fossil artifact 509738097d
+test amend-comment-5.2 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil timeline -n 1
+test amend-comment-5.3 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil info ce17aa2c52df475fd9df33532bbe7a9af8600b9e
+test amend-comment-5.4 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil amend {} -close
+test amend-null-uuid OK
+test test-framework-amend OK
+***** End of amend: 0 errors so far ******
+***** Final results: 0 errors out of 124 tests
+***** Ignored results: 0 ignored errors out of 124 tests

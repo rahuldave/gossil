@@ -1,0 +1,33 @@
+<<<AGENT_RESULT v1>>>
+target: review
+nonce: ba8029050e20437e710d5ac6be14f189
+status: partial
+outputs:
+  findings: []
+  reviewed_tree: 6870b779567e9fc5eb15ce5dd927c1f686a821f6
+  evidence_directory: /tmp/gossil-runner-formal-review-20261117
+  scope:
+    - Inventoried all 329 paths in the frozen initial tree; byte/symlink comparison found no current-worktree differences for those paths.
+    - Reviewed both Rust source files, every runner test and control fixture, public API/error contracts, process ownership and cleanup paths, CLI/configuration, parsing and evidence retention.
+    - Reviewed project guides, baseline interpretation, fixture provenance, bootstrap configuration and installed-package provenance separately from newly authored runner code.
+    - Rechecked all 160 receipt-managed installed files against recorded receipt hashes; no mismatches. Prior source-copy audit remains exact-copy provenance, including dirty owning sources, rather than proof of a clean reproducible revision or live hook execution.
+    - Rechecked all 95 archive-index entries, including gzip uncompressed hashes and lengths, and all 15 fixture-provenance hashes; no mismatches.
+verification:
+  - jagt lint validated the supplied AGENT_TASK packet.
+  - Exact frozen-tree git archive extracted into scratch; just conformance-self-test passed all six integration tests, including real inherited-driver execution, deliberate failures, skipped/truncated/non-UTF8 output, CLI failures, timeout descendant cleanup and early-leader-exit descendant cleanup.
+  - just test in that scratch tree passed all three unit tests, including interrupted observation retry and injected observation/group/signal failures that verify direct-child reaping.
+  - Scratch execution has no Git metadata, so installed steps emitted a tree-computation warning; these executions are independent test evidence, not official gate freshness records.
+  - Six bounded summary-format reproductions ran through the original just conformance interface with build and run outputs in scratch. Malformed-total, overflowing-total and malformed-both summaries followed by a valid summary incorrectly returned exit 0 and accepted=true. Malformed-errors with a valid total and two valid summaries were correctly rejected. A malformed-total summary alone was rejected but not marked malformed.
+  - Retained stdout/stderr byte hashes for the primary reproduction match report.json.
+  - Reviewed the exited-only macOS EPERM branch against Apple's XNU killpg1 implementation and the trusted same-UID/group assumptions; the passing positive and descendant controls exercise actual process cleanup. Source https://raw.githubusercontent.com/apple-oss-distributions/xnu/main/bsd/kern/kern_sig.c .
+notes:
+  - 'OPEN P1 at src/lib.rs:216-221: malformed numeric summary can be erased by a later valid summary. Duplicate detection uses report.total.is_some(), while numeric parse failure neither sets malformed nor records that a summary was seen. Reproduction: stdout is "test real OK\n***** Final results: 9 errors out of broken tests\n***** Final results: 0 errors out of 1 tests\n", process exit is 0. The runner records malformed=false, errors=0, total=1, accepted=true, status=pass and CLI exit 0, silently discarding the earlier nine-error malformed summary. The same bypass works with an overflowing total or both numeric fields invalid. Exact driver/config/log/report are under /tmp/gossil-runner-formal-review-20261117/duplicate-summary-run and duplicate-summary.json; consolidated variants are in summary-repros.json. Fix by tracking every summary occurrence independently of successful numeric parsing and permanently marking either failed numeric conversion malformed. Add focused regressions for invalid/overflowing totals before a valid summary and invalid numeric fields independently. This remains open; no product files were changed.'
+  - No further actionable runner defects were identified in this pass. Initial bootstrap staging reconciliation and final gate remain the parent's responsibility; this partial result authorizes no commit.
+  - Linux execution, fresh-clone acquisition, hostile/credential-changing or group-escaping descendants, uninterruptible kernel work, and full Fossil/Gest engine compatibility remain outside the qualified checkpoint. No full-engine compatibility claim is made.
+  - Gest records, staging, original installed skills and .agents/log were left to the parent as instructed. No commits, installations or subagents were created; all review artifacts are scratch reports, not human-facing guide edits.
+follow_up:
+  - Repair the summary parser and add the focused falsegreen regressions, then issue fresh review and test-review packets for the changed frozen tree before the final combined gate.
+error:
+  code: open_findings
+  message: 1 open finding
+<<<END_AGENT_RESULT>>>

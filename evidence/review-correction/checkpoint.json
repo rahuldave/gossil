@@ -1,0 +1,124 @@
+{
+  "kind": "consolidated correction batch, prepared for fresh independent gates",
+  "time_utc": "2026-11-17T20:18:44.853354+00:00",
+  "tasks": [
+    "lyrmyzsv",
+    "mvnovluo"
+  ],
+  "base_commit": null,
+  "head_commit": null,
+  "reviewed_previous_tree": "6870b779567e9fc5eb15ce5dd927c1f686a821f6",
+  "formal_prior_review": "partial with one P1; preserved verbatim in formal-review-partial.txt",
+  "correction": "Every final-summary occurrence increments summary_count independent of numeric parse success; either failed numeric conversion permanently marks malformed. No inherited assertion weakened.",
+  "changed_files": {
+    "evidence/inventories/README.md": "709f89bd09dc0fbf414df8ced339ab1fd709db759e19e9b94f257a465052ec75",
+    "evidence/inventories/fossil/COPYRIGHT-BSD2.txt": "f65c4693891811303213aad3cc737d85114fc0ede82ec65bc0b923069b646c55",
+    "evidence/inventories/fossil/build_inventory.py": "726a92913ccdf03aaedc87b778031c9674847fea2318f64d363207be3c6af070",
+    "evidence/inventories/fossil/capability-inventory-input.json": "43c0e686fe8cac7a006993e21e119852bea7f715565ff2a68c72917d3793a9c2",
+    "evidence/inventories/fossil/check_inventory.py": "1366f9e6bbd6d1a8579e35d8820a25d85230e95a21c44776c66f0a7aab87b15c",
+    "evidence/inventories/fossil/consistency.json": "4081856e49a82f7b79d6722a33ca22abd5f3c1b3298dcefd47620ea98a8087b0",
+    "evidence/inventories/fossil/hash-index.json": "5b041f2d16fffea34809e0524c26cad0b667f5a2fc63069282ff977421e71559",
+    "evidence/inventories/fossil/inputs.json": "7022e4de5527340d58d648cf242b96ff4f01aaeb75224d32d151f615f2a8d537",
+    "evidence/inventories/fossil/inventory.json.gz": "ec7565b887f01afb8b1c9f1e3937d32f6013aa316805e9f2b851f23203c5ce80",
+    "evidence/inventories/fossil/relocation-index.json": "33d3f44497059b0dea2b93a0ddfdc2a637a8fc919e311d85a5e5332061886a61",
+    "evidence/inventories/fossil/short-report.json": "5a088010418d146fa768335485644d527c73c3df9014e5df7b0ad53ee0cf372b",
+    "evidence/inventories/fossil/source-inventory-input.json": "0c3448b082c88662f37343dbdd0e6853b582065002c9c29fb487ba228609ffaf",
+    "evidence/inventories/gest/baseline-axum-routes.json": "3f73a31710245c92ab250ca51674d084cfdcd359498c9239079c68e183191bc3",
+    "evidence/inventories/gest/baseline-cli-help.json": "6c604afee41ff54cf72721d26388bff01941cf3acc96ba9eb9aeb9be24f77d79",
+    "evidence/inventories/gest/baseline-compatibility.json": "7116eccaf5116c4311e19a405978306f5bb8cfa676df04894cbb618e7a62a800",
+    "evidence/inventories/gest/baseline-environment.json": "c6f75112e3d8e6ccdd796ae51640f6a17dded8319321e3f64269ffe1cdbb8447",
+    "evidence/inventories/gest/baseline-report.json": "04fc55e7db80be9822db677dd09402651ed36388fee5d51f1ea1784e0601d7f0",
+    "evidence/inventories/gest/build_inventory.py": "f0e68a99f852165810d4275cae369b92795cbb04c20def74e07283076bc10618",
+    "evidence/inventories/gest/integration-discovered-tests.txt": "f79309cb1f0cf6b49c1e2e96c64405a4482c9ce48a78bd6eb1e50a1b1db41af0",
+    "evidence/inventories/gest/inventory.json.gz": "84fbf1be4e106721357b627bad7f336be4ac09a7164e922066477a1b647a1f38",
+    "evidence/inventories/gest/prose-check.txt": "2b8e39184efe1b8cde5a280475dff7841353e3fc229da32d5e096c227bb9d024",
+    "evidence/inventories/gest/relocation-index.json": "c318bab596ed30084931dcd2607df24a1931dbe6468d503f5c96251dc647f465",
+    "evidence/inventories/gest/report.txt": "c1aa41711c5e0d1fff9b1ece3cede455daa75720e1466fdc9649b13413d27eee",
+    "evidence/inventories/gest/storage-enumeration-input.json": "c29eff76905eab5115a3631518fd3379e144329cf732893a533869365fa5d93f",
+    "evidence/inventories/gest/unit-discovered-tests.txt": "3914be118f28b8c1f65bf7eef10eaf72535b8304a029abbe8f7e44f1ea002930",
+    "evidence/inventories/gest/validation.json": "9c15db4df56520b1a90c50d6a73cc0d6b0ccacc293afdf12bbaa504781fed0a6",
+    "evidence/inventories/relocation-verification.json": "437b1fa879ad06d543559d9e7149149255ca262763274781a607444d8b5d484c",
+    "evidence/review-correction/formal-review-partial.txt": "13db9930483c0ac21615e35e31b23f5f4cda8291cc34151ca1e2a1f2fcf5e0bf",
+    "evidence/review-correction/strict-coverage.txt": "5e83892022e09339655330b13f5aae2b7d4552f1ce2e7289f7d3b4d208ddf9c3",
+    "evidence/review-correction/summary-parser-green.txt": "854fdfa007d0a4a15d7d0076eef1c344d3467ccd21eec7c02905c00cb4c8d753",
+    "evidence/review-correction/summary-parser-red.txt": "362d5186546e0146590d817f995f94bdb0ee6b20b8691555cdca719e1e5ddb58",
+    "evidence/review-correction/summary-repros.json": "d88998f3236dc5c2b8f9ed508dca12051631f07eea4ffdd8d46ef1d9d8d51d24",
+    "src/lib.rs": "2cc238245318b58fa17cdd1cfda1ceccce0b4540ace9d454638669b18f634312",
+    "tests/conformance.rs": "733c30e6bef7ec2fd799ac8061e1eb09d7137d751c36ec4d541c7fd5929cabcd",
+    "tests/fixtures/controls/bad-both.test": "37784f9d9e2b7eefa92aa39719d96d4b09fbba300acff90a69a029f64fd63dfb",
+    "tests/fixtures/controls/bad-errors.test": "eee54c6066bd08e612845d5efe0c1ad290aa34995ada74fd9a0c5430417305cd",
+    "tests/fixtures/controls/bad-total.test": "53dcfbf78faaaad607dbf61dfbcf03c3907f8ef74ca3d9591930c2a58a397540",
+    "tests/fixtures/controls/duplicate-summary.test": "b714f7cb634d1fec95be0f620a8df908693e00015cc5c140689833858a77b937",
+    "tests/fixtures/controls/overflow-errors.test": "65c61a20b1ec58f19419f7d043c274304202d4b17e247241d3d7375063dd46da",
+    "tests/fixtures/controls/overflow-total.test": "25908cbb6810e0498afe5f8bd5bd92597c58561eb684274ece2b698f1c1e34f3",
+    "tests/fixtures/provenance.json": "a31c1f75b906a54439e3651a2b3101a3274d6eead70180f5bd382dcfb500e2c1"
+  },
+  "checks": [
+    {
+      "command": "just integration malformed_summary (before fix)",
+      "exit": 101,
+      "result": "two actual regression failures: malformed numeric field not marked malformed; malformed-then-valid CLI returned0",
+      "evidence": "summary-parser-red.txt"
+    },
+    {
+      "command": "just integration malformed_summary (after fix)",
+      "exit": 0,
+      "result": "two focused tests passed; five independently invalid/overflow numeric cases alone/then-valid and six actual CLI controls",
+      "evidence": "summary-parser-green.txt"
+    },
+    {
+      "command": "just coverage-check",
+      "exit": 0,
+      "result": "3unit +8integration functions pass, strict first-commit all-lines coverage; no exemptions",
+      "evidence": "strict-coverage.txt",
+      "freshness_limit": "Capturing this log under evidence changed the tree during execution; this is coverage evidence, not a final exact-tree combined gate. Parent reruns final just check after fresh records."
+    },
+    {
+      "command": "just lint",
+      "exit": 0,
+      "result": "passed after consolidating duplicate unit-module inner/outer doc styles without losing meaning"
+    },
+    {
+      "command": "just docstring-check",
+      "exit": 0
+    },
+    {
+      "command": "just api-check",
+      "exit": 0,
+      "result": "17/17 documented, API prose checker zero hard findings"
+    },
+    {
+      "command": "just prose-check evidence/inventories/README.md",
+      "exit": 0,
+      "result": "checker pass only; independent revision/record pending"
+    },
+    {
+      "command": "archive relocation verification",
+      "exit": 0,
+      "evidence": "../inventories/relocation-verification.json"
+    }
+  ],
+  "impact": {
+    "tool": "ast-grep0.42.1",
+    "patterns": [
+      "parse_report($$$)",
+      "validate_report($$$)"
+    ],
+    "coupled_surfaces": [
+      "Report JSON serialization/deserialization",
+      "parse_report acceptance",
+      "validate_report caller",
+      "actual CLI controls"
+    ],
+    "tags": "existing gossil; no new tags"
+  },
+  "limits": [
+    "Fresh update-docs, prose, review, test-review and final just check remain pending.",
+    "Inventory exactness and mapped sets do not establish semantic coverage or accepted compatibility.",
+    "Known upstream failures, blocked configurations, disabled features and storage encoding gaps remain open.",
+    "No engine/delta implementation or corpus added.",
+    "No stage, commit, push, remote or installed skill/exclusion change.",
+    "Historical generator/check scripts retain original absolute input paths; relocation indices preserve exact bytes and do not turn them into runtime dependencies.",
+    "Earlier Gest symlink resolved-content receipts remain unchanged; new inventory records linktext/Gitmode/blobhash and crosswalks."
+  ]
+}

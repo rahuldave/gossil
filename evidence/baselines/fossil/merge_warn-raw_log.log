@@ -1,0 +1,19 @@
+***** merge_warn ******
+/Users/rahul/Projects/gossil/.jlog/bin/fossil add f1
+/Users/rahul/Projects/gossil/.jlog/bin/fossil commit -m {add f1} --tag pivot
+/Users/rahul/Projects/gossil/.jlog/bin/fossil add f2
+/Users/rahul/Projects/gossil/.jlog/bin/fossil commit -m {add f2}
+/Users/rahul/Projects/gossil/.jlog/bin/fossil update pivot
+/Users/rahul/Projects/gossil/.jlog/bin/fossil rm --hard f1
+/Users/rahul/Projects/gossil/.jlog/bin/fossil add f2 f3
+/Users/rahul/Projects/gossil/.jlog/bin/fossil commit -b b -m {delete f1, add f2 and f3} --tag mrg
+/Users/rahul/Projects/gossil/.jlog/bin/fossil add f4
+/Users/rahul/Projects/gossil/.jlog/bin/fossil commit -m {add f4}
+/Users/rahul/Projects/gossil/.jlog/bin/fossil update trunk
+/Users/rahul/Projects/gossil/.jlog/bin/fossil merge --integrate mrg
+test merge_warn-1 OK
+test merge_warn-2 OK
+test test-framework-merge_warn OK
+***** End of merge_warn: 0 errors so far ******
+***** Final results: 0 errors out of 3 tests
+***** Ignored results: 0 ignored errors out of 3 tests

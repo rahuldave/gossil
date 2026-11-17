@@ -1,0 +1,7 @@
+# Preserve immutable observed-output bytes, including terminal blank lines.
+/evidence/baselines/gest/color-target-05.txt -whitespace
+/evidence/baselines/gest/integration.txt -whitespace
+/evidence/baselines/gest/unit-serial.txt -whitespace
+
+# Preserve upstream patch context: a context-only blank line starts with a space.
+/tests/fixtures/fossil/enable.patch -whitespace

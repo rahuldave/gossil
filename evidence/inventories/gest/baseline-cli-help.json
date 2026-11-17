@@ -1,0 +1,2315 @@
+{
+  "binary": "/Users/rahul/Projects/gest/target/debug/gest",
+  "sha256": "b2d39723892046dd50edcbb814076edffe681446f3452603fd11862f2b07220b",
+  "scope": "All canonical commands discovered recursively via compiled --help; hidden aliases separately inventoried from source; flags represented verbatim; no data operation executed.",
+  "commands": [
+    {
+      "argv": [
+        "/Users/rahul/Projects/gest/target/debug/gest",
+        "--help"
+      ],
+      "exit": 0,
+      "help": "/tmp/gest-baseline-rGsljN/help-root.txt",
+      "options": [
+        "      --no-color",
+        "          Disable ANSI color output",
+        "      --no-pager",
+        "          Disable paging of long command output",
+        "  -V, --version",
+        "          Print the current version, platform info, and check for available updates",
+        "  -v, --verbose...",
+        "          Increase log verbosity (`-v` = info, `-vv` = debug, `-vvv` = trace)",
+        "  -h, --help",
+        "          Print help (see a summary with '-h')"
+      ],
+      "arguments": [],
+      "commands": [
+        "  artifact     Manage artifacts",
+        "  config       View or modify configuration",
+        "  generate     Generate shell completions and man pages",
+        "  init         Initialize gest for the current directory",
+        "  iteration    Manage iterations",
+        "  migrate      Import v0.4.x flat-file data into the current project store",
+        "  project      Show or manage the current project [aliases: p]",
+        "  purge        Purge terminal, archived, and orphaned data from the store",
+        "  search       Search across all entity types",
+        "  self-update  Download and install the latest release from GitHub",
+        "  serve        Start the web dashboard server",
+        "  tag          List all tags",
+        "  task         Manage tasks",
+        "  undo         Undo the last command",
+        "  version      Print the current version, platform info, and check for available updates",
+        "  help         Print this message or the help of the given subcommand(s)"
+      ]
+    },
+    {
+      "argv": [
+        "/Users/rahul/Projects/gest/target/debug/gest",
+        "artifact",
+        "--help"
+      ],
+      "exit": 0,
+      "help": "/tmp/gest-baseline-rGsljN/help-artifact.txt",
+      "options": [
+        "      --no-color    Disable ANSI color output",
+        "      --no-pager    Disable paging of long command output",
+        "  -v, --verbose...  Increase log verbosity (`-v` = info, `-vv` = debug, `-vvv` = trace)",
+        "  -h, --help        Print help"
+      ],
+      "arguments": [],
+      "commands": [
+        "  archive  Archive an artifact",
+        "  create   Create a new artifact [aliases: new]",
+        "  delete   Delete an artifact and its dependent rows [aliases: rm]",
+        "  list     List artifacts [aliases: ls]",
+        "  meta     Get or set custom metadata",
+        "  note     Manage notes on an artifact",
+        "  show     Show an artifact [aliases: view]",
+        "  tag      Add a tag to an artifact",
+        "  untag    Remove a tag from an artifact",
+        "  update   Update an artifact [aliases: edit]",
+        "  help     Print this message or the help of the given subcommand(s)"
+      ]
+    },
+    {
+      "argv": [
+        "/Users/rahul/Projects/gest/target/debug/gest",
+        "artifact",
+        "archive",
+        "--help"
+      ],
+      "exit": 0,
+      "help": "/tmp/gest-baseline-rGsljN/help-artifact-archive.txt",
+      "options": [
+        "  -j, --json        Emit output as JSON",
+        "  -q, --quiet       Suppress normal output (print only entity ID on create/mutate, nothing on delete)",
+        "  -r, --raw         Emit script-friendly plain output (no themed styling)",
+        "      --no-color    Disable ANSI color output",
+        "      --no-pager    Disable paging of long command output",
+        "  -v, --verbose...  Increase log verbosity (`-v` = info, `-vv` = debug, `-vvv` = trace)",
+        "  -h, --help        Print help"
+      ],
+      "arguments": [
+        "  <ID>  The artifact ID or prefix"
+      ],
+      "commands": []
+    },
+    {
+      "argv": [
+        "/Users/rahul/Projects/gest/target/debug/gest",
+        "artifact",
+        "create",
+        "--help"
+      ],
+      "exit": 0,
+      "help": "/tmp/gest-baseline-rGsljN/help-artifact-create.txt",
+      "options": [
+        "      --batch                  Read NDJSON artifacts from stdin (one JSON object per line)",
+        "  -b, --body <BODY>            The artifact body (markdown; opens `$EDITOR` if omitted and stdin is a terminal)",
+        "  -i, --iteration <ITERATION>  Link the artifact to an iteration by ID or prefix",
+        "  -m, --metadata <KEY=VALUE>   Set a metadata key=value pair (repeatable; supports dot-paths and scalar inference)",
+        "      --metadata-json <JSON>   Merge a JSON object into metadata (repeatable; applied after --metadata pairs)",
+        "  -s, --source <SOURCE>        Read the body from a file path instead of stdin or `$EDITOR`",
+        "  -t, --tag <TAG>              Add a tag to the artifact (can be repeated; comma-separated values split into multiple tags)",
+        "  -j, --json                   Emit output as JSON",
+        "  -q, --quiet                  Suppress normal output (print only entity ID on create/mutate, nothing on delete)",
+        "  -r, --raw                    Emit script-friendly plain output (no themed styling)",
+        "      --no-color               Disable ANSI color output",
+        "      --no-pager               Disable paging of long command output",
+        "  -v, --verbose...             Increase log verbosity (`-v` = info, `-vv` = debug, `-vvv` = trace)",
+        "  -h, --help                   Print help"
+      ],
+      "arguments": [
+        "  [TITLE]  The artifact title (extracted from the first `# heading` when piping stdin)"
+      ],
+      "commands": []
+    },
+    {
+      "argv": [
+        "/Users/rahul/Projects/gest/target/debug/gest",
+        "artifact",
+        "delete",
+        "--help"
+      ],
+      "exit": 0,
+      "help": "/tmp/gest-baseline-rGsljN/help-artifact-delete.txt",
+      "options": [
+        "      --force       Reserved for future guards; accepted for UX consistency with other delete commands but currently has no effect \u2014 artifacts have no blocking guards",
+        "  -j, --json        Emit output as JSON",
+        "  -q, --quiet       Suppress normal output (print only entity ID on create/mutate, nothing on delete)",
+        "  -r, --raw         Emit script-friendly plain output (no themed styling)",
+        "      --yes         Skip the interactive confirmation prompt",
+        "      --no-color    Disable ANSI color output",
+        "      --no-pager    Disable paging of long command output",
+        "  -v, --verbose...  Increase log verbosity (`-v` = info, `-vv` = debug, `-vvv` = trace)",
+        "  -h, --help        Print help"
+      ],
+      "arguments": [
+        "  <ID>  The artifact ID or prefix"
+      ],
+      "commands": []
+    },
+    {
+      "argv": [
+        "/Users/rahul/Projects/gest/target/debug/gest",
+        "artifact",
+        "list",
+        "--help"
+      ],
+      "exit": 0,
+      "help": "/tmp/gest-baseline-rGsljN/help-artifact-list.txt",
+      "options": [
+        "  -a, --all         Show all artifacts, including archived",
+        "      --archived    Show only archived artifacts [aliases: --archived-only]",
+        "      --limit <N>   Cap the number of items returned",
+        "  -t, --tag <TAG>   Filter by tag",
+        "  -j, --json        Emit output as JSON",
+        "  -q, --quiet       Suppress normal output (print only entity ID on create/mutate, nothing on delete)",
+        "  -r, --raw         Emit script-friendly plain output (no themed styling)",
+        "      --no-color    Disable ANSI color output",
+        "      --no-pager    Disable paging of long command output",
+        "  -v, --verbose...  Increase log verbosity (`-v` = info, `-vv` = debug, `-vvv` = trace)",
+        "  -h, --help        Print help"
+      ],
+      "arguments": [],
+      "commands": []
+    },
+    {
+      "argv": [
+        "/Users/rahul/Projects/gest/target/debug/gest",
+        "artifact",
+        "meta",
+        "--help"
+      ],
+      "exit": 0,
+      "help": "/tmp/gest-baseline-rGsljN/help-artifact-meta.txt",
+      "options": [
+        "  -j, --json        Emit output as JSON",
+        "  -q, --quiet       Suppress normal output (print only entity ID on create/mutate, nothing on delete)",
+        "  -r, --raw         Emit script-friendly plain output (no themed styling)",
+        "      --no-color    Disable ANSI color output",
+        "      --no-pager    Disable paging of long command output",
+        "  -v, --verbose...  Increase log verbosity (`-v` = info, `-vv` = debug, `-vvv` = trace)",
+        "  -h, --help        Print help"
+      ],
+      "arguments": [
+        "  [ID]  The artifact ID or prefix (used when no subcommand is given)"
+      ],
+      "commands": [
+        "  get    Get a metadata value by dot-delimited path",
+        "  set    Set a metadata value at a dot-delimited path",
+        "  unset  Remove a metadata value at a dot-delimited path",
+        "  help   Print this message or the help of the given subcommand(s)"
+      ]
+    },
+    {
+      "argv": [
+        "/Users/rahul/Projects/gest/target/debug/gest",
+        "artifact",
+        "meta",
+        "get",
+        "--help"
+      ],
+      "exit": 0,
+      "help": "/tmp/gest-baseline-rGsljN/help-artifact-meta-get.txt",
+      "options": [
+        "  -j, --json        Emit output as JSON",
+        "  -q, --quiet       Suppress normal output (print only entity ID on create/mutate, nothing on delete)",
+        "  -r, --raw         Emit script-friendly plain output (no themed styling)",
+        "      --no-color    Disable ANSI color output",
+        "      --no-pager    Disable paging of long command output",
+        "  -v, --verbose...  Increase log verbosity (`-v` = info, `-vv` = debug, `-vvv` = trace)",
+        "  -h, --help        Print help"
+      ],
+      "arguments": [
+        "  <ID>    The artifact ID or prefix",
+        "  <PATH>  The dot-delimited metadata path"
+      ],
+      "commands": []
+    },
+    {
+      "argv": [
+        "/Users/rahul/Projects/gest/target/debug/gest",
+        "artifact",
+        "meta",
+        "set",
+        "--help"
+      ],
+      "exit": 0,
+      "help": "/tmp/gest-baseline-rGsljN/help-artifact-meta-set.txt",
+      "options": [
+        "      --as-json     Parse the value as a JSON literal instead of auto-detecting",
+        "  -j, --json        Emit output as JSON",
+        "  -q, --quiet       Suppress normal output (print only entity ID on create/mutate, nothing on delete)",
+        "  -r, --raw         Emit script-friendly plain output (no themed styling)",
+        "      --no-color    Disable ANSI color output",
+        "      --no-pager    Disable paging of long command output",
+        "  -v, --verbose...  Increase log verbosity (`-v` = info, `-vv` = debug, `-vvv` = trace)",
+        "  -h, --help        Print help"
+      ],
+      "arguments": [
+        "  <ID>     The artifact ID or prefix",
+        "  <PATH>   The dot-delimited metadata path",
+        "  <VALUE>  The metadata value (auto-detected scalar unless --as-json is set)"
+      ],
+      "commands": []
+    },
+    {
+      "argv": [
+        "/Users/rahul/Projects/gest/target/debug/gest",
+        "artifact",
+        "meta",
+        "unset",
+        "--help"
+      ],
+      "exit": 0,
+      "help": "/tmp/gest-baseline-rGsljN/help-artifact-meta-unset.txt",
+      "options": [
+        "  -j, --json        Emit output as JSON",
+        "  -q, --quiet       Suppress normal output (print only entity ID on create/mutate, nothing on delete)",
+        "  -r, --raw         Emit script-friendly plain output (no themed styling)",
+        "      --no-color    Disable ANSI color output",
+        "      --no-pager    Disable paging of long command output",
+        "  -v, --verbose...  Increase log verbosity (`-v` = info, `-vv` = debug, `-vvv` = trace)",
+        "  -h, --help        Print help"
+      ],
+      "arguments": [
+        "  <ID>    The artifact ID or prefix",
+        "  <PATH>  The dot-delimited metadata path"
+      ],
+      "commands": []
+    },
+    {
+      "argv": [
+        "/Users/rahul/Projects/gest/target/debug/gest",
+        "artifact",
+        "note",
+        "--help"
+      ],
+      "exit": 0,
+      "help": "/tmp/gest-baseline-rGsljN/help-artifact-note.txt",
+      "options": [
+        "      --no-color    Disable ANSI color output",
+        "      --no-pager    Disable paging of long command output",
+        "  -v, --verbose...  Increase log verbosity (`-v` = info, `-vv` = debug, `-vvv` = trace)",
+        "  -h, --help        Print help"
+      ],
+      "arguments": [],
+      "commands": [
+        "  add     Add a note to an artifact",
+        "  delete  Delete a note from an artifact",
+        "  list    List notes on an artifact",
+        "  show    Show a single note",
+        "  update  Update a note's body",
+        "  help    Print this message or the help of the given subcommand(s)"
+      ]
+    },
+    {
+      "argv": [
+        "/Users/rahul/Projects/gest/target/debug/gest",
+        "artifact",
+        "note",
+        "add",
+        "--help"
+      ],
+      "exit": 0,
+      "help": "/tmp/gest-baseline-rGsljN/help-artifact-note-add.txt",
+      "options": [
+        "  -b, --body <BODY>    The note body (use `-` to open `$EDITOR`)",
+        "      --agent <AGENT>  Set the author (agent) identifier for this note",
+        "  -j, --json           Emit output as JSON",
+        "  -q, --quiet          Suppress normal output (print only entity ID on create/mutate, nothing on delete)",
+        "  -r, --raw            Emit script-friendly plain output (no themed styling)",
+        "      --no-color       Disable ANSI color output",
+        "      --no-pager       Disable paging of long command output",
+        "  -v, --verbose...     Increase log verbosity (`-v` = info, `-vv` = debug, `-vvv` = trace)",
+        "  -h, --help           Print help"
+      ],
+      "arguments": [
+        "  <ID>  The artifact ID or prefix"
+      ],
+      "commands": []
+    },
+    {
+      "argv": [
+        "/Users/rahul/Projects/gest/target/debug/gest",
+        "artifact",
+        "note",
+        "delete",
+        "--help"
+      ],
+      "exit": 0,
+      "help": "/tmp/gest-baseline-rGsljN/help-artifact-note-delete.txt",
+      "options": [
+        "  -j, --json        Emit output as JSON",
+        "  -q, --quiet       Suppress normal output (print only entity ID on create/mutate, nothing on delete)",
+        "  -r, --raw         Emit script-friendly plain output (no themed styling)",
+        "      --yes         Skip the interactive confirmation prompt",
+        "      --no-color    Disable ANSI color output",
+        "      --no-pager    Disable paging of long command output",
+        "  -v, --verbose...  Increase log verbosity (`-v` = info, `-vv` = debug, `-vvv` = trace)",
+        "  -h, --help        Print help"
+      ],
+      "arguments": [
+        "  <ID>  The note ID or prefix"
+      ],
+      "commands": []
+    },
+    {
+      "argv": [
+        "/Users/rahul/Projects/gest/target/debug/gest",
+        "artifact",
+        "note",
+        "list",
+        "--help"
+      ],
+      "exit": 0,
+      "help": "/tmp/gest-baseline-rGsljN/help-artifact-note-list.txt",
+      "options": [
+        "      --limit <N>   Cap the number of items returned",
+        "  -j, --json        Emit output as JSON",
+        "  -q, --quiet       Suppress normal output (print only entity ID on create/mutate, nothing on delete)",
+        "  -r, --raw         Emit script-friendly plain output (no themed styling)",
+        "      --no-color    Disable ANSI color output",
+        "      --no-pager    Disable paging of long command output",
+        "  -v, --verbose...  Increase log verbosity (`-v` = info, `-vv` = debug, `-vvv` = trace)",
+        "  -h, --help        Print help"
+      ],
+      "arguments": [
+        "  <ID>  The artifact ID or prefix"
+      ],
+      "commands": []
+    },
+    {
+      "argv": [
+        "/Users/rahul/Projects/gest/target/debug/gest",
+        "artifact",
+        "note",
+        "show",
+        "--help"
+      ],
+      "exit": 0,
+      "help": "/tmp/gest-baseline-rGsljN/help-artifact-note-show.txt",
+      "options": [
+        "  -j, --json        Emit output as JSON",
+        "  -q, --quiet       Suppress normal output (print only entity ID on create/mutate, nothing on delete)",
+        "  -r, --raw         Emit script-friendly plain output (no themed styling)",
+        "      --no-color    Disable ANSI color output",
+        "      --no-pager    Disable paging of long command output",
+        "  -v, --verbose...  Increase log verbosity (`-v` = info, `-vv` = debug, `-vvv` = trace)",
+        "  -h, --help        Print help"
+      ],
+      "arguments": [
+        "  <ID>  The note ID or prefix"
+      ],
+      "commands": []
+    },
+    {
+      "argv": [
+        "/Users/rahul/Projects/gest/target/debug/gest",
+        "artifact",
+        "note",
+        "update",
+        "--help"
+      ],
+      "exit": 0,
+      "help": "/tmp/gest-baseline-rGsljN/help-artifact-note-update.txt",
+      "options": [
+        "  -b, --body <BODY>  The new body text (use `-` to open `$EDITOR`)",
+        "  -j, --json         Emit output as JSON",
+        "  -q, --quiet        Suppress normal output (print only entity ID on create/mutate, nothing on delete)",
+        "  -r, --raw          Emit script-friendly plain output (no themed styling)",
+        "      --no-color     Disable ANSI color output",
+        "      --no-pager     Disable paging of long command output",
+        "  -v, --verbose...   Increase log verbosity (`-v` = info, `-vv` = debug, `-vvv` = trace)",
+        "  -h, --help         Print help"
+      ],
+      "arguments": [
+        "  <ID>  The note ID or prefix"
+      ],
+      "commands": []
+    },
+    {
+      "argv": [
+        "/Users/rahul/Projects/gest/target/debug/gest",
+        "artifact",
+        "show",
+        "--help"
+      ],
+      "exit": 0,
+      "help": "/tmp/gest-baseline-rGsljN/help-artifact-show.txt",
+      "options": [
+        "  -j, --json        Emit output as JSON",
+        "  -q, --quiet       Suppress normal output (print only entity ID on create/mutate, nothing on delete)",
+        "  -r, --raw         Emit script-friendly plain output (no themed styling)",
+        "      --no-color    Disable ANSI color output",
+        "      --no-pager    Disable paging of long command output",
+        "  -v, --verbose...  Increase log verbosity (`-v` = info, `-vv` = debug, `-vvv` = trace)",
+        "  -h, --help        Print help"
+      ],
+      "arguments": [
+        "  <ID>  The artifact ID or prefix"
+      ],
+      "commands": []
+    },
+    {
+      "argv": [
+        "/Users/rahul/Projects/gest/target/debug/gest",
+        "artifact",
+        "tag",
+        "--help"
+      ],
+      "exit": 0,
+      "help": "/tmp/gest-baseline-rGsljN/help-artifact-tag.txt",
+      "options": [
+        "  -j, --json        Emit output as JSON",
+        "  -q, --quiet       Suppress normal output (print only entity ID on create/mutate, nothing on delete)",
+        "  -r, --raw         Emit script-friendly plain output (no themed styling)",
+        "      --no-color    Disable ANSI color output",
+        "      --no-pager    Disable paging of long command output",
+        "  -v, --verbose...  Increase log verbosity (`-v` = info, `-vv` = debug, `-vvv` = trace)",
+        "  -h, --help        Print help"
+      ],
+      "arguments": [
+        "  <ID>     The artifact ID or prefix",
+        "  <LABEL>  The tag label to add"
+      ],
+      "commands": []
+    },
+    {
+      "argv": [
+        "/Users/rahul/Projects/gest/target/debug/gest",
+        "artifact",
+        "untag",
+        "--help"
+      ],
+      "exit": 0,
+      "help": "/tmp/gest-baseline-rGsljN/help-artifact-untag.txt",
+      "options": [
+        "  -j, --json        Emit output as JSON",
+        "  -q, --quiet       Suppress normal output (print only entity ID on create/mutate, nothing on delete)",
+        "  -r, --raw         Emit script-friendly plain output (no themed styling)",
+        "      --no-color    Disable ANSI color output",
+        "      --no-pager    Disable paging of long command output",
+        "  -v, --verbose...  Increase log verbosity (`-v` = info, `-vv` = debug, `-vvv` = trace)",
+        "  -h, --help        Print help"
+      ],
+      "arguments": [
+        "  <ID>     The artifact ID or prefix",
+        "  <LABEL>  The tag label to remove"
+      ],
+      "commands": []
+    },
+    {
+      "argv": [
+        "/Users/rahul/Projects/gest/target/debug/gest",
+        "artifact",
+        "update",
+        "--help"
+      ],
+      "exit": 0,
+      "help": "/tmp/gest-baseline-rGsljN/help-artifact-update.txt",
+      "options": [
+        "  -b, --body <BODY>           Set the artifact body (markdown)",
+        "  -e, --edit                  Open `$EDITOR` pre-filled with the current body for editing",
+        "  -m, --metadata <KEY=VALUE>  Set a metadata key=value pair (repeatable; supports dot-paths and scalar inference)",
+        "      --metadata-json <JSON>  Merge a JSON object into metadata (repeatable; applied after --metadata pairs)",
+        "  -t, --tag <TAG>             Replace all tags on the artifact (can be repeated; comma-separated values split into multiple tags)",
+        "  -T, --title <TITLE>         Set the artifact title",
+        "  -j, --json                  Emit output as JSON",
+        "  -q, --quiet                 Suppress normal output (print only entity ID on create/mutate, nothing on delete)",
+        "  -r, --raw                   Emit script-friendly plain output (no themed styling)",
+        "      --no-color              Disable ANSI color output",
+        "      --no-pager              Disable paging of long command output",
+        "  -v, --verbose...            Increase log verbosity (`-v` = info, `-vv` = debug, `-vvv` = trace)",
+        "  -h, --help                  Print help"
+      ],
+      "arguments": [
+        "  <ID>  The artifact ID or prefix"
+      ],
+      "commands": []
+    },
+    {
+      "argv": [
+        "/Users/rahul/Projects/gest/target/debug/gest",
+        "config",
+        "--help"
+      ],
+      "exit": 0,
+      "help": "/tmp/gest-baseline-rGsljN/help-config.txt",
+      "options": [
+        "      --no-color    Disable ANSI color output",
+        "      --no-pager    Disable paging of long command output",
+        "  -v, --verbose...  Increase log verbosity (`-v` = info, `-vv` = debug, `-vvv` = trace)",
+        "  -h, --help        Print help"
+      ],
+      "arguments": [],
+      "commands": [
+        "  get   Get a configuration value",
+        "  set   Set a configuration value",
+        "  show  Show the current configuration",
+        "  help  Print this message or the help of the given subcommand(s)"
+      ]
+    },
+    {
+      "argv": [
+        "/Users/rahul/Projects/gest/target/debug/gest",
+        "config",
+        "get",
+        "--help"
+      ],
+      "exit": 0,
+      "help": "/tmp/gest-baseline-rGsljN/help-config-get.txt",
+      "options": [
+        "  -j, --json        Emit output as JSON",
+        "  -q, --quiet       Suppress normal output (print only entity ID on create/mutate, nothing on delete)",
+        "  -r, --raw         Emit script-friendly plain output (no themed styling)",
+        "      --no-color    Disable ANSI color output",
+        "      --no-pager    Disable paging of long command output",
+        "  -v, --verbose...  Increase log verbosity (`-v` = info, `-vv` = debug, `-vvv` = trace)",
+        "  -h, --help        Print help"
+      ],
+      "arguments": [
+        "  <KEY>  The configuration key (e.g. \"storage.data_dir\", \"log.level\")"
+      ],
+      "commands": []
+    },
+    {
+      "argv": [
+        "/Users/rahul/Projects/gest/target/debug/gest",
+        "config",
+        "set",
+        "--help"
+      ],
+      "exit": 0,
+      "help": "/tmp/gest-baseline-rGsljN/help-config-set.txt",
+      "options": [
+        "  -g, --global      Write to the global (user-level) config instead of the project config",
+        "      --no-color    Disable ANSI color output",
+        "      --no-pager    Disable paging of long command output",
+        "  -v, --verbose...  Increase log verbosity (`-v` = info, `-vv` = debug, `-vvv` = trace)",
+        "  -h, --help        Print help"
+      ],
+      "arguments": [
+        "  <KEY>    Dot-delimited config key (e.g. `log.level`)",
+        "  <VALUE>  Value to assign; auto-parsed as bool, int, float, or string"
+      ],
+      "commands": []
+    },
+    {
+      "argv": [
+        "/Users/rahul/Projects/gest/target/debug/gest",
+        "config",
+        "show",
+        "--help"
+      ],
+      "exit": 0,
+      "help": "/tmp/gest-baseline-rGsljN/help-config-show.txt",
+      "options": [
+        "  -j, --json        Emit output as JSON",
+        "  -q, --quiet       Suppress normal output (print only entity ID on create/mutate, nothing on delete)",
+        "  -r, --raw         Emit script-friendly plain output (no themed styling)",
+        "      --no-color    Disable ANSI color output",
+        "      --no-pager    Disable paging of long command output",
+        "  -v, --verbose...  Increase log verbosity (`-v` = info, `-vv` = debug, `-vvv` = trace)",
+        "  -h, --help        Print help"
+      ],
+      "arguments": [],
+      "commands": []
+    },
+    {
+      "argv": [
+        "/Users/rahul/Projects/gest/target/debug/gest",
+        "generate",
+        "--help"
+      ],
+      "exit": 0,
+      "help": "/tmp/gest-baseline-rGsljN/help-generate.txt",
+      "options": [
+        "      --no-color    Disable ANSI color output",
+        "      --no-pager    Disable paging of long command output",
+        "  -v, --verbose...  Increase log verbosity (`-v` = info, `-vv` = debug, `-vvv` = trace)",
+        "  -h, --help        Print help"
+      ],
+      "arguments": [],
+      "commands": [
+        "  completions  Generate shell completions",
+        "  man-pages    Generate man pages",
+        "  help         Print this message or the help of the given subcommand(s)"
+      ]
+    },
+    {
+      "argv": [
+        "/Users/rahul/Projects/gest/target/debug/gest",
+        "generate",
+        "completions",
+        "--help"
+      ],
+      "exit": 0,
+      "help": "/tmp/gest-baseline-rGsljN/help-generate-completions.txt",
+      "options": [
+        "      --no-color    Disable ANSI color output",
+        "      --no-pager    Disable paging of long command output",
+        "  -v, --verbose...  Increase log verbosity (`-v` = info, `-vv` = debug, `-vvv` = trace)",
+        "  -h, --help        Print help"
+      ],
+      "arguments": [
+        "  <SHELL>  The shell to generate completions for [possible values: bash, elvish, fish, powershell, zsh]"
+      ],
+      "commands": []
+    },
+    {
+      "argv": [
+        "/Users/rahul/Projects/gest/target/debug/gest",
+        "generate",
+        "man-pages",
+        "--help"
+      ],
+      "exit": 0,
+      "help": "/tmp/gest-baseline-rGsljN/help-generate-man-pages.txt",
+      "options": [
+        "      --no-color    Disable ANSI color output",
+        "      --no-pager    Disable paging of long command output",
+        "  -v, --verbose...  Increase log verbosity (`-v` = info, `-vv` = debug, `-vvv` = trace)",
+        "  -h, --help        Print help"
+      ],
+      "arguments": [
+        "  [OUTPUT_DIR]  Output directory for man pages [default: man]"
+      ],
+      "commands": []
+    },
+    {
+      "argv": [
+        "/Users/rahul/Projects/gest/target/debug/gest",
+        "init",
+        "--help"
+      ],
+      "exit": 0,
+      "help": "/tmp/gest-baseline-rGsljN/help-init.txt",
+      "options": [
+        "      --local       Create a `.gest` directory in the current project with a local `project.json` instead of using the global data store",
+        "      --no-color    Disable ANSI color output",
+        "      --no-pager    Disable paging of long command output",
+        "  -v, --verbose...  Increase log verbosity (`-v` = info, `-vv` = debug, `-vvv` = trace)",
+        "  -h, --help        Print help"
+      ],
+      "arguments": [],
+      "commands": []
+    },
+    {
+      "argv": [
+        "/Users/rahul/Projects/gest/target/debug/gest",
+        "iteration",
+        "--help"
+      ],
+      "exit": 0,
+      "help": "/tmp/gest-baseline-rGsljN/help-iteration.txt",
+      "options": [
+        "      --no-color    Disable ANSI color output",
+        "      --no-pager    Disable paging of long command output",
+        "  -v, --verbose...  Increase log verbosity (`-v` = info, `-vv` = debug, `-vvv` = trace)",
+        "  -h, --help        Print help"
+      ],
+      "arguments": [],
+      "commands": [
+        "  add       Add a task to an iteration",
+        "  advance   Validate active phase and advance to the next phase",
+        "  cancel    Cancel an iteration",
+        "  complete  Complete an iteration",
+        "  create    Create a new iteration [aliases: new]",
+        "  delete    Delete an iteration and drop its task memberships",
+        "  graph     Show phased task dependency graph",
+        "  link      Link an iteration to another entity",
+        "  list      List iterations [aliases: ls]",
+        "  meta      Get or set custom metadata",
+        "  next      Return the next available task in an iteration",
+        "  remove    Remove a task from an iteration [aliases: rm]",
+        "  reopen    Reopen a completed or cancelled iteration",
+        "  show      Show an iteration [aliases: view]",
+        "  status    Show iteration progress summary",
+        "  tag       Add a tag to an iteration",
+        "  unlink    Remove a relationship between an iteration and another entity",
+        "  untag     Remove a tag from an iteration",
+        "  update    Update an iteration [aliases: edit]",
+        "  help      Print this message or the help of the given subcommand(s)"
+      ]
+    },
+    {
+      "argv": [
+        "/Users/rahul/Projects/gest/target/debug/gest",
+        "iteration",
+        "add",
+        "--help"
+      ],
+      "exit": 0,
+      "help": "/tmp/gest-baseline-rGsljN/help-iteration-add.txt",
+      "options": [
+        "      --batch          Read NDJSON task records from stdin (one JSON object per line)",
+        "  -p, --phase <PHASE>  The phase to add the task to (defaults to max existing + 1; conflicts with `--batch`)",
+        "  -j, --json           Emit output as JSON",
+        "  -q, --quiet          Suppress normal output (print only entity ID on create/mutate, nothing on delete)",
+        "  -r, --raw            Emit script-friendly plain output (no themed styling)",
+        "      --no-color       Disable ANSI color output",
+        "      --no-pager       Disable paging of long command output",
+        "  -v, --verbose...     Increase log verbosity (`-v` = info, `-vv` = debug, `-vvv` = trace)",
+        "  -h, --help           Print help"
+      ],
+      "arguments": [
+        "  <ITERATION>  The iteration ID or prefix",
+        "  [TASK]       The task ID or prefix (conflicts with `--batch`)"
+      ],
+      "commands": []
+    },
+    {
+      "argv": [
+        "/Users/rahul/Projects/gest/target/debug/gest",
+        "iteration",
+        "advance",
+        "--help"
+      ],
+      "exit": 0,
+      "help": "/tmp/gest-baseline-rGsljN/help-iteration-advance.txt",
+      "options": [
+        "      --force       Advance even if the current phase has non-terminal tasks",
+        "  -j, --json        Emit output as JSON",
+        "  -q, --quiet       Suppress normal output (print only entity ID on create/mutate, nothing on delete)",
+        "  -r, --raw         Emit script-friendly plain output (no themed styling)",
+        "      --no-color    Disable ANSI color output",
+        "      --no-pager    Disable paging of long command output",
+        "  -v, --verbose...  Increase log verbosity (`-v` = info, `-vv` = debug, `-vvv` = trace)",
+        "  -h, --help        Print help"
+      ],
+      "arguments": [
+        "  <ID>  The iteration ID or prefix"
+      ],
+      "commands": []
+    },
+    {
+      "argv": [
+        "/Users/rahul/Projects/gest/target/debug/gest",
+        "iteration",
+        "cancel",
+        "--help"
+      ],
+      "exit": 0,
+      "help": "/tmp/gest-baseline-rGsljN/help-iteration-cancel.txt",
+      "options": [
+        "  -j, --json        Emit output as JSON",
+        "  -q, --quiet       Suppress normal output (print only entity ID on create/mutate, nothing on delete)",
+        "  -r, --raw         Emit script-friendly plain output (no themed styling)",
+        "      --no-color    Disable ANSI color output",
+        "      --no-pager    Disable paging of long command output",
+        "  -v, --verbose...  Increase log verbosity (`-v` = info, `-vv` = debug, `-vvv` = trace)",
+        "  -h, --help        Print help"
+      ],
+      "arguments": [
+        "  <ID>  The iteration ID or prefix"
+      ],
+      "commands": []
+    },
+    {
+      "argv": [
+        "/Users/rahul/Projects/gest/target/debug/gest",
+        "iteration",
+        "complete",
+        "--help"
+      ],
+      "exit": 0,
+      "help": "/tmp/gest-baseline-rGsljN/help-iteration-complete.txt",
+      "options": [
+        "  -j, --json        Emit output as JSON",
+        "  -q, --quiet       Suppress normal output (print only entity ID on create/mutate, nothing on delete)",
+        "  -r, --raw         Emit script-friendly plain output (no themed styling)",
+        "      --no-color    Disable ANSI color output",
+        "      --no-pager    Disable paging of long command output",
+        "  -v, --verbose...  Increase log verbosity (`-v` = info, `-vv` = debug, `-vvv` = trace)",
+        "  -h, --help        Print help"
+      ],
+      "arguments": [
+        "  <ID>  The iteration ID or prefix"
+      ],
+      "commands": []
+    },
+    {
+      "argv": [
+        "/Users/rahul/Projects/gest/target/debug/gest",
+        "iteration",
+        "create",
+        "--help"
+      ],
+      "exit": 0,
+      "help": "/tmp/gest-baseline-rGsljN/help-iteration-create.txt",
+      "options": [
+        "  -d, --description <DESCRIPTION>  The iteration description",
+        "  -m, --metadata <KEY=VALUE>       Set a metadata key=value pair (repeatable; supports dot-paths and scalar inference)",
+        "      --metadata-json <JSON>       Merge a JSON object into metadata (repeatable; applied after --metadata pairs)",
+        "  -s, --status <STATUS>            Set the initial status",
+        "  -t, --tag <TAG>                  Add a tag (may be repeated; comma-separated values split into multiple tags)",
+        "  -j, --json                       Emit output as JSON",
+        "  -q, --quiet                      Suppress normal output (print only entity ID on create/mutate, nothing on delete)",
+        "  -r, --raw                        Emit script-friendly plain output (no themed styling)",
+        "      --no-color                   Disable ANSI color output",
+        "      --no-pager                   Disable paging of long command output",
+        "  -v, --verbose...                 Increase log verbosity (`-v` = info, `-vv` = debug, `-vvv` = trace)",
+        "  -h, --help                       Print help"
+      ],
+      "arguments": [
+        "  <TITLE>  The iteration title"
+      ],
+      "commands": []
+    },
+    {
+      "argv": [
+        "/Users/rahul/Projects/gest/target/debug/gest",
+        "iteration",
+        "delete",
+        "--help"
+      ],
+      "exit": 0,
+      "help": "/tmp/gest-baseline-rGsljN/help-iteration-delete.txt",
+      "options": [
+        "      --force       Reserved for future guards; accepted for UX consistency with other delete commands but currently has no effect",
+        "  -j, --json        Emit output as JSON",
+        "  -q, --quiet       Suppress normal output (print only entity ID on create/mutate, nothing on delete)",
+        "  -r, --raw         Emit script-friendly plain output (no themed styling)",
+        "      --yes         Skip the interactive confirmation prompt",
+        "      --no-color    Disable ANSI color output",
+        "      --no-pager    Disable paging of long command output",
+        "  -v, --verbose...  Increase log verbosity (`-v` = info, `-vv` = debug, `-vvv` = trace)",
+        "  -h, --help        Print help"
+      ],
+      "arguments": [
+        "  <ID>  The iteration ID or prefix"
+      ],
+      "commands": []
+    },
+    {
+      "argv": [
+        "/Users/rahul/Projects/gest/target/debug/gest",
+        "iteration",
+        "graph",
+        "--help"
+      ],
+      "exit": 0,
+      "help": "/tmp/gest-baseline-rGsljN/help-iteration-graph.txt",
+      "options": [
+        "  -j, --json        Emit output as JSON",
+        "  -q, --quiet       Suppress normal output (print only entity ID on create/mutate, nothing on delete)",
+        "  -r, --raw         Emit script-friendly plain output (no themed styling)",
+        "      --no-color    Disable ANSI color output",
+        "      --no-pager    Disable paging of long command output",
+        "  -v, --verbose...  Increase log verbosity (`-v` = info, `-vv` = debug, `-vvv` = trace)",
+        "  -h, --help        Print help"
+      ],
+      "arguments": [
+        "  <ID>  The iteration ID or prefix"
+      ],
+      "commands": []
+    },
+    {
+      "argv": [
+        "/Users/rahul/Projects/gest/target/debug/gest",
+        "iteration",
+        "link",
+        "--help"
+      ],
+      "exit": 0,
+      "help": "/tmp/gest-baseline-rGsljN/help-iteration-link.txt",
+      "options": [
+        "      --artifact    Target is an artifact instead of another iteration",
+        "      --rel <REL>   The relationship type (e.g. blocks, blocked-by, relates-to)",
+        "  -j, --json        Emit output as JSON",
+        "  -q, --quiet       Suppress normal output (print only entity ID on create/mutate, nothing on delete)",
+        "  -r, --raw         Emit script-friendly plain output (no themed styling)",
+        "      --no-color    Disable ANSI color output",
+        "      --no-pager    Disable paging of long command output",
+        "  -v, --verbose...  Increase log verbosity (`-v` = info, `-vv` = debug, `-vvv` = trace)",
+        "  -h, --help        Print help"
+      ],
+      "arguments": [
+        "  <ID>               The iteration ID or prefix",
+        "  [[REL] TARGET]...  Positional arguments: either `<target>` (new form) or `<rel> <target>` (deprecated)"
+      ],
+      "commands": []
+    },
+    {
+      "argv": [
+        "/Users/rahul/Projects/gest/target/debug/gest",
+        "iteration",
+        "list",
+        "--help"
+      ],
+      "exit": 0,
+      "help": "/tmp/gest-baseline-rGsljN/help-iteration-list.txt",
+      "options": [
+        "  -a, --all              Show all iterations, including completed",
+        "      --has-available    Only show iterations that have unclaimed (open) tasks",
+        "      --limit <N>        Cap the number of items returned",
+        "  -s, --status <STATUS>  Filter by status",
+        "  -t, --tag <TAG>        Filter by tag",
+        "  -j, --json             Emit output as JSON",
+        "  -q, --quiet            Suppress normal output (print only entity ID on create/mutate, nothing on delete)",
+        "  -r, --raw              Emit script-friendly plain output (no themed styling)",
+        "      --no-color         Disable ANSI color output",
+        "      --no-pager         Disable paging of long command output",
+        "  -v, --verbose...       Increase log verbosity (`-v` = info, `-vv` = debug, `-vvv` = trace)",
+        "  -h, --help             Print help"
+      ],
+      "arguments": [],
+      "commands": []
+    },
+    {
+      "argv": [
+        "/Users/rahul/Projects/gest/target/debug/gest",
+        "iteration",
+        "meta",
+        "--help"
+      ],
+      "exit": 0,
+      "help": "/tmp/gest-baseline-rGsljN/help-iteration-meta.txt",
+      "options": [
+        "  -j, --json        Emit output as JSON",
+        "  -q, --quiet       Suppress normal output (print only entity ID on create/mutate, nothing on delete)",
+        "  -r, --raw         Emit script-friendly plain output (no themed styling)",
+        "      --no-color    Disable ANSI color output",
+        "      --no-pager    Disable paging of long command output",
+        "  -v, --verbose...  Increase log verbosity (`-v` = info, `-vv` = debug, `-vvv` = trace)",
+        "  -h, --help        Print help"
+      ],
+      "arguments": [
+        "  [ID]  The iteration ID or prefix (used when no subcommand is given)"
+      ],
+      "commands": [
+        "  get    Get a metadata value by dot-delimited path",
+        "  set    Set a metadata value at a dot-delimited path",
+        "  unset  Remove a metadata value at a dot-delimited path",
+        "  help   Print this message or the help of the given subcommand(s)"
+      ]
+    },
+    {
+      "argv": [
+        "/Users/rahul/Projects/gest/target/debug/gest",
+        "iteration",
+        "meta",
+        "get",
+        "--help"
+      ],
+      "exit": 0,
+      "help": "/tmp/gest-baseline-rGsljN/help-iteration-meta-get.txt",
+      "options": [
+        "  -j, --json        Emit output as JSON",
+        "  -q, --quiet       Suppress normal output (print only entity ID on create/mutate, nothing on delete)",
+        "  -r, --raw         Emit script-friendly plain output (no themed styling)",
+        "      --no-color    Disable ANSI color output",
+        "      --no-pager    Disable paging of long command output",
+        "  -v, --verbose...  Increase log verbosity (`-v` = info, `-vv` = debug, `-vvv` = trace)",
+        "  -h, --help        Print help"
+      ],
+      "arguments": [
+        "  <ID>    The iteration ID or prefix",
+        "  <PATH>  The dot-delimited metadata path"
+      ],
+      "commands": []
+    },
+    {
+      "argv": [
+        "/Users/rahul/Projects/gest/target/debug/gest",
+        "iteration",
+        "meta",
+        "set",
+        "--help"
+      ],
+      "exit": 0,
+      "help": "/tmp/gest-baseline-rGsljN/help-iteration-meta-set.txt",
+      "options": [
+        "      --as-json     Parse the value as a JSON literal instead of auto-detecting",
+        "  -j, --json        Emit output as JSON",
+        "  -q, --quiet       Suppress normal output (print only entity ID on create/mutate, nothing on delete)",
+        "  -r, --raw         Emit script-friendly plain output (no themed styling)",
+        "      --no-color    Disable ANSI color output",
+        "      --no-pager    Disable paging of long command output",
+        "  -v, --verbose...  Increase log verbosity (`-v` = info, `-vv` = debug, `-vvv` = trace)",
+        "  -h, --help        Print help"
+      ],
+      "arguments": [
+        "  <ID>     The iteration ID or prefix",
+        "  <PATH>   The dot-delimited metadata path",
+        "  <VALUE>  The metadata value (auto-detected scalar unless --as-json is set)"
+      ],
+      "commands": []
+    },
+    {
+      "argv": [
+        "/Users/rahul/Projects/gest/target/debug/gest",
+        "iteration",
+        "meta",
+        "unset",
+        "--help"
+      ],
+      "exit": 0,
+      "help": "/tmp/gest-baseline-rGsljN/help-iteration-meta-unset.txt",
+      "options": [
+        "  -j, --json        Emit output as JSON",
+        "  -q, --quiet       Suppress normal output (print only entity ID on create/mutate, nothing on delete)",
+        "  -r, --raw         Emit script-friendly plain output (no themed styling)",
+        "      --no-color    Disable ANSI color output",
+        "      --no-pager    Disable paging of long command output",
+        "  -v, --verbose...  Increase log verbosity (`-v` = info, `-vv` = debug, `-vvv` = trace)",
+        "  -h, --help        Print help"
+      ],
+      "arguments": [
+        "  <ID>    The iteration ID or prefix",
+        "  <PATH>  The dot-delimited metadata path"
+      ],
+      "commands": []
+    },
+    {
+      "argv": [
+        "/Users/rahul/Projects/gest/target/debug/gest",
+        "iteration",
+        "next",
+        "--help"
+      ],
+      "exit": 0,
+      "help": "/tmp/gest-baseline-rGsljN/help-iteration-next.txt",
+      "options": [
+        "      --agent <AGENT>  Agent name for assignment (requires --claim)",
+        "      --claim          Claim the task (set to in-progress)",
+        "  -j, --json           Emit output as JSON",
+        "  -q, --quiet          Suppress normal output (print only entity ID on create/mutate, nothing on delete)",
+        "  -r, --raw            Emit script-friendly plain output (no themed styling)",
+        "      --no-color       Disable ANSI color output",
+        "      --no-pager       Disable paging of long command output",
+        "  -v, --verbose...     Increase log verbosity (`-v` = info, `-vv` = debug, `-vvv` = trace)",
+        "  -h, --help           Print help"
+      ],
+      "arguments": [
+        "  <ID>  The iteration ID or prefix"
+      ],
+      "commands": []
+    },
+    {
+      "argv": [
+        "/Users/rahul/Projects/gest/target/debug/gest",
+        "iteration",
+        "remove",
+        "--help"
+      ],
+      "exit": 0,
+      "help": "/tmp/gest-baseline-rGsljN/help-iteration-remove.txt",
+      "options": [
+        "  -j, --json        Emit output as JSON",
+        "  -q, --quiet       Suppress normal output (print only entity ID on create/mutate, nothing on delete)",
+        "  -r, --raw         Emit script-friendly plain output (no themed styling)",
+        "      --no-color    Disable ANSI color output",
+        "      --no-pager    Disable paging of long command output",
+        "  -v, --verbose...  Increase log verbosity (`-v` = info, `-vv` = debug, `-vvv` = trace)",
+        "  -h, --help        Print help"
+      ],
+      "arguments": [
+        "  <ITERATION>  The iteration ID or prefix",
+        "  <TASK>       The task ID or prefix"
+      ],
+      "commands": []
+    },
+    {
+      "argv": [
+        "/Users/rahul/Projects/gest/target/debug/gest",
+        "iteration",
+        "reopen",
+        "--help"
+      ],
+      "exit": 0,
+      "help": "/tmp/gest-baseline-rGsljN/help-iteration-reopen.txt",
+      "options": [
+        "  -j, --json        Emit output as JSON",
+        "  -q, --quiet       Suppress normal output (print only entity ID on create/mutate, nothing on delete)",
+        "  -r, --raw         Emit script-friendly plain output (no themed styling)",
+        "      --no-color    Disable ANSI color output",
+        "      --no-pager    Disable paging of long command output",
+        "  -v, --verbose...  Increase log verbosity (`-v` = info, `-vv` = debug, `-vvv` = trace)",
+        "  -h, --help        Print help"
+      ],
+      "arguments": [
+        "  <ID>  The iteration ID or prefix"
+      ],
+      "commands": []
+    },
+    {
+      "argv": [
+        "/Users/rahul/Projects/gest/target/debug/gest",
+        "iteration",
+        "show",
+        "--help"
+      ],
+      "exit": 0,
+      "help": "/tmp/gest-baseline-rGsljN/help-iteration-show.txt",
+      "options": [
+        "  -j, --json        Emit output as JSON",
+        "  -q, --quiet       Suppress normal output (print only entity ID on create/mutate, nothing on delete)",
+        "  -r, --raw         Emit script-friendly plain output (no themed styling)",
+        "      --no-color    Disable ANSI color output",
+        "      --no-pager    Disable paging of long command output",
+        "  -v, --verbose...  Increase log verbosity (`-v` = info, `-vv` = debug, `-vvv` = trace)",
+        "  -h, --help        Print help"
+      ],
+      "arguments": [
+        "  <ID>  The iteration ID or prefix"
+      ],
+      "commands": []
+    },
+    {
+      "argv": [
+        "/Users/rahul/Projects/gest/target/debug/gest",
+        "iteration",
+        "status",
+        "--help"
+      ],
+      "exit": 0,
+      "help": "/tmp/gest-baseline-rGsljN/help-iteration-status.txt",
+      "options": [
+        "  -j, --json        Emit output as JSON",
+        "  -q, --quiet       Suppress normal output (print only entity ID on create/mutate, nothing on delete)",
+        "  -r, --raw         Emit script-friendly plain output (no themed styling)",
+        "      --no-color    Disable ANSI color output",
+        "      --no-pager    Disable paging of long command output",
+        "  -v, --verbose...  Increase log verbosity (`-v` = info, `-vv` = debug, `-vvv` = trace)",
+        "  -h, --help        Print help"
+      ],
+      "arguments": [
+        "  <ID>  The iteration ID or prefix"
+      ],
+      "commands": []
+    },
+    {
+      "argv": [
+        "/Users/rahul/Projects/gest/target/debug/gest",
+        "iteration",
+        "tag",
+        "--help"
+      ],
+      "exit": 0,
+      "help": "/tmp/gest-baseline-rGsljN/help-iteration-tag.txt",
+      "options": [
+        "  -j, --json        Emit output as JSON",
+        "  -q, --quiet       Suppress normal output (print only entity ID on create/mutate, nothing on delete)",
+        "  -r, --raw         Emit script-friendly plain output (no themed styling)",
+        "      --no-color    Disable ANSI color output",
+        "      --no-pager    Disable paging of long command output",
+        "  -v, --verbose...  Increase log verbosity (`-v` = info, `-vv` = debug, `-vvv` = trace)",
+        "  -h, --help        Print help"
+      ],
+      "arguments": [
+        "  <ID>     The iteration ID or prefix",
+        "  <LABEL>  The tag label to add"
+      ],
+      "commands": []
+    },
+    {
+      "argv": [
+        "/Users/rahul/Projects/gest/target/debug/gest",
+        "iteration",
+        "unlink",
+        "--help"
+      ],
+      "exit": 0,
+      "help": "/tmp/gest-baseline-rGsljN/help-iteration-unlink.txt",
+      "options": [
+        "      --artifact    Target is an artifact instead of another iteration",
+        "      --rel <REL>   The relationship type (e.g. blocks, blocked-by, relates-to). Required when multiple edges exist",
+        "  -j, --json        Emit output as JSON",
+        "  -q, --quiet       Suppress normal output (print only entity ID on create/mutate, nothing on delete)",
+        "  -r, --raw         Emit script-friendly plain output (no themed styling)",
+        "      --no-color    Disable ANSI color output",
+        "      --no-pager    Disable paging of long command output",
+        "  -v, --verbose...  Increase log verbosity (`-v` = info, `-vv` = debug, `-vvv` = trace)",
+        "  -h, --help        Print help"
+      ],
+      "arguments": [
+        "  <ID>      The iteration ID or prefix",
+        "  <TARGET>  The target entity ID or prefix"
+      ],
+      "commands": []
+    },
+    {
+      "argv": [
+        "/Users/rahul/Projects/gest/target/debug/gest",
+        "iteration",
+        "untag",
+        "--help"
+      ],
+      "exit": 0,
+      "help": "/tmp/gest-baseline-rGsljN/help-iteration-untag.txt",
+      "options": [
+        "  -j, --json        Emit output as JSON",
+        "  -q, --quiet       Suppress normal output (print only entity ID on create/mutate, nothing on delete)",
+        "  -r, --raw         Emit script-friendly plain output (no themed styling)",
+        "      --no-color    Disable ANSI color output",
+        "      --no-pager    Disable paging of long command output",
+        "  -v, --verbose...  Increase log verbosity (`-v` = info, `-vv` = debug, `-vvv` = trace)",
+        "  -h, --help        Print help"
+      ],
+      "arguments": [
+        "  <ID>     The iteration ID or prefix",
+        "  <LABEL>  The tag label to remove"
+      ],
+      "commands": []
+    },
+    {
+      "argv": [
+        "/Users/rahul/Projects/gest/target/debug/gest",
+        "iteration",
+        "update",
+        "--help"
+      ],
+      "exit": 0,
+      "help": "/tmp/gest-baseline-rGsljN/help-iteration-update.txt",
+      "options": [
+        "  -d, --description <DESCRIPTION>  Set the iteration description",
+        "  -m, --metadata <KEY=VALUE>       Set a metadata key=value pair (repeatable; supports dot-paths and scalar inference)",
+        "      --metadata-json <JSON>       Merge a JSON object into metadata (repeatable; applied after --metadata pairs)",
+        "  -t, --title <TITLE>              Set the iteration title",
+        "  -j, --json                       Emit output as JSON",
+        "  -q, --quiet                      Suppress normal output (print only entity ID on create/mutate, nothing on delete)",
+        "  -r, --raw                        Emit script-friendly plain output (no themed styling)",
+        "      --no-color                   Disable ANSI color output",
+        "      --no-pager                   Disable paging of long command output",
+        "  -v, --verbose...                 Increase log verbosity (`-v` = info, `-vv` = debug, `-vvv` = trace)",
+        "  -h, --help                       Print help"
+      ],
+      "arguments": [
+        "  <ID>  The iteration ID or prefix"
+      ],
+      "commands": []
+    },
+    {
+      "argv": [
+        "/Users/rahul/Projects/gest/target/debug/gest",
+        "migrate",
+        "--help"
+      ],
+      "exit": 0,
+      "help": "/tmp/gest-baseline-rGsljN/help-migrate.txt",
+      "options": [
+        "      --from <FROM>",
+        "          The source format version to migrate from",
+        "          Possible values:",
+        "          - v0.4: v0.4.x flat-file `.gest/` directory format",
+        "      --path <PATH>",
+        "          Path to the legacy data directory (defaults to auto-discovery)",
+        "      --no-color",
+        "          Disable ANSI color output",
+        "      --no-pager",
+        "          Disable paging of long command output",
+        "  -v, --verbose...",
+        "          Increase log verbosity (`-v` = info, `-vv` = debug, `-vvv` = trace)",
+        "  -h, --help",
+        "          Print help (see a summary with '-h')"
+      ],
+      "arguments": [],
+      "commands": []
+    },
+    {
+      "argv": [
+        "/Users/rahul/Projects/gest/target/debug/gest",
+        "project",
+        "--help"
+      ],
+      "exit": 0,
+      "help": "/tmp/gest-baseline-rGsljN/help-project.txt",
+      "options": [
+        "      --json        Emit output as JSON (only applies to the default show view)",
+        "      --no-color    Disable ANSI color output",
+        "      --no-pager    Disable paging of long command output",
+        "  -v, --verbose...  Increase log verbosity (`-v` = info, `-vv` = debug, `-vvv` = trace)",
+        "  -h, --help        Print help"
+      ],
+      "arguments": [],
+      "commands": [
+        "  archive    Soft-archive a project, hiding it and its entities from default list views",
+        "  attach     Attach the current directory to an existing project as a workspace",
+        "  delete     Delete a project and all of its owned entities [aliases: rm]",
+        "  detach     Detach the current directory from its project",
+        "  list       List all known projects [aliases: ls]",
+        "  unarchive  Restore an archived project to active status",
+        "  help       Print this message or the help of the given subcommand(s)"
+      ]
+    },
+    {
+      "argv": [
+        "/Users/rahul/Projects/gest/target/debug/gest",
+        "project",
+        "archive",
+        "--help"
+      ],
+      "exit": 0,
+      "help": "/tmp/gest-baseline-rGsljN/help-project-archive.txt",
+      "options": [
+        "  -j, --json        Emit output as JSON",
+        "  -q, --quiet       Suppress normal output (print only entity ID on create/mutate, nothing on delete)",
+        "  -r, --raw         Emit script-friendly plain output (no themed styling)",
+        "      --yes         Skip the interactive confirmation prompt",
+        "      --no-color    Disable ANSI color output",
+        "      --no-pager    Disable paging of long command output",
+        "  -v, --verbose...  Increase log verbosity (`-v` = info, `-vv` = debug, `-vvv` = trace)",
+        "  -h, --help        Print help"
+      ],
+      "arguments": [
+        "  <ID>  The project ID or prefix"
+      ],
+      "commands": []
+    },
+    {
+      "argv": [
+        "/Users/rahul/Projects/gest/target/debug/gest",
+        "project",
+        "attach",
+        "--help"
+      ],
+      "exit": 0,
+      "help": "/tmp/gest-baseline-rGsljN/help-project-attach.txt",
+      "options": [
+        "      --no-color    Disable ANSI color output",
+        "      --no-pager    Disable paging of long command output",
+        "  -v, --verbose...  Increase log verbosity (`-v` = info, `-vv` = debug, `-vvv` = trace)",
+        "  -h, --help        Print help"
+      ],
+      "arguments": [
+        "  <ID>  The project ID (or unique prefix) to attach to"
+      ],
+      "commands": []
+    },
+    {
+      "argv": [
+        "/Users/rahul/Projects/gest/target/debug/gest",
+        "project",
+        "delete",
+        "--help"
+      ],
+      "exit": 0,
+      "help": "/tmp/gest-baseline-rGsljN/help-project-delete.txt",
+      "options": [
+        "  -j, --json        Emit output as JSON",
+        "  -q, --quiet       Suppress normal output (print only entity ID on create/mutate, nothing on delete)",
+        "  -r, --raw         Emit script-friendly plain output (no themed styling)",
+        "      --yes         Skip the interactive confirmation prompt",
+        "      --no-color    Disable ANSI color output",
+        "      --no-pager    Disable paging of long command output",
+        "  -v, --verbose...  Increase log verbosity (`-v` = info, `-vv` = debug, `-vvv` = trace)",
+        "  -h, --help        Print help"
+      ],
+      "arguments": [
+        "  <ID>  The project ID or prefix"
+      ],
+      "commands": []
+    },
+    {
+      "argv": [
+        "/Users/rahul/Projects/gest/target/debug/gest",
+        "project",
+        "detach",
+        "--help"
+      ],
+      "exit": 0,
+      "help": "/tmp/gest-baseline-rGsljN/help-project-detach.txt",
+      "options": [
+        "      --no-color    Disable ANSI color output",
+        "      --no-pager    Disable paging of long command output",
+        "  -v, --verbose...  Increase log verbosity (`-v` = info, `-vv` = debug, `-vvv` = trace)",
+        "  -h, --help        Print help"
+      ],
+      "arguments": [],
+      "commands": []
+    },
+    {
+      "argv": [
+        "/Users/rahul/Projects/gest/target/debug/gest",
+        "project",
+        "list",
+        "--help"
+      ],
+      "exit": 0,
+      "help": "/tmp/gest-baseline-rGsljN/help-project-list.txt",
+      "options": [
+        "  -a, --all         Show all projects, including archived",
+        "      --limit <N>   Cap the number of items returned",
+        "  -j, --json        Emit output as JSON",
+        "  -q, --quiet       Suppress normal output (print only entity ID on create/mutate, nothing on delete)",
+        "  -r, --raw         Emit script-friendly plain output (no themed styling)",
+        "      --no-color    Disable ANSI color output",
+        "      --no-pager    Disable paging of long command output",
+        "  -v, --verbose...  Increase log verbosity (`-v` = info, `-vv` = debug, `-vvv` = trace)",
+        "  -h, --help        Print help"
+      ],
+      "arguments": [],
+      "commands": []
+    },
+    {
+      "argv": [
+        "/Users/rahul/Projects/gest/target/debug/gest",
+        "project",
+        "unarchive",
+        "--help"
+      ],
+      "exit": 0,
+      "help": "/tmp/gest-baseline-rGsljN/help-project-unarchive.txt",
+      "options": [
+        "  -j, --json        Emit output as JSON",
+        "  -q, --quiet       Suppress normal output (print only entity ID on create/mutate, nothing on delete)",
+        "  -r, --raw         Emit script-friendly plain output (no themed styling)",
+        "      --no-color    Disable ANSI color output",
+        "      --no-pager    Disable paging of long command output",
+        "  -v, --verbose...  Increase log verbosity (`-v` = info, `-vv` = debug, `-vvv` = trace)",
+        "  -h, --help        Print help"
+      ],
+      "arguments": [
+        "  <ID>  The project ID or prefix"
+      ],
+      "commands": []
+    },
+    {
+      "argv": [
+        "/Users/rahul/Projects/gest/target/debug/gest",
+        "purge",
+        "--help"
+      ],
+      "exit": 0,
+      "help": "/tmp/gest-baseline-rGsljN/help-purge.txt",
+      "options": [
+        "      --all-projects   Operate across every project in the store instead of the current one",
+        "      --dry-run        Show what would be purged without making any changes",
+        "      --artifacts      Purge archived artifacts",
+        "      --iterations     Purge archived iterations (terminal: completed/cancelled)",
+        "      --projects       Purge archived projects (non-undoable)",
+        "      --relationships  Purge dangling relationship rows",
+        "      --tasks          Purge terminal tasks (done/cancelled)",
+        "      --tombstones     Purge orphan tombstone files",
+        "      --yes            Skip the interactive confirmation prompt",
+        "      --no-color       Disable ANSI color output",
+        "      --no-pager       Disable paging of long command output",
+        "  -v, --verbose...     Increase log verbosity (`-v` = info, `-vv` = debug, `-vvv` = trace)",
+        "  -h, --help           Print help"
+      ],
+      "arguments": [],
+      "commands": []
+    },
+    {
+      "argv": [
+        "/Users/rahul/Projects/gest/target/debug/gest",
+        "search",
+        "--help"
+      ],
+      "exit": 0,
+      "help": "/tmp/gest-baseline-rGsljN/help-search.txt",
+      "options": [
+        "  -e, --expand      Show full content without truncation",
+        "  -j, --json        Emit results as JSON",
+        "      --limit <N>   Cap the number of items returned",
+        "  -a, --all         Include resolved/archived entities",
+        "      --no-color    Disable ANSI color output",
+        "      --no-pager    Disable paging of long command output",
+        "  -v, --verbose...  Increase log verbosity (`-v` = info, `-vv` = debug, `-vvv` = trace)",
+        "  -h, --help        Print help"
+      ],
+      "arguments": [
+        "  <QUERY>  The search term"
+      ],
+      "commands": []
+    },
+    {
+      "argv": [
+        "/Users/rahul/Projects/gest/target/debug/gest",
+        "self-update",
+        "--help"
+      ],
+      "exit": 0,
+      "help": "/tmp/gest-baseline-rGsljN/help-self-update.txt",
+      "options": [
+        "      --target <TARGET>  Pin to a specific release version (e.g. `0.5.0`)",
+        "      --no-color         Disable ANSI color output",
+        "      --no-pager         Disable paging of long command output",
+        "  -v, --verbose...       Increase log verbosity (`-v` = info, `-vv` = debug, `-vvv` = trace)",
+        "  -h, --help             Print help"
+      ],
+      "arguments": [],
+      "commands": []
+    },
+    {
+      "argv": [
+        "/Users/rahul/Projects/gest/target/debug/gest",
+        "serve",
+        "--help"
+      ],
+      "exit": 0,
+      "help": "/tmp/gest-baseline-rGsljN/help-serve.txt",
+      "options": [
+        "  -b, --bind <BIND_ADDRESS>        Address to bind to (overrides `[serve].bind_address`)",
+        "      --debounce-ms <DEBOUNCE_MS>  File watcher debounce in milliseconds (overrides `[serve].debounce_ms`)",
+        "      --no-open                    Suppress automatic browser opening",
+        "  -p, --port <PORT>                Port to listen on (overrides `[serve].port`)",
+        "      --no-color                   Disable ANSI color output",
+        "      --no-pager                   Disable paging of long command output",
+        "  -v, --verbose...                 Increase log verbosity (`-v` = info, `-vv` = debug, `-vvv` = trace)",
+        "  -h, --help                       Print help"
+      ],
+      "arguments": [],
+      "commands": []
+    },
+    {
+      "argv": [
+        "/Users/rahul/Projects/gest/target/debug/gest",
+        "tag",
+        "--help"
+      ],
+      "exit": 0,
+      "help": "/tmp/gest-baseline-rGsljN/help-tag.txt",
+      "options": [
+        "      --no-color    Disable ANSI color output",
+        "      --no-pager    Disable paging of long command output",
+        "  -v, --verbose...  Increase log verbosity (`-v` = info, `-vv` = debug, `-vvv` = trace)",
+        "  -h, --help        Print help"
+      ],
+      "arguments": [],
+      "commands": [
+        "  add     Add tags to any entity (task, artifact, or iteration)",
+        "  list    List all tags",
+        "  remove  Remove tags from any entity (task, artifact, or iteration)",
+        "  help    Print this message or the help of the given subcommand(s)"
+      ]
+    },
+    {
+      "argv": [
+        "/Users/rahul/Projects/gest/target/debug/gest",
+        "tag",
+        "add",
+        "--help"
+      ],
+      "exit": 0,
+      "help": "/tmp/gest-baseline-rGsljN/help-tag-add.txt",
+      "options": [
+        "  -j, --json        Emit output as JSON",
+        "  -q, --quiet       Suppress normal output (print only entity ID on create/mutate, nothing on delete)",
+        "  -r, --raw         Emit script-friendly plain output (no themed styling)",
+        "      --no-color    Disable ANSI color output",
+        "      --no-pager    Disable paging of long command output",
+        "  -v, --verbose...  Increase log verbosity (`-v` = info, `-vv` = debug, `-vvv` = trace)",
+        "  -h, --help        Print help"
+      ],
+      "arguments": [
+        "  <ID>       The entity ID or prefix",
+        "  <TAGS>...  One or more tag labels to add (comma-separated values split into multiple tags)"
+      ],
+      "commands": []
+    },
+    {
+      "argv": [
+        "/Users/rahul/Projects/gest/target/debug/gest",
+        "tag",
+        "list",
+        "--help"
+      ],
+      "exit": 0,
+      "help": "/tmp/gest-baseline-rGsljN/help-tag-list.txt",
+      "options": [
+        "      --artifact    Show only tags attached to artifacts",
+        "      --iteration   Show only tags attached to iterations",
+        "      --limit <N>   Cap the number of items returned",
+        "      --task        Show only tags attached to tasks",
+        "  -j, --json        Emit output as JSON",
+        "  -q, --quiet       Suppress normal output (print only entity ID on create/mutate, nothing on delete)",
+        "  -r, --raw         Emit script-friendly plain output (no themed styling)",
+        "      --no-color    Disable ANSI color output",
+        "      --no-pager    Disable paging of long command output",
+        "  -v, --verbose...  Increase log verbosity (`-v` = info, `-vv` = debug, `-vvv` = trace)",
+        "  -h, --help        Print help"
+      ],
+      "arguments": [],
+      "commands": []
+    },
+    {
+      "argv": [
+        "/Users/rahul/Projects/gest/target/debug/gest",
+        "tag",
+        "remove",
+        "--help"
+      ],
+      "exit": 0,
+      "help": "/tmp/gest-baseline-rGsljN/help-tag-remove.txt",
+      "options": [
+        "  -j, --json        Emit output as JSON",
+        "  -q, --quiet       Suppress normal output (print only entity ID on create/mutate, nothing on delete)",
+        "  -r, --raw         Emit script-friendly plain output (no themed styling)",
+        "      --no-color    Disable ANSI color output",
+        "      --no-pager    Disable paging of long command output",
+        "  -v, --verbose...  Increase log verbosity (`-v` = info, `-vv` = debug, `-vvv` = trace)",
+        "  -h, --help        Print help"
+      ],
+      "arguments": [
+        "  <ID>       The entity ID or prefix",
+        "  <TAGS>...  One or more tag labels to remove (comma-separated values split into multiple tags)"
+      ],
+      "commands": []
+    },
+    {
+      "argv": [
+        "/Users/rahul/Projects/gest/target/debug/gest",
+        "task",
+        "--help"
+      ],
+      "exit": 0,
+      "help": "/tmp/gest-baseline-rGsljN/help-task.txt",
+      "options": [
+        "      --no-color    Disable ANSI color output",
+        "      --no-pager    Disable paging of long command output",
+        "  -v, --verbose...  Increase log verbosity (`-v` = info, `-vv` = debug, `-vvv` = trace)",
+        "  -h, --help        Print help"
+      ],
+      "arguments": [],
+      "commands": [
+        "  block     Mark a task as blocking another task",
+        "  cancel    Cancel a task",
+        "  claim     Claim a task (assign and mark in-progress)",
+        "  complete  Mark a task as done",
+        "  create    Create a new task [aliases: new]",
+        "  delete    Delete a task and its dependent rows [aliases: rm]",
+        "  link      Link a task to another entity",
+        "  list      List tasks [aliases: ls]",
+        "  meta      Get or set custom metadata",
+        "  note      Manage notes on a task",
+        "  show      Show a task [aliases: view]",
+        "  tag       Add a tag to a task",
+        "  unlink    Remove a relationship from a task",
+        "  untag     Remove a tag from a task",
+        "  update    Update a task [aliases: edit]",
+        "  help      Print this message or the help of the given subcommand(s)"
+      ]
+    },
+    {
+      "argv": [
+        "/Users/rahul/Projects/gest/target/debug/gest",
+        "task",
+        "block",
+        "--help"
+      ],
+      "exit": 0,
+      "help": "/tmp/gest-baseline-rGsljN/help-task-block.txt",
+      "options": [
+        "  -j, --json        Emit output as JSON",
+        "  -q, --quiet       Suppress normal output (print only entity ID on create/mutate, nothing on delete)",
+        "  -r, --raw         Emit script-friendly plain output (no themed styling)",
+        "      --no-color    Disable ANSI color output",
+        "      --no-pager    Disable paging of long command output",
+        "  -v, --verbose...  Increase log verbosity (`-v` = info, `-vv` = debug, `-vvv` = trace)",
+        "  -h, --help        Print help"
+      ],
+      "arguments": [
+        "  <ID>       The task ID or prefix (the blocker)",
+        "  <BLOCKED>  The task being blocked"
+      ],
+      "commands": []
+    },
+    {
+      "argv": [
+        "/Users/rahul/Projects/gest/target/debug/gest",
+        "task",
+        "cancel",
+        "--help"
+      ],
+      "exit": 0,
+      "help": "/tmp/gest-baseline-rGsljN/help-task-cancel.txt",
+      "options": [
+        "  -j, --json        Emit output as JSON",
+        "  -q, --quiet       Suppress normal output (print only entity ID on create/mutate, nothing on delete)",
+        "  -r, --raw         Emit script-friendly plain output (no themed styling)",
+        "      --no-color    Disable ANSI color output",
+        "      --no-pager    Disable paging of long command output",
+        "  -v, --verbose...  Increase log verbosity (`-v` = info, `-vv` = debug, `-vvv` = trace)",
+        "  -h, --help        Print help"
+      ],
+      "arguments": [
+        "  <ID>  The task ID or prefix"
+      ],
+      "commands": []
+    },
+    {
+      "argv": [
+        "/Users/rahul/Projects/gest/target/debug/gest",
+        "task",
+        "claim",
+        "--help"
+      ],
+      "exit": 0,
+      "help": "/tmp/gest-baseline-rGsljN/help-task-claim.txt",
+      "options": [
+        "      --as <AS_AUTHOR>  Claim as a specific author name (defaults to git user)",
+        "  -j, --json            Emit output as JSON",
+        "  -q, --quiet           Suppress normal output (print only entity ID on create/mutate, nothing on delete)",
+        "  -r, --raw             Emit script-friendly plain output (no themed styling)",
+        "      --no-color        Disable ANSI color output",
+        "      --no-pager        Disable paging of long command output",
+        "  -v, --verbose...      Increase log verbosity (`-v` = info, `-vv` = debug, `-vvv` = trace)",
+        "  -h, --help            Print help"
+      ],
+      "arguments": [
+        "  <ID>  The task ID or prefix"
+      ],
+      "commands": []
+    },
+    {
+      "argv": [
+        "/Users/rahul/Projects/gest/target/debug/gest",
+        "task",
+        "complete",
+        "--help"
+      ],
+      "exit": 0,
+      "help": "/tmp/gest-baseline-rGsljN/help-task-complete.txt",
+      "options": [
+        "  -j, --json        Emit output as JSON",
+        "  -q, --quiet       Suppress normal output (print only entity ID on create/mutate, nothing on delete)",
+        "  -r, --raw         Emit script-friendly plain output (no themed styling)",
+        "      --no-color    Disable ANSI color output",
+        "      --no-pager    Disable paging of long command output",
+        "  -v, --verbose...  Increase log verbosity (`-v` = info, `-vv` = debug, `-vvv` = trace)",
+        "  -h, --help        Print help"
+      ],
+      "arguments": [
+        "  <ID>  The task ID or prefix"
+      ],
+      "commands": []
+    },
+    {
+      "argv": [
+        "/Users/rahul/Projects/gest/target/debug/gest",
+        "task",
+        "create",
+        "--help"
+      ],
+      "exit": 0,
+      "help": "/tmp/gest-baseline-rGsljN/help-task-create.txt",
+      "options": [
+        "      --assign <ASSIGN>            Assign the task to an author by name",
+        "      --batch                      Read NDJSON task objects from stdin (one per line)",
+        "  -d, --description <DESCRIPTION>  The task description (opens `$EDITOR` if omitted and stdin is a terminal)",
+        "  -i, --iteration <ITERATION>      Add the task to an iteration (ID or prefix)",
+        "  -l, --link <LINK>                Link the task to another entity (format: `rel:target`). Repeatable",
+        "  -m, --metadata <KEY=VALUE>       Set a metadata key=value pair (repeatable; supports dot-paths and scalar inference)",
+        "      --metadata-json <JSON>       Merge a JSON object into metadata (repeatable; applied after --metadata pairs)",
+        "      --phase <PHASE>              The phase within the iteration (defaults to max existing + 1). Requires `--iteration`",
+        "  -p, --priority <PRIORITY>        The task priority; either 0-4 (lower is higher) or one of critical|high|medium|low|lowest",
+        "  -s, --status <STATUS>            The initial task status",
+        "      --tag <TAG>                  Add a tag to the task. Repeatable; comma-separated values split into multiple tags",
+        "  -j, --json                       Emit output as JSON",
+        "  -q, --quiet                      Suppress normal output (print only entity ID on create/mutate, nothing on delete)",
+        "  -r, --raw                        Emit script-friendly plain output (no themed styling)",
+        "      --no-color                   Disable ANSI color output",
+        "      --no-pager                   Disable paging of long command output",
+        "  -v, --verbose...                 Increase log verbosity (`-v` = info, `-vv` = debug, `-vvv` = trace)",
+        "  -h, --help                       Print help"
+      ],
+      "arguments": [
+        "  [TITLE]  The task title (extracted from the first `# heading` when piping stdin)"
+      ],
+      "commands": []
+    },
+    {
+      "argv": [
+        "/Users/rahul/Projects/gest/target/debug/gest",
+        "task",
+        "delete",
+        "--help"
+      ],
+      "exit": 0,
+      "help": "/tmp/gest-baseline-rGsljN/help-task-delete.txt",
+      "options": [
+        "      --force       Remove the task from every iteration it belongs to before deleting. Without this flag the command refuses to delete a task that is still a member of one or more iterations so members of an active sprint are not removed by accident",
+        "  -j, --json        Emit output as JSON",
+        "  -q, --quiet       Suppress normal output (print only entity ID on create/mutate, nothing on delete)",
+        "  -r, --raw         Emit script-friendly plain output (no themed styling)",
+        "      --yes         Skip the interactive confirmation prompt",
+        "      --no-color    Disable ANSI color output",
+        "      --no-pager    Disable paging of long command output",
+        "  -v, --verbose...  Increase log verbosity (`-v` = info, `-vv` = debug, `-vvv` = trace)",
+        "  -h, --help        Print help"
+      ],
+      "arguments": [
+        "  <ID>  The task ID or prefix"
+      ],
+      "commands": []
+    },
+    {
+      "argv": [
+        "/Users/rahul/Projects/gest/target/debug/gest",
+        "task",
+        "link",
+        "--help"
+      ],
+      "exit": 0,
+      "help": "/tmp/gest-baseline-rGsljN/help-task-link.txt",
+      "options": [
+        "      --artifact                   Target is an artifact instead of a task",
+        "      --rel <REL>                  The relationship type [default: relates-to]",
+        "      --target-type <TARGET_TYPE>  The target entity type [default: task]",
+        "  -j, --json                       Emit output as JSON",
+        "  -q, --quiet                      Suppress normal output (print only entity ID on create/mutate, nothing on delete)",
+        "  -r, --raw                        Emit script-friendly plain output (no themed styling)",
+        "      --no-color                   Disable ANSI color output",
+        "      --no-pager                   Disable paging of long command output",
+        "  -v, --verbose...                 Increase log verbosity (`-v` = info, `-vv` = debug, `-vvv` = trace)",
+        "  -h, --help                       Print help"
+      ],
+      "arguments": [
+        "  <ID>      The task ID or prefix",
+        "  <TARGET>  The target entity ID or prefix"
+      ],
+      "commands": []
+    },
+    {
+      "argv": [
+        "/Users/rahul/Projects/gest/target/debug/gest",
+        "task",
+        "list",
+        "--help"
+      ],
+      "exit": 0,
+      "help": "/tmp/gest-baseline-rGsljN/help-task-list.txt",
+      "options": [
+        "  -a, --all                        Show all tasks, including resolved",
+        "      --assigned-to <ASSIGNED_TO>  Filter by assigned author name",
+        "      --limit <N>                  Cap the number of items returned",
+        "  -s, --status <STATUS>            Filter by status",
+        "  -t, --tag <TAG>                  Filter by tag",
+        "  -j, --json                       Emit output as JSON",
+        "  -q, --quiet                      Suppress normal output (print only entity ID on create/mutate, nothing on delete)",
+        "  -r, --raw                        Emit script-friendly plain output (no themed styling)",
+        "      --no-color                   Disable ANSI color output",
+        "      --no-pager                   Disable paging of long command output",
+        "  -v, --verbose...                 Increase log verbosity (`-v` = info, `-vv` = debug, `-vvv` = trace)",
+        "  -h, --help                       Print help"
+      ],
+      "arguments": [],
+      "commands": []
+    },
+    {
+      "argv": [
+        "/Users/rahul/Projects/gest/target/debug/gest",
+        "task",
+        "meta",
+        "--help"
+      ],
+      "exit": 0,
+      "help": "/tmp/gest-baseline-rGsljN/help-task-meta.txt",
+      "options": [
+        "  -j, --json        Emit output as JSON",
+        "  -q, --quiet       Suppress normal output (print only entity ID on create/mutate, nothing on delete)",
+        "  -r, --raw         Emit script-friendly plain output (no themed styling)",
+        "      --no-color    Disable ANSI color output",
+        "      --no-pager    Disable paging of long command output",
+        "  -v, --verbose...  Increase log verbosity (`-v` = info, `-vv` = debug, `-vvv` = trace)",
+        "  -h, --help        Print help"
+      ],
+      "arguments": [
+        "  [ID]  The task ID or prefix (used when no subcommand is given)"
+      ],
+      "commands": [
+        "  get    Get a metadata value by dot-delimited path",
+        "  set    Set a metadata value at a dot-delimited path",
+        "  unset  Remove a metadata value at a dot-delimited path",
+        "  help   Print this message or the help of the given subcommand(s)"
+      ]
+    },
+    {
+      "argv": [
+        "/Users/rahul/Projects/gest/target/debug/gest",
+        "task",
+        "meta",
+        "get",
+        "--help"
+      ],
+      "exit": 0,
+      "help": "/tmp/gest-baseline-rGsljN/help-task-meta-get.txt",
+      "options": [
+        "  -j, --json        Emit output as JSON",
+        "  -q, --quiet       Suppress normal output (print only entity ID on create/mutate, nothing on delete)",
+        "  -r, --raw         Emit script-friendly plain output (no themed styling)",
+        "      --no-color    Disable ANSI color output",
+        "      --no-pager    Disable paging of long command output",
+        "  -v, --verbose...  Increase log verbosity (`-v` = info, `-vv` = debug, `-vvv` = trace)",
+        "  -h, --help        Print help"
+      ],
+      "arguments": [
+        "  <ID>    The task ID or prefix",
+        "  <PATH>  The dot-delimited metadata path"
+      ],
+      "commands": []
+    },
+    {
+      "argv": [
+        "/Users/rahul/Projects/gest/target/debug/gest",
+        "task",
+        "meta",
+        "set",
+        "--help"
+      ],
+      "exit": 0,
+      "help": "/tmp/gest-baseline-rGsljN/help-task-meta-set.txt",
+      "options": [
+        "      --as-json     Parse the value as a JSON literal instead of auto-detecting",
+        "  -j, --json        Emit output as JSON",
+        "  -q, --quiet       Suppress normal output (print only entity ID on create/mutate, nothing on delete)",
+        "  -r, --raw         Emit script-friendly plain output (no themed styling)",
+        "      --no-color    Disable ANSI color output",
+        "      --no-pager    Disable paging of long command output",
+        "  -v, --verbose...  Increase log verbosity (`-v` = info, `-vv` = debug, `-vvv` = trace)",
+        "  -h, --help        Print help"
+      ],
+      "arguments": [
+        "  <ID>     The task ID or prefix",
+        "  <PATH>   The dot-delimited metadata path",
+        "  <VALUE>  The metadata value (auto-detected scalar unless --as-json is set)"
+      ],
+      "commands": []
+    },
+    {
+      "argv": [
+        "/Users/rahul/Projects/gest/target/debug/gest",
+        "task",
+        "meta",
+        "unset",
+        "--help"
+      ],
+      "exit": 0,
+      "help": "/tmp/gest-baseline-rGsljN/help-task-meta-unset.txt",
+      "options": [
+        "  -j, --json        Emit output as JSON",
+        "  -q, --quiet       Suppress normal output (print only entity ID on create/mutate, nothing on delete)",
+        "  -r, --raw         Emit script-friendly plain output (no themed styling)",
+        "      --no-color    Disable ANSI color output",
+        "      --no-pager    Disable paging of long command output",
+        "  -v, --verbose...  Increase log verbosity (`-v` = info, `-vv` = debug, `-vvv` = trace)",
+        "  -h, --help        Print help"
+      ],
+      "arguments": [
+        "  <ID>    The task ID or prefix",
+        "  <PATH>  The dot-delimited metadata path"
+      ],
+      "commands": []
+    },
+    {
+      "argv": [
+        "/Users/rahul/Projects/gest/target/debug/gest",
+        "task",
+        "note",
+        "--help"
+      ],
+      "exit": 0,
+      "help": "/tmp/gest-baseline-rGsljN/help-task-note.txt",
+      "options": [
+        "      --no-color    Disable ANSI color output",
+        "      --no-pager    Disable paging of long command output",
+        "  -v, --verbose...  Increase log verbosity (`-v` = info, `-vv` = debug, `-vvv` = trace)",
+        "  -h, --help        Print help"
+      ],
+      "arguments": [],
+      "commands": [
+        "  add     Add a note to a task",
+        "  delete  Delete a note from a task",
+        "  list    List notes on a task",
+        "  show    Show a single note",
+        "  update  Update a note's body",
+        "  help    Print this message or the help of the given subcommand(s)"
+      ]
+    },
+    {
+      "argv": [
+        "/Users/rahul/Projects/gest/target/debug/gest",
+        "task",
+        "note",
+        "add",
+        "--help"
+      ],
+      "exit": 0,
+      "help": "/tmp/gest-baseline-rGsljN/help-task-note-add.txt",
+      "options": [
+        "  -b, --body <BODY>    The note body (use `-` to open `$EDITOR`)",
+        "      --agent <AGENT>  Set the author (agent) identifier for this note",
+        "  -j, --json           Emit output as JSON",
+        "  -q, --quiet          Suppress normal output (print only entity ID on create/mutate, nothing on delete)",
+        "  -r, --raw            Emit script-friendly plain output (no themed styling)",
+        "      --no-color       Disable ANSI color output",
+        "      --no-pager       Disable paging of long command output",
+        "  -v, --verbose...     Increase log verbosity (`-v` = info, `-vv` = debug, `-vvv` = trace)",
+        "  -h, --help           Print help"
+      ],
+      "arguments": [
+        "  <ID>  The task ID or prefix"
+      ],
+      "commands": []
+    },
+    {
+      "argv": [
+        "/Users/rahul/Projects/gest/target/debug/gest",
+        "task",
+        "note",
+        "delete",
+        "--help"
+      ],
+      "exit": 0,
+      "help": "/tmp/gest-baseline-rGsljN/help-task-note-delete.txt",
+      "options": [
+        "  -j, --json        Emit output as JSON",
+        "  -q, --quiet       Suppress normal output (print only entity ID on create/mutate, nothing on delete)",
+        "  -r, --raw         Emit script-friendly plain output (no themed styling)",
+        "      --yes         Skip the interactive confirmation prompt",
+        "      --no-color    Disable ANSI color output",
+        "      --no-pager    Disable paging of long command output",
+        "  -v, --verbose...  Increase log verbosity (`-v` = info, `-vv` = debug, `-vvv` = trace)",
+        "  -h, --help        Print help"
+      ],
+      "arguments": [
+        "  <ID>  The note ID or prefix"
+      ],
+      "commands": []
+    },
+    {
+      "argv": [
+        "/Users/rahul/Projects/gest/target/debug/gest",
+        "task",
+        "note",
+        "list",
+        "--help"
+      ],
+      "exit": 0,
+      "help": "/tmp/gest-baseline-rGsljN/help-task-note-list.txt",
+      "options": [
+        "      --limit <N>   Cap the number of items returned",
+        "  -j, --json        Emit output as JSON",
+        "  -q, --quiet       Suppress normal output (print only entity ID on create/mutate, nothing on delete)",
+        "  -r, --raw         Emit script-friendly plain output (no themed styling)",
+        "      --no-color    Disable ANSI color output",
+        "      --no-pager    Disable paging of long command output",
+        "  -v, --verbose...  Increase log verbosity (`-v` = info, `-vv` = debug, `-vvv` = trace)",
+        "  -h, --help        Print help"
+      ],
+      "arguments": [
+        "  <ID>  The task ID or prefix"
+      ],
+      "commands": []
+    },
+    {
+      "argv": [
+        "/Users/rahul/Projects/gest/target/debug/gest",
+        "task",
+        "note",
+        "show",
+        "--help"
+      ],
+      "exit": 0,
+      "help": "/tmp/gest-baseline-rGsljN/help-task-note-show.txt",
+      "options": [
+        "  -j, --json        Emit output as JSON",
+        "  -q, --quiet       Suppress normal output (print only entity ID on create/mutate, nothing on delete)",
+        "  -r, --raw         Emit script-friendly plain output (no themed styling)",
+        "      --no-color    Disable ANSI color output",
+        "      --no-pager    Disable paging of long command output",
+        "  -v, --verbose...  Increase log verbosity (`-v` = info, `-vv` = debug, `-vvv` = trace)",
+        "  -h, --help        Print help"
+      ],
+      "arguments": [
+        "  <ID>  The note ID or prefix"
+      ],
+      "commands": []
+    },
+    {
+      "argv": [
+        "/Users/rahul/Projects/gest/target/debug/gest",
+        "task",
+        "note",
+        "update",
+        "--help"
+      ],
+      "exit": 0,
+      "help": "/tmp/gest-baseline-rGsljN/help-task-note-update.txt",
+      "options": [
+        "  -b, --body <BODY>  The new body text (use `-` to open `$EDITOR`)",
+        "  -j, --json         Emit output as JSON",
+        "  -q, --quiet        Suppress normal output (print only entity ID on create/mutate, nothing on delete)",
+        "  -r, --raw          Emit script-friendly plain output (no themed styling)",
+        "      --no-color     Disable ANSI color output",
+        "      --no-pager     Disable paging of long command output",
+        "  -v, --verbose...   Increase log verbosity (`-v` = info, `-vv` = debug, `-vvv` = trace)",
+        "  -h, --help         Print help"
+      ],
+      "arguments": [
+        "  <ID>  The note ID or prefix"
+      ],
+      "commands": []
+    },
+    {
+      "argv": [
+        "/Users/rahul/Projects/gest/target/debug/gest",
+        "task",
+        "show",
+        "--help"
+      ],
+      "exit": 0,
+      "help": "/tmp/gest-baseline-rGsljN/help-task-show.txt",
+      "options": [
+        "  -j, --json        Emit output as JSON",
+        "  -q, --quiet       Suppress normal output (print only entity ID on create/mutate, nothing on delete)",
+        "  -r, --raw         Emit script-friendly plain output (no themed styling)",
+        "      --no-color    Disable ANSI color output",
+        "      --no-pager    Disable paging of long command output",
+        "  -v, --verbose...  Increase log verbosity (`-v` = info, `-vv` = debug, `-vvv` = trace)",
+        "  -h, --help        Print help"
+      ],
+      "arguments": [
+        "  <ID>  The task ID or prefix"
+      ],
+      "commands": []
+    },
+    {
+      "argv": [
+        "/Users/rahul/Projects/gest/target/debug/gest",
+        "task",
+        "tag",
+        "--help"
+      ],
+      "exit": 0,
+      "help": "/tmp/gest-baseline-rGsljN/help-task-tag.txt",
+      "options": [
+        "  -j, --json        Emit output as JSON",
+        "  -q, --quiet       Suppress normal output (print only entity ID on create/mutate, nothing on delete)",
+        "  -r, --raw         Emit script-friendly plain output (no themed styling)",
+        "      --no-color    Disable ANSI color output",
+        "      --no-pager    Disable paging of long command output",
+        "  -v, --verbose...  Increase log verbosity (`-v` = info, `-vv` = debug, `-vvv` = trace)",
+        "  -h, --help        Print help"
+      ],
+      "arguments": [
+        "  <ID>     The task ID or prefix",
+        "  <LABEL>  The tag label to add"
+      ],
+      "commands": []
+    },
+    {
+      "argv": [
+        "/Users/rahul/Projects/gest/target/debug/gest",
+        "task",
+        "unlink",
+        "--help"
+      ],
+      "exit": 0,
+      "help": "/tmp/gest-baseline-rGsljN/help-task-unlink.txt",
+      "options": [
+        "      --artifact                   Target is an artifact instead of a task",
+        "      --rel <REL>                  Filter to relationships of this type. Required when multiple relationships exist between the endpoints",
+        "      --target-type <TARGET_TYPE>  The target entity type [default: task]",
+        "  -j, --json                       Emit output as JSON",
+        "  -q, --quiet                      Suppress normal output (print only entity ID on create/mutate, nothing on delete)",
+        "  -r, --raw                        Emit script-friendly plain output (no themed styling)",
+        "      --no-color                   Disable ANSI color output",
+        "      --no-pager                   Disable paging of long command output",
+        "  -v, --verbose...                 Increase log verbosity (`-v` = info, `-vv` = debug, `-vvv` = trace)",
+        "  -h, --help                       Print help"
+      ],
+      "arguments": [
+        "  <ID>      The task ID or prefix",
+        "  <TARGET>  The target entity ID or prefix"
+      ],
+      "commands": []
+    },
+    {
+      "argv": [
+        "/Users/rahul/Projects/gest/target/debug/gest",
+        "task",
+        "untag",
+        "--help"
+      ],
+      "exit": 0,
+      "help": "/tmp/gest-baseline-rGsljN/help-task-untag.txt",
+      "options": [
+        "  -j, --json        Emit output as JSON",
+        "  -q, --quiet       Suppress normal output (print only entity ID on create/mutate, nothing on delete)",
+        "  -r, --raw         Emit script-friendly plain output (no themed styling)",
+        "      --no-color    Disable ANSI color output",
+        "      --no-pager    Disable paging of long command output",
+        "  -v, --verbose...  Increase log verbosity (`-v` = info, `-vv` = debug, `-vvv` = trace)",
+        "  -h, --help        Print help"
+      ],
+      "arguments": [
+        "  <ID>     The task ID or prefix",
+        "  <LABEL>  The tag label to remove"
+      ],
+      "commands": []
+    },
+    {
+      "argv": [
+        "/Users/rahul/Projects/gest/target/debug/gest",
+        "task",
+        "update",
+        "--help"
+      ],
+      "exit": 0,
+      "help": "/tmp/gest-baseline-rGsljN/help-task-update.txt",
+      "options": [
+        "      --assigned-to <ASSIGNED_TO>  Set the assigned author by name",
+        "  -d, --description <DESCRIPTION>  Set the task description",
+        "  -m, --metadata <KEY=VALUE>       Set a metadata key=value pair (repeatable; supports dot-paths and scalar inference)",
+        "      --metadata-json <JSON>       Merge a JSON object into metadata (repeatable; applied after --metadata pairs)",
+        "      --phase <PHASE>              Move the task to a phase within its iteration",
+        "  -p, --priority <PRIORITY>        Set the task priority; either 0-4 (lower is higher) or one of critical|high|medium|low|lowest",
+        "  -s, --status <STATUS>            Set the task status",
+        "      --tag <TAG>                  Replace all tags on the task. Repeatable; comma-separated values split into multiple tags",
+        "  -t, --title <TITLE>              Set the task title",
+        "  -j, --json                       Emit output as JSON",
+        "  -q, --quiet                      Suppress normal output (print only entity ID on create/mutate, nothing on delete)",
+        "  -r, --raw                        Emit script-friendly plain output (no themed styling)",
+        "      --no-color                   Disable ANSI color output",
+        "      --no-pager                   Disable paging of long command output",
+        "  -v, --verbose...                 Increase log verbosity (`-v` = info, `-vv` = debug, `-vvv` = trace)",
+        "  -h, --help                       Print help"
+      ],
+      "arguments": [
+        "  <ID>  The task ID or prefix"
+      ],
+      "commands": []
+    },
+    {
+      "argv": [
+        "/Users/rahul/Projects/gest/target/debug/gest",
+        "undo",
+        "--help"
+      ],
+      "exit": 0,
+      "help": "/tmp/gest-baseline-rGsljN/help-undo.txt",
+      "options": [
+        "      --no-color    Disable ANSI color output",
+        "      --no-pager    Disable paging of long command output",
+        "  -v, --verbose...  Increase log verbosity (`-v` = info, `-vv` = debug, `-vvv` = trace)",
+        "  -h, --help        Print help"
+      ],
+      "arguments": [
+        "  [STEPS]  Number of commands to undo [default: 1]"
+      ],
+      "commands": []
+    },
+    {
+      "argv": [
+        "/Users/rahul/Projects/gest/target/debug/gest",
+        "version",
+        "--help"
+      ],
+      "exit": 0,
+      "help": "/tmp/gest-baseline-rGsljN/help-version.txt",
+      "options": [
+        "      --no-color    Disable ANSI color output",
+        "      --no-pager    Disable paging of long command output",
+        "  -v, --verbose...  Increase log verbosity (`-v` = info, `-vv` = debug, `-vvv` = trace)",
+        "  -h, --help        Print help"
+      ],
+      "arguments": [],
+      "commands": []
+    }
+  ]
+}

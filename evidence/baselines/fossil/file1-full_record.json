@@ -1,0 +1,284 @@
+{
+  "name": "file1",
+  "suites": [
+    "file1"
+  ],
+  "command": [
+    "jlog",
+    "run",
+    "tclsh",
+    "/tmp/gossil-fossil-baseline-20261117/launch.tcl",
+    "/tmp/gossil-fossil-baseline-20261117/runs/file1/cwd",
+    "/tmp/gossil-fossil-baseline-20261117/enabled/test/tester.tcl",
+    "/Users/rahul/Projects/gossil/.jlog/bin/fossil",
+    "file1",
+    "-keep"
+  ],
+  "cwd": "/Users/rahul/Projects/gossil",
+  "environment": {
+    "FOSSIL_HOME": "/tmp/gossil-fossil-baseline-20261117/runs/file1/home",
+    "FOSSIL_TEST_TEMP": "/tmp/gossil-fossil-baseline-20261117/runs/file1/tmp",
+    "TEMP": "/tmp/gossil-fossil-baseline-20261117/runs/file1/tmp",
+    "TMP": "/tmp/gossil-fossil-baseline-20261117/runs/file1/tmp",
+    "TMPDIR": "/tmp/gossil-fossil-baseline-20261117/runs/file1/tmp",
+    "HOME": "/tmp/gossil-fossil-baseline-20261117/runs/file1/home",
+    "USER": "gossil-baseline",
+    "LOGNAME": "gossil-baseline",
+    "LC_ALL": "C",
+    "TZ": "UTC"
+  },
+  "exit_code": 0,
+  "timeout": false,
+  "seconds": 1.639,
+  "results": [
+    {
+      "name": "simplify-name-100.1",
+      "result": "pass"
+    },
+    {
+      "name": "simplify-name-100.2",
+      "result": "pass"
+    },
+    {
+      "name": "simplify-name-100.3",
+      "result": "pass"
+    },
+    {
+      "name": "simplify-name-100.4",
+      "result": "pass"
+    },
+    {
+      "name": "simplify-name-101.1",
+      "result": "pass"
+    },
+    {
+      "name": "simplify-name-101.2",
+      "result": "pass"
+    },
+    {
+      "name": "simplify-name-101.3",
+      "result": "pass"
+    },
+    {
+      "name": "simplify-name-101.4",
+      "result": "pass"
+    },
+    {
+      "name": "simplify-name-102.1",
+      "result": "pass"
+    },
+    {
+      "name": "simplify-name-102.2",
+      "result": "pass"
+    },
+    {
+      "name": "simplify-name-102.3",
+      "result": "pass"
+    },
+    {
+      "name": "simplify-name-103.1",
+      "result": "pass"
+    },
+    {
+      "name": "simplify-name-103.2",
+      "result": "pass"
+    },
+    {
+      "name": "simplify-name-103.3",
+      "result": "pass"
+    },
+    {
+      "name": "simplify-name-103.4",
+      "result": "pass"
+    },
+    {
+      "name": "simplify-name-104.1",
+      "result": "pass"
+    },
+    {
+      "name": "simplify-name-104.2",
+      "result": "pass"
+    },
+    {
+      "name": "simplify-name-104.3",
+      "result": "pass"
+    },
+    {
+      "name": "simplify-name-104.4",
+      "result": "pass"
+    },
+    {
+      "name": "simplify-name-105.1",
+      "result": "pass"
+    },
+    {
+      "name": "simplify-name-105.2",
+      "result": "pass"
+    },
+    {
+      "name": "simplify-name-106.1",
+      "result": "pass"
+    },
+    {
+      "name": "simplify-name-106.2",
+      "result": "pass"
+    },
+    {
+      "name": "simplify-name-107.1",
+      "result": "pass"
+    },
+    {
+      "name": "simplify-name-107.2",
+      "result": "pass"
+    },
+    {
+      "name": "relative-name-100.1",
+      "result": "pass"
+    },
+    {
+      "name": "relative-name-100.2",
+      "result": "pass"
+    },
+    {
+      "name": "relative-name-100.3",
+      "result": "pass"
+    },
+    {
+      "name": "relative-name-100.4",
+      "result": "pass"
+    },
+    {
+      "name": "relative-name-101.1",
+      "result": "pass"
+    },
+    {
+      "name": "relative-name-101.2",
+      "result": "pass"
+    },
+    {
+      "name": "relative-name-101.3",
+      "result": "pass"
+    },
+    {
+      "name": "relative-name-102.1",
+      "result": "pass"
+    },
+    {
+      "name": "relative-name-102.2",
+      "result": "pass"
+    },
+    {
+      "name": "relative-name-102.3",
+      "result": "pass"
+    },
+    {
+      "name": "relative-name-103.1",
+      "result": "pass"
+    },
+    {
+      "name": "relative-tree-name-100.1",
+      "result": "pass"
+    },
+    {
+      "name": "relative-tree-name-100.2",
+      "result": "pass"
+    },
+    {
+      "name": "relative-tree-name-100.3",
+      "result": "pass"
+    },
+    {
+      "name": "relative-tree-name-100.4",
+      "result": "pass"
+    },
+    {
+      "name": "relative-tree-name-101.1",
+      "result": "pass"
+    },
+    {
+      "name": "relative-tree-name-101.2",
+      "result": "pass"
+    },
+    {
+      "name": "relative-tree-name-101.3",
+      "result": "pass"
+    },
+    {
+      "name": "relative-tree-name-102.1",
+      "result": "pass"
+    },
+    {
+      "name": "relative-tree-name-102.2",
+      "result": "pass"
+    },
+    {
+      "name": "relative-tree-name-102.3",
+      "result": "pass"
+    },
+    {
+      "name": "relative-tree-name-103.1",
+      "result": "pass"
+    },
+    {
+      "name": "absolute-tree-name-100.1",
+      "result": "pass"
+    },
+    {
+      "name": "absolute-tree-name-100.2",
+      "result": "pass"
+    },
+    {
+      "name": "absolute-tree-name-100.3",
+      "result": "pass"
+    },
+    {
+      "name": "absolute-tree-name-100.4",
+      "result": "pass"
+    },
+    {
+      "name": "absolute-tree-name-101.1",
+      "result": "pass"
+    },
+    {
+      "name": "absolute-tree-name-101.2",
+      "result": "pass"
+    },
+    {
+      "name": "absolute-tree-name-101.3",
+      "result": "pass"
+    },
+    {
+      "name": "absolute-tree-name-102.1",
+      "result": "pass"
+    },
+    {
+      "name": "absolute-tree-name-102.2",
+      "result": "pass"
+    },
+    {
+      "name": "absolute-tree-name-102.3",
+      "result": "pass"
+    },
+    {
+      "name": "absolute-tree-name-103.1",
+      "result": "pass"
+    },
+    {
+      "name": "test-framework-file1",
+      "result": "pass"
+    }
+  ],
+  "counts": {
+    "pass": 59,
+    "fail": 0,
+    "ignored": 0
+  },
+  "upstream_summary": {
+    "errors": 0,
+    "tests": 59
+  },
+  "count_matches": true,
+  "skips": [],
+  "log": "/tmp/gossil-fossil-baseline-20261117/runs/file1/output.log",
+  "gate_pass": true
+}

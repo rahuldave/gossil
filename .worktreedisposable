@@ -1,0 +1,13 @@
+# begin lines of jnterfaces, the installer, from jnterfaces at 338ca39.
+# Last written to .worktreedisposable by `install_stack.py --target /Users/rahul/Projects/gossil --profile rust --defaults --clean`. The record is parts.".worktreedisposable" in .agents/stack.json.
+.agents/log/
+# end lines of jnterfaces. They stay while the project keeps .agents/stack.json.
+# begin lines of rust, the rust profile, from jnprofile-rust at dc9a664.
+# Last written to .worktreedisposable by `install_stack.py --target /Users/rahul/Projects/gossil --profile rust --defaults --clean`. The record is parts.".worktreedisposable" in .agents/stack.json.
+# cargo build makes target/ again from the code and Cargo.lock.
+/target/
+# end lines of rust. `just uninstall rust` removes them.
+# begin lines of rust:api, the api tool of the rust profile, from jnprofile-rust at dc9a664.
+# Last written to .worktreedisposable by `install_stack.py --target /Users/rahul/Projects/gossil --profile rust --defaults --clean`. The record is parts.".worktreedisposable" in .agents/stack.json.
+.jnprofile-rust/
+# end lines of rust:api. `just uninstall api` removes them.

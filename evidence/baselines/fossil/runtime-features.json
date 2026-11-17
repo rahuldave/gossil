@@ -1,0 +1,57 @@
+{
+  "ssl": {
+    "exit_code": 0,
+    "stdout": "0\n",
+    "stderr": ""
+  },
+  "legacyMvRm": {
+    "exit_code": 0,
+    "stdout": "1\n",
+    "stderr": ""
+  },
+  "execRelPaths": {
+    "exit_code": 0,
+    "stdout": "0\n",
+    "stderr": ""
+  },
+  "th1Docs": {
+    "exit_code": 0,
+    "stdout": "0\n",
+    "stderr": ""
+  },
+  "th1Hooks": {
+    "exit_code": 0,
+    "stdout": "0\n",
+    "stderr": ""
+  },
+  "tcl": {
+    "exit_code": 0,
+    "stdout": "0\n",
+    "stderr": ""
+  },
+  "useTclStubs": {
+    "exit_code": 0,
+    "stdout": "0\n",
+    "stderr": ""
+  },
+  "tclStubs": {
+    "exit_code": 0,
+    "stdout": "0\n",
+    "stderr": ""
+  },
+  "tclPrivateStubs": {
+    "exit_code": 0,
+    "stdout": "0\n",
+    "stderr": ""
+  },
+  "json": {
+    "exit_code": 0,
+    "stdout": "0\n",
+    "stderr": ""
+  },
+  "markdown": {
+    "exit_code": 0,
+    "stdout": "1\n",
+    "stderr": ""
+  }
+}

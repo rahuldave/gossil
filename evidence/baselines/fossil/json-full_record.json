@@ -1,0 +1,54 @@
+{
+  "name": "json",
+  "suites": [
+    "json"
+  ],
+  "command": [
+    "jlog",
+    "run",
+    "tclsh",
+    "/tmp/gossil-fossil-baseline-20261117/launch.tcl",
+    "/tmp/gossil-fossil-baseline-20261117/runs/json/cwd",
+    "/tmp/gossil-fossil-baseline-20261117/enabled/test/tester.tcl",
+    "/Users/rahul/Projects/gossil/.jlog/bin/fossil",
+    "json",
+    "-keep"
+  ],
+  "cwd": "/Users/rahul/Projects/gossil",
+  "environment": {
+    "FOSSIL_HOME": "/tmp/gossil-fossil-baseline-20261117/runs/json/home",
+    "FOSSIL_TEST_TEMP": "/tmp/gossil-fossil-baseline-20261117/runs/json/tmp",
+    "TEMP": "/tmp/gossil-fossil-baseline-20261117/runs/json/tmp",
+    "TMP": "/tmp/gossil-fossil-baseline-20261117/runs/json/tmp",
+    "TMPDIR": "/tmp/gossil-fossil-baseline-20261117/runs/json/tmp",
+    "HOME": "/tmp/gossil-fossil-baseline-20261117/runs/json/home",
+    "USER": "gossil-baseline",
+    "LOGNAME": "gossil-baseline",
+    "LC_ALL": "C",
+    "TZ": "UTC"
+  },
+  "exit_code": 0,
+  "timeout": false,
+  "seconds": 0.126,
+  "results": [
+    {
+      "name": "test-framework-json",
+      "result": "pass"
+    }
+  ],
+  "counts": {
+    "pass": 1,
+    "fail": 0,
+    "ignored": 0
+  },
+  "upstream_summary": {
+    "errors": 0,
+    "tests": 1
+  },
+  "count_matches": true,
+  "skips": [
+    "json"
+  ],
+  "log": "/tmp/gossil-fossil-baseline-20261117/runs/json/output.log",
+  "gate_pass": false
+}

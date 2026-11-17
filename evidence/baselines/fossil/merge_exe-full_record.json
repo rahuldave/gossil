@@ -1,0 +1,76 @@
+{
+  "name": "merge_exe",
+  "suites": [
+    "merge_exe"
+  ],
+  "command": [
+    "jlog",
+    "run",
+    "tclsh",
+    "/tmp/gossil-fossil-baseline-20261117/launch.tcl",
+    "/tmp/gossil-fossil-baseline-20261117/runs/merge_exe/cwd",
+    "/tmp/gossil-fossil-baseline-20261117/enabled/test/tester.tcl",
+    "/Users/rahul/Projects/gossil/.jlog/bin/fossil",
+    "merge_exe",
+    "-keep"
+  ],
+  "cwd": "/Users/rahul/Projects/gossil",
+  "environment": {
+    "FOSSIL_HOME": "/tmp/gossil-fossil-baseline-20261117/runs/merge_exe/home",
+    "FOSSIL_TEST_TEMP": "/tmp/gossil-fossil-baseline-20261117/runs/merge_exe/tmp",
+    "TEMP": "/tmp/gossil-fossil-baseline-20261117/runs/merge_exe/tmp",
+    "TMP": "/tmp/gossil-fossil-baseline-20261117/runs/merge_exe/tmp",
+    "TMPDIR": "/tmp/gossil-fossil-baseline-20261117/runs/merge_exe/tmp",
+    "HOME": "/tmp/gossil-fossil-baseline-20261117/runs/merge_exe/home",
+    "USER": "gossil-baseline",
+    "LOGNAME": "gossil-baseline",
+    "LC_ALL": "C",
+    "TZ": "UTC"
+  },
+  "exit_code": 0,
+  "timeout": false,
+  "seconds": 1.198,
+  "results": [
+    {
+      "name": "merge_exe-mrg",
+      "result": "pass"
+    },
+    {
+      "name": "merge_exe-f0",
+      "result": "pass"
+    },
+    {
+      "name": "merge_exe-f1n",
+      "result": "pass"
+    },
+    {
+      "name": "merge_exe-f2",
+      "result": "pass"
+    },
+    {
+      "name": "merge_exe-f3",
+      "result": "pass"
+    },
+    {
+      "name": "merge_exe-f4",
+      "result": "pass"
+    },
+    {
+      "name": "test-framework-merge_exe",
+      "result": "pass"
+    }
+  ],
+  "counts": {
+    "pass": 7,
+    "fail": 0,
+    "ignored": 0
+  },
+  "upstream_summary": {
+    "errors": 0,
+    "tests": 7
+  },
+  "count_matches": true,
+  "skips": [],
+  "log": "/tmp/gossil-fossil-baseline-20261117/runs/merge_exe/output.log",
+  "gate_pass": true
+}

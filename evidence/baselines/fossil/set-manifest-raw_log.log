@@ -1,0 +1,111 @@
+***** set-manifest ******
+/Users/rahul/Projects/gossil/.jlog/bin/fossil settings manifest
+test set-manifest-1 OK
+test set-manifest-1-n OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil settings manifest true
+test set-manifest-2-true OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil settings manifest
+test set-manifest-2-true-a OK
+test set-manifest-2-true-n OK
+test set-manifest-2-true-f-manifest OK
+test set-manifest-2-true-f-manifest.uuid OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil settings manifest on
+test set-manifest-2-on OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil settings manifest
+test set-manifest-2-on-a OK
+test set-manifest-2-on-n OK
+test set-manifest-2-on-f-manifest OK
+test set-manifest-2-on-f-manifest.uuid OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil settings manifest 1
+test set-manifest-2-1 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil settings manifest
+test set-manifest-2-1-a OK
+test set-manifest-2-1-n OK
+test set-manifest-2-1-f-manifest OK
+test set-manifest-2-1-f-manifest.uuid OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil info
+test set-manifest-2-uuid OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil settings manifest false
+test set-manifest-3-false OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil settings manifest
+test set-manifest-3-false-a OK
+test set-manifest-3-false-n OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil settings manifest off
+test set-manifest-3-off OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil settings manifest
+test set-manifest-3-off-a OK
+test set-manifest-3-off-n OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil settings manifest 0
+test set-manifest-3-0 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil settings manifest
+test set-manifest-3-0-a OK
+test set-manifest-3-0-n OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil unset manifest
+test set-manifest-4 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil settings manifest
+test set-manifest-4-a OK
+test set-manifest-4-n OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil settings manifest r
+test set-manifest-5-r OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil settings manifest
+test set-manifest-5-r-a OK
+test set-manifest-5-r-n OK
+test set-manifest-5-r-f-manifest OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil settings manifest u
+test set-manifest-5-u OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil settings manifest
+test set-manifest-5-u-a OK
+test set-manifest-5-u-n OK
+test set-manifest-5-u-f-manifest.uuid OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil settings manifest t
+test set-manifest-5-t OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil settings manifest
+test set-manifest-5-t-a OK
+test set-manifest-5-t-n OK
+test set-manifest-5-t-f-manifest.tags OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil settings manifest ru
+test set-manifest-5-ru OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil settings manifest
+test set-manifest-5-ru-a OK
+test set-manifest-5-ru-n OK
+test set-manifest-5-ru-f-manifest OK
+test set-manifest-5-ru-f-manifest.uuid OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil settings manifest ut
+test set-manifest-5-ut OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil settings manifest
+test set-manifest-5-ut-a OK
+test set-manifest-5-ut-n OK
+test set-manifest-5-ut-f-manifest.tags OK
+test set-manifest-5-ut-f-manifest.uuid OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil settings manifest rt
+test set-manifest-5-rt OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil settings manifest
+test set-manifest-5-rt-a OK
+test set-manifest-5-rt-n OK
+test set-manifest-5-rt-f-manifest OK
+test set-manifest-5-rt-f-manifest.tags OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil settings manifest rut
+test set-manifest-5-rut OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil settings manifest
+test set-manifest-5-rut-a OK
+test set-manifest-5-rut-n OK
+test set-manifest-5-rut-f-manifest OK
+test set-manifest-5-rut-f-manifest.tags OK
+test set-manifest-5-rut-f-manifest.uuid OK
+test set-manifest-6 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil set manifest t
+test set-manifest-7-1 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil tag add manifest-7-tag-1 tip
+test set-manifest-7-2 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil add file1
+/Users/rahul/Projects/gossil/.jlog/bin/fossil commit -m {Added file1.}
+test set-manifest-7-3 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil tag add manifest-7-tag-2 tip
+test set-manifest-7-4 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil add file3
+/Users/rahul/Projects/gossil/.jlog/bin/fossil commit -m {Added file3.} --branch manifest-8-branch
+test set-manifest-8 OK
+test test-framework-set-manifest OK
+***** End of set-manifest: 0 errors so far ******
+***** Final results: 0 errors out of 70 tests
+***** Ignored results: 0 ignored errors out of 70 tests

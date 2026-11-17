@@ -1,0 +1,77 @@
+{
+  "iteration": "usytswsvnmqwylqqpvqopvwtzlxzlklw",
+  "tasks": {
+    "product": "xyzzowpvwsxsqmmzykkpllyskurlxuuk",
+    "baseline": "zlwzpnkxvozqzvuttoqysnnnosnzsnzv",
+    "core": "tkqnmpkvzxkwkkrvptwynvvpotnlowvu",
+    "checkout": "rtkpowvn",
+    "records": "ukqklzmm",
+    "sync": "nuszyluo",
+    "gest": "uvswrttq",
+    "extensions": "nmtxoskp",
+    "acceptance": "zzqxwppt",
+    "runner": "lyrmyzsv",
+    "fossil-baseline": "ywlwlykw",
+    "gest-baseline": "xowmsysx",
+    "port-map": "mvnovluo",
+    "db": "zntxymmw",
+    "codec": "qznzxpwt",
+    "artifact": "mpqykton",
+    "tracking": "povpzypk",
+    "history": "oozzxrvr",
+    "record-types": "zqpovmtx",
+    "remaining-engine": "uyowynzv",
+    "xfer": "xwrlwmqt",
+    "autosync": "ylsnzrtu",
+    "gest-domain": "yqnlstyw",
+    "gest-server": "lyrxsvyy",
+    "gest-ui": "rwuvkmpu",
+    "extension-contract": "qvqyvqlt",
+    "private-shared": "qxzsuqpr",
+    "code-links": "ponrvqvt",
+    "discussion": "upmsxtvl",
+    "packages": "ypkqoooq",
+    "release-matrix": "zsupnvsn"
+  },
+  "classification": {
+    "existing_tags": [],
+    "new_tags": [
+      "gossil"
+    ],
+    "rejected_tags": []
+  },
+  "policy": {
+    "classification": {
+      "tags": {
+        "reviewed": true,
+        "new": "gossil"
+      }
+    },
+    "impact": {
+      "ast_grep": {
+        "required": false
+      }
+    },
+    "vcs": {
+      "tool": "git",
+      "branch_mode": "development-branch",
+      "execution": "main-worktree",
+      "parallel_allowed": false,
+      "branch": "gest/xnuqympy-bootstrap",
+      "workspace_path": "/Users/rahul/Projects/gossil",
+      "integration_target": "main",
+      "local_only": true
+    },
+    "test": {
+      "strategy": "test-first"
+    },
+    "review": {
+      "independent": true,
+      "model": "gpt-6.1-sol",
+      "required": "exact-tree agentic records; actual base/head commits when available"
+    },
+    "github": {
+      "promotion": "not-promoted: explicitly local-only; no remote configured"
+    }
+  }
+}

@@ -1,0 +1,26 @@
+***** th1-repo ******
+/Users/rahul/Projects/gossil/.jlog/bin/fossil add /private/tmp/gossil-fossil-baseline-20261117/runs/parallel-th1-repo/tmp/repo_49829/1794943981_1/th1-repo.test
+/Users/rahul/Projects/gossil/.jlog/bin/fossil commit -m c1
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval --open-config {dir trunk subdir*/*.md}
+test th1-dir-1 OK
+test th1-dir-2.1 OK
+test th1-dir-2.2 OK
+test th1-dir-2.3 OK
+test th1-dir-2.4 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval --open-config {dir trunk subdir*/*.md 1}
+test th1-dir-3.1 OK
+test th1-dir-3.2 OK
+test th1-dir-3.3 OK
+test th1-dir-3.4 OK
+test th1-dir-3.5 OK
+test th1-dir-3.6 OK
+test th1-dir-3.7 OK
+test th1-dir-3.8 OK
+test th1-dir-3.9 OK
+test th1-dir-3.10 OK
+test th1-dir-3.11 OK
+test th1-dir-3.12 OK
+test test-framework-th1-repo OK
+***** End of th1-repo: 0 errors so far ******
+***** Final results: 0 errors out of 18 tests
+***** Ignored results: 0 ignored errors out of 18 tests

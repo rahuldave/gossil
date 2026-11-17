@@ -1,0 +1,17 @@
+***** merge4 ******
+/Users/rahul/Projects/gossil/.jlog/bin/fossil 3-way-merge t1 t2 t3 t4
+/Users/rahul/Projects/gossil/.jlog/bin/fossil 3-way-merge t1 t3 t2 t5
+test merge4-1000 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil 3-way-merge t1 t2 t3 t4
+/Users/rahul/Projects/gossil/.jlog/bin/fossil 3-way-merge t1 t3 t2 t5
+test merge4-1001 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil 3-way-merge t1 t2 t3 t4
+/Users/rahul/Projects/gossil/.jlog/bin/fossil 3-way-merge t1 t3 t2 t5
+test merge4-1002 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil 3-way-merge t1 t2 t3 t4
+/Users/rahul/Projects/gossil/.jlog/bin/fossil 3-way-merge t1 t3 t2 t5
+test merge4-1003 OK
+test test-framework-merge4 OK
+***** End of merge4: 0 errors so far ******
+***** Final results: 0 errors out of 5 tests
+***** Ignored results: 0 ignored errors out of 5 tests

@@ -1,0 +1,2 @@
+# Share existing project-local native tools; this does not install tools on a fresh clone.
+.jlog

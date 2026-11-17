@@ -1,0 +1,15 @@
+{
+  "attempt": "delta1-extended",
+  "timeout_limit_seconds": 600,
+  "exit_code": -15,
+  "timeout": true,
+  "actual_assertions": {
+    "pass": 22622
+  },
+  "framework": {},
+  "upstream_summary": null,
+  "seconds": 600.519,
+  "raw_log": "/tmp/gossil-fossil-baseline-20261117/runs/delta1-extended/output.log",
+  "full_record": "/tmp/gossil-fossil-baseline-20261117/runs/delta1-extended/result.json",
+  "does_not_replace_prescribed_matrix": true
+}

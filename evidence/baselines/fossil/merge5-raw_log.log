@@ -1,0 +1,11 @@
+***** merge5 ******
+Skipping Merge5 tests
+
+fossil sqlite3 --no-repository reacts badly to SQL dumped from
+repositories created from fossil older than version 2.0.
+
+test test-framework-merge5 OK
+***** End of merge5: 0 errors so far ******
+***** Final results: 0 errors out of 1 tests
+***** Ignored results: 0 ignored errors out of 1 tests
+***** Skipped tests: merge5

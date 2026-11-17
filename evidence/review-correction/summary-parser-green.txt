@@ -1,0 +1,19 @@
+just --justfile '/Users/rahul/Projects/gossil/Justfile' rust integration "$@"
+uv run --no-project --quiet --python '>=3.11' python '/Users/rahul/Projects/gossil/.agents/just/rust/steps.py' run integration "$@"
+WARN `--no-project` was provided, but no project was found
+cargo llvm-cov test --all-features --locked --include-build-script --workspace --test conformance --lcov --output-path target/llvm-cov/integration.part0.lcov malformed_summary
+info: cargo-llvm-cov currently setting cfg(coverage); you can opt-out it by passing --no-cfg-coverage
+   Compiling gossil v0.1.0 (/Users/rahul/Projects/gossil)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 5.22s
+     Running tests/conformance.rs (target/llvm-cov-target/debug/deps/conformance-88e26bdb9b559e30)
+
+running 2 tests
+test malformed_summary_numbers_are_permanently_rejected ... ok
+test malformed_summary_controls_never_exit_successfully ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 6 filtered out; finished in 9.96s
+
+
+    Finished report saved to target/llvm-cov/integration.part0.lcov
+jlog step integration
+{"kind":"step","run":"833350bb-9211-427d-a736-c9619c9b96a9","harness":"codex","session":"01a1eaf6-9366-7223-acca-fe3756d68e07","child":null,"time":"2026-11-17T20:15:36Z","argv":["just","integration","malformed_summary"],"step":"integration"}

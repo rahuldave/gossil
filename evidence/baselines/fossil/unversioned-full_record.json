@@ -1,0 +1,284 @@
+{
+  "name": "parallel-unversioned",
+  "suites": [
+    "unversioned"
+  ],
+  "command": [
+    "jlog",
+    "run",
+    "tclsh",
+    "/private/tmp/gossil-fossil-baseline-20261117/launch.tcl",
+    "/private/tmp/gossil-fossil-baseline-20261117/runs/parallel-unversioned/cwd",
+    "/private/tmp/gossil-fossil-baseline-20261117/enabled/test/tester.tcl",
+    "/Users/rahul/Projects/gossil/.jlog/bin/fossil",
+    "unversioned",
+    "-keep"
+  ],
+  "cwd": "/Users/rahul/Projects/gossil",
+  "environment": {
+    "FOSSIL_HOME": "/private/tmp/gossil-fossil-baseline-20261117/runs/parallel-unversioned/home",
+    "FOSSIL_TEST_TEMP": "/private/tmp/gossil-fossil-baseline-20261117/runs/parallel-unversioned/tmp",
+    "TEMP": "/private/tmp/gossil-fossil-baseline-20261117/runs/parallel-unversioned/tmp",
+    "TMP": "/private/tmp/gossil-fossil-baseline-20261117/runs/parallel-unversioned/tmp",
+    "TMPDIR": "/private/tmp/gossil-fossil-baseline-20261117/runs/parallel-unversioned/tmp",
+    "HOME": "/private/tmp/gossil-fossil-baseline-20261117/runs/parallel-unversioned/home",
+    "USER": "gossil-baseline",
+    "LOGNAME": "gossil-baseline",
+    "LC_ALL": "C",
+    "TZ": "UTC"
+  },
+  "exit_code": 1,
+  "timeout": false,
+  "seconds": 6.834,
+  "results": [
+    {
+      "name": "unversioned-1",
+      "result": "pass"
+    },
+    {
+      "name": "unversioned-2",
+      "result": "pass"
+    },
+    {
+      "name": "unversioned-3",
+      "result": "pass"
+    },
+    {
+      "name": "unversioned-4",
+      "result": "pass"
+    },
+    {
+      "name": "unversioned-5",
+      "result": "pass"
+    },
+    {
+      "name": "unversioned-6",
+      "result": "pass"
+    },
+    {
+      "name": "unversioned-7",
+      "result": "pass"
+    },
+    {
+      "name": "unversioned-8",
+      "result": "pass"
+    },
+    {
+      "name": "unversioned-9",
+      "result": "pass"
+    },
+    {
+      "name": "unversioned-10",
+      "result": "pass"
+    },
+    {
+      "name": "unversioned-11",
+      "result": "pass"
+    },
+    {
+      "name": "unversioned-12",
+      "result": "pass"
+    },
+    {
+      "name": "unversioned-13",
+      "result": "pass"
+    },
+    {
+      "name": "unversioned-14",
+      "result": "pass"
+    },
+    {
+      "name": "unversioned-15",
+      "result": "pass"
+    },
+    {
+      "name": "unversioned-16",
+      "result": "pass"
+    },
+    {
+      "name": "unversioned-17",
+      "result": "pass"
+    },
+    {
+      "name": "unversioned-18",
+      "result": "pass"
+    },
+    {
+      "name": "unversioned-19",
+      "result": "pass"
+    },
+    {
+      "name": "unversioned-20",
+      "result": "pass"
+    },
+    {
+      "name": "unversioned-21",
+      "result": "pass"
+    },
+    {
+      "name": "unversioned-22",
+      "result": "pass"
+    },
+    {
+      "name": "unversioned-23",
+      "result": "pass"
+    },
+    {
+      "name": "unversioned-24",
+      "result": "pass"
+    },
+    {
+      "name": "unversioned-25",
+      "result": "pass"
+    },
+    {
+      "name": "unversioned-26",
+      "result": "pass"
+    },
+    {
+      "name": "unversioned-27",
+      "result": "pass"
+    },
+    {
+      "name": "unversioned-28",
+      "result": "pass"
+    },
+    {
+      "name": "unversioned-29",
+      "result": "pass"
+    },
+    {
+      "name": "unversioned-30",
+      "result": "pass"
+    },
+    {
+      "name": "unversioned-31",
+      "result": "pass"
+    },
+    {
+      "name": "unversioned-32",
+      "result": "pass"
+    },
+    {
+      "name": "unversioned-33",
+      "result": "pass"
+    },
+    {
+      "name": "unversioned-34",
+      "result": "pass"
+    },
+    {
+      "name": "unversioned-35",
+      "result": "pass"
+    },
+    {
+      "name": "unversioned-36",
+      "result": "pass"
+    },
+    {
+      "name": "unversioned-37",
+      "result": "pass"
+    },
+    {
+      "name": "unversioned-38",
+      "result": "pass"
+    },
+    {
+      "name": "unversioned-39",
+      "result": "pass"
+    },
+    {
+      "name": "unversioned-40",
+      "result": "pass"
+    },
+    {
+      "name": "unversioned-41",
+      "result": "pass"
+    },
+    {
+      "name": "unversioned-42",
+      "result": "pass"
+    },
+    {
+      "name": "unversioned-43",
+      "result": "pass"
+    },
+    {
+      "name": "unversioned-44",
+      "result": "pass"
+    },
+    {
+      "name": "unversioned-45",
+      "result": "pass"
+    },
+    {
+      "name": "unversioned-46",
+      "result": "fail"
+    },
+    {
+      "name": "unversioned-47",
+      "result": "pass"
+    },
+    {
+      "name": "unversioned-48",
+      "result": "pass"
+    },
+    {
+      "name": "unversioned-49",
+      "result": "pass"
+    },
+    {
+      "name": "unversioned-50",
+      "result": "pass"
+    },
+    {
+      "name": "unversioned-51",
+      "result": "pass"
+    },
+    {
+      "name": "unversioned-52",
+      "result": "fail"
+    },
+    {
+      "name": "unversioned-53",
+      "result": "pass"
+    },
+    {
+      "name": "unversioned-54",
+      "result": "pass"
+    },
+    {
+      "name": "unversioned-55",
+      "result": "fail"
+    },
+    {
+      "name": "unversioned-56",
+      "result": "pass"
+    },
+    {
+      "name": "unversioned-57",
+      "result": "pass"
+    },
+    {
+      "name": "unversioned-58",
+      "result": "pass"
+    },
+    {
+      "name": "test-framework-unversioned",
+      "result": "pass"
+    }
+  ],
+  "counts": {
+    "pass": 56,
+    "fail": 3,
+    "ignored": 0
+  },
+  "upstream_summary": {
+    "errors": 3,
+    "tests": 59
+  },
+  "count_matches": true,
+  "skips": [],
+  "log": "/private/tmp/gossil-fossil-baseline-20261117/runs/parallel-unversioned/output.log",
+  "gate_pass": false
+}

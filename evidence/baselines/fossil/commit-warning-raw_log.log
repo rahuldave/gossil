@@ -1,0 +1,11 @@
+***** commit-warning ******
+micro-smile Âµâº
+pale facepalm ð¤¦ð»
+
+/Users/rahul/Projects/gossil/.jlog/bin/fossil addremove
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-commit-warning --no-settings -v
+test pre-commit-warnings-1 OK
+test test-framework-commit-warning OK
+***** End of commit-warning: 0 errors so far ******
+***** Final results: 0 errors out of 2 tests
+***** Ignored results: 0 ignored errors out of 2 tests

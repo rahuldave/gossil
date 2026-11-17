@@ -1,0 +1,1047 @@
+{
+  "kind": "executed isolated C reference experiments; not a Gossil project gate or Gossil compatibility claim",
+  "provenance": {
+    "source": "/var/folders/wq/mr3zj9r14dzgjnq9rjx_vqbc0000gn/T/gossil-source-review-1sgum5ox/fossil",
+    "git_pin": "b3a1c8efb2731dffbd5cc38c58ac349746de6da6",
+    "native_pin": "7e8ecf0ce4a3c05aa39de7ffe2828d23e334efe446ef2387e09f205ef00b2227",
+    "pristine_file_count": 984,
+    "pristine_tester_sha256": "458608cb05bf10381a0ceff95aedfcb406f33aeba7e07b00244b3b5e70ea4561",
+    "enabled_tester_sha256": "3e26debfaf0be4dd425b21da6537511e345ffc1687721fd0ee2c30840ab21783",
+    "enable_patch_sha256": "954533dd023b4e120eddfe2f595c9d9c53d3f21144e9a5d1ec5d0c3e70b0af8b"
+  },
+  "host": "macOS-15.2-arm64-arm-64bit-Mach-O",
+  "tools": {
+    "tcl": "8.6.18",
+    "fossil": "2.29 [7e8ecf0ce4]",
+    "resolver": "jlog run from /Users/rahul/Projects/gossil"
+  },
+  "suite_count_expected": 37,
+  "suite_count_recorded": 37,
+  "states": {
+    "pass": 25,
+    "blocked": 2,
+    "fail": 5,
+    "feature-disabled": 4,
+    "not-run": 1
+  },
+  "assertion_totals": {
+    "pass": 23247,
+    "fail": 16
+  },
+  "framework_totals": {
+    "pass": 35
+  },
+  "all_completed_counts_match": true,
+  "controls": "/tmp/gossil-fossil-baseline-20261117/controls.json",
+  "seed": 20261117,
+  "timeout_seconds_per_suite": 240,
+  "suite_results": [
+    {
+      "suite": "amend",
+      "attempt": "amend",
+      "state": "pass",
+      "assertions": {
+        "pass": 123
+      },
+      "framework": {
+        "pass": 1
+      },
+      "executed_individual_lines": 124,
+      "upstream_summary": {
+        "errors": 0,
+        "tests": 124
+      },
+      "aggregate_matches_individuals": true,
+      "skips": [],
+      "failures": [],
+      "ignored_failures": [],
+      "exit_code": 0,
+      "timeout": false,
+      "seconds": 6.069,
+      "raw_log": "/tmp/gossil-fossil-baseline-20261117/runs/amend/output.log",
+      "full_record": "/tmp/gossil-fossil-baseline-20261117/runs/amend/result.json"
+    },
+    {
+      "suite": "clean",
+      "attempt": "clean",
+      "state": "pass",
+      "assertions": {
+        "pass": 32
+      },
+      "framework": {
+        "pass": 1
+      },
+      "executed_individual_lines": 33,
+      "upstream_summary": {
+        "errors": 0,
+        "tests": 33
+      },
+      "aggregate_matches_individuals": true,
+      "skips": [],
+      "failures": [],
+      "ignored_failures": [],
+      "exit_code": 0,
+      "timeout": false,
+      "seconds": 1.762,
+      "raw_log": "/tmp/gossil-fossil-baseline-20261117/runs/clean/output.log",
+      "full_record": "/tmp/gossil-fossil-baseline-20261117/runs/clean/result.json"
+    },
+    {
+      "suite": "cmdline",
+      "attempt": "cmdline",
+      "state": "pass",
+      "assertions": {
+        "pass": 5
+      },
+      "framework": {
+        "pass": 1
+      },
+      "executed_individual_lines": 6,
+      "upstream_summary": {
+        "errors": 0,
+        "tests": 6
+      },
+      "aggregate_matches_individuals": true,
+      "skips": [],
+      "failures": [],
+      "ignored_failures": [],
+      "exit_code": 0,
+      "timeout": false,
+      "seconds": 0.184,
+      "raw_log": "/tmp/gossil-fossil-baseline-20261117/runs/cmdline/output.log",
+      "full_record": "/tmp/gossil-fossil-baseline-20261117/runs/cmdline/result.json"
+    },
+    {
+      "suite": "commit-warning",
+      "attempt": "commit-warning",
+      "state": "pass",
+      "assertions": {
+        "pass": 1
+      },
+      "framework": {
+        "pass": 1
+      },
+      "executed_individual_lines": 2,
+      "upstream_summary": {
+        "errors": 0,
+        "tests": 2
+      },
+      "aggregate_matches_individuals": true,
+      "skips": [],
+      "failures": [],
+      "ignored_failures": [],
+      "exit_code": 0,
+      "timeout": false,
+      "seconds": 0.304,
+      "raw_log": "/tmp/gossil-fossil-baseline-20261117/runs/commit-warning/output.log",
+      "full_record": "/tmp/gossil-fossil-baseline-20261117/runs/commit-warning/result.json"
+    },
+    {
+      "suite": "contains-selector",
+      "attempt": "contains-selector",
+      "state": "pass",
+      "assertions": {
+        "pass": 8
+      },
+      "framework": {
+        "pass": 1
+      },
+      "executed_individual_lines": 9,
+      "upstream_summary": {
+        "errors": 0,
+        "tests": 9
+      },
+      "aggregate_matches_individuals": true,
+      "skips": [],
+      "failures": [],
+      "ignored_failures": [],
+      "exit_code": 0,
+      "timeout": false,
+      "seconds": 0.236,
+      "raw_log": "/tmp/gossil-fossil-baseline-20261117/runs/contains-selector/output.log",
+      "full_record": "/tmp/gossil-fossil-baseline-20261117/runs/contains-selector/result.json"
+    },
+    {
+      "suite": "delta1",
+      "attempt": "delta1",
+      "state": "blocked",
+      "assertions": {
+        "pass": 14000
+      },
+      "framework": {},
+      "executed_individual_lines": 14000,
+      "upstream_summary": null,
+      "aggregate_matches_individuals": false,
+      "skips": [],
+      "failures": [],
+      "ignored_failures": [],
+      "exit_code": -15,
+      "timeout": true,
+      "seconds": 240.232,
+      "raw_log": "/tmp/gossil-fossil-baseline-20261117/runs/delta1/output.log",
+      "full_record": "/tmp/gossil-fossil-baseline-20261117/runs/delta1/result.json"
+    },
+    {
+      "suite": "diff",
+      "attempt": "diff",
+      "state": "fail",
+      "assertions": {
+        "pass": 2,
+        "fail": 8
+      },
+      "framework": {
+        "pass": 1
+      },
+      "executed_individual_lines": 11,
+      "upstream_summary": {
+        "errors": 8,
+        "tests": 11
+      },
+      "aggregate_matches_individuals": true,
+      "skips": [],
+      "failures": [
+        "diff-file0-1",
+        "diff-file1-1",
+        "diff-file2-1",
+        "diff-file3-1",
+        "diff-file4-1",
+        "diff-file5-1",
+        "diff-deleted-file-1",
+        "diff-added-file-1"
+      ],
+      "ignored_failures": [],
+      "exit_code": 1,
+      "timeout": false,
+      "seconds": 0.972,
+      "raw_log": "/tmp/gossil-fossil-baseline-20261117/runs/diff/output.log",
+      "full_record": "/tmp/gossil-fossil-baseline-20261117/runs/diff/result.json"
+    },
+    {
+      "suite": "file1",
+      "attempt": "file1",
+      "state": "pass",
+      "assertions": {
+        "pass": 58
+      },
+      "framework": {
+        "pass": 1
+      },
+      "executed_individual_lines": 59,
+      "upstream_summary": {
+        "errors": 0,
+        "tests": 59
+      },
+      "aggregate_matches_individuals": true,
+      "skips": [],
+      "failures": [],
+      "ignored_failures": [],
+      "exit_code": 0,
+      "timeout": false,
+      "seconds": 1.639,
+      "raw_log": "/tmp/gossil-fossil-baseline-20261117/runs/file1/output.log",
+      "full_record": "/tmp/gossil-fossil-baseline-20261117/runs/file1/result.json"
+    },
+    {
+      "suite": "glob",
+      "attempt": "glob",
+      "state": "pass",
+      "assertions": {
+        "pass": 20
+      },
+      "framework": {
+        "pass": 1
+      },
+      "executed_individual_lines": 21,
+      "upstream_summary": {
+        "errors": 0,
+        "tests": 21
+      },
+      "aggregate_matches_individuals": true,
+      "skips": [],
+      "failures": [],
+      "ignored_failures": [],
+      "exit_code": 0,
+      "timeout": false,
+      "seconds": 0.543,
+      "raw_log": "/tmp/gossil-fossil-baseline-20261117/runs/glob/output.log",
+      "full_record": "/tmp/gossil-fossil-baseline-20261117/runs/glob/result.json"
+    },
+    {
+      "suite": "json",
+      "attempt": "json",
+      "state": "feature-disabled",
+      "assertions": {},
+      "framework": {
+        "pass": 1
+      },
+      "executed_individual_lines": 1,
+      "upstream_summary": {
+        "errors": 0,
+        "tests": 1
+      },
+      "aggregate_matches_individuals": true,
+      "skips": [
+        "json"
+      ],
+      "failures": [],
+      "ignored_failures": [],
+      "exit_code": 0,
+      "timeout": false,
+      "seconds": 0.126,
+      "raw_log": "/tmp/gossil-fossil-baseline-20261117/runs/json/output.log",
+      "full_record": "/tmp/gossil-fossil-baseline-20261117/runs/json/result.json"
+    },
+    {
+      "suite": "merge1",
+      "attempt": "merge1",
+      "state": "pass",
+      "assertions": {
+        "pass": 14
+      },
+      "framework": {
+        "pass": 1
+      },
+      "executed_individual_lines": 15,
+      "upstream_summary": {
+        "errors": 0,
+        "tests": 15
+      },
+      "aggregate_matches_individuals": true,
+      "skips": [],
+      "failures": [],
+      "ignored_failures": [],
+      "exit_code": 0,
+      "timeout": false,
+      "seconds": 0.357,
+      "raw_log": "/tmp/gossil-fossil-baseline-20261117/runs/merge1/output.log",
+      "full_record": "/tmp/gossil-fossil-baseline-20261117/runs/merge1/result.json"
+    },
+    {
+      "suite": "merge2",
+      "attempt": "merge2",
+      "state": "blocked",
+      "assertions": {
+        "pass": 4750
+      },
+      "framework": {},
+      "executed_individual_lines": 4750,
+      "upstream_summary": null,
+      "aggregate_matches_individuals": false,
+      "skips": [],
+      "failures": [],
+      "ignored_failures": [],
+      "exit_code": -15,
+      "timeout": true,
+      "seconds": 240.149,
+      "raw_log": "/tmp/gossil-fossil-baseline-20261117/runs/merge2/output.log",
+      "full_record": "/tmp/gossil-fossil-baseline-20261117/runs/merge2/result.json"
+    },
+    {
+      "suite": "merge3",
+      "attempt": "merge3",
+      "state": "pass",
+      "assertions": {
+        "pass": 65
+      },
+      "framework": {
+        "pass": 1
+      },
+      "executed_individual_lines": 66,
+      "upstream_summary": {
+        "errors": 0,
+        "tests": 66
+      },
+      "aggregate_matches_individuals": true,
+      "skips": [],
+      "failures": [],
+      "ignored_failures": [],
+      "exit_code": 0,
+      "timeout": false,
+      "seconds": 3.33,
+      "raw_log": "/tmp/gossil-fossil-baseline-20261117/runs/merge3/output.log",
+      "full_record": "/tmp/gossil-fossil-baseline-20261117/runs/merge3/result.json"
+    },
+    {
+      "suite": "merge4",
+      "attempt": "merge4",
+      "state": "pass",
+      "assertions": {
+        "pass": 4
+      },
+      "framework": {
+        "pass": 1
+      },
+      "executed_individual_lines": 5,
+      "upstream_summary": {
+        "errors": 0,
+        "tests": 5
+      },
+      "aggregate_matches_individuals": true,
+      "skips": [],
+      "failures": [],
+      "ignored_failures": [],
+      "exit_code": 0,
+      "timeout": false,
+      "seconds": 0.514,
+      "raw_log": "/tmp/gossil-fossil-baseline-20261117/runs/merge4/output.log",
+      "full_record": "/tmp/gossil-fossil-baseline-20261117/runs/merge4/result.json"
+    },
+    {
+      "suite": "merge5",
+      "attempt": "merge5",
+      "state": "not-run",
+      "assertions": {},
+      "framework": {
+        "pass": 1
+      },
+      "executed_individual_lines": 1,
+      "upstream_summary": {
+        "errors": 0,
+        "tests": 1
+      },
+      "aggregate_matches_individuals": true,
+      "skips": [
+        "merge5"
+      ],
+      "failures": [],
+      "ignored_failures": [],
+      "exit_code": 0,
+      "timeout": false,
+      "seconds": 0.26,
+      "raw_log": "/tmp/gossil-fossil-baseline-20261117/runs/merge5/output.log",
+      "full_record": "/tmp/gossil-fossil-baseline-20261117/runs/merge5/result.json"
+    },
+    {
+      "suite": "merge6",
+      "attempt": "merge6",
+      "state": "pass",
+      "assertions": {
+        "pass": 5
+      },
+      "framework": {
+        "pass": 1
+      },
+      "executed_individual_lines": 6,
+      "upstream_summary": {
+        "errors": 0,
+        "tests": 6
+      },
+      "aggregate_matches_individuals": true,
+      "skips": [],
+      "failures": [],
+      "ignored_failures": [],
+      "exit_code": 0,
+      "timeout": false,
+      "seconds": 1.809,
+      "raw_log": "/tmp/gossil-fossil-baseline-20261117/runs/merge6/output.log",
+      "full_record": "/tmp/gossil-fossil-baseline-20261117/runs/merge6/result.json"
+    },
+    {
+      "suite": "merge_exe",
+      "attempt": "merge_exe",
+      "state": "pass",
+      "assertions": {
+        "pass": 6
+      },
+      "framework": {
+        "pass": 1
+      },
+      "executed_individual_lines": 7,
+      "upstream_summary": {
+        "errors": 0,
+        "tests": 7
+      },
+      "aggregate_matches_individuals": true,
+      "skips": [],
+      "failures": [],
+      "ignored_failures": [],
+      "exit_code": 0,
+      "timeout": false,
+      "seconds": 1.198,
+      "raw_log": "/tmp/gossil-fossil-baseline-20261117/runs/merge_exe/output.log",
+      "full_record": "/tmp/gossil-fossil-baseline-20261117/runs/merge_exe/result.json"
+    },
+    {
+      "suite": "merge_renames",
+      "attempt": "merge_renames",
+      "state": "pass",
+      "assertions": {
+        "pass": 54
+      },
+      "framework": {
+        "pass": 1
+      },
+      "executed_individual_lines": 55,
+      "upstream_summary": {
+        "errors": 0,
+        "tests": 55
+      },
+      "aggregate_matches_individuals": true,
+      "skips": [],
+      "failures": [],
+      "ignored_failures": [],
+      "exit_code": 0,
+      "timeout": false,
+      "seconds": 14.592,
+      "raw_log": "/tmp/gossil-fossil-baseline-20261117/runs/merge_renames/output.log",
+      "full_record": "/tmp/gossil-fossil-baseline-20261117/runs/merge_renames/result.json"
+    },
+    {
+      "suite": "merge_renames_2",
+      "attempt": "merge_renames_2",
+      "state": "pass",
+      "assertions": {
+        "pass": 2
+      },
+      "framework": {
+        "pass": 1
+      },
+      "executed_individual_lines": 3,
+      "upstream_summary": {
+        "errors": 0,
+        "tests": 3
+      },
+      "aggregate_matches_individuals": true,
+      "skips": [],
+      "failures": [],
+      "ignored_failures": [],
+      "exit_code": 0,
+      "timeout": false,
+      "seconds": 1.214,
+      "raw_log": "/tmp/gossil-fossil-baseline-20261117/runs/merge_renames_2/output.log",
+      "full_record": "/tmp/gossil-fossil-baseline-20261117/runs/merge_renames_2/result.json"
+    },
+    {
+      "suite": "merge_warn",
+      "attempt": "merge_warn",
+      "state": "pass",
+      "assertions": {
+        "pass": 2
+      },
+      "framework": {
+        "pass": 1
+      },
+      "executed_individual_lines": 3,
+      "upstream_summary": {
+        "errors": 0,
+        "tests": 3
+      },
+      "aggregate_matches_individuals": true,
+      "skips": [],
+      "failures": [],
+      "ignored_failures": [],
+      "exit_code": 0,
+      "timeout": false,
+      "seconds": 0.845,
+      "raw_log": "/tmp/gossil-fossil-baseline-20261117/runs/merge_warn/output.log",
+      "full_record": "/tmp/gossil-fossil-baseline-20261117/runs/merge_warn/result.json"
+    },
+    {
+      "suite": "mv-rm",
+      "attempt": "mv-rm",
+      "state": "pass",
+      "assertions": {
+        "pass": 62
+      },
+      "framework": {
+        "pass": 1
+      },
+      "executed_individual_lines": 63,
+      "upstream_summary": {
+        "errors": 0,
+        "tests": 63
+      },
+      "aggregate_matches_individuals": true,
+      "skips": [],
+      "failures": [],
+      "ignored_failures": [],
+      "exit_code": 0,
+      "timeout": false,
+      "seconds": 1.406,
+      "raw_log": "/tmp/gossil-fossil-baseline-20261117/runs/mv-rm/output.log",
+      "full_record": "/tmp/gossil-fossil-baseline-20261117/runs/mv-rm/result.json"
+    },
+    {
+      "suite": "reserved-names",
+      "attempt": "reserved-names",
+      "state": "pass",
+      "assertions": {
+        "pass": 300
+      },
+      "framework": {
+        "pass": 1
+      },
+      "executed_individual_lines": 301,
+      "upstream_summary": {
+        "errors": 0,
+        "tests": 301
+      },
+      "aggregate_matches_individuals": true,
+      "skips": [],
+      "failures": [],
+      "ignored_failures": [],
+      "exit_code": 0,
+      "timeout": false,
+      "seconds": 3.137,
+      "raw_log": "/tmp/gossil-fossil-baseline-20261117/runs/reserved-names/output.log",
+      "full_record": "/tmp/gossil-fossil-baseline-20261117/runs/reserved-names/result.json"
+    },
+    {
+      "suite": "revert",
+      "attempt": "parallel-revert",
+      "state": "pass",
+      "assertions": {
+        "pass": 94
+      },
+      "framework": {
+        "pass": 1
+      },
+      "executed_individual_lines": 95,
+      "upstream_summary": {
+        "errors": 0,
+        "tests": 95
+      },
+      "aggregate_matches_individuals": true,
+      "skips": [],
+      "failures": [],
+      "ignored_failures": [],
+      "exit_code": 0,
+      "timeout": false,
+      "seconds": 7.454,
+      "raw_log": "/private/tmp/gossil-fossil-baseline-20261117/runs/parallel-revert/output.log",
+      "full_record": "/tmp/gossil-fossil-baseline-20261117/runs/parallel-revert/result.json"
+    },
+    {
+      "suite": "set-manifest",
+      "attempt": "parallel-set-manifest",
+      "state": "pass",
+      "assertions": {
+        "pass": 69
+      },
+      "framework": {
+        "pass": 1
+      },
+      "executed_individual_lines": 70,
+      "upstream_summary": {
+        "errors": 0,
+        "tests": 70
+      },
+      "aggregate_matches_individuals": true,
+      "skips": [],
+      "failures": [],
+      "ignored_failures": [],
+      "exit_code": 0,
+      "timeout": false,
+      "seconds": 4.795,
+      "raw_log": "/private/tmp/gossil-fossil-baseline-20261117/runs/parallel-set-manifest/output.log",
+      "full_record": "/tmp/gossil-fossil-baseline-20261117/runs/parallel-set-manifest/result.json"
+    },
+    {
+      "suite": "settings-repo",
+      "attempt": "parallel-settings-repo",
+      "state": "pass",
+      "assertions": {
+        "pass": 1314
+      },
+      "framework": {
+        "pass": 1
+      },
+      "executed_individual_lines": 1315,
+      "upstream_summary": {
+        "errors": 0,
+        "tests": 1315
+      },
+      "aggregate_matches_individuals": true,
+      "skips": [],
+      "failures": [],
+      "ignored_failures": [],
+      "exit_code": 0,
+      "timeout": false,
+      "seconds": 69.121,
+      "raw_log": "/private/tmp/gossil-fossil-baseline-20261117/runs/parallel-settings-repo/output.log",
+      "full_record": "/tmp/gossil-fossil-baseline-20261117/runs/parallel-settings-repo/result.json"
+    },
+    {
+      "suite": "stash",
+      "attempt": "parallel-stash",
+      "state": "fail",
+      "assertions": {
+        "pass": 74,
+        "fail": 3
+      },
+      "framework": {
+        "pass": 1
+      },
+      "executed_individual_lines": 78,
+      "upstream_summary": {
+        "errors": 3,
+        "tests": 78
+      },
+      "aggregate_matches_individuals": true,
+      "skips": [],
+      "failures": [
+        "stash-3-1-show",
+        "stash-3-2-show-2",
+        "stash-4-3-show-2"
+      ],
+      "ignored_failures": [],
+      "exit_code": 1,
+      "timeout": false,
+      "seconds": 4.877,
+      "raw_log": "/private/tmp/gossil-fossil-baseline-20261117/runs/parallel-stash/output.log",
+      "full_record": "/tmp/gossil-fossil-baseline-20261117/runs/parallel-stash/result.json"
+    },
+    {
+      "suite": "symlinks",
+      "attempt": "parallel-symlinks",
+      "state": "pass",
+      "assertions": {
+        "pass": 18
+      },
+      "framework": {
+        "pass": 1
+      },
+      "executed_individual_lines": 19,
+      "upstream_summary": {
+        "errors": 0,
+        "tests": 19
+      },
+      "aggregate_matches_individuals": true,
+      "skips": [],
+      "failures": [],
+      "ignored_failures": [],
+      "exit_code": 0,
+      "timeout": false,
+      "seconds": 1.227,
+      "raw_log": "/private/tmp/gossil-fossil-baseline-20261117/runs/parallel-symlinks/output.log",
+      "full_record": "/tmp/gossil-fossil-baseline-20261117/runs/parallel-symlinks/result.json"
+    },
+    {
+      "suite": "th1",
+      "attempt": "parallel-th1",
+      "state": "fail",
+      "assertions": {
+        "pass": 339,
+        "fail": 1
+      },
+      "framework": {
+        "pass": 1
+      },
+      "executed_individual_lines": 341,
+      "upstream_summary": {
+        "errors": 1,
+        "tests": 341
+      },
+      "aggregate_matches_individuals": true,
+      "skips": [],
+      "failures": [
+        "th1-markdown-5"
+      ],
+      "ignored_failures": [],
+      "exit_code": 1,
+      "timeout": false,
+      "seconds": 17.523,
+      "raw_log": "/private/tmp/gossil-fossil-baseline-20261117/runs/parallel-th1/output.log",
+      "full_record": "/tmp/gossil-fossil-baseline-20261117/runs/parallel-th1/result.json"
+    },
+    {
+      "suite": "th1-docs",
+      "attempt": "parallel-th1-docs",
+      "state": "feature-disabled",
+      "assertions": {},
+      "framework": {
+        "pass": 1
+      },
+      "executed_individual_lines": 1,
+      "upstream_summary": {
+        "errors": 0,
+        "tests": 1
+      },
+      "aggregate_matches_individuals": true,
+      "skips": [
+        "th1-docs"
+      ],
+      "failures": [],
+      "ignored_failures": [],
+      "exit_code": 0,
+      "timeout": false,
+      "seconds": 0.173,
+      "raw_log": "/private/tmp/gossil-fossil-baseline-20261117/runs/parallel-th1-docs/output.log",
+      "full_record": "/tmp/gossil-fossil-baseline-20261117/runs/parallel-th1-docs/result.json"
+    },
+    {
+      "suite": "th1-hooks",
+      "attempt": "parallel-th1-hooks",
+      "state": "feature-disabled",
+      "assertions": {},
+      "framework": {
+        "pass": 1
+      },
+      "executed_individual_lines": 1,
+      "upstream_summary": {
+        "errors": 0,
+        "tests": 1
+      },
+      "aggregate_matches_individuals": true,
+      "skips": [
+        "th1-hooks"
+      ],
+      "failures": [],
+      "ignored_failures": [],
+      "exit_code": 0,
+      "timeout": false,
+      "seconds": 0.258,
+      "raw_log": "/private/tmp/gossil-fossil-baseline-20261117/runs/parallel-th1-hooks/output.log",
+      "full_record": "/tmp/gossil-fossil-baseline-20261117/runs/parallel-th1-hooks/result.json"
+    },
+    {
+      "suite": "th1-repo",
+      "attempt": "parallel-th1-repo",
+      "state": "pass",
+      "assertions": {
+        "pass": 17
+      },
+      "framework": {
+        "pass": 1
+      },
+      "executed_individual_lines": 18,
+      "upstream_summary": {
+        "errors": 0,
+        "tests": 18
+      },
+      "aggregate_matches_individuals": true,
+      "skips": [],
+      "failures": [],
+      "ignored_failures": [],
+      "exit_code": 0,
+      "timeout": false,
+      "seconds": 0.613,
+      "raw_log": "/private/tmp/gossil-fossil-baseline-20261117/runs/parallel-th1-repo/output.log",
+      "full_record": "/tmp/gossil-fossil-baseline-20261117/runs/parallel-th1-repo/result.json"
+    },
+    {
+      "suite": "th1-taint",
+      "attempt": "parallel-th1-taint",
+      "state": "pass",
+      "assertions": {
+        "pass": 23
+      },
+      "framework": {
+        "pass": 1
+      },
+      "executed_individual_lines": 24,
+      "upstream_summary": {
+        "errors": 0,
+        "tests": 24
+      },
+      "aggregate_matches_individuals": true,
+      "skips": [],
+      "failures": [],
+      "ignored_failures": [],
+      "exit_code": 0,
+      "timeout": false,
+      "seconds": 1.766,
+      "raw_log": "/private/tmp/gossil-fossil-baseline-20261117/runs/parallel-th1-taint/output.log",
+      "full_record": "/tmp/gossil-fossil-baseline-20261117/runs/parallel-th1-taint/result.json"
+    },
+    {
+      "suite": "th1-tcl",
+      "attempt": "parallel-th1-tcl",
+      "state": "feature-disabled",
+      "assertions": {},
+      "framework": {
+        "pass": 1
+      },
+      "executed_individual_lines": 1,
+      "upstream_summary": {
+        "errors": 0,
+        "tests": 1
+      },
+      "aggregate_matches_individuals": true,
+      "skips": [
+        "th1-tcl"
+      ],
+      "failures": [],
+      "ignored_failures": [],
+      "exit_code": 0,
+      "timeout": false,
+      "seconds": 0.135,
+      "raw_log": "/private/tmp/gossil-fossil-baseline-20261117/runs/parallel-th1-tcl/output.log",
+      "full_record": "/tmp/gossil-fossil-baseline-20261117/runs/parallel-th1-tcl/result.json"
+    },
+    {
+      "suite": "unversioned",
+      "attempt": "parallel-unversioned",
+      "state": "fail",
+      "assertions": {
+        "pass": 55,
+        "fail": 3
+      },
+      "framework": {
+        "pass": 1
+      },
+      "executed_individual_lines": 59,
+      "upstream_summary": {
+        "errors": 3,
+        "tests": 59
+      },
+      "aggregate_matches_individuals": true,
+      "skips": [],
+      "failures": [
+        "unversioned-46",
+        "unversioned-52",
+        "unversioned-55"
+      ],
+      "ignored_failures": [],
+      "exit_code": 1,
+      "timeout": false,
+      "seconds": 6.834,
+      "raw_log": "/private/tmp/gossil-fossil-baseline-20261117/runs/parallel-unversioned/output.log",
+      "full_record": "/tmp/gossil-fossil-baseline-20261117/runs/parallel-unversioned/result.json"
+    },
+    {
+      "suite": "update",
+      "attempt": "parallel-update",
+      "state": "fail",
+      "assertions": {
+        "pass": 26,
+        "fail": 1
+      },
+      "framework": {
+        "pass": 1
+      },
+      "executed_individual_lines": 28,
+      "upstream_summary": {
+        "errors": 1,
+        "tests": 28
+      },
+      "aggregate_matches_individuals": true,
+      "skips": [],
+      "failures": [
+        "update-message-add-overwrites"
+      ],
+      "ignored_failures": [],
+      "exit_code": 1,
+      "timeout": false,
+      "seconds": 6.189,
+      "raw_log": "/private/tmp/gossil-fossil-baseline-20261117/runs/parallel-update/output.log",
+      "full_record": "/tmp/gossil-fossil-baseline-20261117/runs/parallel-update/result.json"
+    },
+    {
+      "suite": "utf",
+      "attempt": "parallel-utf",
+      "state": "pass",
+      "assertions": {
+        "pass": 1637
+      },
+      "framework": {
+        "pass": 1
+      },
+      "executed_individual_lines": 1638,
+      "upstream_summary": {
+        "errors": 0,
+        "tests": 1638
+      },
+      "aggregate_matches_individuals": true,
+      "skips": [],
+      "failures": [],
+      "ignored_failures": [],
+      "exit_code": 0,
+      "timeout": false,
+      "seconds": 83.675,
+      "raw_log": "/private/tmp/gossil-fossil-baseline-20261117/runs/parallel-utf/output.log",
+      "full_record": "/tmp/gossil-fossil-baseline-20261117/runs/parallel-utf/result.json"
+    },
+    {
+      "suite": "wiki",
+      "attempt": "parallel-wiki",
+      "state": "pass",
+      "assertions": {
+        "pass": 68
+      },
+      "framework": {
+        "pass": 1
+      },
+      "executed_individual_lines": 69,
+      "upstream_summary": {
+        "errors": 0,
+        "tests": 69
+      },
+      "aggregate_matches_individuals": true,
+      "skips": [],
+      "failures": [],
+      "ignored_failures": [],
+      "exit_code": 0,
+      "timeout": false,
+      "seconds": 49.329,
+      "raw_log": "/private/tmp/gossil-fossil-baseline-20261117/runs/parallel-wiki/output.log",
+      "full_record": "/tmp/gossil-fossil-baseline-20261117/runs/parallel-wiki/result.json"
+    }
+  ],
+  "feature_probes": {
+    "ssl": {
+      "exit_code": 0,
+      "stdout": "0\n",
+      "stderr": ""
+    },
+    "legacyMvRm": {
+      "exit_code": 0,
+      "stdout": "1\n",
+      "stderr": ""
+    },
+    "execRelPaths": {
+      "exit_code": 0,
+      "stdout": "0\n",
+      "stderr": ""
+    },
+    "th1Docs": {
+      "exit_code": 0,
+      "stdout": "0\n",
+      "stderr": ""
+    },
+    "th1Hooks": {
+      "exit_code": 0,
+      "stdout": "0\n",
+      "stderr": ""
+    },
+    "tcl": {
+      "exit_code": 0,
+      "stdout": "0\n",
+      "stderr": ""
+    },
+    "useTclStubs": {
+      "exit_code": 0,
+      "stdout": "0\n",
+      "stderr": ""
+    },
+    "tclStubs": {
+      "exit_code": 0,
+      "stdout": "0\n",
+      "stderr": ""
+    },
+    "tclPrivateStubs": {
+      "exit_code": 0,
+      "stdout": "0\n",
+      "stderr": ""
+    },
+    "json": {
+      "exit_code": 0,
+      "stdout": "0\n",
+      "stderr": ""
+    },
+    "markdown": {
+      "exit_code": 0,
+      "stdout": "1\n",
+      "stderr": ""
+    }
+  },
+  "limits": [
+    "Reference build configured without TLS or FUSE; does not establish TLS/FUSE acceptance.",
+    "Runtime JSON, Tcl integration, TH1 docs/hooks are disabled; skipped feature assertions are not passes.",
+    "KnownBug ignored assertions retained as ignored and not counted as passes.",
+    "-keep preserves owned repositories and home directories for inspection; process groups terminated after run.",
+    "tool-identities.json and pristine-files.json record executable and fixture SHA256 pins for replay.",
+    "Initial preliminary parser rejected names containing spaces; corrected and clean37 restarted. Controls removed from inherited fixture directory because delta1 globs every fixture; preliminary run aborted and separately preserved.",
+    "No extra harness-source repair beyond enabling patch; outer runner owns missing-executable, discovery, zero-assertion, aggregate and timeout gates."
+  ]
+}

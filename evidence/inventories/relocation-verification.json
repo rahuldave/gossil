@@ -1,0 +1,40 @@
+{
+  "kind": "Historical relocation integrity and file-row mapped-set checks, not behavioral acceptance",
+  "checks": {
+    "fossil": {
+      "exact_relocation_hashes": true,
+      "tracked_file_count": 984,
+      "all_dispositions_normative": true,
+      "index_artifact_count": 10,
+      "declared_diagnostics": 161,
+      "runtime_diagnostics": 158,
+      "suite_count": 37
+    },
+    "gest": {
+      "exact_relocation_hashes": true,
+      "tracked_file_count": 544,
+      "all_dispositions_normative": true,
+      "index_artifact_count": 13,
+      "compiled_tests": 1214,
+      "counts": {
+        "files": 544,
+        "unit_tests": 867,
+        "integration_tests": 347,
+        "contracts": {
+          "cli-node": 93,
+          "json-command": 72,
+          "cli-alias": 29,
+          "http-route": 34,
+          "exit-code": 10,
+          "storage-migration": 15,
+          "storage-table": 15,
+          "storage-mutation-family": 10,
+          "storage-infrastructure-mutation": 6,
+          "json-shared-output": 2,
+          "json-output-site": 77
+        }
+      }
+    }
+  },
+  "scope_note": "all_dispositions_normative covers historical file rows only; family corrections and pinned Git tree metadata are validated by validate_current.py and correction-validation.json"
+}

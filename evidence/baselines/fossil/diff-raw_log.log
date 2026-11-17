@@ -1,0 +1,30 @@
+***** diff ******
+/Users/rahul/Projects/gossil/.jlog/bin/fossil add /private/tmp/gossil-fossil-baseline-20261117/runs/diff/tmp/repo_35784/1794943814_1/diff.test
+/Users/rahul/Projects/gossil/.jlog/bin/fossil commit -m c1
+/Users/rahul/Projects/gossil/.jlog/bin/fossil ls
+test diff-ls-1 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil diff file0.dat
+test diff-file0-1 FAILED!
+/Users/rahul/Projects/gossil/.jlog/bin/fossil diff file1.dat
+test diff-file1-1 FAILED!
+/Users/rahul/Projects/gossil/.jlog/bin/fossil diff file2.dat
+test diff-file2-1 FAILED!
+/Users/rahul/Projects/gossil/.jlog/bin/fossil diff file3.dat
+test diff-file3-1 FAILED!
+/Users/rahul/Projects/gossil/.jlog/bin/fossil diff file4.dat
+test diff-file4-1 FAILED!
+/Users/rahul/Projects/gossil/.jlog/bin/fossil diff file5.dat
+test diff-file5-1 FAILED!
+/Users/rahul/Projects/gossil/.jlog/bin/fossil xdiff -y -W 16 file6a.dat file6b.dat
+test diff-file-6-1 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil rm file1.dat
+/Users/rahul/Projects/gossil/.jlog/bin/fossil diff -v file1.dat
+test diff-deleted-file-1 FAILED!
+/Users/rahul/Projects/gossil/.jlog/bin/fossil add file6.dat
+/Users/rahul/Projects/gossil/.jlog/bin/fossil diff -v file6.dat
+test diff-added-file-1 FAILED!
+test test-framework-diff OK
+***** End of diff: 8 errors so far ******
+***** Final results: 8 errors out of 11 tests
+***** Considered failures: diff-file0-1 diff-file1-1 diff-file2-1 diff-file3-1 diff-file4-1 diff-file5-1 diff-deleted-file-1 diff-added-file-1
+***** Ignored results: 0 ignored errors out of 11 tests

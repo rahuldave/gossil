@@ -1,0 +1,32 @@
+# begin lines of jnterfaces, the installer, from jnterfaces at 338ca39.
+# Last written to .gitignore by `install_stack.py --target /Users/rahul/Projects/gossil --profile rust --defaults --clean`. The record is parts.".gitignore" in .agents/stack.json.
+.agents/stack-log.jsonl
+.agents/stack-pending.json
+.agents/log/
+# end lines of jnterfaces. They stay while the project keeps .agents/stack.json.
+# begin lines of rust, the rust profile, from jnprofile-rust at dc9a664.
+# Last written to .gitignore by `install_stack.py --target /Users/rahul/Projects/gossil --profile rust --defaults --clean`. The record is parts.".gitignore" in .agents/stack.json.
+/target/
+*.profraw
+# end lines of rust. `just uninstall rust` removes them.
+# begin lines of rust:api, the api tool of the rust profile, from jnprofile-rust at dc9a664.
+# Last written to .gitignore by `install_stack.py --target /Users/rahul/Projects/gossil --profile rust --defaults --clean`. The record is parts.".gitignore" in .agents/stack.json.
+.jnprofile-rust/
+# end lines of rust:api. `just uninstall api` removes them.
+# begin lines of docs, the docs role, from jnterfaces at 338ca39.
+# Last written to .gitignore by `just install docs --answer docs-publish=no`. The record is parts.".gitignore" in .agents/stack.json.
+docs/_site/
+# end lines of docs. `just uninstall docs` removes them.
+
+# Local development task state belongs to this checkout.
+.gest/
+
+# Locally installed native tools and command links.
+.jlog/bin/
+.jlog/tools/
+
+# The native-tool directory may be linked into owned local worktrees.
+/.jlog
+
+# Bytecode caches from locally executed installed Python helpers.
+__pycache__/

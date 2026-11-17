@@ -1,0 +1,4 @@
+set marker [file join $::testrundir escaped-child.txt]
+set owned_child [exec /bin/sh -c {sleep 2; echo alive > "$1"} sh $marker &]
+puts stderr "owned child: $owned_child"
+after 60000

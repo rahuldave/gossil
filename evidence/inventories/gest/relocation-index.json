@@ -1,0 +1,74 @@
+{
+  "kind": "exact historical inventory artifact capture, separate from runtime code",
+  "original_directory": "/tmp/gossil-gest-dispositions-20261117",
+  "files": {
+    "/tmp/gossil-gest-dispositions-20261117/baseline-axum-routes.json": {
+      "archive": "baseline-axum-routes.json",
+      "sha256": "3f73a31710245c92ab250ca51674d084cfdcd359498c9239079c68e183191bc3",
+      "bytes": 4440
+    },
+    "/tmp/gossil-gest-dispositions-20261117/baseline-cli-help.json": {
+      "archive": "baseline-cli-help.json",
+      "sha256": "6c604afee41ff54cf72721d26388bff01941cf3acc96ba9eb9aeb9be24f77d79",
+      "bytes": 95572
+    },
+    "/tmp/gossil-gest-dispositions-20261117/baseline-compatibility.json": {
+      "archive": "baseline-compatibility.json",
+      "sha256": "7116eccaf5116c4311e19a405978306f5bb8cfa676df04894cbb618e7a62a800",
+      "bytes": 78412
+    },
+    "/tmp/gossil-gest-dispositions-20261117/baseline-environment.json": {
+      "archive": "baseline-environment.json",
+      "sha256": "c6f75112e3d8e6ccdd796ae51640f6a17dded8319321e3f64269ffe1cdbb8447",
+      "bytes": 10821
+    },
+    "/tmp/gossil-gest-dispositions-20261117/baseline-report.json": {
+      "archive": "baseline-report.json",
+      "sha256": "04fc55e7db80be9822db677dd09402651ed36388fee5d51f1ea1784e0601d7f0",
+      "bytes": 4141
+    },
+    "/tmp/gossil-gest-dispositions-20261117/build_inventory.py": {
+      "archive": "build_inventory.py",
+      "sha256": "f0e68a99f852165810d4275cae369b92795cbb04c20def74e07283076bc10618",
+      "bytes": 31869
+    },
+    "/tmp/gossil-gest-dispositions-20261117/integration-discovered-tests.txt": {
+      "archive": "integration-discovered-tests.txt",
+      "sha256": "f79309cb1f0cf6b49c1e2e96c64405a4482c9ce48a78bd6eb1e50a1b1db41af0",
+      "bytes": 26597
+    },
+    "/tmp/gossil-gest-dispositions-20261117/inventory.json": {
+      "archive": "inventory.json.gz",
+      "sha256": "d9f432a3e86dceb2ef944415a84026867131d66d24a8810f8b98fa073a7c4794",
+      "bytes": 3413348,
+      "compression": "gzip",
+      "sha256_covers": "uncompressed original bytes"
+    },
+    "/tmp/gossil-gest-dispositions-20261117/prose-check.txt": {
+      "archive": "prose-check.txt",
+      "sha256": "2b8e39184efe1b8cde5a280475dff7841353e3fc229da32d5e096c227bb9d024",
+      "bytes": 671
+    },
+    "/tmp/gossil-gest-dispositions-20261117/report.txt": {
+      "archive": "report.txt",
+      "sha256": "c1aa41711c5e0d1fff9b1ece3cede455daa75720e1466fdc9649b13413d27eee",
+      "bytes": 2041
+    },
+    "/tmp/gossil-gest-dispositions-20261117/storage-enumeration-input.json": {
+      "archive": "storage-enumeration-input.json",
+      "sha256": "c29eff76905eab5115a3631518fd3379e144329cf732893a533869365fa5d93f",
+      "bytes": 18585
+    },
+    "/tmp/gossil-gest-dispositions-20261117/unit-discovered-tests.txt": {
+      "archive": "unit-discovered-tests.txt",
+      "sha256": "3914be118f28b8c1f65bf7eef10eaf72535b8304a029abbe8f7e44f1ea002930",
+      "bytes": 73540
+    },
+    "/tmp/gossil-gest-dispositions-20261117/validation.json": {
+      "archive": "validation.json",
+      "sha256": "9c15db4df56520b1a90c50d6a73cc0d6b0ccacc293afdf12bbaa504781fed0a6",
+      "bytes": 1785
+    }
+  },
+  "reproduction_limit": "Generation/check scripts retain their original absolute source, scratch, pinned-build and specification inputs. Restore those inputs to reproduce historical measurements; archived scripts are evidence, not installed runtime dependencies. No scripts were modified or re-executed during relocation."
+}

@@ -1,0 +1,3 @@
+# Runner control: execute the explicit program, then check its actual output.
+fossil version
+test runner-real-version {[string match {*fossil*version*} $RESULT]}

@@ -1,0 +1,121 @@
+***** file1 ******
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-simplify-name .
+test simplify-name-100.1 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-simplify-name .//
+test simplify-name-100.2 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-simplify-name ..
+test simplify-name-100.3 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-simplify-name ../////
+test simplify-name-100.4 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-simplify-name {}
+test simplify-name-101.1 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-simplify-name /
+test simplify-name-101.2 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-simplify-name /////////
+test simplify-name-101.3 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-simplify-name ././././
+test simplify-name-101.4 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-simplify-name x
+test simplify-name-102.1 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-simplify-name /x
+test simplify-name-102.2 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-simplify-name ///x
+test simplify-name-102.3 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-simplify-name a/b
+test simplify-name-103.1 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-simplify-name /a/b
+test simplify-name-103.2 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-simplify-name a///b
+test simplify-name-103.3 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-simplify-name ///a///b/////
+test simplify-name-103.4 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-simplify-name a/b/../c/
+test simplify-name-104.1 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-simplify-name /a/b/../c
+test simplify-name-104.2 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-simplify-name /a/b//../c
+test simplify-name-104.3 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-simplify-name /a/b/..///c
+test simplify-name-104.4 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-simplify-name a/b/../../x/y
+test simplify-name-105.1 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-simplify-name /a/b/../../x/y
+test simplify-name-105.2 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-simplify-name a/b/../../../x/y
+test simplify-name-106.1 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-simplify-name /a/b/../../../x/y
+test simplify-name-106.2 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-simplify-name a/./b/.././../x/y
+test simplify-name-107.1 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-simplify-name a//.//b//..//.//..//x//y///
+test simplify-name-107.2 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-relative-name --chdir . .
+test relative-name-100.1 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-relative-name --chdir test1 /private/tmp/gossil-fossil-baseline-20261117/runs/file1/tmp/repo_35829/1794943815_1/file1.test/file1
+test relative-name-100.2 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-relative-name --chdir test1 /private/tmp/gossil-fossil-baseline-20261117/runs/file1/tmp/repo_35829/1794943815_1/file1.test/file1/
+test relative-name-100.3 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-relative-name --chdir test1 /private/tmp/gossil-fossil-baseline-20261117/runs/file1/tmp/repo_35829/1794943815_1/file1.test/file1/test
+test relative-name-100.4 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-relative-name --chdir test1/test2 /private/tmp/gossil-fossil-baseline-20261117/runs/file1/tmp/repo_35829/1794943815_1/file1.test/file1
+test relative-name-101.1 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-relative-name --chdir test1/test2 /private/tmp/gossil-fossil-baseline-20261117/runs/file1/tmp/repo_35829/1794943815_1/file1.test/file1/
+test relative-name-101.2 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-relative-name --chdir test1/test2 /private/tmp/gossil-fossil-baseline-20261117/runs/file1/tmp/repo_35829/1794943815_1/file1.test/file1/test
+test relative-name-101.3 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-relative-name --chdir test1 /private/tmp/gossil-fossil-baseline-20261117/runs/file1/tmp/repo_35829/1794943815_1/file1.test/file1/test
+test relative-name-102.1 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-relative-name --chdir . /private/tmp/gossil-fossil-baseline-20261117/runs/file1/tmp/repo_35829/1794943815_1/file1.test/file1/file1
+test relative-name-102.2 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-relative-name --chdir . /private/tmp/gossil-fossil-baseline-20261117/runs/file1/tmp/repo_35829/1794943815_1/file1.test/file1/file1/file2
+test relative-name-102.3 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-relative-name --chdir . /private/tmp/gossil-fossil-baseline-20261117/runs/file1/tmp/repo_35829/1794943815_1/file1.test/file1
+test relative-name-103.1 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-tree-name --chdir . .
+test relative-tree-name-100.1 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-tree-name --chdir test1 /private/tmp/gossil-fossil-baseline-20261117/runs/file1/tmp/repo_35829/1794943815_1/file1.test/file1
+test relative-tree-name-100.2 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-tree-name --chdir test1 /private/tmp/gossil-fossil-baseline-20261117/runs/file1/tmp/repo_35829/1794943815_1/file1.test/file1/
+test relative-tree-name-100.3 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-tree-name --chdir test1 /private/tmp/gossil-fossil-baseline-20261117/runs/file1/tmp/repo_35829/1794943815_1/file1.test/file1/test
+test relative-tree-name-100.4 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-tree-name --chdir test1/test2 /private/tmp/gossil-fossil-baseline-20261117/runs/file1/tmp/repo_35829/1794943815_1/file1.test/file1
+test relative-tree-name-101.1 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-tree-name --chdir test1/test2 /private/tmp/gossil-fossil-baseline-20261117/runs/file1/tmp/repo_35829/1794943815_1/file1.test/file1/
+test relative-tree-name-101.2 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-tree-name --chdir test1/test2 /private/tmp/gossil-fossil-baseline-20261117/runs/file1/tmp/repo_35829/1794943815_1/file1.test/file1/test
+test relative-tree-name-101.3 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-tree-name --chdir test1 /private/tmp/gossil-fossil-baseline-20261117/runs/file1/tmp/repo_35829/1794943815_1/file1.test/file1/test
+test relative-tree-name-102.1 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-tree-name --chdir . /private/tmp/gossil-fossil-baseline-20261117/runs/file1/tmp/repo_35829/1794943815_1/file1.test/file1/file1
+test relative-tree-name-102.2 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-tree-name --chdir . /private/tmp/gossil-fossil-baseline-20261117/runs/file1/tmp/repo_35829/1794943815_1/file1.test/file1/file1/file2
+test relative-tree-name-102.3 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-tree-name --chdir . /private/tmp/gossil-fossil-baseline-20261117/runs/file1/tmp/repo_35829/1794943815_1/file1.test/file1
+test relative-tree-name-103.1 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-tree-name --chdir . --absolute .
+test absolute-tree-name-100.1 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-tree-name --chdir test1 --absolute /private/tmp/gossil-fossil-baseline-20261117/runs/file1/tmp/repo_35829/1794943815_1/file1.test/file1
+test absolute-tree-name-100.2 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-tree-name --chdir test1 --absolute /private/tmp/gossil-fossil-baseline-20261117/runs/file1/tmp/repo_35829/1794943815_1/file1.test/file1/
+test absolute-tree-name-100.3 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-tree-name --chdir test1 --absolute /private/tmp/gossil-fossil-baseline-20261117/runs/file1/tmp/repo_35829/1794943815_1/file1.test/file1/test
+test absolute-tree-name-100.4 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-tree-name --chdir test1/test2 --absolute /private/tmp/gossil-fossil-baseline-20261117/runs/file1/tmp/repo_35829/1794943815_1/file1.test/file1
+test absolute-tree-name-101.1 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-tree-name --chdir test1/test2 --absolute /private/tmp/gossil-fossil-baseline-20261117/runs/file1/tmp/repo_35829/1794943815_1/file1.test/file1/
+test absolute-tree-name-101.2 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-tree-name --chdir test1/test2 --absolute /private/tmp/gossil-fossil-baseline-20261117/runs/file1/tmp/repo_35829/1794943815_1/file1.test/file1/test
+test absolute-tree-name-101.3 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-tree-name --chdir test1 --absolute /private/tmp/gossil-fossil-baseline-20261117/runs/file1/tmp/repo_35829/1794943815_1/file1.test/file1/test
+test absolute-tree-name-102.1 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-tree-name --chdir . --absolute /private/tmp/gossil-fossil-baseline-20261117/runs/file1/tmp/repo_35829/1794943815_1/file1.test/file1/file1
+test absolute-tree-name-102.2 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-tree-name --chdir . --absolute /private/tmp/gossil-fossil-baseline-20261117/runs/file1/tmp/repo_35829/1794943815_1/file1.test/file1/file1/file2
+test absolute-tree-name-102.3 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-tree-name --chdir . --absolute /private/tmp/gossil-fossil-baseline-20261117/runs/file1/tmp/repo_35829/1794943815_1/file1.test/file1
+test absolute-tree-name-103.1 OK
+test test-framework-file1 OK
+***** End of file1: 0 errors so far ******
+***** Final results: 0 errors out of 59 tests
+***** Ignored results: 0 ignored errors out of 59 tests

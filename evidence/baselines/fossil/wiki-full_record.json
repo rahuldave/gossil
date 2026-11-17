@@ -1,0 +1,324 @@
+{
+  "name": "parallel-wiki",
+  "suites": [
+    "wiki"
+  ],
+  "command": [
+    "jlog",
+    "run",
+    "tclsh",
+    "/private/tmp/gossil-fossil-baseline-20261117/launch.tcl",
+    "/private/tmp/gossil-fossil-baseline-20261117/runs/parallel-wiki/cwd",
+    "/private/tmp/gossil-fossil-baseline-20261117/enabled/test/tester.tcl",
+    "/Users/rahul/Projects/gossil/.jlog/bin/fossil",
+    "wiki",
+    "-keep"
+  ],
+  "cwd": "/Users/rahul/Projects/gossil",
+  "environment": {
+    "FOSSIL_HOME": "/private/tmp/gossil-fossil-baseline-20261117/runs/parallel-wiki/home",
+    "FOSSIL_TEST_TEMP": "/private/tmp/gossil-fossil-baseline-20261117/runs/parallel-wiki/tmp",
+    "TEMP": "/private/tmp/gossil-fossil-baseline-20261117/runs/parallel-wiki/tmp",
+    "TMP": "/private/tmp/gossil-fossil-baseline-20261117/runs/parallel-wiki/tmp",
+    "TMPDIR": "/private/tmp/gossil-fossil-baseline-20261117/runs/parallel-wiki/tmp",
+    "HOME": "/private/tmp/gossil-fossil-baseline-20261117/runs/parallel-wiki/home",
+    "USER": "gossil-baseline",
+    "LOGNAME": "gossil-baseline",
+    "LC_ALL": "C",
+    "TZ": "UTC"
+  },
+  "exit_code": 0,
+  "timeout": false,
+  "seconds": 49.329,
+  "results": [
+    {
+      "name": "wiki-0",
+      "result": "pass"
+    },
+    {
+      "name": "wiki-1",
+      "result": "pass"
+    },
+    {
+      "name": "wiki-2",
+      "result": "pass"
+    },
+    {
+      "name": "wiki-3",
+      "result": "pass"
+    },
+    {
+      "name": "wiki-4",
+      "result": "pass"
+    },
+    {
+      "name": "wiki-5",
+      "result": "pass"
+    },
+    {
+      "name": "wiki-6",
+      "result": "pass"
+    },
+    {
+      "name": "wiki-7",
+      "result": "pass"
+    },
+    {
+      "name": "wiki-8",
+      "result": "pass"
+    },
+    {
+      "name": "wiki-9",
+      "result": "pass"
+    },
+    {
+      "name": "wiki-10",
+      "result": "pass"
+    },
+    {
+      "name": "wiki-11",
+      "result": "pass"
+    },
+    {
+      "name": "wiki-13",
+      "result": "pass"
+    },
+    {
+      "name": "wiki-13.1",
+      "result": "pass"
+    },
+    {
+      "name": "wiki-14",
+      "result": "pass"
+    },
+    {
+      "name": "wiki-15",
+      "result": "pass"
+    },
+    {
+      "name": "wiki-15.1",
+      "result": "pass"
+    },
+    {
+      "name": "wiki-16",
+      "result": "pass"
+    },
+    {
+      "name": "wiki-17",
+      "result": "pass"
+    },
+    {
+      "name": "wiki-18",
+      "result": "pass"
+    },
+    {
+      "name": "wiki-19",
+      "result": "pass"
+    },
+    {
+      "name": "wiki-20",
+      "result": "pass"
+    },
+    {
+      "name": "wiki-21",
+      "result": "pass"
+    },
+    {
+      "name": "wiki-22",
+      "result": "pass"
+    },
+    {
+      "name": "wiki-23",
+      "result": "pass"
+    },
+    {
+      "name": "wiki-24",
+      "result": "pass"
+    },
+    {
+      "name": "wiki-25",
+      "result": "pass"
+    },
+    {
+      "name": "wiki-26",
+      "result": "pass"
+    },
+    {
+      "name": "wiki-27",
+      "result": "pass"
+    },
+    {
+      "name": "wiki-28",
+      "result": "pass"
+    },
+    {
+      "name": "wiki-29",
+      "result": "pass"
+    },
+    {
+      "name": "wiki-30",
+      "result": "pass"
+    },
+    {
+      "name": "wiki-31",
+      "result": "pass"
+    },
+    {
+      "name": "wiki-32",
+      "result": "pass"
+    },
+    {
+      "name": "wiki-33",
+      "result": "pass"
+    },
+    {
+      "name": "wiki-34",
+      "result": "pass"
+    },
+    {
+      "name": "wiki-35",
+      "result": "pass"
+    },
+    {
+      "name": "wiki-36",
+      "result": "pass"
+    },
+    {
+      "name": "wiki-36-1",
+      "result": "pass"
+    },
+    {
+      "name": "wiki-36-2",
+      "result": "pass"
+    },
+    {
+      "name": "wiki-37",
+      "result": "pass"
+    },
+    {
+      "name": "wiki-38",
+      "result": "pass"
+    },
+    {
+      "name": "wiki-39-0",
+      "result": "pass"
+    },
+    {
+      "name": "wiki-39-1",
+      "result": "pass"
+    },
+    {
+      "name": "wiki-39-2",
+      "result": "pass"
+    },
+    {
+      "name": "wiki-39-3",
+      "result": "pass"
+    },
+    {
+      "name": "wiki-39-4",
+      "result": "pass"
+    },
+    {
+      "name": "wiki-39-5",
+      "result": "pass"
+    },
+    {
+      "name": "wiki-39-6",
+      "result": "pass"
+    },
+    {
+      "name": "wiki-39-7",
+      "result": "pass"
+    },
+    {
+      "name": "wiki-40",
+      "result": "pass"
+    },
+    {
+      "name": "wiki-41",
+      "result": "pass"
+    },
+    {
+      "name": "wiki-42",
+      "result": "pass"
+    },
+    {
+      "name": "wiki-43",
+      "result": "pass"
+    },
+    {
+      "name": "wiki-44",
+      "result": "pass"
+    },
+    {
+      "name": "wiki-45",
+      "result": "pass"
+    },
+    {
+      "name": "wiki-46",
+      "result": "pass"
+    },
+    {
+      "name": "wiki-47",
+      "result": "pass"
+    },
+    {
+      "name": "wiki-48",
+      "result": "pass"
+    },
+    {
+      "name": "wiki-49",
+      "result": "pass"
+    },
+    {
+      "name": "wiki-50",
+      "result": "pass"
+    },
+    {
+      "name": "wiki-51",
+      "result": "pass"
+    },
+    {
+      "name": "wiki-52",
+      "result": "pass"
+    },
+    {
+      "name": "wiki-53",
+      "result": "pass"
+    },
+    {
+      "name": "wiki-54",
+      "result": "pass"
+    },
+    {
+      "name": "wiki-55",
+      "result": "pass"
+    },
+    {
+      "name": "wiki-56",
+      "result": "pass"
+    },
+    {
+      "name": "wiki-57",
+      "result": "pass"
+    },
+    {
+      "name": "test-framework-wiki",
+      "result": "pass"
+    }
+  ],
+  "counts": {
+    "pass": 69,
+    "fail": 0,
+    "ignored": 0
+  },
+  "upstream_summary": {
+    "errors": 0,
+    "tests": 69
+  },
+  "count_matches": true,
+  "skips": [],
+  "log": "/private/tmp/gossil-fossil-baseline-20261117/runs/parallel-wiki/output.log",
+  "gate_pass": true
+}

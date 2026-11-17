@@ -1,0 +1,8 @@
+***** json ******
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval {hasfeature json}
+Fossil was not compiled with JSON support.
+test test-framework-json OK
+***** End of json: 0 errors so far ******
+***** Final results: 0 errors out of 1 tests
+***** Ignored results: 0 ignored errors out of 1 tests
+***** Skipped tests: json

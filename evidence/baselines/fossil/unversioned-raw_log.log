@@ -1,0 +1,134 @@
+***** unversioned ******
+/Users/rahul/Projects/gossil/.jlog/bin/fossil set backoffice-disable 1
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval --open-config repository
+/Users/rahul/Projects/gossil/.jlog/bin/fossil unversioned
+test unversioned-1 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil unversioned list
+test unversioned-2 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil unversioned cat not-found.txt
+test unversioned-3 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil unversioned cat unversioned1.txt
+test unversioned-4 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil unversioned add unversioned1.txt
+test unversioned-5 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil unversioned cat unversioned1.txt
+test unversioned-6 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil unversioned list
+test unversioned-7 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil unversioned ls
+test unversioned-8 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil unversioned remove unversioned1.txt
+test unversioned-9 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil unversioned list
+test unversioned-10 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil unversioned ls
+test unversioned-11 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil unversioned list --all
+test unversioned-12 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil unversioned ls --all
+test unversioned-13 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil unversioned add {unversioned space.txt}
+test unversioned-14 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil unversioned add {unversioned space.txt} --as unversioned3.txt
+test unversioned-15 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil unversioned list
+test unversioned-16 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil unversioned ls --l
+test unversioned-17 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil unversioned ls
+test unversioned-18 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil unversioned add unversioned2.txt --mtime 2016-10-01
+test unversioned-19 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil unversioned list
+test unversioned-20 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil unversioned ls
+test unversioned-21 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil unversioned cat unversioned1.txt
+test unversioned-22 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil unversioned cat unversioned2.txt
+test unversioned-23 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil unversioned cat unversioned3.txt
+test unversioned-24 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil unversioned rm unversioned3.txt
+test unversioned-25 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil unversioned add unversioned4.txt
+test unversioned-26 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil unversioned cat unversioned4.txt
+test unversioned-27 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil unversioned edit unversioned4.txt
+test unversioned-28 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil unversioned cat unversioned4.txt
+test unversioned-29 OK
+test unversioned-30 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil unversioned edit unversioned4.txt --mtime 2016-10-01
+test unversioned-31 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil unversioned cat unversioned4.txt
+test unversioned-32 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil unversioned list
+test unversioned-33 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil unversioned export unversioned2.txt unversioned2-ex.txt
+test unversioned-34 OK
+test unversioned-35 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil unversioned hash
+test unversioned-36 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil unversioned hash --debug
+test unversioned-37 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil unversioned remove unversioned4.txt --mtime {2016-10-02 13:47:29}
+test unversioned-38 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil unversioned list --all
+test unversioned-39 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil unversioned touch unversioned1.txt --mtime {2016-10-03 23:01:44}
+test unversioned-40 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil unversioned list --all
+test unversioned-41 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil unversioned add unversioned5.txt
+test unversioned-42 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil unversioned touch unversioned5.txt
+test unversioned-43 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil unversioned list
+test unversioned-44 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil user new uvtester {Unversioned Test User} 1794943988
+/Users/rahul/Projects/gossil/.jlog/bin/fossil user capabilities uvtester oy
+Could not detect Fossil server port, using default...
+Started Fossil server, pid "50481", port "8080".
+Now in client directory "/private/tmp/gossil-fossil-baseline-20261117/runs/parallel-unversioned/tmp/uvtest_1794943989_3".
+/Users/rahul/Projects/gossil/.jlog/bin/fossil clone --save-http-password http://uvtester:1794943988@localhost:8080/ uvrepo.fossil
+/Users/rahul/Projects/gossil/.jlog/bin/fossil open -f uvrepo.fossil
+/Users/rahul/Projects/gossil/.jlog/bin/fossil unversioned list
+test unversioned-45 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil unversioned sync http://uvtester:1794943988@localhost:8080/
+y
+test unversioned-46 FAILED!
+/Users/rahul/Projects/gossil/.jlog/bin/fossil unversioned ls
+test unversioned-47 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil unversioned edit unversioned2.txt
+test unversioned-48 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil unversioned cat unversioned2.txt
+test unversioned-49 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil unversioned remove unversioned5.txt
+test unversioned-50 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil unversioned list --all
+test unversioned-51 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil unversioned revert http://uvtester:1794943988@localhost:8080/
+y
+test unversioned-52 FAILED!
+/Users/rahul/Projects/gossil/.jlog/bin/fossil unversioned list
+test unversioned-53 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil unversioned add unversioned-client1.txt
+test unversioned-54 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil unversioned sync http://uvtester:1794943988@localhost:8080/
+y
+test unversioned-55 FAILED!
+/Users/rahul/Projects/gossil/.jlog/bin/fossil close
+test unversioned-56 OK
+Now in server directory "/private/tmp/gossil-fossil-baseline-20261117/runs/parallel-unversioned/tmp/repo_50064/1794943985_1/unversioned.test".
+Stopped Fossil server, pid "50481", using argument "50481".
+/Users/rahul/Projects/gossil/.jlog/bin/fossil unversioned list
+test unversioned-57 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil unversioned cat unversioned-client1.txt
+test unversioned-58 OK
+test test-framework-unversioned OK
+***** End of unversioned: 3 errors so far ******
+***** Final results: 3 errors out of 59 tests
+***** Considered failures: unversioned-46 unversioned-52 unversioned-55
+***** Ignored results: 0 ignored errors out of 59 tests

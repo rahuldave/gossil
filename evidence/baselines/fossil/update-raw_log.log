@@ -1,0 +1,142 @@
+***** update ******
+/Users/rahul/Projects/gossil/.jlog/bin/fossil update --verbose
+test update-already-up-to-date OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil revert
+/Users/rahul/Projects/gossil/.jlog/bin/fossil update
+/Users/rahul/Projects/gossil/.jlog/bin/fossil add test-01-conflict-standard.txt
+/Users/rahul/Projects/gossil/.jlog/bin/fossil commit -m {Add test-01-conflict-standard.txt}
+/Users/rahul/Projects/gossil/.jlog/bin/fossil up previous
+/Users/rahul/Projects/gossil/.jlog/bin/fossil add test-01-conflict-standard.txt
+/Users/rahul/Projects/gossil/.jlog/bin/fossil update --verbose
+test update-message-conflict-standard OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil changes
+test update-changes-conflict-standard OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil revert
+/Users/rahul/Projects/gossil/.jlog/bin/fossil update
+/Users/rahul/Projects/gossil/.jlog/bin/fossil add test-02-add-overwrites.txt
+/Users/rahul/Projects/gossil/.jlog/bin/fossil commit -m {Add test-02-add-overwrites.txt}
+/Users/rahul/Projects/gossil/.jlog/bin/fossil up previous
+/Users/rahul/Projects/gossil/.jlog/bin/fossil update --verbose
+test update-message-add-overwrites FAILED!
+/Users/rahul/Projects/gossil/.jlog/bin/fossil changes
+test update-changes-add-overwrites OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil revert
+/Users/rahul/Projects/gossil/.jlog/bin/fossil update
+/Users/rahul/Projects/gossil/.jlog/bin/fossil add test-03-add-standard.txt
+/Users/rahul/Projects/gossil/.jlog/bin/fossil commit -m {Add test-03-add-standard.txt}
+/Users/rahul/Projects/gossil/.jlog/bin/fossil up previous
+/Users/rahul/Projects/gossil/.jlog/bin/fossil update --verbose
+test update-message-add-standard OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil changes
+test update-changes-add-standard OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil revert
+/Users/rahul/Projects/gossil/.jlog/bin/fossil update
+/Users/rahul/Projects/gossil/.jlog/bin/fossil add test-04-update-change.txt
+/Users/rahul/Projects/gossil/.jlog/bin/fossil commit -m {Add test-04-update-change.txt}
+/Users/rahul/Projects/gossil/.jlog/bin/fossil commit -m {Update test-04-update-change.txt}
+/Users/rahul/Projects/gossil/.jlog/bin/fossil up previous
+/Users/rahul/Projects/gossil/.jlog/bin/fossil rm --hard test-04-update-change.txt
+/Users/rahul/Projects/gossil/.jlog/bin/fossil update --verbose
+test update-message-update-change OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil changes
+test update-changes-update-change OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil revert
+/Users/rahul/Projects/gossil/.jlog/bin/fossil update
+/Users/rahul/Projects/gossil/.jlog/bin/fossil add test-05-update-standard.txt
+/Users/rahul/Projects/gossil/.jlog/bin/fossil commit -m {Add test-05-update-standard.txt}
+/Users/rahul/Projects/gossil/.jlog/bin/fossil commit -m {Update update-standard}
+/Users/rahul/Projects/gossil/.jlog/bin/fossil up previous
+/Users/rahul/Projects/gossil/.jlog/bin/fossil update --verbose
+test update-message-update-standard OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil changes
+test update-changes-update-standard OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil revert
+/Users/rahul/Projects/gossil/.jlog/bin/fossil update
+/Users/rahul/Projects/gossil/.jlog/bin/fossil add test-06-update-missing.txt
+/Users/rahul/Projects/gossil/.jlog/bin/fossil commit -m {Add test-06-update-missing.txt}
+/Users/rahul/Projects/gossil/.jlog/bin/fossil commit -m {Update test-06-update-missing.txt}
+/Users/rahul/Projects/gossil/.jlog/bin/fossil up previous
+/Users/rahul/Projects/gossil/.jlog/bin/fossil update --verbose
+test update-message-update-missing OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil changes
+test update-changes-update-missing OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil revert
+/Users/rahul/Projects/gossil/.jlog/bin/fossil update
+/Users/rahul/Projects/gossil/.jlog/bin/fossil add test-07-conflict-deleted.txt
+/Users/rahul/Projects/gossil/.jlog/bin/fossil commit -m {Add test-07-conflict-deleted.txt}
+/Users/rahul/Projects/gossil/.jlog/bin/fossil rm --hard test-07-conflict-deleted.txt
+/Users/rahul/Projects/gossil/.jlog/bin/fossil commit -m {Remove test-07-conflict-deleted.txt}
+/Users/rahul/Projects/gossil/.jlog/bin/fossil up previous
+/Users/rahul/Projects/gossil/.jlog/bin/fossil update --verbose
+test update-message-conflict-deleted OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil changes
+test update-changes-conflict-deleted OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil revert
+/Users/rahul/Projects/gossil/.jlog/bin/fossil update
+/Users/rahul/Projects/gossil/.jlog/bin/fossil add test-08-remove.txt
+/Users/rahul/Projects/gossil/.jlog/bin/fossil commit -m {Add test-08-remove.txt}
+/Users/rahul/Projects/gossil/.jlog/bin/fossil rm --hard test-08-remove.txt
+/Users/rahul/Projects/gossil/.jlog/bin/fossil commit -m {Remove test-08-remove.txt}
+/Users/rahul/Projects/gossil/.jlog/bin/fossil up previous
+/Users/rahul/Projects/gossil/.jlog/bin/fossil update --verbose
+test update-message-remove OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil changes
+test update-changes-remove OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil revert
+/Users/rahul/Projects/gossil/.jlog/bin/fossil update
+/Users/rahul/Projects/gossil/.jlog/bin/fossil add test-09-merge-renamed.txt
+/Users/rahul/Projects/gossil/.jlog/bin/fossil commit -m {Add test-09-merge-renamed.txt}
+/Users/rahul/Projects/gossil/.jlog/bin/fossil mv --hard test-09-merge-renamed.txt test-09-merge-renamed.txt.renamed
+/Users/rahul/Projects/gossil/.jlog/bin/fossil commit -m {Update and rename test-09-merge-renamed.txt}
+/Users/rahul/Projects/gossil/.jlog/bin/fossil up previous
+/Users/rahul/Projects/gossil/.jlog/bin/fossil update --verbose
+test update-message-merge-renamed OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil changes
+test update-changes-merge-renamed OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil revert
+/Users/rahul/Projects/gossil/.jlog/bin/fossil update
+/Users/rahul/Projects/gossil/.jlog/bin/fossil add test-10-merge-standard.txt
+/Users/rahul/Projects/gossil/.jlog/bin/fossil commit -m {Add test-10-merge-standard.txt}
+/Users/rahul/Projects/gossil/.jlog/bin/fossil commit -m {Update test-10-merge-standard.txt}
+/Users/rahul/Projects/gossil/.jlog/bin/fossil up previous
+/Users/rahul/Projects/gossil/.jlog/bin/fossil update --verbose
+test update-message-merge-standard OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil changes
+test update-changes-merge-standard OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil revert
+/Users/rahul/Projects/gossil/.jlog/bin/fossil update
+/Users/rahul/Projects/gossil/.jlog/bin/fossil add test-11-merge-conflict.txt
+/Users/rahul/Projects/gossil/.jlog/bin/fossil commit -m {Add test-11-merge-conflict.txt}
+/Users/rahul/Projects/gossil/.jlog/bin/fossil commit -m {Update test-11-merge-conflict.txt}
+/Users/rahul/Projects/gossil/.jlog/bin/fossil up previous
+/Users/rahul/Projects/gossil/.jlog/bin/fossil update --verbose
+test update-message-merge-conflict OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil changes
+test update-changes-merge-conflict OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil revert
+/Users/rahul/Projects/gossil/.jlog/bin/fossil update
+/Users/rahul/Projects/gossil/.jlog/bin/fossil add test-12-edited.txt
+/Users/rahul/Projects/gossil/.jlog/bin/fossil commit -m {Add test-12-edited.txt}
+/Users/rahul/Projects/gossil/.jlog/bin/fossil add test-12-edited.txt.other
+/Users/rahul/Projects/gossil/.jlog/bin/fossil commit -m {Add test-12-edited.txt.other}
+/Users/rahul/Projects/gossil/.jlog/bin/fossil up previous
+/Users/rahul/Projects/gossil/.jlog/bin/fossil update --verbose
+test update-message-edited OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil changes
+test update-changes-edited OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil revert
+/Users/rahul/Projects/gossil/.jlog/bin/fossil update
+/Users/rahul/Projects/gossil/.jlog/bin/fossil add test-13-unchanged.txt.unchanged
+/Users/rahul/Projects/gossil/.jlog/bin/fossil commit -m {Add test-13-unchanged.txt.unchanged}
+/Users/rahul/Projects/gossil/.jlog/bin/fossil add test-13-unchanged.txt
+/Users/rahul/Projects/gossil/.jlog/bin/fossil commit -m {Add test-13-unchanged.txt}
+/Users/rahul/Projects/gossil/.jlog/bin/fossil up previous
+/Users/rahul/Projects/gossil/.jlog/bin/fossil update --verbose
+test update-message-unchanged OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil changes
+test update-changes-unchanged OK
+test test-framework-update OK
+***** End of update: 1 errors so far ******
+***** Final results: 1 errors out of 28 tests
+***** Considered failures: update-message-add-overwrites
+***** Ignored results: 0 ignored errors out of 28 tests

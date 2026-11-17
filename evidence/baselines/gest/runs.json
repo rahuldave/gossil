@@ -1,0 +1,110 @@
+[
+  {
+    "name": "integration",
+    "argv": [
+      "cargo",
+      "test",
+      "--locked",
+      "--all-features",
+      "--test",
+      "integration"
+    ],
+    "cwd": "/Users/rahul/Projects/gest",
+    "environment_overrides": {},
+    "exit": 0,
+    "started_unix": 1794943829.560888,
+    "elapsed_seconds": 47.19888114929199,
+    "output": "/tmp/gest-baseline-rGsljN/integration.txt"
+  },
+  {
+    "name": "focused",
+    "argv": [
+      "cargo",
+      "test",
+      "--locked",
+      "--all-features",
+      "--bin",
+      "gest",
+      "ui::components::molecules::task_row::tests::it_renders_pipes_in_sibling_columns",
+      "--",
+      "--exact",
+      "--nocapture"
+    ],
+    "cwd": "/Users/rahul/Projects/gest",
+    "environment_overrides": {},
+    "exit": 0,
+    "started_unix": 1794943876.762789,
+    "elapsed_seconds": 85.99276089668274,
+    "output": "/tmp/gest-baseline-rGsljN/focused.txt"
+  },
+  {
+    "name": "unit-parallel",
+    "argv": [
+      "cargo",
+      "test",
+      "--locked",
+      "--all-features",
+      "--bin",
+      "gest"
+    ],
+    "cwd": "/Users/rahul/Projects/gest",
+    "environment_overrides": {},
+    "exit": 0,
+    "started_unix": 1794943962.772994,
+    "elapsed_seconds": 19.08450698852539,
+    "output": "/tmp/gest-baseline-rGsljN/unit-parallel.txt"
+  },
+  {
+    "name": "unit-serial",
+    "argv": [
+      "cargo",
+      "test",
+      "--locked",
+      "--all-features",
+      "--bin",
+      "gest",
+      "--",
+      "--test-threads=1"
+    ],
+    "cwd": "/Users/rahul/Projects/gest",
+    "environment_overrides": {},
+    "exit": 0,
+    "started_unix": 1794943981.8597918,
+    "elapsed_seconds": 34.57232117652893,
+    "output": "/tmp/gest-baseline-rGsljN/unit-serial.txt"
+  },
+  {
+    "name": "unit-no-color",
+    "argv": [
+      "cargo",
+      "test",
+      "--locked",
+      "--all-features",
+      "--bin",
+      "gest"
+    ],
+    "cwd": "/Users/rahul/Projects/gest",
+    "environment_overrides": {
+      "NO_COLOR": "1"
+    },
+    "exit": 0,
+    "started_unix": 1794944016.439693,
+    "elapsed_seconds": 15.9182710647583,
+    "output": "/tmp/gest-baseline-rGsljN/unit-no-color.txt"
+  },
+  {
+    "name": "build",
+    "argv": [
+      "cargo",
+      "build",
+      "--locked",
+      "--all-features"
+    ],
+    "cwd": "/Users/rahul/Projects/gest",
+    "environment_overrides": {},
+    "exit": 0,
+    "started_unix": 1794944032.3616939,
+    "elapsed_seconds": 43.17665410041809,
+    "output": "/tmp/gest-baseline-rGsljN/build.txt"
+  }
+]

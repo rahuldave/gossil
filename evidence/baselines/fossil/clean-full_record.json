@@ -1,0 +1,180 @@
+{
+  "name": "clean",
+  "suites": [
+    "clean"
+  ],
+  "command": [
+    "jlog",
+    "run",
+    "tclsh",
+    "/tmp/gossil-fossil-baseline-20261117/launch.tcl",
+    "/tmp/gossil-fossil-baseline-20261117/runs/clean/cwd",
+    "/tmp/gossil-fossil-baseline-20261117/enabled/test/tester.tcl",
+    "/Users/rahul/Projects/gossil/.jlog/bin/fossil",
+    "clean",
+    "-keep"
+  ],
+  "cwd": "/Users/rahul/Projects/gossil",
+  "environment": {
+    "FOSSIL_HOME": "/tmp/gossil-fossil-baseline-20261117/runs/clean/home",
+    "FOSSIL_TEST_TEMP": "/tmp/gossil-fossil-baseline-20261117/runs/clean/tmp",
+    "TEMP": "/tmp/gossil-fossil-baseline-20261117/runs/clean/tmp",
+    "TMP": "/tmp/gossil-fossil-baseline-20261117/runs/clean/tmp",
+    "TMPDIR": "/tmp/gossil-fossil-baseline-20261117/runs/clean/tmp",
+    "HOME": "/tmp/gossil-fossil-baseline-20261117/runs/clean/home",
+    "USER": "gossil-baseline",
+    "LOGNAME": "gossil-baseline",
+    "LC_ALL": "C",
+    "TZ": "UTC"
+  },
+  "exit_code": 0,
+  "timeout": false,
+  "seconds": 1.762,
+  "results": [
+    {
+      "name": "clean-0",
+      "result": "pass"
+    },
+    {
+      "name": "clean-1",
+      "result": "pass"
+    },
+    {
+      "name": "clean-2",
+      "result": "pass"
+    },
+    {
+      "name": "clean-3",
+      "result": "pass"
+    },
+    {
+      "name": "clean-4",
+      "result": "pass"
+    },
+    {
+      "name": "clean-5",
+      "result": "pass"
+    },
+    {
+      "name": "clean-6",
+      "result": "pass"
+    },
+    {
+      "name": "clean-7",
+      "result": "pass"
+    },
+    {
+      "name": "clean-8",
+      "result": "pass"
+    },
+    {
+      "name": "clean-9",
+      "result": "pass"
+    },
+    {
+      "name": "clean-10",
+      "result": "pass"
+    },
+    {
+      "name": "clean-11",
+      "result": "pass"
+    },
+    {
+      "name": "clean-12",
+      "result": "pass"
+    },
+    {
+      "name": "clean-13",
+      "result": "pass"
+    },
+    {
+      "name": "clean-14",
+      "result": "pass"
+    },
+    {
+      "name": "clean-15",
+      "result": "pass"
+    },
+    {
+      "name": "clean-16",
+      "result": "pass"
+    },
+    {
+      "name": "clean-17",
+      "result": "pass"
+    },
+    {
+      "name": "clean-18",
+      "result": "pass"
+    },
+    {
+      "name": "clean-19",
+      "result": "pass"
+    },
+    {
+      "name": "clean-20",
+      "result": "pass"
+    },
+    {
+      "name": "clean-21",
+      "result": "pass"
+    },
+    {
+      "name": "clean-22",
+      "result": "pass"
+    },
+    {
+      "name": "clean-23",
+      "result": "pass"
+    },
+    {
+      "name": "clean-24",
+      "result": "pass"
+    },
+    {
+      "name": "clean-25",
+      "result": "pass"
+    },
+    {
+      "name": "clean-26",
+      "result": "pass"
+    },
+    {
+      "name": "clean-27",
+      "result": "pass"
+    },
+    {
+      "name": "clean-28",
+      "result": "pass"
+    },
+    {
+      "name": "clean-29",
+      "result": "pass"
+    },
+    {
+      "name": "clean-30",
+      "result": "pass"
+    },
+    {
+      "name": "clean-31",
+      "result": "pass"
+    },
+    {
+      "name": "test-framework-clean",
+      "result": "pass"
+    }
+  ],
+  "counts": {
+    "pass": 33,
+    "fail": 0,
+    "ignored": 0
+  },
+  "upstream_summary": {
+    "errors": 0,
+    "tests": 33
+  },
+  "count_matches": true,
+  "skips": [],
+  "log": "/tmp/gossil-fossil-baseline-20261117/runs/clean/output.log",
+  "gate_pass": true
+}

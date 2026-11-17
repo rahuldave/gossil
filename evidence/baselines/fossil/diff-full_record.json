@@ -1,0 +1,92 @@
+{
+  "name": "diff",
+  "suites": [
+    "diff"
+  ],
+  "command": [
+    "jlog",
+    "run",
+    "tclsh",
+    "/tmp/gossil-fossil-baseline-20261117/launch.tcl",
+    "/tmp/gossil-fossil-baseline-20261117/runs/diff/cwd",
+    "/tmp/gossil-fossil-baseline-20261117/enabled/test/tester.tcl",
+    "/Users/rahul/Projects/gossil/.jlog/bin/fossil",
+    "diff",
+    "-keep"
+  ],
+  "cwd": "/Users/rahul/Projects/gossil",
+  "environment": {
+    "FOSSIL_HOME": "/tmp/gossil-fossil-baseline-20261117/runs/diff/home",
+    "FOSSIL_TEST_TEMP": "/tmp/gossil-fossil-baseline-20261117/runs/diff/tmp",
+    "TEMP": "/tmp/gossil-fossil-baseline-20261117/runs/diff/tmp",
+    "TMP": "/tmp/gossil-fossil-baseline-20261117/runs/diff/tmp",
+    "TMPDIR": "/tmp/gossil-fossil-baseline-20261117/runs/diff/tmp",
+    "HOME": "/tmp/gossil-fossil-baseline-20261117/runs/diff/home",
+    "USER": "gossil-baseline",
+    "LOGNAME": "gossil-baseline",
+    "LC_ALL": "C",
+    "TZ": "UTC"
+  },
+  "exit_code": 1,
+  "timeout": false,
+  "seconds": 0.972,
+  "results": [
+    {
+      "name": "diff-ls-1",
+      "result": "pass"
+    },
+    {
+      "name": "diff-file0-1",
+      "result": "fail"
+    },
+    {
+      "name": "diff-file1-1",
+      "result": "fail"
+    },
+    {
+      "name": "diff-file2-1",
+      "result": "fail"
+    },
+    {
+      "name": "diff-file3-1",
+      "result": "fail"
+    },
+    {
+      "name": "diff-file4-1",
+      "result": "fail"
+    },
+    {
+      "name": "diff-file5-1",
+      "result": "fail"
+    },
+    {
+      "name": "diff-file-6-1",
+      "result": "pass"
+    },
+    {
+      "name": "diff-deleted-file-1",
+      "result": "fail"
+    },
+    {
+      "name": "diff-added-file-1",
+      "result": "fail"
+    },
+    {
+      "name": "test-framework-diff",
+      "result": "pass"
+    }
+  ],
+  "counts": {
+    "pass": 3,
+    "fail": 8,
+    "ignored": 0
+  },
+  "upstream_summary": {
+    "errors": 8,
+    "tests": 11
+  },
+  "count_matches": true,
+  "skips": [],
+  "log": "/tmp/gossil-fossil-baseline-20261117/runs/diff/output.log",
+  "gate_pass": false
+}

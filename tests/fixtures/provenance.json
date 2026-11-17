@@ -1,0 +1,29 @@
+{
+  "upstream_git_revision": "b3a1c8efb2731dffbd5cc38c58ac349746de6da6",
+  "upstream_native_revision": "7e8ecf0ce4a3c05aa39de7ffe2828d23e334efe446ef2387e09f205ef00b2227",
+  "upstream_license": "fossil/COPYRIGHT-BSD2.txt",
+  "adaptation": "controls/tester.tcl removes only initial puts Ok and exit; fossil/enable.patch retains exact enabling patch; all *.test controls are new runner self-tests, not upstream suites",
+  "sha256": {
+    "controls/early-exit.test": "2acb76becd77e5d1a5d3c740b0e1e9b35fbaa86c3e430a9ef6d1476f8a04dac1",
+    "controls/empty.test": "74be671989999d7a6f9988a4fee5a01d32d5de9f7f4da7cb6685365b67f3ba40",
+    "controls/fail.test": "7adacd9283be35c5c24cfc09af1b890a5a95ff248bb5eaa5d207a0a0f8cbcd17",
+    "controls/known-pass.test": "01396b7980eee185c8f82d07138d91c7137b639aa36144f339a7518ecd83eae1",
+    "controls/known.test": "f0cdbf33b756f1bf78e7e6c5f0f618b987aa443521d1ac95e74337c01cd99643",
+    "controls/nonutf8.test": "7502cf6d9213d7afcef9077d3bf7b2bf6bf6b36bcebb2d05bb2992f2a8f8610a",
+    "controls/pass.test": "6949716a6e43a9d6b8a4bcc60b7e6eb1981ce901c15c5aebddbd2f7ed5221607",
+    "controls/skipped.test": "fdee66cbb87e73a5287dd701f2e5d4d9d553242666fe0fd01fb25d189b0d330b",
+    "controls/stderr-only.test": "f73ba264a253df57bd84a4b41abd488eedb5f46cd5a9e057952aeb7b57ede9c9",
+    "controls/tester.tcl": "3e26debfaf0be4dd425b21da6537511e345ffc1687721fd0ee2c30840ab21783",
+    "controls/timeout.test": "329169a069a11bf717db6ec4b5a64264233c3af15f8bb70bf66941ca14e22d8a",
+    "controls/truncated.test": "7278c7146fb9530ee50db8d4b6c854003e58381f8de11efe90fb33d336d02f99",
+    "fossil/COPYRIGHT-BSD2.txt": "f65c4693891811303213aad3cc737d85114fc0ede82ec65bc0b923069b646c55",
+    "fossil/enable.patch": "954533dd023b4e120eddfe2f595c9d9c53d3f21144e9a5d1ec5d0c3e70b0af8b",
+    "fossil/tester.tcl": "458608cb05bf10381a0ceff95aedfcb406f33aeba7e07b00244b3b5e70ea4561",
+    "controls/bad-both.test": "37784f9d9e2b7eefa92aa39719d96d4b09fbba300acff90a69a029f64fd63dfb",
+    "controls/bad-errors.test": "eee54c6066bd08e612845d5efe0c1ad290aa34995ada74fd9a0c5430417305cd",
+    "controls/bad-total.test": "53dcfbf78faaaad607dbf61dfbcf03c3907f8ef74ca3d9591930c2a58a397540",
+    "controls/duplicate-summary.test": "b714f7cb634d1fec95be0f620a8df908693e00015cc5c140689833858a77b937",
+    "controls/overflow-errors.test": "65c61a20b1ec58f19419f7d043c274304202d4b17e247241d3d7375063dd46da",
+    "controls/overflow-total.test": "25908cbb6810e0498afe5f8bd5bd92597c58561eb684274ece2b698f1c1e34f3"
+  }
+}

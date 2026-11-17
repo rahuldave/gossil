@@ -1,0 +1,1412 @@
+{
+  "name": "parallel-th1",
+  "suites": [
+    "th1"
+  ],
+  "command": [
+    "jlog",
+    "run",
+    "tclsh",
+    "/private/tmp/gossil-fossil-baseline-20261117/launch.tcl",
+    "/private/tmp/gossil-fossil-baseline-20261117/runs/parallel-th1/cwd",
+    "/private/tmp/gossil-fossil-baseline-20261117/enabled/test/tester.tcl",
+    "/Users/rahul/Projects/gossil/.jlog/bin/fossil",
+    "th1",
+    "-keep"
+  ],
+  "cwd": "/Users/rahul/Projects/gossil",
+  "environment": {
+    "FOSSIL_HOME": "/private/tmp/gossil-fossil-baseline-20261117/runs/parallel-th1/home",
+    "FOSSIL_TEST_TEMP": "/private/tmp/gossil-fossil-baseline-20261117/runs/parallel-th1/tmp",
+    "TEMP": "/private/tmp/gossil-fossil-baseline-20261117/runs/parallel-th1/tmp",
+    "TMP": "/private/tmp/gossil-fossil-baseline-20261117/runs/parallel-th1/tmp",
+    "TMPDIR": "/private/tmp/gossil-fossil-baseline-20261117/runs/parallel-th1/tmp",
+    "HOME": "/private/tmp/gossil-fossil-baseline-20261117/runs/parallel-th1/home",
+    "USER": "gossil-baseline",
+    "LOGNAME": "gossil-baseline",
+    "LC_ALL": "C",
+    "TZ": "UTC"
+  },
+  "exit_code": 1,
+  "timeout": false,
+  "seconds": 17.523,
+  "results": [
+    {
+      "name": "th1-setting-1",
+      "result": "pass"
+    },
+    {
+      "name": "th1-setting-2",
+      "result": "pass"
+    },
+    {
+      "name": "th1-setting-3",
+      "result": "pass"
+    },
+    {
+      "name": "th1-setting-4",
+      "result": "pass"
+    },
+    {
+      "name": "th1-setting-5",
+      "result": "pass"
+    },
+    {
+      "name": "th1-setting-6",
+      "result": "pass"
+    },
+    {
+      "name": "th1-setting-7",
+      "result": "pass"
+    },
+    {
+      "name": "th1-setting-8",
+      "result": "pass"
+    },
+    {
+      "name": "th1-setting-9",
+      "result": "pass"
+    },
+    {
+      "name": "th1-setting-10",
+      "result": "pass"
+    },
+    {
+      "name": "th1-divide-by-zero-1",
+      "result": "pass"
+    },
+    {
+      "name": "th1-divide-by-zero-2",
+      "result": "pass"
+    },
+    {
+      "name": "th1-divide-by-zero-3",
+      "result": "pass"
+    },
+    {
+      "name": "th1-divide-by-zero-4",
+      "result": "pass"
+    },
+    {
+      "name": "th1-modulus-by-zero-1",
+      "result": "pass"
+    },
+    {
+      "name": "th1-modulus-by-zero-2",
+      "result": "pass"
+    },
+    {
+      "name": "th1-modulus-by-zero-3",
+      "result": "pass"
+    },
+    {
+      "name": "th1-modulus-by-zero-4",
+      "result": "pass"
+    },
+    {
+      "name": "th1-info-exists-1",
+      "result": "pass"
+    },
+    {
+      "name": "th1-info-exists-2",
+      "result": "pass"
+    },
+    {
+      "name": "th1-info-exists-3",
+      "result": "pass"
+    },
+    {
+      "name": "th1-info-exists-4",
+      "result": "pass"
+    },
+    {
+      "name": "th1-info-exists-5",
+      "result": "pass"
+    },
+    {
+      "name": "th1-info-exists-6",
+      "result": "pass"
+    },
+    {
+      "name": "th1-info-exists-7",
+      "result": "pass"
+    },
+    {
+      "name": "th1-info-exists-8",
+      "result": "pass"
+    },
+    {
+      "name": "th1-info-exists-9",
+      "result": "pass"
+    },
+    {
+      "name": "th1-info-exists-10",
+      "result": "pass"
+    },
+    {
+      "name": "th1-info-exists-11",
+      "result": "pass"
+    },
+    {
+      "name": "th1-info-exists-12",
+      "result": "pass"
+    },
+    {
+      "name": "th1-unset-1",
+      "result": "pass"
+    },
+    {
+      "name": "th1-unset-2",
+      "result": "pass"
+    },
+    {
+      "name": "th1-unset-3",
+      "result": "pass"
+    },
+    {
+      "name": "th1-unset-4",
+      "result": "pass"
+    },
+    {
+      "name": "th1-unset-5",
+      "result": "pass"
+    },
+    {
+      "name": "th1-unset-6",
+      "result": "pass"
+    },
+    {
+      "name": "th1-unset-7",
+      "result": "pass"
+    },
+    {
+      "name": "th1-unset-8",
+      "result": "pass"
+    },
+    {
+      "name": "th1-string-first-1",
+      "result": "pass"
+    },
+    {
+      "name": "th1-string-first-2",
+      "result": "pass"
+    },
+    {
+      "name": "th1-string-first-3",
+      "result": "pass"
+    },
+    {
+      "name": "th1-string-first-4",
+      "result": "pass"
+    },
+    {
+      "name": "th1-string-first-5",
+      "result": "pass"
+    },
+    {
+      "name": "th1-string-first-6",
+      "result": "pass"
+    },
+    {
+      "name": "th1-string-first-7",
+      "result": "pass"
+    },
+    {
+      "name": "th1-string-first-8",
+      "result": "pass"
+    },
+    {
+      "name": "th1-string-first-9",
+      "result": "pass"
+    },
+    {
+      "name": "th1-string-last-1",
+      "result": "pass"
+    },
+    {
+      "name": "th1-string-last-2",
+      "result": "pass"
+    },
+    {
+      "name": "th1-string-last-3",
+      "result": "pass"
+    },
+    {
+      "name": "th1-string-last-4",
+      "result": "pass"
+    },
+    {
+      "name": "th1-string-last-5",
+      "result": "pass"
+    },
+    {
+      "name": "th1-string-last-6",
+      "result": "pass"
+    },
+    {
+      "name": "th1-string-last-7",
+      "result": "pass"
+    },
+    {
+      "name": "th1-string-last-8",
+      "result": "pass"
+    },
+    {
+      "name": "th1-string-last-9",
+      "result": "pass"
+    },
+    {
+      "name": "th1-expr-1",
+      "result": "pass"
+    },
+    {
+      "name": "th1-expr-2",
+      "result": "pass"
+    },
+    {
+      "name": "th1-expr-3",
+      "result": "pass"
+    },
+    {
+      "name": "th1-expr-4",
+      "result": "pass"
+    },
+    {
+      "name": "th1-expr-5",
+      "result": "pass"
+    },
+    {
+      "name": "th1-expr-6",
+      "result": "pass"
+    },
+    {
+      "name": "th1-expr-7",
+      "result": "pass"
+    },
+    {
+      "name": "th1-expr-8",
+      "result": "pass"
+    },
+    {
+      "name": "th1-expr-9",
+      "result": "pass"
+    },
+    {
+      "name": "th1-expr-10",
+      "result": "pass"
+    },
+    {
+      "name": "th1-expr-11",
+      "result": "pass"
+    },
+    {
+      "name": "th1-expr-12",
+      "result": "pass"
+    },
+    {
+      "name": "th1-expr-13",
+      "result": "pass"
+    },
+    {
+      "name": "th1-expr-14",
+      "result": "pass"
+    },
+    {
+      "name": "th1-expr-15",
+      "result": "pass"
+    },
+    {
+      "name": "th1-expr-16",
+      "result": "pass"
+    },
+    {
+      "name": "th1-expr-17",
+      "result": "pass"
+    },
+    {
+      "name": "th1-expr-18",
+      "result": "pass"
+    },
+    {
+      "name": "th1-expr-19",
+      "result": "pass"
+    },
+    {
+      "name": "th1-expr-20",
+      "result": "pass"
+    },
+    {
+      "name": "th1-expr-21",
+      "result": "pass"
+    },
+    {
+      "name": "th1-expr-22",
+      "result": "pass"
+    },
+    {
+      "name": "th1-expr-23",
+      "result": "pass"
+    },
+    {
+      "name": "th1-expr-24",
+      "result": "pass"
+    },
+    {
+      "name": "th1-expr-25",
+      "result": "pass"
+    },
+    {
+      "name": "th1-expr-26",
+      "result": "pass"
+    },
+    {
+      "name": "th1-expr-27",
+      "result": "pass"
+    },
+    {
+      "name": "th1-expr-28",
+      "result": "pass"
+    },
+    {
+      "name": "th1-expr-29",
+      "result": "pass"
+    },
+    {
+      "name": "th1-expr-30",
+      "result": "pass"
+    },
+    {
+      "name": "th1-expr-31",
+      "result": "pass"
+    },
+    {
+      "name": "th1-expr-32",
+      "result": "pass"
+    },
+    {
+      "name": "th1-expr-33",
+      "result": "pass"
+    },
+    {
+      "name": "th1-expr-34",
+      "result": "pass"
+    },
+    {
+      "name": "th1-expr-35",
+      "result": "pass"
+    },
+    {
+      "name": "th1-expr-36",
+      "result": "pass"
+    },
+    {
+      "name": "th1-expr-37",
+      "result": "pass"
+    },
+    {
+      "name": "th1-expr-38",
+      "result": "pass"
+    },
+    {
+      "name": "th1-expr-39",
+      "result": "pass"
+    },
+    {
+      "name": "th1-expr-40",
+      "result": "pass"
+    },
+    {
+      "name": "th1-expr-41",
+      "result": "pass"
+    },
+    {
+      "name": "th1-expr-42",
+      "result": "pass"
+    },
+    {
+      "name": "th1-expr-43",
+      "result": "pass"
+    },
+    {
+      "name": "th1-expr-44",
+      "result": "pass"
+    },
+    {
+      "name": "th1-expr-45",
+      "result": "pass"
+    },
+    {
+      "name": "th1-expr-46",
+      "result": "pass"
+    },
+    {
+      "name": "th1-expr-47",
+      "result": "pass"
+    },
+    {
+      "name": "th1-expr-48",
+      "result": "pass"
+    },
+    {
+      "name": "th1-expr-49",
+      "result": "pass"
+    },
+    {
+      "name": "th1-anycap-no-a-1",
+      "result": "pass"
+    },
+    {
+      "name": "th1-hascap-no-a-1",
+      "result": "pass"
+    },
+    {
+      "name": "th1-anoncap-no-a-1",
+      "result": "pass"
+    },
+    {
+      "name": "th1-anycap-no-b-1",
+      "result": "pass"
+    },
+    {
+      "name": "th1-hascap-no-b-1",
+      "result": "pass"
+    },
+    {
+      "name": "th1-anoncap-no-b-1",
+      "result": "pass"
+    },
+    {
+      "name": "th1-anycap-no-c-1",
+      "result": "pass"
+    },
+    {
+      "name": "th1-hascap-no-c-1",
+      "result": "pass"
+    },
+    {
+      "name": "th1-anoncap-no-c-1",
+      "result": "pass"
+    },
+    {
+      "name": "th1-anycap-no-e-1",
+      "result": "pass"
+    },
+    {
+      "name": "th1-hascap-no-e-1",
+      "result": "pass"
+    },
+    {
+      "name": "th1-anoncap-no-e-1",
+      "result": "pass"
+    },
+    {
+      "name": "th1-anycap-no-f-1",
+      "result": "pass"
+    },
+    {
+      "name": "th1-hascap-no-f-1",
+      "result": "pass"
+    },
+    {
+      "name": "th1-anoncap-no-f-1",
+      "result": "pass"
+    },
+    {
+      "name": "th1-anycap-no-g-1",
+      "result": "pass"
+    },
+    {
+      "name": "th1-hascap-no-g-1",
+      "result": "pass"
+    },
+    {
+      "name": "th1-anoncap-no-g-1",
+      "result": "pass"
+    },
+    {
+      "name": "th1-anycap-no-h-1",
+      "result": "pass"
+    },
+    {
+      "name": "th1-hascap-no-h-1",
+      "result": "pass"
+    },
+    {
+      "name": "th1-anoncap-no-h-1",
+      "result": "pass"
+    },
+    {
+      "name": "th1-anycap-no-i-1",
+      "result": "pass"
+    },
+    {
+      "name": "th1-hascap-no-i-1",
+      "result": "pass"
+    },
+    {
+      "name": "th1-anoncap-no-i-1",
+      "result": "pass"
+    },
+    {
+      "name": "th1-anycap-no-j-1",
+      "result": "pass"
+    },
+    {
+      "name": "th1-hascap-no-j-1",
+      "result": "pass"
+    },
+    {
+      "name": "th1-anoncap-no-j-1",
+      "result": "pass"
+    },
+    {
+      "name": "th1-anycap-no-k-1",
+      "result": "pass"
+    },
+    {
+      "name": "th1-hascap-no-k-1",
+      "result": "pass"
+    },
+    {
+      "name": "th1-anoncap-no-k-1",
+      "result": "pass"
+    },
+    {
+      "name": "th1-anycap-no-l-1",
+      "result": "pass"
+    },
+    {
+      "name": "th1-hascap-no-l-1",
+      "result": "pass"
+    },
+    {
+      "name": "th1-anoncap-no-l-1",
+      "result": "pass"
+    },
+    {
+      "name": "th1-anycap-no-m-1",
+      "result": "pass"
+    },
+    {
+      "name": "th1-hascap-no-m-1",
+      "result": "pass"
+    },
+    {
+      "name": "th1-anoncap-no-m-1",
+      "result": "pass"
+    },
+    {
+      "name": "th1-anycap-no-n-1",
+      "result": "pass"
+    },
+    {
+      "name": "th1-hascap-no-n-1",
+      "result": "pass"
+    },
+    {
+      "name": "th1-anoncap-no-n-1",
+      "result": "pass"
+    },
+    {
+      "name": "th1-anycap-no-o-1",
+      "result": "pass"
+    },
+    {
+      "name": "th1-hascap-no-o-1",
+      "result": "pass"
+    },
+    {
+      "name": "th1-anoncap-no-o-1",
+      "result": "pass"
+    },
+    {
+      "name": "th1-anycap-no-p-1",
+      "result": "pass"
+    },
+    {
+      "name": "th1-hascap-no-p-1",
+      "result": "pass"
+    },
+    {
+      "name": "th1-anoncap-no-p-1",
+      "result": "pass"
+    },
+    {
+      "name": "th1-anycap-no-q-1",
+      "result": "pass"
+    },
+    {
+      "name": "th1-hascap-no-q-1",
+      "result": "pass"
+    },
+    {
+      "name": "th1-anoncap-no-q-1",
+      "result": "pass"
+    },
+    {
+      "name": "th1-anycap-no-r-1",
+      "result": "pass"
+    },
+    {
+      "name": "th1-hascap-no-r-1",
+      "result": "pass"
+    },
+    {
+      "name": "th1-anoncap-no-r-1",
+      "result": "pass"
+    },
+    {
+      "name": "th1-anycap-no-s-1",
+      "result": "pass"
+    },
+    {
+      "name": "th1-hascap-no-s-1",
+      "result": "pass"
+    },
+    {
+      "name": "th1-anoncap-no-s-1",
+      "result": "pass"
+    },
+    {
+      "name": "th1-anycap-no-t-1",
+      "result": "pass"
+    },
+    {
+      "name": "th1-hascap-no-t-1",
+      "result": "pass"
+    },
+    {
+      "name": "th1-anoncap-no-t-1",
+      "result": "pass"
+    },
+    {
+      "name": "th1-anycap-no-w-1",
+      "result": "pass"
+    },
+    {
+      "name": "th1-hascap-no-w-1",
+      "result": "pass"
+    },
+    {
+      "name": "th1-anoncap-no-w-1",
+      "result": "pass"
+    },
+    {
+      "name": "th1-anycap-no-x-1",
+      "result": "pass"
+    },
+    {
+      "name": "th1-hascap-no-x-1",
+      "result": "pass"
+    },
+    {
+      "name": "th1-anoncap-no-x-1",
+      "result": "pass"
+    },
+    {
+      "name": "th1-anycap-no-y-1",
+      "result": "pass"
+    },
+    {
+      "name": "th1-hascap-no-y-1",
+      "result": "pass"
+    },
+    {
+      "name": "th1-anoncap-no-y-1",
+      "result": "pass"
+    },
+    {
+      "name": "th1-anycap-no-z-1",
+      "result": "pass"
+    },
+    {
+      "name": "th1-hascap-no-z-1",
+      "result": "pass"
+    },
+    {
+      "name": "th1-anoncap-no-z-1",
+      "result": "pass"
+    },
+    {
+      "name": "th1-anycap-no-A-1",
+      "result": "pass"
+    },
+    {
+      "name": "th1-hascap-no-A-1",
+      "result": "pass"
+    },
+    {
+      "name": "th1-anoncap-no-A-1",
+      "result": "pass"
+    },
+    {
+      "name": "th1-anycap-no-D-1",
+      "result": "pass"
+    },
+    {
+      "name": "th1-hascap-no-D-1",
+      "result": "pass"
+    },
+    {
+      "name": "th1-anoncap-no-D-1",
+      "result": "pass"
+    },
+    {
+      "name": "th1-anycap-no-2-1",
+      "result": "pass"
+    },
+    {
+      "name": "th1-hascap-no-2-1",
+      "result": "pass"
+    },
+    {
+      "name": "th1-anoncap-no-2-1",
+      "result": "pass"
+    },
+    {
+      "name": "th1-anycap-no-3-1",
+      "result": "pass"
+    },
+    {
+      "name": "th1-hascap-no-3-1",
+      "result": "pass"
+    },
+    {
+      "name": "th1-anoncap-no-3-1",
+      "result": "pass"
+    },
+    {
+      "name": "th1-anycap-no-4-1",
+      "result": "pass"
+    },
+    {
+      "name": "th1-hascap-no-4-1",
+      "result": "pass"
+    },
+    {
+      "name": "th1-anoncap-no-4-1",
+      "result": "pass"
+    },
+    {
+      "name": "th1-anycap-no-5-1",
+      "result": "pass"
+    },
+    {
+      "name": "th1-hascap-no-5-1",
+      "result": "pass"
+    },
+    {
+      "name": "th1-anoncap-no-5-1",
+      "result": "pass"
+    },
+    {
+      "name": "th1-anycap-no-6-1",
+      "result": "pass"
+    },
+    {
+      "name": "th1-hascap-no-6-1",
+      "result": "pass"
+    },
+    {
+      "name": "th1-anoncap-no-6-1",
+      "result": "pass"
+    },
+    {
+      "name": "th1-anycap-no-7-1",
+      "result": "pass"
+    },
+    {
+      "name": "th1-hascap-no-7-1",
+      "result": "pass"
+    },
+    {
+      "name": "th1-anoncap-no-7-1",
+      "result": "pass"
+    },
+    {
+      "name": "th1-anycap-no-multiple-1",
+      "result": "pass"
+    },
+    {
+      "name": "th1-hascap-no-multiple-1",
+      "result": "pass"
+    },
+    {
+      "name": "th1-hascap-no-multiple-2",
+      "result": "pass"
+    },
+    {
+      "name": "th1-anoncap-no-multiple-1",
+      "result": "pass"
+    },
+    {
+      "name": "th1-anoncap-no-multiple-2",
+      "result": "pass"
+    },
+    {
+      "name": "th1-checkout-3",
+      "result": "pass"
+    },
+    {
+      "name": "th1-checkout-4",
+      "result": "pass"
+    },
+    {
+      "name": "th1-render-1",
+      "result": "pass"
+    },
+    {
+      "name": "th1-render-2",
+      "result": "pass"
+    },
+    {
+      "name": "th1-trace-1",
+      "result": "pass"
+    },
+    {
+      "name": "th1-trace-2",
+      "result": "pass"
+    },
+    {
+      "name": "th1-trace-3",
+      "result": "pass"
+    },
+    {
+      "name": "th1-trace-4",
+      "result": "pass"
+    },
+    {
+      "name": "th1-defHeader-1",
+      "result": "pass"
+    },
+    {
+      "name": "th1-defHeader-2",
+      "result": "pass"
+    },
+    {
+      "name": "th1-footer-2",
+      "result": "pass"
+    },
+    {
+      "name": "th1-footer-3",
+      "result": "pass"
+    },
+    {
+      "name": "th1-get-parameter-1",
+      "result": "pass"
+    },
+    {
+      "name": "th1-get-parameter-2",
+      "result": "pass"
+    },
+    {
+      "name": "th1-get-parameter-3",
+      "result": "pass"
+    },
+    {
+      "name": "th1-set-parameter-1",
+      "result": "pass"
+    },
+    {
+      "name": "th1-set-parameter-2",
+      "result": "pass"
+    },
+    {
+      "name": "th1-set-parameter-3",
+      "result": "pass"
+    },
+    {
+      "name": "th1-set-parameter-4",
+      "result": "pass"
+    },
+    {
+      "name": "th1-set-parameter-5",
+      "result": "pass"
+    },
+    {
+      "name": "th1-set-parameter-6",
+      "result": "pass"
+    },
+    {
+      "name": "th1-set-parameter-7",
+      "result": "pass"
+    },
+    {
+      "name": "th1-artifact-1",
+      "result": "pass"
+    },
+    {
+      "name": "th1-artifact-5",
+      "result": "pass"
+    },
+    {
+      "name": "th1-artifact-9",
+      "result": "pass"
+    },
+    {
+      "name": "th1-globalState-4",
+      "result": "pass"
+    },
+    {
+      "name": "th1-globalState-5",
+      "result": "pass"
+    },
+    {
+      "name": "th1-globalState-6",
+      "result": "pass"
+    },
+    {
+      "name": "th1-globalState-7",
+      "result": "pass"
+    },
+    {
+      "name": "th1-globalState-10",
+      "result": "pass"
+    },
+    {
+      "name": "th1-globalState-11",
+      "result": "pass"
+    },
+    {
+      "name": "th1-globalState-12",
+      "result": "pass"
+    },
+    {
+      "name": "th1-globalState-13",
+      "result": "pass"
+    },
+    {
+      "name": "th1-globalState-14",
+      "result": "pass"
+    },
+    {
+      "name": "th1-globalState-15",
+      "result": "pass"
+    },
+    {
+      "name": "th1-globalState-16",
+      "result": "pass"
+    },
+    {
+      "name": "th1-reinitialize-2",
+      "result": "pass"
+    },
+    {
+      "name": "th1-info-vars-1",
+      "result": "pass"
+    },
+    {
+      "name": "th1-info-vars-2",
+      "result": "pass"
+    },
+    {
+      "name": "th1-info-vars-3",
+      "result": "pass"
+    },
+    {
+      "name": "th1-info-vars-4",
+      "result": "pass"
+    },
+    {
+      "name": "th1-info-vars-5",
+      "result": "pass"
+    },
+    {
+      "name": "th1-array-exists-1",
+      "result": "pass"
+    },
+    {
+      "name": "th1-array-exists-2",
+      "result": "pass"
+    },
+    {
+      "name": "th1-array-exists-3",
+      "result": "pass"
+    },
+    {
+      "name": "th1-array-exists-4",
+      "result": "pass"
+    },
+    {
+      "name": "th1-array-exists-5",
+      "result": "pass"
+    },
+    {
+      "name": "th1-array-names-1",
+      "result": "pass"
+    },
+    {
+      "name": "th1-array-names-2",
+      "result": "pass"
+    },
+    {
+      "name": "th1-array-names-3",
+      "result": "pass"
+    },
+    {
+      "name": "th1-array-names-4",
+      "result": "pass"
+    },
+    {
+      "name": "th1-array-names-5",
+      "result": "pass"
+    },
+    {
+      "name": "th1-array-names-6",
+      "result": "pass"
+    },
+    {
+      "name": "th1-lsearch-1",
+      "result": "pass"
+    },
+    {
+      "name": "th1-lsearch-2",
+      "result": "pass"
+    },
+    {
+      "name": "th1-lsearch-3",
+      "result": "pass"
+    },
+    {
+      "name": "th1-lsearch-4",
+      "result": "pass"
+    },
+    {
+      "name": "th1-lsearch-5",
+      "result": "pass"
+    },
+    {
+      "name": "th1-lsearch-6",
+      "result": "pass"
+    },
+    {
+      "name": "th1-lsearch-7",
+      "result": "pass"
+    },
+    {
+      "name": "th1-lsearch-8",
+      "result": "pass"
+    },
+    {
+      "name": "th1-lsearch-9",
+      "result": "pass"
+    },
+    {
+      "name": "th1-lsearch-10",
+      "result": "pass"
+    },
+    {
+      "name": "th1-glob-match-1",
+      "result": "pass"
+    },
+    {
+      "name": "th1-glob-match-2",
+      "result": "pass"
+    },
+    {
+      "name": "th1-glob-match-3",
+      "result": "pass"
+    },
+    {
+      "name": "th1-glob-match-4",
+      "result": "pass"
+    },
+    {
+      "name": "th1-glob-match-5",
+      "result": "pass"
+    },
+    {
+      "name": "th1-glob-match-6",
+      "result": "pass"
+    },
+    {
+      "name": "th1-glob-match-7",
+      "result": "pass"
+    },
+    {
+      "name": "th1-glob-match-8",
+      "result": "pass"
+    },
+    {
+      "name": "th1-glob-match-9",
+      "result": "pass"
+    },
+    {
+      "name": "th1-glob-match-10",
+      "result": "pass"
+    },
+    {
+      "name": "th1-glob-match-11",
+      "result": "pass"
+    },
+    {
+      "name": "th1-glob-match-12",
+      "result": "pass"
+    },
+    {
+      "name": "th1-glob-match-13",
+      "result": "pass"
+    },
+    {
+      "name": "th1-string-is-1",
+      "result": "pass"
+    },
+    {
+      "name": "th1-string-is-2",
+      "result": "pass"
+    },
+    {
+      "name": "th1-string-is-3",
+      "result": "pass"
+    },
+    {
+      "name": "th1-string-is-4",
+      "result": "pass"
+    },
+    {
+      "name": "th1-string-is-5",
+      "result": "pass"
+    },
+    {
+      "name": "th1-string-is-6",
+      "result": "pass"
+    },
+    {
+      "name": "th1-string-is-7",
+      "result": "pass"
+    },
+    {
+      "name": "th1-string-is-8",
+      "result": "pass"
+    },
+    {
+      "name": "th1-string-is-9",
+      "result": "pass"
+    },
+    {
+      "name": "th1-string-is-10",
+      "result": "pass"
+    },
+    {
+      "name": "th1-string-is-11",
+      "result": "pass"
+    },
+    {
+      "name": "th1-string-is-12",
+      "result": "pass"
+    },
+    {
+      "name": "th1-string-is-13",
+      "result": "pass"
+    },
+    {
+      "name": "th1-string-is-14",
+      "result": "pass"
+    },
+    {
+      "name": "th1-string-is-15",
+      "result": "pass"
+    },
+    {
+      "name": "th1-string-is-16",
+      "result": "pass"
+    },
+    {
+      "name": "th1-string-is-17",
+      "result": "pass"
+    },
+    {
+      "name": "th1-string-is-18",
+      "result": "pass"
+    },
+    {
+      "name": "th1-string-is-19",
+      "result": "pass"
+    },
+    {
+      "name": "th1-string-is-20",
+      "result": "pass"
+    },
+    {
+      "name": "th1-string-is-21",
+      "result": "pass"
+    },
+    {
+      "name": "th1-string-is-22",
+      "result": "pass"
+    },
+    {
+      "name": "th1-string-is-23",
+      "result": "pass"
+    },
+    {
+      "name": "th1-string-is-24",
+      "result": "pass"
+    },
+    {
+      "name": "th1-string-is-25",
+      "result": "pass"
+    },
+    {
+      "name": "th1-string-is-26",
+      "result": "pass"
+    },
+    {
+      "name": "th1-string-is-27",
+      "result": "pass"
+    },
+    {
+      "name": "th1-string-is-28",
+      "result": "pass"
+    },
+    {
+      "name": "th1-string-is-29",
+      "result": "pass"
+    },
+    {
+      "name": "th1-string-is-30",
+      "result": "pass"
+    },
+    {
+      "name": "th1-string-is-31",
+      "result": "pass"
+    },
+    {
+      "name": "th1-string-index-1",
+      "result": "pass"
+    },
+    {
+      "name": "th1-string-index-2",
+      "result": "pass"
+    },
+    {
+      "name": "th1-string-index-3",
+      "result": "pass"
+    },
+    {
+      "name": "th1-string-index-4",
+      "result": "pass"
+    },
+    {
+      "name": "th1-string-index-5",
+      "result": "pass"
+    },
+    {
+      "name": "th1-string-index-6",
+      "result": "pass"
+    },
+    {
+      "name": "th1-string-index-7",
+      "result": "pass"
+    },
+    {
+      "name": "th1-string-index-8",
+      "result": "pass"
+    },
+    {
+      "name": "th1-string-index-9",
+      "result": "pass"
+    },
+    {
+      "name": "th1-string-index-10",
+      "result": "pass"
+    },
+    {
+      "name": "th1-string-index-11",
+      "result": "pass"
+    },
+    {
+      "name": "th1-string-index-12",
+      "result": "pass"
+    },
+    {
+      "name": "th1-string-index-13",
+      "result": "pass"
+    },
+    {
+      "name": "th1-string-index-14",
+      "result": "pass"
+    },
+    {
+      "name": "th1-string-index-15",
+      "result": "pass"
+    },
+    {
+      "name": "th1-markdown-1",
+      "result": "pass"
+    },
+    {
+      "name": "th1-markdown-2",
+      "result": "pass"
+    },
+    {
+      "name": "th1-markdown-3",
+      "result": "pass"
+    },
+    {
+      "name": "th1-markdown-4",
+      "result": "pass"
+    },
+    {
+      "name": "th1-markdown-5",
+      "result": "fail"
+    },
+    {
+      "name": "th1-markdown-6",
+      "result": "pass"
+    },
+    {
+      "name": "th1-encode64-1",
+      "result": "pass"
+    },
+    {
+      "name": "th1-encode64-2",
+      "result": "pass"
+    },
+    {
+      "name": "th1-platform-1",
+      "result": "pass"
+    },
+    {
+      "name": "th1-platform-2",
+      "result": "pass"
+    },
+    {
+      "name": "th1-platform-3",
+      "result": "pass"
+    },
+    {
+      "name": "th1-platform-4",
+      "result": "pass"
+    },
+    {
+      "name": "th1-source-1",
+      "result": "pass"
+    },
+    {
+      "name": "th1-unversioned-1",
+      "result": "pass"
+    },
+    {
+      "name": "th1-unversioned-2",
+      "result": "pass"
+    },
+    {
+      "name": "test-framework-th1",
+      "result": "pass"
+    }
+  ],
+  "counts": {
+    "pass": 340,
+    "fail": 1,
+    "ignored": 0
+  },
+  "upstream_summary": {
+    "errors": 1,
+    "tests": 341
+  },
+  "count_matches": true,
+  "skips": [],
+  "log": "/private/tmp/gossil-fossil-baseline-20261117/runs/parallel-th1/output.log",
+  "gate_pass": false
+}

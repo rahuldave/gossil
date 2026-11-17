@@ -1,0 +1,110 @@
+{
+  "status": "complete isolated baseline accounting, with explicit failures, disabled/dormant surfaces and bounded incomplete randomized suites",
+  "matrix": "/tmp/gossil-fossil-baseline-20261117/baseline-240s.json",
+  "states": {
+    "pass": 25,
+    "blocked": 2,
+    "fail": 5,
+    "feature-disabled": 4,
+    "not-run": 1
+  },
+  "actual_assertions": {
+    "pass": 23247,
+    "fail": 16,
+    "ignored": 0
+  },
+  "framework": {
+    "pass": 35
+  },
+  "all_completed_counts_match": true,
+  "failing_suites": [
+    {
+      "suite": "diff",
+      "assertions": {
+        "pass": 2,
+        "fail": 8
+      },
+      "failures": [
+        "diff-file0-1",
+        "diff-file1-1",
+        "diff-file2-1",
+        "diff-file3-1",
+        "diff-file4-1",
+        "diff-file5-1",
+        "diff-deleted-file-1",
+        "diff-added-file-1"
+      ],
+      "raw_log": "/tmp/gossil-fossil-baseline-20261117/runs/diff/output.log"
+    },
+    {
+      "suite": "stash",
+      "assertions": {
+        "pass": 74,
+        "fail": 3
+      },
+      "failures": [
+        "stash-3-1-show",
+        "stash-3-2-show-2",
+        "stash-4-3-show-2"
+      ],
+      "raw_log": "/private/tmp/gossil-fossil-baseline-20261117/runs/parallel-stash/output.log"
+    },
+    {
+      "suite": "th1",
+      "assertions": {
+        "pass": 339,
+        "fail": 1
+      },
+      "failures": [
+        "th1-markdown-5"
+      ],
+      "raw_log": "/private/tmp/gossil-fossil-baseline-20261117/runs/parallel-th1/output.log"
+    },
+    {
+      "suite": "unversioned",
+      "assertions": {
+        "pass": 55,
+        "fail": 3
+      },
+      "failures": [
+        "unversioned-46",
+        "unversioned-52",
+        "unversioned-55"
+      ],
+      "raw_log": "/private/tmp/gossil-fossil-baseline-20261117/runs/parallel-unversioned/output.log"
+    },
+    {
+      "suite": "update",
+      "assertions": {
+        "pass": 26,
+        "fail": 1
+      },
+      "failures": [
+        "update-message-add-overwrites"
+      ],
+      "raw_log": "/private/tmp/gossil-fossil-baseline-20261117/runs/parallel-update/output.log"
+    }
+  ],
+  "supplemental_delta": {
+    "attempt": "delta1-extended",
+    "timeout_limit_seconds": 600,
+    "exit_code": -15,
+    "timeout": true,
+    "actual_assertions": {
+      "pass": 22622
+    },
+    "framework": {},
+    "upstream_summary": null,
+    "seconds": 600.519,
+    "raw_log": "/tmp/gossil-fossil-baseline-20261117/runs/delta1-extended/output.log",
+    "full_record": "/tmp/gossil-fossil-baseline-20261117/runs/delta1-extended/result.json",
+    "does_not_replace_prescribed_matrix": true
+  },
+  "evidence_index": "/tmp/gossil-fossil-baseline-20261117/evidence-index.json",
+  "runner_design": "/tmp/gossil-fossil-baseline-20261117/runner-design.json",
+  "recommendation": "Adopt the separately recorded runner gates, retain these upstream failures and incomplete outcomes, and qualify missing build/platform configurations before claiming compatibility.",
+  "shared_source_mutations": false,
+  "gest_mutations": false,
+  "project_gate_claim": false,
+  "gossil_behavior_claim": false
+}

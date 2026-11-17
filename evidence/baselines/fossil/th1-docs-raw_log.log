@@ -1,0 +1,8 @@
+***** th1-docs ******
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval {hasfeature th1Docs}
+Fossil was not compiled with TH1 docs support.
+test test-framework-th1-docs OK
+***** End of th1-docs: 0 errors so far ******
+***** Final results: 0 errors out of 1 tests
+***** Ignored results: 0 ignored errors out of 1 tests
+***** Skipped tests: th1-docs

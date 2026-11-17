@@ -1,0 +1,68 @@
+***** clean ******
+/Users/rahul/Projects/gossil/.jlog/bin/fossil extra
+test clean-0 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil add f1
+/Users/rahul/Projects/gossil/.jlog/bin/fossil commit -m {base file}
+/Users/rahul/Projects/gossil/.jlog/bin/fossil ls
+test clean-1 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil extra
+test clean-2 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil extra
+test clean-3 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil clean
+test clean-4 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil extra
+test clean-5 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil undo
+test clean-6 OK
+test clean-7 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil extra
+test clean-8 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil extra
+test clean-9 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil clean --no-prompt
+test clean-10 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil extra
+test clean-11 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil undo
+test clean-12 OK
+test clean-13 OK
+test clean-14 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil extra
+test clean-15 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil clean --force
+test clean-16 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil extra
+test clean-17 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil undo
+test clean-18 OK
+test clean-19 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil extra
+test clean-20 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil clean --disable-undo --no-prompt
+test clean-21 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil extra
+test clean-22 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil undo
+test clean-23 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil clean --disable-undo --force
+test clean-24 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil extra
+test clean-25 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil undo
+test clean-26 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil extra
+test clean-27 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil clean --disable-undo
+Y
+test clean-28 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil extra
+test clean-29 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil undo
+test clean-30 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil extra
+test clean-31 OK
+test test-framework-clean OK
+***** End of clean: 0 errors so far ******
+***** Final results: 0 errors out of 33 tests
+***** Ignored results: 0 ignored errors out of 33 tests

@@ -1,0 +1,98 @@
+# Written by just install. Do not edit: the next just install writes it again.
+# The recipes of the profiles and roles of this project. .agents/install.just imports this file.
+
+# Each line of a recipe runs through jlog, which adds it to the run log in .agents/log
+set shell := ["jlog", "sh", "-cu"]
+
+mod rust 'rust.just'
+import? 'roles/agent_gest_git_skills.just'
+import? 'roles/nossaifd.just'
+import? '../skills/docs/docs.just'
+
+# just api-check for each language that has it: rust
+api-check:
+    just --justfile {{quote(justfile())}} rust api-check
+
+# just api-prose-check for each language that has it: rust
+[positional-arguments]
+api-prose-check *args:
+    just --justfile {{quote(justfile())}} rust api-prose-check "$@"
+
+# just build for each language that has it: rust
+[positional-arguments]
+build *args:
+    just --justfile {{quote(justfile())}} rust build "$@"
+
+# just coverage-check for each language that has it: rust
+coverage-check:
+    just --justfile {{quote(justfile())}} rust coverage-check
+    jlog step coverage-check
+
+# just docstring-check for each language that has it: rust
+docstring-check:
+    just --justfile {{quote(justfile())}} rust docstring-check
+    jlog step docstring-check
+
+# just fmt for each language that has it: rust
+[positional-arguments]
+fmt *args:
+    just --justfile {{quote(justfile())}} rust fmt "$@"
+
+# just fmt-check for each language that has it: rust
+fmt-check:
+    just --justfile {{quote(justfile())}} rust fmt-check
+    jlog step fmt-check
+
+# just integration for each language that has it: rust
+[positional-arguments]
+integration *args:
+    just --justfile {{quote(justfile())}} rust integration "$@"
+    jlog step integration
+
+# just lint for each language that has it: rust
+[positional-arguments]
+lint *args:
+    just --justfile {{quote(justfile())}} rust lint "$@"
+    jlog step lint
+
+# just setup for each language that has it: rust
+setup:
+    just --justfile {{quote(justfile())}} rust setup
+
+# just test for each language that has it: rust
+[positional-arguments]
+test *args:
+    just --justfile {{quote(justfile())}} rust test "$@"
+    jlog step test
+
+# just test-paths for each language that has it: rust
+[positional-arguments]
+test-paths *args:
+    just --justfile {{quote(justfile())}} rust test-paths "$@"
+
+# just typecheck for each language that has it: rust
+[positional-arguments]
+typecheck *args:
+    just --justfile {{quote(justfile())}} rust typecheck "$@"
+    jlog step typecheck
+
+# just version for each language that has it: rust
+version:
+    just --justfile {{quote(justfile())}} rust version
+
+# Every installed check of each language, then the check of git for whitespace errors
+verify:
+    just --justfile {{quote(justfile())}} rust verify
+    git diff --check
+
+# Find whitespace errors in the changes against the last commit
+diff-check:
+    git diff --check "$(git rev-parse -q --verify HEAD || git hash-object -t tree /dev/null)"
+    jlog step diff-check
+
+# Everything a commit must pass: each step, then the pass of jlog for the worktree
+check: fmt-check lint typecheck test integration coverage-check docstring-check docs-check prose-check diff-check
+    jlog pass
+
+# What CI checks: the trailers of the commit gate, then the steps of the list ci of .agents/stack.json
+ci: ci-gate

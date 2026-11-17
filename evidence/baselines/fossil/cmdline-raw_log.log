@@ -1,0 +1,15 @@
+***** cmdline ******
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-echo abc
+test cmd-line-100.1 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-echo a\"bc
+test cmd-line-100.2 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-echo {"abc"}
+test cmd-line-100.3 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-echo *
+test cmd-line-101.1 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-echo *.*
+test cmd-line-101.2 OK
+test test-framework-cmdline OK
+***** End of cmdline: 0 errors so far ******
+***** Final results: 0 errors out of 6 tests
+***** Ignored results: 0 ignored errors out of 6 tests

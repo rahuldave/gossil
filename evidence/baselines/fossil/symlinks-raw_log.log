@@ -1,0 +1,31 @@
+***** symlinks ******
+/Users/rahul/Projects/gossil/.jlog/bin/fossil set allow-symlinks on
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval --open-config repository
+test symlinks-dir-1 OK
+test symlinks-dir-2 OK
+test symlinks-dir-3 OK
+test symlinks-dir-4 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil add /private/tmp/gossil-fossil-baseline-20261117/runs/parallel-symlinks/tmp/repo_47754/1794943962_1/symlinks.test/symdirA/f1.txt
+test symlinks-skip-dir-traversal OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil commit -m c1
+test symlinks-empty-commit OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil ls
+test symlinks-dir-5 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil extras
+test symlinks-dir-6 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil close
+test symlinks-dir-7 OK
+test symlinks-dir-8 OK
+test symlinks-dir-9 OK
+test symlinks-dir-10 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil open --force /private/tmp/gossil-fossil-baseline-20261117/runs/parallel-symlinks/tmp/repo_47754/1794943962_1/symlinks.test/.rep.fossil
+test symlinks-dir-11 OK
+test symlinks-dir-12 OK
+test symlinks-dir-13 OK
+test symlinks-dir-14 OK
+test symlinks-dir-15 OK
+test symlinks-dir-16 OK
+test test-framework-symlinks OK
+***** End of symlinks: 0 errors so far ******
+***** Final results: 0 errors out of 19 tests
+***** Ignored results: 0 ignored errors out of 19 tests

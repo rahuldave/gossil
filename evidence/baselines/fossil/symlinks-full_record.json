@@ -1,0 +1,124 @@
+{
+  "name": "parallel-symlinks",
+  "suites": [
+    "symlinks"
+  ],
+  "command": [
+    "jlog",
+    "run",
+    "tclsh",
+    "/private/tmp/gossil-fossil-baseline-20261117/launch.tcl",
+    "/private/tmp/gossil-fossil-baseline-20261117/runs/parallel-symlinks/cwd",
+    "/private/tmp/gossil-fossil-baseline-20261117/enabled/test/tester.tcl",
+    "/Users/rahul/Projects/gossil/.jlog/bin/fossil",
+    "symlinks",
+    "-keep"
+  ],
+  "cwd": "/Users/rahul/Projects/gossil",
+  "environment": {
+    "FOSSIL_HOME": "/private/tmp/gossil-fossil-baseline-20261117/runs/parallel-symlinks/home",
+    "FOSSIL_TEST_TEMP": "/private/tmp/gossil-fossil-baseline-20261117/runs/parallel-symlinks/tmp",
+    "TEMP": "/private/tmp/gossil-fossil-baseline-20261117/runs/parallel-symlinks/tmp",
+    "TMP": "/private/tmp/gossil-fossil-baseline-20261117/runs/parallel-symlinks/tmp",
+    "TMPDIR": "/private/tmp/gossil-fossil-baseline-20261117/runs/parallel-symlinks/tmp",
+    "HOME": "/private/tmp/gossil-fossil-baseline-20261117/runs/parallel-symlinks/home",
+    "USER": "gossil-baseline",
+    "LOGNAME": "gossil-baseline",
+    "LC_ALL": "C",
+    "TZ": "UTC"
+  },
+  "exit_code": 0,
+  "timeout": false,
+  "seconds": 1.227,
+  "results": [
+    {
+      "name": "symlinks-dir-1",
+      "result": "pass"
+    },
+    {
+      "name": "symlinks-dir-2",
+      "result": "pass"
+    },
+    {
+      "name": "symlinks-dir-3",
+      "result": "pass"
+    },
+    {
+      "name": "symlinks-dir-4",
+      "result": "pass"
+    },
+    {
+      "name": "symlinks-skip-dir-traversal",
+      "result": "pass"
+    },
+    {
+      "name": "symlinks-empty-commit",
+      "result": "pass"
+    },
+    {
+      "name": "symlinks-dir-5",
+      "result": "pass"
+    },
+    {
+      "name": "symlinks-dir-6",
+      "result": "pass"
+    },
+    {
+      "name": "symlinks-dir-7",
+      "result": "pass"
+    },
+    {
+      "name": "symlinks-dir-8",
+      "result": "pass"
+    },
+    {
+      "name": "symlinks-dir-9",
+      "result": "pass"
+    },
+    {
+      "name": "symlinks-dir-10",
+      "result": "pass"
+    },
+    {
+      "name": "symlinks-dir-11",
+      "result": "pass"
+    },
+    {
+      "name": "symlinks-dir-12",
+      "result": "pass"
+    },
+    {
+      "name": "symlinks-dir-13",
+      "result": "pass"
+    },
+    {
+      "name": "symlinks-dir-14",
+      "result": "pass"
+    },
+    {
+      "name": "symlinks-dir-15",
+      "result": "pass"
+    },
+    {
+      "name": "symlinks-dir-16",
+      "result": "pass"
+    },
+    {
+      "name": "test-framework-symlinks",
+      "result": "pass"
+    }
+  ],
+  "counts": {
+    "pass": 19,
+    "fail": 0,
+    "ignored": 0
+  },
+  "upstream_summary": {
+    "errors": 0,
+    "tests": 19
+  },
+  "count_matches": true,
+  "skips": [],
+  "log": "/private/tmp/gossil-fossil-baseline-20261117/runs/parallel-symlinks/output.log",
+  "gate_pass": true
+}

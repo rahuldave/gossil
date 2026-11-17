@@ -1,0 +1,300 @@
+{
+  "name": "mv-rm",
+  "suites": [
+    "mv-rm"
+  ],
+  "command": [
+    "jlog",
+    "run",
+    "tclsh",
+    "/tmp/gossil-fossil-baseline-20261117/launch.tcl",
+    "/tmp/gossil-fossil-baseline-20261117/runs/mv-rm/cwd",
+    "/tmp/gossil-fossil-baseline-20261117/enabled/test/tester.tcl",
+    "/Users/rahul/Projects/gossil/.jlog/bin/fossil",
+    "mv-rm",
+    "-keep"
+  ],
+  "cwd": "/Users/rahul/Projects/gossil",
+  "environment": {
+    "FOSSIL_HOME": "/tmp/gossil-fossil-baseline-20261117/runs/mv-rm/home",
+    "FOSSIL_TEST_TEMP": "/tmp/gossil-fossil-baseline-20261117/runs/mv-rm/tmp",
+    "TEMP": "/tmp/gossil-fossil-baseline-20261117/runs/mv-rm/tmp",
+    "TMP": "/tmp/gossil-fossil-baseline-20261117/runs/mv-rm/tmp",
+    "TMPDIR": "/tmp/gossil-fossil-baseline-20261117/runs/mv-rm/tmp",
+    "HOME": "/tmp/gossil-fossil-baseline-20261117/runs/mv-rm/home",
+    "USER": "gossil-baseline",
+    "LOGNAME": "gossil-baseline",
+    "LC_ALL": "C",
+    "TZ": "UTC"
+  },
+  "exit_code": 0,
+  "timeout": false,
+  "seconds": 1.406,
+  "results": [
+    {
+      "name": "mv-soft-relative-1",
+      "result": "pass"
+    },
+    {
+      "name": "mv-soft-relative-2",
+      "result": "pass"
+    },
+    {
+      "name": "mv-soft-relative-3",
+      "result": "pass"
+    },
+    {
+      "name": "mv-soft-relative-4",
+      "result": "pass"
+    },
+    {
+      "name": "mv-hard-relative-1",
+      "result": "pass"
+    },
+    {
+      "name": "mv-hard-relative-2",
+      "result": "pass"
+    },
+    {
+      "name": "mv-hard-relative-3",
+      "result": "pass"
+    },
+    {
+      "name": "mv-hard-relative-4",
+      "result": "pass"
+    },
+    {
+      "name": "mv-soft-absolute-1",
+      "result": "pass"
+    },
+    {
+      "name": "mv-soft-absolute-2",
+      "result": "pass"
+    },
+    {
+      "name": "mv-soft-absolute-3",
+      "result": "pass"
+    },
+    {
+      "name": "mv-soft-absolute-4",
+      "result": "pass"
+    },
+    {
+      "name": "mv-hard-absolute-1",
+      "result": "pass"
+    },
+    {
+      "name": "mv-hard-absolute-2",
+      "result": "pass"
+    },
+    {
+      "name": "mv-hard-absolute-3",
+      "result": "pass"
+    },
+    {
+      "name": "mv-hard-absolute-4",
+      "result": "pass"
+    },
+    {
+      "name": "rm-soft-relative-1",
+      "result": "pass"
+    },
+    {
+      "name": "rm-soft-relative-2",
+      "result": "pass"
+    },
+    {
+      "name": "rm-soft-relative-3",
+      "result": "pass"
+    },
+    {
+      "name": "rm-soft-relative-4",
+      "result": "pass"
+    },
+    {
+      "name": "rm-soft-relative-5",
+      "result": "pass"
+    },
+    {
+      "name": "rm-soft-relative-6",
+      "result": "pass"
+    },
+    {
+      "name": "rm-hard-relative-1",
+      "result": "pass"
+    },
+    {
+      "name": "rm-hard-relative-2",
+      "result": "pass"
+    },
+    {
+      "name": "rm-hard-relative-3",
+      "result": "pass"
+    },
+    {
+      "name": "rm-hard-relative-4",
+      "result": "pass"
+    },
+    {
+      "name": "rm-hard-relative-5",
+      "result": "pass"
+    },
+    {
+      "name": "rm-hard-relative-6",
+      "result": "pass"
+    },
+    {
+      "name": "rm-soft-absolute-1",
+      "result": "pass"
+    },
+    {
+      "name": "rm-soft-absolute-2",
+      "result": "pass"
+    },
+    {
+      "name": "rm-soft-absolute-3",
+      "result": "pass"
+    },
+    {
+      "name": "rm-soft-absolute-4",
+      "result": "pass"
+    },
+    {
+      "name": "rm-soft-absolute-5",
+      "result": "pass"
+    },
+    {
+      "name": "rm-soft-absolute-6",
+      "result": "pass"
+    },
+    {
+      "name": "rm-hard-absolute-1",
+      "result": "pass"
+    },
+    {
+      "name": "rm-hard-absolute-2",
+      "result": "pass"
+    },
+    {
+      "name": "rm-hard-absolute-3",
+      "result": "pass"
+    },
+    {
+      "name": "rm-hard-absolute-4",
+      "result": "pass"
+    },
+    {
+      "name": "rm-hard-absolute-5",
+      "result": "pass"
+    },
+    {
+      "name": "rm-hard-absolute-6",
+      "result": "pass"
+    },
+    {
+      "name": "mv-file-new-directory-1",
+      "result": "pass"
+    },
+    {
+      "name": "mv-file-new-directory-2",
+      "result": "pass"
+    },
+    {
+      "name": "mv-file-new-directory-3",
+      "result": "pass"
+    },
+    {
+      "name": "mv-file-new-directory-4",
+      "result": "pass"
+    },
+    {
+      "name": "mv-file-new-directory-5",
+      "result": "pass"
+    },
+    {
+      "name": "mv-file-new-directory-6",
+      "result": "pass"
+    },
+    {
+      "name": "mv-file-new-directory-7",
+      "result": "pass"
+    },
+    {
+      "name": "mv-file-new-directory-8",
+      "result": "pass"
+    },
+    {
+      "name": "mv-file-new-directory-9",
+      "result": "pass"
+    },
+    {
+      "name": "mv-file-new-directory-10",
+      "result": "pass"
+    },
+    {
+      "name": "mv-file-new-directory-11",
+      "result": "pass"
+    },
+    {
+      "name": "mv-file-new-directory-12",
+      "result": "pass"
+    },
+    {
+      "name": "mv-file-new-directory-13",
+      "result": "pass"
+    },
+    {
+      "name": "mv-file-new-directory-14",
+      "result": "pass"
+    },
+    {
+      "name": "mv-file-new-directory-15",
+      "result": "pass"
+    },
+    {
+      "name": "mv-file-new-directory-16",
+      "result": "pass"
+    },
+    {
+      "name": "mv-soft-already-renamed-directory-1",
+      "result": "pass"
+    },
+    {
+      "name": "mv-soft-already-renamed-directory-2",
+      "result": "pass"
+    },
+    {
+      "name": "mv-soft-already-renamed-directory-3",
+      "result": "pass"
+    },
+    {
+      "name": "mv-soft-already-renamed-directory-4",
+      "result": "pass"
+    },
+    {
+      "name": "mv-soft-already-renamed-directory-5",
+      "result": "pass"
+    },
+    {
+      "name": "mv-soft-already-renamed-directory-6",
+      "result": "pass"
+    },
+    {
+      "name": "test-framework-mv-rm",
+      "result": "pass"
+    }
+  ],
+  "counts": {
+    "pass": 63,
+    "fail": 0,
+    "ignored": 0
+  },
+  "upstream_summary": {
+    "errors": 0,
+    "tests": 63
+  },
+  "count_matches": true,
+  "skips": [],
+  "log": "/tmp/gossil-fossil-baseline-20261117/runs/mv-rm/output.log",
+  "gate_pass": true
+}

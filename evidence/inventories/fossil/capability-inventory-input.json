@@ -1,0 +1,1240 @@
+{
+  "kind": "availability enumeration only; diagnostics not all executed",
+  "source_declarations": [
+    {
+      "name": "test-reserved-names",
+      "path": "src/add.c",
+      "line": 131,
+      "runtime_availability": "listed"
+    },
+    {
+      "name": "test-mailbox-hashname",
+      "path": "src/alerts.c",
+      "line": 875,
+      "runtime_availability": "listed"
+    },
+    {
+      "name": "test-alert",
+      "path": "src/alerts.c",
+      "line": 2831,
+      "runtime_availability": "listed"
+    },
+    {
+      "name": "test-add-alerts",
+      "path": "src/alerts.c",
+      "line": 2898,
+      "runtime_availability": "listed"
+    },
+    {
+      "name": "test-list-attachments",
+      "path": "src/attach.c",
+      "line": 1639,
+      "runtime_availability": "listed"
+    },
+    {
+      "name": "test-attachment-target",
+      "path": "src/attach.c",
+      "line": 1795,
+      "runtime_availability": "listed"
+    },
+    {
+      "name": "test-attachments-to-json",
+      "path": "src/attach.c",
+      "line": 1826,
+      "runtime_availability": "listed"
+    },
+    {
+      "name": "test-backlinks",
+      "path": "src/backlink.c",
+      "line": 381,
+      "runtime_availability": "listed"
+    },
+    {
+      "name": "test-relink-wiki",
+      "path": "src/backlink.c",
+      "line": 435,
+      "runtime_availability": "listed"
+    },
+    {
+      "name": "test-process-id",
+      "path": "src/backoffice.c",
+      "line": 335,
+      "runtime_availability": "listed"
+    },
+    {
+      "name": "test-backoffice-lease",
+      "path": "src/backoffice.c",
+      "line": 358,
+      "runtime_availability": "listed"
+    },
+    {
+      "name": "test-isspace",
+      "path": "src/blob.c",
+      "line": 156,
+      "runtime_availability": "listed"
+    },
+    {
+      "name": "test-strip-comment-lines",
+      "path": "src/blob.c",
+      "line": 977,
+      "runtime_availability": "listed"
+    },
+    {
+      "name": "test-atoi",
+      "path": "src/blob.c",
+      "line": 1102,
+      "runtime_availability": "listed"
+    },
+    {
+      "name": "test-compress",
+      "path": "src/blob.c",
+      "line": 1410,
+      "runtime_availability": "listed"
+    },
+    {
+      "name": "test-compress-2",
+      "path": "src/blob.c",
+      "line": 1468,
+      "runtime_availability": "listed"
+    },
+    {
+      "name": "test-uncompress",
+      "path": "src/blob.c",
+      "line": 1521,
+      "runtime_availability": "listed"
+    },
+    {
+      "name": "test-cycle-compress",
+      "path": "src/blob.c",
+      "line": 1538,
+      "runtime_availability": "listed"
+    },
+    {
+      "name": "test-escaped-arg",
+      "path": "src/blob.c",
+      "line": 1838,
+      "runtime_availability": "listed"
+    },
+    {
+      "name": "test-fileage",
+      "path": "src/browse.c",
+      "line": 1104,
+      "runtime_availability": "listed"
+    },
+    {
+      "name": "test-builtin-list",
+      "path": "src/builtin.c",
+      "line": 89,
+      "runtime_availability": "listed"
+    },
+    {
+      "name": "test-builtin-get",
+      "path": "src/builtin.c",
+      "line": 129,
+      "runtime_availability": "listed"
+    },
+    {
+      "name": "test-js-once",
+      "path": "src/builtin.c",
+      "line": 825,
+      "runtime_availability": "listed"
+    },
+    {
+      "name": "test-subtree",
+      "path": "src/bundle.c",
+      "line": 255,
+      "runtime_availability": "listed"
+    },
+    {
+      "name": "test-captcha",
+      "path": "src/captcha.c",
+      "line": 486,
+      "runtime_availability": "listed"
+    },
+    {
+      "name": "test-chat-formatter",
+      "path": "src/chat.c",
+      "line": 517,
+      "runtime_availability": "listed"
+    },
+    {
+      "name": "test-date-format",
+      "path": "src/checkin.c",
+      "line": 1851,
+      "runtime_availability": "listed"
+    },
+    {
+      "name": "test-commit-warning",
+      "path": "src/checkin.c",
+      "line": 2298,
+      "runtime_availability": "listed"
+    },
+    {
+      "name": "test-hash-color",
+      "path": "src/color.c",
+      "line": 390,
+      "runtime_availability": "listed"
+    },
+    {
+      "name": "test-comment-format",
+      "path": "src/comformat.c",
+      "line": 734,
+      "runtime_availability": "listed"
+    },
+    {
+      "name": "test-var-list",
+      "path": "src/configure.c",
+      "line": 968,
+      "runtime_availability": "listed"
+    },
+    {
+      "name": "test-var-get",
+      "path": "src/configure.c",
+      "line": 1069,
+      "runtime_availability": "listed"
+    },
+    {
+      "name": "test-var-set",
+      "path": "src/configure.c",
+      "line": 1108,
+      "runtime_availability": "listed"
+    },
+    {
+      "name": "test-content-rawget",
+      "path": "src/content.c",
+      "line": 349,
+      "runtime_availability": "listed"
+    },
+    {
+      "name": "test-content-put",
+      "path": "src/content.c",
+      "line": 704,
+      "runtime_availability": "listed"
+    },
+    {
+      "name": "test-content-undelta",
+      "path": "src/content.c",
+      "line": 773,
+      "runtime_availability": "listed"
+    },
+    {
+      "name": "test-content-deltify",
+      "path": "src/content.c",
+      "line": 954,
+      "runtime_availability": "listed"
+    },
+    {
+      "name": "test-integrity",
+      "path": "src/content.c",
+      "line": 988,
+      "runtime_availability": "listed"
+    },
+    {
+      "name": "test-orphans",
+      "path": "src/content.c",
+      "line": 1147,
+      "runtime_availability": "listed"
+    },
+    {
+      "name": "test-missing",
+      "path": "src/content.c",
+      "line": 1248,
+      "runtime_availability": "listed"
+    },
+    {
+      "name": "test-content-erase",
+      "path": "src/content.c",
+      "line": 1318,
+      "runtime_availability": "listed"
+    },
+    {
+      "name": "test-db-exec-error",
+      "path": "src/db.c",
+      "line": 986,
+      "runtime_availability": "listed"
+    },
+    {
+      "name": "test-db-prepare",
+      "path": "src/db.c",
+      "line": 1000,
+      "runtime_availability": "listed"
+    },
+    {
+      "name": "test-is-repo",
+      "path": "src/db.c",
+      "line": 2716,
+      "runtime_availability": "listed"
+    },
+    {
+      "name": "test-move-repository",
+      "path": "src/db.c",
+      "line": 2963,
+      "runtime_availability": "listed"
+    },
+    {
+      "name": "test-manifest-setting",
+      "path": "src/db.c",
+      "line": 4123,
+      "runtime_availability": "listed"
+    },
+    {
+      "name": "test-timespan",
+      "path": "src/db.c",
+      "line": 5452,
+      "runtime_availability": "listed"
+    },
+    {
+      "name": "test-without-rowid",
+      "path": "src/db.c",
+      "line": 5471,
+      "runtime_availability": "listed"
+    },
+    {
+      "name": "test-database-names",
+      "path": "src/db.c",
+      "line": 5582,
+      "runtime_availability": "listed"
+    },
+    {
+      "name": "test-fingerprint",
+      "path": "src/db.c",
+      "line": 5659,
+      "runtime_availability": "listed"
+    },
+    {
+      "name": "test-delta-create",
+      "path": "src/deltacmd.c",
+      "line": 46,
+      "runtime_availability": "listed"
+    },
+    {
+      "name": "test-delta-analyze",
+      "path": "src/deltacmd.c",
+      "line": 74,
+      "runtime_availability": "listed"
+    },
+    {
+      "name": "test-delta-apply",
+      "path": "src/deltacmd.c",
+      "line": 147,
+      "runtime_availability": "listed"
+    },
+    {
+      "name": "test-delta",
+      "path": "src/deltacmd.c",
+      "line": 178,
+      "runtime_availability": "listed"
+    },
+    {
+      "name": "test-line-diff",
+      "path": "src/diff.c",
+      "line": 962,
+      "runtime_availability": "listed"
+    },
+    {
+      "name": "test-line-match",
+      "path": "src/diff.c",
+      "line": 1953,
+      "runtime_availability": "listed"
+    },
+    {
+      "name": "test-diff",
+      "path": "src/diff.c",
+      "line": 3362,
+      "runtime_availability": "listed"
+    },
+    {
+      "name": "test-all-help",
+      "path": "src/dispatch.c",
+      "line": 653,
+      "runtime_availability": "listed"
+    },
+    {
+      "name": "test-command-stats",
+      "path": "src/dispatch.c",
+      "line": 714,
+      "runtime_availability": "listed"
+    },
+    {
+      "name": "test-approx-match",
+      "path": "src/dispatch.c",
+      "line": 820,
+      "runtime_availability": "listed"
+    },
+    {
+      "name": "test-list-webpage",
+      "path": "src/dispatch.c",
+      "line": 1402,
+      "runtime_availability": "listed"
+    },
+    {
+      "name": "test-mimetype",
+      "path": "src/doc.c",
+      "line": 497,
+      "runtime_availability": "listed"
+    },
+    {
+      "name": "test-encode64",
+      "path": "src/encode.c",
+      "line": 624,
+      "runtime_availability": "listed"
+    },
+    {
+      "name": "test-decode64",
+      "path": "src/encode.c",
+      "line": 698,
+      "runtime_availability": "listed"
+    },
+    {
+      "name": "test-obscure",
+      "path": "src/encode.c",
+      "line": 920,
+      "runtime_availability": "listed"
+    },
+    {
+      "name": "test-etag",
+      "path": "src/etag.c",
+      "line": 258,
+      "runtime_availability": "listed"
+    },
+    {
+      "name": "test-topological-sort",
+      "path": "src/export.c",
+      "line": 833,
+      "runtime_availability": "listed"
+    },
+    {
+      "name": "test-sanitize-name",
+      "path": "src/export.c",
+      "line": 910,
+      "runtime_availability": "listed"
+    },
+    {
+      "name": "test-file-copy",
+      "path": "src/file.c",
+      "line": 676,
+      "runtime_availability": "listed"
+    },
+    {
+      "name": "test-set-mtime",
+      "path": "src/file.c",
+      "line": 748,
+      "runtime_availability": "listed"
+    },
+    {
+      "name": "test-is-normal-dir",
+      "path": "src/file.c",
+      "line": 957,
+      "runtime_availability": "not-listed"
+    },
+    {
+      "name": "test-simplify-name",
+      "path": "src/file.c",
+      "line": 1263,
+      "runtime_availability": "listed"
+    },
+    {
+      "name": "test-case-filename",
+      "path": "src/file.c",
+      "line": 1466,
+      "runtime_availability": "listed"
+    },
+    {
+      "name": "test-which",
+      "path": "src/file.c",
+      "line": 1571,
+      "runtime_availability": "listed"
+    },
+    {
+      "name": "test-file-environment",
+      "path": "src/file.c",
+      "line": 1671,
+      "runtime_availability": "listed"
+    },
+    {
+      "name": "test-canonical-name",
+      "path": "src/file.c",
+      "line": 1726,
+      "runtime_availability": "listed"
+    },
+    {
+      "name": "test-relative-name",
+      "path": "src/file.c",
+      "line": 1867,
+      "runtime_availability": "listed"
+    },
+    {
+      "name": "test-tree-name",
+      "path": "src/file.c",
+      "line": 1981,
+      "runtime_availability": "listed"
+    },
+    {
+      "name": "test-tempname",
+      "path": "src/file.c",
+      "line": 2219,
+      "runtime_availability": "listed"
+    },
+    {
+      "name": "test-valid-for-windows",
+      "path": "src/file.c",
+      "line": 2478,
+      "runtime_availability": "listed"
+    },
+    {
+      "name": "test-dir-list",
+      "path": "src/file.c",
+      "line": 2634,
+      "runtime_availability": "listed"
+    },
+    {
+      "name": "test-is-reserved-name",
+      "path": "src/file.c",
+      "line": 3062,
+      "runtime_availability": "listed"
+    },
+    {
+      "name": "test-ci-mini",
+      "path": "src/fileedit.c",
+      "line": 692,
+      "runtime_availability": "listed"
+    },
+    {
+      "name": "test-forum-statuses",
+      "path": "src/forum.c",
+      "line": 175,
+      "runtime_availability": "listed"
+    },
+    {
+      "name": "test-forumpost-tag",
+      "path": "src/forum.c",
+      "line": 503,
+      "runtime_availability": "listed"
+    },
+    {
+      "name": "test-forumthread",
+      "path": "src/forum.c",
+      "line": 764,
+      "runtime_availability": "listed"
+    },
+    {
+      "name": "test-fuzz",
+      "path": "src/fuzz.c",
+      "line": 148,
+      "runtime_availability": "listed"
+    },
+    {
+      "name": "test-glob",
+      "path": "src/glob.c",
+      "line": 255,
+      "runtime_availability": "listed"
+    },
+    {
+      "name": "test-gzip",
+      "path": "src/gzip.c",
+      "line": 120,
+      "runtime_availability": "listed"
+    },
+    {
+      "name": "test-ssh-needs-path",
+      "path": "src/http.c",
+      "line": 344,
+      "runtime_availability": "listed"
+    },
+    {
+      "name": "test-httpmsg",
+      "path": "src/http.c",
+      "line": 1011,
+      "runtime_availability": "listed"
+    },
+    {
+      "name": "test-line-numbers",
+      "path": "src/info.c",
+      "line": 2737,
+      "runtime_availability": "listed"
+    },
+    {
+      "name": "test-symlink-list",
+      "path": "src/info.c",
+      "line": 4330,
+      "runtime_availability": "listed"
+    },
+    {
+      "name": "test-leaf-ambiguity",
+      "path": "src/leaf.c",
+      "line": 268,
+      "runtime_availability": "listed"
+    },
+    {
+      "name": "test-loadavg",
+      "path": "src/loadctrl.c",
+      "line": 39,
+      "runtime_availability": "listed"
+    },
+    {
+      "name": "test-ishuman",
+      "path": "src/login.c",
+      "line": 504,
+      "runtime_availability": "listed"
+    },
+    {
+      "name": "test-resetpw-url",
+      "path": "src/login.c",
+      "line": 1040,
+      "runtime_availability": "listed"
+    },
+    {
+      "name": "test-email-used",
+      "path": "src/login.c",
+      "line": 2017,
+      "runtime_availability": "listed"
+    },
+    {
+      "name": "test-looks-like-utf",
+      "path": "src/lookslike.c",
+      "line": 400,
+      "runtime_availability": "listed"
+    },
+    {
+      "name": "test-looks-like-attack",
+      "path": "src/lookslike.c",
+      "line": 576,
+      "runtime_availability": "listed"
+    },
+    {
+      "name": "test-http",
+      "path": "src/main.c",
+      "line": 3102,
+      "runtime_availability": "listed"
+    },
+    {
+      "name": "test-echo",
+      "path": "src/main.c",
+      "line": 3737,
+      "runtime_availability": "listed"
+    },
+    {
+      "name": "test-parse-manifest",
+      "path": "src/manifest.c",
+      "line": 1242,
+      "runtime_availability": "listed"
+    },
+    {
+      "name": "test-parse-all-blobs",
+      "path": "src/manifest.c",
+      "line": 1289,
+      "runtime_availability": "listed"
+    },
+    {
+      "name": "test-crosslink",
+      "path": "src/manifest.c",
+      "line": 2927,
+      "runtime_availability": "listed"
+    },
+    {
+      "name": "test-artifact-to-json",
+      "path": "src/manifest.c",
+      "line": 3201,
+      "runtime_availability": "listed"
+    },
+    {
+      "name": "test-show-vfile",
+      "path": "src/merge.c",
+      "line": 819,
+      "runtime_availability": "listed"
+    },
+    {
+      "name": "test-user-could-moderate",
+      "path": "src/moderate.c",
+      "line": 318,
+      "runtime_availability": "listed"
+    },
+    {
+      "name": "test-name-to-id",
+      "path": "src/name.c",
+      "line": 890,
+      "runtime_availability": "listed"
+    },
+    {
+      "name": "test-whatis-all",
+      "path": "src/name.c",
+      "line": 1646,
+      "runtime_availability": "listed"
+    },
+    {
+      "name": "test-ambiguous",
+      "path": "src/name.c",
+      "line": 1666,
+      "runtime_availability": "listed"
+    },
+    {
+      "name": "test-describe-artifacts",
+      "path": "src/name.c",
+      "line": 1992,
+      "runtime_availability": "listed"
+    },
+    {
+      "name": "test-unsent",
+      "path": "src/name.c",
+      "line": 2409,
+      "runtime_availability": "listed"
+    },
+    {
+      "name": "test-unclustered",
+      "path": "src/name.c",
+      "line": 2421,
+      "runtime_availability": "listed"
+    },
+    {
+      "name": "test-phantoms",
+      "path": "src/name.c",
+      "line": 2433,
+      "runtime_availability": "listed"
+    },
+    {
+      "name": "test-shortest-path",
+      "path": "src/path.c",
+      "line": 352,
+      "runtime_availability": "listed"
+    },
+    {
+      "name": "test-ancestor-path",
+      "path": "src/path.c",
+      "line": 450,
+      "runtime_availability": "listed"
+    },
+    {
+      "name": "test-name-changes",
+      "path": "src/path.c",
+      "line": 631,
+      "runtime_availability": "listed"
+    },
+    {
+      "name": "test-pqueue",
+      "path": "src/pqueue.c",
+      "line": 184,
+      "runtime_availability": "listed"
+    },
+    {
+      "name": "test-create-clusters",
+      "path": "src/rebuild.c",
+      "line": 922,
+      "runtime_availability": "listed"
+    },
+    {
+      "name": "test-clusters",
+      "path": "src/rebuild.c",
+      "line": 944,
+      "runtime_availability": "listed"
+    },
+    {
+      "name": "test-hash-from-path*",
+      "path": "src/rebuild.c",
+      "line": 1258,
+      "runtime_availability": "not-listed"
+    },
+    {
+      "name": "test-grep",
+      "path": "src/regexp.c",
+      "line": 903,
+      "runtime_availability": "listed"
+    },
+    {
+      "name": "test-list-page",
+      "path": "src/repolist.c",
+      "line": 417,
+      "runtime_availability": "listed"
+    },
+    {
+      "name": "test-match",
+      "path": "src/search.c",
+      "line": 331,
+      "runtime_availability": "listed"
+    },
+    {
+      "name": "test-search-stext",
+      "path": "src/search.c",
+      "line": 1738,
+      "runtime_availability": "listed"
+    },
+    {
+      "name": "test-convert-stext",
+      "path": "src/search.c",
+      "line": 1757,
+      "runtime_availability": "listed"
+    },
+    {
+      "name": "test-user-caps-changed",
+      "path": "src/setupuser.c",
+      "line": 354,
+      "runtime_availability": "listed"
+    },
+    {
+      "name": "test-find-mx",
+      "path": "src/smtp.c",
+      "line": 131,
+      "runtime_availability": "listed"
+    },
+    {
+      "name": "test-smtp-probe",
+      "path": "src/smtp.c",
+      "line": 453,
+      "runtime_availability": "listed"
+    },
+    {
+      "name": "test-smtp-senddata",
+      "path": "src/smtp.c",
+      "line": 537,
+      "runtime_availability": "listed"
+    },
+    {
+      "name": "test-smtp-send",
+      "path": "src/smtp.c",
+      "line": 644,
+      "runtime_availability": "listed"
+    },
+    {
+      "name": "test-contains-selector",
+      "path": "src/style.c",
+      "line": 1220,
+      "runtime_availability": "listed"
+    },
+    {
+      "name": "test-tag",
+      "path": "src/tag.c",
+      "line": 246,
+      "runtime_availability": "listed"
+    },
+    {
+      "name": "test-tarball",
+      "path": "src/tar.c",
+      "line": 482,
+      "runtime_availability": "listed"
+    },
+    {
+      "name": "test-th-render",
+      "path": "src/th_main.c",
+      "line": 3078,
+      "runtime_availability": "listed"
+    },
+    {
+      "name": "test-th-eval",
+      "path": "src/th_main.c",
+      "line": 3128,
+      "runtime_availability": "listed"
+    },
+    {
+      "name": "test-th-source",
+      "path": "src/th_main.c",
+      "line": 3189,
+      "runtime_availability": "listed"
+    },
+    {
+      "name": "test-th-hook",
+      "path": "src/th_main.c",
+      "line": 3250,
+      "runtime_availability": "not-listed"
+    },
+    {
+      "name": "test-endpoint",
+      "path": "src/timeline.c",
+      "line": 1737,
+      "runtime_availability": "listed"
+    },
+    {
+      "name": "test-timewarp-list",
+      "path": "src/timeline.c",
+      "line": 4339,
+      "runtime_availability": "listed"
+    },
+    {
+      "name": "test-ticket-rebuild",
+      "path": "src/tkt.c",
+      "line": 698,
+      "runtime_availability": "listed"
+    },
+    {
+      "name": "test-urlparser",
+      "path": "src/url.c",
+      "line": 542,
+      "runtime_availability": "listed"
+    },
+    {
+      "name": "test-url-basename",
+      "path": "src/url.c",
+      "line": 893,
+      "runtime_availability": "listed"
+    },
+    {
+      "name": "test-usernames",
+      "path": "src/user.c",
+      "line": 593,
+      "runtime_availability": "listed"
+    },
+    {
+      "name": "test-hash-passwords",
+      "path": "src/user.c",
+      "line": 634,
+      "runtime_availability": "listed"
+    },
+    {
+      "name": "test-prompt-user",
+      "path": "src/user.c",
+      "line": 669,
+      "runtime_availability": "listed"
+    },
+    {
+      "name": "test-prompt-password",
+      "path": "src/user.c",
+      "line": 684,
+      "runtime_availability": "listed"
+    },
+    {
+      "name": "test-fossil-system",
+      "path": "src/util.c",
+      "line": 389,
+      "runtime_availability": "listed"
+    },
+    {
+      "name": "test-random-password",
+      "path": "src/util.c",
+      "line": 881,
+      "runtime_availability": "listed"
+    },
+    {
+      "name": "test-generate-uuid",
+      "path": "src/util.c",
+      "line": 952,
+      "runtime_availability": "listed"
+    },
+    {
+      "name": "test-verify-all",
+      "path": "src/verify.c",
+      "line": 112,
+      "runtime_availability": "listed"
+    },
+    {
+      "name": "test-agg-cksum",
+      "path": "src/vfile.c",
+      "line": 959,
+      "runtime_availability": "listed"
+    },
+    {
+      "name": "test-wiki-render",
+      "path": "src/wikiformat.c",
+      "line": 2065,
+      "runtime_availability": "listed"
+    },
+    {
+      "name": "test-markdown-render",
+      "path": "src/wikiformat.c",
+      "line": 2152,
+      "runtime_availability": "listed"
+    },
+    {
+      "name": "test-html-tokenize",
+      "path": "src/wikiformat.c",
+      "line": 2503,
+      "runtime_availability": "listed"
+    },
+    {
+      "name": "test-html-tidy",
+      "path": "src/wikiformat.c",
+      "line": 2638,
+      "runtime_availability": "listed"
+    },
+    {
+      "name": "test-html-to-text",
+      "path": "src/wikiformat.c",
+      "line": 2804,
+      "runtime_availability": "listed"
+    },
+    {
+      "name": "test-safe-html",
+      "path": "src/wikiformat.c",
+      "line": 3160,
+      "runtime_availability": "listed"
+    },
+    {
+      "name": "test-xfer",
+      "path": "src/xfer.c",
+      "line": 2007,
+      "runtime_availability": "listed"
+    },
+    {
+      "name": "test-filezip",
+      "path": "src/zip.c",
+      "line": 572,
+      "runtime_availability": "listed"
+    }
+  ],
+  "source_declaration_count": 161,
+  "installed_help_receipts": [
+    {
+      "command": [
+        "jlog",
+        "run",
+        "fossil",
+        "help",
+        "--test"
+      ],
+      "exit_code": 0,
+      "stdout": "test-add-alerts           test-etag                 test-pqueue             \ntest-agg-cksum            test-file-copy            test-process-id         \ntest-alert                test-file-environment     test-prompt-password    \ntest-all-help             test-fileage              test-prompt-user        \ntest-ambiguous            test-filezip              test-random-password    \ntest-ancestor-path        test-find-mx              test-relative-name      \ntest-approx-match         test-fingerprint          test-relink-wiki        \ntest-artifact-to-json     test-forum-statuses       test-reserved-names     \ntest-atoi                 test-forumpost-tag        test-resetpw-url        \ntest-attachment-target    test-forumthread          test-safe-html          \ntest-attachments-to-json  test-fossil-system        test-sanitize-name      \ntest-backlinks            test-fuzz                 test-search-stext       \ntest-backoffice-lease     test-generate-uuid        test-set-mtime          \ntest-builtin-get          test-glob                 test-shortest-path      \ntest-builtin-list         test-grep                 test-show-vfile         \ntest-canonical-name       test-gzip                 test-simplify-name      \ntest-captcha              test-hash-color           test-smtp-probe         \ntest-case-filename        test-hash-passwords       test-smtp-send          \ntest-chat-formatter       test-html-tidy            test-smtp-senddata      \ntest-ci-mini              test-html-to-text         test-ssh-needs-path     \ntest-clusters             test-html-tokenize        test-strip-comment-lines\ntest-command-stats        test-http                 test-subtree            \ntest-comment-format       test-httpmsg              test-symlink-list       \ntest-commit-warning       test-integrity            test-tag                \ntest-compress             test-is-repo              test-tarball            \ntest-compress-2           test-is-reserved-name     test-tempname           \ntest-contains-selector    test-ishuman              test-th-eval            \ntest-content-deltify      test-isspace              test-th-render          \ntest-content-erase        test-js-once              test-th-source          \ntest-content-put          test-leaf-ambiguity       test-ticket-rebuild     \ntest-content-rawget       test-line-diff            test-timespan           \ntest-content-undelta      test-line-match           test-timewarp-list      \ntest-convert-stext        test-line-numbers         test-topological-sort   \ntest-create-clusters      test-list-attachments     test-tree-name          \ntest-crosslink            test-list-page            test-unclustered        \ntest-cycle-compress       test-list-webpage         test-uncompress         \ntest-database-names       test-loadavg              test-unsent             \ntest-date-format          test-looks-like-attack    test-url-basename       \ntest-db-exec-error        test-looks-like-utf       test-urlparser          \ntest-db-prepare           test-mailbox-hashname     test-user-caps-changed  \ntest-decode64             test-manifest-setting     test-user-could-moderate\ntest-delta                test-markdown-render      test-usernames          \ntest-delta-analyze        test-match                test-valid-for-windows  \ntest-delta-apply          test-mimetype             test-var-get            \ntest-delta-create         test-missing              test-var-list           \ntest-describe-artifacts   test-move-repository      test-var-set            \ntest-diff                 test-name-changes         test-verify-all         \ntest-dir-list             test-name-to-id           test-whatis-all         \ntest-echo                 test-obscure              test-which              \ntest-email-used           test-orphans              test-wiki-render        \ntest-encode64             test-parse-all-blobs      test-without-rowid      \ntest-endpoint             test-parse-manifest       test-xfer               \ntest-escaped-arg          test-phantoms           \n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "jlog",
+        "run",
+        "fossil",
+        "help",
+        "--all"
+      ],
+      "exit_code": 0,
+      "stdout": "3-way-merge    clone          hash-policy    push           stash        \nadd            close          help           rebuild        status       \naddremove      commit         hook           reconstruct    sync         \nalerts         configuration  http           redo           system       \nall            dbstat         import         remote         tag          \namend          deconstruct    info           remote-url     tarball      \nannotate       delete         init           rename         ticket       \nartifact       descendants    interwiki      repack         timeline     \nattachment     describe       leaves         reparent       tls-config   \nbackoffice     detach         login-group    revert         touch        \nbackup         diff           ls             rm             tree         \nbisect         export         md5sum         rss            ui           \nblame          extras         merge          scrub          undo         \nbranch         fdiff          merge-base     search         unpublished  \nbundle         finfo          merge-info     server         unset        \ncache          forget         mv             settings       unversioned  \ncat            forum          open           sha1sum        update       \ncgi            fts-config     patch          sha3sum        user         \nchanges        fusefs         pikchr         shell          version      \nchat           gdiff          praise         sql            whatis       \ncheckout       get            publish        sqlar          wiki         \ncherrypick     git            pull           sqlite3        xdiff        \nclean          grep           purge          ssl-config     zip          \n",
+      "stderr": ""
+    }
+  ],
+  "runtime_build_features": {
+    "ssl": {
+      "exit_code": 0,
+      "stdout": "0\n",
+      "stderr": ""
+    },
+    "legacyMvRm": {
+      "exit_code": 0,
+      "stdout": "1\n",
+      "stderr": ""
+    },
+    "execRelPaths": {
+      "exit_code": 0,
+      "stdout": "0\n",
+      "stderr": ""
+    },
+    "th1Docs": {
+      "exit_code": 0,
+      "stdout": "0\n",
+      "stderr": ""
+    },
+    "th1Hooks": {
+      "exit_code": 0,
+      "stdout": "0\n",
+      "stderr": ""
+    },
+    "tcl": {
+      "exit_code": 0,
+      "stdout": "0\n",
+      "stderr": ""
+    },
+    "useTclStubs": {
+      "exit_code": 0,
+      "stdout": "0\n",
+      "stderr": ""
+    },
+    "tclStubs": {
+      "exit_code": 0,
+      "stdout": "0\n",
+      "stderr": ""
+    },
+    "tclPrivateStubs": {
+      "exit_code": 0,
+      "stdout": "0\n",
+      "stderr": ""
+    },
+    "json": {
+      "exit_code": 0,
+      "stdout": "0\n",
+      "stderr": ""
+    },
+    "markdown": {
+      "exit_code": 0,
+      "stdout": "1\n",
+      "stderr": ""
+    }
+  },
+  "platform": "macOS arm64; no Windows/Linux or TLS/FUSE matrix executed",
+  "native_test_command_names": [
+    "test-add-alerts",
+    "test-agg-cksum",
+    "test-alert",
+    "test-all-help",
+    "test-ambiguous",
+    "test-ancestor-path",
+    "test-approx-match",
+    "test-artifact-to-json",
+    "test-atoi",
+    "test-attachment-target",
+    "test-attachments-to-json",
+    "test-backlinks",
+    "test-backoffice-lease",
+    "test-builtin-get",
+    "test-builtin-list",
+    "test-canonical-name",
+    "test-captcha",
+    "test-case-filename",
+    "test-chat-formatter",
+    "test-ci-mini",
+    "test-clusters",
+    "test-command-stats",
+    "test-comment-format",
+    "test-commit-warning",
+    "test-compress",
+    "test-compress-2",
+    "test-contains-selector",
+    "test-content-deltify",
+    "test-content-erase",
+    "test-content-put",
+    "test-content-rawget",
+    "test-content-undelta",
+    "test-convert-stext",
+    "test-create-clusters",
+    "test-crosslink",
+    "test-cycle-compress",
+    "test-database-names",
+    "test-date-format",
+    "test-db-exec-error",
+    "test-db-prepare",
+    "test-decode64",
+    "test-delta",
+    "test-delta-analyze",
+    "test-delta-apply",
+    "test-delta-create",
+    "test-describe-artifacts",
+    "test-diff",
+    "test-dir-list",
+    "test-echo",
+    "test-email-used",
+    "test-encode64",
+    "test-endpoint",
+    "test-escaped-arg",
+    "test-etag",
+    "test-file-copy",
+    "test-file-environment",
+    "test-fileage",
+    "test-filezip",
+    "test-find-mx",
+    "test-fingerprint",
+    "test-forum-statuses",
+    "test-forumpost-tag",
+    "test-forumthread",
+    "test-fossil-system",
+    "test-fuzz",
+    "test-generate-uuid",
+    "test-glob",
+    "test-grep",
+    "test-gzip",
+    "test-hash-color",
+    "test-hash-passwords",
+    "test-html-tidy",
+    "test-html-to-text",
+    "test-html-tokenize",
+    "test-http",
+    "test-httpmsg",
+    "test-integrity",
+    "test-is-repo",
+    "test-is-reserved-name",
+    "test-ishuman",
+    "test-isspace",
+    "test-js-once",
+    "test-leaf-ambiguity",
+    "test-line-diff",
+    "test-line-match",
+    "test-line-numbers",
+    "test-list-attachments",
+    "test-list-page",
+    "test-list-webpage",
+    "test-loadavg",
+    "test-looks-like-attack",
+    "test-looks-like-utf",
+    "test-mailbox-hashname",
+    "test-manifest-setting",
+    "test-markdown-render",
+    "test-match",
+    "test-mimetype",
+    "test-missing",
+    "test-move-repository",
+    "test-name-changes",
+    "test-name-to-id",
+    "test-obscure",
+    "test-orphans",
+    "test-parse-all-blobs",
+    "test-parse-manifest",
+    "test-phantoms",
+    "test-pqueue",
+    "test-process-id",
+    "test-prompt-password",
+    "test-prompt-user",
+    "test-random-password",
+    "test-relative-name",
+    "test-relink-wiki",
+    "test-reserved-names",
+    "test-resetpw-url",
+    "test-safe-html",
+    "test-sanitize-name",
+    "test-search-stext",
+    "test-set-mtime",
+    "test-shortest-path",
+    "test-show-vfile",
+    "test-simplify-name",
+    "test-smtp-probe",
+    "test-smtp-send",
+    "test-smtp-senddata",
+    "test-ssh-needs-path",
+    "test-strip-comment-lines",
+    "test-subtree",
+    "test-symlink-list",
+    "test-tag",
+    "test-tarball",
+    "test-tempname",
+    "test-th-eval",
+    "test-th-render",
+    "test-th-source",
+    "test-ticket-rebuild",
+    "test-timespan",
+    "test-timewarp-list",
+    "test-topological-sort",
+    "test-tree-name",
+    "test-unclustered",
+    "test-uncompress",
+    "test-unsent",
+    "test-url-basename",
+    "test-urlparser",
+    "test-user-caps-changed",
+    "test-user-could-moderate",
+    "test-usernames",
+    "test-valid-for-windows",
+    "test-var-get",
+    "test-var-list",
+    "test-var-set",
+    "test-verify-all",
+    "test-whatis-all",
+    "test-which",
+    "test-wiki-render",
+    "test-without-rowid",
+    "test-xfer"
+  ],
+  "native_test_command_count": 158,
+  "source_declarations_not_listed": [
+    {
+      "name": "test-is-normal-dir",
+      "path": "src/file.c",
+      "line": 957,
+      "runtime_availability": "not-listed",
+      "reason": "Windows-only source conditional; unavailable in macOS build"
+    },
+    {
+      "name": "test-hash-from-path*",
+      "path": "src/rebuild.c",
+      "line": 1258,
+      "runtime_availability": "not-listed",
+      "reason": "source declaration in #if 0 dormant block; * is declaration marker, not test coverage"
+    },
+    {
+      "name": "test-th-hook",
+      "path": "src/th_main.c",
+      "line": 3250,
+      "runtime_availability": "not-listed",
+      "reason": "TH1 hook feature disabled in build"
+    }
+  ]
+}

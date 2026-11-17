@@ -1,0 +1,1951 @@
+{
+  "scope": "Inspected source and built help, not a complete formal compatibility contract; command JSON schemas need per-command review beyond these output-site references.",
+  "commands_with_json": [
+    {
+      "command": [
+        "artifact",
+        "archive"
+      ],
+      "options": [
+        "  -j, --json        Emit output as JSON",
+        "  -q, --quiet       Suppress normal output (print only entity ID on create/mutate, nothing on delete)",
+        "  -r, --raw         Emit script-friendly plain output (no themed styling)",
+        "      --no-color    Disable ANSI color output",
+        "      --no-pager    Disable paging of long command output",
+        "  -v, --verbose...  Increase log verbosity (`-v` = info, `-vv` = debug, `-vvv` = trace)",
+        "  -h, --help        Print help"
+      ]
+    },
+    {
+      "command": [
+        "artifact",
+        "create"
+      ],
+      "options": [
+        "      --batch                  Read NDJSON artifacts from stdin (one JSON object per line)",
+        "  -b, --body <BODY>            The artifact body (markdown; opens `$EDITOR` if omitted and stdin is a terminal)",
+        "  -i, --iteration <ITERATION>  Link the artifact to an iteration by ID or prefix",
+        "  -m, --metadata <KEY=VALUE>   Set a metadata key=value pair (repeatable; supports dot-paths and scalar inference)",
+        "      --metadata-json <JSON>   Merge a JSON object into metadata (repeatable; applied after --metadata pairs)",
+        "  -s, --source <SOURCE>        Read the body from a file path instead of stdin or `$EDITOR`",
+        "  -t, --tag <TAG>              Add a tag to the artifact (can be repeated; comma-separated values split into multiple tags)",
+        "  -j, --json                   Emit output as JSON",
+        "  -q, --quiet                  Suppress normal output (print only entity ID on create/mutate, nothing on delete)",
+        "  -r, --raw                    Emit script-friendly plain output (no themed styling)",
+        "      --no-color               Disable ANSI color output",
+        "      --no-pager               Disable paging of long command output",
+        "  -v, --verbose...             Increase log verbosity (`-v` = info, `-vv` = debug, `-vvv` = trace)",
+        "  -h, --help                   Print help"
+      ]
+    },
+    {
+      "command": [
+        "artifact",
+        "delete"
+      ],
+      "options": [
+        "      --force       Reserved for future guards; accepted for UX consistency with other delete commands but currently has no effect \u2014 artifacts have no blocking guards",
+        "  -j, --json        Emit output as JSON",
+        "  -q, --quiet       Suppress normal output (print only entity ID on create/mutate, nothing on delete)",
+        "  -r, --raw         Emit script-friendly plain output (no themed styling)",
+        "      --yes         Skip the interactive confirmation prompt",
+        "      --no-color    Disable ANSI color output",
+        "      --no-pager    Disable paging of long command output",
+        "  -v, --verbose...  Increase log verbosity (`-v` = info, `-vv` = debug, `-vvv` = trace)",
+        "  -h, --help        Print help"
+      ]
+    },
+    {
+      "command": [
+        "artifact",
+        "list"
+      ],
+      "options": [
+        "  -a, --all         Show all artifacts, including archived",
+        "      --archived    Show only archived artifacts [aliases: --archived-only]",
+        "      --limit <N>   Cap the number of items returned",
+        "  -t, --tag <TAG>   Filter by tag",
+        "  -j, --json        Emit output as JSON",
+        "  -q, --quiet       Suppress normal output (print only entity ID on create/mutate, nothing on delete)",
+        "  -r, --raw         Emit script-friendly plain output (no themed styling)",
+        "      --no-color    Disable ANSI color output",
+        "      --no-pager    Disable paging of long command output",
+        "  -v, --verbose...  Increase log verbosity (`-v` = info, `-vv` = debug, `-vvv` = trace)",
+        "  -h, --help        Print help"
+      ]
+    },
+    {
+      "command": [
+        "artifact",
+        "meta"
+      ],
+      "options": [
+        "  -j, --json        Emit output as JSON",
+        "  -q, --quiet       Suppress normal output (print only entity ID on create/mutate, nothing on delete)",
+        "  -r, --raw         Emit script-friendly plain output (no themed styling)",
+        "      --no-color    Disable ANSI color output",
+        "      --no-pager    Disable paging of long command output",
+        "  -v, --verbose...  Increase log verbosity (`-v` = info, `-vv` = debug, `-vvv` = trace)",
+        "  -h, --help        Print help"
+      ]
+    },
+    {
+      "command": [
+        "artifact",
+        "meta",
+        "get"
+      ],
+      "options": [
+        "  -j, --json        Emit output as JSON",
+        "  -q, --quiet       Suppress normal output (print only entity ID on create/mutate, nothing on delete)",
+        "  -r, --raw         Emit script-friendly plain output (no themed styling)",
+        "      --no-color    Disable ANSI color output",
+        "      --no-pager    Disable paging of long command output",
+        "  -v, --verbose...  Increase log verbosity (`-v` = info, `-vv` = debug, `-vvv` = trace)",
+        "  -h, --help        Print help"
+      ]
+    },
+    {
+      "command": [
+        "artifact",
+        "meta",
+        "set"
+      ],
+      "options": [
+        "      --as-json     Parse the value as a JSON literal instead of auto-detecting",
+        "  -j, --json        Emit output as JSON",
+        "  -q, --quiet       Suppress normal output (print only entity ID on create/mutate, nothing on delete)",
+        "  -r, --raw         Emit script-friendly plain output (no themed styling)",
+        "      --no-color    Disable ANSI color output",
+        "      --no-pager    Disable paging of long command output",
+        "  -v, --verbose...  Increase log verbosity (`-v` = info, `-vv` = debug, `-vvv` = trace)",
+        "  -h, --help        Print help"
+      ]
+    },
+    {
+      "command": [
+        "artifact",
+        "meta",
+        "unset"
+      ],
+      "options": [
+        "  -j, --json        Emit output as JSON",
+        "  -q, --quiet       Suppress normal output (print only entity ID on create/mutate, nothing on delete)",
+        "  -r, --raw         Emit script-friendly plain output (no themed styling)",
+        "      --no-color    Disable ANSI color output",
+        "      --no-pager    Disable paging of long command output",
+        "  -v, --verbose...  Increase log verbosity (`-v` = info, `-vv` = debug, `-vvv` = trace)",
+        "  -h, --help        Print help"
+      ]
+    },
+    {
+      "command": [
+        "artifact",
+        "note",
+        "add"
+      ],
+      "options": [
+        "  -b, --body <BODY>    The note body (use `-` to open `$EDITOR`)",
+        "      --agent <AGENT>  Set the author (agent) identifier for this note",
+        "  -j, --json           Emit output as JSON",
+        "  -q, --quiet          Suppress normal output (print only entity ID on create/mutate, nothing on delete)",
+        "  -r, --raw            Emit script-friendly plain output (no themed styling)",
+        "      --no-color       Disable ANSI color output",
+        "      --no-pager       Disable paging of long command output",
+        "  -v, --verbose...     Increase log verbosity (`-v` = info, `-vv` = debug, `-vvv` = trace)",
+        "  -h, --help           Print help"
+      ]
+    },
+    {
+      "command": [
+        "artifact",
+        "note",
+        "delete"
+      ],
+      "options": [
+        "  -j, --json        Emit output as JSON",
+        "  -q, --quiet       Suppress normal output (print only entity ID on create/mutate, nothing on delete)",
+        "  -r, --raw         Emit script-friendly plain output (no themed styling)",
+        "      --yes         Skip the interactive confirmation prompt",
+        "      --no-color    Disable ANSI color output",
+        "      --no-pager    Disable paging of long command output",
+        "  -v, --verbose...  Increase log verbosity (`-v` = info, `-vv` = debug, `-vvv` = trace)",
+        "  -h, --help        Print help"
+      ]
+    },
+    {
+      "command": [
+        "artifact",
+        "note",
+        "list"
+      ],
+      "options": [
+        "      --limit <N>   Cap the number of items returned",
+        "  -j, --json        Emit output as JSON",
+        "  -q, --quiet       Suppress normal output (print only entity ID on create/mutate, nothing on delete)",
+        "  -r, --raw         Emit script-friendly plain output (no themed styling)",
+        "      --no-color    Disable ANSI color output",
+        "      --no-pager    Disable paging of long command output",
+        "  -v, --verbose...  Increase log verbosity (`-v` = info, `-vv` = debug, `-vvv` = trace)",
+        "  -h, --help        Print help"
+      ]
+    },
+    {
+      "command": [
+        "artifact",
+        "note",
+        "show"
+      ],
+      "options": [
+        "  -j, --json        Emit output as JSON",
+        "  -q, --quiet       Suppress normal output (print only entity ID on create/mutate, nothing on delete)",
+        "  -r, --raw         Emit script-friendly plain output (no themed styling)",
+        "      --no-color    Disable ANSI color output",
+        "      --no-pager    Disable paging of long command output",
+        "  -v, --verbose...  Increase log verbosity (`-v` = info, `-vv` = debug, `-vvv` = trace)",
+        "  -h, --help        Print help"
+      ]
+    },
+    {
+      "command": [
+        "artifact",
+        "note",
+        "update"
+      ],
+      "options": [
+        "  -b, --body <BODY>  The new body text (use `-` to open `$EDITOR`)",
+        "  -j, --json         Emit output as JSON",
+        "  -q, --quiet        Suppress normal output (print only entity ID on create/mutate, nothing on delete)",
+        "  -r, --raw          Emit script-friendly plain output (no themed styling)",
+        "      --no-color     Disable ANSI color output",
+        "      --no-pager     Disable paging of long command output",
+        "  -v, --verbose...   Increase log verbosity (`-v` = info, `-vv` = debug, `-vvv` = trace)",
+        "  -h, --help         Print help"
+      ]
+    },
+    {
+      "command": [
+        "artifact",
+        "show"
+      ],
+      "options": [
+        "  -j, --json        Emit output as JSON",
+        "  -q, --quiet       Suppress normal output (print only entity ID on create/mutate, nothing on delete)",
+        "  -r, --raw         Emit script-friendly plain output (no themed styling)",
+        "      --no-color    Disable ANSI color output",
+        "      --no-pager    Disable paging of long command output",
+        "  -v, --verbose...  Increase log verbosity (`-v` = info, `-vv` = debug, `-vvv` = trace)",
+        "  -h, --help        Print help"
+      ]
+    },
+    {
+      "command": [
+        "artifact",
+        "tag"
+      ],
+      "options": [
+        "  -j, --json        Emit output as JSON",
+        "  -q, --quiet       Suppress normal output (print only entity ID on create/mutate, nothing on delete)",
+        "  -r, --raw         Emit script-friendly plain output (no themed styling)",
+        "      --no-color    Disable ANSI color output",
+        "      --no-pager    Disable paging of long command output",
+        "  -v, --verbose...  Increase log verbosity (`-v` = info, `-vv` = debug, `-vvv` = trace)",
+        "  -h, --help        Print help"
+      ]
+    },
+    {
+      "command": [
+        "artifact",
+        "untag"
+      ],
+      "options": [
+        "  -j, --json        Emit output as JSON",
+        "  -q, --quiet       Suppress normal output (print only entity ID on create/mutate, nothing on delete)",
+        "  -r, --raw         Emit script-friendly plain output (no themed styling)",
+        "      --no-color    Disable ANSI color output",
+        "      --no-pager    Disable paging of long command output",
+        "  -v, --verbose...  Increase log verbosity (`-v` = info, `-vv` = debug, `-vvv` = trace)",
+        "  -h, --help        Print help"
+      ]
+    },
+    {
+      "command": [
+        "artifact",
+        "update"
+      ],
+      "options": [
+        "  -b, --body <BODY>           Set the artifact body (markdown)",
+        "  -e, --edit                  Open `$EDITOR` pre-filled with the current body for editing",
+        "  -m, --metadata <KEY=VALUE>  Set a metadata key=value pair (repeatable; supports dot-paths and scalar inference)",
+        "      --metadata-json <JSON>  Merge a JSON object into metadata (repeatable; applied after --metadata pairs)",
+        "  -t, --tag <TAG>             Replace all tags on the artifact (can be repeated; comma-separated values split into multiple tags)",
+        "  -T, --title <TITLE>         Set the artifact title",
+        "  -j, --json                  Emit output as JSON",
+        "  -q, --quiet                 Suppress normal output (print only entity ID on create/mutate, nothing on delete)",
+        "  -r, --raw                   Emit script-friendly plain output (no themed styling)",
+        "      --no-color              Disable ANSI color output",
+        "      --no-pager              Disable paging of long command output",
+        "  -v, --verbose...            Increase log verbosity (`-v` = info, `-vv` = debug, `-vvv` = trace)",
+        "  -h, --help                  Print help"
+      ]
+    },
+    {
+      "command": [
+        "config",
+        "get"
+      ],
+      "options": [
+        "  -j, --json        Emit output as JSON",
+        "  -q, --quiet       Suppress normal output (print only entity ID on create/mutate, nothing on delete)",
+        "  -r, --raw         Emit script-friendly plain output (no themed styling)",
+        "      --no-color    Disable ANSI color output",
+        "      --no-pager    Disable paging of long command output",
+        "  -v, --verbose...  Increase log verbosity (`-v` = info, `-vv` = debug, `-vvv` = trace)",
+        "  -h, --help        Print help"
+      ]
+    },
+    {
+      "command": [
+        "config",
+        "show"
+      ],
+      "options": [
+        "  -j, --json        Emit output as JSON",
+        "  -q, --quiet       Suppress normal output (print only entity ID on create/mutate, nothing on delete)",
+        "  -r, --raw         Emit script-friendly plain output (no themed styling)",
+        "      --no-color    Disable ANSI color output",
+        "      --no-pager    Disable paging of long command output",
+        "  -v, --verbose...  Increase log verbosity (`-v` = info, `-vv` = debug, `-vvv` = trace)",
+        "  -h, --help        Print help"
+      ]
+    },
+    {
+      "command": [
+        "iteration",
+        "add"
+      ],
+      "options": [
+        "      --batch          Read NDJSON task records from stdin (one JSON object per line)",
+        "  -p, --phase <PHASE>  The phase to add the task to (defaults to max existing + 1; conflicts with `--batch`)",
+        "  -j, --json           Emit output as JSON",
+        "  -q, --quiet          Suppress normal output (print only entity ID on create/mutate, nothing on delete)",
+        "  -r, --raw            Emit script-friendly plain output (no themed styling)",
+        "      --no-color       Disable ANSI color output",
+        "      --no-pager       Disable paging of long command output",
+        "  -v, --verbose...     Increase log verbosity (`-v` = info, `-vv` = debug, `-vvv` = trace)",
+        "  -h, --help           Print help"
+      ]
+    },
+    {
+      "command": [
+        "iteration",
+        "advance"
+      ],
+      "options": [
+        "      --force       Advance even if the current phase has non-terminal tasks",
+        "  -j, --json        Emit output as JSON",
+        "  -q, --quiet       Suppress normal output (print only entity ID on create/mutate, nothing on delete)",
+        "  -r, --raw         Emit script-friendly plain output (no themed styling)",
+        "      --no-color    Disable ANSI color output",
+        "      --no-pager    Disable paging of long command output",
+        "  -v, --verbose...  Increase log verbosity (`-v` = info, `-vv` = debug, `-vvv` = trace)",
+        "  -h, --help        Print help"
+      ]
+    },
+    {
+      "command": [
+        "iteration",
+        "cancel"
+      ],
+      "options": [
+        "  -j, --json        Emit output as JSON",
+        "  -q, --quiet       Suppress normal output (print only entity ID on create/mutate, nothing on delete)",
+        "  -r, --raw         Emit script-friendly plain output (no themed styling)",
+        "      --no-color    Disable ANSI color output",
+        "      --no-pager    Disable paging of long command output",
+        "  -v, --verbose...  Increase log verbosity (`-v` = info, `-vv` = debug, `-vvv` = trace)",
+        "  -h, --help        Print help"
+      ]
+    },
+    {
+      "command": [
+        "iteration",
+        "complete"
+      ],
+      "options": [
+        "  -j, --json        Emit output as JSON",
+        "  -q, --quiet       Suppress normal output (print only entity ID on create/mutate, nothing on delete)",
+        "  -r, --raw         Emit script-friendly plain output (no themed styling)",
+        "      --no-color    Disable ANSI color output",
+        "      --no-pager    Disable paging of long command output",
+        "  -v, --verbose...  Increase log verbosity (`-v` = info, `-vv` = debug, `-vvv` = trace)",
+        "  -h, --help        Print help"
+      ]
+    },
+    {
+      "command": [
+        "iteration",
+        "create"
+      ],
+      "options": [
+        "  -d, --description <DESCRIPTION>  The iteration description",
+        "  -m, --metadata <KEY=VALUE>       Set a metadata key=value pair (repeatable; supports dot-paths and scalar inference)",
+        "      --metadata-json <JSON>       Merge a JSON object into metadata (repeatable; applied after --metadata pairs)",
+        "  -s, --status <STATUS>            Set the initial status",
+        "  -t, --tag <TAG>                  Add a tag (may be repeated; comma-separated values split into multiple tags)",
+        "  -j, --json                       Emit output as JSON",
+        "  -q, --quiet                      Suppress normal output (print only entity ID on create/mutate, nothing on delete)",
+        "  -r, --raw                        Emit script-friendly plain output (no themed styling)",
+        "      --no-color                   Disable ANSI color output",
+        "      --no-pager                   Disable paging of long command output",
+        "  -v, --verbose...                 Increase log verbosity (`-v` = info, `-vv` = debug, `-vvv` = trace)",
+        "  -h, --help                       Print help"
+      ]
+    },
+    {
+      "command": [
+        "iteration",
+        "delete"
+      ],
+      "options": [
+        "      --force       Reserved for future guards; accepted for UX consistency with other delete commands but currently has no effect",
+        "  -j, --json        Emit output as JSON",
+        "  -q, --quiet       Suppress normal output (print only entity ID on create/mutate, nothing on delete)",
+        "  -r, --raw         Emit script-friendly plain output (no themed styling)",
+        "      --yes         Skip the interactive confirmation prompt",
+        "      --no-color    Disable ANSI color output",
+        "      --no-pager    Disable paging of long command output",
+        "  -v, --verbose...  Increase log verbosity (`-v` = info, `-vv` = debug, `-vvv` = trace)",
+        "  -h, --help        Print help"
+      ]
+    },
+    {
+      "command": [
+        "iteration",
+        "graph"
+      ],
+      "options": [
+        "  -j, --json        Emit output as JSON",
+        "  -q, --quiet       Suppress normal output (print only entity ID on create/mutate, nothing on delete)",
+        "  -r, --raw         Emit script-friendly plain output (no themed styling)",
+        "      --no-color    Disable ANSI color output",
+        "      --no-pager    Disable paging of long command output",
+        "  -v, --verbose...  Increase log verbosity (`-v` = info, `-vv` = debug, `-vvv` = trace)",
+        "  -h, --help        Print help"
+      ]
+    },
+    {
+      "command": [
+        "iteration",
+        "link"
+      ],
+      "options": [
+        "      --artifact    Target is an artifact instead of another iteration",
+        "      --rel <REL>   The relationship type (e.g. blocks, blocked-by, relates-to)",
+        "  -j, --json        Emit output as JSON",
+        "  -q, --quiet       Suppress normal output (print only entity ID on create/mutate, nothing on delete)",
+        "  -r, --raw         Emit script-friendly plain output (no themed styling)",
+        "      --no-color    Disable ANSI color output",
+        "      --no-pager    Disable paging of long command output",
+        "  -v, --verbose...  Increase log verbosity (`-v` = info, `-vv` = debug, `-vvv` = trace)",
+        "  -h, --help        Print help"
+      ]
+    },
+    {
+      "command": [
+        "iteration",
+        "list"
+      ],
+      "options": [
+        "  -a, --all              Show all iterations, including completed",
+        "      --has-available    Only show iterations that have unclaimed (open) tasks",
+        "      --limit <N>        Cap the number of items returned",
+        "  -s, --status <STATUS>  Filter by status",
+        "  -t, --tag <TAG>        Filter by tag",
+        "  -j, --json             Emit output as JSON",
+        "  -q, --quiet            Suppress normal output (print only entity ID on create/mutate, nothing on delete)",
+        "  -r, --raw              Emit script-friendly plain output (no themed styling)",
+        "      --no-color         Disable ANSI color output",
+        "      --no-pager         Disable paging of long command output",
+        "  -v, --verbose...       Increase log verbosity (`-v` = info, `-vv` = debug, `-vvv` = trace)",
+        "  -h, --help             Print help"
+      ]
+    },
+    {
+      "command": [
+        "iteration",
+        "meta"
+      ],
+      "options": [
+        "  -j, --json        Emit output as JSON",
+        "  -q, --quiet       Suppress normal output (print only entity ID on create/mutate, nothing on delete)",
+        "  -r, --raw         Emit script-friendly plain output (no themed styling)",
+        "      --no-color    Disable ANSI color output",
+        "      --no-pager    Disable paging of long command output",
+        "  -v, --verbose...  Increase log verbosity (`-v` = info, `-vv` = debug, `-vvv` = trace)",
+        "  -h, --help        Print help"
+      ]
+    },
+    {
+      "command": [
+        "iteration",
+        "meta",
+        "get"
+      ],
+      "options": [
+        "  -j, --json        Emit output as JSON",
+        "  -q, --quiet       Suppress normal output (print only entity ID on create/mutate, nothing on delete)",
+        "  -r, --raw         Emit script-friendly plain output (no themed styling)",
+        "      --no-color    Disable ANSI color output",
+        "      --no-pager    Disable paging of long command output",
+        "  -v, --verbose...  Increase log verbosity (`-v` = info, `-vv` = debug, `-vvv` = trace)",
+        "  -h, --help        Print help"
+      ]
+    },
+    {
+      "command": [
+        "iteration",
+        "meta",
+        "set"
+      ],
+      "options": [
+        "      --as-json     Parse the value as a JSON literal instead of auto-detecting",
+        "  -j, --json        Emit output as JSON",
+        "  -q, --quiet       Suppress normal output (print only entity ID on create/mutate, nothing on delete)",
+        "  -r, --raw         Emit script-friendly plain output (no themed styling)",
+        "      --no-color    Disable ANSI color output",
+        "      --no-pager    Disable paging of long command output",
+        "  -v, --verbose...  Increase log verbosity (`-v` = info, `-vv` = debug, `-vvv` = trace)",
+        "  -h, --help        Print help"
+      ]
+    },
+    {
+      "command": [
+        "iteration",
+        "meta",
+        "unset"
+      ],
+      "options": [
+        "  -j, --json        Emit output as JSON",
+        "  -q, --quiet       Suppress normal output (print only entity ID on create/mutate, nothing on delete)",
+        "  -r, --raw         Emit script-friendly plain output (no themed styling)",
+        "      --no-color    Disable ANSI color output",
+        "      --no-pager    Disable paging of long command output",
+        "  -v, --verbose...  Increase log verbosity (`-v` = info, `-vv` = debug, `-vvv` = trace)",
+        "  -h, --help        Print help"
+      ]
+    },
+    {
+      "command": [
+        "iteration",
+        "next"
+      ],
+      "options": [
+        "      --agent <AGENT>  Agent name for assignment (requires --claim)",
+        "      --claim          Claim the task (set to in-progress)",
+        "  -j, --json           Emit output as JSON",
+        "  -q, --quiet          Suppress normal output (print only entity ID on create/mutate, nothing on delete)",
+        "  -r, --raw            Emit script-friendly plain output (no themed styling)",
+        "      --no-color       Disable ANSI color output",
+        "      --no-pager       Disable paging of long command output",
+        "  -v, --verbose...     Increase log verbosity (`-v` = info, `-vv` = debug, `-vvv` = trace)",
+        "  -h, --help           Print help"
+      ]
+    },
+    {
+      "command": [
+        "iteration",
+        "remove"
+      ],
+      "options": [
+        "  -j, --json        Emit output as JSON",
+        "  -q, --quiet       Suppress normal output (print only entity ID on create/mutate, nothing on delete)",
+        "  -r, --raw         Emit script-friendly plain output (no themed styling)",
+        "      --no-color    Disable ANSI color output",
+        "      --no-pager    Disable paging of long command output",
+        "  -v, --verbose...  Increase log verbosity (`-v` = info, `-vv` = debug, `-vvv` = trace)",
+        "  -h, --help        Print help"
+      ]
+    },
+    {
+      "command": [
+        "iteration",
+        "reopen"
+      ],
+      "options": [
+        "  -j, --json        Emit output as JSON",
+        "  -q, --quiet       Suppress normal output (print only entity ID on create/mutate, nothing on delete)",
+        "  -r, --raw         Emit script-friendly plain output (no themed styling)",
+        "      --no-color    Disable ANSI color output",
+        "      --no-pager    Disable paging of long command output",
+        "  -v, --verbose...  Increase log verbosity (`-v` = info, `-vv` = debug, `-vvv` = trace)",
+        "  -h, --help        Print help"
+      ]
+    },
+    {
+      "command": [
+        "iteration",
+        "show"
+      ],
+      "options": [
+        "  -j, --json        Emit output as JSON",
+        "  -q, --quiet       Suppress normal output (print only entity ID on create/mutate, nothing on delete)",
+        "  -r, --raw         Emit script-friendly plain output (no themed styling)",
+        "      --no-color    Disable ANSI color output",
+        "      --no-pager    Disable paging of long command output",
+        "  -v, --verbose...  Increase log verbosity (`-v` = info, `-vv` = debug, `-vvv` = trace)",
+        "  -h, --help        Print help"
+      ]
+    },
+    {
+      "command": [
+        "iteration",
+        "status"
+      ],
+      "options": [
+        "  -j, --json        Emit output as JSON",
+        "  -q, --quiet       Suppress normal output (print only entity ID on create/mutate, nothing on delete)",
+        "  -r, --raw         Emit script-friendly plain output (no themed styling)",
+        "      --no-color    Disable ANSI color output",
+        "      --no-pager    Disable paging of long command output",
+        "  -v, --verbose...  Increase log verbosity (`-v` = info, `-vv` = debug, `-vvv` = trace)",
+        "  -h, --help        Print help"
+      ]
+    },
+    {
+      "command": [
+        "iteration",
+        "tag"
+      ],
+      "options": [
+        "  -j, --json        Emit output as JSON",
+        "  -q, --quiet       Suppress normal output (print only entity ID on create/mutate, nothing on delete)",
+        "  -r, --raw         Emit script-friendly plain output (no themed styling)",
+        "      --no-color    Disable ANSI color output",
+        "      --no-pager    Disable paging of long command output",
+        "  -v, --verbose...  Increase log verbosity (`-v` = info, `-vv` = debug, `-vvv` = trace)",
+        "  -h, --help        Print help"
+      ]
+    },
+    {
+      "command": [
+        "iteration",
+        "unlink"
+      ],
+      "options": [
+        "      --artifact    Target is an artifact instead of another iteration",
+        "      --rel <REL>   The relationship type (e.g. blocks, blocked-by, relates-to). Required when multiple edges exist",
+        "  -j, --json        Emit output as JSON",
+        "  -q, --quiet       Suppress normal output (print only entity ID on create/mutate, nothing on delete)",
+        "  -r, --raw         Emit script-friendly plain output (no themed styling)",
+        "      --no-color    Disable ANSI color output",
+        "      --no-pager    Disable paging of long command output",
+        "  -v, --verbose...  Increase log verbosity (`-v` = info, `-vv` = debug, `-vvv` = trace)",
+        "  -h, --help        Print help"
+      ]
+    },
+    {
+      "command": [
+        "iteration",
+        "untag"
+      ],
+      "options": [
+        "  -j, --json        Emit output as JSON",
+        "  -q, --quiet       Suppress normal output (print only entity ID on create/mutate, nothing on delete)",
+        "  -r, --raw         Emit script-friendly plain output (no themed styling)",
+        "      --no-color    Disable ANSI color output",
+        "      --no-pager    Disable paging of long command output",
+        "  -v, --verbose...  Increase log verbosity (`-v` = info, `-vv` = debug, `-vvv` = trace)",
+        "  -h, --help        Print help"
+      ]
+    },
+    {
+      "command": [
+        "iteration",
+        "update"
+      ],
+      "options": [
+        "  -d, --description <DESCRIPTION>  Set the iteration description",
+        "  -m, --metadata <KEY=VALUE>       Set a metadata key=value pair (repeatable; supports dot-paths and scalar inference)",
+        "      --metadata-json <JSON>       Merge a JSON object into metadata (repeatable; applied after --metadata pairs)",
+        "  -t, --title <TITLE>              Set the iteration title",
+        "  -j, --json                       Emit output as JSON",
+        "  -q, --quiet                      Suppress normal output (print only entity ID on create/mutate, nothing on delete)",
+        "  -r, --raw                        Emit script-friendly plain output (no themed styling)",
+        "      --no-color                   Disable ANSI color output",
+        "      --no-pager                   Disable paging of long command output",
+        "  -v, --verbose...                 Increase log verbosity (`-v` = info, `-vv` = debug, `-vvv` = trace)",
+        "  -h, --help                       Print help"
+      ]
+    },
+    {
+      "command": [
+        "project"
+      ],
+      "options": [
+        "      --json        Emit output as JSON (only applies to the default show view)",
+        "      --no-color    Disable ANSI color output",
+        "      --no-pager    Disable paging of long command output",
+        "  -v, --verbose...  Increase log verbosity (`-v` = info, `-vv` = debug, `-vvv` = trace)",
+        "  -h, --help        Print help"
+      ]
+    },
+    {
+      "command": [
+        "project",
+        "archive"
+      ],
+      "options": [
+        "  -j, --json        Emit output as JSON",
+        "  -q, --quiet       Suppress normal output (print only entity ID on create/mutate, nothing on delete)",
+        "  -r, --raw         Emit script-friendly plain output (no themed styling)",
+        "      --yes         Skip the interactive confirmation prompt",
+        "      --no-color    Disable ANSI color output",
+        "      --no-pager    Disable paging of long command output",
+        "  -v, --verbose...  Increase log verbosity (`-v` = info, `-vv` = debug, `-vvv` = trace)",
+        "  -h, --help        Print help"
+      ]
+    },
+    {
+      "command": [
+        "project",
+        "delete"
+      ],
+      "options": [
+        "  -j, --json        Emit output as JSON",
+        "  -q, --quiet       Suppress normal output (print only entity ID on create/mutate, nothing on delete)",
+        "  -r, --raw         Emit script-friendly plain output (no themed styling)",
+        "      --yes         Skip the interactive confirmation prompt",
+        "      --no-color    Disable ANSI color output",
+        "      --no-pager    Disable paging of long command output",
+        "  -v, --verbose...  Increase log verbosity (`-v` = info, `-vv` = debug, `-vvv` = trace)",
+        "  -h, --help        Print help"
+      ]
+    },
+    {
+      "command": [
+        "project",
+        "list"
+      ],
+      "options": [
+        "  -a, --all         Show all projects, including archived",
+        "      --limit <N>   Cap the number of items returned",
+        "  -j, --json        Emit output as JSON",
+        "  -q, --quiet       Suppress normal output (print only entity ID on create/mutate, nothing on delete)",
+        "  -r, --raw         Emit script-friendly plain output (no themed styling)",
+        "      --no-color    Disable ANSI color output",
+        "      --no-pager    Disable paging of long command output",
+        "  -v, --verbose...  Increase log verbosity (`-v` = info, `-vv` = debug, `-vvv` = trace)",
+        "  -h, --help        Print help"
+      ]
+    },
+    {
+      "command": [
+        "project",
+        "unarchive"
+      ],
+      "options": [
+        "  -j, --json        Emit output as JSON",
+        "  -q, --quiet       Suppress normal output (print only entity ID on create/mutate, nothing on delete)",
+        "  -r, --raw         Emit script-friendly plain output (no themed styling)",
+        "      --no-color    Disable ANSI color output",
+        "      --no-pager    Disable paging of long command output",
+        "  -v, --verbose...  Increase log verbosity (`-v` = info, `-vv` = debug, `-vvv` = trace)",
+        "  -h, --help        Print help"
+      ]
+    },
+    {
+      "command": [
+        "search"
+      ],
+      "options": [
+        "  -e, --expand      Show full content without truncation",
+        "  -j, --json        Emit results as JSON",
+        "      --limit <N>   Cap the number of items returned",
+        "  -a, --all         Include resolved/archived entities",
+        "      --no-color    Disable ANSI color output",
+        "      --no-pager    Disable paging of long command output",
+        "  -v, --verbose...  Increase log verbosity (`-v` = info, `-vv` = debug, `-vvv` = trace)",
+        "  -h, --help        Print help"
+      ]
+    },
+    {
+      "command": [
+        "tag",
+        "add"
+      ],
+      "options": [
+        "  -j, --json        Emit output as JSON",
+        "  -q, --quiet       Suppress normal output (print only entity ID on create/mutate, nothing on delete)",
+        "  -r, --raw         Emit script-friendly plain output (no themed styling)",
+        "      --no-color    Disable ANSI color output",
+        "      --no-pager    Disable paging of long command output",
+        "  -v, --verbose...  Increase log verbosity (`-v` = info, `-vv` = debug, `-vvv` = trace)",
+        "  -h, --help        Print help"
+      ]
+    },
+    {
+      "command": [
+        "tag",
+        "list"
+      ],
+      "options": [
+        "      --artifact    Show only tags attached to artifacts",
+        "      --iteration   Show only tags attached to iterations",
+        "      --limit <N>   Cap the number of items returned",
+        "      --task        Show only tags attached to tasks",
+        "  -j, --json        Emit output as JSON",
+        "  -q, --quiet       Suppress normal output (print only entity ID on create/mutate, nothing on delete)",
+        "  -r, --raw         Emit script-friendly plain output (no themed styling)",
+        "      --no-color    Disable ANSI color output",
+        "      --no-pager    Disable paging of long command output",
+        "  -v, --verbose...  Increase log verbosity (`-v` = info, `-vv` = debug, `-vvv` = trace)",
+        "  -h, --help        Print help"
+      ]
+    },
+    {
+      "command": [
+        "tag",
+        "remove"
+      ],
+      "options": [
+        "  -j, --json        Emit output as JSON",
+        "  -q, --quiet       Suppress normal output (print only entity ID on create/mutate, nothing on delete)",
+        "  -r, --raw         Emit script-friendly plain output (no themed styling)",
+        "      --no-color    Disable ANSI color output",
+        "      --no-pager    Disable paging of long command output",
+        "  -v, --verbose...  Increase log verbosity (`-v` = info, `-vv` = debug, `-vvv` = trace)",
+        "  -h, --help        Print help"
+      ]
+    },
+    {
+      "command": [
+        "task",
+        "block"
+      ],
+      "options": [
+        "  -j, --json        Emit output as JSON",
+        "  -q, --quiet       Suppress normal output (print only entity ID on create/mutate, nothing on delete)",
+        "  -r, --raw         Emit script-friendly plain output (no themed styling)",
+        "      --no-color    Disable ANSI color output",
+        "      --no-pager    Disable paging of long command output",
+        "  -v, --verbose...  Increase log verbosity (`-v` = info, `-vv` = debug, `-vvv` = trace)",
+        "  -h, --help        Print help"
+      ]
+    },
+    {
+      "command": [
+        "task",
+        "cancel"
+      ],
+      "options": [
+        "  -j, --json        Emit output as JSON",
+        "  -q, --quiet       Suppress normal output (print only entity ID on create/mutate, nothing on delete)",
+        "  -r, --raw         Emit script-friendly plain output (no themed styling)",
+        "      --no-color    Disable ANSI color output",
+        "      --no-pager    Disable paging of long command output",
+        "  -v, --verbose...  Increase log verbosity (`-v` = info, `-vv` = debug, `-vvv` = trace)",
+        "  -h, --help        Print help"
+      ]
+    },
+    {
+      "command": [
+        "task",
+        "claim"
+      ],
+      "options": [
+        "      --as <AS_AUTHOR>  Claim as a specific author name (defaults to git user)",
+        "  -j, --json            Emit output as JSON",
+        "  -q, --quiet           Suppress normal output (print only entity ID on create/mutate, nothing on delete)",
+        "  -r, --raw             Emit script-friendly plain output (no themed styling)",
+        "      --no-color        Disable ANSI color output",
+        "      --no-pager        Disable paging of long command output",
+        "  -v, --verbose...      Increase log verbosity (`-v` = info, `-vv` = debug, `-vvv` = trace)",
+        "  -h, --help            Print help"
+      ]
+    },
+    {
+      "command": [
+        "task",
+        "complete"
+      ],
+      "options": [
+        "  -j, --json        Emit output as JSON",
+        "  -q, --quiet       Suppress normal output (print only entity ID on create/mutate, nothing on delete)",
+        "  -r, --raw         Emit script-friendly plain output (no themed styling)",
+        "      --no-color    Disable ANSI color output",
+        "      --no-pager    Disable paging of long command output",
+        "  -v, --verbose...  Increase log verbosity (`-v` = info, `-vv` = debug, `-vvv` = trace)",
+        "  -h, --help        Print help"
+      ]
+    },
+    {
+      "command": [
+        "task",
+        "create"
+      ],
+      "options": [
+        "      --assign <ASSIGN>            Assign the task to an author by name",
+        "      --batch                      Read NDJSON task objects from stdin (one per line)",
+        "  -d, --description <DESCRIPTION>  The task description (opens `$EDITOR` if omitted and stdin is a terminal)",
+        "  -i, --iteration <ITERATION>      Add the task to an iteration (ID or prefix)",
+        "  -l, --link <LINK>                Link the task to another entity (format: `rel:target`). Repeatable",
+        "  -m, --metadata <KEY=VALUE>       Set a metadata key=value pair (repeatable; supports dot-paths and scalar inference)",
+        "      --metadata-json <JSON>       Merge a JSON object into metadata (repeatable; applied after --metadata pairs)",
+        "      --phase <PHASE>              The phase within the iteration (defaults to max existing + 1). Requires `--iteration`",
+        "  -p, --priority <PRIORITY>        The task priority; either 0-4 (lower is higher) or one of critical|high|medium|low|lowest",
+        "  -s, --status <STATUS>            The initial task status",
+        "      --tag <TAG>                  Add a tag to the task. Repeatable; comma-separated values split into multiple tags",
+        "  -j, --json                       Emit output as JSON",
+        "  -q, --quiet                      Suppress normal output (print only entity ID on create/mutate, nothing on delete)",
+        "  -r, --raw                        Emit script-friendly plain output (no themed styling)",
+        "      --no-color                   Disable ANSI color output",
+        "      --no-pager                   Disable paging of long command output",
+        "  -v, --verbose...                 Increase log verbosity (`-v` = info, `-vv` = debug, `-vvv` = trace)",
+        "  -h, --help                       Print help"
+      ]
+    },
+    {
+      "command": [
+        "task",
+        "delete"
+      ],
+      "options": [
+        "      --force       Remove the task from every iteration it belongs to before deleting. Without this flag the command refuses to delete a task that is still a member of one or more iterations so members of an active sprint are not removed by accident",
+        "  -j, --json        Emit output as JSON",
+        "  -q, --quiet       Suppress normal output (print only entity ID on create/mutate, nothing on delete)",
+        "  -r, --raw         Emit script-friendly plain output (no themed styling)",
+        "      --yes         Skip the interactive confirmation prompt",
+        "      --no-color    Disable ANSI color output",
+        "      --no-pager    Disable paging of long command output",
+        "  -v, --verbose...  Increase log verbosity (`-v` = info, `-vv` = debug, `-vvv` = trace)",
+        "  -h, --help        Print help"
+      ]
+    },
+    {
+      "command": [
+        "task",
+        "link"
+      ],
+      "options": [
+        "      --artifact                   Target is an artifact instead of a task",
+        "      --rel <REL>                  The relationship type [default: relates-to]",
+        "      --target-type <TARGET_TYPE>  The target entity type [default: task]",
+        "  -j, --json                       Emit output as JSON",
+        "  -q, --quiet                      Suppress normal output (print only entity ID on create/mutate, nothing on delete)",
+        "  -r, --raw                        Emit script-friendly plain output (no themed styling)",
+        "      --no-color                   Disable ANSI color output",
+        "      --no-pager                   Disable paging of long command output",
+        "  -v, --verbose...                 Increase log verbosity (`-v` = info, `-vv` = debug, `-vvv` = trace)",
+        "  -h, --help                       Print help"
+      ]
+    },
+    {
+      "command": [
+        "task",
+        "list"
+      ],
+      "options": [
+        "  -a, --all                        Show all tasks, including resolved",
+        "      --assigned-to <ASSIGNED_TO>  Filter by assigned author name",
+        "      --limit <N>                  Cap the number of items returned",
+        "  -s, --status <STATUS>            Filter by status",
+        "  -t, --tag <TAG>                  Filter by tag",
+        "  -j, --json                       Emit output as JSON",
+        "  -q, --quiet                      Suppress normal output (print only entity ID on create/mutate, nothing on delete)",
+        "  -r, --raw                        Emit script-friendly plain output (no themed styling)",
+        "      --no-color                   Disable ANSI color output",
+        "      --no-pager                   Disable paging of long command output",
+        "  -v, --verbose...                 Increase log verbosity (`-v` = info, `-vv` = debug, `-vvv` = trace)",
+        "  -h, --help                       Print help"
+      ]
+    },
+    {
+      "command": [
+        "task",
+        "meta"
+      ],
+      "options": [
+        "  -j, --json        Emit output as JSON",
+        "  -q, --quiet       Suppress normal output (print only entity ID on create/mutate, nothing on delete)",
+        "  -r, --raw         Emit script-friendly plain output (no themed styling)",
+        "      --no-color    Disable ANSI color output",
+        "      --no-pager    Disable paging of long command output",
+        "  -v, --verbose...  Increase log verbosity (`-v` = info, `-vv` = debug, `-vvv` = trace)",
+        "  -h, --help        Print help"
+      ]
+    },
+    {
+      "command": [
+        "task",
+        "meta",
+        "get"
+      ],
+      "options": [
+        "  -j, --json        Emit output as JSON",
+        "  -q, --quiet       Suppress normal output (print only entity ID on create/mutate, nothing on delete)",
+        "  -r, --raw         Emit script-friendly plain output (no themed styling)",
+        "      --no-color    Disable ANSI color output",
+        "      --no-pager    Disable paging of long command output",
+        "  -v, --verbose...  Increase log verbosity (`-v` = info, `-vv` = debug, `-vvv` = trace)",
+        "  -h, --help        Print help"
+      ]
+    },
+    {
+      "command": [
+        "task",
+        "meta",
+        "set"
+      ],
+      "options": [
+        "      --as-json     Parse the value as a JSON literal instead of auto-detecting",
+        "  -j, --json        Emit output as JSON",
+        "  -q, --quiet       Suppress normal output (print only entity ID on create/mutate, nothing on delete)",
+        "  -r, --raw         Emit script-friendly plain output (no themed styling)",
+        "      --no-color    Disable ANSI color output",
+        "      --no-pager    Disable paging of long command output",
+        "  -v, --verbose...  Increase log verbosity (`-v` = info, `-vv` = debug, `-vvv` = trace)",
+        "  -h, --help        Print help"
+      ]
+    },
+    {
+      "command": [
+        "task",
+        "meta",
+        "unset"
+      ],
+      "options": [
+        "  -j, --json        Emit output as JSON",
+        "  -q, --quiet       Suppress normal output (print only entity ID on create/mutate, nothing on delete)",
+        "  -r, --raw         Emit script-friendly plain output (no themed styling)",
+        "      --no-color    Disable ANSI color output",
+        "      --no-pager    Disable paging of long command output",
+        "  -v, --verbose...  Increase log verbosity (`-v` = info, `-vv` = debug, `-vvv` = trace)",
+        "  -h, --help        Print help"
+      ]
+    },
+    {
+      "command": [
+        "task",
+        "note",
+        "add"
+      ],
+      "options": [
+        "  -b, --body <BODY>    The note body (use `-` to open `$EDITOR`)",
+        "      --agent <AGENT>  Set the author (agent) identifier for this note",
+        "  -j, --json           Emit output as JSON",
+        "  -q, --quiet          Suppress normal output (print only entity ID on create/mutate, nothing on delete)",
+        "  -r, --raw            Emit script-friendly plain output (no themed styling)",
+        "      --no-color       Disable ANSI color output",
+        "      --no-pager       Disable paging of long command output",
+        "  -v, --verbose...     Increase log verbosity (`-v` = info, `-vv` = debug, `-vvv` = trace)",
+        "  -h, --help           Print help"
+      ]
+    },
+    {
+      "command": [
+        "task",
+        "note",
+        "delete"
+      ],
+      "options": [
+        "  -j, --json        Emit output as JSON",
+        "  -q, --quiet       Suppress normal output (print only entity ID on create/mutate, nothing on delete)",
+        "  -r, --raw         Emit script-friendly plain output (no themed styling)",
+        "      --yes         Skip the interactive confirmation prompt",
+        "      --no-color    Disable ANSI color output",
+        "      --no-pager    Disable paging of long command output",
+        "  -v, --verbose...  Increase log verbosity (`-v` = info, `-vv` = debug, `-vvv` = trace)",
+        "  -h, --help        Print help"
+      ]
+    },
+    {
+      "command": [
+        "task",
+        "note",
+        "list"
+      ],
+      "options": [
+        "      --limit <N>   Cap the number of items returned",
+        "  -j, --json        Emit output as JSON",
+        "  -q, --quiet       Suppress normal output (print only entity ID on create/mutate, nothing on delete)",
+        "  -r, --raw         Emit script-friendly plain output (no themed styling)",
+        "      --no-color    Disable ANSI color output",
+        "      --no-pager    Disable paging of long command output",
+        "  -v, --verbose...  Increase log verbosity (`-v` = info, `-vv` = debug, `-vvv` = trace)",
+        "  -h, --help        Print help"
+      ]
+    },
+    {
+      "command": [
+        "task",
+        "note",
+        "show"
+      ],
+      "options": [
+        "  -j, --json        Emit output as JSON",
+        "  -q, --quiet       Suppress normal output (print only entity ID on create/mutate, nothing on delete)",
+        "  -r, --raw         Emit script-friendly plain output (no themed styling)",
+        "      --no-color    Disable ANSI color output",
+        "      --no-pager    Disable paging of long command output",
+        "  -v, --verbose...  Increase log verbosity (`-v` = info, `-vv` = debug, `-vvv` = trace)",
+        "  -h, --help        Print help"
+      ]
+    },
+    {
+      "command": [
+        "task",
+        "note",
+        "update"
+      ],
+      "options": [
+        "  -b, --body <BODY>  The new body text (use `-` to open `$EDITOR`)",
+        "  -j, --json         Emit output as JSON",
+        "  -q, --quiet        Suppress normal output (print only entity ID on create/mutate, nothing on delete)",
+        "  -r, --raw          Emit script-friendly plain output (no themed styling)",
+        "      --no-color     Disable ANSI color output",
+        "      --no-pager     Disable paging of long command output",
+        "  -v, --verbose...   Increase log verbosity (`-v` = info, `-vv` = debug, `-vvv` = trace)",
+        "  -h, --help         Print help"
+      ]
+    },
+    {
+      "command": [
+        "task",
+        "show"
+      ],
+      "options": [
+        "  -j, --json        Emit output as JSON",
+        "  -q, --quiet       Suppress normal output (print only entity ID on create/mutate, nothing on delete)",
+        "  -r, --raw         Emit script-friendly plain output (no themed styling)",
+        "      --no-color    Disable ANSI color output",
+        "      --no-pager    Disable paging of long command output",
+        "  -v, --verbose...  Increase log verbosity (`-v` = info, `-vv` = debug, `-vvv` = trace)",
+        "  -h, --help        Print help"
+      ]
+    },
+    {
+      "command": [
+        "task",
+        "tag"
+      ],
+      "options": [
+        "  -j, --json        Emit output as JSON",
+        "  -q, --quiet       Suppress normal output (print only entity ID on create/mutate, nothing on delete)",
+        "  -r, --raw         Emit script-friendly plain output (no themed styling)",
+        "      --no-color    Disable ANSI color output",
+        "      --no-pager    Disable paging of long command output",
+        "  -v, --verbose...  Increase log verbosity (`-v` = info, `-vv` = debug, `-vvv` = trace)",
+        "  -h, --help        Print help"
+      ]
+    },
+    {
+      "command": [
+        "task",
+        "unlink"
+      ],
+      "options": [
+        "      --artifact                   Target is an artifact instead of a task",
+        "      --rel <REL>                  Filter to relationships of this type. Required when multiple relationships exist between the endpoints",
+        "      --target-type <TARGET_TYPE>  The target entity type [default: task]",
+        "  -j, --json                       Emit output as JSON",
+        "  -q, --quiet                      Suppress normal output (print only entity ID on create/mutate, nothing on delete)",
+        "  -r, --raw                        Emit script-friendly plain output (no themed styling)",
+        "      --no-color                   Disable ANSI color output",
+        "      --no-pager                   Disable paging of long command output",
+        "  -v, --verbose...                 Increase log verbosity (`-v` = info, `-vv` = debug, `-vvv` = trace)",
+        "  -h, --help                       Print help"
+      ]
+    },
+    {
+      "command": [
+        "task",
+        "untag"
+      ],
+      "options": [
+        "  -j, --json        Emit output as JSON",
+        "  -q, --quiet       Suppress normal output (print only entity ID on create/mutate, nothing on delete)",
+        "  -r, --raw         Emit script-friendly plain output (no themed styling)",
+        "      --no-color    Disable ANSI color output",
+        "      --no-pager    Disable paging of long command output",
+        "  -v, --verbose...  Increase log verbosity (`-v` = info, `-vv` = debug, `-vvv` = trace)",
+        "  -h, --help        Print help"
+      ]
+    },
+    {
+      "command": [
+        "task",
+        "update"
+      ],
+      "options": [
+        "      --assigned-to <ASSIGNED_TO>  Set the assigned author by name",
+        "  -d, --description <DESCRIPTION>  Set the task description",
+        "  -m, --metadata <KEY=VALUE>       Set a metadata key=value pair (repeatable; supports dot-paths and scalar inference)",
+        "      --metadata-json <JSON>       Merge a JSON object into metadata (repeatable; applied after --metadata pairs)",
+        "      --phase <PHASE>              Move the task to a phase within its iteration",
+        "  -p, --priority <PRIORITY>        Set the task priority; either 0-4 (lower is higher) or one of critical|high|medium|low|lowest",
+        "  -s, --status <STATUS>            Set the task status",
+        "      --tag <TAG>                  Replace all tags on the task. Repeatable; comma-separated values split into multiple tags",
+        "  -t, --title <TITLE>              Set the task title",
+        "  -j, --json                       Emit output as JSON",
+        "  -q, --quiet                      Suppress normal output (print only entity ID on create/mutate, nothing on delete)",
+        "  -r, --raw                        Emit script-friendly plain output (no themed styling)",
+        "      --no-color                   Disable ANSI color output",
+        "      --no-pager                   Disable paging of long command output",
+        "  -v, --verbose...                 Increase log verbosity (`-v` = info, `-vv` = debug, `-vvv` = trace)",
+        "  -h, --help                       Print help"
+      ]
+    }
+  ],
+  "aliases": [
+    {
+      "file": "src/cli.rs",
+      "line": 227,
+      "declaration": "#[command(alias = \"a\")]",
+      "next": "Artifact(commands::artifact::Command),"
+    },
+    {
+      "file": "src/cli.rs",
+      "line": 236,
+      "declaration": "#[command(alias = \"i\")]",
+      "next": "Iteration(commands::iteration::Command),"
+    },
+    {
+      "file": "src/cli.rs",
+      "line": 241,
+      "declaration": "#[command(visible_alias = \"p\")]",
+      "next": "Project(commands::project::Command),"
+    },
+    {
+      "file": "src/cli.rs",
+      "line": 246,
+      "declaration": "#[command(alias = \"grep\")]",
+      "next": "Search(commands::search::Command),"
+    },
+    {
+      "file": "src/cli.rs",
+      "line": 252,
+      "declaration": "#[command(alias = \"s\")]",
+      "next": "Serve(commands::serve::Command),"
+    },
+    {
+      "file": "src/cli.rs",
+      "line": 257,
+      "declaration": "#[command(alias = \"t\")]",
+      "next": "Task(commands::task::Command),"
+    },
+    {
+      "file": "src/cli.rs",
+      "line": 260,
+      "declaration": "#[command(alias = \"u\")]",
+      "next": "Undo(commands::undo::Command),"
+    },
+    {
+      "file": "src/cli/commands/artifact/list.rs",
+      "line": 29,
+      "declaration": "#[arg(long, visible_alias = \"archived-only\")]",
+      "next": "archived: bool,"
+    },
+    {
+      "file": "src/cli/commands/artifact/meta.rs",
+      "line": 32,
+      "declaration": "#[command(alias = \"delete\")]",
+      "next": "Unset(unset::Command),"
+    },
+    {
+      "file": "src/cli/commands/artifact.rs",
+      "line": 32,
+      "declaration": "#[command(visible_alias = \"new\")]",
+      "next": "Create(create::Command),"
+    },
+    {
+      "file": "src/cli/commands/artifact.rs",
+      "line": 35,
+      "declaration": "#[command(visible_alias = \"rm\")]",
+      "next": "Delete(delete::Command),"
+    },
+    {
+      "file": "src/cli/commands/artifact.rs",
+      "line": 38,
+      "declaration": "#[command(visible_alias = \"ls\")]",
+      "next": "List(list::Command),"
+    },
+    {
+      "file": "src/cli/commands/artifact.rs",
+      "line": 45,
+      "declaration": "#[command(visible_alias = \"view\")]",
+      "next": "Show(show::Command),"
+    },
+    {
+      "file": "src/cli/commands/artifact.rs",
+      "line": 52,
+      "declaration": "#[command(visible_alias = \"edit\")]",
+      "next": "Update(update::Command),"
+    },
+    {
+      "file": "src/cli/commands/iteration/meta.rs",
+      "line": 32,
+      "declaration": "#[command(alias = \"delete\")]",
+      "next": "Unset(unset::Command),"
+    },
+    {
+      "file": "src/cli/commands/iteration.rs",
+      "line": 47,
+      "declaration": "#[command(visible_alias = \"new\")]",
+      "next": "Create(create::Command),"
+    },
+    {
+      "file": "src/cli/commands/iteration.rs",
+      "line": 56,
+      "declaration": "#[command(visible_alias = \"ls\")]",
+      "next": "List(list::Command),"
+    },
+    {
+      "file": "src/cli/commands/iteration.rs",
+      "line": 63,
+      "declaration": "#[command(visible_alias = \"rm\")]",
+      "next": "Remove(remove::Command),"
+    },
+    {
+      "file": "src/cli/commands/iteration.rs",
+      "line": 68,
+      "declaration": "#[command(visible_alias = \"view\")]",
+      "next": "Show(show::Command),"
+    },
+    {
+      "file": "src/cli/commands/iteration.rs",
+      "line": 79,
+      "declaration": "#[command(visible_alias = \"edit\")]",
+      "next": "Update(update::Command),"
+    },
+    {
+      "file": "src/cli/commands/project.rs",
+      "line": 33,
+      "declaration": "#[command(visible_alias = \"rm\")]",
+      "next": "Delete(delete::Command),"
+    },
+    {
+      "file": "src/cli/commands/project.rs",
+      "line": 38,
+      "declaration": "#[command(visible_alias = \"ls\")]",
+      "next": "List(list::Command),"
+    },
+    {
+      "file": "src/cli/commands/serve.rs",
+      "line": 24,
+      "declaration": "#[arg(long = \"bind\", short = 'b', alias = \"host\")]",
+      "next": "bind_address: Option<IpAddr>,"
+    },
+    {
+      "file": "src/cli/commands/task/meta.rs",
+      "line": 35,
+      "declaration": "#[command(alias = \"delete\")]",
+      "next": "Unset(unset::Command),"
+    },
+    {
+      "file": "src/cli/commands/task.rs",
+      "line": 44,
+      "declaration": "#[command(visible_alias = \"new\")]",
+      "next": "Create(create::Command),"
+    },
+    {
+      "file": "src/cli/commands/task.rs",
+      "line": 47,
+      "declaration": "#[command(visible_alias = \"rm\")]",
+      "next": "Delete(delete::Command),"
+    },
+    {
+      "file": "src/cli/commands/task.rs",
+      "line": 52,
+      "declaration": "#[command(visible_alias = \"ls\")]",
+      "next": "List(list::Command),"
+    },
+    {
+      "file": "src/cli/commands/task.rs",
+      "line": 59,
+      "declaration": "#[command(visible_alias = \"view\")]",
+      "next": "Show(show::Command),"
+    },
+    {
+      "file": "src/cli/commands/task.rs",
+      "line": 68,
+      "declaration": "#[command(visible_alias = \"edit\")]",
+      "next": "Update(update::Command),"
+    }
+  ],
+  "json_output_source_sites": [
+    {
+      "file": "src/cli/commands/artifact/archive.rs",
+      "sha256": "ad5ee5808119518304a794c3dfcb49a1b95cdde7a01bc1eefca02e7c7aa63c9f",
+      "json_output_sites": [
+        {
+          "line": 61,
+          "text": "let envelope = Envelope::load_one(&conn, EntityType::Artifact, artifact.id(), &artifact, true).await?;"
+        },
+        {
+          "line": 62,
+          "text": "self.output.print_envelope(&envelope, &short_id, || {"
+        }
+      ]
+    },
+    {
+      "file": "src/cli/commands/artifact/create.rs",
+      "sha256": "0a06ec67d2922c482f42191b3f681db5648c7296968e48a4c41548d1dde71e5b",
+      "json_output_sites": [
+        {
+          "line": 145,
+          "text": "let envelope = Envelope::load_one(&conn, EntityType::Artifact, artifact.id(), &artifact, true).await?;"
+        },
+        {
+          "line": 146,
+          "text": "self.output.print_envelope(&envelope, &short_id, || {"
+        },
+        {
+          "line": 188,
+          "text": "let envelopes = Envelope::load_many(&conn, EntityType::Artifact, &envelope_input, true).await?;"
+        },
+        {
+          "line": 190,
+          "text": "self.output.print_envelopes_with_short_ids("
+        }
+      ]
+    },
+    {
+      "file": "src/cli/commands/artifact/delete.rs",
+      "sha256": "738b842a3118e024230cee7fefc1e67fa195930911ff86b1947fe21ba15b622c",
+      "json_output_sites": [
+        {
+          "line": 69,
+          "text": "let envelope = Envelope::load_one(&conn, EntityType::Artifact, artifact.id(), &artifact, true).await?;"
+        },
+        {
+          "line": 84,
+          "text": "self.output.print_envelope(&envelope, &short_id, || {"
+        }
+      ]
+    },
+    {
+      "file": "src/cli/commands/artifact/list.rs",
+      "sha256": "7aef2c72f02c7d1ff1291c5ac54050f3120cb2ca8e8e4f958a5176192a251a23",
+      "json_output_sites": [
+        {
+          "line": 70,
+          "text": "let envelopes = Envelope::load_many(&conn, EntityType::Artifact, &pairs, false).await?;"
+        },
+        {
+          "line": 71,
+          "text": "let json = serde_json::to_string_pretty(&envelopes)?;"
+        }
+      ]
+    },
+    {
+      "file": "src/cli/commands/artifact/show.rs",
+      "sha256": "543f110957722809a6f8798b46dbd7b51bfd5fa83b108d8710f43291e884661d",
+      "json_output_sites": [
+        {
+          "line": 42,
+          "text": "let envelope = Envelope::load_one(&conn, EntityType::Artifact, artifact.id(), &artifact, true).await?;"
+        },
+        {
+          "line": 43,
+          "text": "self.output.print_envelope(&envelope, &short_id, String::new)?;"
+        }
+      ]
+    },
+    {
+      "file": "src/cli/commands/artifact/update.rs",
+      "sha256": "4dd7e0844d5e2a422c5384ef98498e092a69c35bdfc544fd92dc6b748f26e01d",
+      "json_output_sites": [
+        {
+          "line": 102,
+          "text": "let envelope = Envelope::load_one(&conn, EntityType::Artifact, artifact.id(), &artifact, true).await?;"
+        },
+        {
+          "line": 103,
+          "text": "self.output.print_envelope(&envelope, &short_id, || {"
+        }
+      ]
+    },
+    {
+      "file": "src/cli/commands/config/get.rs",
+      "sha256": "4f7b2e3ee368d810bfe60916f2742e2b492614dcc9f4bd8e805e3bd729e78c2d",
+      "json_output_sites": [
+        {
+          "line": 36,
+          "text": "self.output.print_entity(&value, &human, || human.clone())?;"
+        }
+      ]
+    },
+    {
+      "file": "src/cli/commands/config/show.rs",
+      "sha256": "c4426292869003ab53a6109ba064033cf046d3d4d011dc5460e4ae9ad6f91dea",
+      "json_output_sites": [
+        {
+          "line": 34,
+          "text": "self.output.print_entity(settings, \"config\", || {"
+        }
+      ]
+    },
+    {
+      "file": "src/cli/commands/iteration/add.rs",
+      "sha256": "dc4f923f57ceadecd7c9561df8861ed041e99b65472bafabe783e90da3b1c4fe",
+      "json_output_sites": [
+        {
+          "line": 83,
+          "text": "let result = serde_json::json!({"
+        },
+        {
+          "line": 88,
+          "text": "self.output.print_entity(&result, &short_id, || {"
+        },
+        {
+          "line": 155,
+          "text": "let result = serde_json::json!({"
+        },
+        {
+          "line": 159,
+          "text": "self.output.print_entity(&result, &short_id, || {"
+        }
+      ]
+    },
+    {
+      "file": "src/cli/commands/iteration/advance.rs",
+      "sha256": "46da00c53a20b50ed881f2b18c487abebccd9f010c5d7f284f6710c16a1ab820",
+      "json_output_sites": [
+        {
+          "line": 106,
+          "text": "let envelope = Envelope::load_one(&conn, EntityType::Iteration, &id, &iteration, true).await?;"
+        },
+        {
+          "line": 109,
+          "text": "self.output.print_envelope(&envelope, &short_id, || {"
+        },
+        {
+          "line": 127,
+          "text": "self.output.print_envelope(&envelope, &short_id, || {"
+        }
+      ]
+    },
+    {
+      "file": "src/cli/commands/iteration/create.rs",
+      "sha256": "551d10630929a8b853ddf1ce6ac87208935b2e263ec5062863ea4861a4c4d0a5",
+      "json_output_sites": [
+        {
+          "line": 98,
+          "text": "let envelope = Envelope::load_one(&conn, EntityType::Iteration, iteration.id(), &iteration, true).await?;"
+        },
+        {
+          "line": 99,
+          "text": "self.output.print_envelope(&envelope, &short_id, || {"
+        }
+      ]
+    },
+    {
+      "file": "src/cli/commands/iteration/delete.rs",
+      "sha256": "2dd218f44c5200ddc8df11124ad39fab429c64c5ec0abefbbb272ba782ca7ba5",
+      "json_output_sites": [
+        {
+          "line": 73,
+          "text": "let envelope = Envelope::load_one(&conn, EntityType::Iteration, iteration.id(), &iteration, true).await?;"
+        },
+        {
+          "line": 89,
+          "text": "self.output.print_envelope(&envelope, &short_id, || {"
+        }
+      ]
+    },
+    {
+      "file": "src/cli/commands/iteration/graph.rs",
+      "sha256": "5d93765e202cdc4f920e2438e2f139caf57a315bd841f5a4d435d250e5c27305",
+      "json_output_sites": [
+        {
+          "line": 48,
+          "text": "serde_json::json!({"
+        },
+        {
+          "line": 59,
+          "text": "let json = serde_json::json!({"
+        },
+        {
+          "line": 64,
+          "text": "println!(\"{}\", serde_json::to_string_pretty(&json)?);"
+        }
+      ]
+    },
+    {
+      "file": "src/cli/commands/iteration/link.rs",
+      "sha256": "fa8038eb3345c27b1f473144366fca6b886a170709a0a33290f2e6742c095c73",
+      "json_output_sites": [
+        {
+          "line": 100,
+          "text": "let envelope = Envelope::load_one(&conn, EntityType::Iteration, &source_id, &iteration, true).await?;"
+        },
+        {
+          "line": 101,
+          "text": "self.output.print_envelope(&envelope, &short_id, || {"
+        }
+      ]
+    },
+    {
+      "file": "src/cli/commands/iteration/list.rs",
+      "sha256": "a594598fe2e4bf6212008cac3c1eaaf38515072c8b1463024b811b26506f5ee4",
+      "json_output_sites": [
+        {
+          "line": 75,
+          "text": "let envelopes = Envelope::load_many(&conn, EntityType::Iteration, &pairs, false).await?;"
+        },
+        {
+          "line": 76,
+          "text": "let json = serde_json::to_string_pretty(&envelopes)?;"
+        }
+      ]
+    },
+    {
+      "file": "src/cli/commands/iteration/next.rs",
+      "sha256": "24c6b625713e999c2e5c71f436e76ba5f74d45d41cce4b75bf483c78d2a8adcb",
+      "json_output_sites": [
+        {
+          "line": 158,
+          "text": "self.output.print_entity("
+        },
+        {
+          "line": 159,
+          "text": "&serde_json::json!({"
+        }
+      ]
+    },
+    {
+      "file": "src/cli/commands/iteration/remove.rs",
+      "sha256": "dd8d1373c1f730207fff7682e81a57d32197e9262e7ec4cbd00f918f67708af1",
+      "json_output_sites": [
+        {
+          "line": 42,
+          "text": "let before = serde_json::json!({"
+        },
+        {
+          "line": 60,
+          "text": "let envelope = Envelope::load_one(&conn, EntityType::Iteration, &iteration_id, &iteration, true).await?;"
+        },
+        {
+          "line": 61,
+          "text": "self.output.print_envelope(&envelope, &short_id, || {"
+        }
+      ]
+    },
+    {
+      "file": "src/cli/commands/iteration/show.rs",
+      "sha256": "1355e4cce16c110f7d033de36ea3d3f77c7e34bd30b30a20324b0d31a04e7d11",
+      "json_output_sites": [
+        {
+          "line": 47,
+          "text": "let envelope = Envelope::load_one(&conn, EntityType::Iteration, &id, &iteration, true).await?;"
+        },
+        {
+          "line": 48,
+          "text": "self.output.print_envelope(&envelope, &short_id, String::new)?;"
+        }
+      ]
+    },
+    {
+      "file": "src/cli/commands/iteration/status.rs",
+      "sha256": "677bae144446373e20a922585a2d57faea9740908672489083fe239002b8e354",
+      "json_output_sites": [
+        {
+          "line": 46,
+          "text": "let status_json = serde_json::json!({"
+        },
+        {
+          "line": 59,
+          "text": "self.output.print_raw_or("
+        }
+      ]
+    },
+    {
+      "file": "src/cli/commands/iteration/unlink.rs",
+      "sha256": "9686764a914d327475ce9eddaf72114c51f153552d6d7edd5cf11659e9fd2301",
+      "json_output_sites": [
+        {
+          "line": 122,
+          "text": "let envelope = Envelope::load_one(&conn, EntityType::Iteration, &source_id, &iteration, true).await?;"
+        },
+        {
+          "line": 123,
+          "text": "self.output.print_envelope(&envelope, &short_id, || {"
+        }
+      ]
+    },
+    {
+      "file": "src/cli/commands/iteration/update.rs",
+      "sha256": "9f0d3ca9a74795f4edb334c8023cc9d1bf17d0832c6761d3b523147ef672eb5c",
+      "json_output_sites": [
+        {
+          "line": 83,
+          "text": "let envelope = Envelope::load_one(&conn, EntityType::Iteration, &id, &iteration, true).await?;"
+        },
+        {
+          "line": 84,
+          "text": "self.output.print_envelope(&envelope, &short_id, || {"
+        }
+      ]
+    },
+    {
+      "file": "src/cli/commands/project/archive.rs",
+      "sha256": "daeb3ef461b14f558ac3969d1516f0dc4f213776a2180be4a01397275e6ece5a",
+      "json_output_sites": [
+        {
+          "line": 73,
+          "text": "self.output.print_envelope(&envelope, &short_id, || {"
+        }
+      ]
+    },
+    {
+      "file": "src/cli/commands/project/delete.rs",
+      "sha256": "68b299f113487399dfa2443fb9666120c958ad988e334a2c07d8d90a915648a8",
+      "json_output_sites": [
+        {
+          "line": 77,
+          "text": "self.output.print_envelope(&envelope, &short_id, || {"
+        }
+      ]
+    },
+    {
+      "file": "src/cli/commands/project/list.rs",
+      "sha256": "b135770cfec6c322f06e5bf01a705854290aee508bd146e01e8dfdf5f5a93168",
+      "json_output_sites": [
+        {
+          "line": 48,
+          "text": "let json = serde_json::to_string_pretty(&projects)?;"
+        }
+      ]
+    },
+    {
+      "file": "src/cli/commands/project/unarchive.rs",
+      "sha256": "4c17c01c27ed4386f205a04620af561e8a390e2f3725416ee8c9801ea116117b",
+      "json_output_sites": [
+        {
+          "line": 53,
+          "text": "self.output.print_envelope(&envelope, &short_id, || {"
+        }
+      ]
+    },
+    {
+      "file": "src/cli/commands/project.rs",
+      "sha256": "b4175fe43d85afa037d21ba5c9a78ecdaf825727426e3f6ba693b262f81e93be",
+      "json_output_sites": [
+        {
+          "line": 85,
+          "text": "let json = serde_json::to_string_pretty(&project)?;"
+        }
+      ]
+    },
+    {
+      "file": "src/cli/commands/search.rs",
+      "sha256": "9e85294493d756fbb22e3278982cb164f1872258e46ca087c1e7cc689c175a91",
+      "json_output_sites": [
+        {
+          "line": 53,
+          "text": "let json_value = serde_json::json!({"
+        },
+        {
+          "line": 59,
+          "text": "let json = serde_json::to_string_pretty(&json_value)?;"
+        }
+      ]
+    },
+    {
+      "file": "src/cli/commands/tag/add.rs",
+      "sha256": "06cf50f7b3971cf502196cc309dd98b32317ed9c96d4c407d5945193027d8273",
+      "json_output_sites": [
+        {
+          "line": 51,
+          "text": "self.output.print_entity(&attached_tags, &short_id, || {"
+        }
+      ]
+    },
+    {
+      "file": "src/cli/commands/tag/list.rs",
+      "sha256": "2fd84b0b7aea5cc6b70096556d67ed2c905f84360b730f81c9f72fc17a15952c",
+      "json_output_sites": [
+        {
+          "line": 52,
+          "text": "let json = serde_json::to_string_pretty(&tags)?;"
+        }
+      ]
+    },
+    {
+      "file": "src/cli/commands/tag/remove.rs",
+      "sha256": "4b28e34f8455421b993962e89852a0a801e248f05d2146a4ccf98fb5d201de51",
+      "json_output_sites": [
+        {
+          "line": 61,
+          "text": "self.output.print_delete(|| {"
+        }
+      ]
+    },
+    {
+      "file": "src/cli/commands/task/block.rs",
+      "sha256": "93261e8ab9efe1c622ae01dbe87098bd9480810c89bfa731b7e431b9e51d6b2b",
+      "json_output_sites": [
+        {
+          "line": 59,
+          "text": "let envelope = Envelope::load_one(&conn, EntityType::Task, source_task.id(), &source_task, true).await?;"
+        },
+        {
+          "line": 65,
+          "text": "self.output.print_envelope(&envelope, &short_id, || {"
+        }
+      ]
+    },
+    {
+      "file": "src/cli/commands/task/claim.rs",
+      "sha256": "e064e4a76054c58a365eb2e1cb198a66935eb2c58581eed937d082bf134307e4",
+      "json_output_sites": [
+        {
+          "line": 89,
+          "text": "let envelope = Envelope::load_one(&conn, EntityType::Task, task.id(), &task, true).await?;"
+        },
+        {
+          "line": 95,
+          "text": "self.output.print_envelope(&envelope, &short_id, || {"
+        }
+      ]
+    },
+    {
+      "file": "src/cli/commands/task/create.rs",
+      "sha256": "d115149c91b7f71ecdc71a0910e5abfefc2145f5bb39b14d792942c46263a98a",
+      "json_output_sites": [
+        {
+          "line": 191,
+          "text": "let envelope = Envelope::load_one(&conn, EntityType::Task, task.id(), &task, true).await?;"
+        },
+        {
+          "line": 198,
+          "text": "self.output.print_envelope(&envelope, &short_id, || {"
+        },
+        {
+          "line": 239,
+          "text": "let envelopes = Envelope::load_many(conn, EntityType::Task, &envelope_input, true).await?;"
+        },
+        {
+          "line": 241,
+          "text": "self.output.print_envelopes_with_short_ids("
+        }
+      ]
+    },
+    {
+      "file": "src/cli/commands/task/delete.rs",
+      "sha256": "c3a6020c3ed1e4a33620399b0cdec73889ddad62c1f3a62037768ac7fea58dd3",
+      "json_output_sites": [
+        {
+          "line": 83,
+          "text": "let envelope = Envelope::load_one(&conn, EntityType::Task, task.id(), &task, true).await?;"
+        },
+        {
+          "line": 93,
+          "text": "self.output.print_envelope(&envelope, &short_id, || {"
+        }
+      ]
+    },
+    {
+      "file": "src/cli/commands/task/link.rs",
+      "sha256": "d4dc84e0efebe21cdf53ae6cc5867c1413806c706fb9de294331c1f6028d6e2b",
+      "json_output_sites": [
+        {
+          "line": 71,
+          "text": "let envelope = Envelope::load_one(&conn, EntityType::Task, source_task.id(), &source_task, true).await?;"
+        },
+        {
+          "line": 77,
+          "text": "self.output.print_envelope(&envelope, &short_id, || {"
+        }
+      ]
+    },
+    {
+      "file": "src/cli/commands/task/list.rs",
+      "sha256": "2ed42ad17ab25d1837e13f3dcaa697285e829dd48a3557eb1689e3a664a58c9e",
+      "json_output_sites": [
+        {
+          "line": 77,
+          "text": "let envelopes = Envelope::load_many(&conn, EntityType::Task, &pairs, false).await?;"
+        },
+        {
+          "line": 78,
+          "text": "self.output.print_envelopes("
+        }
+      ]
+    },
+    {
+      "file": "src/cli/commands/task/show.rs",
+      "sha256": "4f9eb60014314feb1e984d7f94089a75cca75faebc6e87de6e2f8f18910d70ff",
+      "json_output_sites": [
+        {
+          "line": 41,
+          "text": "let envelope = Envelope::load_one(&conn, EntityType::Task, task.id(), &task, true).await?;"
+        },
+        {
+          "line": 49,
+          "text": "self.output.print_envelope(&envelope, &short_id, || {"
+        }
+      ]
+    },
+    {
+      "file": "src/cli/commands/task/unlink.rs",
+      "sha256": "3ae2e9990754429a1d7c5715da3a53c360b6823bffee5b52ab7c2739b0b1bafe",
+      "json_output_sites": [
+        {
+          "line": 110,
+          "text": "let envelope = Envelope::load_one(&conn, EntityType::Task, source_task.id(), &source_task, true).await?;"
+        },
+        {
+          "line": 117,
+          "text": "self.output.print_envelope(&envelope, &short_id, || {"
+        }
+      ]
+    },
+    {
+      "file": "src/cli/commands/task/update.rs",
+      "sha256": "9cbaacf98792ec9fe9c33e144417e0d6d250607dd1f3b27753a0f027a2cb96d0",
+      "json_output_sites": [
+        {
+          "line": 187,
+          "text": "let envelope = Envelope::load_one(&conn, EntityType::Task, task.id(), &task, true).await?;"
+        },
+        {
+          "line": 193,
+          "text": "self.output.print_envelope(&envelope, &short_id, || {"
+        }
+      ]
+    }
+  ],
+  "json_common_envelope": {
+    "source": "src/ui/envelope.rs",
+    "entity": "serde flatten",
+    "notes": "optional omitted when None",
+    "relationships": "Vec<RelationshipView>",
+    "tags": "Vec<String>"
+  },
+  "json_other_inspected": {
+    "search": [
+      "query",
+      "tasks",
+      "artifacts",
+      "iterations"
+    ],
+    "delete": "{} via shared Flags::print_delete",
+    "shared_flags": "src/ui/json.rs; json/quiet/raw precedence varies by helper, preserve caller behavior"
+  },
+  "exit_source": "src/cli.rs::Error::exit_code_u8",
+  "exit_map": {
+    "0": "success",
+    "2": "clap parse error: observed invalid top-level command exit 2",
+    "64": "Argument / InvalidPrefix",
+    "65": "Serialize / TomlSerialize / store Serialization / Yaml",
+    "66": "MetaKeyNotFound / NotFound / store Ambiguous / NotFound",
+    "69": "InvalidState / NothingToUndo",
+    "70": "Editor",
+    "74": "Io / store Database / InvalidValue / Io",
+    "75": "NoTasksAvailable",
+    "78": "Config / UninitializedProject / store Config"
+  },
+  "exit_integration_tests": "tests/integration/behavior/when_exit_codes.rs; individual results in integration.txt"
+}

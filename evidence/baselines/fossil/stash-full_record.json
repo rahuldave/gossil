@@ -1,0 +1,360 @@
+{
+  "name": "parallel-stash",
+  "suites": [
+    "stash"
+  ],
+  "command": [
+    "jlog",
+    "run",
+    "tclsh",
+    "/private/tmp/gossil-fossil-baseline-20261117/launch.tcl",
+    "/private/tmp/gossil-fossil-baseline-20261117/runs/parallel-stash/cwd",
+    "/private/tmp/gossil-fossil-baseline-20261117/enabled/test/tester.tcl",
+    "/Users/rahul/Projects/gossil/.jlog/bin/fossil",
+    "stash",
+    "-keep"
+  ],
+  "cwd": "/Users/rahul/Projects/gossil",
+  "environment": {
+    "FOSSIL_HOME": "/private/tmp/gossil-fossil-baseline-20261117/runs/parallel-stash/home",
+    "FOSSIL_TEST_TEMP": "/private/tmp/gossil-fossil-baseline-20261117/runs/parallel-stash/tmp",
+    "TEMP": "/private/tmp/gossil-fossil-baseline-20261117/runs/parallel-stash/tmp",
+    "TMP": "/private/tmp/gossil-fossil-baseline-20261117/runs/parallel-stash/tmp",
+    "TMPDIR": "/private/tmp/gossil-fossil-baseline-20261117/runs/parallel-stash/tmp",
+    "HOME": "/private/tmp/gossil-fossil-baseline-20261117/runs/parallel-stash/home",
+    "USER": "gossil-baseline",
+    "LOGNAME": "gossil-baseline",
+    "LC_ALL": "C",
+    "TZ": "UTC"
+  },
+  "exit_code": 1,
+  "timeout": false,
+  "seconds": 4.877,
+  "results": [
+    {
+      "name": "stash-1-CODE",
+      "result": "pass"
+    },
+    {
+      "name": "stash-1",
+      "result": "pass"
+    },
+    {
+      "name": "stash-1-changes",
+      "result": "pass"
+    },
+    {
+      "name": "stash-1-addremove",
+      "result": "pass"
+    },
+    {
+      "name": "stash-1-exists",
+      "result": "pass"
+    },
+    {
+      "name": "stash-1-notexists",
+      "result": "pass"
+    },
+    {
+      "name": "stash-1-list-1",
+      "result": "pass"
+    },
+    {
+      "name": "stash-1-list-2",
+      "result": "pass"
+    },
+    {
+      "name": "stash-2-CODE",
+      "result": "pass"
+    },
+    {
+      "name": "stash-2",
+      "result": "pass"
+    },
+    {
+      "name": "stash-2-changes",
+      "result": "pass"
+    },
+    {
+      "name": "stash-2-addremove",
+      "result": "pass"
+    },
+    {
+      "name": "stash-2-exists",
+      "result": "pass"
+    },
+    {
+      "name": "stash-2-notexists",
+      "result": "pass"
+    },
+    {
+      "name": "stash-2-list",
+      "result": "pass"
+    },
+    {
+      "name": "stash-2-1-CODE",
+      "result": "pass"
+    },
+    {
+      "name": "stash-2-1",
+      "result": "pass"
+    },
+    {
+      "name": "stash-2-1-changes",
+      "result": "pass"
+    },
+    {
+      "name": "stash-2-1-addremove",
+      "result": "pass"
+    },
+    {
+      "name": "stash-2-1-exists",
+      "result": "pass"
+    },
+    {
+      "name": "stash-2-1-notexists",
+      "result": "pass"
+    },
+    {
+      "name": "stash-3-1-CODE",
+      "result": "pass"
+    },
+    {
+      "name": "stash-3-1",
+      "result": "pass"
+    },
+    {
+      "name": "stash-3-1-changes",
+      "result": "pass"
+    },
+    {
+      "name": "stash-3-1-addremove",
+      "result": "pass"
+    },
+    {
+      "name": "stash-3-1-exists",
+      "result": "pass"
+    },
+    {
+      "name": "stash-3-1-notexists",
+      "result": "pass"
+    },
+    {
+      "name": "stash-3-1-show",
+      "result": "fail"
+    },
+    {
+      "name": "stash-3-1-pop-CODE",
+      "result": "pass"
+    },
+    {
+      "name": "stash-3-1-pop",
+      "result": "pass"
+    },
+    {
+      "name": "stash-3-1-pop-changes",
+      "result": "pass"
+    },
+    {
+      "name": "stash-3-1-pop-addremove",
+      "result": "pass"
+    },
+    {
+      "name": "stash-3-1-pop-exists",
+      "result": "pass"
+    },
+    {
+      "name": "stash-3-1-pop-notexists",
+      "result": "pass"
+    },
+    {
+      "name": "stash-3-2-mv-CODE",
+      "result": "pass"
+    },
+    {
+      "name": "stash-3-2-mv",
+      "result": "pass"
+    },
+    {
+      "name": "stash-3-2-mv-changes",
+      "result": "pass"
+    },
+    {
+      "name": "stash-3-2-mv-addremove",
+      "result": "pass"
+    },
+    {
+      "name": "stash-3-2-mv-exists",
+      "result": "pass"
+    },
+    {
+      "name": "stash-3-2-mv-notexists",
+      "result": "pass"
+    },
+    {
+      "name": "stash-3-2-show-2",
+      "result": "fail"
+    },
+    {
+      "name": "stash-3-2-pop-CODE",
+      "result": "pass"
+    },
+    {
+      "name": "stash-3-2-pop",
+      "result": "pass"
+    },
+    {
+      "name": "stash-3-2-pop-changes",
+      "result": "pass"
+    },
+    {
+      "name": "stash-3-2-pop-addremove",
+      "result": "pass"
+    },
+    {
+      "name": "stash-3-2-pop-exists",
+      "result": "pass"
+    },
+    {
+      "name": "stash-3-2-pop-notexists",
+      "result": "pass"
+    },
+    {
+      "name": "stash-4-1-CODE",
+      "result": "pass"
+    },
+    {
+      "name": "stash-4-1",
+      "result": "pass"
+    },
+    {
+      "name": "stash-4-1-changes",
+      "result": "pass"
+    },
+    {
+      "name": "stash-4-1-addremove",
+      "result": "pass"
+    },
+    {
+      "name": "stash-4-1-exists",
+      "result": "pass"
+    },
+    {
+      "name": "stash-4-1-notexists",
+      "result": "pass"
+    },
+    {
+      "name": "stash-4-1-diff-CODE",
+      "result": "pass"
+    },
+    {
+      "name": "stash-4-1-show-1",
+      "result": "pass"
+    },
+    {
+      "name": "stash-4-1-show-2",
+      "result": "pass"
+    },
+    {
+      "name": "stash-4-2-CODE",
+      "result": "pass"
+    },
+    {
+      "name": "stash-4-2",
+      "result": "pass"
+    },
+    {
+      "name": "stash-4-2-changes",
+      "result": "pass"
+    },
+    {
+      "name": "stash-4-2-addremove",
+      "result": "pass"
+    },
+    {
+      "name": "stash-4-2-exists",
+      "result": "pass"
+    },
+    {
+      "name": "stash-4-2-notexists",
+      "result": "pass"
+    },
+    {
+      "name": "stash-4-2-diff-CODE",
+      "result": "pass"
+    },
+    {
+      "name": "stash-4-2-show-1",
+      "result": "pass"
+    },
+    {
+      "name": "stash-4-2-show-2",
+      "result": "pass"
+    },
+    {
+      "name": "stash-4-2-show-3",
+      "result": "pass"
+    },
+    {
+      "name": "stash-4-3-CODE",
+      "result": "pass"
+    },
+    {
+      "name": "stash-4-3",
+      "result": "pass"
+    },
+    {
+      "name": "stash-4-3-changes",
+      "result": "pass"
+    },
+    {
+      "name": "stash-4-3-addremove",
+      "result": "pass"
+    },
+    {
+      "name": "stash-4-3-exists",
+      "result": "pass"
+    },
+    {
+      "name": "stash-4-3-notexists",
+      "result": "pass"
+    },
+    {
+      "name": "stash-4-3-diff-CODE",
+      "result": "pass"
+    },
+    {
+      "name": "stash-4-3-show-1",
+      "result": "pass"
+    },
+    {
+      "name": "stash-4-3-show-2",
+      "result": "pass"
+    },
+    {
+      "name": "stash-4-3-show-2",
+      "result": "fail"
+    },
+    {
+      "name": "stash-4-3-show-3",
+      "result": "pass"
+    },
+    {
+      "name": "test-framework-stash",
+      "result": "pass"
+    }
+  ],
+  "counts": {
+    "pass": 75,
+    "fail": 3,
+    "ignored": 0
+  },
+  "upstream_summary": {
+    "errors": 3,
+    "tests": 78
+  },
+  "count_matches": true,
+  "skips": [],
+  "log": "/private/tmp/gossil-fossil-baseline-20261117/runs/parallel-stash/output.log",
+  "gate_pass": false
+}

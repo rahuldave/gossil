@@ -1,0 +1,5308 @@
+{
+  "name": "parallel-settings-repo",
+  "suites": [
+    "settings-repo"
+  ],
+  "command": [
+    "jlog",
+    "run",
+    "tclsh",
+    "/private/tmp/gossil-fossil-baseline-20261117/launch.tcl",
+    "/private/tmp/gossil-fossil-baseline-20261117/runs/parallel-settings-repo/cwd",
+    "/private/tmp/gossil-fossil-baseline-20261117/enabled/test/tester.tcl",
+    "/Users/rahul/Projects/gossil/.jlog/bin/fossil",
+    "settings-repo",
+    "-keep"
+  ],
+  "cwd": "/Users/rahul/Projects/gossil",
+  "environment": {
+    "FOSSIL_HOME": "/private/tmp/gossil-fossil-baseline-20261117/runs/parallel-settings-repo/home",
+    "FOSSIL_TEST_TEMP": "/private/tmp/gossil-fossil-baseline-20261117/runs/parallel-settings-repo/tmp",
+    "TEMP": "/private/tmp/gossil-fossil-baseline-20261117/runs/parallel-settings-repo/tmp",
+    "TMP": "/private/tmp/gossil-fossil-baseline-20261117/runs/parallel-settings-repo/tmp",
+    "TMPDIR": "/private/tmp/gossil-fossil-baseline-20261117/runs/parallel-settings-repo/tmp",
+    "HOME": "/private/tmp/gossil-fossil-baseline-20261117/runs/parallel-settings-repo/home",
+    "USER": "gossil-baseline",
+    "LOGNAME": "gossil-baseline",
+    "LC_ALL": "C",
+    "TZ": "UTC"
+  },
+  "exit_code": 0,
+  "timeout": false,
+  "seconds": 69.121,
+  "results": [
+    {
+      "name": "settings-set-bad-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-bad-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-bad-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-bad-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-ambiguous-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-ambiguous-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-ambiguous-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-ambiguous-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-access-log-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check1-access-log-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check2-access-log-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-access-log-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check1-access-log-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check2-access-log-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-access-log-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check1-access-log-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check2-access-log-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-access-log-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check1-access-log-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check2-access-log-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-admin-log-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check1-admin-log-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check2-admin-log-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-admin-log-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check1-admin-log-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check2-admin-log-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-admin-log-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check1-admin-log-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check2-admin-log-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-admin-log-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check1-admin-log-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check2-admin-log-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-allow-symlinks-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check1-allow-symlinks-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check2-allow-symlinks-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-allow-symlinks-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check1-allow-symlinks-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check2-allow-symlinks-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-allow-symlinks-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check1-allow-symlinks-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check2-allow-symlinks-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-allow-symlinks-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check1-allow-symlinks-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check2-allow-symlinks-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-auto-captcha-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check1-auto-captcha-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check2-auto-captcha-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-auto-captcha-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check1-auto-captcha-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check2-auto-captcha-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-auto-captcha-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check1-auto-captcha-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check2-auto-captcha-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-auto-captcha-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check1-auto-captcha-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check2-auto-captcha-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-auto-hyperlink-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check1-auto-hyperlink-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check2-auto-hyperlink-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-auto-hyperlink-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check1-auto-hyperlink-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check2-auto-hyperlink-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-auto-hyperlink-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check1-auto-hyperlink-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check2-auto-hyperlink-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-auto-hyperlink-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check1-auto-hyperlink-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check2-auto-hyperlink-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-auto-hyperlink-delay-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check1-auto-hyperlink-delay-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check2-auto-hyperlink-delay-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-auto-hyperlink-delay-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check1-auto-hyperlink-delay-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check2-auto-hyperlink-delay-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-auto-hyperlink-delay-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check1-auto-hyperlink-delay-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check2-auto-hyperlink-delay-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-auto-hyperlink-delay-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check1-auto-hyperlink-delay-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check2-auto-hyperlink-delay-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-auto-hyperlink-mouseover-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check1-auto-hyperlink-mouseover-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check2-auto-hyperlink-mouseover-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-auto-hyperlink-mouseover-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check1-auto-hyperlink-mouseover-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check2-auto-hyperlink-mouseover-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-auto-hyperlink-mouseover-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check1-auto-hyperlink-mouseover-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check2-auto-hyperlink-mouseover-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-auto-hyperlink-mouseover-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check1-auto-hyperlink-mouseover-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check2-auto-hyperlink-mouseover-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-auto-shun-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check1-auto-shun-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check2-auto-shun-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-auto-shun-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check1-auto-shun-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check2-auto-shun-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-auto-shun-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check1-auto-shun-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check2-auto-shun-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-auto-shun-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check1-auto-shun-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check2-auto-shun-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-autosync-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check1-autosync-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check2-autosync-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-autosync-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check1-autosync-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check2-autosync-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-autosync-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check1-autosync-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check2-autosync-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-autosync-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check1-autosync-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check2-autosync-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-autosync-tries-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check1-autosync-tries-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check2-autosync-tries-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-autosync-tries-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check1-autosync-tries-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check2-autosync-tries-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-autosync-tries-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check1-autosync-tries-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check2-autosync-tries-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-autosync-tries-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check1-autosync-tries-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check2-autosync-tries-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-backoffice-disable-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check1-backoffice-disable-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check2-backoffice-disable-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-backoffice-disable-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check1-backoffice-disable-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check2-backoffice-disable-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-backoffice-disable-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check1-backoffice-disable-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check2-backoffice-disable-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-backoffice-disable-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check1-backoffice-disable-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check2-backoffice-disable-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-backoffice-logfile-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check1-backoffice-logfile-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check2-backoffice-logfile-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-backoffice-logfile-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check1-backoffice-logfile-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check2-backoffice-logfile-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-backoffice-logfile-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check1-backoffice-logfile-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check2-backoffice-logfile-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-backoffice-logfile-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check1-backoffice-logfile-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check2-backoffice-logfile-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-backoffice-nodelay-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check1-backoffice-nodelay-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check2-backoffice-nodelay-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-backoffice-nodelay-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check1-backoffice-nodelay-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check2-backoffice-nodelay-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-backoffice-nodelay-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check1-backoffice-nodelay-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check2-backoffice-nodelay-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-backoffice-nodelay-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check1-backoffice-nodelay-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check2-backoffice-nodelay-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-binary-glob-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check1-binary-glob-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check2-binary-glob-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-binary-glob-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check1-binary-glob-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check2-binary-glob-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-binary-glob-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check1-binary-glob-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check2-binary-glob-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-binary-glob-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check1-binary-glob-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check2-binary-glob-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-case-sensitive-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check1-case-sensitive-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check2-case-sensitive-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-case-sensitive-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check1-case-sensitive-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check2-case-sensitive-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-case-sensitive-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check1-case-sensitive-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check2-case-sensitive-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-case-sensitive-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check1-case-sensitive-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check2-case-sensitive-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-chat-alert-sound-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check1-chat-alert-sound-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check2-chat-alert-sound-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-chat-alert-sound-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check1-chat-alert-sound-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check2-chat-alert-sound-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-chat-alert-sound-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check1-chat-alert-sound-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check2-chat-alert-sound-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-chat-alert-sound-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check1-chat-alert-sound-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check2-chat-alert-sound-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-chat-initial-history-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check1-chat-initial-history-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check2-chat-initial-history-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-chat-initial-history-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check1-chat-initial-history-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check2-chat-initial-history-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-chat-initial-history-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check1-chat-initial-history-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check2-chat-initial-history-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-chat-initial-history-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check1-chat-initial-history-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check2-chat-initial-history-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-chat-inline-images-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check1-chat-inline-images-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check2-chat-inline-images-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-chat-inline-images-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check1-chat-inline-images-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check2-chat-inline-images-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-chat-inline-images-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check1-chat-inline-images-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check2-chat-inline-images-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-chat-inline-images-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check1-chat-inline-images-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check2-chat-inline-images-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-chat-keep-count-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check1-chat-keep-count-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check2-chat-keep-count-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-chat-keep-count-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check1-chat-keep-count-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check2-chat-keep-count-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-chat-keep-count-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check1-chat-keep-count-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check2-chat-keep-count-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-chat-keep-count-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check1-chat-keep-count-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check2-chat-keep-count-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-chat-keep-days-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check1-chat-keep-days-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check2-chat-keep-days-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-chat-keep-days-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check1-chat-keep-days-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check2-chat-keep-days-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-chat-keep-days-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check1-chat-keep-days-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check2-chat-keep-days-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-chat-keep-days-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check1-chat-keep-days-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check2-chat-keep-days-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-chat-poll-timeout-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check1-chat-poll-timeout-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check2-chat-poll-timeout-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-chat-poll-timeout-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check1-chat-poll-timeout-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check2-chat-poll-timeout-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-chat-poll-timeout-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check1-chat-poll-timeout-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check2-chat-poll-timeout-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-chat-poll-timeout-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check1-chat-poll-timeout-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check2-chat-poll-timeout-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-chat-timeline-user-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check1-chat-timeline-user-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check2-chat-timeline-user-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-chat-timeline-user-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check1-chat-timeline-user-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check2-chat-timeline-user-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-chat-timeline-user-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check1-chat-timeline-user-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check2-chat-timeline-user-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-chat-timeline-user-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check1-chat-timeline-user-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check2-chat-timeline-user-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-clean-glob-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check1-clean-glob-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check2-clean-glob-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-clean-glob-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check1-clean-glob-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check2-clean-glob-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-clean-glob-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check1-clean-glob-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check2-clean-glob-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-clean-glob-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check1-clean-glob-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check2-clean-glob-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-clearsign-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check1-clearsign-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check2-clearsign-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-clearsign-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check1-clearsign-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check2-clearsign-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-clearsign-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check1-clearsign-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check2-clearsign-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-clearsign-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check1-clearsign-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check2-clearsign-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-comment-format-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check1-comment-format-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check2-comment-format-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-comment-format-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check1-comment-format-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check2-comment-format-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-comment-format-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check1-comment-format-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check2-comment-format-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-comment-format-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check1-comment-format-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check2-comment-format-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-crlf-glob-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check1-crlf-glob-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check2-crlf-glob-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-crlf-glob-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check1-crlf-glob-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check2-crlf-glob-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-crlf-glob-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check1-crlf-glob-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check2-crlf-glob-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-crlf-glob-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check1-crlf-glob-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check2-crlf-glob-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-crnl-glob-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check1-crnl-glob-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check2-crnl-glob-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-crnl-glob-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check1-crnl-glob-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check2-crnl-glob-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-crnl-glob-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check1-crnl-glob-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check2-crnl-glob-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-crnl-glob-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check1-crnl-glob-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check2-crnl-glob-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-default-csp-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check1-default-csp-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check2-default-csp-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-default-csp-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check1-default-csp-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check2-default-csp-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-default-csp-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check1-default-csp-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check2-default-csp-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-default-csp-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check1-default-csp-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check2-default-csp-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-default-perms-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check1-default-perms-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check2-default-perms-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-default-perms-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check1-default-perms-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check2-default-perms-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-default-perms-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check1-default-perms-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check2-default-perms-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-default-perms-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check1-default-perms-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check2-default-perms-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-default-skin-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check1-default-skin-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check2-default-skin-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-default-skin-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check1-default-skin-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check2-default-skin-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-default-skin-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check1-default-skin-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check2-default-skin-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-default-skin-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check1-default-skin-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check2-default-skin-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-diff-binary-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check1-diff-binary-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check2-diff-binary-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-diff-binary-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check1-diff-binary-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check2-diff-binary-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-diff-binary-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check1-diff-binary-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check2-diff-binary-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-diff-binary-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check1-diff-binary-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check2-diff-binary-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-diff-command-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check1-diff-command-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check2-diff-command-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-diff-command-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check1-diff-command-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check2-diff-command-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-diff-command-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check1-diff-command-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check2-diff-command-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-diff-command-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check1-diff-command-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check2-diff-command-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-dont-commit-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check1-dont-commit-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check2-dont-commit-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-dont-commit-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check1-dont-commit-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check2-dont-commit-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-dont-commit-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check1-dont-commit-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check2-dont-commit-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-dont-commit-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check1-dont-commit-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check2-dont-commit-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-dont-push-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check1-dont-push-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check2-dont-push-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-dont-push-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check1-dont-push-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check2-dont-push-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-dont-push-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check1-dont-push-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check2-dont-push-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-dont-push-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check1-dont-push-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check2-dont-push-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-dotfiles-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check1-dotfiles-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check2-dotfiles-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-dotfiles-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check1-dotfiles-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check2-dotfiles-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-dotfiles-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check1-dotfiles-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check2-dotfiles-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-dotfiles-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check1-dotfiles-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check2-dotfiles-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-editor-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check1-editor-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check2-editor-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-editor-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check1-editor-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check2-editor-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-editor-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check1-editor-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check2-editor-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-editor-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check1-editor-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check2-editor-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-email-admin-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check1-email-admin-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check2-email-admin-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-email-admin-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check1-email-admin-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check2-email-admin-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-email-admin-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check1-email-admin-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check2-email-admin-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-email-admin-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check1-email-admin-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check2-email-admin-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-email-listid-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check1-email-listid-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check2-email-listid-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-email-listid-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check1-email-listid-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check2-email-listid-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-email-listid-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check1-email-listid-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check2-email-listid-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-email-listid-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check1-email-listid-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check2-email-listid-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-email-renew-interval-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check1-email-renew-interval-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check2-email-renew-interval-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-email-renew-interval-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check1-email-renew-interval-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check2-email-renew-interval-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-email-renew-interval-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check1-email-renew-interval-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check2-email-renew-interval-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-email-renew-interval-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check1-email-renew-interval-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check2-email-renew-interval-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-email-self-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check1-email-self-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check2-email-self-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-email-self-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check1-email-self-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check2-email-self-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-email-self-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check1-email-self-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check2-email-self-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-email-self-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check1-email-self-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check2-email-self-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-email-send-command-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check1-email-send-command-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check2-email-send-command-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-email-send-command-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check1-email-send-command-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check2-email-send-command-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-email-send-command-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check1-email-send-command-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check2-email-send-command-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-email-send-command-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check1-email-send-command-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check2-email-send-command-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-email-send-db-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check1-email-send-db-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check2-email-send-db-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-email-send-db-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check1-email-send-db-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check2-email-send-db-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-email-send-db-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check1-email-send-db-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check2-email-send-db-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-email-send-db-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check1-email-send-db-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check2-email-send-db-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-email-send-dir-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check1-email-send-dir-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check2-email-send-dir-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-email-send-dir-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check1-email-send-dir-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check2-email-send-dir-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-email-send-dir-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check1-email-send-dir-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check2-email-send-dir-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-email-send-dir-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check1-email-send-dir-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check2-email-send-dir-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-email-send-method-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check1-email-send-method-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check2-email-send-method-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-email-send-method-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check1-email-send-method-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check2-email-send-method-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-email-send-method-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check1-email-send-method-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check2-email-send-method-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-email-send-method-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check1-email-send-method-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check2-email-send-method-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-email-send-relayhost-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check1-email-send-relayhost-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check2-email-send-relayhost-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-email-send-relayhost-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check1-email-send-relayhost-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check2-email-send-relayhost-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-email-send-relayhost-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check1-email-send-relayhost-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check2-email-send-relayhost-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-email-send-relayhost-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check1-email-send-relayhost-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check2-email-send-relayhost-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-email-subname-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check1-email-subname-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check2-email-subname-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-email-subname-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check1-email-subname-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check2-email-subname-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-email-subname-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check1-email-subname-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check2-email-subname-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-email-subname-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check1-email-subname-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check2-email-subname-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-email-url-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check1-email-url-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check2-email-url-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-email-url-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check1-email-url-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check2-email-url-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-email-url-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check1-email-url-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check2-email-url-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-email-url-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check1-email-url-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check2-email-url-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-empty-dirs-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check1-empty-dirs-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check2-empty-dirs-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-empty-dirs-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check1-empty-dirs-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check2-empty-dirs-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-empty-dirs-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check1-empty-dirs-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check2-empty-dirs-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-empty-dirs-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check1-empty-dirs-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check2-empty-dirs-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-encoding-glob-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check1-encoding-glob-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check2-encoding-glob-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-encoding-glob-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check1-encoding-glob-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check2-encoding-glob-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-encoding-glob-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check1-encoding-glob-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check2-encoding-glob-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-encoding-glob-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check1-encoding-glob-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check2-encoding-glob-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-exec-rel-paths-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check1-exec-rel-paths-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check2-exec-rel-paths-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-exec-rel-paths-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check1-exec-rel-paths-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check2-exec-rel-paths-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-exec-rel-paths-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check1-exec-rel-paths-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check2-exec-rel-paths-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-exec-rel-paths-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check1-exec-rel-paths-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check2-exec-rel-paths-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-fileedit-glob-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check1-fileedit-glob-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check2-fileedit-glob-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-fileedit-glob-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check1-fileedit-glob-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check2-fileedit-glob-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-fileedit-glob-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check1-fileedit-glob-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check2-fileedit-glob-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-fileedit-glob-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check1-fileedit-glob-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check2-fileedit-glob-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-forbid-delta-manifests-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check1-forbid-delta-manifests-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check2-forbid-delta-manifests-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-forbid-delta-manifests-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check1-forbid-delta-manifests-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check2-forbid-delta-manifests-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-forbid-delta-manifests-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check1-forbid-delta-manifests-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check2-forbid-delta-manifests-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-forbid-delta-manifests-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check1-forbid-delta-manifests-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check2-forbid-delta-manifests-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-forum-close-policy-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check1-forum-close-policy-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check2-forum-close-policy-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-forum-close-policy-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check1-forum-close-policy-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check2-forum-close-policy-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-forum-close-policy-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check1-forum-close-policy-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check2-forum-close-policy-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-forum-close-policy-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check1-forum-close-policy-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check2-forum-close-policy-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-forum-title-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check1-forum-title-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check2-forum-title-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-forum-title-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check1-forum-title-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check2-forum-title-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-forum-title-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check1-forum-title-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check2-forum-title-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-forum-title-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check1-forum-title-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check2-forum-title-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-gdiff-command-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check1-gdiff-command-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check2-gdiff-command-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-gdiff-command-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check1-gdiff-command-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check2-gdiff-command-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-gdiff-command-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check1-gdiff-command-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check2-gdiff-command-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-gdiff-command-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check1-gdiff-command-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check2-gdiff-command-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-gmerge-command-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check1-gmerge-command-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check2-gmerge-command-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-gmerge-command-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check1-gmerge-command-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check2-gmerge-command-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-gmerge-command-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check1-gmerge-command-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check2-gmerge-command-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-gmerge-command-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check1-gmerge-command-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check2-gmerge-command-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-hash-digits-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check1-hash-digits-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check2-hash-digits-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-hash-digits-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check1-hash-digits-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check2-hash-digits-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-hash-digits-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check1-hash-digits-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check2-hash-digits-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-hash-digits-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check1-hash-digits-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check2-hash-digits-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-hooks-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check1-hooks-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check2-hooks-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-hooks-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check1-hooks-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check2-hooks-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-hooks-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check1-hooks-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check2-hooks-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-hooks-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check1-hooks-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check2-hooks-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-http-port-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check1-http-port-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check2-http-port-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-http-port-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check1-http-port-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check2-http-port-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-http-port-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check1-http-port-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check2-http-port-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-http-port-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check1-http-port-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check2-http-port-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-https-login-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check1-https-login-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check2-https-login-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-https-login-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check1-https-login-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check2-https-login-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-https-login-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check1-https-login-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check2-https-login-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-https-login-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check1-https-login-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check2-https-login-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-ignore-glob-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check1-ignore-glob-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check2-ignore-glob-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-ignore-glob-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check1-ignore-glob-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check2-ignore-glob-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-ignore-glob-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check1-ignore-glob-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check2-ignore-glob-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-ignore-glob-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check1-ignore-glob-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check2-ignore-glob-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-keep-glob-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check1-keep-glob-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check2-keep-glob-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-keep-glob-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check1-keep-glob-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check2-keep-glob-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-keep-glob-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check1-keep-glob-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check2-keep-glob-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-keep-glob-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check1-keep-glob-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check2-keep-glob-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-large-file-size-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check1-large-file-size-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check2-large-file-size-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-large-file-size-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check1-large-file-size-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check2-large-file-size-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-large-file-size-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check1-large-file-size-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check2-large-file-size-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-large-file-size-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check1-large-file-size-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check2-large-file-size-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-localauth-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check1-localauth-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check2-localauth-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-localauth-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check1-localauth-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check2-localauth-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-localauth-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check1-localauth-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check2-localauth-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-localauth-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check1-localauth-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check2-localauth-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-lock-timeout-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check1-lock-timeout-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check2-lock-timeout-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-lock-timeout-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check1-lock-timeout-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check2-lock-timeout-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-lock-timeout-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check1-lock-timeout-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check2-lock-timeout-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-lock-timeout-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check1-lock-timeout-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check2-lock-timeout-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-main-branch-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check1-main-branch-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check2-main-branch-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-main-branch-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check1-main-branch-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check2-main-branch-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-main-branch-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check1-main-branch-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check2-main-branch-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-main-branch-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check1-main-branch-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check2-main-branch-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-mainmenu-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check1-mainmenu-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check2-mainmenu-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-mainmenu-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check1-mainmenu-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check2-mainmenu-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-mainmenu-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check1-mainmenu-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check2-mainmenu-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-mainmenu-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check1-mainmenu-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check2-mainmenu-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-manifest-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check1-manifest-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check2-manifest-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-manifest-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check1-manifest-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check2-manifest-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-max-cache-entry-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check1-max-cache-entry-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check2-max-cache-entry-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-max-cache-entry-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check1-max-cache-entry-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check2-max-cache-entry-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-max-cache-entry-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check1-max-cache-entry-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check2-max-cache-entry-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-max-cache-entry-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check1-max-cache-entry-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check2-max-cache-entry-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-max-loadavg-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check1-max-loadavg-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check2-max-loadavg-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-max-loadavg-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check1-max-loadavg-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check2-max-loadavg-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-max-loadavg-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check1-max-loadavg-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check2-max-loadavg-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-max-loadavg-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check1-max-loadavg-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check2-max-loadavg-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-max-upload-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check1-max-upload-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check2-max-upload-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-max-upload-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check1-max-upload-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check2-max-upload-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-max-upload-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check1-max-upload-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check2-max-upload-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-max-upload-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check1-max-upload-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check2-max-upload-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-mimetypes-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check1-mimetypes-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check2-mimetypes-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-mimetypes-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check1-mimetypes-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check2-mimetypes-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-mimetypes-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check1-mimetypes-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check2-mimetypes-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-mimetypes-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check1-mimetypes-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check2-mimetypes-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-mtime-changes-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check1-mtime-changes-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check2-mtime-changes-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-mtime-changes-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check1-mtime-changes-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check2-mtime-changes-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-mtime-changes-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check1-mtime-changes-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check2-mtime-changes-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-mtime-changes-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check1-mtime-changes-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check2-mtime-changes-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-mv-rm-files-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check1-mv-rm-files-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check2-mv-rm-files-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-mv-rm-files-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check1-mv-rm-files-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check2-mv-rm-files-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-mv-rm-files-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check1-mv-rm-files-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check2-mv-rm-files-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-mv-rm-files-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check1-mv-rm-files-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check2-mv-rm-files-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-mv-rm-files-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check1-mv-rm-files-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check2-mv-rm-files-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-mv-rm-files-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check1-mv-rm-files-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check2-mv-rm-files-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-mv-rm-files-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check1-mv-rm-files-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check2-mv-rm-files-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-mv-rm-files-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check1-mv-rm-files-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check2-mv-rm-files-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-pgp-command-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check1-pgp-command-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check2-pgp-command-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-pgp-command-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check1-pgp-command-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check2-pgp-command-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-pgp-command-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check1-pgp-command-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check2-pgp-command-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-pgp-command-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check1-pgp-command-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check2-pgp-command-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-preferred-diff-type-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check1-preferred-diff-type-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check2-preferred-diff-type-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-preferred-diff-type-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check1-preferred-diff-type-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check2-preferred-diff-type-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-preferred-diff-type-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check1-preferred-diff-type-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check2-preferred-diff-type-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-preferred-diff-type-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check1-preferred-diff-type-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check2-preferred-diff-type-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-proxy-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check1-proxy-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check2-proxy-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-proxy-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check1-proxy-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check2-proxy-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-proxy-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check1-proxy-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check2-proxy-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-proxy-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check1-proxy-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check2-proxy-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-raw-bgcolor-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check1-raw-bgcolor-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check2-raw-bgcolor-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-raw-bgcolor-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check1-raw-bgcolor-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check2-raw-bgcolor-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-raw-bgcolor-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check1-raw-bgcolor-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check2-raw-bgcolor-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-raw-bgcolor-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check1-raw-bgcolor-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check2-raw-bgcolor-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-redirect-to-https-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check1-redirect-to-https-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check2-redirect-to-https-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-redirect-to-https-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check1-redirect-to-https-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check2-redirect-to-https-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-redirect-to-https-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check1-redirect-to-https-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check2-redirect-to-https-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-redirect-to-https-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check1-redirect-to-https-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check2-redirect-to-https-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-relative-paths-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check1-relative-paths-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check2-relative-paths-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-relative-paths-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check1-relative-paths-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check2-relative-paths-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-relative-paths-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check1-relative-paths-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check2-relative-paths-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-relative-paths-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check1-relative-paths-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check2-relative-paths-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-repo-cksum-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check1-repo-cksum-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check2-repo-cksum-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-repo-cksum-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check1-repo-cksum-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check2-repo-cksum-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-repo-cksum-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check1-repo-cksum-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check2-repo-cksum-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-repo-cksum-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check1-repo-cksum-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check2-repo-cksum-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-repolist-skin-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check1-repolist-skin-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check2-repolist-skin-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-repolist-skin-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check1-repolist-skin-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check2-repolist-skin-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-repolist-skin-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check1-repolist-skin-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check2-repolist-skin-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-repolist-skin-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check1-repolist-skin-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check2-repolist-skin-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-robot-restrict-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check1-robot-restrict-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check2-robot-restrict-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-robot-restrict-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check1-robot-restrict-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check2-robot-restrict-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-robot-restrict-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check1-robot-restrict-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check2-robot-restrict-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-robot-restrict-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check1-robot-restrict-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check2-robot-restrict-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-robots-txt-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check1-robots-txt-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check2-robots-txt-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-robots-txt-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check1-robots-txt-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check2-robots-txt-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-robots-txt-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check1-robots-txt-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check2-robots-txt-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-robots-txt-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check1-robots-txt-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check2-robots-txt-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-safe-html-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check1-safe-html-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check2-safe-html-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-safe-html-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check1-safe-html-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check2-safe-html-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-safe-html-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check1-safe-html-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check2-safe-html-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-safe-html-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check1-safe-html-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check2-safe-html-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-self-pw-reset-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check1-self-pw-reset-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check2-self-pw-reset-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-self-pw-reset-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check1-self-pw-reset-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check2-self-pw-reset-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-self-pw-reset-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check1-self-pw-reset-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check2-self-pw-reset-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-self-pw-reset-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check1-self-pw-reset-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check2-self-pw-reset-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-self-register-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check1-self-register-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check2-self-register-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-self-register-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check1-self-register-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check2-self-register-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-self-register-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check1-self-register-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check2-self-register-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-self-register-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check1-self-register-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check2-self-register-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-sitemap-extra-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check1-sitemap-extra-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check2-sitemap-extra-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-sitemap-extra-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check1-sitemap-extra-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check2-sitemap-extra-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-sitemap-extra-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check1-sitemap-extra-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check2-sitemap-extra-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-sitemap-extra-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check1-sitemap-extra-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check2-sitemap-extra-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-ssh-command-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check1-ssh-command-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check2-ssh-command-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-ssh-command-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check1-ssh-command-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check2-ssh-command-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-ssh-command-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check1-ssh-command-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check2-ssh-command-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-ssh-command-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check1-ssh-command-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check2-ssh-command-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-ssl-ca-location-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check1-ssl-ca-location-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check2-ssl-ca-location-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-ssl-ca-location-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check1-ssl-ca-location-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check2-ssl-ca-location-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-ssl-ca-location-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check1-ssl-ca-location-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check2-ssl-ca-location-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-ssl-ca-location-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check1-ssl-ca-location-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check2-ssl-ca-location-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-ssl-identity-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check1-ssl-identity-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check2-ssl-identity-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-ssl-identity-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check1-ssl-identity-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check2-ssl-identity-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-ssl-identity-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check1-ssl-identity-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check2-ssl-identity-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-ssl-identity-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check1-ssl-identity-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check2-ssl-identity-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-tclsh-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check1-tclsh-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check2-tclsh-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-tclsh-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check1-tclsh-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check2-tclsh-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-tclsh-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check1-tclsh-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check2-tclsh-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-tclsh-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check1-tclsh-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check2-tclsh-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-th1-setup-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check1-th1-setup-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check2-th1-setup-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-th1-setup-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check1-th1-setup-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check2-th1-setup-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-th1-setup-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check1-th1-setup-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check2-th1-setup-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-th1-setup-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check1-th1-setup-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check2-th1-setup-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-th1-uri-regexp-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check1-th1-uri-regexp-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check2-th1-uri-regexp-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-th1-uri-regexp-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check1-th1-uri-regexp-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check2-th1-uri-regexp-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-th1-uri-regexp-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check1-th1-uri-regexp-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check2-th1-uri-regexp-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-th1-uri-regexp-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check1-th1-uri-regexp-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check2-th1-uri-regexp-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-ticket-default-report-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check1-ticket-default-report-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check2-ticket-default-report-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-ticket-default-report-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check1-ticket-default-report-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check2-ticket-default-report-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-ticket-default-report-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check1-ticket-default-report-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check2-ticket-default-report-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-ticket-default-report-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check1-ticket-default-report-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check2-ticket-default-report-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-timeline-hard-newlines-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check1-timeline-hard-newlines-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check2-timeline-hard-newlines-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-timeline-hard-newlines-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check1-timeline-hard-newlines-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check2-timeline-hard-newlines-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-timeline-hard-newlines-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check1-timeline-hard-newlines-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check2-timeline-hard-newlines-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-timeline-hard-newlines-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check1-timeline-hard-newlines-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check2-timeline-hard-newlines-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-timeline-plaintext-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check1-timeline-plaintext-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check2-timeline-plaintext-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-timeline-plaintext-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check1-timeline-plaintext-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check2-timeline-plaintext-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-timeline-plaintext-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check1-timeline-plaintext-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check2-timeline-plaintext-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-timeline-plaintext-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check1-timeline-plaintext-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check2-timeline-plaintext-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-timeline-truncate-at-blank-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check1-timeline-truncate-at-blank-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check2-timeline-truncate-at-blank-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-timeline-truncate-at-blank-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check1-timeline-truncate-at-blank-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check2-timeline-truncate-at-blank-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-timeline-truncate-at-blank-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check1-timeline-truncate-at-blank-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check2-timeline-truncate-at-blank-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-timeline-truncate-at-blank-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check1-timeline-truncate-at-blank-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check2-timeline-truncate-at-blank-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-timeline-tslink-info-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check1-timeline-tslink-info-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check2-timeline-tslink-info-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-timeline-tslink-info-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check1-timeline-tslink-info-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check2-timeline-tslink-info-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-timeline-tslink-info-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check1-timeline-tslink-info-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check2-timeline-tslink-info-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-timeline-tslink-info-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check1-timeline-tslink-info-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check2-timeline-tslink-info-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-timeline-utc-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check1-timeline-utc-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check2-timeline-utc-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-timeline-utc-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check1-timeline-utc-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check2-timeline-utc-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-timeline-utc-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check1-timeline-utc-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check2-timeline-utc-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-timeline-utc-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check1-timeline-utc-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check2-timeline-utc-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-user-color-map-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check1-user-color-map-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check2-user-color-map-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-user-color-map-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check1-user-color-map-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check2-user-color-map-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-user-color-map-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check1-user-color-map-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check2-user-color-map-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-user-color-map-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check1-user-color-map-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check2-user-color-map-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-uv-sync-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check1-uv-sync-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check2-uv-sync-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-uv-sync-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check1-uv-sync-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check2-uv-sync-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-uv-sync-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check1-uv-sync-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check2-uv-sync-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-uv-sync-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check1-uv-sync-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check2-uv-sync-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-verify-comments-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check1-verify-comments-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check2-verify-comments-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-verify-comments-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check1-verify-comments-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check2-verify-comments-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-verify-comments-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check1-verify-comments-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check2-verify-comments-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-verify-comments-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check1-verify-comments-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check2-verify-comments-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-vuln-report-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check1-vuln-report-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check2-vuln-report-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-vuln-report-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check1-vuln-report-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check2-vuln-report-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-vuln-report-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check1-vuln-report-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check2-vuln-report-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-vuln-report-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check1-vuln-report-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check2-vuln-report-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-web-browser-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check1-web-browser-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check2-web-browser-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-web-browser-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check1-web-browser-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check2-web-browser-global",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-web-browser-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check1-web-browser-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check2-web-browser-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-web-browser-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check1-web-browser-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-unset-check2-web-browser-local",
+      "result": "pass"
+    },
+    {
+      "name": "settings-before-versionable-binary-glob",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check1-versionable-binary-glob",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check2-versionable-binary-glob",
+      "result": "pass"
+    },
+    {
+      "name": "settings-after-versionable-binary-glob",
+      "result": "pass"
+    },
+    {
+      "name": "settings-before-versionable-clean-glob",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check1-versionable-clean-glob",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check2-versionable-clean-glob",
+      "result": "pass"
+    },
+    {
+      "name": "settings-after-versionable-clean-glob",
+      "result": "pass"
+    },
+    {
+      "name": "settings-before-versionable-crlf-glob",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check1-versionable-crlf-glob",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check2-versionable-crlf-glob",
+      "result": "pass"
+    },
+    {
+      "name": "settings-after-versionable-crlf-glob",
+      "result": "pass"
+    },
+    {
+      "name": "settings-before-versionable-crnl-glob",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check1-versionable-crnl-glob",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check2-versionable-crnl-glob",
+      "result": "pass"
+    },
+    {
+      "name": "settings-after-versionable-crnl-glob",
+      "result": "pass"
+    },
+    {
+      "name": "settings-before-versionable-dotfiles",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check1-versionable-dotfiles",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check2-versionable-dotfiles",
+      "result": "pass"
+    },
+    {
+      "name": "settings-after-versionable-dotfiles",
+      "result": "pass"
+    },
+    {
+      "name": "settings-before-versionable-empty-dirs",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check1-versionable-empty-dirs",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check2-versionable-empty-dirs",
+      "result": "pass"
+    },
+    {
+      "name": "settings-after-versionable-empty-dirs",
+      "result": "pass"
+    },
+    {
+      "name": "settings-before-versionable-encoding-glob",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check1-versionable-encoding-glob",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check2-versionable-encoding-glob",
+      "result": "pass"
+    },
+    {
+      "name": "settings-after-versionable-encoding-glob",
+      "result": "pass"
+    },
+    {
+      "name": "settings-before-versionable-ignore-glob",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check1-versionable-ignore-glob",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check2-versionable-ignore-glob",
+      "result": "pass"
+    },
+    {
+      "name": "settings-after-versionable-ignore-glob",
+      "result": "pass"
+    },
+    {
+      "name": "settings-before-versionable-keep-glob",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check1-versionable-keep-glob",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check2-versionable-keep-glob",
+      "result": "pass"
+    },
+    {
+      "name": "settings-after-versionable-keep-glob",
+      "result": "pass"
+    },
+    {
+      "name": "settings-before-versionable-manifest",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check1-versionable-manifest",
+      "result": "pass"
+    },
+    {
+      "name": "settings-set-check2-versionable-manifest",
+      "result": "pass"
+    },
+    {
+      "name": "settings-after-versionable-manifest",
+      "result": "pass"
+    },
+    {
+      "name": "test-framework-settings-repo",
+      "result": "pass"
+    }
+  ],
+  "counts": {
+    "pass": 1315,
+    "fail": 0,
+    "ignored": 0
+  },
+  "upstream_summary": {
+    "errors": 0,
+    "tests": 1315
+  },
+  "count_matches": true,
+  "skips": [],
+  "log": "/private/tmp/gossil-fossil-baseline-20261117/runs/parallel-settings-repo/output.log",
+  "gate_pass": true
+}

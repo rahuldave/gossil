@@ -1,0 +1,72 @@
+{
+  "name": "cmdline",
+  "suites": [
+    "cmdline"
+  ],
+  "command": [
+    "jlog",
+    "run",
+    "tclsh",
+    "/tmp/gossil-fossil-baseline-20261117/launch.tcl",
+    "/tmp/gossil-fossil-baseline-20261117/runs/cmdline/cwd",
+    "/tmp/gossil-fossil-baseline-20261117/enabled/test/tester.tcl",
+    "/Users/rahul/Projects/gossil/.jlog/bin/fossil",
+    "cmdline",
+    "-keep"
+  ],
+  "cwd": "/Users/rahul/Projects/gossil",
+  "environment": {
+    "FOSSIL_HOME": "/tmp/gossil-fossil-baseline-20261117/runs/cmdline/home",
+    "FOSSIL_TEST_TEMP": "/tmp/gossil-fossil-baseline-20261117/runs/cmdline/tmp",
+    "TEMP": "/tmp/gossil-fossil-baseline-20261117/runs/cmdline/tmp",
+    "TMP": "/tmp/gossil-fossil-baseline-20261117/runs/cmdline/tmp",
+    "TMPDIR": "/tmp/gossil-fossil-baseline-20261117/runs/cmdline/tmp",
+    "HOME": "/tmp/gossil-fossil-baseline-20261117/runs/cmdline/home",
+    "USER": "gossil-baseline",
+    "LOGNAME": "gossil-baseline",
+    "LC_ALL": "C",
+    "TZ": "UTC"
+  },
+  "exit_code": 0,
+  "timeout": false,
+  "seconds": 0.184,
+  "results": [
+    {
+      "name": "cmd-line-100.1",
+      "result": "pass"
+    },
+    {
+      "name": "cmd-line-100.2",
+      "result": "pass"
+    },
+    {
+      "name": "cmd-line-100.3",
+      "result": "pass"
+    },
+    {
+      "name": "cmd-line-101.1",
+      "result": "pass"
+    },
+    {
+      "name": "cmd-line-101.2",
+      "result": "pass"
+    },
+    {
+      "name": "test-framework-cmdline",
+      "result": "pass"
+    }
+  ],
+  "counts": {
+    "pass": 6,
+    "fail": 0,
+    "ignored": 0
+  },
+  "upstream_summary": {
+    "errors": 0,
+    "tests": 6
+  },
+  "count_matches": true,
+  "skips": [],
+  "log": "/tmp/gossil-fossil-baseline-20261117/runs/cmdline/output.log",
+  "gate_pass": true
+}

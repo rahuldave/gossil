@@ -1,0 +1,72 @@
+{
+  "name": "merge6",
+  "suites": [
+    "merge6"
+  ],
+  "command": [
+    "jlog",
+    "run",
+    "tclsh",
+    "/tmp/gossil-fossil-baseline-20261117/launch.tcl",
+    "/tmp/gossil-fossil-baseline-20261117/runs/merge6/cwd",
+    "/tmp/gossil-fossil-baseline-20261117/enabled/test/tester.tcl",
+    "/Users/rahul/Projects/gossil/.jlog/bin/fossil",
+    "merge6",
+    "-keep"
+  ],
+  "cwd": "/Users/rahul/Projects/gossil",
+  "environment": {
+    "FOSSIL_HOME": "/tmp/gossil-fossil-baseline-20261117/runs/merge6/home",
+    "FOSSIL_TEST_TEMP": "/tmp/gossil-fossil-baseline-20261117/runs/merge6/tmp",
+    "TEMP": "/tmp/gossil-fossil-baseline-20261117/runs/merge6/tmp",
+    "TMP": "/tmp/gossil-fossil-baseline-20261117/runs/merge6/tmp",
+    "TMPDIR": "/tmp/gossil-fossil-baseline-20261117/runs/merge6/tmp",
+    "HOME": "/tmp/gossil-fossil-baseline-20261117/runs/merge6/home",
+    "USER": "gossil-baseline",
+    "LOGNAME": "gossil-baseline",
+    "LC_ALL": "C",
+    "TZ": "UTC"
+  },
+  "exit_code": 0,
+  "timeout": false,
+  "seconds": 1.809,
+  "results": [
+    {
+      "name": "merge_multi-0",
+      "result": "pass"
+    },
+    {
+      "name": "merge_multi-1",
+      "result": "pass"
+    },
+    {
+      "name": "merge_multi-2",
+      "result": "pass"
+    },
+    {
+      "name": "merge_multi-3",
+      "result": "pass"
+    },
+    {
+      "name": "merge_multi-4",
+      "result": "pass"
+    },
+    {
+      "name": "test-framework-merge6",
+      "result": "pass"
+    }
+  ],
+  "counts": {
+    "pass": 6,
+    "fail": 0,
+    "ignored": 0
+  },
+  "upstream_summary": {
+    "errors": 0,
+    "tests": 6
+  },
+  "count_matches": true,
+  "skips": [],
+  "log": "/tmp/gossil-fossil-baseline-20261117/runs/merge6/output.log",
+  "gate_pass": true
+}

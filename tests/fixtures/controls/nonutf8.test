@@ -1,0 +1,3 @@
+fconfigure stdout -encoding binary
+puts -nonewline stdout [binary format H* ff]
+exit 0

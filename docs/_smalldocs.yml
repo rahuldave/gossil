@@ -1,0 +1,18 @@
+project:
+  type: website
+  output-dir: _site
+
+website:
+  title: Gossil development
+  page-navigation: true
+  navbar:
+    left:
+      - href: index.md
+        text: Home
+      - href: conformance.md
+        text: Inherited-test runner
+      - href: development-plan.md
+        text: Development plan
+
+toc: true
+code-copy: true

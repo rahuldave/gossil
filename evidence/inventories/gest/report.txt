@@ -1,0 +1,15 @@
+Gest disposition inventory component
+
+Observed: pinned Gest revision and all 544 tracked entries match the pin; 541 regular-file hashes match prior reference evidence and three symlinks now distinguish pinned link-target blobs from resolved-content hashes. Fresh compiled discovery matches 867 unit and 347 integration identities; no assertions were rerun. Every file has a role, owner, proposed destination, normative disposition, rationale and exact source-resident test relation or explicit follow-up.
+
+Mapped API surfaces: 93 canonical CLI nodes including root, 72 JSON nodes, 29 alias declarations (27 command and two option aliases), 34 Axum paths with methods, exit families, shared JSON helpers/output sites, 15 schema migrations and derived tables. Contract links distinguish literal invocation or source ownership from behavioral acceptance; every unproven contract retains a follow-up.
+
+Proposed: keep CLI/API/IDs/exits/styles/Markdown and embedded server behavior while routing durable state through Fossil core records and rebuildable projections. Exact encodings/import/rebuild/private-shared rules remain required-blocked. No file is omitted or dropped. Source registration does not establish live HTTP acceptance.
+
+Prior executed evidence: default parallel and serial full unit runs passed 867 each, integration passed 347. Bounded concurrent UI tests reproduced the original task-row assertion. Global styling test interference is a source-supported inference; rendered ANSI bytes were not captured. Assertions remain unchanged.
+
+Validation: validation.json passes complete pinned-file, compiled-test and API-set checks plus all inventory foreign keys. The inventory provides a complete mapping. Semantic behavior review, implementation and phase1 acceptance remain pending.
+
+Recommendations
+
+Prefer unchanged inherited assertions with explicit compatibility adapters and global-style test isolation. Next, resolve blocked Gest/Fossil storage encodings and fill exact semantic/live-HTTP coverage before claiming acceptance.

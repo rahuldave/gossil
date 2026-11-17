@@ -1,0 +1,268 @@
+{
+  "name": "merge_renames",
+  "suites": [
+    "merge_renames"
+  ],
+  "command": [
+    "jlog",
+    "run",
+    "tclsh",
+    "/tmp/gossil-fossil-baseline-20261117/launch.tcl",
+    "/tmp/gossil-fossil-baseline-20261117/runs/merge_renames/cwd",
+    "/tmp/gossil-fossil-baseline-20261117/enabled/test/tester.tcl",
+    "/Users/rahul/Projects/gossil/.jlog/bin/fossil",
+    "merge_renames",
+    "-keep"
+  ],
+  "cwd": "/Users/rahul/Projects/gossil",
+  "environment": {
+    "FOSSIL_HOME": "/tmp/gossil-fossil-baseline-20261117/runs/merge_renames/home",
+    "FOSSIL_TEST_TEMP": "/tmp/gossil-fossil-baseline-20261117/runs/merge_renames/tmp",
+    "TEMP": "/tmp/gossil-fossil-baseline-20261117/runs/merge_renames/tmp",
+    "TMP": "/tmp/gossil-fossil-baseline-20261117/runs/merge_renames/tmp",
+    "TMPDIR": "/tmp/gossil-fossil-baseline-20261117/runs/merge_renames/tmp",
+    "HOME": "/tmp/gossil-fossil-baseline-20261117/runs/merge_renames/home",
+    "USER": "gossil-baseline",
+    "LOGNAME": "gossil-baseline",
+    "LC_ALL": "C",
+    "TZ": "UTC"
+  },
+  "exit_code": 0,
+  "timeout": false,
+  "seconds": 14.592,
+  "results": [
+    {
+      "name": "merge_renames-1",
+      "result": "pass"
+    },
+    {
+      "name": "merge_renames-2",
+      "result": "pass"
+    },
+    {
+      "name": "merge_renames-3",
+      "result": "pass"
+    },
+    {
+      "name": "merge_renames-4-1",
+      "result": "pass"
+    },
+    {
+      "name": "merge_renames-4-2",
+      "result": "pass"
+    },
+    {
+      "name": "merge_renames-5-1",
+      "result": "pass"
+    },
+    {
+      "name": "merge_renames-5-2",
+      "result": "pass"
+    },
+    {
+      "name": "merge_renames-6-1",
+      "result": "pass"
+    },
+    {
+      "name": "merge_renames-6-2",
+      "result": "pass"
+    },
+    {
+      "name": "merge_renames-6-3",
+      "result": "pass"
+    },
+    {
+      "name": "merge_renames-6-4",
+      "result": "pass"
+    },
+    {
+      "name": "merge_renames-7-1",
+      "result": "pass"
+    },
+    {
+      "name": "merge_renames-7-2",
+      "result": "pass"
+    },
+    {
+      "name": "merge_renames-7-3",
+      "result": "pass"
+    },
+    {
+      "name": "merge_renames-8-1",
+      "result": "pass"
+    },
+    {
+      "name": "merge_renames-8-2",
+      "result": "pass"
+    },
+    {
+      "name": "merge_renames-9-1",
+      "result": "pass"
+    },
+    {
+      "name": "merge_renames-9-2",
+      "result": "pass"
+    },
+    {
+      "name": "merge_renames-9-3",
+      "result": "pass"
+    },
+    {
+      "name": "merge_renames-9-4",
+      "result": "pass"
+    },
+    {
+      "name": "merge_renames-9-5",
+      "result": "pass"
+    },
+    {
+      "name": "merge_renames-9-6",
+      "result": "pass"
+    },
+    {
+      "name": "merge_renames-9-7",
+      "result": "pass"
+    },
+    {
+      "name": "merge_renames-10-1",
+      "result": "pass"
+    },
+    {
+      "name": "merge_renames-10-2",
+      "result": "pass"
+    },
+    {
+      "name": "merge_renames-10-3",
+      "result": "pass"
+    },
+    {
+      "name": "merge_renames-10-4",
+      "result": "pass"
+    },
+    {
+      "name": "merge_renames-10-5",
+      "result": "pass"
+    },
+    {
+      "name": "merge_renames-10-6",
+      "result": "pass"
+    },
+    {
+      "name": "merge_renames-10-7",
+      "result": "pass"
+    },
+    {
+      "name": "merge_renames-10-8",
+      "result": "pass"
+    },
+    {
+      "name": "merge_renames-10-9",
+      "result": "pass"
+    },
+    {
+      "name": "merge_renames-10-10",
+      "result": "pass"
+    },
+    {
+      "name": "merge_renames-11-1",
+      "result": "pass"
+    },
+    {
+      "name": "merge_renames-11-2",
+      "result": "pass"
+    },
+    {
+      "name": "merge_renames-11-3",
+      "result": "pass"
+    },
+    {
+      "name": "merge_renames-11-4",
+      "result": "pass"
+    },
+    {
+      "name": "merge_renames-12-1",
+      "result": "pass"
+    },
+    {
+      "name": "merge_renames-12-2",
+      "result": "pass"
+    },
+    {
+      "name": "merge_renames-12-3",
+      "result": "pass"
+    },
+    {
+      "name": "merge_renames-12-4",
+      "result": "pass"
+    },
+    {
+      "name": "merge_renames-12-5",
+      "result": "pass"
+    },
+    {
+      "name": "merge_renames-12-6",
+      "result": "pass"
+    },
+    {
+      "name": "merge_renames_13-1",
+      "result": "pass"
+    },
+    {
+      "name": "merge_renames_13-2",
+      "result": "pass"
+    },
+    {
+      "name": "merge_renames-13-3",
+      "result": "pass"
+    },
+    {
+      "name": "merge_renames-13-4",
+      "result": "pass"
+    },
+    {
+      "name": "merge_renames-13-5",
+      "result": "pass"
+    },
+    {
+      "name": "merge_renames-13-6",
+      "result": "pass"
+    },
+    {
+      "name": "merge_renames-13-7",
+      "result": "pass"
+    },
+    {
+      "name": "merge_renames-13-8",
+      "result": "pass"
+    },
+    {
+      "name": "merge_renames-13-9",
+      "result": "pass"
+    },
+    {
+      "name": "merge_renames-13-10",
+      "result": "pass"
+    },
+    {
+      "name": "merge_renames-13-11",
+      "result": "pass"
+    },
+    {
+      "name": "test-framework-merge_renames",
+      "result": "pass"
+    }
+  ],
+  "counts": {
+    "pass": 55,
+    "fail": 0,
+    "ignored": 0
+  },
+  "upstream_summary": {
+    "errors": 0,
+    "tests": 55
+  },
+  "count_matches": true,
+  "skips": [],
+  "log": "/tmp/gossil-fossil-baseline-20261117/runs/merge_renames/output.log",
+  "gate_pass": true
+}

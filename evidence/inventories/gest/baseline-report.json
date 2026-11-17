@@ -1,0 +1,78 @@
+{
+  "status": "reference experiments complete; source unchanged; no Gossil compatibility claim",
+  "reference_revision": "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8",
+  "environment": "environment.json",
+  "cargo_lock_sha256": "adfcf503c7a519aa8597d873bb2773ff6d823d1bf2fdd0370b69c83141f35e59",
+  "command_receipts": "runs.json",
+  "individual_test_results": "individual-results.json",
+  "baseline": {
+    "unit_count": 867,
+    "integration_count": 347,
+    "focused_original_failure": "pass alone; 1 passed, 866 filtered",
+    "default_parallel_unit": "867 pass,0fail,0ignored",
+    "serial_unit": "867 pass,0fail,0ignored",
+    "integration": "347 pass,0fail,0ignored",
+    "repeat_explicit_no_color": "867 pass,0fail; inherited NO_COLOR already1 so not a distinct color setting",
+    "prior_failed_attempt": "prior-baseline-tests.txt; original 866pass1fail, integration not executed"
+  },
+  "race_characterization": {
+    "first_bounded_stress": "10 runs of120 ui::components tests at32threads;5 failed processes",
+    "followup_bounded_stress": "maximum50 attempts, stopped after5 when original task_row test failed",
+    "exact_reproduced_failure": "color-target-05.txt;117pass3fail747filtered",
+    "diagnosis": "Source-supported inference: test helpers race on process-global yansi condition. Test-isolation source defect, schedule dependent; serial success and default parallel success do not clear it. Rendered ANSI bytes were not captured by boolean assertions.",
+    "source_evidence": [
+      {
+        "path": "src/ui/components/molecules/task_row.rs",
+        "lines": [
+          185,
+          186,
+          187,
+          188,
+          203,
+          208
+        ]
+      },
+      {
+        "path": "src/ui/components/atoms/icon.rs",
+        "lines": [
+          98,
+          99,
+          100,
+          101
+        ]
+      },
+      {
+        "path": "yansi1.0.1/src/global.rs",
+        "lines": [
+          3,
+          19,
+          20,
+          41,
+          42
+        ],
+        "observation": "static ENABLED AtomicCondition; disable stores NEVER, enable stores ALWAYS"
+      }
+    ],
+    "recommendation": "Preserve output assertions; isolate all tests that read or mutate global styling with a shared test-only lock/guard or child-process boundary, restore prior condition. Serial run is characterization, not defect repair.",
+    "runtime_implication": "CLI sets process-global style at startup; observed failing mutations are test helpers. No concurrent runtime rendering failure demonstrated. Re-evaluate global styling if library callers change style while rendering."
+  },
+  "inventories": {
+    "canonical_built_help": "cli-help.json;93 command nodes incl root; task claim present",
+    "aliases_json_exit": "compatibility.json;29 alias declarations,72 nodes expose --json",
+    "source_declarations": "cli-source-declarations.json",
+    "http": "axum-routes.json;34 registered paths with methods, fallback and middleware; source inspection not live endpoint acceptance",
+    "source_files": "source-files.json;544 tracked file hashes",
+    "limits": "JSON output sites and shared envelope inspected, not complete per-command JSON schema/behavior proof; inherited integration results cover their named contracts only. No exhaustive formal contract invented."
+  },
+  "workflow": {
+    "interface": "Gest has no Justfile. Native Cargo explicitly allowed by Gest AGENTS.md; these are reference experiments, not Gossil Just gates.",
+    "tracking": "Parent/delivery owns Gest task xowmsysx; worker did not run Gest state commands.",
+    "writes": "Scratch evidence plus normal ignored Cargo build/test outputs; no tracked source, assertions, fixtures, installed skills or task state edited.",
+    "source_status_end": "?? .gest/\n"
+  },
+  "recommendations": [
+    "Preserve the failing baseline evidence and record the global-style test-isolation defect.",
+    "Use integration347pass and unit867pass executions with race caveat; no blanket stable-parallel baseline claim.",
+    "Transplant unchanged fixtures/assertions with explicit compatible isolation, then rerun default parallel and bounded stress."
+  ]
+}

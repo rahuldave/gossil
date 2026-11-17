@@ -1,0 +1,66 @@
+{
+  "kind": "archived observed reference experiments, not Gossil acceptance",
+  "files": {
+    "/tmp/gest-baseline-rGsljN/report.json": {
+      "archive": "report.json",
+      "sha256": "04fc55e7db80be9822db677dd09402651ed36388fee5d51f1ea1784e0601d7f0",
+      "uncompressed_bytes": 4141
+    },
+    "/tmp/gest-baseline-rGsljN/environment.json": {
+      "archive": "environment.json",
+      "sha256": "c6f75112e3d8e6ccdd796ae51640f6a17dded8319321e3f64269ffe1cdbb8447",
+      "uncompressed_bytes": 10821
+    },
+    "/tmp/gest-baseline-rGsljN/runs.json": {
+      "archive": "runs.json",
+      "sha256": "0aa92af5c35d55a1d5ca8026749cb48ecbc4aa3341bc7b7f9192c52e27505d5d",
+      "uncompressed_bytes": 2479
+    },
+    "/tmp/gest-baseline-rGsljN/individual-results.json": {
+      "archive": "individual-results.json.gz",
+      "sha256": "0ab1b40632eb138632c52a68816cd405bd3923094e6f2287bbf1ca3bcf243a6b",
+      "uncompressed_bytes": 1760377
+    },
+    "/tmp/gest-baseline-rGsljN/source-files.json": {
+      "archive": "source-files.json",
+      "sha256": "147783f85a2cf2122b5c481211379ae341d226f70a13a4a1ae368e8fe9e1e907",
+      "uncompressed_bytes": 77542
+    },
+    "/tmp/gest-baseline-rGsljN/cli-help.json": {
+      "archive": "cli-help.json",
+      "sha256": "6c604afee41ff54cf72721d26388bff01941cf3acc96ba9eb9aeb9be24f77d79",
+      "uncompressed_bytes": 95572
+    },
+    "/tmp/gest-baseline-rGsljN/axum-routes.json": {
+      "archive": "axum-routes.json",
+      "sha256": "3f73a31710245c92ab250ca51674d084cfdcd359498c9239079c68e183191bc3",
+      "uncompressed_bytes": 4440
+    },
+    "/tmp/gest-baseline-rGsljN/compatibility.json": {
+      "archive": "compatibility.json",
+      "sha256": "7116eccaf5116c4311e19a405978306f5bb8cfa676df04894cbb618e7a62a800",
+      "uncompressed_bytes": 78412
+    },
+    "/tmp/gest-baseline-rGsljN/cli-source-declarations.json": {
+      "archive": "cli-source-declarations.json",
+      "sha256": "2eb0104766147d17a69457ffcca18d1ad3d4117ffb5423266ffc536c11c66bab",
+      "uncompressed_bytes": 67821
+    },
+    "/tmp/gest-baseline-rGsljN/color-target-05.txt": {
+      "archive": "color-target-05.txt",
+      "sha256": "a5ca74cf569a6ec45f3851a37f3d0c7daeb9eaa97634bb09a93bca74f56e86f2",
+      "uncompressed_bytes": 12437
+    },
+    "/tmp/gest-baseline-rGsljN/integration.txt": {
+      "archive": "integration.txt",
+      "sha256": "b779a3dec61fea5397135308ce3596318cb45468255225ca4934e26a6f46b7a0",
+      "uncompressed_bytes": 28933
+    },
+    "/tmp/gest-baseline-rGsljN/unit-serial.txt": {
+      "archive": "unit-serial.txt",
+      "sha256": "066e72cb6aa39850067c5b79198e75f8a01420fcb4a064ee0a8f69a3af070595",
+      "uncompressed_bytes": 81482
+    }
+  },
+  "limit": "Original commands and source paths describe historical runs. Archive index resolves captured artifacts. Native acquisition and source acquisition remain prerequisites."
+}

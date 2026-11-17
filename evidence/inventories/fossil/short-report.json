@@ -1,0 +1,239 @@
+{
+  "source_revision": "b3a1c8efb2731dffbd5cc38c58ac349746de6da6",
+  "file_count": 984,
+  "surfaces": {
+    "root": 16,
+    ".fossil-settings": 5,
+    ".settings": 2,
+    "autosetup": 18,
+    "compat": 228,
+    "extsrc": 13,
+    "setup": 2,
+    "skins": 92,
+    "src": 229,
+    "test": 81,
+    "tools": 78,
+    "win": 13,
+    "www": 207
+  },
+  "dispositions": {
+    "supporting-source": 779,
+    "replace-with-equivalent": 95,
+    "port": 110
+  },
+  "declared_hook_count": 161,
+  "runtime_hook_count": 158,
+  "unavailable_hooks": [
+    {
+      "canonical_name": "test-is-normal-dir",
+      "source_path": "src/file.c",
+      "source_line": 957,
+      "unavailable_reason": "Windows-only source block; absent on macOS"
+    },
+    {
+      "canonical_name": "test-hash-from-path",
+      "source_path": "src/rebuild.c",
+      "source_line": 1258,
+      "unavailable_reason": "source #if 0 dormant block; * marks declaration"
+    },
+    {
+      "canonical_name": "test-th-hook",
+      "source_path": "src/th_main.c",
+      "source_line": 3250,
+      "unavailable_reason": "FOSSIL_ENABLE_TH1_HOOKS disabled in selected reference build"
+    }
+  ],
+  "questions": [
+    {
+      "id": "CONTRACT-checkout",
+      "question": "Derive focused positive, malformed-input and state/integrity tests for versioned filesystem changes, path/permission/encoding handling, checkout state and undo; inherited suite references alone do not establish complete coverage.",
+      "status": "open required acceptance mapping"
+    },
+    {
+      "id": "CONTRACT-history",
+      "question": "Derive focused positive, malformed-input and state/integrity tests for artifact name resolution, branches, leaves, ancestry and file history; inherited suite references alone do not establish complete coverage.",
+      "status": "open required acceptance mapping"
+    },
+    {
+      "id": "CONTRACT-merge",
+      "question": "Derive focused positive, malformed-input and state/integrity tests for merge/conflict/rename behavior, stash, patch exchange and bisect state; inherited suite references alone do not establish complete coverage.",
+      "status": "open required acceptance mapping"
+    },
+    {
+      "id": "CONTRACT-diff",
+      "question": "Derive focused positive, malformed-input and state/integrity tests for diff algorithms, binary detection, output and diagnostic behavior; inherited suite references alone do not establish complete coverage.",
+      "status": "open required acceptance mapping"
+    },
+    {
+      "id": "CONTRACT-storage",
+      "question": "Derive focused positive, malformed-input and state/integrity tests for artifact parsing, crosslinks, reconstruction, integrity, shunning and purge semantics; inherited suite references alone do not establish complete coverage.",
+      "status": "open required acceptance mapping"
+    },
+    {
+      "id": "CONTRACT-database",
+      "question": "Inventory SQL functions, virtual tables, compile options, transactions/locking and schema upgrades; qualify libsql against tools/sqlcompattest.c requirements and crash/rollback fixtures without a parallel SQLite dependency.",
+      "status": "open required acceptance mapping"
+    },
+    {
+      "id": "CONTRACT-bytes",
+      "question": "Complete malformed delta/encoder interoperability, compression envelope failures, archive paths/bounds and bundle roundtrip tests; delta decoder corpus only characterizes its finite cases.",
+      "status": "open required acceptance mapping"
+    },
+    {
+      "id": "CONTRACT-hashes",
+      "question": "Record hash known-answer and collision-detection vectors, policy promotion/reuse and nonstandard SHA3 length behavior; SHA256 fixture hashes are not artifact hash coverage.",
+      "status": "open required acceptance mapping"
+    },
+    {
+      "id": "CONTRACT-sync",
+      "question": "Add C/Rust bidirectional xfer fixtures for every artifact family, private/shunned content, divergence/interruption/retry, TLS certificates and SSH/proxy failures; unversioned suite is not general sync coverage.",
+      "status": "open required acceptance mapping"
+    },
+    {
+      "id": "CONTRACT-records",
+      "question": "Map each artifact/card parser, crosslink, edit/moderation/reply/deletion/history/sync behavior to fixtures; wiki/unversioned assertions do not cover all record families.",
+      "status": "open required acceptance mapping"
+    },
+    {
+      "id": "CONTRACT-auth",
+      "question": "Add capability matrix, session/password/login-group/CSRF/captcha/moderation and adversarial privilege tests; inherited TH1/JSON references are partial and JSON build is disabled.",
+      "status": "open required acceptance mapping"
+    },
+    {
+      "id": "CONTRACT-service",
+      "question": "Preserve queues/retries/mail encoding/auth/subscriber permissions/hook ordering and subprocess behavior; adapt fake SMTP/email tools into owned-fixture tests before execution.",
+      "status": "open required acceptance mapping"
+    },
+    {
+      "id": "CONTRACT-server",
+      "question": "Map every CLI/web route and option to embedded-server/API equivalents, including CGI/SCGI/extension deployment compatibility decisions, resource limits and child lifecycle; server substitution cannot delete xfer/security/extension mechanisms.",
+      "status": "open required acceptance mapping"
+    },
+    {
+      "id": "CONTRACT-render",
+      "question": "Define intentional rendering differences and replacement assertions against chosen Gest Markdown engine; retain source examples, security/link/HTML behavior and observed th1-markdown-5 failure.",
+      "status": "open required acceptance mapping"
+    },
+    {
+      "id": "CONTRACT-wiki-render",
+      "question": "Gest Markdown substitution does not replace Fossil wiki parser or artifact semantics. Map formatting/link/safety rules and retain HTML/wiki/Markdown fixtures.",
+      "status": "open required acceptance mapping"
+    },
+    {
+      "id": "CONTRACT-scripting",
+      "question": "Specify interpreter/FFI lifecycle, Tcl8.6/9/stubs, taint/escaping/permissions, docs/hooks and error parity. Disabled reference features remain required configurations, not exclusions.",
+      "status": "open required acceptance mapping"
+    },
+    {
+      "id": "CONTRACT-query",
+      "question": "Preserve Unicode/case/glob/regexp/SQL matching and search-index consistency; add differential malformed and boundary tests, full-text query/result/permission tests.",
+      "status": "open required acceptance mapping"
+    },
+    {
+      "id": "CONTRACT-analytics",
+      "question": "Separate underlying graph/report/feed/caching algorithms from substituted presentation; map ordering/filter/permission/invalidation/SQL-report and graph fixtures to contract tests.",
+      "status": "open required acceptance mapping"
+    },
+    {
+      "id": "CONTRACT-ui-workflows",
+      "question": "Map each upstream page/action to chosen Gest UI/API flow and required engine operation, including edit conflicts, permissions, docs paths and customization; reduced UI is not an engine exemption.",
+      "status": "open required acceptance mapping"
+    },
+    {
+      "id": "CONTRACT-process",
+      "question": "Specify signing/verification, Git/SVN/import/export/mirror data parity, external command quoting/errors, multi-repository isolation and terminal formatting; add owned-process fixtures across platforms.",
+      "status": "open required acceptance mapping"
+    },
+    {
+      "id": "CONTRACT-platform-fuse",
+      "question": "Qualify FUSE-enabled reference and Rust behavior, mount/unmount/path/permission/history reads, platform availability and interruption; disabled build is not removed scope.",
+      "status": "open required acceptance mapping"
+    },
+    {
+      "id": "CONTRACT-platform-windows",
+      "question": "Resolve supported Windows contract and equivalent platform behavior before full port acceptance; run Windows native service/HTTP fixtures if required. Keep source accounted even though current host is macOS.",
+      "status": "open required acceptance mapping"
+    },
+    {
+      "id": "CONTRACT-test-infrastructure",
+      "question": "Enumerate FUZZ_* dispatch choices from source, retain seed corpus, qualify Linux sanitizer/libFuzzer and Rust fuzz equivalents; no fuzz campaign executed in this inventory.",
+      "status": "open required acceptance mapping"
+    },
+    {
+      "id": "CONTRACT-build-generation",
+      "question": "Compare embedded resource names/bytes/cache behavior and generated-resource reproducibility; retain source assets and licenses.",
+      "status": "open required acceptance mapping"
+    },
+    {
+      "id": "CONTRACT-json-api",
+      "question": "Build reference with JSON enabled; enumerate every JSON subcommand and envelope/error/auth contract, map to preserved public endpoint or explicit requirement-based replacement assertion. Current JSON suite skipped.",
+      "status": "open required acceptance mapping"
+    },
+    {
+      "id": "CONTRACT-update",
+      "question": "Preserve local changes and all conflict/update outputs; retain observed update-message-add-overwrites failure, add crash/undo and cross-checkout state fixtures.",
+      "status": "open required acceptance mapping"
+    },
+    {
+      "id": "CONTRACT-chat",
+      "question": "Explicitly map storage retention, cursor/poll delivery, attachment/download and permission/privacy semantics; transient chat is still required engine scope.",
+      "status": "open required acceptance mapping"
+    },
+    {
+      "id": "CONTRACT-diagram",
+      "question": "Choose compatible Pikchr execution strategy and test rendering/errors/resource limits/embedded integration. Gest Markdown replacement alone does not replace diagrams.",
+      "status": "open required acceptance mapping"
+    },
+    {
+      "id": "CONTRACT-build",
+      "question": "Map build options/generated resources/platform targets to reproducible Rust/reference configurations; do not treat build documentation as implemented gates.",
+      "status": "open required acceptance mapping"
+    },
+    {
+      "id": "CONTRACT-docs",
+      "question": "Extract behavioral claims/examples from each retained page and map to tests; file inventory is not a page-by-page behavioral audit.",
+      "status": "open required acceptance mapping"
+    },
+    {
+      "id": "CONTRACT-assets",
+      "question": "Decide equivalent Gest interaction/visual/accessibility/asset/license mapping; retain related engine workflow contracts and add visual/workflow tests.",
+      "status": "open required acceptance mapping"
+    },
+    {
+      "id": "CONTRACT-dependency",
+      "question": "Resolve licenses, features/ABI/compile flags and differential dependency behavior; libsql replaces SQLite family, while Tcl/diagram/compression mechanisms remain required.",
+      "status": "open required acceptance mapping"
+    },
+    {
+      "id": "CONTRACT-migration-tools",
+      "question": "Determine standalone CVS-tool support and preserved import result semantics; create fixture repositories for every conversion stage/cycle/symbol edge before any rewrite.",
+      "status": "open required acceptance mapping"
+    },
+    {
+      "id": "CONTRACT-test-surfaces",
+      "question": "Retain exact fixtures and classify runnable/manual/dormant/build/platform prerequisites; convert manual observations into assertions under owned resources before reporting passes.",
+      "status": "open required acceptance mapping"
+    }
+  ],
+  "reference_states": {
+    "pass": 25,
+    "blocked": 2,
+    "fail": 5,
+    "feature-disabled": 4,
+    "not-run": 1
+  },
+  "completion_boundary": {
+    "complete": "Every tracked file has exact identity/hash, role, normative disposition, proposed responsibility, rationale and linked test/contract relation or missing-test follow-up; every declared/native diagnostic hook maps to pinned source.",
+    "not_proven": [
+      "file-by-file behavioral correctness",
+      "complete function/branch/API/SQL schema inventory",
+      "complete assertion-to-contract mapping",
+      "Rust implementation or Gossil behavior",
+      "all reference suites passing",
+      "all build/platform configurations qualified",
+      "phase1 gate complete"
+    ]
+  },
+  "phase1_complete_claim": false,
+  "recommendation": "Review open contract questions and normative dispositions independently, then close remaining phase1 acceptance prerequisites. Advance engine phase2 only after the director records the phase1 decision."
+}

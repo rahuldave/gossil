@@ -1,0 +1,716 @@
+***** th1 ******
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval {hasfeature tcl}
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval {hasfeature th1Hooks}
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval --open-config {setting abc}
+test th1-setting-1 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval --open-config {setting -- abc}
+test th1-setting-2 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval --open-config {setting -strict abc}
+test th1-setting-3 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval --open-config {setting -strict -- abc}
+test th1-setting-4 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval --open-config {setting autosync}
+test th1-setting-5 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval --open-config {setting -strict autosync}
+test th1-setting-6 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval --open-config {setting --}
+test th1-setting-7 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval --open-config {setting -strict --}
+test th1-setting-8 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval --open-config {setting -- --}
+test th1-setting-9 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval --open-config {setting -strict -- --}
+test th1-setting-10 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval {expr 42/0}
+test th1-divide-by-zero-1 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval {expr 42/0.0}
+test th1-divide-by-zero-2 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval {expr 42.0/0}
+test th1-divide-by-zero-3 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval {expr 42.0/0.0}
+test th1-divide-by-zero-4 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval {expr 42%0}
+test th1-modulus-by-zero-1 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval {expr 42%0.0}
+test th1-modulus-by-zero-2 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval {expr 42.0%0}
+test th1-modulus-by-zero-3 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval {expr 42.0%0.0}
+test th1-modulus-by-zero-4 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval {set var 1; info exists var}
+test th1-info-exists-1 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval {set var 1; unset var; info exists var}
+test th1-info-exists-2 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval {set var 1; unset var; set var 2; info exists var}
+test th1-info-exists-3 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval {set var 1; expr {$var+0}}
+test th1-info-exists-4 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval {set var 1; unset var; expr {$var+0}}
+test th1-info-exists-5 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval {catch {bad}; info exists var; set th_stack_trace}
+test th1-info-exists-6 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval {set var(1) 1; info exists var}
+test th1-info-exists-7 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval {set var(1) 1; unset var(1); info exists var}
+test th1-info-exists-8 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval {set var(1) 1; unset var; info exists var}
+test th1-info-exists-9 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval {set var(1) 1; info exists var(1)}
+test th1-info-exists-10 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval {set var(1) 1; unset var(1); info exists var(1)}
+test th1-info-exists-11 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval {set var(1) 1; unset var; info exists var(1)}
+test th1-info-exists-12 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval {set var 1; unset var}
+test th1-unset-1 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval {unset var}
+test th1-unset-2 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval {set var 1; unset var; unset var}
+test th1-unset-3 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval {set gv 1; proc p {} {upvar 1 gv lv; unset lv}; p; unset gv}
+test th1-unset-4 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval {set gv 1; upvar 0 gv gv2; info exists gv2}
+test th1-unset-5 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval {set gv 1; upvar 0 gv gv2; unset gv; unset gv2}
+test th1-unset-6 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval {set gv 1; upvar 0 gv gv2(1); unset gv; unset gv2(1)}
+test th1-unset-7 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval {set gv(1) 1; upvar 0 gv(1) gv2; unset gv(1); unset gv2}
+test th1-unset-8 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval {string first {} {}}
+test th1-string-first-1 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval {string first {} {a}}
+test th1-string-first-2 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval {string first {a} {}}
+test th1-string-first-3 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval {string first {a} {a}}
+test th1-string-first-4 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval {string first {a} {aa}}
+test th1-string-first-5 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval {string first {aa} {a}}
+test th1-string-first-6 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval {string first {ab} {abc}}
+test th1-string-first-7 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval {string first {bc} {abc}}
+test th1-string-first-8 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval {string first {AB} {abc}}
+test th1-string-first-9 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval {string last {} {}}
+test th1-string-last-1 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval {string last {} {a}}
+test th1-string-last-2 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval {string last {a} {}}
+test th1-string-last-3 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval {string last {a} {a}}
+test th1-string-last-4 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval {string last {a} {aa}}
+test th1-string-last-5 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval {string last {aa} {a}}
+test th1-string-last-6 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval {string last {ab} {abc}}
+test th1-string-last-7 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval {string last {bc} {abc}}
+test th1-string-last-8 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval {string last {AB} {abc}}
+test th1-string-last-9 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval {expr -2147483649.0}
+test th1-expr-1 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval {expr -2147483649}
+test th1-expr-2 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval {expr -2147483648}
+test th1-expr-3 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval {expr -2147483647}
+test th1-expr-4 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval {expr -1}
+test th1-expr-5 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval {expr 0}
+test th1-expr-6 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval {expr 0.0}
+test th1-expr-7 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval {expr 1}
+test th1-expr-8 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval {expr 2147483647}
+test th1-expr-9 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval {expr 2147483648}
+test th1-expr-10 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval {expr 2147483649}
+test th1-expr-11 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval {expr +2147483649}
+test th1-expr-12 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval {expr +2147483649.0}
+test th1-expr-13 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval {expr ~(-1)}
+test th1-expr-14 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval {expr ~-1}
+test th1-expr-15 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval {expr ~0}
+test th1-expr-16 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval {expr ~+0}
+test th1-expr-17 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval {expr ~-0}
+test th1-expr-18 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval {expr ~(+0)}
+test th1-expr-19 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval {expr ~(-0)}
+test th1-expr-20 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval {expr ~1}
+test th1-expr-21 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval {expr ~+1}
+test th1-expr-22 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval {expr ~(+1)}
+test th1-expr-23 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval {expr 0+0b11}
+test th1-expr-24 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval {expr 0+0o15}
+test th1-expr-25 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval {expr 0+0x15}
+test th1-expr-26 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval {expr 0+0b2}
+test th1-expr-27 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval {expr 0+0o8}
+test th1-expr-28 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval {expr 0+0xg}
+test th1-expr-29 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval {expr 0+0b1.}
+test th1-expr-30 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval {expr 0+0o1.}
+test th1-expr-31 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval {expr 0+0x1.}
+test th1-expr-32 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval {expr 0ne5}
+test th1-expr-33 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval {expr 0b1+5}
+test th1-expr-34 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval {expr 0+0b}
+test th1-expr-35 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval {expr (-1)+1}
+test th1-expr-36 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval {expr (((-1)))}
+test th1-expr-37 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval {expr (((1)))}
+test th1-expr-38 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval {expr (((1))}
+test th1-expr-39 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval {expr ((1)))}
+test th1-expr-40 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval {expr (((1)*2)*2)}
+test th1-expr-41 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval {expr +}
+test th1-expr-42 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval {expr -}
+test th1-expr-43 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval {expr ++}
+test th1-expr-44 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval {expr --}
+test th1-expr-45 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval {lindex list +}
+test th1-expr-46 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval {lindex list -}
+test th1-expr-47 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval {lindex list +0x}
+test th1-expr-48 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval {lindex list -0x}
+test th1-expr-49 OK
+Skipping th1-anycap-*-1 perm tests: not in Fossil repo checkout.
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval {anycap a}
+test th1-anycap-no-a-1 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval {hascap a}
+test th1-hascap-no-a-1 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval {anoncap a}
+test th1-anoncap-no-a-1 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval {anycap b}
+test th1-anycap-no-b-1 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval {hascap b}
+test th1-hascap-no-b-1 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval {anoncap b}
+test th1-anoncap-no-b-1 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval {anycap c}
+test th1-anycap-no-c-1 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval {hascap c}
+test th1-hascap-no-c-1 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval {anoncap c}
+test th1-anoncap-no-c-1 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval {anycap e}
+test th1-anycap-no-e-1 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval {hascap e}
+test th1-hascap-no-e-1 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval {anoncap e}
+test th1-anoncap-no-e-1 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval {anycap f}
+test th1-anycap-no-f-1 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval {hascap f}
+test th1-hascap-no-f-1 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval {anoncap f}
+test th1-anoncap-no-f-1 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval {anycap g}
+test th1-anycap-no-g-1 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval {hascap g}
+test th1-hascap-no-g-1 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval {anoncap g}
+test th1-anoncap-no-g-1 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval {anycap h}
+test th1-anycap-no-h-1 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval {hascap h}
+test th1-hascap-no-h-1 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval {anoncap h}
+test th1-anoncap-no-h-1 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval {anycap i}
+test th1-anycap-no-i-1 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval {hascap i}
+test th1-hascap-no-i-1 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval {anoncap i}
+test th1-anoncap-no-i-1 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval {anycap j}
+test th1-anycap-no-j-1 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval {hascap j}
+test th1-hascap-no-j-1 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval {anoncap j}
+test th1-anoncap-no-j-1 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval {anycap k}
+test th1-anycap-no-k-1 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval {hascap k}
+test th1-hascap-no-k-1 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval {anoncap k}
+test th1-anoncap-no-k-1 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval {anycap l}
+test th1-anycap-no-l-1 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval {hascap l}
+test th1-hascap-no-l-1 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval {anoncap l}
+test th1-anoncap-no-l-1 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval {anycap m}
+test th1-anycap-no-m-1 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval {hascap m}
+test th1-hascap-no-m-1 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval {anoncap m}
+test th1-anoncap-no-m-1 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval {anycap n}
+test th1-anycap-no-n-1 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval {hascap n}
+test th1-hascap-no-n-1 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval {anoncap n}
+test th1-anoncap-no-n-1 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval {anycap o}
+test th1-anycap-no-o-1 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval {hascap o}
+test th1-hascap-no-o-1 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval {anoncap o}
+test th1-anoncap-no-o-1 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval {anycap p}
+test th1-anycap-no-p-1 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval {hascap p}
+test th1-hascap-no-p-1 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval {anoncap p}
+test th1-anoncap-no-p-1 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval {anycap q}
+test th1-anycap-no-q-1 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval {hascap q}
+test th1-hascap-no-q-1 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval {anoncap q}
+test th1-anoncap-no-q-1 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval {anycap r}
+test th1-anycap-no-r-1 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval {hascap r}
+test th1-hascap-no-r-1 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval {anoncap r}
+test th1-anoncap-no-r-1 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval {anycap s}
+test th1-anycap-no-s-1 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval {hascap s}
+test th1-hascap-no-s-1 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval {anoncap s}
+test th1-anoncap-no-s-1 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval {anycap t}
+test th1-anycap-no-t-1 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval {hascap t}
+test th1-hascap-no-t-1 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval {anoncap t}
+test th1-anoncap-no-t-1 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval {anycap w}
+test th1-anycap-no-w-1 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval {hascap w}
+test th1-hascap-no-w-1 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval {anoncap w}
+test th1-anoncap-no-w-1 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval {anycap x}
+test th1-anycap-no-x-1 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval {hascap x}
+test th1-hascap-no-x-1 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval {anoncap x}
+test th1-anoncap-no-x-1 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval {anycap y}
+test th1-anycap-no-y-1 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval {hascap y}
+test th1-hascap-no-y-1 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval {anoncap y}
+test th1-anoncap-no-y-1 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval {anycap z}
+test th1-anycap-no-z-1 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval {hascap z}
+test th1-hascap-no-z-1 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval {anoncap z}
+test th1-anoncap-no-z-1 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval {anycap A}
+test th1-anycap-no-A-1 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval {hascap A}
+test th1-hascap-no-A-1 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval {anoncap A}
+test th1-anoncap-no-A-1 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval {anycap D}
+test th1-anycap-no-D-1 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval {hascap D}
+test th1-hascap-no-D-1 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval {anoncap D}
+test th1-anoncap-no-D-1 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval {anycap 2}
+test th1-anycap-no-2-1 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval {hascap 2}
+test th1-hascap-no-2-1 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval {anoncap 2}
+test th1-anoncap-no-2-1 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval {anycap 3}
+test th1-anycap-no-3-1 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval {hascap 3}
+test th1-hascap-no-3-1 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval {anoncap 3}
+test th1-anoncap-no-3-1 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval {anycap 4}
+test th1-anycap-no-4-1 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval {hascap 4}
+test th1-hascap-no-4-1 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval {anoncap 4}
+test th1-anoncap-no-4-1 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval {anycap 5}
+test th1-anycap-no-5-1 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval {hascap 5}
+test th1-hascap-no-5-1 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval {anoncap 5}
+test th1-anoncap-no-5-1 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval {anycap 6}
+test th1-anycap-no-6-1 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval {hascap 6}
+test th1-hascap-no-6-1 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval {anoncap 6}
+test th1-anoncap-no-6-1 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval {anycap 7}
+test th1-anycap-no-7-1 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval {hascap 7}
+test th1-hascap-no-7-1 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval {anoncap 7}
+test th1-anoncap-no-7-1 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval {anycap oh}
+test th1-anycap-no-multiple-1 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval {hascap oh}
+test th1-hascap-no-multiple-1 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval {hascap o h}
+test th1-hascap-no-multiple-2 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval {anoncap oh}
+test th1-anoncap-no-multiple-1 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval {anoncap o h}
+test th1-anoncap-no-multiple-2 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval {checkout 1}
+test th1-checkout-3 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval checkout
+test th1-checkout-4 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval {render {}}
+test th1-render-1 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval {render {$<x> before <th1>set x 123</th1> after $<x> }}
+test th1-render-2 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval {trace {}}
+test th1-trace-1 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval --th-trace {trace {}}
+test th1-trace-2 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval {trace {this is a trace message.}}
+test th1-trace-3 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval --th-trace {trace {this is a trace message.}}
+test th1-trace-4 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval {defHeader {Page Title Here}}
+test th1-defHeader-1 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval defHeader
+test th1-defHeader-2 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval --open-config styleFooter
+test th1-footer-2 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval --open-config --cgi {styleHeader {}; styleFooter}
+test th1-footer-3 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval getParameter
+test th1-get-parameter-1 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval {getParameter test1}
+test th1-get-parameter-2 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval {getParameter test1 defValue1}
+test th1-get-parameter-3 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval setParameter
+test th1-set-parameter-1 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval {setParameter test1 value1; getParameter test1}
+test th1-set-parameter-2 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval {setParameter test2 value2; getParameter test1}
+test th1-set-parameter-3 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval {setParameter test3 value3; getParameter test3}
+test th1-set-parameter-4 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval {setParameter test3 value3; getParameter test3 defValue3}
+test th1-set-parameter-5 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval {setParameter test4 value4; setParameter test4 value5; getParameter test4}
+test th1-set-parameter-6 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval {setParameter test4 value4; setParameter test4 value5; getParameter test4 defValue4}
+test th1-set-parameter-7 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval artifact
+test th1-artifact-1 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval --open-config {artifact 0000000000}
+test th1-artifact-5 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval --open-config {artifact 0000000000 test/th1.test}
+test th1-artifact-9 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval --open-config {globalState configuration}
+test th1-globalState-4 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval {globalState executable}
+test th1-globalState-5 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval {globalState log}
+test th1-globalState-6 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval --errorlog foserrors.log {globalState log}
+test th1-globalState-7 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval {globalState top}
+test th1-globalState-10 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval {globalState user}
+test th1-globalState-11 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval --user fossil-th1-test {globalState user}
+test th1-globalState-12 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval {globalState vfs}
+test th1-globalState-13 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval {globalState vfs}
+test th1-globalState-14 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval --vfs unix-dotfile {globalState vfs}
+test th1-globalState-15 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval {globalState flags}
+test th1-globalState-16 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval {reinitialize 1; globalState configuration}
+test th1-reinitialize-2 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval {info vars}
+test th1-info-vars-1 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval {set x 1; info vars}
+test th1-info-vars-2 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval {set x 1; unset x; info vars}
+test th1-info-vars-3 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval {proc foo {} {set x 1; info vars}; foo}
+test th1-info-vars-4 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval {set y 1; proc foo {} {set x 1; uplevel 1 {info vars}}; foo}
+test th1-info-vars-5 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval {array exists foo}
+test th1-array-exists-1 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval {set foo(x) 1; array exists foo}
+test th1-array-exists-2 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval {set foo(x) 1; unset foo(x); array exists foo}
+test th1-array-exists-3 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval {set foo(x) 1; unset foo; array exists foo}
+test th1-array-exists-4 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval {set foo 1; array exists foo}
+test th1-array-exists-5 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval {array names foo}
+test th1-array-names-1 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval {set foo 2; array names foo}
+test th1-array-names-2 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval {set foo 2; unset foo; set foo(x) 2; array names foo}
+test th1-array-names-3 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval {set foo(x) 2; array names foo}
+test th1-array-names-4 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval {set foo(x) 2; set foo(y) 2; array names foo}
+test th1-array-names-5 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval {set foo(x) 2; unset foo(x); array names foo}
+test th1-array-names-6 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval lsearch
+test th1-lsearch-1 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval {lsearch a}
+test th1-lsearch-2 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval {lsearch a a a}
+test th1-lsearch-3 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval {lsearch {a b c} a}
+test th1-lsearch-4 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval {lsearch {a b c} b}
+test th1-lsearch-5 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval {lsearch {a b c} c}
+test th1-lsearch-6 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval {lsearch {a b c} d}
+test th1-lsearch-7 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval {lsearch {a b c} aa}
+test th1-lsearch-8 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval {lsearch {aa b c} a}
+test th1-lsearch-9 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval lsearch\ \"\{aa\ b\ c\"\ a
+test th1-lsearch-10 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval glob_match
+test th1-glob-match-1 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval {glob_match -one}
+test th1-glob-match-2 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval {glob_match --}
+test th1-glob-match-3 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval {glob_match -one --}
+test th1-glob-match-4 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval {glob_match -one -- 1}
+test th1-glob-match-5 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval {glob_match -one -- 1 2 3}
+test th1-glob-match-6 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval {list [glob_match a A] [glob_match A a]}
+test th1-glob-match-7 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval {list [glob_match a,b a] [glob_match a,b b]}
+test th1-glob-match-8 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval {list [glob_match -one a,b a] [glob_match -one a,b b]}
+test th1-glob-match-9 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval {list [glob_match -one a,b a,b] [glob_match -one a b,a]}
+test th1-glob-match-10 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval {list [glob_match a*c abc] [glob_match abc a*c]}
+test th1-glob-match-11 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval {list [glob_match a?c abc] [glob_match abc a?c]}
+test th1-glob-match-12 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval {list [glob_match {a[bd]c} abc] [glob_match abc {a[bd]c}]}
+test th1-glob-match-13 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval {string is}
+test th1-string-is-1 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval {string is something}
+test th1-string-is-2 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval {string is not something else}
+test th1-string-is-3 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval {string is other 123}
+test th1-string-is-4 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval {string is alnum 123}
+test th1-string-is-5 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval {string is alnum abc}
+test th1-string-is-6 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval {string is alnum 123abc}
+test th1-string-is-7 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval {string is alnum abc123}
+test th1-string-is-8 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval {string is alnum _abc123}
+test th1-string-is-9 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval {string is alnum abc.123}
+test th1-string-is-10 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval {string is alnum abc123_}
+test th1-string-is-11 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval {string is list ""}
+test th1-string-is-12 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval {string is list 1}
+test th1-string-is-13 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval {string is list "1 2 3"}
+test th1-string-is-14 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval {string is list "\{"}
+test th1-string-is-15 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval {string is list "1 2 3 \{"}
+test th1-string-is-16 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval {string is list "1 2 3 \{\}"}
+test th1-string-is-17 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval {string is list "1 2 3 \{\{\}"}
+test th1-string-is-18 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval {string is double 123}
+test th1-string-is-19 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval {string is double 123.456}
+test th1-string-is-20 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval {string is double 123abc}
+test th1-string-is-21 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval {string is double 123_456}
+test th1-string-is-22 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval {string is integer 123}
+test th1-string-is-23 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval {string is integer 123.456}
+test th1-string-is-24 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval {string is integer 123abc}
+test th1-string-is-25 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval {string is integer 0b11001001}
+test th1-string-is-26 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval {string is integer 0b11001002}
+test th1-string-is-27 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval {string is integer 0o777}
+test th1-string-is-28 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval {string is integer 0o778}
+test th1-string-is-29 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval {string is integer 0xC0DEF00D}
+test th1-string-is-30 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval {string is integer 0xC0DEF00Z}
+test th1-string-is-31 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval {string index "" -1}
+test th1-string-index-1 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval {string index "" 0}
+test th1-string-index-2 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval {string index "" 1}
+test th1-string-index-3 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval {string index "" 2}
+test th1-string-index-4 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval {string index "" end}
+test th1-string-index-5 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval {string index A -1}
+test th1-string-index-6 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval {string index A 0}
+test th1-string-index-7 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval {string index A 1}
+test th1-string-index-8 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval {string index A 2}
+test th1-string-index-9 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval {string index A end}
+test th1-string-index-10 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval {string index ABC -1}
+test th1-string-index-11 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval {string index ABC 0}
+test th1-string-index-12 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval {string index ABC 1}
+test th1-string-index-13 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval {string index ABC 2}
+test th1-string-index-14 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval {string index ABC end}
+test th1-string-index-15 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval markdown
+test th1-markdown-1 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval {markdown one two}
+test th1-markdown-2 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval {markdown "*This is a test.*"}
+test th1-markdown-3 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval {markdown "Test1\n=====\n*This is a test.*"}
+test th1-markdown-4 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval {markdown {
+Markdown Formatter Test Document
+================================
+
+This document is designed to test the markdown formatter.
+
+ * A bullet item.
+     *  A subitem
+ * Second bullet
+
+More text
+
+ 1. Enumeration
+    1.1.  Subitem 1
+    1.2.  Subitem 2
+ 2. Second enumeration.
+
+Another paragraph.
+
+
+
+Other Features
+--------------
+
+Text can show *emphasis* or _emphasis_ or **strong emphassis**.
+}}
+test th1-markdown-5 FAILED!
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval {markdown "*This is\\*a test.*\n_second\\_test_"}
+test th1-markdown-6 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval {encode64 test}
+test th1-encode64-1 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval {encode64 test\x00}
+test th1-encode64-2 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval {array exists tcl_platform}
+test th1-platform-1 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval {array names tcl_platform}
+test th1-platform-2 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval {set tcl_platform(engine)}
+test th1-platform-3 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval {set tcl_platform(platform)}
+test th1-platform-4 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-source /private/tmp/gossil-fossil-baseline-20261117/runs/parallel-th1/tmp/th1-47849.th1
+test th1-source-1 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil unversioned add ten.txt
+/Users/rahul/Projects/gossil/.jlog/bin/fossil unversioned list
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval --open-config {unversioned list}
+test th1-unversioned-1 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil test-th-eval --open-config {string length [unversioned content ten.txt]}
+test th1-unversioned-2 OK
+test test-framework-th1 OK
+***** End of th1: 1 errors so far ******
+***** Final results: 1 errors out of 341 tests
+***** Considered failures: th1-markdown-5
+***** Ignored results: 0 ignored errors out of 341 tests

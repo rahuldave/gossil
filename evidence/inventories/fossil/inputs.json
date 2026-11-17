@@ -1,0 +1,22 @@
+{
+  "/Users/rahul/Projects/AIProjectInfra/docs/gossil/evidence/fossil-inventory.json": {
+    "sha256": "0c3448b082c88662f37343dbdd0e6853b582065002c9c29fb487ba228609ffaf",
+    "role": "reused pinned evidence; not modified"
+  },
+  "/tmp/gossil-fossil-baseline-20261117/pristine-files.json": {
+    "sha256": "592de9816bc307c6cf2c09aaeb9aa230682c5398daba50b3c834f420bcc34989",
+    "role": "reused pinned evidence; not modified"
+  },
+  "/tmp/gossil-fossil-baseline-20261117/baseline-240s.json": {
+    "sha256": "d33b2f4329b6b1237b92b48c35e1f25618c2063b9be5b6d63c6e2b933828f3d3",
+    "role": "reused pinned evidence; not modified"
+  },
+  "/tmp/gossil-fossil-baseline-20261117/capability-inventory.json": {
+    "sha256": "43c0e686fe8cac7a006993e21e119852bea7f715565ff2a68c72917d3793a9c2",
+    "role": "reused pinned evidence; not modified"
+  },
+  "/tmp/gossil-delta-decoder-corpus-20261117/manifest.json": {
+    "sha256": "c06649fe77359d10c353afefb8d7a5fb298a75925dcd3276e5f3ebf68b002b02",
+    "role": "reused pinned evidence; not modified"
+  }
+}

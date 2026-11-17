@@ -1,0 +1,47 @@
+{
+  "schema_version": 1,
+  "package": "jnterfaces",
+  "source_repository": "git@github.com:rahuldave/jnterfaces.git",
+  "source_revision": "338ca39105397177d51fdc1bbb555b80f2bc22de",
+  "source_worktree_dirty": false,
+  "source_requested_commit": null,
+  "skills": [
+    "docs",
+    "just"
+  ],
+  "skill_folders": [
+    "docs",
+    "just"
+  ],
+  "extras": [
+    ".agents/install.just"
+  ],
+  "merged_hooks": {},
+  "created_settings": [],
+  "seeds": {},
+  "managed_files": {
+    ".agents/install.just": "43d0f8bac0bc134a81fe5eafbe468192d6c63c1c5388065f2d5b6fbaba302fe1",
+    ".agents/skills/docs/SKILL.md": "6d3c14e04c3d21c1878ca7dd4027f4bfc439616d1cf902be19b082feb9474cf3",
+    ".agents/skills/docs/agents/openai.yaml": "eca180f1864565b70ec21ca724d33f302ef362f4a9324d49a5b649f4eca70568",
+    ".agents/skills/docs/assets/_smalldocs.yml": "0f34f9fd7725485be342639ec5330b4c2c0430cf857d035babf3837c375d3c72",
+    ".agents/skills/docs/assets/docs-publish.yml": "e4de9535ff480d931d7be0b85076466b03f5f4e99e7850fcce4ab2e2575e773d",
+    ".agents/skills/docs/assets/index.md": "85903a9ba6ed20903835d013630b90f17345b8732ab2c25d20e8a1f3b955a5b7",
+    ".agents/skills/docs/docs.just": "ecacf4f0d60b0639bc9b15a648e842b7f64c3fa1f85481bfc08d67c53834ec36",
+    ".agents/skills/docs/docs_publish.py": "a6db1dce128acd1fc6dd6fbc0ea5ac69ec37798acd8cfff6b004de436211183c",
+    ".agents/skills/just/SKILL.md": "ee77a2a68bbe366662f2f803579ade5d7173ca81d493de98c2582a93dd8f3035",
+    ".agents/skills/just/agents/openai.yaml": "c7ce3f44bded5f34dd32feb8fb1ce2d05b032cb31c7e8ceb74849e31bf4ab0fa",
+    ".agents/skills/just/assets/templates/agent-contract.just": "0d7bc8e190e4da64a1c3d59f06e9d7c990ba265272c97c051844b6df88a77f85",
+    ".agents/skills/just/assets/templates/browser-agent.just": "edfa2c9c7790ed0325dd573677ce0aba347a5b21af827911c5564f8a5157720a",
+    ".agents/skills/just/assets/templates/go.just": "1a032632727803acf2f6739ec3aa80acfca1cca62cdbac9fec7d31fd699bce32",
+    ".agents/skills/just/assets/templates/house-style.just": "463dd689459f1a890105943e1f0dd0cab9bbbd7c19a24af6a9924ba6dacd3db2",
+    ".agents/skills/just/assets/templates/npm-local-cache.just": "104b57b6f7492ab1c632e98cfa30e18d62e3f70c897858f0683784cba6a2dda1",
+    ".agents/skills/just/assets/templates/python-uv.just": "8d16f54021042bcdca4d7ba5b7532165f5525e9fd264cfc8fa564134ec7dd402",
+    ".agents/skills/just/assets/templates/rust-cargo.just": "c34885624e63e42d5699dcbbf730d6ecb77639a4aabaef4a76e4238bd5324120",
+    ".agents/skills/just/assets/templates/typescript-npm.just": "bea190d495b633430a21f59fa9859769154d37b9c0254ab3c4aa32d76c14a3cd",
+    ".agents/skills/just/references/command_contract.md": "65747447c3b5e4ab4fe9f76a4848b10c1baf7566e876c86a6a8991dd8cdf60a9"
+  },
+  "claude_links": [
+    "docs",
+    "just"
+  ]
+}

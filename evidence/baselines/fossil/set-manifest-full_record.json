@@ -1,0 +1,328 @@
+{
+  "name": "parallel-set-manifest",
+  "suites": [
+    "set-manifest"
+  ],
+  "command": [
+    "jlog",
+    "run",
+    "tclsh",
+    "/private/tmp/gossil-fossil-baseline-20261117/launch.tcl",
+    "/private/tmp/gossil-fossil-baseline-20261117/runs/parallel-set-manifest/cwd",
+    "/private/tmp/gossil-fossil-baseline-20261117/enabled/test/tester.tcl",
+    "/Users/rahul/Projects/gossil/.jlog/bin/fossil",
+    "set-manifest",
+    "-keep"
+  ],
+  "cwd": "/Users/rahul/Projects/gossil",
+  "environment": {
+    "FOSSIL_HOME": "/private/tmp/gossil-fossil-baseline-20261117/runs/parallel-set-manifest/home",
+    "FOSSIL_TEST_TEMP": "/private/tmp/gossil-fossil-baseline-20261117/runs/parallel-set-manifest/tmp",
+    "TEMP": "/private/tmp/gossil-fossil-baseline-20261117/runs/parallel-set-manifest/tmp",
+    "TMP": "/private/tmp/gossil-fossil-baseline-20261117/runs/parallel-set-manifest/tmp",
+    "TMPDIR": "/private/tmp/gossil-fossil-baseline-20261117/runs/parallel-set-manifest/tmp",
+    "HOME": "/private/tmp/gossil-fossil-baseline-20261117/runs/parallel-set-manifest/home",
+    "USER": "gossil-baseline",
+    "LOGNAME": "gossil-baseline",
+    "LC_ALL": "C",
+    "TZ": "UTC"
+  },
+  "exit_code": 0,
+  "timeout": false,
+  "seconds": 4.795,
+  "results": [
+    {
+      "name": "set-manifest-1",
+      "result": "pass"
+    },
+    {
+      "name": "set-manifest-1-n",
+      "result": "pass"
+    },
+    {
+      "name": "set-manifest-2-true",
+      "result": "pass"
+    },
+    {
+      "name": "set-manifest-2-true-a",
+      "result": "pass"
+    },
+    {
+      "name": "set-manifest-2-true-n",
+      "result": "pass"
+    },
+    {
+      "name": "set-manifest-2-true-f-manifest",
+      "result": "pass"
+    },
+    {
+      "name": "set-manifest-2-true-f-manifest.uuid",
+      "result": "pass"
+    },
+    {
+      "name": "set-manifest-2-on",
+      "result": "pass"
+    },
+    {
+      "name": "set-manifest-2-on-a",
+      "result": "pass"
+    },
+    {
+      "name": "set-manifest-2-on-n",
+      "result": "pass"
+    },
+    {
+      "name": "set-manifest-2-on-f-manifest",
+      "result": "pass"
+    },
+    {
+      "name": "set-manifest-2-on-f-manifest.uuid",
+      "result": "pass"
+    },
+    {
+      "name": "set-manifest-2-1",
+      "result": "pass"
+    },
+    {
+      "name": "set-manifest-2-1-a",
+      "result": "pass"
+    },
+    {
+      "name": "set-manifest-2-1-n",
+      "result": "pass"
+    },
+    {
+      "name": "set-manifest-2-1-f-manifest",
+      "result": "pass"
+    },
+    {
+      "name": "set-manifest-2-1-f-manifest.uuid",
+      "result": "pass"
+    },
+    {
+      "name": "set-manifest-2-uuid",
+      "result": "pass"
+    },
+    {
+      "name": "set-manifest-3-false",
+      "result": "pass"
+    },
+    {
+      "name": "set-manifest-3-false-a",
+      "result": "pass"
+    },
+    {
+      "name": "set-manifest-3-false-n",
+      "result": "pass"
+    },
+    {
+      "name": "set-manifest-3-off",
+      "result": "pass"
+    },
+    {
+      "name": "set-manifest-3-off-a",
+      "result": "pass"
+    },
+    {
+      "name": "set-manifest-3-off-n",
+      "result": "pass"
+    },
+    {
+      "name": "set-manifest-3-0",
+      "result": "pass"
+    },
+    {
+      "name": "set-manifest-3-0-a",
+      "result": "pass"
+    },
+    {
+      "name": "set-manifest-3-0-n",
+      "result": "pass"
+    },
+    {
+      "name": "set-manifest-4",
+      "result": "pass"
+    },
+    {
+      "name": "set-manifest-4-a",
+      "result": "pass"
+    },
+    {
+      "name": "set-manifest-4-n",
+      "result": "pass"
+    },
+    {
+      "name": "set-manifest-5-r",
+      "result": "pass"
+    },
+    {
+      "name": "set-manifest-5-r-a",
+      "result": "pass"
+    },
+    {
+      "name": "set-manifest-5-r-n",
+      "result": "pass"
+    },
+    {
+      "name": "set-manifest-5-r-f-manifest",
+      "result": "pass"
+    },
+    {
+      "name": "set-manifest-5-u",
+      "result": "pass"
+    },
+    {
+      "name": "set-manifest-5-u-a",
+      "result": "pass"
+    },
+    {
+      "name": "set-manifest-5-u-n",
+      "result": "pass"
+    },
+    {
+      "name": "set-manifest-5-u-f-manifest.uuid",
+      "result": "pass"
+    },
+    {
+      "name": "set-manifest-5-t",
+      "result": "pass"
+    },
+    {
+      "name": "set-manifest-5-t-a",
+      "result": "pass"
+    },
+    {
+      "name": "set-manifest-5-t-n",
+      "result": "pass"
+    },
+    {
+      "name": "set-manifest-5-t-f-manifest.tags",
+      "result": "pass"
+    },
+    {
+      "name": "set-manifest-5-ru",
+      "result": "pass"
+    },
+    {
+      "name": "set-manifest-5-ru-a",
+      "result": "pass"
+    },
+    {
+      "name": "set-manifest-5-ru-n",
+      "result": "pass"
+    },
+    {
+      "name": "set-manifest-5-ru-f-manifest",
+      "result": "pass"
+    },
+    {
+      "name": "set-manifest-5-ru-f-manifest.uuid",
+      "result": "pass"
+    },
+    {
+      "name": "set-manifest-5-ut",
+      "result": "pass"
+    },
+    {
+      "name": "set-manifest-5-ut-a",
+      "result": "pass"
+    },
+    {
+      "name": "set-manifest-5-ut-n",
+      "result": "pass"
+    },
+    {
+      "name": "set-manifest-5-ut-f-manifest.tags",
+      "result": "pass"
+    },
+    {
+      "name": "set-manifest-5-ut-f-manifest.uuid",
+      "result": "pass"
+    },
+    {
+      "name": "set-manifest-5-rt",
+      "result": "pass"
+    },
+    {
+      "name": "set-manifest-5-rt-a",
+      "result": "pass"
+    },
+    {
+      "name": "set-manifest-5-rt-n",
+      "result": "pass"
+    },
+    {
+      "name": "set-manifest-5-rt-f-manifest",
+      "result": "pass"
+    },
+    {
+      "name": "set-manifest-5-rt-f-manifest.tags",
+      "result": "pass"
+    },
+    {
+      "name": "set-manifest-5-rut",
+      "result": "pass"
+    },
+    {
+      "name": "set-manifest-5-rut-a",
+      "result": "pass"
+    },
+    {
+      "name": "set-manifest-5-rut-n",
+      "result": "pass"
+    },
+    {
+      "name": "set-manifest-5-rut-f-manifest",
+      "result": "pass"
+    },
+    {
+      "name": "set-manifest-5-rut-f-manifest.tags",
+      "result": "pass"
+    },
+    {
+      "name": "set-manifest-5-rut-f-manifest.uuid",
+      "result": "pass"
+    },
+    {
+      "name": "set-manifest-6",
+      "result": "pass"
+    },
+    {
+      "name": "set-manifest-7-1",
+      "result": "pass"
+    },
+    {
+      "name": "set-manifest-7-2",
+      "result": "pass"
+    },
+    {
+      "name": "set-manifest-7-3",
+      "result": "pass"
+    },
+    {
+      "name": "set-manifest-7-4",
+      "result": "pass"
+    },
+    {
+      "name": "set-manifest-8",
+      "result": "pass"
+    },
+    {
+      "name": "test-framework-set-manifest",
+      "result": "pass"
+    }
+  ],
+  "counts": {
+    "pass": 70,
+    "fail": 0,
+    "ignored": 0
+  },
+  "upstream_summary": {
+    "errors": 0,
+    "tests": 70
+  },
+  "count_matches": true,
+  "skips": [],
+  "log": "/private/tmp/gossil-fossil-baseline-20261117/runs/parallel-set-manifest/output.log",
+  "gate_pass": true
+}

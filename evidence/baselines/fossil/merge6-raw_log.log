@@ -1,0 +1,28 @@
+***** merge6 ******
+/Users/rahul/Projects/gossil/.jlog/bin/fossil ls
+test merge_multi-0 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil add f1
+/Users/rahul/Projects/gossil/.jlog/bin/fossil commit -m {base file}
+/Users/rahul/Projects/gossil/.jlog/bin/fossil ls
+test merge_multi-1 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil update trunk
+/Users/rahul/Projects/gossil/.jlog/bin/fossil add f2
+/Users/rahul/Projects/gossil/.jlog/bin/fossil commit -m {branch for file f2} -b branch_for_f2
+/Users/rahul/Projects/gossil/.jlog/bin/fossil ls
+test merge_multi-2 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil update trunk
+/Users/rahul/Projects/gossil/.jlog/bin/fossil add f3
+/Users/rahul/Projects/gossil/.jlog/bin/fossil add f4
+/Users/rahul/Projects/gossil/.jlog/bin/fossil commit -m {branch for files f3 and f4} -b branch_for_f3_f4
+/Users/rahul/Projects/gossil/.jlog/bin/fossil ls
+test merge_multi-3 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil update trunk
+/Users/rahul/Projects/gossil/.jlog/bin/fossil merge branch_for_f2
+/Users/rahul/Projects/gossil/.jlog/bin/fossil merge branch_for_f3_f4
+/Users/rahul/Projects/gossil/.jlog/bin/fossil commit -m {new trunk files f2, f3, and f4 via merge}
+/Users/rahul/Projects/gossil/.jlog/bin/fossil ls
+test merge_multi-4 OK
+test test-framework-merge6 OK
+***** End of merge6: 0 errors so far ******
+***** Final results: 0 errors out of 6 tests
+***** Ignored results: 0 ignored errors out of 6 tests

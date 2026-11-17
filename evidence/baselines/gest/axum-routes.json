@@ -1,0 +1,221 @@
+{
+  "source": "src/web.rs::router",
+  "routes": [
+    {
+      "path": "/",
+      "methods": {
+        "GET": "handlers::dashboard"
+      }
+    },
+    {
+      "path": "/_dashboard",
+      "methods": {
+        "GET": "handlers::dashboard_fragment"
+      }
+    },
+    {
+      "path": "/artifacts",
+      "methods": {
+        "GET": "handlers::artifact_list",
+        "POST": "handlers::artifact_create_submit"
+      }
+    },
+    {
+      "path": "/artifacts/_list",
+      "methods": {
+        "GET": "handlers::artifact_list_fragment"
+      }
+    },
+    {
+      "path": "/artifacts/new",
+      "methods": {
+        "GET": "handlers::artifact_create_form"
+      }
+    },
+    {
+      "path": "/artifacts/{id}",
+      "methods": {
+        "GET": "handlers::artifact_detail",
+        "POST": "handlers::artifact_update"
+      }
+    },
+    {
+      "path": "/artifacts/{id}/_detail",
+      "methods": {
+        "GET": "handlers::artifact_detail_fragment"
+      }
+    },
+    {
+      "path": "/artifacts/{id}/archive",
+      "methods": {
+        "POST": "handlers::artifact_archive"
+      }
+    },
+    {
+      "path": "/artifacts/{id}/edit",
+      "methods": {
+        "GET": "handlers::artifact_edit_form"
+      }
+    },
+    {
+      "path": "/artifacts/{id}/notes",
+      "methods": {
+        "POST": "handlers::artifact_note_add"
+      }
+    },
+    {
+      "path": "/avatars/{hash}",
+      "methods": {
+        "GET": "handlers::avatar_get"
+      }
+    },
+    {
+      "path": "/events",
+      "methods": {
+        "GET": "sse::events"
+      }
+    },
+    {
+      "path": "/api/search",
+      "methods": {
+        "GET": "handlers::api_search"
+      }
+    },
+    {
+      "path": "/api/render-markdown",
+      "methods": {
+        "POST": "handlers::api_render_markdown"
+      }
+    },
+    {
+      "path": "/graphs",
+      "methods": {
+        "GET": "handlers::graph_relationships"
+      }
+    },
+    {
+      "path": "/graphs/relationships",
+      "methods": {
+        "GET": "handlers::graph_relationships"
+      }
+    },
+    {
+      "path": "/graphs/phases",
+      "methods": {
+        "GET": "handlers::graph_phases"
+      }
+    },
+    {
+      "path": "/iterations",
+      "methods": {
+        "GET": "handlers::iteration_list"
+      }
+    },
+    {
+      "path": "/iterations/_list",
+      "methods": {
+        "GET": "handlers::iteration_list_fragment"
+      }
+    },
+    {
+      "path": "/iterations/{id}",
+      "methods": {
+        "GET": "handlers::iteration_detail"
+      }
+    },
+    {
+      "path": "/iterations/{id}/board",
+      "methods": {
+        "GET": "handlers::iteration_board"
+      }
+    },
+    {
+      "path": "/iterations/{id}/_detail",
+      "methods": {
+        "GET": "handlers::iteration_detail_fragment"
+      }
+    },
+    {
+      "path": "/iterations/{id}/_board",
+      "methods": {
+        "GET": "handlers::iteration_board_fragment"
+      }
+    },
+    {
+      "path": "/search",
+      "methods": {
+        "GET": "handlers::search"
+      }
+    },
+    {
+      "path": "/tasks",
+      "methods": {
+        "GET": "handlers::task_list",
+        "POST": "handlers::task_create_submit"
+      }
+    },
+    {
+      "path": "/tasks/_board",
+      "methods": {
+        "GET": "handlers::task_board_fragment"
+      }
+    },
+    {
+      "path": "/tasks/_list",
+      "methods": {
+        "GET": "handlers::task_list_fragment"
+      }
+    },
+    {
+      "path": "/tasks/board",
+      "methods": {
+        "GET": "handlers::task_board"
+      }
+    },
+    {
+      "path": "/tasks/new",
+      "methods": {
+        "GET": "handlers::task_create_form"
+      }
+    },
+    {
+      "path": "/tasks/{id}",
+      "methods": {
+        "GET": "handlers::task_detail",
+        "POST": "handlers::task_update"
+      }
+    },
+    {
+      "path": "/tasks/{id}/_detail",
+      "methods": {
+        "GET": "handlers::task_detail_fragment"
+      }
+    },
+    {
+      "path": "/tasks/{id}/edit",
+      "methods": {
+        "GET": "handlers::task_edit_form"
+      }
+    },
+    {
+      "path": "/tasks/{id}/notes",
+      "methods": {
+        "POST": "handlers::note_add"
+      }
+    },
+    {
+      "path": "/static/{*path}",
+      "methods": {
+        "GET": "assets::serve"
+      }
+    }
+  ],
+  "fallback": "handlers::not_found",
+  "middleware": [
+    "request_log::log_request",
+    "security_headers::add_security_headers",
+    "nonce::attach_nonce",
+    "csrf::csrf_layer"
+  ],
+  "scope": "source route registration only; not live HTTP validation"
+}

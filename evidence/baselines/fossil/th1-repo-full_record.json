@@ -1,0 +1,120 @@
+{
+  "name": "parallel-th1-repo",
+  "suites": [
+    "th1-repo"
+  ],
+  "command": [
+    "jlog",
+    "run",
+    "tclsh",
+    "/private/tmp/gossil-fossil-baseline-20261117/launch.tcl",
+    "/private/tmp/gossil-fossil-baseline-20261117/runs/parallel-th1-repo/cwd",
+    "/private/tmp/gossil-fossil-baseline-20261117/enabled/test/tester.tcl",
+    "/Users/rahul/Projects/gossil/.jlog/bin/fossil",
+    "th1-repo",
+    "-keep"
+  ],
+  "cwd": "/Users/rahul/Projects/gossil",
+  "environment": {
+    "FOSSIL_HOME": "/private/tmp/gossil-fossil-baseline-20261117/runs/parallel-th1-repo/home",
+    "FOSSIL_TEST_TEMP": "/private/tmp/gossil-fossil-baseline-20261117/runs/parallel-th1-repo/tmp",
+    "TEMP": "/private/tmp/gossil-fossil-baseline-20261117/runs/parallel-th1-repo/tmp",
+    "TMP": "/private/tmp/gossil-fossil-baseline-20261117/runs/parallel-th1-repo/tmp",
+    "TMPDIR": "/private/tmp/gossil-fossil-baseline-20261117/runs/parallel-th1-repo/tmp",
+    "HOME": "/private/tmp/gossil-fossil-baseline-20261117/runs/parallel-th1-repo/home",
+    "USER": "gossil-baseline",
+    "LOGNAME": "gossil-baseline",
+    "LC_ALL": "C",
+    "TZ": "UTC"
+  },
+  "exit_code": 0,
+  "timeout": false,
+  "seconds": 0.613,
+  "results": [
+    {
+      "name": "th1-dir-1",
+      "result": "pass"
+    },
+    {
+      "name": "th1-dir-2.1",
+      "result": "pass"
+    },
+    {
+      "name": "th1-dir-2.2",
+      "result": "pass"
+    },
+    {
+      "name": "th1-dir-2.3",
+      "result": "pass"
+    },
+    {
+      "name": "th1-dir-2.4",
+      "result": "pass"
+    },
+    {
+      "name": "th1-dir-3.1",
+      "result": "pass"
+    },
+    {
+      "name": "th1-dir-3.2",
+      "result": "pass"
+    },
+    {
+      "name": "th1-dir-3.3",
+      "result": "pass"
+    },
+    {
+      "name": "th1-dir-3.4",
+      "result": "pass"
+    },
+    {
+      "name": "th1-dir-3.5",
+      "result": "pass"
+    },
+    {
+      "name": "th1-dir-3.6",
+      "result": "pass"
+    },
+    {
+      "name": "th1-dir-3.7",
+      "result": "pass"
+    },
+    {
+      "name": "th1-dir-3.8",
+      "result": "pass"
+    },
+    {
+      "name": "th1-dir-3.9",
+      "result": "pass"
+    },
+    {
+      "name": "th1-dir-3.10",
+      "result": "pass"
+    },
+    {
+      "name": "th1-dir-3.11",
+      "result": "pass"
+    },
+    {
+      "name": "th1-dir-3.12",
+      "result": "pass"
+    },
+    {
+      "name": "test-framework-th1-repo",
+      "result": "pass"
+    }
+  ],
+  "counts": {
+    "pass": 18,
+    "fail": 0,
+    "ignored": 0
+  },
+  "upstream_summary": {
+    "errors": 0,
+    "tests": 18
+  },
+  "count_matches": true,
+  "skips": [],
+  "log": "/private/tmp/gossil-fossil-baseline-20261117/runs/parallel-th1-repo/output.log",
+  "gate_pass": true
+}

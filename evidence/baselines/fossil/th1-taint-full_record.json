@@ -1,0 +1,144 @@
+{
+  "name": "parallel-th1-taint",
+  "suites": [
+    "th1-taint"
+  ],
+  "command": [
+    "jlog",
+    "run",
+    "tclsh",
+    "/private/tmp/gossil-fossil-baseline-20261117/launch.tcl",
+    "/private/tmp/gossil-fossil-baseline-20261117/runs/parallel-th1-taint/cwd",
+    "/private/tmp/gossil-fossil-baseline-20261117/enabled/test/tester.tcl",
+    "/Users/rahul/Projects/gossil/.jlog/bin/fossil",
+    "th1-taint",
+    "-keep"
+  ],
+  "cwd": "/Users/rahul/Projects/gossil",
+  "environment": {
+    "FOSSIL_HOME": "/private/tmp/gossil-fossil-baseline-20261117/runs/parallel-th1-taint/home",
+    "FOSSIL_TEST_TEMP": "/private/tmp/gossil-fossil-baseline-20261117/runs/parallel-th1-taint/tmp",
+    "TEMP": "/private/tmp/gossil-fossil-baseline-20261117/runs/parallel-th1-taint/tmp",
+    "TMP": "/private/tmp/gossil-fossil-baseline-20261117/runs/parallel-th1-taint/tmp",
+    "TMPDIR": "/private/tmp/gossil-fossil-baseline-20261117/runs/parallel-th1-taint/tmp",
+    "HOME": "/private/tmp/gossil-fossil-baseline-20261117/runs/parallel-th1-taint/home",
+    "USER": "gossil-baseline",
+    "LOGNAME": "gossil-baseline",
+    "LC_ALL": "C",
+    "TZ": "UTC"
+  },
+  "exit_code": 0,
+  "timeout": false,
+  "seconds": 1.766,
+  "results": [
+    {
+      "name": "th1-taint-10",
+      "result": "pass"
+    },
+    {
+      "name": "th1-taint-20",
+      "result": "pass"
+    },
+    {
+      "name": "th1-taint-30",
+      "result": "pass"
+    },
+    {
+      "name": "th1-taint-40",
+      "result": "pass"
+    },
+    {
+      "name": "th1-taint-50",
+      "result": "pass"
+    },
+    {
+      "name": "th1-taint-60",
+      "result": "pass"
+    },
+    {
+      "name": "th1-taint-100",
+      "result": "pass"
+    },
+    {
+      "name": "th1-taint-110",
+      "result": "pass"
+    },
+    {
+      "name": "th1-taint-200",
+      "result": "pass"
+    },
+    {
+      "name": "th1-taint-210",
+      "result": "pass"
+    },
+    {
+      "name": "th1-taint-220",
+      "result": "pass"
+    },
+    {
+      "name": "th1-taint-230",
+      "result": "pass"
+    },
+    {
+      "name": "th1-taint-300",
+      "result": "pass"
+    },
+    {
+      "name": "th1-taint-310",
+      "result": "pass"
+    },
+    {
+      "name": "th1-taint-400",
+      "result": "pass"
+    },
+    {
+      "name": "th1-taint-410",
+      "result": "pass"
+    },
+    {
+      "name": "th1-taint-420",
+      "result": "pass"
+    },
+    {
+      "name": "th1-taint-430",
+      "result": "pass"
+    },
+    {
+      "name": "th1-taint-500",
+      "result": "pass"
+    },
+    {
+      "name": "th1-taint-600",
+      "result": "pass"
+    },
+    {
+      "name": "th1-taint-700",
+      "result": "pass"
+    },
+    {
+      "name": "th1-taint-710",
+      "result": "pass"
+    },
+    {
+      "name": "th1-taint-720",
+      "result": "pass"
+    },
+    {
+      "name": "test-framework-th1-taint",
+      "result": "pass"
+    }
+  ],
+  "counts": {
+    "pass": 24,
+    "fail": 0,
+    "ignored": 0
+  },
+  "upstream_summary": {
+    "errors": 0,
+    "tests": 24
+  },
+  "count_matches": true,
+  "skips": [],
+  "log": "/private/tmp/gossil-fossil-baseline-20261117/runs/parallel-th1-taint/output.log",
+  "gate_pass": true
+}

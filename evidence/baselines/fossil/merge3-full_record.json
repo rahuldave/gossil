@@ -1,0 +1,312 @@
+{
+  "name": "merge3",
+  "suites": [
+    "merge3"
+  ],
+  "command": [
+    "jlog",
+    "run",
+    "tclsh",
+    "/tmp/gossil-fossil-baseline-20261117/launch.tcl",
+    "/tmp/gossil-fossil-baseline-20261117/runs/merge3/cwd",
+    "/tmp/gossil-fossil-baseline-20261117/enabled/test/tester.tcl",
+    "/Users/rahul/Projects/gossil/.jlog/bin/fossil",
+    "merge3",
+    "-keep"
+  ],
+  "cwd": "/Users/rahul/Projects/gossil",
+  "environment": {
+    "FOSSIL_HOME": "/tmp/gossil-fossil-baseline-20261117/runs/merge3/home",
+    "FOSSIL_TEST_TEMP": "/tmp/gossil-fossil-baseline-20261117/runs/merge3/tmp",
+    "TEMP": "/tmp/gossil-fossil-baseline-20261117/runs/merge3/tmp",
+    "TMP": "/tmp/gossil-fossil-baseline-20261117/runs/merge3/tmp",
+    "TMPDIR": "/tmp/gossil-fossil-baseline-20261117/runs/merge3/tmp",
+    "HOME": "/tmp/gossil-fossil-baseline-20261117/runs/merge3/home",
+    "USER": "gossil-baseline",
+    "LOGNAME": "gossil-baseline",
+    "LC_ALL": "C",
+    "TZ": "UTC"
+  },
+  "exit_code": 0,
+  "timeout": false,
+  "seconds": 3.33,
+  "results": [
+    {
+      "name": "merge3-1",
+      "result": "pass"
+    },
+    {
+      "name": "merge3-2",
+      "result": "pass"
+    },
+    {
+      "name": "merge3-3",
+      "result": "pass"
+    },
+    {
+      "name": "merge3-4",
+      "result": "pass"
+    },
+    {
+      "name": "merge3-5",
+      "result": "pass"
+    },
+    {
+      "name": "merge3-6",
+      "result": "pass"
+    },
+    {
+      "name": "merge3-7",
+      "result": "pass"
+    },
+    {
+      "name": "merge3-8",
+      "result": "pass"
+    },
+    {
+      "name": "merge3-9",
+      "result": "pass"
+    },
+    {
+      "name": "merge3-10",
+      "result": "pass"
+    },
+    {
+      "name": "merge3-11",
+      "result": "pass"
+    },
+    {
+      "name": "merge3-12",
+      "result": "pass"
+    },
+    {
+      "name": "merge3-20",
+      "result": "pass"
+    },
+    {
+      "name": "merge3-21",
+      "result": "pass"
+    },
+    {
+      "name": "merge3-22",
+      "result": "pass"
+    },
+    {
+      "name": "merge3-23",
+      "result": "pass"
+    },
+    {
+      "name": "merge3-24",
+      "result": "pass"
+    },
+    {
+      "name": "merge3-25",
+      "result": "pass"
+    },
+    {
+      "name": "merge3-30",
+      "result": "pass"
+    },
+    {
+      "name": "merge3-31",
+      "result": "pass"
+    },
+    {
+      "name": "merge3-32",
+      "result": "pass"
+    },
+    {
+      "name": "merge3-33",
+      "result": "pass"
+    },
+    {
+      "name": "merge3-34",
+      "result": "pass"
+    },
+    {
+      "name": "merge3-35",
+      "result": "pass"
+    },
+    {
+      "name": "merge3-40",
+      "result": "pass"
+    },
+    {
+      "name": "merge3-41",
+      "result": "pass"
+    },
+    {
+      "name": "merge3-42",
+      "result": "pass"
+    },
+    {
+      "name": "merge3-43",
+      "result": "pass"
+    },
+    {
+      "name": "merge3-44",
+      "result": "pass"
+    },
+    {
+      "name": "merge3-45",
+      "result": "pass"
+    },
+    {
+      "name": "merge3-50",
+      "result": "pass"
+    },
+    {
+      "name": "merge3-51",
+      "result": "pass"
+    },
+    {
+      "name": "merge3-52",
+      "result": "pass"
+    },
+    {
+      "name": "merge3-53",
+      "result": "pass"
+    },
+    {
+      "name": "merge3-54",
+      "result": "pass"
+    },
+    {
+      "name": "merge3-55",
+      "result": "pass"
+    },
+    {
+      "name": "merge3-60",
+      "result": "pass"
+    },
+    {
+      "name": "merge3-61",
+      "result": "pass"
+    },
+    {
+      "name": "merge3-62",
+      "result": "pass"
+    },
+    {
+      "name": "merge3-63",
+      "result": "pass"
+    },
+    {
+      "name": "merge3-64",
+      "result": "pass"
+    },
+    {
+      "name": "merge3-65",
+      "result": "pass"
+    },
+    {
+      "name": "merge3-70",
+      "result": "pass"
+    },
+    {
+      "name": "merge3-71",
+      "result": "pass"
+    },
+    {
+      "name": "merge3-72",
+      "result": "pass"
+    },
+    {
+      "name": "merge3-73",
+      "result": "pass"
+    },
+    {
+      "name": "merge3-74",
+      "result": "pass"
+    },
+    {
+      "name": "merge3-75",
+      "result": "pass"
+    },
+    {
+      "name": "merge3-80",
+      "result": "pass"
+    },
+    {
+      "name": "merge3-81",
+      "result": "pass"
+    },
+    {
+      "name": "merge3-82",
+      "result": "pass"
+    },
+    {
+      "name": "merge3-83",
+      "result": "pass"
+    },
+    {
+      "name": "merge3-84",
+      "result": "pass"
+    },
+    {
+      "name": "merge3-85",
+      "result": "pass"
+    },
+    {
+      "name": "merge3-90",
+      "result": "pass"
+    },
+    {
+      "name": "merge3-91",
+      "result": "pass"
+    },
+    {
+      "name": "merge3-92",
+      "result": "pass"
+    },
+    {
+      "name": "merge3-93",
+      "result": "pass"
+    },
+    {
+      "name": "merge3-94",
+      "result": "pass"
+    },
+    {
+      "name": "merge3-95",
+      "result": "pass"
+    },
+    {
+      "name": "merge3-100",
+      "result": "pass"
+    },
+    {
+      "name": "merge3-101",
+      "result": "pass"
+    },
+    {
+      "name": "merge3-102",
+      "result": "pass"
+    },
+    {
+      "name": "merge3-103",
+      "result": "pass"
+    },
+    {
+      "name": "merge3-104",
+      "result": "pass"
+    },
+    {
+      "name": "test-framework-merge3",
+      "result": "pass"
+    }
+  ],
+  "counts": {
+    "pass": 66,
+    "fail": 0,
+    "ignored": 0
+  },
+  "upstream_summary": {
+    "errors": 0,
+    "tests": 66
+  },
+  "count_matches": true,
+  "skips": [],
+  "log": "/tmp/gossil-fossil-baseline-20261117/runs/merge3/output.log",
+  "gate_pass": true
+}

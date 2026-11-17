@@ -1,0 +1,76 @@
+{
+  "status": "pass",
+  "checks": {
+    "pinned_revision": "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8",
+    "tracked_set_exact": 544,
+    "tracked_hashes_match_pin_and_prior_inventory": {
+      "regular_files": 541,
+      "symlinks": 3,
+      "note": "Pinned symlink blob hashes represent link-target text; prior inventory hashed resolved document bytes, recorded separately."
+    },
+    "fresh_compiled_discovery_matches_all_tests": {
+      "unit": 867,
+      "integration": 347
+    },
+    "cli_node_set_exact": 93,
+    "json_node_set_exact": 72,
+    "alias_count_exact": {
+      "declarations": 29,
+      "command_aliases": 27,
+      "option_aliases": 2
+    },
+    "route_path_set_exact": 34,
+    "migration_versions_exact": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15
+    ],
+    "derived_tables": [
+      "_migrations",
+      "artifacts",
+      "authors",
+      "entity_tags",
+      "iteration_tasks",
+      "iterations",
+      "notes",
+      "project_workspaces",
+      "projects",
+      "relationships",
+      "sync_digests",
+      "tags",
+      "tasks",
+      "transaction_events",
+      "transactions"
+    ],
+    "exit_code_set_exact": [
+      0,
+      2,
+      64,
+      65,
+      66,
+      69,
+      70,
+      74,
+      75,
+      78
+    ],
+    "all_foreign_keys_resolve": true,
+    "every_file_has_tests_or_explicit_followup": true,
+    "disposition_values_normative": true,
+    "source_status_unchanged": true
+  },
+  "inventory_sha256": "d9f432a3e86dceb2ef944415a84026867131d66d24a8810f8b98fa073a7c4794",
+  "limits": "Set completeness and structural referential integrity only; no new semantic or live HTTP acceptance, no engine implementation and no full phase1 completion."
+}

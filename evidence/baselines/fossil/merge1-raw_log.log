@@ -1,0 +1,33 @@
+***** merge1 ******
+/Users/rahul/Projects/gossil/.jlog/bin/fossil 3-way-merge t1 t3 t2 a32
+test merge1-1.1 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil 3-way-merge t1 t2 t3 a23
+test merge1-1.2 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil 3-way-merge t1 t3 t2 a32
+test merge1-2.1 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil 3-way-merge t1 t2 t3 a23
+test merge1-2.2 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil 3-way-merge t1 t3 t2 a32
+test merge1-3.1 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil 3-way-merge t1 t2 t3 a23
+test merge1-3.2 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil 3-way-merge t1 t3 t2 a32
+test merge1-4.1 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil 3-way-merge t1 t2 t3 a23
+test merge1-4.2 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil 3-way-merge t1 t3 t2 a32
+test merge1-5.1 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil 3-way-merge t1 t2 t3 a23
+test merge1-5.2 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil 3-way-merge t1 t3 t2 a32
+test merge1-6.1 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil 3-way-merge t1 t2 t3 a23
+test merge1-6.2 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil 3-way-merge t1 t2 t3 a23
+test merge1-7.1 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil 3-way-merge t1 t2 t3 a23
+test merge1-7.2 OK
+test test-framework-merge1 OK
+***** End of merge1: 0 errors so far ******
+***** Final results: 0 errors out of 15 tests
+***** Ignored results: 0 ignored errors out of 15 tests

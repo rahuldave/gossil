@@ -1,0 +1,10 @@
+{
+  "/Users/rahul/Projects/gossil/.jlog/bin/fossil": {
+    "resolved": "/Users/rahul/Projects/gossil/.jlog/tools/fossil/7e8ecf0ce4/macos-arm64/fossil",
+    "sha256": "75550c754e94a4b7fa0269f40ce8e4918daf67e05ba12b236ed735d424c8e16c"
+  },
+  "/Users/rahul/Projects/gossil/.jlog/bin/tclsh": {
+    "resolved": "/opt/homebrew/Cellar/tcl-tk@8/8.6.18/bin/tclsh8.6",
+    "sha256": "1082e36c5564dfd0f02b8edcd39a6634e2158188f479012a25523e79709f240a"
+  }
+}

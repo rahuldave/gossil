@@ -1,0 +1,147 @@
+***** stash ******
+/Users/rahul/Projects/gossil/.jlog/bin/fossil add f1 f2 f3
+/Users/rahul/Projects/gossil/.jlog/bin/fossil commit -m c1 --tag c1
+/Users/rahul/Projects/gossil/.jlog/bin/fossil add f0
+/Users/rahul/Projects/gossil/.jlog/bin/fossil rm f1
+/Users/rahul/Projects/gossil/.jlog/bin/fossil mv f3 f3n
+/Users/rahul/Projects/gossil/.jlog/bin/fossil stash save -m {stash 1}
+test stash-1-CODE OK
+test stash-1 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil changes
+test stash-1-changes OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil addremove -n
+test stash-1-addremove OK
+test stash-1-exists OK
+test stash-1-notexists OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil stash list
+test stash-1-list-1 OK
+test stash-1-list-2 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil stash pop
+test stash-2-CODE OK
+test stash-2 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil changes
+test stash-2-changes OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil addremove -n
+test stash-2-addremove OK
+test stash-2-exists OK
+test stash-2-notexists OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil stash list
+test stash-2-list OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil checkout --force c1
+/Users/rahul/Projects/gossil/.jlog/bin/fossil clean
+/Users/rahul/Projects/gossil/.jlog/bin/fossil mv --soft f1 f1new
+/Users/rahul/Projects/gossil/.jlog/bin/fossil add f1
+/Users/rahul/Projects/gossil/.jlog/bin/fossil commit -m {add f1}
+/Users/rahul/Projects/gossil/.jlog/bin/fossil mv f1 f1n
+/Users/rahul/Projects/gossil/.jlog/bin/fossil add f1
+/Users/rahul/Projects/gossil/.jlog/bin/fossil stash save -m f1b
+test stash-2-1-CODE OK (knownBug)?
+test stash-2-1 OK (knownBug)?
+/Users/rahul/Projects/gossil/.jlog/bin/fossil changes
+test stash-2-1-changes OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil addremove -n
+test stash-2-1-addremove OK
+test stash-2-1-exists OK
+test stash-2-1-notexists OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil add f1 f2
+/Users/rahul/Projects/gossil/.jlog/bin/fossil commit -m baseline
+/Users/rahul/Projects/gossil/.jlog/bin/fossil add f3
+/Users/rahul/Projects/gossil/.jlog/bin/fossil stash save -m f3
+test stash-3-1-CODE OK
+test stash-3-1 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil changes
+test stash-3-1-changes OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil addremove -n
+test stash-3-1-addremove OK
+test stash-3-1-exists OK
+test stash-3-1-notexists OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil stash show
+test stash-3-1-show FAILED!
+/Users/rahul/Projects/gossil/.jlog/bin/fossil stash pop
+test stash-3-1-pop-CODE OK
+test stash-3-1-pop OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil changes
+test stash-3-1-pop-changes OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil addremove -n
+test stash-3-1-pop-addremove OK
+test stash-3-1-pop-exists OK
+test stash-3-1-pop-notexists OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil status
+/Users/rahul/Projects/gossil/.jlog/bin/fossil add f1 f2
+/Users/rahul/Projects/gossil/.jlog/bin/fossil commit -m baseline
+/Users/rahul/Projects/gossil/.jlog/bin/fossil mv --hard f2 f2n
+test stash-3-2-mv-CODE OK
+test stash-3-2-mv OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil changes
+test stash-3-2-mv-changes OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil addremove -n
+test stash-3-2-mv-addremove OK
+test stash-3-2-mv-exists OK
+test stash-3-2-mv-notexists OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil stash save -m f2n
+/Users/rahul/Projects/gossil/.jlog/bin/fossil stash show
+test stash-3-2-show-2 FAILED!
+/Users/rahul/Projects/gossil/.jlog/bin/fossil stash pop
+test stash-3-2-pop-CODE OK
+test stash-3-2-pop OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil changes
+test stash-3-2-pop-changes OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil addremove -n
+test stash-3-2-pop-addremove OK
+test stash-3-2-pop-exists OK
+test stash-3-2-pop-notexists OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil add f1 f2 f3
+/Users/rahul/Projects/gossil/.jlog/bin/fossil commit -m c1 --tag c1
+/Users/rahul/Projects/gossil/.jlog/bin/fossil add f0
+/Users/rahul/Projects/gossil/.jlog/bin/fossil stash snapshot -m {snap 1}
+test stash-4-1-CODE OK
+test stash-4-1 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil changes
+test stash-4-1-changes OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil addremove -n
+test stash-4-1-addremove OK
+test stash-4-1-exists OK
+test stash-4-1-notexists OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil stash diff
+test stash-4-1-diff-CODE OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil stash show
+test stash-4-1-show-1 OK
+test stash-4-1-show-2 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil rm f1
+/Users/rahul/Projects/gossil/.jlog/bin/fossil stash snapshot -m {snap 2}
+test stash-4-2-CODE OK
+test stash-4-2 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil changes
+test stash-4-2-changes OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil addremove -n
+test stash-4-2-addremove OK
+test stash-4-2-exists OK
+test stash-4-2-notexists OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil stash diff
+test stash-4-2-diff-CODE OK (knownBug)?
+/Users/rahul/Projects/gossil/.jlog/bin/fossil stash show
+test stash-4-2-show-1 OK
+test stash-4-2-show-2 OK
+test stash-4-2-show-3 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil mv f3 f3n
+/Users/rahul/Projects/gossil/.jlog/bin/fossil stash snapshot -m {snap 3}
+test stash-4-3-CODE OK
+test stash-4-3 OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil changes
+test stash-4-3-changes OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil addremove -n
+test stash-4-3-addremove OK
+test stash-4-3-exists OK
+test stash-4-3-notexists OK
+/Users/rahul/Projects/gossil/.jlog/bin/fossil stash diff
+test stash-4-3-diff-CODE OK (knownBug)?
+/Users/rahul/Projects/gossil/.jlog/bin/fossil stash show
+test stash-4-3-show-1 OK
+test stash-4-3-show-2 OK
+test stash-4-3-show-2 FAILED!
+test stash-4-3-show-3 OK
+test test-framework-stash OK
+***** End of stash: 3 errors so far ******
+***** Final results: 3 errors out of 78 tests
+***** Considered failures: stash-3-1-show stash-3-2-show-2 stash-4-3-show-2
+***** Ignored results: 0 ignored errors out of 78 tests

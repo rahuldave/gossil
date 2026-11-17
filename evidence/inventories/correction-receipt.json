@@ -1,0 +1,149 @@
+{
+  "schema_version": 1,
+  "kind": "inventory correction receipt; planning/provenance only",
+  "date": "2026-11-17",
+  "findings_addressed": [
+    "P2: normalize fourteen Fossil family dispositions using a separate overlay",
+    "P2: capture all 984 pinned Git paths with kind/mode/blob identity"
+  ],
+  "preserved_originals": {
+    "fossil/COPYRIGHT-BSD2.txt": {
+      "stored_sha256": "f65c4693891811303213aad3cc737d85114fc0ede82ec65bc0b923069b646c55",
+      "original_sha256": "f65c4693891811303213aad3cc737d85114fc0ede82ec65bc0b923069b646c55",
+      "original_bytes": 1516
+    },
+    "fossil/build_inventory.py": {
+      "stored_sha256": "726a92913ccdf03aaedc87b778031c9674847fea2318f64d363207be3c6af070",
+      "original_sha256": "726a92913ccdf03aaedc87b778031c9674847fea2318f64d363207be3c6af070",
+      "original_bytes": 40718
+    },
+    "fossil/check_inventory.py": {
+      "stored_sha256": "1366f9e6bbd6d1a8579e35d8820a25d85230e95a21c44776c66f0a7aab87b15c",
+      "original_sha256": "1366f9e6bbd6d1a8579e35d8820a25d85230e95a21c44776c66f0a7aab87b15c",
+      "original_bytes": 5635
+    },
+    "fossil/consistency.json": {
+      "stored_sha256": "4081856e49a82f7b79d6722a33ca22abd5f3c1b3298dcefd47620ea98a8087b0",
+      "original_sha256": "4081856e49a82f7b79d6722a33ca22abd5f3c1b3298dcefd47620ea98a8087b0",
+      "original_bytes": 3204
+    },
+    "fossil/hash-index.json": {
+      "stored_sha256": "5b041f2d16fffea34809e0524c26cad0b667f5a2fc63069282ff977421e71559",
+      "original_sha256": "5b041f2d16fffea34809e0524c26cad0b667f5a2fc63069282ff977421e71559",
+      "original_bytes": 910
+    },
+    "fossil/inputs.json": {
+      "stored_sha256": "7022e4de5527340d58d648cf242b96ff4f01aaeb75224d32d151f615f2a8d537",
+      "original_sha256": "7022e4de5527340d58d648cf242b96ff4f01aaeb75224d32d151f615f2a8d537",
+      "original_bytes": 1039
+    },
+    "fossil/inventory.json.gz": {
+      "stored_sha256": "ec7565b887f01afb8b1c9f1e3937d32f6013aa316805e9f2b851f23203c5ce80",
+      "original_sha256": "a87d9a81e1f30da54eacacb6f00f7af06aa3970f0ca1b21017039336d6ee9b7c",
+      "original_bytes": 3094262
+    },
+    "fossil/short-report.json": {
+      "stored_sha256": "5a088010418d146fa768335485644d527c73c3df9014e5df7b0ad53ee0cf372b",
+      "original_sha256": "5a088010418d146fa768335485644d527c73c3df9014e5df7b0ad53ee0cf372b",
+      "original_bytes": 12465
+    },
+    "fossil/capability-inventory-input.json": {
+      "stored_sha256": "43c0e686fe8cac7a006993e21e119852bea7f715565ff2a68c72917d3793a9c2",
+      "original_sha256": "43c0e686fe8cac7a006993e21e119852bea7f715565ff2a68c72917d3793a9c2",
+      "original_bytes": 33683
+    },
+    "fossil/source-inventory-input.json": {
+      "stored_sha256": "0c3448b082c88662f37343dbdd0e6853b582065002c9c29fb487ba228609ffaf",
+      "original_sha256": "0c3448b082c88662f37343dbdd0e6853b582065002c9c29fb487ba228609ffaf",
+      "original_bytes": 218719
+    },
+    "gest/baseline-axum-routes.json": {
+      "stored_sha256": "3f73a31710245c92ab250ca51674d084cfdcd359498c9239079c68e183191bc3",
+      "original_sha256": "3f73a31710245c92ab250ca51674d084cfdcd359498c9239079c68e183191bc3",
+      "original_bytes": 4440
+    },
+    "gest/baseline-cli-help.json": {
+      "stored_sha256": "6c604afee41ff54cf72721d26388bff01941cf3acc96ba9eb9aeb9be24f77d79",
+      "original_sha256": "6c604afee41ff54cf72721d26388bff01941cf3acc96ba9eb9aeb9be24f77d79",
+      "original_bytes": 95572
+    },
+    "gest/baseline-compatibility.json": {
+      "stored_sha256": "7116eccaf5116c4311e19a405978306f5bb8cfa676df04894cbb618e7a62a800",
+      "original_sha256": "7116eccaf5116c4311e19a405978306f5bb8cfa676df04894cbb618e7a62a800",
+      "original_bytes": 78412
+    },
+    "gest/baseline-environment.json": {
+      "stored_sha256": "c6f75112e3d8e6ccdd796ae51640f6a17dded8319321e3f64269ffe1cdbb8447",
+      "original_sha256": "c6f75112e3d8e6ccdd796ae51640f6a17dded8319321e3f64269ffe1cdbb8447",
+      "original_bytes": 10821
+    },
+    "gest/baseline-report.json": {
+      "stored_sha256": "04fc55e7db80be9822db677dd09402651ed36388fee5d51f1ea1784e0601d7f0",
+      "original_sha256": "04fc55e7db80be9822db677dd09402651ed36388fee5d51f1ea1784e0601d7f0",
+      "original_bytes": 4141
+    },
+    "gest/build_inventory.py": {
+      "stored_sha256": "f0e68a99f852165810d4275cae369b92795cbb04c20def74e07283076bc10618",
+      "original_sha256": "f0e68a99f852165810d4275cae369b92795cbb04c20def74e07283076bc10618",
+      "original_bytes": 31869
+    },
+    "gest/integration-discovered-tests.txt": {
+      "stored_sha256": "f79309cb1f0cf6b49c1e2e96c64405a4482c9ce48a78bd6eb1e50a1b1db41af0",
+      "original_sha256": "f79309cb1f0cf6b49c1e2e96c64405a4482c9ce48a78bd6eb1e50a1b1db41af0",
+      "original_bytes": 26597
+    },
+    "gest/inventory.json.gz": {
+      "stored_sha256": "84fbf1be4e106721357b627bad7f336be4ac09a7164e922066477a1b647a1f38",
+      "original_sha256": "d9f432a3e86dceb2ef944415a84026867131d66d24a8810f8b98fa073a7c4794",
+      "original_bytes": 3413348
+    },
+    "gest/prose-check.txt": {
+      "stored_sha256": "2b8e39184efe1b8cde5a280475dff7841353e3fc229da32d5e096c227bb9d024",
+      "original_sha256": "2b8e39184efe1b8cde5a280475dff7841353e3fc229da32d5e096c227bb9d024",
+      "original_bytes": 671
+    },
+    "gest/report.txt": {
+      "stored_sha256": "c1aa41711c5e0d1fff9b1ece3cede455daa75720e1466fdc9649b13413d27eee",
+      "original_sha256": "c1aa41711c5e0d1fff9b1ece3cede455daa75720e1466fdc9649b13413d27eee",
+      "original_bytes": 2041
+    },
+    "gest/storage-enumeration-input.json": {
+      "stored_sha256": "c29eff76905eab5115a3631518fd3379e144329cf732893a533869365fa5d93f",
+      "original_sha256": "c29eff76905eab5115a3631518fd3379e144329cf732893a533869365fa5d93f",
+      "original_bytes": 18585
+    },
+    "gest/unit-discovered-tests.txt": {
+      "stored_sha256": "3914be118f28b8c1f65bf7eef10eaf72535b8304a029abbe8f7e44f1ea002930",
+      "original_sha256": "3914be118f28b8c1f65bf7eef10eaf72535b8304a029abbe8f7e44f1ea002930",
+      "original_bytes": 73540
+    },
+    "gest/validation.json": {
+      "stored_sha256": "9c15db4df56520b1a90c50d6a73cc0d6b0ccacc293afdf12bbaa504781fed0a6",
+      "original_sha256": "9c15db4df56520b1a90c50d6a73cc0d6b0ccacc293afdf12bbaa504781fed0a6",
+      "original_bytes": 1785
+    }
+  },
+  "review_status": "awaiting fresh independent exact-tree review and final gate; historical reviews do not cover this layer",
+  "checks": {
+    "actual_git_tree_and_blobs": 984,
+    "family_corrections": 14,
+    "effective_fossil_families": 34,
+    "regression_tests": 9,
+    "prose": "README checker: 0 hard; independent prose pass pending parent-directed fresh gate",
+    "validation_checks": 1066,
+    "overlay_preservation": "Exact five-key schema enforced; injected contract, destination and followup fields rejected."
+  },
+  "companions": {
+    "README.md": "bdfbd3481943d2f7a6246b0f7e42389e73665ff7f8db9bf1b89146be8d95e58c",
+    "relocation-verification.json": "42aa6fab3062d6ffb15b382c2e66f27970251cb590c7f4417a24d1a64dea0741",
+    "fossil/family-corrections.json": "9983db83a4dc127b7a602861fb7a85ce998063050e309c651db8ad84128c39d9",
+    "fossil/pinned-git-tree.json": "c446eefd0d3b7ca4d9026d4131b9b416773c9b4e5598ce2f2c5d8751e5b3c79e",
+    "fossil/pinned-git-tree.ls-tree": "25ca8e723e365bcf1fa20084b1e8830638d63851c67e36b4764f70f8b262d3e1",
+    "validate_current.py": "bc9b3a96249e06962b1ceeea29d190a98b395b6c6d429a5eb2f54c260f83315f",
+    "test_current_validation.py": "1d89da2219503b2b2a73b4abf1eb29b7a1d0077411b6fc0d1a6a09a2fbe1dee5",
+    "correction-validation.json": "20057711671634957c702e2735a9c7a0026dd0373153acdf88781f58aa87b8a6"
+  },
+  "acceptance_limit": "No engine implementation or compatibility/configuration qualification. Native Fossil manifest ID remains historical provenance, separate from Git mirror identity.",
+  "recommendation": "Review the correction layer on the final frozen tree, then use effective mappings for incremental port planning while baseline/configuration work remains open.",
+  "previous_source_tree": "32bb29333d17a53290592870950048a53eb6168f"
+}

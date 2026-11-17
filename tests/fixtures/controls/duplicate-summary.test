@@ -1,0 +1,5 @@
+# Runner regression: malformed or duplicate summary cannot be overwritten.
+puts {test real OK}
+puts {***** Final results: 0 errors out of 1 tests}
+puts {***** Final results: 0 errors out of 1 tests}
+exit 0

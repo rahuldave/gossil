@@ -1,0 +1,54 @@
+{
+  "name": "parallel-th1-hooks",
+  "suites": [
+    "th1-hooks"
+  ],
+  "command": [
+    "jlog",
+    "run",
+    "tclsh",
+    "/private/tmp/gossil-fossil-baseline-20261117/launch.tcl",
+    "/private/tmp/gossil-fossil-baseline-20261117/runs/parallel-th1-hooks/cwd",
+    "/private/tmp/gossil-fossil-baseline-20261117/enabled/test/tester.tcl",
+    "/Users/rahul/Projects/gossil/.jlog/bin/fossil",
+    "th1-hooks",
+    "-keep"
+  ],
+  "cwd": "/Users/rahul/Projects/gossil",
+  "environment": {
+    "FOSSIL_HOME": "/private/tmp/gossil-fossil-baseline-20261117/runs/parallel-th1-hooks/home",
+    "FOSSIL_TEST_TEMP": "/private/tmp/gossil-fossil-baseline-20261117/runs/parallel-th1-hooks/tmp",
+    "TEMP": "/private/tmp/gossil-fossil-baseline-20261117/runs/parallel-th1-hooks/tmp",
+    "TMP": "/private/tmp/gossil-fossil-baseline-20261117/runs/parallel-th1-hooks/tmp",
+    "TMPDIR": "/private/tmp/gossil-fossil-baseline-20261117/runs/parallel-th1-hooks/tmp",
+    "HOME": "/private/tmp/gossil-fossil-baseline-20261117/runs/parallel-th1-hooks/home",
+    "USER": "gossil-baseline",
+    "LOGNAME": "gossil-baseline",
+    "LC_ALL": "C",
+    "TZ": "UTC"
+  },
+  "exit_code": 0,
+  "timeout": false,
+  "seconds": 0.258,
+  "results": [
+    {
+      "name": "test-framework-th1-hooks",
+      "result": "pass"
+    }
+  ],
+  "counts": {
+    "pass": 1,
+    "fail": 0,
+    "ignored": 0
+  },
+  "upstream_summary": {
+    "errors": 0,
+    "tests": 1
+  },
+  "count_matches": true,
+  "skips": [
+    "th1-hooks"
+  ],
+  "log": "/private/tmp/gossil-fossil-baseline-20261117/runs/parallel-th1-hooks/output.log",
+  "gate_pass": false
+}

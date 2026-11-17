@@ -1,0 +1,132 @@
+{
+  "status": "passed exhaustive identity/disposition/hook consistency checks; not behavioral verification",
+  "checks": [
+    {
+      "check": "exact984file set with no duplicates",
+      "passed": true,
+      "details": null
+    },
+    {
+      "check": "all metadata pins exact",
+      "passed": true,
+      "details": null
+    },
+    {
+      "check": "hashes equal both original inventory and pristine manifest",
+      "passed": true,
+      "details": null
+    },
+    {
+      "check": "actual pristine bytes match all984 hashes",
+      "passed": true,
+      "details": []
+    },
+    {
+      "check": "required surface counts",
+      "passed": true,
+      "details": null
+    },
+    {
+      "check": "normative disposition enum",
+      "passed": true,
+      "details": null
+    },
+    {
+      "check": "every file has role destination rationale contract and resolving followup",
+      "passed": true,
+      "details": null
+    },
+    {
+      "check": "every file behavioral audit explicitly pending",
+      "passed": true,
+      "details": null
+    },
+    {
+      "check": "no root engine C module silently supporting-source",
+      "passed": true,
+      "details": null
+    },
+    {
+      "check": "all37 Tcl suites and original states mapped",
+      "passed": true,
+      "details": null
+    },
+    {
+      "check": "all161 declarations mapped exactly",
+      "passed": true,
+      "details": null
+    },
+    {
+      "check": "all hooks source hash pin destination followup present",
+      "passed": true,
+      "details": null
+    },
+    {
+      "check": "declaration source lines exact",
+      "passed": true,
+      "details": null
+    },
+    {
+      "check": "all158 runtime hook names mapped exactly",
+      "passed": true,
+      "details": null
+    },
+    {
+      "check": "every runtime hook maps to one pinned declaration",
+      "passed": true,
+      "details": null
+    },
+    {
+      "check": "three source-disabled/platform hook reasons present",
+      "passed": true,
+      "details": null
+    },
+    {
+      "check": "manual dormant fuzz database-compat and disabled-driver explicitly accounted",
+      "passed": true,
+      "details": null
+    },
+    {
+      "check": "baseline not relabeled allpassed",
+      "passed": true,
+      "details": null
+    },
+    {
+      "check": "configuration matrix includes required feature/platform surfaces",
+      "passed": true,
+      "details": null
+    },
+    {
+      "check": "no phase1 completion claim",
+      "passed": true,
+      "details": null
+    }
+  ],
+  "check_count": 20,
+  "file_count": 984,
+  "engine_root_C_modules": 153,
+  "surface_counts": {
+    "root": 16,
+    ".fossil-settings": 5,
+    ".settings": 2,
+    "autosetup": 18,
+    "compat": 228,
+    "extsrc": 13,
+    "setup": 2,
+    "skins": 92,
+    "src": 229,
+    "test": 81,
+    "tools": 78,
+    "win": 13,
+    "www": 207
+  },
+  "disposition_counts": {
+    "supporting-source": 779,
+    "replace-with-equivalent": 95,
+    "port": 110
+  },
+  "declarations": 161,
+  "runtime_hooks": 158,
+  "remaining_contract_family_questions": 34,
+  "recommendation": "Use this checked inventory for independent phase1 review; keep behavioral mappings and missing configuration evidence open."
+}
