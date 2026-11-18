@@ -90,6 +90,40 @@ The main-only Pages workflow retains `just docs-publish` and deploys the rendere
 artifact through GitHub Pages. It installs the pinned nightly toolchain before
 generation. Local rendering does not establish a successful deployment.
 
+## Maintain the bundled provider
+
+The root Cargo patch selects the complete `libsql-ffi` 0.9.30 archive under
+`vendor/libsql-ffi`. Its adapted date conversion includes `<stdint.h>` itself
+because it uses `UINT64_C`. The upstream build script does not define
+`HAVE_STDINT_H` or `HAVE_INTTYPES_H` for the core build.
+
+Use these checks when changing the provider:
+
+```sh
+just libsql-vendor-check
+just libsql-vendor-test
+just libsql-provider-compile
+just libsql-provider-dates
+```
+
+The compile regression builds the complete adapted C source with the core feature
+flags and both optional header defines unset. On Linux it also reconstructs the
+exact previous adapted source and requires its integer initializers to fail.
+macOS skips that negative control because its transitive headers supply the macro.
+The date recipe runs the retained finite date tests through the bundled Rust provider
+without coverage instrumentation.
+
+The existing required PR job `check / ci` runs these compile and semantic checks
+on Ubuntu 24.04, then builds the site and Rust API with `just docs-build`.
+A successful local macOS run does not establish a Linux pass or a Pages deployment.
+
+For regeneration, supply the pinned original registry source and native Fossil
+source to `scripts/regenerate-libsql.py ORIGINAL NATIVE NEW_OUTPUT`.
+The script verifies both input hashes, all eight patch hunks and the output hash.
+Keep canonical baselines unchanged. Review the source diff before updating the
+adapted patch, source identity and affected manifest receipts together.
+The provenance record is `evidence/libsql-provider/provenance.json`.
+
 ## Evidence archive
 
 The repository keeps exact experiments in

@@ -79,3 +79,11 @@ ci: libsql-vendor-check libsql-vendor-test ci-gate
 # Run the current product CLI without coverage instrumentation.
 gossil *args:
     jlog run cargo run --locked --bin gossil -- "$@"
+
+# Compile the complete adapted C provider without optional integer-header defines.
+libsql-provider-compile:
+    jlog run python3 -m unittest discover -s tests -p 'test_libsql_provider_compile.py' -v
+
+# Run the finite date semantic controls through the actual bundled Rust provider.
+libsql-provider-dates:
+    jlog run cargo test --locked --lib storage::date_tests

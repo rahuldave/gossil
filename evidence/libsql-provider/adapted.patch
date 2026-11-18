@@ -1,11 +1,12 @@
 --- a/bundled/src/sqlite3.c
 +++ b/bundled/src/sqlite3.c
-@@ -24830,6 +24830,386 @@
+@@ -24830,6 +24830,387 @@
  }
  
  /************** End of status.c **********************************************/
 +/* Pinned SQLite numerical closure for date text only; original length/encoding API remains unchanged. */
 +#include <math.h>
++#include <stdint.h>
 +#ifndef INFINITY
 +#define INFINITY HUGE_VAL
 +#endif
@@ -387,7 +388,7 @@
  /************** Begin file date.c ********************************************/
  /*
  ** 2003 October 31
-@@ -25053,10 +25433,12 @@
+@@ -25053,10 +25434,12 @@
          zDate++;
        }
        ms /= rScale;
@@ -400,7 +401,7 @@
    p->validJD = 0;
    p->rawS = 0;
    p->validHMS = 1;
-@@ -25094,6 +25476,7 @@
+@@ -25094,6 +25477,7 @@
      Y = 2000;  /* If no YMD specified, assume 2000-Jan-01 */
      M = 1;
      D = 1;
@@ -408,7 +409,7 @@
    }
    if( Y<-4713 || Y>9999 || p->rawS ){
      datetimeError(p);
-@@ -25103,8 +25486,8 @@
+@@ -25103,8 +25487,8 @@
      Y--;
      M += 12;
    }
@@ -419,7 +420,7 @@
    X1 = 36525*(Y+4716)/100;
    X2 = 306001*(M+1)/10000;
    p->iJD = (sqlite3_int64)((X1 + X2 + D + B - 1524.5 ) * 86400000);
-@@ -25132,6 +25515,18 @@
+@@ -25132,6 +25516,18 @@
  ** on success and 1 if the input string is not a well-formed
  ** date.
  */
@@ -438,7 +439,7 @@
  static int parseYyyyMmDd(const char *zDate, DateTime *p){
    int Y, M, D, neg;
  
-@@ -25144,10 +25539,23 @@
+@@ -25144,10 +25540,23 @@
    if( getDigits(zDate, "40f-21a-21d", &Y, &M, &D)!=3 ){
      return 1;
    }
@@ -463,7 +464,7 @@
    }else if( *zDate==0 ){
      p->validHMS = 0;
    }else{
-@@ -25155,7 +25563,7 @@
+@@ -25155,7 +25564,7 @@
    }
    p->validJD = 0;
    p->validYMD = 1;
@@ -472,7 +473,7 @@
    p->M = M;
    p->D = D;
    if( p->validTZ ){
-@@ -25222,7 +25630,7 @@
+@@ -25222,7 +25631,7 @@
      return 0;
    }else if( sqlite3StrICmp(zDate,"now")==0 && sqlite3NotPureFunc(context) ){
      return setDateTimeToCurrent(context, p);
