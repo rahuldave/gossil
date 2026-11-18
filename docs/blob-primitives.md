@@ -1,6 +1,8 @@
 # Byte digests and packed blobs
 
-The library provides Fossil byte digests and packed-blob operations. Packing
+[API: `pack`](api/compression.qmd#pack) gives the exact contract.
+
+The library has Fossil byte digests and packed-blob operations. Packing
 adds a capacity header to compressed bytes. These
 primitives do not select a repository hash policy or store content. The runner
 and these primitives share a crate. CLI integration remains separate work.
@@ -52,7 +54,7 @@ SHA3 uses Fossil's width-dependent capacity and its `0x06` and `0x80` padding.
 The small adapter handles byte absorption, padding and extraction in explicit
 little-endian lane order. The maintained `keccak` crate supplies the permutation.
 A shorter digest is not a truncated standard-width hash. The four standard
-widths use FIPS-202 padding; the other widths preserve Fossil's extensions.
+widths use FIPS-202 padding. The other widths preserve Fossil's extensions.
 
 `compression::pack` accepts zlib levels -1 and zero through nine. Level -1
 selects the backend default. `compression::pack_two` compresses the concatenated
@@ -67,8 +69,10 @@ header produce errors.
 
 `compression::unpack` accepts a caller-selected limit. It rejects a header above
 that limit before decoding, then checks each output chunk against the header.
-Output grows through fallible reservations. The limit is caller policy; the
-format has no additional fixed small cap. Encoding rejects lengths above the
+Output grows through fallible reservations. The caller sets the limit. The
+format has no additional fixed small cap.
+
+Encoding rejects lengths above the
 unsigned 32-bit header range. C overflow and undefined behavior are not ported.
 
 Inputs of at most four bytes produce `Unpacked::NoPayload`. A caller that replaces an existing buffer
@@ -78,61 +82,10 @@ Fossil's diagnostic `test-uncompress` ignores the C function's error return, so
 CLI exit zero does not prove successful decoding.
 
 Allocation and compression errors retain their underlying causes. Digest
-results have a fixed small size; compressed input and output remain caller-owned.
+results have a fixed small size. Compressed input and output remain caller-owned.
 The API does not define database, filesystem, publication or privacy behavior.
-
-## Executed checks
-
-The portable corpus is `tests/fixtures/blob/reference.json`. Its generator runs
-native reference commands through `jlog`. It records the executable version and
-pinned source identity in separate fields. The source revision is a Git identity;
-the executable reports Fossil version 2.29 with identifier `7e8ecf0ce4`.
-That Git commit contains a `manifest.uuid` beginning with `7e8ecf0ce4`,
-so the two identifiers name the same source snapshot.
-
-The corpus includes all thirteen SHA3 widths at six
-lengths around their input-block boundaries, a binary SHA1 vector, a known collision pair, and both
-native compression modes, for one slice and for two concatenated slices. It also records oversized headers, trailing bytes,
-short inputs and invalid data, including the native CLI's unchanged output.
-
-`just blob-reference` regenerates the finite corpus. The ordinary tests consume
-the committed bytes without a Fossil installation. They check native-to-Rust
-decoding, digest equality, every compression level, chunk boundaries and errors.
-`just blob-interop` explicitly runs the opt-in native decoding test against the
-locally installed reference. It checks Rust-to-native decoding at all levels
-and for the concatenation of both input slices. The ordinary suite reports that test as ignored.
-
-Both interoperability directions passed locally on macOS. Exact compressed-byte
-identity is not claimed. These experiments establish byte-level primitives;
-they do not establish a complete content store or inherited-suite acceptance.
-
-## Dependencies and integration
-
-The lockfile selects `sha1collisiondetection` 0.3.4 with its `std` feature,
-`keccak` 0.1.6 and `flate2` 1.1.11. The SHA1 crate is the maintained Rust port
-of Marc Stevens and Dan Shumow's SHA1 collision-detection implementation.
-`flate2` uses its default Rust backend, `miniz_oxide` 0.9.1. No native Fossil
-process supplies candidate digest or compression behavior.
-
-The two `sha-mbles` collision fixtures come from `sha1collisiondetection` 0.3.4.
-Their upstream MIT license and attribution accompany them in
-`tests/fixtures/blob/SHA1CD-LICENSE.txt`. Both native reference outputs differ
-from the common vulnerable digest and from each other.
-
-The composed library exports these modules with the delta encoder, decoder,
-token codec and [local storage boundary](local-storage.md). A private fixture
-persists packed source and delta bytes, restores the target and checks its hash.
-It also checks rollback of a failed transaction. This fixture adds composition
-coverage without changing the native byte evidence above.
-
-See the [development workflow](development-plan.md#checkpoints-and-ownership)
-for review of this composition. The agent coordinating integration refreshes installed tools separately. Source
-changes and passing local checks do not establish a remote release.
 
 ## Recommendations
 
-Use these library primitives with an explicit caller output limit.
-Next, follow the [review workflow](development-plan.md#checkpoints-and-ownership),
-including `just check`, for the composed core before extending native storage.
-Keep the finite native observations separate
-from the local storage fixture.
+Use the contracts above with explicit resource limits. Next, consult the
+[generated Rust API](api/index.qmd) for the full signatures and errors.

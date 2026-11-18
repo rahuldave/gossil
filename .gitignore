@@ -30,3 +30,7 @@ docs/_site/
 
 # Bytecode caches from locally executed installed Python helpers.
 __pycache__/
+
+# Rust API pages are regenerated from source comments by smalldocs.
+/docs/api/
+/docs/_symbols.json

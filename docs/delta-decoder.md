@@ -1,5 +1,7 @@
 # Bounded delta decoder
 
+[API: `apply`](api/delta.qmd#apply) gives the exact contract.
+
 `gossil::delta` applies Fossil deltas to byte slices. A delta describes output
 with literal bytes and copies from an original byte slice. The library validates
 the commands before allocating output, then returns the decoded bytes.
@@ -20,6 +22,7 @@ spaces. The command reads both inputs and finishes decoding before it opens
 On success, it writes exactly the decoded bytes, returns status 0 and leaves
 stdout and stderr empty.
 
+Cargo may print build messages on stderr before the executable runs.
 The command returns status 1 for usage, read, decode, allocation or write errors.
 The characterized diagnostics are:
 
@@ -84,8 +87,7 @@ The decoder returns these `DeltaError` variants:
 
 Fallible reservation reports recoverable allocation failures. It does not
 guarantee recovery from an operating-system kill or memory exhaustion after a
-successful reservation. The tests use bounded injected failures rather than
-attempting to exhaust system memory.
+successful reservation.
 
 ## Preserved format behavior
 
@@ -111,48 +113,7 @@ Checked ranges and slice access reject truncation at boundaries where the C
 implementation can read beyond its logical input. Those C pointer behaviors
 are not format guarantees.
 
-## Evidence and limits
-
-The pinned reference is Fossil 2.29 at revision `7e8ecf0ce4`; the
-original manifest at `tests/fixtures/delta/original/manifest.json` in the
-repository root records its build
-and observations. The durable fixtures live under `tests/fixtures/delta/` at the repository root.
-The original 64 C observations retain 35 accepted, 24 rejected and five
-`not-run` cases. The separate supplement records 27 observations, comprising
-13 accepted and 14 rejected. Its observations cover eight decoder cases,
-ten cases of command framing and paths, and nine native encoder golden vectors.
-The nine golden vectors are used as decoder inputs, not as proof of a Rust encoder.
-
-`cases.json` has 81 rows drawn from the original cases, eight supplemental
-decoder cases and nine golden vectors. Library and subprocess tests replay
-every bounded apply observation, including exact command output and target
-preservation on rejection. The original five C `not-run` statuses remain
-unchanged, even where later bounded tests characterize related behavior.
-
-The integrity check enumerates all 428 files in `portable-index.json` and checks
-their byte lengths and SHA-256 hashes. It also checks all 81 case rows against
-the original or supplemental records and the captured binary files.
-The original records retain absolute scratch paths as historical provenance.
-The replay tests use the checked-in bytes and do not require those paths or
-the native Fossil binary.
-
-The inherited runner remains a separate executable with its existing
-[configuration contract](conformance.md). The [encoder guide](delta-encoder.md) records the encoder, the `test-delta`
-diagnostics and evidence from the inherited `delta1` suite. Checksum-enabled builds remain future work.
-The decoder establishes no database, storage or replication behavior.
-
-### Historical command contract
-
-`contract.json` preserves the original command proposal. The later authorized
-namespace change is recorded in
-`evidence/delta-decoder/scope-and-test-first.json` in the repository root.
-Use that record to interpret the older proposal. The current invocation and
-usage line include `vcs`. It also distinguishes initial behavioral failures
-from tests added after implementation, so those later tests do not establish
-a test-first failure.
-
 ## Recommendations
 
-Use `apply` with an explicit output limit for bounded delta application.
-Next, review the encoder and its inherited `delta1` evidence, which use the
-`gossil vcs` namespace.
+Use the contracts above with explicit resource limits. Next, consult the
+[generated Rust API](api/index.qmd) for the full signatures and errors.

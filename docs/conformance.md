@@ -149,7 +149,7 @@ Add an `invocation_plan` object to the configuration:
 ```
 
 `expected_invocations` pins the complete row count and must be positive.
-A count pin catches truncated plans during setup; it does not prove source correspondence.
+A count pin catches truncated plans during setup. It does not prove source correspondence.
 
 Both expected hashes must be lowercase SHA-256 values. The runner checks them
 before execution and parses those same verified bytes. The plan binds the
@@ -172,7 +172,7 @@ identifies one of the three assertions in each mutation iteration, numbered
 assertions, also numbered 1 through 3.
 
 The complete object shapes are shown below. These illustrative objects have one
-corpus row; they are not a complete plan for the real `delta1` suite. Replace
+corpus row. They are not a complete plan for the real `delta1` suite. Replace
 all hash placeholders with hashes of the exact bytes and include every real row.
 
 ```json
@@ -204,7 +204,7 @@ Source paths use forward slashes and contain no empty, dot or parent components.
 IDs must be unique, and plan rows must cover every manifest source.
 
 Review of the generator and source establishes correspondence for every invocation.
-Hashes bind supplied bytes; arbitrary identity labels alone do not prove provenance.
+Hashes bind supplied bytes. Arbitrary identity labels alone do not prove provenance.
 
 The runner compares the entire observed vector with the complete expected
 original-name sequence and cardinality. It attaches `expected_invocation_id`
@@ -227,7 +227,7 @@ just delta1-plan /absolute/path/fossil /absolute/path/new-plan-directory
 ```
 
 The generator uses the selected Tcl interpreter's actual `lsort` order and
-`file root` behavior. `lsort` determines the order of corpus paths;
+`file root` behavior. `lsort` determines the order of corpus paths.
 `file root` removes the final filename extension to form the printed name stem. It preserves all non-directory corpus inputs and emits
 all 22,804 rows for 76 files, three empty controls and the framework assertion.
 
@@ -241,7 +241,7 @@ The generator writes `invocation-plan.json`, `corpus-manifest.json` and
 `generation.json`. Use the plan and manifest hashes from `generation.json`
 for the configuration pins. Set `corpus_root` to the source root.
 Generation metadata records the Tcl and generator hashes and complete source order.
-The [encoder guide](delta-encoder.md) links the executed qualification evidence.
+The [development guide](development-plan.md#evidence-archive) links the executed qualification evidence.
 
 ## Process isolation and limits
 
