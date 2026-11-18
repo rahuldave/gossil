@@ -1,0 +1,13 @@
+The package clones are in /Users/rahul/Projects; set SKILL_PACKAGES_DIR to use another folder.
+Installed jnterfaces in /Users/rahul/Projects/gossil.worktrees/gest-usvwnwtn-blob-primitives from 389cdf8d26205ef00d0651ff8550be0684d99875 (dirty source: False)
+Installed agent_gest_git_skills in /Users/rahul/Projects/gossil.worktrees/gest-usvwnwtn-blob-primitives from 9225e7bc0107d0d4f4fccefb9caa9f1f5b365863 (dirty source: False)
+Installed nossaifd in /Users/rahul/Projects/gossil.worktrees/gest-usvwnwtn-blob-primitives from 7ab9e940bfdfad994008c1b00234572547ceaf9a (dirty source: False)
+Installed jnprofile-rust in /Users/rahul/Projects/gossil.worktrees/gest-usvwnwtn-blob-primitives from b0c4a946ca17a7e401e3f3851f70ca3a179b3c22 (dirty source: False)
+Installed in /Users/rahul/Projects/gossil.worktrees/gest-usvwnwtn-blob-primitives:
+  jnterfaces at 389cdf8d26205ef00d0651ff8550be0684d99875
+  agent_gest_git_skills at 9225e7bc0107d0d4f4fccefb9caa9f1f5b365863
+  nossaifd at 7ab9e940bfdfad994008c1b00234572547ceaf9a
+  jnprofile-rust at b0c4a946ca17a7e401e3f3851f70ca3a179b3c22
+  tools: rust:lint, rust:typecheck, rust:integration, rust:test, rust:docstring, rust:api
+  tasker: git (work on a branch in the main checkout)
+Saved in .agents/stack.json. Run just install again without names to install the same set.

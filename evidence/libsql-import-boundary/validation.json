@@ -1,0 +1,37 @@
+{
+  "candidate_tree_index_identity": {
+    "tree": "2f96dcc546aae747e3a7c1dec424a2cebf7d3c87",
+    "tracked_paths": 1389,
+    "equal": true
+  },
+  "prior_source_correspondence": {
+    "vendor/libsql-ffi/bundled/src/sqlite3.c": "1c99ebdc5a6fccdecb30c7702f7f6b07fa8258eea7d4216d878863cb3b7deefd",
+    "evidence/libsql-provider/adapted.patch": "89bbc97bff1ac86a165a2536cd6b060588a842b79b6c007a209c2e682eb9e763",
+    "evidence/libsql-provider/independent-source-review.json": "a0bbe1e08e1d83b68a083945011a8762504977ea493e4a2ad2498ad1d801fd0f"
+  },
+  "lists": {
+    ".agents/coverage-exclude.txt": {
+      "entries": [
+        "vendor/libsql-ffi/build.rs",
+        "vendor/libsql-ffi/src/lib.rs"
+      ],
+      "sha256": "a49ae68312eabf24371ec4b6fd26e2c3a0d715d8b8aef2ddc9220fd50448292c",
+      "exact": true
+    },
+    ".agents/generated.txt": {
+      "entries": [
+        "vendor/libsql-ffi/bundled/bindings/bindgen.rs",
+        "vendor/libsql-ffi/bundled/bindings/session_bindgen.rs"
+      ],
+      "sha256": "79268c65bc21b10114cc59dc85591b033bb663c5afc1aa387342d8c0ce969f90",
+      "exact": true
+    }
+  },
+  "status": {
+    "owner_policy_commit": "b0c4a946ca17a7e401e3f3851f70ca3a179b3c22",
+    "official_product_install": "clean committed owner source installed; install --check exit 0; exact fifteen Rust source files verified",
+    "independent_prerequisite_review": "pending parent",
+    "final_product_gates": "not run",
+    "runtime_acceptance": "not claimed"
+  }
+}

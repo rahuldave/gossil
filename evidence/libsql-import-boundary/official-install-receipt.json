@@ -1,0 +1,35 @@
+{
+  "status": "committed-source-installed",
+  "records": {
+    "agent_gest_git_skills": {
+      "revision": "9225e7bc0107d0d4f4fccefb9caa9f1f5b365863",
+      "dirty": false,
+      "managed_files": 88
+    },
+    "jnprofile-rust": {
+      "revision": "b0c4a946ca17a7e401e3f3851f70ca3a179b3c22",
+      "dirty": false,
+      "managed_files": 15
+    },
+    "nossaifd": {
+      "revision": "7ab9e940bfdfad994008c1b00234572547ceaf9a",
+      "dirty": false,
+      "managed_files": 40
+    },
+    "jnterfaces": {
+      "revision": "389cdf8d26205ef00d0651ff8550be0684d99875",
+      "dirty": false,
+      "managed_files": 20
+    }
+  },
+  "installer_changed_tracked_paths": [
+    ".agents/jnprofile-rust-install.json",
+    ".agents/just/rust/steps.py",
+    ".agents/targets/rust/test-review.md"
+  ],
+  "rust_managed_file_count": 15,
+  "exact_user_lists_and_index_preserved": true,
+  "install_log": "/tmp/gossil-libsql-import-official-install.log",
+  "install_check_log": "/tmp/gossil-libsql-import-install-check.log",
+  "install_check_exit_code": 0
+}

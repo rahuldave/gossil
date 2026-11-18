@@ -1,0 +1,11 @@
+# libsql-ffi 0.9.30: rust-bindgen 0.66.1 generated core FFI declarations, preserved byte for byte.
+# build.rs copies this file into OUT_DIR; generated classification does not qualify upstream behavior.
+# Proof and import conditions: docs/libsql-import-boundary.md; evidence/libsql-import-boundary/archive-proof.json.
+# Independent prior review: evidence/libsql-import-boundary/prior-product-review.txt.
+vendor/libsql-ffi/bundled/bindings/bindgen.rs
+
+# libsql-ffi 0.9.30: rust-bindgen 0.66.1 generated optional session FFI declarations, preserved byte for byte.
+# Session is outside the core-only qualification; generated classification does not approve that feature.
+# Proof and import conditions: docs/libsql-import-boundary.md; evidence/libsql-import-boundary/archive-proof.json.
+# Independent prior review: evidence/libsql-import-boundary/prior-test-review.txt.
+vendor/libsql-ffi/bundled/bindings/session_bindgen.rs

@@ -1,0 +1,98 @@
+{
+  "verdict": "accept",
+  "blocking_findings": [],
+  "base": "266241e4cffe4a89045f1717199e749b8dd75a03",
+  "staged_tree": "e5038bab1a136c3aca48892cf57b8bb037344de7",
+  "changed_files_sha256": {
+    "README.md": "54fe6ab6369a82a564fdab794c065a0fdaf05440322c58cff115afecd7fef773",
+    "docs/tools.md": "39d90df9107c209a5869403b2258da49ddbceb4962e82d0d11f6f8b1581d4ca8",
+    ".agents/targets/rust/test-review.md": "7f09fbffdd613bb14f8e55ab07a1ce6ed55b2d017a32382aafea1cdd9d1456ec",
+    ".agents/just/rust/steps.py": "e266e620686f249ab50bb78565931a4b7dcf9c4ed3397e986e70e4cf7b8e2d79",
+    "tests/test_steps.py": "f55f99dc6c77a71c1e3ca6bb24bb599737548f83366be5522f963ba229f6f688"
+  },
+  "checks": [
+    {
+      "name": "independent scratch tests.test_steps",
+      "result": "pass",
+      "tests": 66,
+      "seconds": 14.725,
+      "log": "/tmp/rust-vendor-policy-review-20261118/steps.log"
+    },
+    {
+      "name": "initial scratch tests",
+      "result": "fixture setup failure",
+      "detail": "Unchanged base.just absent; copied prerequisite, then all66 passed."
+    },
+    {
+      "name": "algorithm expansion",
+      "result": "none",
+      "method": "Full diff plus AST equality after normalizing string literals"
+    },
+    {
+      "name": "frozen hashes",
+      "result": "all5 match"
+    },
+    {
+      "name": "staged whitespace",
+      "result": "pass"
+    },
+    {
+      "name": "nossaifd three modified pages",
+      "result": "zero hard findings",
+      "soft_notes": {
+        "README.md": 3,
+        "docs/tools.md": 16,
+        ".agents/targets/rust/test-review.md": 9
+      }
+    },
+    {
+      "name": "independent declaude/new-reader pass",
+      "result": "accepted without required edits"
+    },
+    {
+      "name": "shipped extras correspondence",
+      "result": "all14 complete and byte equal",
+      "source": "/tmp/rust-vendor-policy-install-correspondence.json"
+    },
+    {
+      "name": "official install",
+      "result": "pass; dirty source True",
+      "log": "/tmp/rust-vendor-policy-official-install.log"
+    },
+    {
+      "name": "official install --check",
+      "result": "pass",
+      "log": "/tmp/rust-vendor-policy-install-check.log"
+    },
+    {
+      "name": "diagnostic red evidence",
+      "result": "old diagnostic fails new regression assertion",
+      "log": "/tmp/rust-vendor-policy-red.log"
+    },
+    {
+      "name": "package-maker",
+      "result": "pre-existing manifest failure reproduced on clean base",
+      "log": "/tmp/rust-vendor-policy-base-bundle.log"
+    },
+    {
+      "name": "owner full just check",
+      "result": "pending; no pass claimed"
+    },
+    {
+      "name": "agentic gate receipts",
+      "result": "not available; none claimed"
+    }
+  ],
+  "optional_findings": [
+    {
+      "priority": "P3",
+      "path": "README.md",
+      "line": 98,
+      "suggestion": "Write source checks in `just check` and CI instead of source checks in check and CI."
+    }
+  ],
+  "recommendations": [
+    "Proceed with parent complete final check and commit only frozen five files.",
+    "Keep manifest limitation and dirty-source install provenance explicit."
+  ]
+}

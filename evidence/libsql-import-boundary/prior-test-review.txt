@@ -1,0 +1,41 @@
+<<<AGENT_RESULT v1>>>
+target: test-review
+nonce: c6c531faef18b3c94f2697f04e98807b
+status: success
+outputs:
+  findings: []
+  review:
+    base: de790aeab99012034f4b0bc9f9074181c935cd49
+    input_tree: 2f96dcc546aae747e3a7c1dec424a2cebf7d3c87
+    decision: No open test findings for bounded core-only provider adoption.
+    surfaces:
+      - All 445 changed paths enumerated and compared to candidate blobs; no working-byte mismatch. Complete manifest and accepted complete 272-file archive correspondence inspected.
+      - Private storage date unit module, both complete fixtures and provenance, twelve Python maintenance methods, three maintenance scripts, Just and workflow composition, hook size exceptions, whitespace policy and exact reader policy reviewed.
+      - Exact candidate source, adapted patch and independent source review match earlier accepted source proof byte for byte. Reliance is on that accepted proof, not a new semantic review of untouched upstream C.
+    assertions:
+      - The date unit test executes actual private LocalStore transactions, checks fixture lengths, and asserts independent expected SQLite storage classes and exact binary64 bits for all 519 tokens across julianday, CAST and arithmetic. SQL NULL is explicit, with 43 main and 3 threshold null results.
+      - Corpus covers numeric thresholds, fractional seconds, hour24, calendar boundaries, signed years, offsets, invalid inputs and legacy numeric behavior. Expected julianday values come from pinned native SQLite; CAST and arithmetic expectations preserve the original provider.
+      - Integrity controls mutate disposable complete copies and demand rejection for missing, extra, changed, corrupt, duplicate-key, escaping-path and linked sources, wrong provenance, staged disagreement and staged inventory errors. Exact-copy success prevents a reject-everything implementation from passing.
+      - Regeneration controls assert wrong input and malformed substitution counts fail with no output. Inspected retained independently executed exact positive regeneration and the strict frozen final-output hash.
+      - Whitespace controls exercise actual staged Git checks and assert normal neighboring paths fail. Reader controls exercise all three exact pages, verbose contract, normal authored prose rejection, missing/changed/linked pages, broadened map, missing/broken checker and altered original-page hash.
+    causality:
+      - All five test-parent entries were read including their individual outputs. Broad tests/** selection sent fixtures and Python files to unrelated Rust integration tests; absent Tcl setup caused conformance failures. These are not meaningful red evidence for this change.
+      - Retained product-red stderr contains the actual behavioral failure in the new date test with the original provider, for julianday of 2024-01-01T00:00:00.9999 returning 4142c54b40006117 instead of 4142c54b400060fe. Product green and current executable replay pass the same assertion.
+      - Legacy CAST and arithmetic characterization deliberately preserve prior behavior and may pass on the parent; that is required regression coverage for a date-only engine change.
+      - New maintenance and reader-policy APIs do not exist on the parent. Missing-module or missing-adapter setup failures do not establish behavioral red; current disposable mutation controls establish intended acceptance and rejection. Original upstream prose hard findings remain retained.
+    exclusions:
+      - No new ignored tests, coverage pragmas, coverage exclusion entries or generated exclusion entries were introduced.
+      - The new cfg(test) path points only to the private test module under tests/support; it does not relocate production library logic into an uncounted directory. Actual storage behavior remains covered through its existing module and composition tests.
+      - Vendor whitespace preservation and four exact size exceptions have adjacent source-preservation reasons, with complete byte verification as replacement. Exact three-page reader policy retains ordinary authored and new-page style checking.
+    limits:
+      - Tests qualify finite fixed SQL behavior of the pinned core-only local engine. Artifact D/E parser, runtime clock, modifiers/strftime, optional encryption/replication, alternate build flags and full platform parity remain expressly outside acceptance.
+      - Existing executable replays are not new Cargo or native compilations. Fresh compilation and broader gate receipts were inspected as prior evidence; the parent final check remains outstanding.
+      - Used read-only review and scratch-only execution. Direct Python execution avoided recipe logging writes under the assignment's no-repository-change boundary. No product, Git, Gest or installed-hook mutation and no agent spawning occurred.
+verification:
+  - Fresh twelve-method maintenance control run passed; receipts in /tmp/gossil-libsql-test-review-20261118/maintenance.stderr.
+  - Existing native executable replay passed all 1557 result comparisons; main-replay.stdout and threshold-replay.stdout retained in reviewer scratch.
+  - Existing instrumented Rust executable replay passed all seventeen storage/date/composition tests; profile and output written only to reviewer scratch.
+  - Complete 445-path candidate correspondence and exact source-proof identity passed; identity.json retained in reviewer scratch.
+notes: []
+follow_up: []
+<<<END_AGENT_RESULT>>>

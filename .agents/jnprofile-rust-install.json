@@ -2,10 +2,10 @@
   "schema_version": 1,
   "package": "jnprofile-rust",
   "source_repository": "https://github.com/rahuldave/jnprofile-rust.git",
-  "source_revision": "266241e4cffe4a89045f1717199e749b8dd75a03",
-  "source_version": "v0.2.0",
+  "source_revision": "b0c4a946ca17a7e401e3f3851f70ca3a179b3c22",
+  "source_version": "v0.2.0-1-gb0c4a94",
   "source_worktree_dirty": false,
-  "source_requested_commit": "266241e4cffe4a89045f1717199e749b8dd75a03",
+  "source_requested_commit": "b0c4a946ca17a7e401e3f3851f70ca3a179b3c22",
   "skills": [
     "rust-profile"
   ],
@@ -26,14 +26,14 @@
     ".agents/just/rust/docstring.just": "8e335b85902d33602066ececff9f5c694dd01f2c7c603f3cd20001732401fee7",
     ".agents/just/rust/integration.just": "129253bdc04de366ff35aa7a0008b7eea277921deec5596bec57fb648f9549a1",
     ".agents/just/rust/lint.just": "1f8448af467b2b1244e7bbd952d77cf6ac8070b28676adac1cdc546533f27d76",
-    ".agents/just/rust/steps.py": "086db281987a551e77f698fb6b16ce546100015a9d2ba124174613ee5fb272ce",
+    ".agents/just/rust/steps.py": "e266e620686f249ab50bb78565931a4b7dcf9c4ed3397e986e70e4cf7b8e2d79",
     ".agents/just/rust/test.just": "896071d8b2436292a7dc05679c43bc55fecb6051d91ba1f013469ec1e034c19f",
     ".agents/just/rust/toml.just": "1e6b85bd32a82d158158bcb95fb6b690fd85e0d0b9c12315d6791f1627be44c4",
     ".agents/just/rust/typecheck.just": "f9d46f73d77d974eda2e4a72f456bcacb080e2d5c48a3ddf6ac4c2c170f41fc8",
     ".agents/skills/rust-profile/SKILL.md": "9f9317168765848ba32c32f18b6cbc8e7a0b3b9c771eba820c60eb53a0698e79",
     ".agents/targets/rust/prose.md": "ab282d963864bb55e86307574fd8481b281a26890affb6c565fa2d7ba71ef4f7",
     ".agents/targets/rust/review.md": "1e2661e80e91bf4d875d6dc1611197a77cd0aa26bdbb28c498bada0fbfdaf6ed",
-    ".agents/targets/rust/test-review.md": "ecaee7edf0618aee1dadb4ef7f91f2b682c1591ad825eb8c9524d50d6f680616",
+    ".agents/targets/rust/test-review.md": "7f09fbffdd613bb14f8e55ab07a1ce6ed55b2d017a32382aafea1cdd9d1456ec",
     ".agents/targets/rust/update-docs.md": "ed30fb6e811bb84d248d39c184119f307b8042cb84ac61aa54d7b801627a4c2d"
   },
   "claude_links": [

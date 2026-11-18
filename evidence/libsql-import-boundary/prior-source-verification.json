@@ -1,0 +1,75 @@
+{
+  "proof_hashes": {
+    "original.c": true,
+    "native.c": true,
+    "patched.c": true,
+    "adapted.patch": true,
+    "patch.py": true,
+    "corpus.json": true,
+    "threshold-corpus.json": true,
+    "proof-report.json": true,
+    "numeric-symbol-map.json": true,
+    "complete-callsite-map.json": true,
+    "rust/Cargo.toml": true,
+    "rust/Cargo.lock": true,
+    "vendor-manifest.json": true,
+    "receipts-decoded.json": true
+  },
+  "reverse_rename": {
+    "sqlite3Multiply128": true,
+    "sqlite3Multiply160": true,
+    "powerOfTen": true,
+    "pwr10to2": {
+      "copied": "static int gossilDatepwr10to2(int p){ return (p*108853) >> 15; }",
+      "native": "static int pwr10to2(int p){ return (p*108853) >> 15; }"
+    },
+    "countLeadingZeros": true,
+    "sqlite3Fp10Convert2": true,
+    "sqlite3AtoF": true
+  },
+  "regeneration_exit": 0,
+  "regeneration_exact": true,
+  "legacy_AtoF_unchanged": true,
+  "vendor_manifest_mismatch": [],
+  "vendor_manifest_exact_inventory": true,
+  "archive_hash": "0be1da6f123ceb2cd23f469883415cab9ee963286a85d61e22afb8b12e15e681",
+  "vendor_vs_archive_changed": [
+    "bundled/src/sqlite3.c"
+  ],
+  "vendor_vs_archive_extra": [
+    ".cargo-ok"
+  ],
+  "vendor_vs_archive_missing": [],
+  "independent_replays": {
+    "original-corpus": {
+      "exit": 0,
+      "rows": 1467,
+      "argv_tokens": 489
+    },
+    "original-threshold-corpus": {
+      "exit": 0,
+      "rows": 90,
+      "argv_tokens": 30
+    },
+    "native-corpus": {
+      "exit": 0,
+      "rows": 1467,
+      "argv_tokens": 489
+    },
+    "native-threshold-corpus": {
+      "exit": 0,
+      "rows": 90,
+      "argv_tokens": 30
+    },
+    "patched-corpus": {
+      "exit": 0,
+      "rows": 1467,
+      "argv_tokens": 489
+    },
+    "patched-threshold-corpus": {
+      "exit": 0,
+      "rows": 90,
+      "argv_tokens": 30
+    }
+  }
+}

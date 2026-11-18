@@ -1,0 +1,27 @@
+{
+  "status": "accepted-local-owner-checkpoint",
+  "commit": "b0c4a946ca17a7e401e3f3851f70ca3a179b3c22",
+  "tree": "e5038bab1a136c3aca48892cf57b8bb037344de7",
+  "parent": "266241e4cffe4a89045f1717199e749b8dd75a03",
+  "branch": "gest/nusunqnq-vendor-coverage",
+  "worktree": "/Users/rahul/Projects/jnprofile-rust.worktrees/gest-nusunqnq-vendor-coverage",
+  "final_check": {
+    "command": "JNTERFACES=/Users/rahul/Projects/jnterfaces just check",
+    "exit_code": 0,
+    "tests": 186,
+    "skipped": 1,
+    "skip_reason": "tests.test_lab.Ci.test_ci_has_everything_that_the_lab_needs: only in CI"
+  },
+  "evidence": {
+    "/tmp/rust-vendor-policy-review-20261118/report.md": "373fb827ad2ab28fe8957e5ea785171baee7a2d76182f95145afe06dc05ca73f",
+    "/tmp/rust-vendor-policy-review-20261118/inventory-checks.json": "f29df02d9fcd2a179e1249b9f4e130ca9dec50b70baeb713cf24bca77c63d20f",
+    "/tmp/rust-vendor-policy-director-final-check.log": "81125607737de2cf74fb200548a797c75286565a6d46a645139eb45e3e4d90ad",
+    "/tmp/rust-vendor-policy-install-correspondence.json": "3470781eba9ad91e74d93d6de586cea8fdc4ea42cd26d5e8fd5739c74d7e96ff"
+  },
+  "limitations": [
+    "package-maker manifest failure is pre-existing and not repaired",
+    "prior scratch install used dirty candidate source, all14filebytesverified",
+    "Gossil committed-source installation and exact import review are separate pending task"
+  ],
+  "delivery": "local-only topic; no release, push, PR, or mainline change"
+}

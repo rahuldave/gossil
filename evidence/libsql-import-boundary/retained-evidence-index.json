@@ -1,0 +1,73 @@
+{
+  "retained": {
+    "prior-product-review.txt": {
+      "source": "/tmp/gossil-libsql-review.result",
+      "sha256": "ee6a88015c64ea69c9557cec6fce3e36aa24f099b345f3733ef2647631e65a78",
+      "length": 6543
+    },
+    "prior-test-review.txt": {
+      "source": "/tmp/gossil-libsql-test-review.result",
+      "sha256": "e6357a3b4e9174b29424f0264c8483d54bfc0529814348a41cd69ed133fc15c8",
+      "length": 5456
+    },
+    "prior-maintenance.stdout.txt": {
+      "source": "/tmp/gossil-libsql-test-review-20261118/maintenance.stdout",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "length": 0
+    },
+    "prior-maintenance.stderr.txt": {
+      "source": "/tmp/gossil-libsql-test-review-20261118/maintenance.stderr",
+      "sha256": "ac4daf436065cb9b405180a386aae2efb2466c117f092ed11a9194e5b834bd92",
+      "length": 2578
+    },
+    "prior-test-identity.json": {
+      "source": "/tmp/gossil-libsql-test-review-20261118/identity.json",
+      "sha256": "4cdfd3944e11162e07ed658b35b9abb44a0aa416af600f6c1f6ae2ccb752c9c6",
+      "length": 27263
+    },
+    "prior-source-review.json": {
+      "source": "/tmp/gossil-libsql-date-review-20261117/proof-review/review.json",
+      "sha256": "a0bbe1e08e1d83b68a083945011a8762504977ea493e4a2ad2498ad1d801fd0f",
+      "length": 9037
+    },
+    "prior-source-verification.json": {
+      "source": "/tmp/gossil-libsql-date-review-20261117/proof-review/verification.json",
+      "sha256": "15e08f4feac53156080e55ef96d7281521c61335b4f37ce8e14e59e69f85cba9",
+      "length": 1840
+    },
+    "prior-final-check.txt": {
+      "source": "/tmp/gossil-libsql-final-check.log",
+      "sha256": "b70c51232a6dfdbbec3f69837e8beb8259d2f35c6f248e38c41c504e5d455220",
+      "length": 16188
+    },
+    "coverage-diagnosis.txt": {
+      "source": "/tmp/gossil-libsql-coverage-diagnosis-20261118/diagnosis.txt",
+      "sha256": "33590cf86c193fddf0b3599a82b6d45ddf78017be6c9fa44ea8ea31d844a4d9b",
+      "length": 7170
+    },
+    "owner-policy-review.txt": {
+      "source": "/tmp/rust-vendor-policy-review-20261118/report.md",
+      "sha256": "373fb827ad2ab28fe8957e5ea785171baee7a2d76182f95145afe06dc05ca73f",
+      "length": 3714
+    },
+    "owner-policy-inventory.json": {
+      "source": "/tmp/rust-vendor-policy-review-20261118/inventory-checks.json",
+      "sha256": "f29df02d9fcd2a179e1249b9f4e130ca9dec50b70baeb713cf24bca77c63d20f",
+      "length": 3127
+    },
+    "owner-policy-checkpoint.json": {
+      "source": "/tmp/rust-vendor-policy-checkpoint-20261118.json",
+      "sha256": "d9889e5951f45e5d5a4c7fd2b8b7ab7fdad8f08cb5b65d93c2ecb19da59cc073",
+      "length": 1479
+    },
+    "prior-storage.stdout.txt.gz": {
+      "source": "/tmp/gossil-libsql-test-review-20261118/rust-replay.stdout",
+      "uncompressed_sha256": "28dc654b6a169bef24b7f8c820d12bf99f6e66a3039a882c24ccc0defdff1954",
+      "uncompressed_length": 1580,
+      "sha256": "170c27ff2ff6afe317494f0d6c67e045d19295a6f246af5db46adcbfea160d06",
+      "length": 686,
+      "encoding": "gzip; byte-identical original after decompression"
+    }
+  },
+  "boundary": "Prior receipts are retained evidence, not new product runtime acceptance; fresh checks only compare source/list consumers and candidate verifier."
+}

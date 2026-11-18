@@ -1,0 +1,39 @@
+# Independent review verdict
+
+Accept the five-file candidate for its narrow policy and diagnostic change. No blocking findings.
+
+Reviewed the complete base-to-candidate diff, all three modified prose pages in full, Justfile, source Rust-profile skill, changed docstring, tests, and supplied evidence logs. Applied independent nossaifd/declaude review using guidance attributed to Rosalind Reid, Shreya Shankar and Oskar Austegard. No owner, installed, product or Git state was changed by this review.
+
+The policy requires complete archive accounting, per-file byte proof, independent review before import, prior committed exact exclusions, project and CI provenance checks, staged-byte guard and retained behavior tests. It rejects automatic vendor exemptions and first-party/adapted exclusions, and requires review for changed releases or bytes. Runtime, feature and platform qualification remain separate.
+
+steps.py changes only its docstring and diagnostic strings. AST comparison after normalizing string values confirms no algorithm expansion.
+
+## Complete changed-file inventory
+
+- `README.md`: `54fe6ab6369a82a564fdab794c065a0fdaf05440322c58cff115afecd7fef773`
+- `docs/tools.md`: `39d90df9107c209a5869403b2258da49ddbceb4962e82d0d11f6f8b1581d4ca8`
+- `.agents/targets/rust/test-review.md`: `7f09fbffdd613bb14f8e55ab07a1ce6ed55b2d017a32382aafea1cdd9d1456ec`
+- `.agents/just/rust/steps.py`: `e266e620686f249ab50bb78565931a4b7dcf9c4ed3397e986e70e4cf7b8e2d79`
+- `tests/test_steps.py`: `f55f99dc6c77a71c1e3ca6bb24bb599737548f83366be5522f963ba229f6f688`
+
+All match the frozen inventory. Staged diff: five files, 103 insertions, 10 deletions; whitespace check passes. Base is 266241e4cffe4a89045f1717199e749b8dd75a03. Reviewed staged tree is e5038bab1a136c3aca48892cf57b8bb037344de7.
+
+## Verification and limits
+
+- Independently reproduced all 66 tests.test_steps tests in owned scratch: pass, 14.725 seconds. Log: steps.log. Initial scratch run lacked unchanged base.just; its two fixture failures disappeared after copying that prerequisite.
+- Inspected real red log: diagnostic regression fails against old wording; exact-path test passes.
+- New exclusion test checks unstaged/staged-only failure, prior-commit success, and failure for adjacent vendor and first-party files.
+- Nossaifd: zero hard findings on all three modified prose pages; 3/16/9 soft notes respectively.
+- Declaude candidates were individually judged. The generated/untestable contrast corrects a relevant misconception; repeated coverage terms preserve meaning. No rewrite necessary.
+- Independently rehashed all 14 shipped extra files in source and official scratch installation; bytes match and inventories are complete.
+- Official installation log identifies base revision with dirty source: True. This proves candidate payload correspondence, not installation from committed candidate source. Separate install --check log passes.
+- Package-maker base log confirms the existing manifest failure: empty installers while npx.supported=false. No package-maker success claimed.
+- Parent started final owner just check on unchanged staged tree e5038bab1a136c3aca48892cf57b8bb037344de7. It is pending. No complete owner check pass or agentic-gate receipt is claimed. Parent retains final-check responsibility.
+
+## Optional finding
+
+P3, README.md line98: “source checks in check and CI” could say “source checks in `just check` and CI” to make the command clearer for a newcomer. This does not affect acceptance. No edit was made.
+
+## Recommendations
+
+Proceed with the parent's complete final check and commit only the frozen five files. Keep the manifest limitation and dirty-source installation provenance explicit in delivery evidence.

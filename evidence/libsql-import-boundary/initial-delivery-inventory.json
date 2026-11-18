@@ -1,0 +1,165 @@
+{
+  "phase": "initial static prerequisite frozen before official installation and independent final gates",
+  "base": "ede1f9c56002f122df5c1627b41b8a1d4577aa0a",
+  "branch": "gest/lokxosvs-libsql-provenance",
+  "files": {
+    ".agents/coverage-exclude.txt": {
+      "length": 806,
+      "sha256": "a49ae68312eabf24371ec4b6fd26e2c3a0d715d8b8aef2ddc9220fd50448292c"
+    },
+    ".agents/generated.txt": {
+      "length": 919,
+      "sha256": "79268c65bc21b10114cc59dc85591b033bb663c5afc1aa387342d8c0ce969f90"
+    },
+    "docs/index.md": {
+      "length": 3392,
+      "sha256": "b5038e7a840c724bfc696eeeafe45563477ec4a403aa105d18568b2e98fed93e"
+    },
+    "docs/libsql-import-boundary.md": {
+      "length": 5546,
+      "sha256": "6027178dfe7891020e37c3426d6c48511cac94ff3f60a519d8c84340641615a1"
+    },
+    "evidence/libsql-import-boundary/archive-proof.json": {
+      "length": 90794,
+      "sha256": "5aec96dc5c066e3d302daa433914bd1b1616f9782e4dd94714351f1e5aa180af"
+    },
+    "evidence/libsql-import-boundary/candidate-.agents--nossaifd-checkers.json.txt": {
+      "length": 349,
+      "sha256": "c5468b062c0bf817ddd4f0503105909ff2e29fc211a47469d45b3d9ea55c6ad0"
+    },
+    "evidence/libsql-import-boundary/candidate-.github--workflows--check.yml.txt": {
+      "length": 2237,
+      "sha256": "cb252d352e8f85a2c2ebd8e0fd6fb0a2e8b5b3e2d51c97bd1ce39873fd1cd9a6"
+    },
+    "evidence/libsql-import-boundary/candidate-.pre-commit-config.yaml.txt": {
+      "length": 2277,
+      "sha256": "3fd47a7db677cecab8ab32ff30bc2b902f709aaab3829e45d690867cbbe96684"
+    },
+    "evidence/libsql-import-boundary/candidate-Justfile.txt": {
+      "length": 3809,
+      "sha256": "0cc448e3c64aecdc7a951cafa5ba36fb4f7251c5d43a01e17a43231017095cea"
+    },
+    "evidence/libsql-import-boundary/candidate-evidence--libsql-provider--independent-source-review.json.txt": {
+      "length": 9037,
+      "sha256": "a0bbe1e08e1d83b68a083945011a8762504977ea493e4a2ad2498ad1d801fd0f"
+    },
+    "evidence/libsql-import-boundary/candidate-evidence--libsql-provider--provenance.json.txt": {
+      "length": 2599,
+      "sha256": "04d3b60543cdf06bd7d7f5645287ab918d0954911bebce93ccce567fe7e1caf0"
+    },
+    "evidence/libsql-import-boundary/candidate-files.json": {
+      "length": 116026,
+      "sha256": "2a3ee3a6442cf2c2ecd6961f809fd1ed43fdd3679c14420e375843f57bfda8f0"
+    },
+    "evidence/libsql-import-boundary/candidate-scripts--check-preserved-libsql-prose.py.txt": {
+      "length": 1658,
+      "sha256": "8a08bf79bec17ab6a9fa41d8a21c3bb83d0012ac6566257f99d79b968d090b67"
+    },
+    "evidence/libsql-import-boundary/candidate-scripts--regenerate-libsql.py.txt": {
+      "length": 3980,
+      "sha256": "a75023ecef4d21ecfc2c731cd5d129517e6c827fdb41cbe220dc5f9506bf2ebd"
+    },
+    "evidence/libsql-import-boundary/candidate-scripts--verify-libsql-vendor.py.txt": {
+      "length": 8346,
+      "sha256": "8025d06f08117176a9ef9939d4467fe7d4ef7a028b7925d20b9b2aee7516db5e"
+    },
+    "evidence/libsql-import-boundary/candidate-tests--test_libsql_vendor.py.txt": {
+      "length": 13104,
+      "sha256": "677c37512a1ddbbde6f3443a45d1cbf72dd575cebabfc45f01f82b783368c034"
+    },
+    "evidence/libsql-import-boundary/candidate-vendor--libsql-ffi.manifest.json.txt": {
+      "length": 71307,
+      "sha256": "9dbcfc2b647f32b55389f10342fde5041750718a87aa52a2aa75b6b61337d3a5"
+    },
+    "evidence/libsql-import-boundary/coverage-diagnosis.txt": {
+      "length": 7170,
+      "sha256": "33590cf86c193fddf0b3599a82b6d45ddf78017be6c9fa44ea8ea31d844a4d9b"
+    },
+    "evidence/libsql-import-boundary/dependency-impact.json": {
+      "length": 6147,
+      "sha256": "1914584a7710c366ce460de02c55052a7d9b39c9bb24c37ae7c8f2c5be581040"
+    },
+    "evidence/libsql-import-boundary/matcher-controls.json": {
+      "length": 903,
+      "sha256": "df48bc466b1da688be155f4a66f34683c8ffffabc0ee6da6558aff0bfd447e08"
+    },
+    "evidence/libsql-import-boundary/owner-policy-checkpoint.json": {
+      "length": 1479,
+      "sha256": "d9889e5951f45e5d5a4c7fd2b8b7ab7fdad8f08cb5b65d93c2ecb19da59cc073"
+    },
+    "evidence/libsql-import-boundary/owner-policy-inventory.json": {
+      "length": 3127,
+      "sha256": "f29df02d9fcd2a179e1249b9f4e130ca9dec50b70baeb713cf24bca77c63d20f"
+    },
+    "evidence/libsql-import-boundary/owner-policy-review.txt": {
+      "length": 3714,
+      "sha256": "373fb827ad2ab28fe8957e5ea785171baee7a2d76182f95145afe06dc05ca73f"
+    },
+    "evidence/libsql-import-boundary/prior-final-check.txt": {
+      "length": 16188,
+      "sha256": "b70c51232a6dfdbbec3f69837e8beb8259d2f35c6f248e38c41c504e5d455220"
+    },
+    "evidence/libsql-import-boundary/prior-maintenance.stderr.txt": {
+      "length": 2578,
+      "sha256": "ac4daf436065cb9b405180a386aae2efb2466c117f092ed11a9194e5b834bd92"
+    },
+    "evidence/libsql-import-boundary/prior-maintenance.stdout.txt": {
+      "length": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "evidence/libsql-import-boundary/prior-product-review.txt": {
+      "length": 6543,
+      "sha256": "ee6a88015c64ea69c9557cec6fce3e36aa24f099b345f3733ef2647631e65a78"
+    },
+    "evidence/libsql-import-boundary/prior-source-review.json": {
+      "length": 9037,
+      "sha256": "a0bbe1e08e1d83b68a083945011a8762504977ea493e4a2ad2498ad1d801fd0f"
+    },
+    "evidence/libsql-import-boundary/prior-source-verification.json": {
+      "length": 1840,
+      "sha256": "15e08f4feac53156080e55ef96d7281521c61335b4f37ce8e14e59e69f85cba9"
+    },
+    "evidence/libsql-import-boundary/prior-storage.stdout.txt": {
+      "length": 1580,
+      "sha256": "28dc654b6a169bef24b7f8c820d12bf99f6e66a3039a882c24ccc0defdff1954"
+    },
+    "evidence/libsql-import-boundary/prior-test-identity.json": {
+      "length": 27263,
+      "sha256": "4cdfd3944e11162e07ed658b35b9abb44a0aa416af600f6c1f6ae2ccb752c9c6"
+    },
+    "evidence/libsql-import-boundary/prior-test-review.txt": {
+      "length": 5456,
+      "sha256": "e6357a3b4e9174b29424f0264c8483d54bfc0529814348a41cd69ed133fc15c8"
+    },
+    "evidence/libsql-import-boundary/retained-evidence-index.json": {
+      "length": 3037,
+      "sha256": "5b002429449324dc2473ee8a336d2214279fc8b2360deab9db0fab9131efafdc"
+    },
+    "evidence/libsql-import-boundary/upstream-build.rs.txt": {
+      "length": 24910,
+      "sha256": "452e349bbcfcc4367565352650341eea33a0a2492d90f4709ca4ce3a843cd2ed"
+    },
+    "evidence/libsql-import-boundary/upstream-bundled--bindings--bindgen.rs.txt": {
+      "length": 122899,
+      "sha256": "5e16cb83f45292d28f4c7a39abd75d6e6c21f4a92975c06cbcafaa0664034059"
+    },
+    "evidence/libsql-import-boundary/upstream-bundled--bindings--session_bindgen.rs.txt": {
+      "length": 139742,
+      "sha256": "10cf04ffe0d3236530bb6246575b88bba792ca5eabe2057dc9ea95cda557de34"
+    },
+    "evidence/libsql-import-boundary/upstream-src--lib.rs.txt": {
+      "length": 14607,
+      "sha256": "3ea2ce7d73d87dedce9f41986d0bf830b66a81c95c8cfab009242046a391cd63"
+    },
+    "evidence/libsql-import-boundary/validation.json": {
+      "length": 1382,
+      "sha256": "0f812e40f02ab55c42220f0359b9fd51fd9d0a01bf3298ad46a622dc2d4e145d"
+    },
+    "evidence/libsql-import-boundary/verifier-recheck.json": {
+      "length": 501,
+      "sha256": "e7ab0cbf62cc329f7a50eb1ee1ce7b45a33bc7469d4f79a120f8d70adb18f63e"
+    }
+  },
+  "inventory_excludes_itself": true,
+  "remaining": "Parent official install receipt, bounded guide/evidence finalization and independent gates."
+}

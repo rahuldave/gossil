@@ -28,6 +28,8 @@ remain planned work.
   behavior, fallible allocation and the finite native observations.
 - [Local storage](local-storage.md) describes database lifecycle, exclusive
   transactions and the private fixture that composes storage with byte primitives.
+- [libSQL source import boundary](libsql-import-boundary.md) records exact upstream
+  classifications and the controls required before importing the provider.
 - [Development plan](development-plan.md) gives the delivery order, ownership
   and local checkpoint workflow.
 

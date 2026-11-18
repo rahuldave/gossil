@@ -1,0 +1,1 @@
+just install --check: the record in .agents/stack.json and the files agree

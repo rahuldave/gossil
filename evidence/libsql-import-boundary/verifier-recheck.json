@@ -1,0 +1,23 @@
+{
+  "worktree": {
+    "command": [
+      "python3",
+      "-B",
+      "scripts/verify-libsql-vendor.py"
+    ],
+    "exit_code": 0,
+    "stdout": "Verified 272 libsql archive files and frozen provenance (worktree).\n",
+    "stderr": ""
+  },
+  "index": {
+    "command": [
+      "python3",
+      "-B",
+      "scripts/verify-libsql-vendor.py",
+      "--index"
+    ],
+    "exit_code": 0,
+    "stdout": "Verified 272 libsql archive files and frozen provenance (index + worktree).\n",
+    "stderr": ""
+  }
+}

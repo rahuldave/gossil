@@ -1,0 +1,22 @@
+{
+  "implementation_sha256": "086db281987a551e77f698fb6b16ce546100015a9d2ba124174613ee5fb272ce",
+  "mode": "Read-only existing matcher; no synthetic Git repository, no algorithm changes.",
+  "inventory_matched": [
+    "vendor/libsql-ffi/build.rs",
+    "vendor/libsql-ffi/bundled/bindings/bindgen.rs",
+    "vendor/libsql-ffi/bundled/bindings/session_bindgen.rs",
+    "vendor/libsql-ffi/src/lib.rs"
+  ],
+  "negative_controls": {
+    "src/storage.rs": false,
+    "src/lib.rs": false,
+    "vendor/libsql-ffi/src/neighbor.rs": false,
+    "vendor/libsql-ffi/build.rs.extra": false,
+    "vendor/libsql-ffi-other/src/lib.rs": false
+  },
+  "current_HEAD_parent_lists": {
+    "generated": [],
+    "coverage_exclude": []
+  },
+  "prior_commit_semantics": "Working/index entries cannot apply before prerequisite is committed; owner exact-path test independently reviewed prior-commit versus staged-only behavior."
+}

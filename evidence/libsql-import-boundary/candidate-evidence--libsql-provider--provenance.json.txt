@@ -1,0 +1,42 @@
+{
+  "identity": {
+    "crate": "libsql-ffi",
+    "version": "0.9.30",
+    "archive_sha256": "0be1da6f123ceb2cd23f469883415cab9ee963286a85d61e22afb8b12e15e681",
+    "crate_vcs": "0653c5788d77ef16a97c56ff3e9fdc11717a72d9",
+    "original_source_sha256": "d9791dc493f043172d75c4fe6ef48307db6534c98f2106c843551ca5cbfa2912",
+    "native_source_sha256": "fa1ca7a8ac45af89632ab480a3133556a48120fc76bffdd2d5cbb54cfb2e7ab0",
+    "patched_source_sha256": "1c99ebdc5a6fccdecb30c7702f7f6b07fa8258eea7d4216d878863cb3b7deefd"
+  },
+  "crate_archive": "https://static.crates.io/crates/libsql-ffi/libsql-ffi-0.9.30.crate",
+  "native_fossil_revision": "7e8ecf0ce4a3c05aa39de7ffe2828d23e334efe446ef2387e09f205ef00b2227",
+  "native_input_path": "extsrc/sqlite3.c from pinned Fossil source",
+  "native_sqlite_version": "3.55.0",
+  "native_sqlite_source_id": "2026-11-15 00:55:04 ad4ee20509dc4e2803f35093b03df55cb3e39c8083b0d4ad231e1432516c7841",
+  "base_sqlite_version": "3.45.1",
+  "packaging_difference": "Complete published registry archive with only bundled/src/sqlite3.c replaced by reviewed bytes. Cargo extraction marker .cargo-ok is absent in archive and omitted; no source file omitted. build.rs unchanged.",
+  "source_review_sha256": "a0bbe1e08e1d83b68a083945011a8762504977ea493e4a2ad2498ad1d801fd0f",
+  "patch_sha256": "89bbc97bff1ac86a165a2536cd6b060588a842b79b6c007a209c2e682eb9e763",
+  "patch_hunks": 8,
+  "provider_identity": "Base sqlite_version/sourceid remain unchanged; candidate identity is complete provenance + patched source hash.",
+  "source_changes": [
+    "date-only internal upstream numeric closure with unchanged legacy AtoF API",
+    "fraction clamp, hour24 validation and signed month/year rollover",
+    "negative Gregorian century arithmetic"
+  ],
+  "upstream_calendar_commit": "https://github.com/sqlite/sqlite/commit/aa2258e35b3df3dcd49220f2fed53725b150ac2b",
+  "upstream_fraction_commit": "https://github.com/sqlite/sqlite/commit/255548562b125e6c148bb27d49aaa01b2fe61dba",
+  "upstream_hour24_commits": [
+    "4b495f91a98381444a4688dcfdc6582e09ee9e56",
+    "1bf688324433bae5833168cbb1ef62dca536bcfe",
+    "3bce1260e7ef31b6b7bdde9d3781eb1264d68f37"
+  ],
+  "limitations": [
+    "actual inherited/Gossil D/E parser unimplemented/unexecuted",
+    "now/subsec/subsecond runtime untested",
+    "date modifiers/strftime not qualified",
+    "MultipleCiphers sources unchanged and unqualified; dependency core-only",
+    "only local macOSarm64 observations; Linux/otherarchitectures/alternateflags unqualified",
+    "bounded489+30 characterization; no unrestricted engine/parity approval"
+  ]
+}

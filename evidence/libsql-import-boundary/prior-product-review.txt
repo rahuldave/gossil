@@ -1,0 +1,55 @@
+<<<AGENT_RESULT v1>>>
+target: review
+nonce: f339690f8773edf99515091bb1f8d447
+status: success
+outputs:
+  findings: []
+  review:
+    decision: No open correctness, regression, test, safety or documentation findings in the bounded candidate.
+    base: de790aeab99012034f4b0bc9f9074181c935cd49
+    input_tree: 2f96dcc546aae747e3a7c1dec424a2cebf7d3c87
+    branch: gest/uqytyztr-libsql-date
+    complete_surface_enumeration: /tmp/gossil-libsql-product-review-20261118/complete-changed-surfaces.txt
+    surfaces:
+      - All 445 changed paths enumerated and individually compared to frozen candidate blobs; all match current working bytes.
+      - Complete 272-file published libsql-ffi 0.9.30 archive, including build.rs, Cargo metadata, bindings, licenses, notices, optional MultipleCiphers and sqlean sources.
+      - Cargo.toml exact core-only libsql pin and relative crates.io patch; Cargo.lock removes only ffi registry source/checksum.
+      - Three project Python maintenance/checker scripts, complete vendor manifest, exact three-page checker map, and twelve maintenance control methods.
+      - Justfile required typecheck/CI composition, workflow direct verification, index-aware always-run pre-commit/pre-merge verifier, four exact size exceptions, literal whitespace attributes and unchanged other hooks.
+      - Private storage test inclusion, 489-token and 30-threshold fixtures with provenance; no production Rust behavior or public SQL API added.
+      - README, docs/index, development-plan, local-storage, new libsql-provider guide, navigation, and complete retained evidence collection.
+    correctness:
+      - Independently compared cached published archive SHA256 and every archive path and byte; only bundled/src/sqlite3.c differs, with no missing or extra files. No .cargo-ok retained.
+      - Candidate C source, adapted patch and retained independent-source-review are byte-identical to the earlier accepted independent source proof. Patched source SHA256 is 1c99ebdc5a6fccdecb30c7702f7f6b07fa8258eea7d4216d878863cb3b7deefd.
+      - Reviewed the eight semantic hunks, copied internal numeric dependency closure, calendar/fraction/hour24 changes and prior complete caller accounting. Existing global sqlite3AtoF API and seventeen unrelated caller expressions remain unchanged.
+      - Independently regenerated exact candidate from pinned original and native inputs with current strict patch applier. Input hashes, target, offsets, context, hunk counts, substitution counts, final hash and exclusive output creation are checked.
+    regressions:
+      - No second engine, altered upstream build script or production Rust query boundary introduced. Existing core-only dependency selection is preserved.
+      - Exact four-path size exemption and vendor/literal whitespace boundaries preserve normal checks on ordinary and neighboring paths; original commit, trailer and pre-push entries remain unchanged.
+      - Earlier historical source review correctly leaves product integration outstanding; later adoption and reader-policy reports describe their respective executed stages and outstanding parent gates. They do not claim parser, clock or platform acceptance.
+    tests:
+      - Fresh complete worktree verifier and index-plus-worktree verifier both passed, each checking 272 files and frozen artifacts.
+      - Fresh execution of all twelve maintenance test methods passed, including extra/missing/corrupt/duplicate/path-escape/symlink/index disagreement, regeneration, literal whitespace and exact reader-policy controls.
+      - Fresh C compile against current candidate and replay of 489 main plus 30 threshold tokens passed all 1557 SQL result/storage-class/binary64 comparisons.
+      - Replayed existing instrumented Rust test executable with scratch profile output; all seventeen storage/date/composition tests passed. This is executable replay, not a newly compiled Cargo validation.
+      - Reviewed retained original-provider red receipt for fractional .9999 and adopted green receipts; original returned 4142c54b40006117 versus required 4142c54b400060fe.
+    safety:
+      - Validator rejects noncanonical paths, duplicate JSON keys, symlinks, nonregular sources, incorrect inventories, byte hashes and staged/worktree divergence. Reader map and original-page hashes are constants independently enforced outside editable digest rows.
+      - Adapter rejects unlisted pages and verifies the complete frozen composition. Ordinary/new pages retain the normal checker; altered map/adapter/source cannot silently use preservation policy.
+      - No network fetch is added to normal Cargo or regeneration. Exclusive regeneration output prevents accidental replacement. No secret or destructive-command defect found.
+    docs:
+      - All five authored pages and storage module additions explain purpose, source identity, exact policy and qualification limits; navigation resolves to the new guide.
+      - Three readable upstream pages are preserved verbatim under explicit exact source checks; their original hard prose findings remain retained. Independent prose/newcomer passes are prior evidence, not work newly performed by this review.
+      - Recommendations distinguish current source adoption and executed fixed SQL tests from future parser, shared-clock and feature/platform qualification.
+    limits:
+      - Untouched archive files received complete inventory and byte-preservation verification, not a claimed semantic review of one million upstream C lines.
+      - Numeric/date semantic review relies on the earlier independent accepted source proof after exact candidate correspondence, plus current hunk inspection and fresh bounded replays.
+      - Actual artifact parser, clock-sensitive behavior, date modifiers/formatting, optional features, alternate flags and full platform parity remain outside acceptance.
+      - No fresh Cargo build, full delta1 rerun, installer refresh or independent prose rewrite was performed; corresponding retained receipts were inspected as historical evidence.
+      - No product, index, branch, Gest or installed-hook changes were made. Gest calls and new agent delegation were excluded by the assignment.
+verification:
+  - Full changed-surface identity, complete registry archive comparison, source-proof correspondence and exact regeneration passed.
+  - Worktree and staged integrity verifiers, twelve maintenance controls, fresh native corpus replay, existing Rust executable replay and git diff --check passed.
+notes: []
+follow_up: []
+<<<END_AGENT_RESULT>>>

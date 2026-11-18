@@ -1,0 +1,11 @@
+# libsql-ffi 0.9.30: unchanged, handwritten upstream build logic; reachable, not generated.
+# Reviewed pinned-source preservation replaces new first-party line coverage only.
+# Proof and import conditions: docs/libsql-import-boundary.md; evidence/libsql-import-boundary/archive-proof.json.
+# Independent prior review: evidence/libsql-import-boundary/prior-product-review.txt.
+vendor/libsql-ffi/build.rs
+
+# libsql-ffi 0.9.30: unchanged, handwritten upstream FFI helpers; reachable, not generated.
+# Reviewed pinned-source preservation replaces new first-party line coverage only.
+# Proof and import conditions: docs/libsql-import-boundary.md; evidence/libsql-import-boundary/archive-proof.json.
+# Independent prior review: evidence/libsql-import-boundary/prior-test-review.txt.
+vendor/libsql-ffi/src/lib.rs
