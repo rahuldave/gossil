@@ -24,6 +24,7 @@ hashes and token escaping.
 | Parse structural artifact records | [Artifact parser](artifact-parser.md) |
 | Own a local database transaction | [Local storage](local-storage.md) |
 | Initialize an empty root or store private bytes | [Native storage](native-storage.md) |
+| Validate decoded task snapshots in memory | [Gest task values](gest-task-values.md) |
 
 The [concepts guide](concepts.md) explains how these modules fit together.
 Gossil is under development. General version-control commands, Gest task

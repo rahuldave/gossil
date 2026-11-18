@@ -1,0 +1,115 @@
+{
+  "ast-from": {
+    "command": [
+      "ast-grep",
+      "run",
+      "--lang",
+      "rust",
+      "--pattern",
+      "task_from_values($$$ARGS)",
+      "--json",
+      "src",
+      "tests"
+    ],
+    "exit": 0
+  },
+  "ast-to": {
+    "command": [
+      "ast-grep",
+      "run",
+      "--lang",
+      "rust",
+      "--pattern",
+      "task_to_values($$$ARGS)",
+      "--json",
+      "src",
+      "tests"
+    ],
+    "exit": 0
+  },
+  "ast-inputs": {
+    "command": [
+      "ast-grep",
+      "run",
+      "--lang",
+      "rust",
+      "--pattern",
+      "TaskValueInputs { $$$FIELDS }",
+      "--json",
+      "src",
+      "tests"
+    ],
+    "exit": 0
+  },
+  "ast-error": {
+    "command": [
+      "ast-grep",
+      "run",
+      "--lang",
+      "rust",
+      "--pattern",
+      "TaskValueError { $$$FIELDS }",
+      "--json",
+      "src",
+      "tests"
+    ],
+    "exit": 0
+  },
+  "ast-parse-cause": {
+    "command": [
+      "ast-grep",
+      "run",
+      "--lang",
+      "rust",
+      "--pattern",
+      "$ERROR.parse_cause()",
+      "--json",
+      "src",
+      "tests"
+    ],
+    "exit": 1,
+    "qualification": "Structural expression pattern returned zero; node-kind field_identifier scan and literal inventory supply method/field coverage."
+  },
+  "diff-check": {
+    "exit": 0
+  },
+  "format-check": {
+    "exit": 0
+  },
+  "ast-error-types": {
+    "command": [
+      "ast-grep",
+      "scan",
+      "--inline-rules",
+      "id: ast-error-types\nlanguage: Rust\nrule:\n  kind: type_identifier\n  regex: ^TaskValueError$\n",
+      "--json",
+      "src",
+      "tests"
+    ],
+    "exit": 0
+  },
+  "ast-cause-fields": {
+    "command": [
+      "ast-grep",
+      "scan",
+      "--inline-rules",
+      "id: ast-cause-fields\nlanguage: Rust\nrule:\n  kind: field_identifier\n  regex: ^parse_cause$\n",
+      "--json",
+      "src",
+      "tests"
+    ],
+    "exit": 0
+  },
+  "ast-api-module": {
+    "command": [
+      "ast-grep",
+      "scan",
+      "--inline-rules",
+      "id: ast-api-module\nlanguage: Rust\nrule:\n  kind: identifier\n  regex: ^gest_task_values$\n",
+      "--json",
+      "src",
+      "tests"
+    ],
+    "exit": 0
+  }
+}

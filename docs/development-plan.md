@@ -4,6 +4,9 @@ Gossil implements byte primitives, structural artifact parsing and bounded local
 storage. The `gossil` executable implements three delta diagnostics.
 The generated [Rust API](api/index.qmd) describes the public library surface.
 
+The standalone [Gest task values converter](gest-task-values.md) validates eleven decoded fields.
+Storage integration, raw field admission and the full Gest API remain future work.
+
 ## Current scope
 
 | Available | Planned |
@@ -123,6 +126,12 @@ The script verifies both input hashes, all eight patch hunks and the output hash
 Keep canonical baselines unchanged. Review the source diff before updating the
 adapted patch, source identity and affected manifest receipts together.
 The provenance record is `evidence/libsql-provider/provenance.json`.
+
+Five frozen task-value captures retain literal whitespace through exact `.gitattributes` paths.
+They are `green.log`, `guide.diff` and `source.diff` under `evidence/gest-task-values-cause-fix`,
+plus `focused-test.log` and `source-edge-observation.log` under `evidence/gest-task-values`.
+These paths preserve command output and patch context without changing the captured bytes.
+Ordinary authored files, suffixed paths and neighboring names retain whitespace checks.
 
 ## Evidence archive
 

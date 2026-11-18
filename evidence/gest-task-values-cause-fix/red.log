@@ -1,0 +1,149 @@
+just --justfile '/Users/rahul/Projects/gossil.worktrees/gest-oyntmozu-gest-values/Justfile' rust test-paths "$@"
+uv run --no-project --quiet --python '>=3.11' python '/Users/rahul/Projects/gossil.worktrees/gest-oyntmozu-gest-values/.agents/just/rust/steps.py' test-paths "$@"
+WARN `--no-project` was provided, but no project was found
+cargo test --locked --all-features --package gossil --test gest_task_values
+   Compiling proc-macro2 v1.0.107
+   Compiling unicode-ident v1.0.27
+   Compiling quote v1.0.47
+   Compiling cfg-if v1.0.5
+   Compiling libc v0.2.191
+   Compiling glob v0.3.4
+   Compiling bitflags v2.13.2
+   Compiling prettyplease v0.2.37
+   Compiling rustix v0.38.44
+   Compiling version_check v0.9.5
+   Compiling clang-sys v1.9.1
+   Compiling minimal-lexical v0.2.1
+   Compiling memchr v2.8.3
+   Compiling typenum v1.20.1
+   Compiling regex-syntax v0.8.12
+   Compiling nom v7.1.3
+   Compiling generic-array v0.14.7
+   Compiling libloading v0.8.9
+   Compiling pin-project-lite v0.2.17
+   Compiling shlex v2.0.1
+   Compiling serde_core v1.0.229
+   Compiling find-msvc-tools v0.1.15
+   Compiling bindgen v0.66.1
+   Compiling home v0.5.12
+   Compiling either v1.19.0
+   Compiling syn v2.0.119
+   Compiling syn v3.0.10
+   Compiling cc v1.11.2
+   Compiling shlex v1.3.0
+   Compiling errno v0.3.15
+   Compiling rustc-hash v1.1.0
+   Compiling lazy_static v1.5.1
+   Compiling peeking_take_while v0.1.2
+   Compiling log v0.4.35
+   Compiling lazycell v1.3.0
+   Compiling regex-automata v0.4.19
+   Compiling cexpr v0.6.0
+   Compiling which v4.4.2
+   Compiling cmake v0.1.58
+   Compiling futures-core v0.3.34
+   Compiling futures-sink v0.3.34
+   Compiling serde v1.0.229
+   Compiling once_cell v1.21.4
+   Compiling futures-channel v0.3.34
+   Compiling futures-io v0.3.34
+   Compiling futures-task v0.3.34
+   Compiling slab v0.4.12
+   Compiling rustversion v1.0.23
+   Compiling parking_lot_core v0.9.12
+   Compiling autocfg v1.5.1
+   Compiling tracing-core v0.1.36
+   Compiling regex v1.13.2
+   Compiling num-traits v0.2.19
+   Compiling block-buffer v0.10.4
+   Compiling crypto-common v0.1.7
+   Compiling zmij v1.0.23
+   Compiling scopeguard v1.2.0
+   Compiling byteorder v1.5.0
+   Compiling crc32fast v1.5.5
+   Compiling smallvec v1.16.5
+   Compiling thiserror v1.0.69
+   Compiling lock_api v0.4.14
+   Compiling digest v0.10.7
+   Compiling cpufeatures v0.2.17
+   Compiling adler2 v2.0.1
+   Compiling simd-adler32 v0.3.10
+   Compiling serde_json v1.0.154
+   Compiling sha1collisiondetection v0.3.4
+   Compiling generic-array v1.4.5
+   Compiling miniz_oxide v0.9.1
+   Compiling parking_lot v0.12.5
+   Compiling serde_derive v1.0.229
+   Compiling futures-macro v0.3.34
+   Compiling async-trait v0.1.92
+   Compiling itoa v1.0.19
+   Compiling chrono v0.4.44
+   Compiling futures-util v0.3.34
+   Compiling zerocopy-derive v0.7.35
+   Compiling tracing-attributes v0.1.31
+   Compiling zerocopy v0.7.35
+   Compiling thiserror-impl v1.0.69
+   Compiling flate2 v1.1.11
+   Compiling tracing v0.1.44
+   Compiling keccak v0.1.6
+   Compiling sha2 v0.10.9
+   Compiling md-5 v0.10.6
+   Compiling getrandom v0.4.3
+   Compiling rustix v1.1.6
+   Compiling tokio-macros v2.7.2
+   Compiling fastrand v2.5.0
+   Compiling tokio v1.54.1
+   Compiling futures-executor v0.3.34
+   Compiling libsql-ffi v0.9.30 (/Users/rahul/Projects/gossil.worktrees/gest-oyntmozu-gest-values/vendor/libsql-ffi)
+   Compiling futures v0.3.34
+   Compiling bytes v1.12.2
+   Compiling tempfile v3.27.0
+   Compiling libsql-sys v0.9.30
+   Compiling libsql v0.9.30
+   Compiling gossil v0.1.0 (/Users/rahul/Projects/gossil.worktrees/gest-oyntmozu-gest-values)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 1m 04s
+     Running tests/gest_task_values.rs (/tmp/gossil-gest-values-cause-fix-20261118/target/debug/deps/gest_task_values-b886a4e3a19d537f)
+
+running 22 tests
+test adopted_status_pairing_false_for_open ... ok
+test adopted_status_pairing_true_for_cancelled ... ok
+test adopted_status_pairing_true_for_done ... ok
+test adopted_status_pairing_false_for_in_progress ... ok
+test fixture_source_map_covers_all_23_upstream_tests_without_claiming_all_are_ported ... ok
+test inherited_status_display_formats_cancelled ... ok
+test complete_record_preserves_all_fields_and_round_trips ... ok
+test inherited_status_display_formats_done ... ok
+test inherited_status_display_formats_open ... ok
+test inherited_status_display_formats_in_progress ... ok
+test gossil_canonical_time_refuses_only_unrepresentable_utc_output ... ok
+test inherited_priority_numeric_values_in_named_range ... ok
+test gossil_checked_priority_rejects_values_instead_of_wrapping ... ok
+test text_is_exact_without_invented_content_restrictions ... ok
+test metadata_preserves_every_value_variant_and_nested_content ... ok
+test full_id_domains_for_all_three_identifier_fields ... ok
+test source_status_aliases_case_and_canonical_output ... ok
+test timestamp_order_is_not_an_invented_record_restriction ... ok
+test timestamp_errors_retain_distinct_upstream_causes ... FAILED
+test required_types_and_nullable_field_types_are_checked ... ok
+test source_chrono_timestamp_controls_apply_to_every_time_field ... ok
+test gossil_checked_priority_accepts_source_model_full_u8_range ... ok
+
+failures:
+
+---- timestamp_errors_retain_distinct_upstream_causes stdout ----
+
+thread 'timestamp_errors_retain_distinct_upstream_causes' (314188011) panicked at tests/gest_task_values.rs:436:5:
+assertion `left != right` failed
+  left: TaskValueError { field: "created_at", reason: "expected a chrono-compatible RFC3339 timestamp" }
+ right: TaskValueError { field: "created_at", reason: "expected a chrono-compatible RFC3339 timestamp" }
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+
+failures:
+    timestamp_errors_retain_distinct_upstream_causes
+
+test result: FAILED. 21 passed; 1 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.04s
+
+error: test failed, to rerun pass `-p gossil --test gest_task_values`
+error: Recipe `test-paths` failed on line 16 with exit code 1
+error: Recipe `test-paths` failed on line 71 with exit code 1

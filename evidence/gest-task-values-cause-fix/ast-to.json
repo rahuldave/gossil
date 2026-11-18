@@ -1,0 +1,51 @@
+[
+{
+  "text": "task_to_values(&task_from_values(fields).unwrap())",
+  "range": {
+    "byteOffset": {
+      "start": 1244,
+      "end": 1294
+    },
+    "start": {
+      "line": 32,
+      "column": 4
+    },
+    "end": {
+      "line": 32,
+      "column": 54
+    }
+  },
+  "file": "tests/gest_task_values.rs",
+  "lines": "    task_to_values(&task_from_values(fields).unwrap())",
+  "charCount": {
+    "leading": 4,
+    "trailing": 0
+  },
+  "language": "Rust",
+  "metaVariables": {
+    "single": {},
+    "multi": {
+      "ARGS": [
+        {
+          "text": "&task_from_values(fields).unwrap()",
+          "range": {
+            "byteOffset": {
+              "start": 1259,
+              "end": 1293
+            },
+            "start": {
+              "line": 32,
+              "column": 19
+            },
+            "end": {
+              "line": 32,
+              "column": 53
+            }
+          }
+        }
+      ]
+    },
+    "transformed": {}
+  }
+}
+]

@@ -1,0 +1,2 @@
+WARN `--no-project` was provided, but no project was found
+docs/gest-task-values.md: checked by check.py of the skill, 0 hard, 16 soft

@@ -1,0 +1,93 @@
+--- tests.before.txt
++++ tests/gest_task_values.rs
+@@ -422,3 +422,90 @@
+         }
+     }
+ }
++
++/// Preserve distinct upstream parse failures even when safe display text is equal.
++#[test]
++fn timestamp_errors_retain_distinct_upstream_causes() {
++    let mut short = base();
++    short.created_at = json!("");
++    let short = task_from_values(short).unwrap_err();
++    let mut range = base();
++    range.created_at = json!("2026-02-30T12:00:00Z");
++    let range = task_from_values(range).unwrap_err();
++    assert_eq!(short.to_string(), range.to_string());
++    assert_ne!(short, range);
++    for (error, input, kind) in [
++        (&short, "", chrono::format::ParseErrorKind::TooShort),
++        (
++            &range,
++            "2026-02-30T12:00:00Z",
++            chrono::format::ParseErrorKind::OutOfRange,
++        ),
++    ] {
++        let upstream = chrono::DateTime::parse_from_rfc3339(input).unwrap_err();
++        assert_eq!(error.parse_cause(), Some(&upstream));
++        assert_eq!(error.parse_cause().unwrap().kind(), kind);
++        assert_eq!(
++            error.to_string(),
++            "created_at: expected a chrono-compatible RFC3339 timestamp"
++        );
++        assert_eq!(error.clone().parse_cause(), Some(&upstream));
++    }
++}
++
++/// Keep ordinary validation failures distinct from actual chrono parser failures.
++#[test]
++fn non_parser_validation_errors_have_no_parse_cause() {
++    for field in [
++        "title",
++        "gest_id",
++        "priority",
++        "status",
++        "resolved_at",
++        "created_at",
++    ] {
++        let mut fields = base();
++        match field {
++            "title" => fields.title = json!(42),
++            "gest_id" => fields.gest_id = json!("bad"),
++            "priority" => fields.priority = json!(256),
++            "status" => fields.status = json!("unknown"),
++            "resolved_at" => fields.resolved_at = json!("2026-11-18T12:00:00Z"),
++            _ => fields.created_at = json!(42),
++        }
++        let error = task_from_values(fields).unwrap_err();
++        assert!(error.to_string().starts_with(&format!("{field}:")));
++        assert_eq!(error.parse_cause(), None);
++    }
++}
++
++/// Retain canonical UTC reparsing errors for each timestamp field.
++#[test]
++fn canonical_output_parser_errors_retain_the_upstream_cause() {
++    let fixture: Value =
++        serde_json::from_str(include_str!("fixtures/gest_task_values/records.json")).unwrap();
++    for field in ["created_at", "updated_at", "resolved_at"] {
++        for input in fixture["canonical_refusals"].as_array().unwrap() {
++            let parsed = chrono::DateTime::parse_from_rfc3339(input.as_str().unwrap()).unwrap();
++            let canonical = parsed.with_timezone(&chrono::Utc).to_rfc3339();
++            let upstream = chrono::DateTime::parse_from_rfc3339(&canonical).unwrap_err();
++            let mut fields = base();
++            match field {
++                "created_at" => fields.created_at = input.clone(),
++                "updated_at" => fields.updated_at = input.clone(),
++                _ => {
++                    fields.status = json!("done");
++                    fields.resolved_at = input.clone();
++                }
++            }
++            let error = task_from_values(fields).unwrap_err();
++            assert_eq!(error.parse_cause(), Some(&upstream));
++            assert_eq!(
++                error.to_string(),
++                format!(
++                    "{field}: normalized UTC timestamp is outside the canonical RFC3339 output domain"
++                )
++            );
++        }
++    }
++}

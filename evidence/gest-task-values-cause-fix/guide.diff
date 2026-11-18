@@ -1,0 +1,19 @@
+--- guide.before.txt
++++ docs/gest-task-values.md
+@@ -42,7 +42,15 @@
+ The example uses array metadata and priority 255 to show the model's full value
+ types. Production callers must handle `TaskValueError` from validation.
+ Its display text names the first rejected field and the reason, without echoing
+-the supplied value. The validated record stays unchanged if a caller changes
++the supplied value.
++
++`TaskValueError::parse_cause()` returns the actual typed
++`chrono::ParseError` when input parsing or canonical UTC output parsing fails.
++Callers can inspect its `kind()` to distinguish failures such as `TooShort`
++and `OutOfRange`. Other validation failures return no parse cause.
++Chrono's alloc-only build does not implement `std::error::Error` for this parser
++error, so callers use the accessor rather than `Error::source()`.
++The validated record stays unchanged if a caller changes
+ the owned fields returned by `task_to_values`.
+ 
+ ## Conversion contract

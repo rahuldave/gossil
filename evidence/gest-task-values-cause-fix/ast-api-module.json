@@ -1,0 +1,98 @@
+[
+{
+  "text": "gest_task_values",
+  "range": {
+    "byteOffset": {
+      "start": 29799,
+      "end": 29815
+    },
+    "start": {
+      "line": 783,
+      "column": 8
+    },
+    "end": {
+      "line": 783,
+      "column": 24
+    }
+  },
+  "file": "src/lib.rs",
+  "lines": "pub mod gest_task_values;",
+  "charCount": {
+    "leading": 8,
+    "trailing": 1
+  },
+  "language": "Rust",
+  "ruleId": "ast-api-module",
+  "severity": "hint",
+  "note": null,
+  "message": "",
+  "labels": [
+    {
+      "text": "gest_task_values",
+      "range": {
+        "byteOffset": {
+          "start": 29799,
+          "end": 29815
+        },
+        "start": {
+          "line": 783,
+          "column": 8
+        },
+        "end": {
+          "line": 783,
+          "column": 24
+        }
+      },
+      "style": "primary"
+    }
+  ]
+},
+{
+  "text": "gest_task_values",
+  "range": {
+    "byteOffset": {
+      "start": 91,
+      "end": 107
+    },
+    "start": {
+      "line": 1,
+      "column": 12
+    },
+    "end": {
+      "line": 1,
+      "column": 28
+    }
+  },
+  "file": "tests/gest_task_values.rs",
+  "lines": "use gossil::gest_task_values::{TaskValueInputs, task_from_values, task_to_values};",
+  "charCount": {
+    "leading": 12,
+    "trailing": 54
+  },
+  "language": "Rust",
+  "ruleId": "ast-api-module",
+  "severity": "hint",
+  "note": null,
+  "message": "",
+  "labels": [
+    {
+      "text": "gest_task_values",
+      "range": {
+        "byteOffset": {
+          "start": 91,
+          "end": 107
+        },
+        "start": {
+          "line": 1,
+          "column": 12
+        },
+        "end": {
+          "line": 1,
+          "column": 28
+        }
+      },
+      "style": "primary"
+    }
+  ]
+}
+]

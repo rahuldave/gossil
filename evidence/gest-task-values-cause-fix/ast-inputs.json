@@ -1,0 +1,814 @@
+[
+{
+  "text": "TaskValueInputs {\n        gest_id: Value::from(task.gest_id.clone()),\n        project_id: Value::from(task.project_id.clone()),\n        title: Value::from(task.title.clone()),\n        priority: task.priority.map(Value::from).unwrap_or(Value::Null),\n        status: Value::from(task.status),\n        description: Value::from(task.description.clone()),\n        assigned_to: task\n            .assigned_to\n            .clone()\n            .map(Value::from)\n            .unwrap_or(Value::Null),\n        metadata: task.metadata.clone(),\n        resolved_at: task\n            .resolved_at\n            .map(|dt| Value::from(dt.to_rfc3339()))\n            .unwrap_or(Value::Null),\n        created_at: Value::from(task.created_at.to_rfc3339()),\n        updated_at: Value::from(task.updated_at.to_rfc3339()),\n    }",
+  "range": {
+    "byteOffset": {
+      "start": 9914,
+      "end": 10716
+    },
+    "start": {
+      "line": 243,
+      "column": 4
+    },
+    "end": {
+      "line": 262,
+      "column": 5
+    }
+  },
+  "file": "src/gest_task_values.rs",
+  "lines": "    TaskValueInputs {\n        gest_id: Value::from(task.gest_id.clone()),\n        project_id: Value::from(task.project_id.clone()),\n        title: Value::from(task.title.clone()),\n        priority: task.priority.map(Value::from).unwrap_or(Value::Null),\n        status: Value::from(task.status),\n        description: Value::from(task.description.clone()),\n        assigned_to: task\n            .assigned_to\n            .clone()\n            .map(Value::from)\n            .unwrap_or(Value::Null),\n        metadata: task.metadata.clone(),\n        resolved_at: task\n            .resolved_at\n            .map(|dt| Value::from(dt.to_rfc3339()))\n            .unwrap_or(Value::Null),\n        created_at: Value::from(task.created_at.to_rfc3339()),\n        updated_at: Value::from(task.updated_at.to_rfc3339()),\n    }",
+  "charCount": {
+    "leading": 4,
+    "trailing": 0
+  },
+  "language": "Rust",
+  "metaVariables": {
+    "single": {},
+    "multi": {
+      "FIELDS": [
+        {
+          "text": "gest_id: Value::from(task.gest_id.clone())",
+          "range": {
+            "byteOffset": {
+              "start": 9940,
+              "end": 9982
+            },
+            "start": {
+              "line": 244,
+              "column": 8
+            },
+            "end": {
+              "line": 244,
+              "column": 50
+            }
+          }
+        },
+        {
+          "text": ",",
+          "range": {
+            "byteOffset": {
+              "start": 9982,
+              "end": 9983
+            },
+            "start": {
+              "line": 244,
+              "column": 50
+            },
+            "end": {
+              "line": 244,
+              "column": 51
+            }
+          }
+        },
+        {
+          "text": "project_id: Value::from(task.project_id.clone())",
+          "range": {
+            "byteOffset": {
+              "start": 9992,
+              "end": 10040
+            },
+            "start": {
+              "line": 245,
+              "column": 8
+            },
+            "end": {
+              "line": 245,
+              "column": 56
+            }
+          }
+        },
+        {
+          "text": ",",
+          "range": {
+            "byteOffset": {
+              "start": 10040,
+              "end": 10041
+            },
+            "start": {
+              "line": 245,
+              "column": 56
+            },
+            "end": {
+              "line": 245,
+              "column": 57
+            }
+          }
+        },
+        {
+          "text": "title: Value::from(task.title.clone())",
+          "range": {
+            "byteOffset": {
+              "start": 10050,
+              "end": 10088
+            },
+            "start": {
+              "line": 246,
+              "column": 8
+            },
+            "end": {
+              "line": 246,
+              "column": 46
+            }
+          }
+        },
+        {
+          "text": ",",
+          "range": {
+            "byteOffset": {
+              "start": 10088,
+              "end": 10089
+            },
+            "start": {
+              "line": 246,
+              "column": 46
+            },
+            "end": {
+              "line": 246,
+              "column": 47
+            }
+          }
+        },
+        {
+          "text": "priority: task.priority.map(Value::from).unwrap_or(Value::Null)",
+          "range": {
+            "byteOffset": {
+              "start": 10098,
+              "end": 10161
+            },
+            "start": {
+              "line": 247,
+              "column": 8
+            },
+            "end": {
+              "line": 247,
+              "column": 71
+            }
+          }
+        },
+        {
+          "text": ",",
+          "range": {
+            "byteOffset": {
+              "start": 10161,
+              "end": 10162
+            },
+            "start": {
+              "line": 247,
+              "column": 71
+            },
+            "end": {
+              "line": 247,
+              "column": 72
+            }
+          }
+        },
+        {
+          "text": "status: Value::from(task.status)",
+          "range": {
+            "byteOffset": {
+              "start": 10171,
+              "end": 10203
+            },
+            "start": {
+              "line": 248,
+              "column": 8
+            },
+            "end": {
+              "line": 248,
+              "column": 40
+            }
+          }
+        },
+        {
+          "text": ",",
+          "range": {
+            "byteOffset": {
+              "start": 10203,
+              "end": 10204
+            },
+            "start": {
+              "line": 248,
+              "column": 40
+            },
+            "end": {
+              "line": 248,
+              "column": 41
+            }
+          }
+        },
+        {
+          "text": "description: Value::from(task.description.clone())",
+          "range": {
+            "byteOffset": {
+              "start": 10213,
+              "end": 10263
+            },
+            "start": {
+              "line": 249,
+              "column": 8
+            },
+            "end": {
+              "line": 249,
+              "column": 58
+            }
+          }
+        },
+        {
+          "text": ",",
+          "range": {
+            "byteOffset": {
+              "start": 10263,
+              "end": 10264
+            },
+            "start": {
+              "line": 249,
+              "column": 58
+            },
+            "end": {
+              "line": 249,
+              "column": 59
+            }
+          }
+        },
+        {
+          "text": "assigned_to: task\n            .assigned_to\n            .clone()\n            .map(Value::from)\n            .unwrap_or(Value::Null)",
+          "range": {
+            "byteOffset": {
+              "start": 10273,
+              "end": 10402
+            },
+            "start": {
+              "line": 250,
+              "column": 8
+            },
+            "end": {
+              "line": 254,
+              "column": 35
+            }
+          }
+        },
+        {
+          "text": ",",
+          "range": {
+            "byteOffset": {
+              "start": 10402,
+              "end": 10403
+            },
+            "start": {
+              "line": 254,
+              "column": 35
+            },
+            "end": {
+              "line": 254,
+              "column": 36
+            }
+          }
+        },
+        {
+          "text": "metadata: task.metadata.clone()",
+          "range": {
+            "byteOffset": {
+              "start": 10412,
+              "end": 10443
+            },
+            "start": {
+              "line": 255,
+              "column": 8
+            },
+            "end": {
+              "line": 255,
+              "column": 39
+            }
+          }
+        },
+        {
+          "text": ",",
+          "range": {
+            "byteOffset": {
+              "start": 10443,
+              "end": 10444
+            },
+            "start": {
+              "line": 255,
+              "column": 39
+            },
+            "end": {
+              "line": 255,
+              "column": 40
+            }
+          }
+        },
+        {
+          "text": "resolved_at: task\n            .resolved_at\n            .map(|dt| Value::from(dt.to_rfc3339()))\n            .unwrap_or(Value::Null)",
+          "range": {
+            "byteOffset": {
+              "start": 10453,
+              "end": 10583
+            },
+            "start": {
+              "line": 256,
+              "column": 8
+            },
+            "end": {
+              "line": 259,
+              "column": 35
+            }
+          }
+        },
+        {
+          "text": ",",
+          "range": {
+            "byteOffset": {
+              "start": 10583,
+              "end": 10584
+            },
+            "start": {
+              "line": 259,
+              "column": 35
+            },
+            "end": {
+              "line": 259,
+              "column": 36
+            }
+          }
+        },
+        {
+          "text": "created_at: Value::from(task.created_at.to_rfc3339())",
+          "range": {
+            "byteOffset": {
+              "start": 10593,
+              "end": 10646
+            },
+            "start": {
+              "line": 260,
+              "column": 8
+            },
+            "end": {
+              "line": 260,
+              "column": 61
+            }
+          }
+        },
+        {
+          "text": ",",
+          "range": {
+            "byteOffset": {
+              "start": 10646,
+              "end": 10647
+            },
+            "start": {
+              "line": 260,
+              "column": 61
+            },
+            "end": {
+              "line": 260,
+              "column": 62
+            }
+          }
+        },
+        {
+          "text": "updated_at: Value::from(task.updated_at.to_rfc3339())",
+          "range": {
+            "byteOffset": {
+              "start": 10656,
+              "end": 10709
+            },
+            "start": {
+              "line": 261,
+              "column": 8
+            },
+            "end": {
+              "line": 261,
+              "column": 61
+            }
+          }
+        },
+        {
+          "text": ",",
+          "range": {
+            "byteOffset": {
+              "start": 10709,
+              "end": 10710
+            },
+            "start": {
+              "line": 261,
+              "column": 61
+            },
+            "end": {
+              "line": 261,
+              "column": 62
+            }
+          }
+        }
+      ]
+    },
+    "transformed": {}
+  }
+},
+{
+  "text": "TaskValueInputs {\n        gest_id: v[\"gest_id\"].clone(),\n        project_id: v[\"project_id\"].clone(),\n        title: v[\"title\"].clone(),\n        priority: v[\"priority\"].clone(),\n        status: v[\"status\"].clone(),\n        description: v[\"description\"].clone(),\n        assigned_to: v[\"assigned_to\"].clone(),\n        metadata: v[\"metadata\"].clone(),\n        resolved_at: v[\"resolved_at\"].clone(),\n        created_at: v[\"created_at\"].clone(),\n        updated_at: v[\"updated_at\"].clone(),\n    }",
+  "range": {
+    "byteOffset": {
+      "start": 373,
+      "end": 865
+    },
+    "start": {
+      "line": 7,
+      "column": 4
+    },
+    "end": {
+      "line": 19,
+      "column": 5
+    }
+  },
+  "file": "tests/gest_task_values.rs",
+  "lines": "    TaskValueInputs {\n        gest_id: v[\"gest_id\"].clone(),\n        project_id: v[\"project_id\"].clone(),\n        title: v[\"title\"].clone(),\n        priority: v[\"priority\"].clone(),\n        status: v[\"status\"].clone(),\n        description: v[\"description\"].clone(),\n        assigned_to: v[\"assigned_to\"].clone(),\n        metadata: v[\"metadata\"].clone(),\n        resolved_at: v[\"resolved_at\"].clone(),\n        created_at: v[\"created_at\"].clone(),\n        updated_at: v[\"updated_at\"].clone(),\n    }",
+  "charCount": {
+    "leading": 4,
+    "trailing": 0
+  },
+  "language": "Rust",
+  "metaVariables": {
+    "single": {},
+    "multi": {
+      "FIELDS": [
+        {
+          "text": "gest_id: v[\"gest_id\"].clone()",
+          "range": {
+            "byteOffset": {
+              "start": 399,
+              "end": 428
+            },
+            "start": {
+              "line": 8,
+              "column": 8
+            },
+            "end": {
+              "line": 8,
+              "column": 37
+            }
+          }
+        },
+        {
+          "text": ",",
+          "range": {
+            "byteOffset": {
+              "start": 428,
+              "end": 429
+            },
+            "start": {
+              "line": 8,
+              "column": 37
+            },
+            "end": {
+              "line": 8,
+              "column": 38
+            }
+          }
+        },
+        {
+          "text": "project_id: v[\"project_id\"].clone()",
+          "range": {
+            "byteOffset": {
+              "start": 438,
+              "end": 473
+            },
+            "start": {
+              "line": 9,
+              "column": 8
+            },
+            "end": {
+              "line": 9,
+              "column": 43
+            }
+          }
+        },
+        {
+          "text": ",",
+          "range": {
+            "byteOffset": {
+              "start": 473,
+              "end": 474
+            },
+            "start": {
+              "line": 9,
+              "column": 43
+            },
+            "end": {
+              "line": 9,
+              "column": 44
+            }
+          }
+        },
+        {
+          "text": "title: v[\"title\"].clone()",
+          "range": {
+            "byteOffset": {
+              "start": 483,
+              "end": 508
+            },
+            "start": {
+              "line": 10,
+              "column": 8
+            },
+            "end": {
+              "line": 10,
+              "column": 33
+            }
+          }
+        },
+        {
+          "text": ",",
+          "range": {
+            "byteOffset": {
+              "start": 508,
+              "end": 509
+            },
+            "start": {
+              "line": 10,
+              "column": 33
+            },
+            "end": {
+              "line": 10,
+              "column": 34
+            }
+          }
+        },
+        {
+          "text": "priority: v[\"priority\"].clone()",
+          "range": {
+            "byteOffset": {
+              "start": 518,
+              "end": 549
+            },
+            "start": {
+              "line": 11,
+              "column": 8
+            },
+            "end": {
+              "line": 11,
+              "column": 39
+            }
+          }
+        },
+        {
+          "text": ",",
+          "range": {
+            "byteOffset": {
+              "start": 549,
+              "end": 550
+            },
+            "start": {
+              "line": 11,
+              "column": 39
+            },
+            "end": {
+              "line": 11,
+              "column": 40
+            }
+          }
+        },
+        {
+          "text": "status: v[\"status\"].clone()",
+          "range": {
+            "byteOffset": {
+              "start": 559,
+              "end": 586
+            },
+            "start": {
+              "line": 12,
+              "column": 8
+            },
+            "end": {
+              "line": 12,
+              "column": 35
+            }
+          }
+        },
+        {
+          "text": ",",
+          "range": {
+            "byteOffset": {
+              "start": 586,
+              "end": 587
+            },
+            "start": {
+              "line": 12,
+              "column": 35
+            },
+            "end": {
+              "line": 12,
+              "column": 36
+            }
+          }
+        },
+        {
+          "text": "description: v[\"description\"].clone()",
+          "range": {
+            "byteOffset": {
+              "start": 596,
+              "end": 633
+            },
+            "start": {
+              "line": 13,
+              "column": 8
+            },
+            "end": {
+              "line": 13,
+              "column": 45
+            }
+          }
+        },
+        {
+          "text": ",",
+          "range": {
+            "byteOffset": {
+              "start": 633,
+              "end": 634
+            },
+            "start": {
+              "line": 13,
+              "column": 45
+            },
+            "end": {
+              "line": 13,
+              "column": 46
+            }
+          }
+        },
+        {
+          "text": "assigned_to: v[\"assigned_to\"].clone()",
+          "range": {
+            "byteOffset": {
+              "start": 643,
+              "end": 680
+            },
+            "start": {
+              "line": 14,
+              "column": 8
+            },
+            "end": {
+              "line": 14,
+              "column": 45
+            }
+          }
+        },
+        {
+          "text": ",",
+          "range": {
+            "byteOffset": {
+              "start": 680,
+              "end": 681
+            },
+            "start": {
+              "line": 14,
+              "column": 45
+            },
+            "end": {
+              "line": 14,
+              "column": 46
+            }
+          }
+        },
+        {
+          "text": "metadata: v[\"metadata\"].clone()",
+          "range": {
+            "byteOffset": {
+              "start": 690,
+              "end": 721
+            },
+            "start": {
+              "line": 15,
+              "column": 8
+            },
+            "end": {
+              "line": 15,
+              "column": 39
+            }
+          }
+        },
+        {
+          "text": ",",
+          "range": {
+            "byteOffset": {
+              "start": 721,
+              "end": 722
+            },
+            "start": {
+              "line": 15,
+              "column": 39
+            },
+            "end": {
+              "line": 15,
+              "column": 40
+            }
+          }
+        },
+        {
+          "text": "resolved_at: v[\"resolved_at\"].clone()",
+          "range": {
+            "byteOffset": {
+              "start": 731,
+              "end": 768
+            },
+            "start": {
+              "line": 16,
+              "column": 8
+            },
+            "end": {
+              "line": 16,
+              "column": 45
+            }
+          }
+        },
+        {
+          "text": ",",
+          "range": {
+            "byteOffset": {
+              "start": 768,
+              "end": 769
+            },
+            "start": {
+              "line": 16,
+              "column": 45
+            },
+            "end": {
+              "line": 16,
+              "column": 46
+            }
+          }
+        },
+        {
+          "text": "created_at: v[\"created_at\"].clone()",
+          "range": {
+            "byteOffset": {
+              "start": 778,
+              "end": 813
+            },
+            "start": {
+              "line": 17,
+              "column": 8
+            },
+            "end": {
+              "line": 17,
+              "column": 43
+            }
+          }
+        },
+        {
+          "text": ",",
+          "range": {
+            "byteOffset": {
+              "start": 813,
+              "end": 814
+            },
+            "start": {
+              "line": 17,
+              "column": 43
+            },
+            "end": {
+              "line": 17,
+              "column": 44
+            }
+          }
+        },
+        {
+          "text": "updated_at: v[\"updated_at\"].clone()",
+          "range": {
+            "byteOffset": {
+              "start": 823,
+              "end": 858
+            },
+            "start": {
+              "line": 18,
+              "column": 8
+            },
+            "end": {
+              "line": 18,
+              "column": 43
+            }
+          }
+        },
+        {
+          "text": ",",
+          "range": {
+            "byteOffset": {
+              "start": 858,
+              "end": 859
+            },
+            "start": {
+              "line": 18,
+              "column": 43
+            },
+            "end": {
+              "line": 18,
+              "column": 44
+            }
+          }
+        }
+      ]
+    },
+    "transformed": {}
+  }
+}
+]

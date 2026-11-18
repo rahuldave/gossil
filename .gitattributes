@@ -26,6 +26,12 @@
 # Preserve hash-verified upstream native schema comments and inherited whitespace.
 /src/storage/schema/native-repository.sql -whitespace
 
+# Preserve these frozen task-value command outputs and literal patch context bytes.
+/evidence/gest-task-values-cause-fix/green.log -whitespace
+/evidence/gest-task-values-cause-fix/guide.diff -whitespace
+/evidence/gest-task-values-cause-fix/source.diff -whitespace
+/evidence/gest-task-values/focused-test.log -whitespace
+/evidence/gest-task-values/source-edge-observation.log -whitespace
 # Preserve pinned Atelier font license notices byte-for-byte, including CRLF.
 /docs/_extensions/atelier/fonts/dmsans-OFL.txt -whitespace
 /docs/_extensions/atelier/fonts/ibmplexmono-OFL.txt -whitespace

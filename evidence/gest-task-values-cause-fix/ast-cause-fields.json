@@ -1,0 +1,434 @@
+[
+{
+  "text": "parse_cause",
+  "range": {
+    "byteOffset": {
+      "start": 3950,
+      "end": 3961
+    },
+    "start": {
+      "line": 90,
+      "column": 4
+    },
+    "end": {
+      "line": 90,
+      "column": 15
+    }
+  },
+  "file": "src/gest_task_values.rs",
+  "lines": "    parse_cause: Option<chrono::ParseError>,",
+  "charCount": {
+    "leading": 4,
+    "trailing": 29
+  },
+  "language": "Rust",
+  "ruleId": "ast-cause-fields",
+  "severity": "hint",
+  "note": null,
+  "message": "",
+  "labels": [
+    {
+      "text": "parse_cause",
+      "range": {
+        "byteOffset": {
+          "start": 3950,
+          "end": 3961
+        },
+        "start": {
+          "line": 90,
+          "column": 4
+        },
+        "end": {
+          "line": 90,
+          "column": 15
+        }
+      },
+      "style": "primary"
+    }
+  ]
+},
+{
+  "text": "parse_cause",
+  "range": {
+    "byteOffset": {
+      "start": 4508,
+      "end": 4519
+    },
+    "start": {
+      "line": 102,
+      "column": 13
+    },
+    "end": {
+      "line": 102,
+      "column": 24
+    }
+  },
+  "file": "src/gest_task_values.rs",
+  "lines": "        self.parse_cause.as_ref()",
+  "charCount": {
+    "leading": 13,
+    "trailing": 9
+  },
+  "language": "Rust",
+  "ruleId": "ast-cause-fields",
+  "severity": "hint",
+  "note": null,
+  "message": "",
+  "labels": [
+    {
+      "text": "parse_cause",
+      "range": {
+        "byteOffset": {
+          "start": 4508,
+          "end": 4519
+        },
+        "start": {
+          "line": 102,
+          "column": 13
+        },
+        "end": {
+          "line": 102,
+          "column": 24
+        }
+      },
+      "style": "primary"
+    }
+  ]
+},
+{
+  "text": "parse_cause",
+  "range": {
+    "byteOffset": {
+      "start": 7756,
+      "end": 7767
+    },
+    "start": {
+      "line": 180,
+      "column": 20
+    },
+    "end": {
+      "line": 180,
+      "column": 31
+    }
+  },
+  "file": "src/gest_task_values.rs",
+  "lines": "                    parse_cause: None,",
+  "charCount": {
+    "leading": 20,
+    "trailing": 7
+  },
+  "language": "Rust",
+  "ruleId": "ast-cause-fields",
+  "severity": "hint",
+  "note": null,
+  "message": "",
+  "labels": [
+    {
+      "text": "parse_cause",
+      "range": {
+        "byteOffset": {
+          "start": 7756,
+          "end": 7767
+        },
+        "start": {
+          "line": 180,
+          "column": 20
+        },
+        "end": {
+          "line": 180,
+          "column": 31
+        }
+      },
+      "style": "primary"
+    }
+  ]
+},
+{
+  "text": "parse_cause",
+  "range": {
+    "byteOffset": {
+      "start": 8240,
+      "end": 8251
+    },
+    "start": {
+      "line": 194,
+      "column": 16
+    },
+    "end": {
+      "line": 194,
+      "column": 27
+    }
+  },
+  "file": "src/gest_task_values.rs",
+  "lines": "                parse_cause: None,",
+  "charCount": {
+    "leading": 16,
+    "trailing": 7
+  },
+  "language": "Rust",
+  "ruleId": "ast-cause-fields",
+  "severity": "hint",
+  "note": null,
+  "message": "",
+  "labels": [
+    {
+      "text": "parse_cause",
+      "range": {
+        "byteOffset": {
+          "start": 8240,
+          "end": 8251
+        },
+        "start": {
+          "line": 194,
+          "column": 16
+        },
+        "end": {
+          "line": 194,
+          "column": 27
+        }
+      },
+      "style": "primary"
+    }
+  ]
+},
+{
+  "text": "parse_cause",
+  "range": {
+    "byteOffset": {
+      "start": 8906,
+      "end": 8917
+    },
+    "start": {
+      "line": 213,
+      "column": 12
+    },
+    "end": {
+      "line": 213,
+      "column": 23
+    }
+  },
+  "file": "src/gest_task_values.rs",
+  "lines": "            parse_cause: None,",
+  "charCount": {
+    "leading": 12,
+    "trailing": 7
+  },
+  "language": "Rust",
+  "ruleId": "ast-cause-fields",
+  "severity": "hint",
+  "note": null,
+  "message": "",
+  "labels": [
+    {
+      "text": "parse_cause",
+      "range": {
+        "byteOffset": {
+          "start": 8906,
+          "end": 8917
+        },
+        "start": {
+          "line": 213,
+          "column": 12
+        },
+        "end": {
+          "line": 213,
+          "column": 23
+        }
+      },
+      "style": "primary"
+    }
+  ]
+},
+{
+  "text": "parse_cause",
+  "range": {
+    "byteOffset": {
+      "start": 11107,
+      "end": 11118
+    },
+    "start": {
+      "line": 275,
+      "column": 12
+    },
+    "end": {
+      "line": 275,
+      "column": 23
+    }
+  },
+  "file": "src/gest_task_values.rs",
+  "lines": "            parse_cause: None,",
+  "charCount": {
+    "leading": 12,
+    "trailing": 7
+  },
+  "language": "Rust",
+  "ruleId": "ast-cause-fields",
+  "severity": "hint",
+  "note": null,
+  "message": "",
+  "labels": [
+    {
+      "text": "parse_cause",
+      "range": {
+        "byteOffset": {
+          "start": 11107,
+          "end": 11118
+        },
+        "start": {
+          "line": 275,
+          "column": 12
+        },
+        "end": {
+          "line": 275,
+          "column": 23
+        }
+      },
+      "style": "primary"
+    }
+  ]
+},
+{
+  "text": "parse_cause",
+  "range": {
+    "byteOffset": {
+      "start": 11701,
+      "end": 11712
+    },
+    "start": {
+      "line": 291,
+      "column": 12
+    },
+    "end": {
+      "line": 291,
+      "column": 23
+    }
+  },
+  "file": "src/gest_task_values.rs",
+  "lines": "            parse_cause: None,",
+  "charCount": {
+    "leading": 12,
+    "trailing": 7
+  },
+  "language": "Rust",
+  "ruleId": "ast-cause-fields",
+  "severity": "hint",
+  "note": null,
+  "message": "",
+  "labels": [
+    {
+      "text": "parse_cause",
+      "range": {
+        "byteOffset": {
+          "start": 11701,
+          "end": 11712
+        },
+        "start": {
+          "line": 291,
+          "column": 12
+        },
+        "end": {
+          "line": 291,
+          "column": 23
+        }
+      },
+      "style": "primary"
+    }
+  ]
+},
+{
+  "text": "parse_cause",
+  "range": {
+    "byteOffset": {
+      "start": 12359,
+      "end": 12370
+    },
+    "start": {
+      "line": 309,
+      "column": 12
+    },
+    "end": {
+      "line": 309,
+      "column": 23
+    }
+  },
+  "file": "src/gest_task_values.rs",
+  "lines": "            parse_cause: Some(cause),",
+  "charCount": {
+    "leading": 12,
+    "trailing": 14
+  },
+  "language": "Rust",
+  "ruleId": "ast-cause-fields",
+  "severity": "hint",
+  "note": null,
+  "message": "",
+  "labels": [
+    {
+      "text": "parse_cause",
+      "range": {
+        "byteOffset": {
+          "start": 12359,
+          "end": 12370
+        },
+        "start": {
+          "line": 309,
+          "column": 12
+        },
+        "end": {
+          "line": 309,
+          "column": 23
+        }
+      },
+      "style": "primary"
+    }
+  ]
+},
+{
+  "text": "parse_cause",
+  "range": {
+    "byteOffset": {
+      "start": 12866,
+      "end": 12877
+    },
+    "start": {
+      "line": 318,
+      "column": 12
+    },
+    "end": {
+      "line": 318,
+      "column": 23
+    }
+  },
+  "file": "src/gest_task_values.rs",
+  "lines": "            parse_cause: Some(cause),",
+  "charCount": {
+    "leading": 12,
+    "trailing": 14
+  },
+  "language": "Rust",
+  "ruleId": "ast-cause-fields",
+  "severity": "hint",
+  "note": null,
+  "message": "",
+  "labels": [
+    {
+      "text": "parse_cause",
+      "range": {
+        "byteOffset": {
+          "start": 12866,
+          "end": 12877
+        },
+        "start": {
+          "line": 318,
+          "column": 12
+        },
+        "end": {
+          "line": 318,
+          "column": 23
+        }
+      },
+      "style": "primary"
+    }
+  ]
+}
+]

@@ -1,0 +1,722 @@
+[
+{
+  "text": "TaskValueError",
+  "range": {
+    "byteOffset": {
+      "start": 3729,
+      "end": 3743
+    },
+    "start": {
+      "line": 84,
+      "column": 11
+    },
+    "end": {
+      "line": 84,
+      "column": 25
+    }
+  },
+  "file": "src/gest_task_values.rs",
+  "lines": "pub struct TaskValueError {",
+  "charCount": {
+    "leading": 11,
+    "trailing": 2
+  },
+  "language": "Rust",
+  "ruleId": "ast-error-types",
+  "severity": "hint",
+  "note": null,
+  "message": "",
+  "labels": [
+    {
+      "text": "TaskValueError",
+      "range": {
+        "byteOffset": {
+          "start": 3729,
+          "end": 3743
+        },
+        "start": {
+          "line": 84,
+          "column": 11
+        },
+        "end": {
+          "line": 84,
+          "column": 25
+        }
+      },
+      "style": "primary"
+    }
+  ]
+},
+{
+  "text": "TaskValueError",
+  "range": {
+    "byteOffset": {
+      "start": 3999,
+      "end": 4013
+    },
+    "start": {
+      "line": 93,
+      "column": 5
+    },
+    "end": {
+      "line": 93,
+      "column": 19
+    }
+  },
+  "file": "src/gest_task_values.rs",
+  "lines": "impl TaskValueError {",
+  "charCount": {
+    "leading": 5,
+    "trailing": 2
+  },
+  "language": "Rust",
+  "ruleId": "ast-error-types",
+  "severity": "hint",
+  "note": null,
+  "message": "",
+  "labels": [
+    {
+      "text": "TaskValueError",
+      "range": {
+        "byteOffset": {
+          "start": 3999,
+          "end": 4013
+        },
+        "start": {
+          "line": 93,
+          "column": 5
+        },
+        "end": {
+          "line": 93,
+          "column": 19
+        }
+      },
+      "style": "primary"
+    }
+  ]
+},
+{
+  "text": "TaskValueError",
+  "range": {
+    "byteOffset": {
+      "start": 4560,
+      "end": 4574
+    },
+    "start": {
+      "line": 106,
+      "column": 22
+    },
+    "end": {
+      "line": 106,
+      "column": 36
+    }
+  },
+  "file": "src/gest_task_values.rs",
+  "lines": "impl fmt::Display for TaskValueError {",
+  "charCount": {
+    "leading": 22,
+    "trailing": 2
+  },
+  "language": "Rust",
+  "ruleId": "ast-error-types",
+  "severity": "hint",
+  "note": null,
+  "message": "",
+  "labels": [
+    {
+      "text": "TaskValueError",
+      "range": {
+        "byteOffset": {
+          "start": 4560,
+          "end": 4574
+        },
+        "start": {
+          "line": 106,
+          "column": 22
+        },
+        "end": {
+          "line": 106,
+          "column": 36
+        }
+      },
+      "style": "primary"
+    }
+  ]
+},
+{
+  "text": "TaskValueError",
+  "range": {
+    "byteOffset": {
+      "start": 4903,
+      "end": 4917
+    },
+    "start": {
+      "line": 116,
+      "column": 27
+    },
+    "end": {
+      "line": 116,
+      "column": 41
+    }
+  },
+  "file": "src/gest_task_values.rs",
+  "lines": "impl std::error::Error for TaskValueError {}",
+  "charCount": {
+    "leading": 27,
+    "trailing": 3
+  },
+  "language": "Rust",
+  "ruleId": "ast-error-types",
+  "severity": "hint",
+  "note": null,
+  "message": "",
+  "labels": [
+    {
+      "text": "TaskValueError",
+      "range": {
+        "byteOffset": {
+          "start": 4903,
+          "end": 4917
+        },
+        "start": {
+          "line": 116,
+          "column": 27
+        },
+        "end": {
+          "line": 116,
+          "column": 41
+        }
+      },
+      "style": "primary"
+    }
+  ]
+},
+{
+  "text": "TaskValueError",
+  "range": {
+    "byteOffset": {
+      "start": 7175,
+      "end": 7189
+    },
+    "start": {
+      "line": 165,
+      "column": 71
+    },
+    "end": {
+      "line": 165,
+      "column": 85
+    }
+  },
+  "file": "src/gest_task_values.rs",
+  "lines": "pub fn task_from_values(fields: TaskValueInputs) -> Result<TaskValues, TaskValueError> {",
+  "charCount": {
+    "leading": 71,
+    "trailing": 3
+  },
+  "language": "Rust",
+  "ruleId": "ast-error-types",
+  "severity": "hint",
+  "note": null,
+  "message": "",
+  "labels": [
+    {
+      "text": "TaskValueError",
+      "range": {
+        "byteOffset": {
+          "start": 7175,
+          "end": 7189
+        },
+        "start": {
+          "line": 165,
+          "column": 71
+        },
+        "end": {
+          "line": 165,
+          "column": 85
+        }
+      },
+      "style": "primary"
+    }
+  ]
+},
+{
+  "text": "TaskValueError",
+  "range": {
+    "byteOffset": {
+      "start": 7602,
+      "end": 7616
+    },
+    "start": {
+      "line": 177,
+      "column": 23
+    },
+    "end": {
+      "line": 177,
+      "column": 37
+    }
+  },
+  "file": "src/gest_task_values.rs",
+  "lines": "                .ok_or(TaskValueError {",
+  "charCount": {
+    "leading": 23,
+    "trailing": 2
+  },
+  "language": "Rust",
+  "ruleId": "ast-error-types",
+  "severity": "hint",
+  "note": null,
+  "message": "",
+  "labels": [
+    {
+      "text": "TaskValueError",
+      "range": {
+        "byteOffset": {
+          "start": 7602,
+          "end": 7616
+        },
+        "start": {
+          "line": 177,
+          "column": 23
+        },
+        "end": {
+          "line": 177,
+          "column": 37
+        }
+      },
+      "style": "primary"
+    }
+  ]
+},
+{
+  "text": "TaskValueError",
+  "range": {
+    "byteOffset": {
+      "start": 8127,
+      "end": 8141
+    },
+    "start": {
+      "line": 191,
+      "column": 23
+    },
+    "end": {
+      "line": 191,
+      "column": 37
+    }
+  },
+  "file": "src/gest_task_values.rs",
+  "lines": "            return Err(TaskValueError {",
+  "charCount": {
+    "leading": 23,
+    "trailing": 2
+  },
+  "language": "Rust",
+  "ruleId": "ast-error-types",
+  "severity": "hint",
+  "note": null,
+  "message": "",
+  "labels": [
+    {
+      "text": "TaskValueError",
+      "range": {
+        "byteOffset": {
+          "start": 8127,
+          "end": 8141
+        },
+        "start": {
+          "line": 191,
+          "column": 23
+        },
+        "end": {
+          "line": 191,
+          "column": 37
+        }
+      },
+      "style": "primary"
+    }
+  ]
+},
+{
+  "text": "TaskValueError",
+  "range": {
+    "byteOffset": {
+      "start": 8749,
+      "end": 8763
+    },
+    "start": {
+      "line": 210,
+      "column": 19
+    },
+    "end": {
+      "line": 210,
+      "column": 33
+    }
+  },
+  "file": "src/gest_task_values.rs",
+  "lines": "        return Err(TaskValueError {",
+  "charCount": {
+    "leading": 19,
+    "trailing": 2
+  },
+  "language": "Rust",
+  "ruleId": "ast-error-types",
+  "severity": "hint",
+  "note": null,
+  "message": "",
+  "labels": [
+    {
+      "text": "TaskValueError",
+      "range": {
+        "byteOffset": {
+          "start": 8749,
+          "end": 8763
+        },
+        "start": {
+          "line": 210,
+          "column": 19
+        },
+        "end": {
+          "line": 210,
+          "column": 33
+        }
+      },
+      "style": "primary"
+    }
+  ]
+},
+{
+  "text": "TaskValueError",
+  "range": {
+    "byteOffset": {
+      "start": 10930,
+      "end": 10944
+    },
+    "start": {
+      "line": 269,
+      "column": 63
+    },
+    "end": {
+      "line": 269,
+      "column": 77
+    }
+  },
+  "file": "src/gest_task_values.rs",
+  "lines": "fn string(value: Value, field: &'static str) -> Result<String, TaskValueError> {",
+  "charCount": {
+    "leading": 63,
+    "trailing": 3
+  },
+  "language": "Rust",
+  "ruleId": "ast-error-types",
+  "severity": "hint",
+  "note": null,
+  "message": "",
+  "labels": [
+    {
+      "text": "TaskValueError",
+      "range": {
+        "byteOffset": {
+          "start": 10930,
+          "end": 10944
+        },
+        "start": {
+          "line": 269,
+          "column": 63
+        },
+        "end": {
+          "line": 269,
+          "column": 77
+        }
+      },
+      "style": "primary"
+    }
+  ]
+},
+{
+  "text": "TaskValueError",
+  "range": {
+    "byteOffset": {
+      "start": 11018,
+      "end": 11032
+    },
+    "start": {
+      "line": 272,
+      "column": 17
+    },
+    "end": {
+      "line": 272,
+      "column": 31
+    }
+  },
+  "file": "src/gest_task_values.rs",
+  "lines": "        _ => Err(TaskValueError {",
+  "charCount": {
+    "leading": 17,
+    "trailing": 2
+  },
+  "language": "Rust",
+  "ruleId": "ast-error-types",
+  "severity": "hint",
+  "note": null,
+  "message": "",
+  "labels": [
+    {
+      "text": "TaskValueError",
+      "range": {
+        "byteOffset": {
+          "start": 11018,
+          "end": 11032
+        },
+        "start": {
+          "line": 272,
+          "column": 17
+        },
+        "end": {
+          "line": 272,
+          "column": 31
+        }
+      },
+      "style": "primary"
+    }
+  ]
+},
+{
+  "text": "TaskValueError",
+  "range": {
+    "byteOffset": {
+      "start": 11440,
+      "end": 11454
+    },
+    "start": {
+      "line": 285,
+      "column": 67
+    },
+    "end": {
+      "line": 285,
+      "column": 81
+    }
+  },
+  "file": "src/gest_task_values.rs",
+  "lines": "fn identifier(value: Value, field: &'static str) -> Result<String, TaskValueError> {",
+  "charCount": {
+    "leading": 67,
+    "trailing": 3
+  },
+  "language": "Rust",
+  "ruleId": "ast-error-types",
+  "severity": "hint",
+  "note": null,
+  "message": "",
+  "labels": [
+    {
+      "text": "TaskValueError",
+      "range": {
+        "byteOffset": {
+          "start": 11440,
+          "end": 11454
+        },
+        "start": {
+          "line": 285,
+          "column": 67
+        },
+        "end": {
+          "line": 285,
+          "column": 81
+        }
+      },
+      "style": "primary"
+    }
+  ]
+},
+{
+  "text": "TaskValueError",
+  "range": {
+    "byteOffset": {
+      "start": 11585,
+      "end": 11599
+    },
+    "start": {
+      "line": 288,
+      "column": 19
+    },
+    "end": {
+      "line": 288,
+      "column": 33
+    }
+  },
+  "file": "src/gest_task_values.rs",
+  "lines": "        return Err(TaskValueError {",
+  "charCount": {
+    "leading": 19,
+    "trailing": 2
+  },
+  "language": "Rust",
+  "ruleId": "ast-error-types",
+  "severity": "hint",
+  "note": null,
+  "message": "",
+  "labels": [
+    {
+      "text": "TaskValueError",
+      "range": {
+        "byteOffset": {
+          "start": 11585,
+          "end": 11599
+        },
+        "start": {
+          "line": 288,
+          "column": 19
+        },
+        "end": {
+          "line": 288,
+          "column": 33
+        }
+      },
+      "style": "primary"
+    }
+  ]
+},
+{
+  "text": "TaskValueError",
+  "range": {
+    "byteOffset": {
+      "start": 12074,
+      "end": 12088
+    },
+    "start": {
+      "line": 302,
+      "column": 73
+    },
+    "end": {
+      "line": 302,
+      "column": 87
+    }
+  },
+  "file": "src/gest_task_values.rs",
+  "lines": "fn timestamp(value: Value, field: &'static str) -> Result<DateTime<Utc>, TaskValueError> {",
+  "charCount": {
+    "leading": 73,
+    "trailing": 3
+  },
+  "language": "Rust",
+  "ruleId": "ast-error-types",
+  "severity": "hint",
+  "note": null,
+  "message": "",
+  "labels": [
+    {
+      "text": "TaskValueError",
+      "range": {
+        "byteOffset": {
+          "start": 12074,
+          "end": 12088
+        },
+        "start": {
+          "line": 302,
+          "column": 73
+        },
+        "end": {
+          "line": 302,
+          "column": 87
+        }
+      },
+      "style": "primary"
+    }
+  ]
+},
+{
+  "text": "TaskValueError",
+  "range": {
+    "byteOffset": {
+      "start": 12241,
+      "end": 12255
+    },
+    "start": {
+      "line": 306,
+      "column": 25
+    },
+    "end": {
+      "line": 306,
+      "column": 39
+    }
+  },
+  "file": "src/gest_task_values.rs",
+  "lines": "        .map_err(|cause| TaskValueError {",
+  "charCount": {
+    "leading": 25,
+    "trailing": 2
+  },
+  "language": "Rust",
+  "ruleId": "ast-error-types",
+  "severity": "hint",
+  "note": null,
+  "message": "",
+  "labels": [
+    {
+      "text": "TaskValueError",
+      "range": {
+        "byteOffset": {
+          "start": 12241,
+          "end": 12255
+        },
+        "start": {
+          "line": 306,
+          "column": 25
+        },
+        "end": {
+          "line": 306,
+          "column": 39
+        }
+      },
+      "style": "primary"
+    }
+  ]
+},
+{
+  "text": "TaskValueError",
+  "range": {
+    "byteOffset": {
+      "start": 12723,
+      "end": 12737
+    },
+    "start": {
+      "line": 315,
+      "column": 19
+    },
+    "end": {
+      "line": 315,
+      "column": 33
+    }
+  },
+  "file": "src/gest_task_values.rs",
+  "lines": "        return Err(TaskValueError {",
+  "charCount": {
+    "leading": 19,
+    "trailing": 2
+  },
+  "language": "Rust",
+  "ruleId": "ast-error-types",
+  "severity": "hint",
+  "note": null,
+  "message": "",
+  "labels": [
+    {
+      "text": "TaskValueError",
+      "range": {
+        "byteOffset": {
+          "start": 12723,
+          "end": 12737
+        },
+        "start": {
+          "line": 315,
+          "column": 19
+        },
+        "end": {
+          "line": 315,
+          "column": 33
+        }
+      },
+      "style": "primary"
+    }
+  ]
+}
+]

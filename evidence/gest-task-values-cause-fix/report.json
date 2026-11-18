@@ -1,0 +1,75 @@
+{
+  "status": "implemented; focused verification passed; independent review and formal gates pending",
+  "worktree": "/Users/rahul/Projects/gossil.worktrees/gest-oyntmozu-gest-values",
+  "branch": "gest/oyntmozu-gest-values",
+  "finding": "P2 actual typed chrono parse causes were discarded",
+  "implementation": "TaskValueError retains Option<chrono::ParseError>; public parse_cause() returns Option<&chrono::ParseError>. Input parsing and canonical UTC reparsing retain actual errors; all other validation errors hold None. Existing safe Display is unchanged. No parser, string classification, dependency, feature or acceptance-rule change.",
+  "observed_red": {
+    "command": "CARGO_TARGET_DIR=/tmp/gossil-gest-values-cause-fix-20261118/target jlog run just test-paths tests/gest_task_values.rs",
+    "source": {
+      "path": "/Users/rahul/Projects/gossil.worktrees/gest-oyntmozu-gest-values/evidence/gest-task-values-cause-fix/source.before.txt",
+      "sha256": "9a680e3a4b5a169478283cbef45370e2aabe30123fce8b6600dd2761e611570f"
+    },
+    "log": "/Users/rahul/Projects/gossil.worktrees/gest-oyntmozu-gest-values/evidence/gest-task-values-cause-fix/red.log",
+    "outcome": "production runtime assertion failed: same-field TooShort and OutOfRange errors compared equal; 21 existing tests passed, 1 new test failed; recipe exit 1. Outer capture shell ended with tail and returned zero; the recipe failure is preserved in the log."
+  },
+  "observed_green": {
+    "command": "CARGO_TARGET_DIR=/tmp/gossil-gest-values-cause-fix-20261118/target jlog run just test-paths tests/gest_task_values.rs",
+    "log": "/Users/rahul/Projects/gossil.worktrees/gest-oyntmozu-gest-values/evidence/gest-task-values-cause-fix/green.log",
+    "outcome": "24 passed, 0 failed, 0 ignored; includes all 21 unchanged original tests and 3 new tests"
+  },
+  "regressions": [
+    "Distinguish actual upstream TooShort and OutOfRange, compare typed causes to upstream parse results, preserve safe Display and cloned cause.",
+    "Ordinary type, ID, priority, status and terminal pairing validation errors return no parse cause.",
+    "Canonical UTC output reparsing retains actual upstream cause across all three timestamp fields."
+  ],
+  "dependency_impact": {
+    "semantic_contract": "Typed parser-cause accessor and richer equality/debug data for TaskValueError. No consumer adaptation is needed.",
+    "surfaces": "All first-party src/ and tests/ Rust files enumerated in first-party-rust-files.txt; AST queries and literal inventory include source constructors, conversion callers, input construction, error type references, accessor field/method references, and lib/test module references. No storage, artifact, command or schema consumer.",
+    "ast_node_scans": {
+      "ast-error-types": {
+        "count": 15,
+        "files": [
+          "src/gest_task_values.rs"
+        ]
+      },
+      "ast-cause-fields": {
+        "count": 9,
+        "files": [
+          "src/gest_task_values.rs"
+        ]
+      },
+      "ast-api-module": {
+        "count": 2,
+        "files": [
+          "src/lib.rs",
+          "tests/gest_task_values.rs"
+        ]
+      }
+    },
+    "query_limit": "Expression-pattern accessor query returned zero; explicit field_identifier scan found nine references. Empty query is not treated as absence."
+  },
+  "prose": {
+    "skill": "nossaifd; attribution preserved",
+    "author_checks": "prose_gate check and verbose check: 0 hard, 23 soft; declaude lint captured seven candidates in existing unchanged material; added paragraph manually reviewed.",
+    "qualification": "No independent revision or prose gate record claimed; parent owns fresh independent revision and ordered gates. Explicit assignment forbids subagents and gate recursion."
+  },
+  "preservation": {
+    "historical_evidence_unchanged": true,
+    "historical_evidence_file_count": 12,
+    "source_map_unchanged": true,
+    "candidate_hashes_and_historical_test_counts_unchanged": true,
+    "all_original_21_tests_byte_preserved_as_prefix": true
+  },
+  "owned_outputs": {
+    "/Users/rahul/Projects/gossil.worktrees/gest-oyntmozu-gest-values/src/gest_task_values.rs": "c3d5e716de24081197957515d61611a7d0372f7f9f50a52666ba614571dadaf7",
+    "/Users/rahul/Projects/gossil.worktrees/gest-oyntmozu-gest-values/tests/gest_task_values.rs": "f9f98796e7842bb8f46737afcc3e31afa328e87f96e7e6a45a13449449c04f86",
+    "/Users/rahul/Projects/gossil.worktrees/gest-oyntmozu-gest-values/docs/gest-task-values.md": "bd7571c1ad3c6c5ab40940834cacd1b8d9dd9f4aacc433d123478eaf19904b7c"
+  },
+  "evidence": "/Users/rahul/Projects/gossil.worktrees/gest-oyntmozu-gest-values/evidence/gest-task-values-cause-fix",
+  "not_run": [
+    "No full gates, instrumentation, native probes, Gest commands, staging, commits, subagents or shared instrumentation.",
+    "No raw JSON, replay, API expansion beyond error accessor, or migration work."
+  ],
+  "handoff": "Parent owns ordered fresh gates, independent review, prose revision/record, Gest bookkeeping, staging and commit. Shared Just test ownership released after this report."
+}

@@ -1,0 +1,48 @@
+just --justfile '/Users/rahul/Projects/gossil.worktrees/gest-oyntmozu-gest-values/Justfile' rust test-paths "$@"
+uv run --no-project --quiet --python '>=3.11' python '/Users/rahul/Projects/gossil.worktrees/gest-oyntmozu-gest-values/.agents/just/rust/steps.py' test-paths "$@"
+WARN `--no-project` was provided, but no project was found
+cargo test --locked --all-features --package gossil --test gest_task_values
+   Compiling gossil v0.1.0 (/Users/rahul/Projects/gossil.worktrees/gest-oyntmozu-gest-values)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.94s
+     Running tests/gest_task_values.rs (target/gest-task-values/debug/deps/gest_task_values-b886a4e3a19d537f)
+
+running 21 tests
+test adopted_status_pairing_false_for_open ... ok
+test adopted_status_pairing_true_for_done ... ok
+test adopted_status_pairing_false_for_in_progress ... ok
+test complete_record_preserves_all_fields_and_round_trips ... ok
+test fixture_source_map_covers_all_23_upstream_tests_without_claiming_all_are_ported ... ok
+test gossil_canonical_time_refuses_only_unrepresentable_utc_output ... FAILED
+test adopted_status_pairing_true_for_cancelled ... ok
+test inherited_status_display_formats_cancelled ... ok
+test inherited_status_display_formats_done ... ok
+test inherited_status_display_formats_in_progress ... ok
+test inherited_priority_numeric_values_in_named_range ... ok
+test inherited_status_display_formats_open ... ok
+test gossil_checked_priority_rejects_values_instead_of_wrapping ... ok
+test text_is_exact_without_invented_content_restrictions ... ok
+test metadata_preserves_every_value_variant_and_nested_content ... ok
+test timestamp_order_is_not_an_invented_record_restriction ... ok
+test full_id_domains_for_all_three_identifier_fields ... ok
+test source_status_aliases_case_and_canonical_output ... ok
+test required_types_and_nullable_field_types_are_checked ... ok
+test source_chrono_timestamp_controls_apply_to_every_time_field ... ok
+test gossil_checked_priority_accepts_source_model_full_u8_range ... ok
+
+failures:
+
+---- gossil_canonical_time_refuses_only_unrepresentable_utc_output stdout ----
+
+thread 'gossil_canonical_time_refuses_only_unrepresentable_utc_output' (314095083) panicked at tests/gest_task_values.rs:40:14:
+called `Result::unwrap_err()` on an `Ok` value: TaskValues { gest_id: "zyxwvutsrqponmlkzyxwvutsrqponmlk", project_id: "kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk", title: "", priority: None, status: "open", description: "", assigned_to: None, metadata: Null, resolved_at: None, created_at: -0001-12-31T23:00:00Z, updated_at: 2026-11-18T12:00:00Z }
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+
+failures:
+    gossil_canonical_time_refuses_only_unrepresentable_utc_output
+
+test result: FAILED. 20 passed; 1 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.04s
+
+error: test failed, to rerun pass `-p gossil --test gest_task_values`
+error: Recipe `test-paths` failed on line 16 with exit code 1
+error: Recipe `test-paths` failed on line 71 with exit code 1

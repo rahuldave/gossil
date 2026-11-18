@@ -1,0 +1,44 @@
+./docs/gest-task-values.md:7:`TaskValueInputs` requires an explicit `serde_json::Value` for each field.
+./docs/gest-task-values.md:8:`task_from_values` validates these values and returns `TaskValues`, whose fields
+./docs/gest-task-values.md:9:are private. `task_to_values` returns the complete set of owned values.
+./docs/gest-task-values.md:69:The fixture [source map](../tests/fixtures/gest_task_values/source-map.json)
+./docs/gest-task-values.md:74:The focused [tests](../tests/gest_task_values.rs) exercise the public conversion
+./docs/gest-task-values.md:75:functions. The [records](../tests/fixtures/gest_task_values/records.json) include
+./docs/gest-task-values.md:83:`jlog run just test-paths tests/gest_task_values.rs`. Parent-owned review and
+./src/gest_task_values.rs:15:pub struct TaskValueInputs {
+./src/gest_task_values.rs:42:pub struct TaskValues {
+./src/gest_task_values.rs:69:pub struct TaskValueError {
+./src/gest_task_values.rs:76:impl fmt::Display for TaskValueError {
+./src/gest_task_values.rs:83:impl std::error::Error for TaskValueError {}
+./src/gest_task_values.rs:98:pub fn task_from_values(fields: TaskValueInputs) -> Result<TaskValues, TaskValueError> {
+./src/gest_task_values.rs:110:                .ok_or(TaskValueError {
+./src/gest_task_values.rs:123:            return Err(TaskValueError {
+./src/gest_task_values.rs:141:        return Err(TaskValueError {
+./src/gest_task_values.rs:146:    Ok(TaskValues {
+./src/gest_task_values.rs:164:/// * `task` - A record validated by [`task_from_values`].
+./src/gest_task_values.rs:169:pub fn task_to_values(task: &TaskValues) -> TaskValueInputs {
+./src/gest_task_values.rs:170:    TaskValueInputs {
+./src/gest_task_values.rs:193:fn string(value: Value, field: &'static str) -> Result<String, TaskValueError> {
+./src/gest_task_values.rs:196:        _ => Err(TaskValueError {
+./src/gest_task_values.rs:204:fn identifier(value: Value, field: &'static str) -> Result<String, TaskValueError> {
+./src/gest_task_values.rs:207:        return Err(TaskValueError {
+./src/gest_task_values.rs:216:fn timestamp(value: Value, field: &'static str) -> Result<DateTime<Utc>, TaskValueError> {
+./src/gest_task_values.rs:220:        .map_err(|_| TaskValueError {
+./src/gest_task_values.rs:228:        return Err(TaskValueError {
+./src/lib.rs:784:pub mod gest_task_values;
+./tests/gest_task_values.rs:2:use gossil::gest_task_values::{TaskValueInputs, task_from_values, task_to_values};
+./tests/gest_task_values.rs:6:fn inputs(v: &Value) -> TaskValueInputs {
+./tests/gest_task_values.rs:8:    TaskValueInputs {
+./tests/gest_task_values.rs:24:fn base() -> TaskValueInputs {
+./tests/gest_task_values.rs:26:        &serde_json::from_str::<Value>(include_str!("fixtures/gest_task_values/records.json"))
+./tests/gest_task_values.rs:32:fn output(fields: TaskValueInputs) -> TaskValueInputs {
+./tests/gest_task_values.rs:33:    task_to_values(&task_from_values(fields).unwrap())
+./tests/gest_task_values.rs:37:fn rejects(fields: TaskValueInputs, field: &str) {
+./tests/gest_task_values.rs:39:        task_from_values(fields)
+./tests/gest_task_values.rs:49:        serde_json::from_str(include_str!("fixtures/gest_task_values/records.json")).unwrap();
+./tests/gest_task_values.rs:52:        let task = task_from_values(fields.clone()).unwrap();
+./tests/gest_task_values.rs:53:        assert_eq!(task_to_values(&task), fields);
+./tests/gest_task_values.rs:54:        assert_eq!(task_from_values(task_to_values(&task)).unwrap(), task);
+./tests/gest_task_values.rs:312:        serde_json::from_str(include_str!("fixtures/gest_task_values/records.json")).unwrap();
+./tests/gest_task_values.rs:358:        serde_json::from_str(include_str!("fixtures/gest_task_values/source-map.json")).unwrap();
+./tests/gest_task_values.rs:387:        serde_json::from_str(include_str!("fixtures/gest_task_values/records.json")).unwrap();

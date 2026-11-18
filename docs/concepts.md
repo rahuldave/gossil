@@ -44,6 +44,13 @@ Operating-system access establishes local owner authority.
 The [native storage guide](native-storage.md) defines admission, content bounds
 and access rules. General crosslinks, sync and team authentication remain planned.
 
+## Task values
+
+The `gest_task_values` module validates eleven already decoded task fields.
+It returns an owned record with canonical status and UTC timestamps.
+The [task values guide](gest-task-values.md) defines validation and caller responsibilities.
+Raw input admission, storage integration and task commands remain separate work.
+
 ## Recommendations
 
 Choose the smallest module that fits the operation. Next, set resource limits
