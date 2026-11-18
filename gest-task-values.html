@@ -1,0 +1,214 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="generator" content="smalldocs-0.5.12"><meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes"><title>Gest task values – Gossil</title><link rel="icon" href="site_libs/themes/atelier/logo.svg"><link rel="stylesheet" href="site_libs/themes/atelier/atelier.css" data-mode="light" class="quarto-color-scheme" id="quarto-bootstrap-light" media="not all and (prefers-color-scheme: dark)"><link rel="stylesheet" href="site_libs/themes/atelier/atelier-dark.css" data-mode="dark" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap-dark" media="(prefers-color-scheme: dark)"><link rel="stylesheet" href="site_libs/bootstrap-icons/bootstrap-icons.min.css"><link rel="stylesheet" href="site_libs/smalldocs.css"><meta name="smalldocs:offset" content="./"><script src="site_libs/bootstrap/bootstrap.bundle.min.js"></script><script src="site_libs/fuse/fuse.min.js"></script><script src="site_libs/smalldocs.js" defer></script><script>(function(){var d=document.documentElement,s=null;try{s=localStorage.getItem('smalldocs-scheme')}catch(e){}var alt=s?s==='alternate':!!(window.matchMedia&&matchMedia('(prefers-color-scheme: dark)').matches);var ls=document.querySelectorAll('link.quarto-color-scheme');if(alt)d.dataset.scheme='alternate';if(s)ls.forEach(function(l){var on=l.classList.contains('quarto-color-alternate')===alt;if(on)l.setAttribute('blocking','render');l.media=on?'all':'not all'});var on=ls[alt?1:0];if(on&&on.dataset.mode==='dark')d.classList.add('quarto-dark')})();</script></head><body class="nav-sidebar floating nav-fixed"><header id="quarto-header" class="headroom sticky-top"><nav class="navbar navbar-expand-lg sd-navbar-default"><div class="navbar-container container-fluid"><div class="navbar-brand-container mx-auto"><a class="navbar-brand" href="index.html"><span class="navbar-title">Gossil</span></a></div><button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button><div class="collapse navbar-collapse" id="navbarCollapse"><ul class="navbar-nav navbar-nav-scroll me-auto"><li class="nav-item"><a class="nav-link" href="getting-started.html"><span class="menu-text">Start</span></a></li><li class="nav-item"><a class="nav-link" href="concepts.html"><span class="menu-text">Guides</span></a></li><li class="nav-item"><a class="nav-link" href="cli.html"><span class="menu-text">CLI</span></a></li><li class="nav-item"><a class="nav-link" href="api/index.html"><span class="menu-text">Rust API</span></a></li><li class="nav-item"><a class="nav-link" href="development-plan.html"><span class="menu-text">Development</span></a></li></ul><ul class="navbar-nav navbar-nav-scroll ms-auto"><li class="nav-item compact"><a class="nav-link" href="https://github.com/rahuldave/gossil" aria-label="github"><i class="bi bi-github" role="img"></i></a></li><li class="nav-item compact"><a class="quarto-color-scheme-toggle nav-link" href="" title="Toggle dark mode" onclick="window.smalldocsToggleScheme(); return false;"><i class="bi"></i></a></li></ul><div class="quarto-navbar-tools"><div class="smalldocs-search" id="quarto-search"><i class="bi bi-search" aria-hidden="true"></i><input type="search" class="form-control form-control-sm" placeholder="Search" aria-label="Search" autocomplete="off"><div class="smalldocs-search-results dropdown-menu"></div></div></div></div></div></nav><nav class="quarto-secondary-nav"><div class="container-fluid d-flex"><button type="button" class="quarto-btn-toggle btn" aria-controls="quarto-sidebar" aria-label="Toggle sidebar navigation"><i class="bi bi-layout-text-sidebar-reverse"></i></button><nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="development-plan.html">Development</a></li><li class="breadcrumb-item"><a href="gest-task-values.html">Gest task values</a></li></ol></nav></div></nav></header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article has-sidebar has-margin"><nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto"><div class="sidebar-menu-container"><ul class="list-unstyled mt-1"><li class="sidebar-item"><div class="sidebar-item-container"><a href="index.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Gossil</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="getting-started.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Get started</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="cli.html" class="sidebar-item-text sidebar-link"><span class="menu-text">CLI reference</span></a></div></li><li class="sidebar-item sidebar-item-section"><div class="sidebar-item-container"><a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true"><span class="menu-text">Guides</span></a><a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section"><i class="bi bi-chevron-right ms-2"></i></a></div><ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show"><li class="sidebar-item"><div class="sidebar-item-container"><a href="concepts.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Library concepts</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="examples.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Rust library examples</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="delta-encoder.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Bounded delta encoder</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="delta-decoder.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Bounded delta decoder</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="blob-primitives.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Byte digests and packed blobs</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="artifact-checksum.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Artifact byte checksums</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="token-codec.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Fossil token bytes</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="artifact-parser.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Artifact parser</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="local-storage.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Local database ownership</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="native-storage.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Native local storage</span></a></div></li></ul></li><li class="sidebar-item sidebar-item-section"><div class="sidebar-item-container"><a class="sidebar-item-text sidebar-link" href="api/index.html"><span class="menu-text">Rust API</span></a><a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Toggle section"><i class="bi bi-chevron-right ms-2"></i></a></div><ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show"><li class="sidebar-item"><div class="sidebar-item-container"><a href="api/artifact.html" class="sidebar-item-text sidebar-link"><span class="menu-text">artifact</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="api/artifact_checksum.html" class="sidebar-item-text sidebar-link"><span class="menu-text">artifact_checksum</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="api/compression.html" class="sidebar-item-text sidebar-link"><span class="menu-text">compression</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="api/content_hash.html" class="sidebar-item-text sidebar-link"><span class="menu-text">content_hash</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="api/delta.html" class="sidebar-item-text sidebar-link"><span class="menu-text">delta</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="api/gest_task_values.html" class="sidebar-item-text sidebar-link"><span class="menu-text">gest_task_values</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="api/gossil.html" class="sidebar-item-text sidebar-link"><span class="menu-text">gossil</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="api/storage.html" class="sidebar-item-text sidebar-link"><span class="menu-text">storage</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="api/token_codec.html" class="sidebar-item-text sidebar-link"><span class="menu-text">token_codec</span></a></div></li></ul></li><li class="sidebar-item sidebar-item-section"><div class="sidebar-item-container"><a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true"><span class="menu-text">Development</span></a><a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true" aria-label="Toggle section"><i class="bi bi-chevron-right ms-2"></i></a></div><ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show"><li class="sidebar-item"><div class="sidebar-item-container"><a href="development-plan.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Development and contributing</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="conformance.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Inherited-test runner</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="gest-task-values.html" class="sidebar-item-text sidebar-link active" aria-current="page"><span class="menu-text">Gest task values</span></a></div></li></ul></li></ul></div></nav><div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item"></div><div id="quarto-margin-sidebar" class="sidebar margin-sidebar"><nav id="TOC" role="doc-toc" class="toc-active"><h2 id="toc-title">On this page</h2><ul><li><a href="#use-the-library" id="toc-use-the-library" class="nav-link" data-scroll-target="#use-the-library">Use the library</a></li><li><a href="#conversion-contract" id="toc-conversion-contract" class="nav-link" data-scroll-target="#conversion-contract">Conversion contract</a></li><li><a href="#dependency-scope" id="toc-dependency-scope" class="nav-link" data-scroll-target="#dependency-scope">Dependency scope</a></li><li><a href="#caller-responsibilities" id="toc-caller-responsibilities" class="nav-link" data-scroll-target="#caller-responsibilities">Caller responsibilities</a></li><li><a href="#source-and-verification-evidence" id="toc-source-and-verification-evidence" class="nav-link" data-scroll-target="#source-and-verification-evidence">Source and verification evidence</a></li><li><a href="#recommendations" id="toc-recommendations" class="nav-link" data-scroll-target="#recommendations">Recommendations</a></li></ul></nav></div><main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="development-plan.html">Development</a></li><li class="breadcrumb-item"><a href="gest-task-values.html">Gest task values</a></li></ol></nav><div class="quarto-title"><h1 class="title">Gest task values</h1></div><div class="quarto-title-meta"></div></header><p>The <code>gossil::gest_task_values</code> module converts eleven already decoded task fields
+into an owned, validated record. Callers can use the record for complete task
+snapshots before storage integration. The module does not complete the Gest API
+or permit nonempty migration.</p>
+<p><a href="api/gest_task_values.html#TaskValueInputs"><code>TaskValueInputs</code></a> requires an explicit <code>serde_json::Value</code> for each field.
+<a href="api/gest_task_values.html#task_from_values"><code>task_from_values</code></a> validates these values and returns <a href="api/gest_task_values.html#TaskValues"><code>TaskValues</code></a>, whose fields
+are private. <a href="api/gest_task_values.html#task_to_values"><code>task_to_values</code></a> returns the complete set of owned values.
+The functions do not read a clock, generate identifiers or execute SQL.</p>
+<section id="use-the-library" class="level2">
+<h2 class="anchored" data-anchor-id="use-the-library">Use the library</h2>
+<p>Assemble every field after admitting the raw input. No field has a default.
+The public input and output use the same <a href="api/gest_task_values.html#TaskValueInputs"><code>TaskValueInputs</code></a> type.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span class="kw">use</span> gossil::gest_task_values::{TaskValueInputs, task_from_values, task_to_values};
+<span class="kw">use</span> serde_json::json;
+
+<span class="kw">let</span> fields <span class="op">=</span> TaskValueInputs {
+    gest_id: json<span class="op">!</span>(<span class="st">&quot;</span><span class="st">zyxwvutsrqponmlkzyxwvutsrqponmlk</span><span class="st">&quot;</span>),
+    project_id: json<span class="op">!</span>(<span class="st">&quot;</span><span class="st">kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk</span><span class="st">&quot;</span>),
+    title: json<span class="op">!</span>(<span class="st">&quot;</span><span class="st">Review task values</span><span class="st">&quot;</span>),
+    priority: json<span class="op">!</span>(<span class="dv">255</span>),
+    status: json<span class="op">!</span>(<span class="st">&quot;</span><span class="st">IN_PROGRESS</span><span class="st">&quot;</span>),
+    description: json<span class="op">!</span>(<span class="st">&quot;</span><span class="st">&quot;</span>),
+    assigned_to: json<span class="op">!</span>(null),
+    metadata: json<span class="op">!</span>([null, {<span class="st">&quot;</span><span class="st">reviewed</span><span class="st">&quot;</span>: false}]),
+    resolved_at: json<span class="op">!</span>(null),
+    created_at: json<span class="op">!</span>(<span class="st">&quot;</span><span class="st">2026-11-18T07:00:00-05:00</span><span class="st">&quot;</span>),
+    updated_at: json<span class="op">!</span>(<span class="st">&quot;</span><span class="st">2026-11-18T12:00:00Z</span><span class="st">&quot;</span>),
+};
+<span class="kw">let</span> task <span class="op">=</span> task_from_values(fields).unwrap();
+<span class="kw">let</span> values <span class="op">=</span> task_to_values(<span class="op">&amp;</span>task);
+<span class="fu">assert_eq!</span>(values.status, json<span class="op">!</span>(<span class="st">&quot;</span><span class="st">in-progress</span><span class="st">&quot;</span>));
+<span class="fu">assert_eq!</span>(values.created_at, json<span class="op">!</span>(<span class="st">&quot;</span><span class="st">2026-11-18T12:00:00+00:00</span><span class="st">&quot;</span>));
+<span class="fu">assert_eq!</span>(task_from_values(values).unwrap(), task);</code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>The example uses array metadata and priority 255 to show the model’s full value
+types. Production callers must handle <a href="api/gest_task_values.html#TaskValueError"><code>TaskValueError</code></a> from validation.
+Its display text names the first rejected field and the reason, without echoing
+the supplied value.</p>
+<p><a href="api/gest_task_values.html#TaskValueError.parse_cause"><code>TaskValueError::parse_cause()</code></a> returns the original <code>chrono::ParseError</code>
+when parsing the input or its canonical UTC output fails.
+Callers can inspect its <code>kind()</code> to distinguish failures such as <code>TooShort</code>
+and <code>OutOfRange</code>. Other validation failures return no parse cause.
+Error equality includes the retained cause, so errors with equal display text
+can compare unequal.
+Chrono’s alloc-only build does not implement <code>std::error::Error</code> for this parser
+error, so callers use the accessor rather than <code>Error::source()</code>.
+The validated record stays unchanged if a caller changes
+the owned fields returned by <a href="api/gest_task_values.html#task_to_values"><code>task_to_values</code></a>.</p>
+</section>
+<section id="conversion-contract" class="level2">
+<h2 class="anchored" data-anchor-id="conversion-contract">Conversion contract</h2>
+<p>The input requires all eleven fields, even when a value is null.</p>
+<div class="sd-table">
+<table class="caption-top table">
+<thead>
+<tr>
+<th>Field</th>
+<th>Admitted value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>gest_id</code></td>
+<td>Full task ID string, called <code>id</code> in upstream <code>Model</code>.</td>
+</tr>
+<tr>
+<td><code>project_id</code></td>
+<td>Full project ID string.</td>
+</tr>
+<tr>
+<td><code>title</code></td>
+<td>Any string.</td>
+</tr>
+<tr>
+<td><code>priority</code></td>
+<td>Null or a JSON integer from 0 through 255.</td>
+</tr>
+<tr>
+<td><code>status</code></td>
+<td>A status string accepted by upstream <code>FromStr</code>.</td>
+</tr>
+<tr>
+<td><code>description</code></td>
+<td>Any string.</td>
+</tr>
+<tr>
+<td><code>assigned_to</code></td>
+<td>Null or a full author ID string.</td>
+</tr>
+<tr>
+<td><code>metadata</code></td>
+<td>Any <code>serde_json::Value</code>, including null.</td>
+</tr>
+<tr>
+<td><code>resolved_at</code></td>
+<td>A timestamp string for terminal status, otherwise null.</td>
+</tr>
+<tr>
+<td><code>created_at</code></td>
+<td>A timestamp string.</td>
+</tr>
+<tr>
+<td><code>updated_at</code></td>
+<td>A timestamp string.</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>The task and project identifiers require exactly 32 lowercase letters from
+<code>k</code> through <code>z</code>. An assignee is null or a full identifier. Title and description
+preserve their strings, including empty strings, Unicode, whitespace and null
+characters. The task field <code>gest_id</code> corresponds to upstream <code>Model.id</code>.</p>
+<p>Priority is null or an integer from 0 through 255. Checked conversion rejects
+negative integers, larger integers, floating point values and other JSON types.
+The upstream task model uses <code>Option&lt;u8&gt;</code>. Its separate named priority enum
+covers only 0 through 4 and is outside this module.</p>
+<p>Status parsing follows upstream <code>FromStr</code>. The statuses are <code>open</code>,
+<code>in-progress</code>, <code>done</code> and <code>cancelled</code>. Parsing accepts case differences and the
+<code>in-progress</code>, <code>in_progress</code> and <code>inprogress</code> aliases. Output uses <code>in-progress</code>.
+The adopted Gossil contract requires a resolution timestamp for <code>done</code> and
+<code>cancelled</code>, and null for <code>open</code> and <code>in-progress</code>.
+The converter checks that pairing without generating a timestamp.</p>
+<p>Metadata retains every JSON value variant, including null. Explicit metadata
+null is model data, independent of the nulls in optional model fields.
+The converter preserves JSON value semantics without promising original JSON
+spelling, object member order or duplicate-key detection.</p>
+<p>Business timestamps use Gest’s pinned chrono 0.4.44 RFC3339 parser and normalize
+to Coordinated Universal Time (UTC), subject to Gossil’s canonical output contract.
+RFC3339 is the timestamp string format used at this boundary.
+Output uses chrono’s RFC3339 form with the <code>+00:00</code> offset and at most nine fractional digits.</p>
+<p>The parser accepts offsets, lowercase separators, a space separator, year zero
+and leap seconds. It truncates fractional input beyond nanoseconds, as upstream
+does. Business timestamp rules are separate from the stricter artifact D-card time
+grammar. The converter adds no ordering rule between timestamps.</p>
+<p>A parsed instant must have a UTC representation that the RFC3339 parser can
+read back. Offset normalization across the year zero or 9999 boundary can
+produce a signed extended year. The converter rejects those results under the
+adopted output contract. Upstream source parsing accepts their inputs.
+Year zero and nearby offsets remain valid when their UTC result is representable.
+The module does not claim parity with the full upstream timestamp
+input domain.</p>
+<p>Invalid field types, incomplete identifiers, invalid priorities or statuses,
+unparseable timestamps and inconsistent status/resolution pairs return <a href="api/gest_task_values.html#TaskValueError"><code>TaskValueError</code></a>.
+Normalized UTC output outside the adopted RFC3339 domain also returns that error.
+Metadata has no further type restriction.</p>
+</section>
+<section id="dependency-scope" class="level2">
+<h2 class="anchored" data-anchor-id="dependency-scope">Dependency scope</h2>
+<p><code>Cargo.toml</code> pins chrono to 0.4.44 with default features disabled and <code>alloc</code>
+as its only enabled feature. Clock access and chrono’s serde support are disabled.
+The lockfile adds chrono 0.4.44, num-traits 0.2.19 and autocfg 1.5.1.
+The change updates no existing dependency package versions.
+These additions support timestamp conversion in Rust and do not add a native
+Fossil process or a SQL date conversion to this module.</p>
+</section>
+<section id="caller-responsibilities" class="level2">
+<h2 class="anchored" data-anchor-id="caller-responsibilities">Caller responsibilities</h2>
+<p>The caller must decode and admit raw contributors before constructing the
+input. It must check complete field presence, classify every raw J field,
+reject duplicate lexemes where required and enforce operation byte budgets.
+The explicit input struct is not an object decoder and cannot identify fields
+that the caller discarded. Whole-history validation, reference closure and
+unsupported-contributor policy also remain with the enclosing implementation.</p>
+<p>The existing nonempty migration guard remains in place. This module supplies
+complete task values for later before and after snapshots. Artifact creation,
+replay, recipes, provenance, inverse operations, references and storage writes
+remain separate work.</p>
+</section>
+<section id="source-and-verification-evidence" class="level2">
+<h2 class="anchored" data-anchor-id="source-and-verification-evidence">Source and verification evidence</h2>
+<p>The source pin is Gest <code>eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8</code>.
+The corrected plan is <code>addendum.json</code> with SHA-256
+<code>9206f47295ea635e5b8baa6ccb223b68f452e634100ee4966203f809ed951d78</code>.
+Open the following source and evidence paths from the repository root.
+They are outside this documentation site.</p>
+<p>The fixture source map, <code>tests/fixtures/gest_task_values/source-map.json</code>,
+records exact source identities, all fields and all 23 priority/status tests.
+It maps five directly inherited checks and six semantic replacements.
+The other twelve tests concern the named priority API outside the numeric task
+model. This accounting does not claim 23 ports or full Gest compatibility.</p>
+<p>The focused tests, <code>tests/gest_task_values.rs</code>, exercise the public conversion
+functions. The records in <code>tests/fixtures/gest_task_values/records.json</code> include
+complete snapshots and source-compatible timestamp controls.
+Checked priority conversion and terminal/null rejection are Gossil contract
+checks, rather than copied upstream SQL behavior.</p>
+<p>The candidate evidence in <code>evidence/gest-task-values/candidate.json</code> records the
+author’s focused run, dependency delta and complete impact inventory.
+It preserves the author tree’s hashes. Later documentation and comment edits
+do not change that evidence or make those hashes describe the later tree.
+The preserved focused run passed 21 test functions with none failed or ignored.</p>
+<p>The separate parse-cause correction in <code>evidence/gest-task-values-cause-fix/report.json</code>
+records a failing regression before the fix and a passing run of 24 tests after it.
+That run includes the unchanged original 21 tests and three new cause controls.
+The controls check distinct parser causes, validation failures without a parser
+cause and canonical UTC reparsing failures. This later evidence preserves the
+original run and does not qualify the final composed tree.</p>
+<p>Ordinary focused tests run in the worker’s own target directory through
+<code>jlog run just test-paths tests/gest_task_values.rs</code>. Parent-owned review and
+formal gates qualify the later composed tree. No live Fossil probe ran for
+this module.</p>
+<p>The README, site navigation and development plan link to this guide.
+The API comments document the input fields, private record, conversion functions
+and error type. Storage, artifacts, commands and schemas do not call this module.
+Their contracts remain separate. Independent prose revision and the final
+composed gates remain part of the parent-owned acceptance workflow.</p>
+<p>This page follows the nossaifd writing guide, including principles credited to
+Rosalind Reid, Shreya Shankar and Oskar Austegard.</p>
+</section>
+<section id="recommendations" class="level2">
+<h2 class="anchored" data-anchor-id="recommendations">Recommendations</h2>
+<p>Use the explicit decoded-field converter for task snapshot values.
+Next, independently review this candidate and run the composed tree’s gates.
+Keep nonempty migration closed until its enclosing contracts are implemented.</p>
+</section>
+<nav class="page-navigation"><div class="nav-page nav-page-previous"><a href="conformance.html" class="pagination-link"><i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">Inherited-test runner</span></a></div><div class="nav-page nav-page-next"></div></nav></main></div></body></html>
