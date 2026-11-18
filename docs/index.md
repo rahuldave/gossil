@@ -10,8 +10,8 @@ Git remains the source-code authority in the first release.
 
 This checkout contains a bounded Fossil delta encoder and decoder, their
 `gossil vcs` diagnostics and a runner for inherited Fossil Tcl tests.
-It also composes byte primitives, token byte escaping and owned local libSQL
-transactions. Gest integration, domain storage and the remaining Fossil mechanisms
+It also composes byte primitives, legacy artifact checksums, token byte escaping
+and owned local libSQL transactions. Gest integration, domain storage and the remaining Fossil mechanisms
 remain planned work.
 
 - [Delta encoder](delta-encoder.md) explains creation, round-trip diagnostics
@@ -22,6 +22,8 @@ remain planned work.
   evidence and acceptance limits.
 - [Byte digests and packed blobs](blob-primitives.md) describes SHA1DC safe
   hashes, thirteen SHA3 widths, decoding limits and native interoperability.
+- [Artifact byte checksums](artifact-checksum.md) explains bounded MD5 bytes,
+  owned incremental computations and finite reference checks.
 - [Token byte escaping](token-codec.md) describes bounded byte and C-string
   behavior, fallible allocation and the finite native observations.
 - [Local storage](local-storage.md) describes database lifecycle, exclusive

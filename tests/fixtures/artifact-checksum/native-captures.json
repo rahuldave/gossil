@@ -1,0 +1,198 @@
+[
+  {
+    "command": [
+      "jlog",
+      "run",
+      "fossil",
+      "md5sum",
+      "tests/fixtures/artifact-checksum/empty.bin"
+    ],
+    "input_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "input_length": 0,
+    "stdout": "d41d8cd98f00b204e9800998ecf8427e  tests/fixtures/artifact-checksum/empty.bin\n",
+    "stderr": "",
+    "exit_code": 0
+  },
+  {
+    "command": [
+      "jlog",
+      "run",
+      "fossil",
+      "md5sum",
+      "tests/fixtures/artifact-checksum/binary.bin"
+    ],
+    "input_sha256": "40aff2e9d2d8922e47afd4648e6967497158785fbd1da870e7110266bf944880",
+    "input_length": 256,
+    "stdout": "e2c865db4162bed963bfaa9ef6ac18f0  tests/fixtures/artifact-checksum/binary.bin\n",
+    "stderr": "",
+    "exit_code": 0
+  },
+  {
+    "command": [
+      "jlog",
+      "run",
+      "fossil",
+      "md5sum",
+      "tests/fixtures/artifact-checksum/embedded-nul.bin"
+    ],
+    "input_sha256": "6601e324917d6d5bf6d5c55f1efd0fef503537e15625c284b15835d761b30038",
+    "input_length": 5,
+    "stdout": "26394b457eab9c7312ccb32af5e86600  tests/fixtures/artifact-checksum/embedded-nul.bin\n",
+    "stderr": "",
+    "exit_code": 0
+  },
+  {
+    "command": [
+      "jlog",
+      "run",
+      "fossil",
+      "md5sum",
+      "tests/fixtures/artifact-checksum/length-55.bin"
+    ],
+    "input_sha256": "463eb28e72f82e0a96c0a4cc53690c571281131f672aa229e0d45ae59b598b59",
+    "input_length": 55,
+    "stdout": "6912ee65fff2d9f9ce2508cddf8bcda0  tests/fixtures/artifact-checksum/length-55.bin\n",
+    "stderr": "",
+    "exit_code": 0
+  },
+  {
+    "command": [
+      "jlog",
+      "run",
+      "fossil",
+      "md5sum",
+      "tests/fixtures/artifact-checksum/length-56.bin"
+    ],
+    "input_sha256": "da2ae4d6b36748f2a318f23e7ab1dfdf45acdc9d049bd80e59de82a60895f562",
+    "input_length": 56,
+    "stdout": "51fdd1acda72405dfdfa03fcb85896d7  tests/fixtures/artifact-checksum/length-56.bin\n",
+    "stderr": "",
+    "exit_code": 0
+  },
+  {
+    "command": [
+      "jlog",
+      "run",
+      "fossil",
+      "md5sum",
+      "tests/fixtures/artifact-checksum/length-57.bin"
+    ],
+    "input_sha256": "2fe741af801cc238602ac0ec6a7b0c3a8a87c7fc7d7f02a3fe03d1c12eac4d8f",
+    "input_length": 57,
+    "stdout": "5320ef4c17ef34a0cf2db763338d25eb  tests/fixtures/artifact-checksum/length-57.bin\n",
+    "stderr": "",
+    "exit_code": 0
+  },
+  {
+    "command": [
+      "jlog",
+      "run",
+      "fossil",
+      "md5sum",
+      "tests/fixtures/artifact-checksum/length-63.bin"
+    ],
+    "input_sha256": "29af2686fd53374a36b0846694cc342177e428d1647515f078784d69cdb9e488",
+    "input_length": 63,
+    "stdout": "48a6295221902e8e0938f773a7185e72  tests/fixtures/artifact-checksum/length-63.bin\n",
+    "stderr": "",
+    "exit_code": 0
+  },
+  {
+    "command": [
+      "jlog",
+      "run",
+      "fossil",
+      "md5sum",
+      "tests/fixtures/artifact-checksum/length-64.bin"
+    ],
+    "input_sha256": "fdeab9acf3710362bd2658cdc9a29e8f9c757fcf9811603a8c447cd1d9151108",
+    "input_length": 64,
+    "stdout": "b2d3f56bc197fd985d5965079b5e7148  tests/fixtures/artifact-checksum/length-64.bin\n",
+    "stderr": "",
+    "exit_code": 0
+  },
+  {
+    "command": [
+      "jlog",
+      "run",
+      "fossil",
+      "md5sum",
+      "tests/fixtures/artifact-checksum/length-65.bin"
+    ],
+    "input_sha256": "4bfd2c8b6f1eec7a2afeb48b934ee4b2694182027e6d0fc075074f2fabb31781",
+    "input_length": 65,
+    "stdout": "8bd7053801c768420faf816fadba971c  tests/fixtures/artifact-checksum/length-65.bin\n",
+    "stderr": "",
+    "exit_code": 0
+  },
+  {
+    "command": [
+      "jlog",
+      "run",
+      "fossil",
+      "md5sum",
+      "tests/fixtures/artifact-checksum/length-119.bin"
+    ],
+    "input_sha256": "da18797ed7c3a777f0847f429724a2d8cd5138e6ed2895c3fa1a6d39d18f7ec6",
+    "input_length": 119,
+    "stdout": "1c772251899a7ff007400b888d6b2042  tests/fixtures/artifact-checksum/length-119.bin\n",
+    "stderr": "",
+    "exit_code": 0
+  },
+  {
+    "command": [
+      "jlog",
+      "run",
+      "fossil",
+      "md5sum",
+      "tests/fixtures/artifact-checksum/length-120.bin"
+    ],
+    "input_sha256": "f52b23db1fbb6ded89ef42a23ce0c8922c45f25c50b568a93bf1c075420bbb7c",
+    "input_length": 120,
+    "stdout": "b7ba1efc6022e9ed272f00b8831e26e6  tests/fixtures/artifact-checksum/length-120.bin\n",
+    "stderr": "",
+    "exit_code": 0
+  },
+  {
+    "command": [
+      "jlog",
+      "run",
+      "fossil",
+      "md5sum",
+      "tests/fixtures/artifact-checksum/length-127.bin"
+    ],
+    "input_sha256": "92ca0fa6651ee2f97b884b7246a562fa71250fedefe5ebf270d31c546bfea976",
+    "input_length": 127,
+    "stdout": "8402b21e7bc7906493bae0dac017f1f9  tests/fixtures/artifact-checksum/length-127.bin\n",
+    "stderr": "",
+    "exit_code": 0
+  },
+  {
+    "command": [
+      "jlog",
+      "run",
+      "fossil",
+      "md5sum",
+      "tests/fixtures/artifact-checksum/length-128.bin"
+    ],
+    "input_sha256": "471fb943aa23c511f6f72f8d1652d9c880cfa392ad80503120547703e56a2be5",
+    "input_length": 128,
+    "stdout": "37eff01866ba3f538421b30b7cbefcac  tests/fixtures/artifact-checksum/length-128.bin\n",
+    "stderr": "",
+    "exit_code": 0
+  },
+  {
+    "command": [
+      "jlog",
+      "run",
+      "fossil",
+      "md5sum",
+      "tests/fixtures/artifact-checksum/length-129.bin"
+    ],
+    "input_sha256": "5099c6a56203f9687f7d33f4bfdf576d31dc91f6b695ecea38b2770c87631135",
+    "input_length": 129,
+    "stdout": "46f986692847558fc38b0cece591c20f  tests/fixtures/artifact-checksum/length-129.bin\n",
+    "stderr": "",
+    "exit_code": 0
+  }
+]

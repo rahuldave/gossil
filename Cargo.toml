@@ -4,6 +4,7 @@ version = "0.1.0"
 edition = "2024"
 
 [dependencies]
+md-5 = "=0.10.6"
 libsql = { version = "=0.9.30", default-features = false, features = ["core"] }
 libc = "0.2"
 serde = { version = "1", features = ["derive"] }

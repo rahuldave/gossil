@@ -1,0 +1,50 @@
+{
+  "kind": "new finite byte primitive characterization; not inherited suite",
+  "mirror_revision": "b3a1c8efb2731dffbd5cc38c58ac349746de6da6",
+  "native_revision": "7e8ecf0ce4a3c05aa39de7ffe2828d23e334efe446ef2387e09f205ef00b2227",
+  "native_version_command": [
+    "jlog",
+    "run",
+    "fossil",
+    "version"
+  ],
+  "native_version_stdout": "This is fossil version 2.29 [7e8ecf0ce4] 2026-11-16 11:41:54 UTC\n",
+  "source_sha256": {
+    "src/md5.c": "ceb3843194f8054d0a73d27c8e6f07f7c8151ada5f2c61744e53460e820a9b2b",
+    "src/manifest.c": "5cb3d4eef68e324756175577c3b4d6e0655f96e27502021bc90b833a4f26282a"
+  },
+  "primary_sources_verified": [
+    "https://docs.rs/md-5/0.10.6/md5/",
+    "https://docs.rs/md-5/0.11.0/md5/",
+    "https://www.rfc-editor.org/rfc/rfc1321"
+  ],
+  "ast_patterns": [
+    "md5sum_blob($A, $B)",
+    "md5sum_step_text($A, $B)"
+  ],
+  "unsuccessful_ast_patterns": [
+    "md5sum_blob($$$)",
+    "md5sum_blob($$$ARGS)"
+  ],
+  "limits": [
+    "native md5sum command captures only existing regular files",
+    "no malformed artifact inputs or native parser runs",
+    "no inherited Tcl suite run",
+    "MD5 internal context diagnostic excluded",
+    "no source, CLI, filesystem or repository checksum parity claim"
+  ],
+  "tests_red": "red.log: compilable zero-result stub; three assertion failures",
+  "tests_green": "green.log.gz: same three tests pass; gzip preserves the original observed log bytes",
+  "green_log_archive": {
+    "path": "green.log.gz",
+    "format": "gzip",
+    "compression_level": 9,
+    "mtime": 0,
+    "original_path": "green.log",
+    "decompressed_length": 565,
+    "decompressed_sha256": "834bebbd8757ee609c3892ab67823a21e92a45f985311586e58e7a5dd3542b92",
+    "archive_length": 358,
+    "archive_sha256": "6c0cb93fa485285e4ae71a64ba510b73667b32c569c361101541beb71b5d5cdb",
+    "verification": "decompression equals original log byte for byte; deterministic recompression equals archive"
+  }
+}

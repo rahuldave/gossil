@@ -5,6 +5,10 @@ adds a capacity header to compressed bytes. These
 primitives do not select a repository hash policy or store content. The runner
 and these primitives share a crate. CLI integration remains separate work.
 
+Legacy MD5 checksums have a separate [artifact checksum module](artifact-checksum.md).
+That module supplies byte checksums for future artifact validation; it does not
+change the repository content identity policy described here.
+
 ## Use the library
 
 ```rust

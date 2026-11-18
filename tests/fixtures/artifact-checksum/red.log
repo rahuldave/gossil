@@ -1,0 +1,42 @@
+   Compiling gossil v0.1.0 (/Users/rahul/Projects/gossil.worktrees/gest-usvwnwtn-blob-primitives)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 2.30s
+     Running tests/artifact_checksum.rs (target/debug/deps/artifact_checksum-15535271dfeab02a)
+
+running 3 tests
+test independent_owned_computations ... FAILED
+test rfc_1321_vectors ... FAILED
+test native_bytes_and_chunking ... FAILED
+
+failures:
+
+---- independent_owned_computations stdout ----
+
+thread 'independent_owned_computations' (312414610) panicked at tests/artifact_checksum.rs:37:5:
+assertion `left == right` failed
+  left: "00000000000000000000000000000000"
+ right: "900150983cd24fb0d6963f7d28e17f72"
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+---- rfc_1321_vectors stdout ----
+
+thread 'rfc_1321_vectors' (312414612) panicked at tests/artifact_checksum.rs:14:9:
+assertion `left == right` failed: ""
+  left: "00000000000000000000000000000000"
+ right: "d41d8cd98f00b204e9800998ecf8427e"
+
+---- native_bytes_and_chunking stdout ----
+
+thread 'native_bytes_and_chunking' (312414611) panicked at tests/artifact_checksum.rs:21:9:
+assertion `left == right` failed
+  left: "00000000000000000000000000000000"
+ right: "d41d8cd98f00b204e9800998ecf8427e"
+
+
+failures:
+    independent_owned_computations
+    native_bytes_and_chunking
+    rfc_1321_vectors
+
+test result: FAILED. 0 passed; 3 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+error: test failed, to rerun pass `--test artifact_checksum`

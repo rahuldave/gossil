@@ -7,7 +7,8 @@ Planned records include tasks, shared issues and private agent traces.
 Git remains the source-code authority in the first release.
 
 This checkout includes a bounded Fossil delta encoder and decoder, safe hashes,
-packed blobs, token byte escaping and a local libSQL transaction boundary.
+packed blobs, legacy artifact checksums, token byte escaping and a local libSQL
+transaction boundary.
 The library exposes these modules together. Its `gossil vcs` diagnostics create,
 apply and test deltas. `gossil-conformance` runs inherited Fossil Tcl tests
 against an explicit reference or candidate program.
@@ -16,6 +17,8 @@ The [local storage guide](docs/local-storage.md) describes database lifecycle
 and exclusive transactions. No domain schema or public SQL interface is present.
 The [byte primitives](docs/blob-primitives.md) and [token codec](docs/token-codec.md)
 guides describe the byte contracts and their finite reference checks.
+The [artifact checksum guide](docs/artifact-checksum.md) covers bounded MD5
+bytes and owned incremental computations for future artifact validation.
 Gest integration and the remaining Fossil mechanisms remain planned work.
 
 ## Start here

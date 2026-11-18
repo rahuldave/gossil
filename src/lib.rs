@@ -774,3 +774,6 @@ pub mod delta;
 pub mod storage;
 /// Encode and decode Fossil token bytes.
 pub mod token_codec;
+
+/// Compute legacy Fossil artifact checksums over bytes.
+pub mod artifact_checksum;

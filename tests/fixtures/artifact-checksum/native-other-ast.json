@@ -1,0 +1,314 @@
+[
+  {
+    "pattern": "md5sum_init()",
+    "returncode": 0,
+    "matches": [
+      {
+        "text": "md5sum_init()",
+        "range": {
+          "byteOffset": {
+            "start": 24137,
+            "end": 24150
+          },
+          "start": {
+            "line": 732,
+            "column": 2
+          },
+          "end": {
+            "line": 732,
+            "column": 15
+          }
+        },
+        "file": "/tmp/gossil-fossil-baseline-20261117/pristine/src/vfile.c",
+        "lines": "  md5sum_init();",
+        "charCount": {
+          "leading": 2,
+          "trailing": 1
+        },
+        "language": "C"
+      },
+      {
+        "text": "md5sum_init()",
+        "range": {
+          "byteOffset": {
+            "start": 26711,
+            "end": 26724
+          },
+          "start": {
+            "line": 822,
+            "column": 2
+          },
+          "end": {
+            "line": 822,
+            "column": 15
+          }
+        },
+        "file": "/tmp/gossil-fossil-baseline-20261117/pristine/src/vfile.c",
+        "lines": "  md5sum_init();",
+        "charCount": {
+          "leading": 2,
+          "trailing": 1
+        },
+        "language": "C"
+      },
+      {
+        "text": "md5sum_init()",
+        "range": {
+          "byteOffset": {
+            "start": 28699,
+            "end": 28712
+          },
+          "start": {
+            "line": 884,
+            "column": 2
+          },
+          "end": {
+            "line": 884,
+            "column": 15
+          }
+        },
+        "file": "/tmp/gossil-fossil-baseline-20261117/pristine/src/vfile.c",
+        "lines": "  md5sum_init();",
+        "charCount": {
+          "leading": 2,
+          "trailing": 1
+        },
+        "language": "C"
+      },
+      {
+        "text": "md5sum_init()",
+        "range": {
+          "byteOffset": {
+            "start": 102279,
+            "end": 102292
+          },
+          "start": {
+            "line": 3282,
+            "column": 4
+          },
+          "end": {
+            "line": 3282,
+            "column": 17
+          }
+        },
+        "file": "/tmp/gossil-fossil-baseline-20261117/pristine/src/db.c",
+        "lines": "    md5sum_init();",
+        "charCount": {
+          "leading": 4,
+          "trailing": 1
+        },
+        "language": "C"
+      },
+      {
+        "text": "md5sum_init()",
+        "range": {
+          "byteOffset": {
+            "start": 185088,
+            "end": 185101
+          },
+          "start": {
+            "line": 5647,
+            "column": 4
+          },
+          "end": {
+            "line": 5647,
+            "column": 17
+          }
+        },
+        "file": "/tmp/gossil-fossil-baseline-20261117/pristine/src/db.c",
+        "lines": "    md5sum_init();",
+        "charCount": {
+          "leading": 4,
+          "trailing": 1
+        },
+        "language": "C"
+      },
+      {
+        "text": "md5sum_init()",
+        "range": {
+          "byteOffset": {
+            "start": 4364,
+            "end": 4377
+          },
+          "start": {
+            "line": 107,
+            "column": 2
+          },
+          "end": {
+            "line": 107,
+            "column": 15
+          }
+        },
+        "file": "/tmp/gossil-fossil-baseline-20261117/pristine/src/etag.c",
+        "lines": "  md5sum_init();",
+        "charCount": {
+          "leading": 2,
+          "trailing": 1
+        },
+        "language": "C"
+      },
+      {
+        "text": "md5sum_init()",
+        "range": {
+          "byteOffset": {
+            "start": 11638,
+            "end": 11651
+          },
+          "start": {
+            "line": 355,
+            "column": 2
+          },
+          "end": {
+            "line": 355,
+            "column": 15
+          }
+        },
+        "file": "/tmp/gossil-fossil-baseline-20261117/pristine/src/manifest.c",
+        "lines": "  md5sum_init();",
+        "charCount": {
+          "leading": 2,
+          "trailing": 1
+        },
+        "language": "C"
+      },
+      {
+        "text": "md5sum_init()",
+        "range": {
+          "byteOffset": {
+            "start": 36949,
+            "end": 36962
+          },
+          "start": {
+            "line": 1132,
+            "column": 2
+          },
+          "end": {
+            "line": 1132,
+            "column": 15
+          }
+        },
+        "file": "/tmp/gossil-fossil-baseline-20261117/pristine/src/manifest.c",
+        "lines": "  md5sum_init();",
+        "charCount": {
+          "leading": 2,
+          "trailing": 1
+        },
+        "language": "C"
+      },
+      {
+        "text": "md5sum_init()",
+        "range": {
+          "byteOffset": {
+            "start": 37360,
+            "end": 37373
+          },
+          "start": {
+            "line": 1149,
+            "column": 2
+          },
+          "end": {
+            "line": 1149,
+            "column": 15
+          }
+        },
+        "file": "/tmp/gossil-fossil-baseline-20261117/pristine/src/manifest.c",
+        "lines": "  md5sum_init();",
+        "charCount": {
+          "leading": 2,
+          "trailing": 1
+        },
+        "language": "C"
+      }
+    ],
+    "stderr": ""
+  },
+  {
+    "pattern": "md5sum_step_blob($A)",
+    "returncode": 1,
+    "matches": [],
+    "stderr": ""
+  },
+  {
+    "pattern": "md5sum_finish($A)",
+    "returncode": 1,
+    "matches": [],
+    "stderr": ""
+  },
+  {
+    "pattern": "md5sum_current_state()",
+    "returncode": 1,
+    "matches": [],
+    "stderr": ""
+  },
+  {
+    "pattern": "md5sum_file($A, $B)",
+    "returncode": 0,
+    "matches": [
+      {
+        "text": "md5sum_file(g.argv[i], &cksum)",
+        "range": {
+          "byteOffset": {
+            "start": 14097,
+            "end": 14127
+          },
+          "start": {
+            "line": 460,
+            "column": 6
+          },
+          "end": {
+            "line": 460,
+            "column": 36
+          }
+        },
+        "file": "/tmp/gossil-fossil-baseline-20261117/pristine/src/md5.c",
+        "lines": "      md5sum_file(g.argv[i], &cksum);",
+        "charCount": {
+          "leading": 6,
+          "trailing": 1
+        },
+        "language": "C",
+        "metaVariables": {
+          "single": {
+            "B": {
+              "text": "&cksum",
+              "range": {
+                "byteOffset": {
+                  "start": 14120,
+                  "end": 14126
+                },
+                "start": {
+                  "line": 460,
+                  "column": 29
+                },
+                "end": {
+                  "line": 460,
+                  "column": 35
+                }
+              }
+            },
+            "A": {
+              "text": "g.argv[i]",
+              "range": {
+                "byteOffset": {
+                  "start": 14109,
+                  "end": 14118
+                },
+                "start": {
+                  "line": 460,
+                  "column": 18
+                },
+                "end": {
+                  "line": 460,
+                  "column": 27
+                }
+              }
+            }
+          },
+          "multi": {},
+          "transformed": {}
+        }
+      }
+    ],
+    "stderr": ""
+  }
+]

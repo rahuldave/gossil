@@ -17,6 +17,8 @@ website:
         text: Delta decoder
       - href: blob-primitives.md
         text: Byte primitives
+      - href: artifact-checksum.md
+        text: Artifact checksums
       - href: token-codec.md
         text: Token byte escaping
       - href: local-storage.md

@@ -9,7 +9,8 @@ Git owns source code.
 
 The checkout implements bounded delta creation and application, their
 `gossil vcs` diagnostics, and the inherited-test runner.
-It also composes [byte primitives](blob-primitives.md), [token escaping](token-codec.md)
+It also composes [byte primitives](blob-primitives.md), [token escaping](token-codec.md),
+[artifact checksums](artifact-checksum.md)
 and [local transactions](local-storage.md), with no domain schema or public SQL.
 The [encoder](delta-encoder.md) and [decoder](delta-decoder.md) guides give
 the current scope and limits.
@@ -73,11 +74,13 @@ configurations and storage encodings open. Historical generation scripts require
 ## Checkpoints and ownership
 
 The composed core is the library's delta, byte, token and local storage modules
-and their private composition test. Its topic starts at accepted encoder
-`6ea4c22aea10b49a759f26645166193597b165de` and imports accepted blob, token
-and database changes. These imports do not establish ancestry of their source
-commits. Independent review and a final combined gate precede the integration
-checkpoint. The following bootstrap notes describe earlier setup.
+and their private composition test. The historical topic
+`gest/ruxnuror-core-integration` started at accepted encoder
+`6ea4c22aea10b49a759f26645166193597b165de` and imported accepted blob, token
+and database changes. Those imports do not establish ancestry of their source
+commits. Independent review and a final combined gate preceded the accepted
+integration checkpoint `de790aeab99012034f4b0bc9f9074181c935cd49`.
+The bootstrap notes below describe earlier setup.
 
 Every production change starts with focused tests and checks of the callers
 and tests that depend on the changed behavior. Fresh GPT-6.1 Sol agents
@@ -150,18 +153,18 @@ records the implementation and inherited `delta1` evidence. The candidate
 uses an explicit wrapper to map Fossil diagnostics into `gossil vcs`.
 The inherited assertions and original corpus remain unchanged.
 
-## Unsettled extension contracts
+## Extension contracts and remaining work
 
-The linked specification lists storage, Gest, sync and UI contract pages that
-have not yet been written. Exact issue revisions, Git-link encodings, annotation descriptors and shared/private
-replication rules need byte fixtures before durable extension writes begin.
-Task `qvqyvqlt` tracks those missing contracts. Inspect it with
-`gest task show qvqyvqlt` in the local Gest project. Do not invent storage or wire formats.
+The companion specification now contains accepted normative Gest, sync and UI
+contracts. Exact storage encodings and their test inventory remain in progress.
+Issue revisions, Git-link encodings and annotation descriptors need byte fixtures
+before durable extension writes begin. Task `qvqyvqlt` tracks this contract work.
+Inspect it with `gest task show qvqyvqlt` in the local Gest project.
+Do not invent storage or wire formats.
 
-These rules remain unsettled.
-
-The private/shared contract must settle dependency closure, transaction identity,
-authorization, declassification and identical-byte visibility.
+The private/shared implementation must follow the companion sync contract for
+dependency closure, transaction identity, authorization, declassification and
+identical-byte visibility.
 
 Dependency closure includes every object that a record requires and determines
 which related objects must travel together.

@@ -1,0 +1,96 @@
+/tmp/gossil-fossil-baseline-20261117/pristine/src/xfer.c:972:        md5sum_blob(&cluster, &cksum);
+/tmp/gossil-fossil-baseline-20261117/pristine/src/xfer.c:991:      md5sum_blob(&cluster, &cksum);
+/tmp/gossil-fossil-baseline-20261117/pristine/src/tkt.c:993:  md5sum_blob(&tktchng, &cksum);
+/tmp/gossil-fossil-baseline-20261117/pristine/src/tkt.c:1873:      md5sum_blob(&tktchng, &cksum);
+/tmp/gossil-fossil-baseline-20261117/pristine/src/wiki.c:1682:    md5sum_blob(&wiki, &cksum);
+/tmp/gossil-fossil-baseline-20261117/pristine/src/wiki.c:2098:  md5sum_blob(&wiki, &cksum);
+/tmp/gossil-fossil-baseline-20261117/pristine/src/info.c:3697:    md5sum_blob(ctrl, &cksum);
+/tmp/gossil-fossil-baseline-20261117/pristine/src/forum.c:483:  md5sum_blob(&artifact, &cksum);
+/tmp/gossil-fossil-baseline-20261117/pristine/src/forum.c:1961:  md5sum_blob(&x, &cksum);
+/tmp/gossil-fossil-baseline-20261117/pristine/src/forum.c:3208:  md5sum_blob(&x, &cksum);
+/tmp/gossil-fossil-baseline-20261117/pristine/src/forum.c:3509:    md5sum_blob(&x, &cksum);
+/tmp/gossil-fossil-baseline-20261117/pristine/src/import.c:228:    md5sum_blob(&record, &cksum);
+/tmp/gossil-fossil-baseline-20261117/pristine/src/import.c:334:  md5sum_blob(&record, &cksum);
+/tmp/gossil-fossil-baseline-20261117/pristine/src/import.c:356:    md5sum_blob(&record, &cksum);
+/tmp/gossil-fossil-baseline-20261117/pristine/src/import.c:1199:    md5sum_blob(&manifest, &mcksum);
+/tmp/gossil-fossil-baseline-20261117/pristine/src/attach.c:572:    md5sum_blob(&manifest, &cksum);
+/tmp/gossil-fossil-baseline-20261117/pristine/src/attach.c:1249:    md5sum_blob(&manifest, &cksum);
+/tmp/gossil-fossil-baseline-20261117/pristine/src/json_branch.c:285:  md5sum_blob(&branch, &mcksum);
+/tmp/gossil-fossil-baseline-20261117/pristine/src/db.c:3283:    md5sum_init();
+/tmp/gossil-fossil-baseline-20261117/pristine/src/db.c:3287:    blob_appendf(&manifest, "R %s\n", md5sum_finish(0));
+/tmp/gossil-fossil-baseline-20261117/pristine/src/db.c:3291:    md5sum_blob(&manifest, &hash);
+/tmp/gossil-fossil-baseline-20261117/pristine/src/db.c:5648:    md5sum_init();
+/tmp/gossil-fossil-baseline-20261117/pristine/src/db.c:5650:      md5sum_step_text(db_column_text(&q,i),-1);
+/tmp/gossil-fossil-baseline-20261117/pristine/src/db.c:5652:    z = mprintf("%d/%s",db_column_int(&q,0),md5sum_finish(0));
+/tmp/gossil-fossil-baseline-20261117/pristine/src/vfile.c:733:  md5sum_init();
+/tmp/gossil-fossil-baseline-20261117/pristine/src/vfile.c:740:      md5sum_step_text(zName, -1);
+/tmp/gossil-fossil-baseline-20261117/pristine/src/vfile.c:747:        md5sum_step_text(zBuf, -1);
+/tmp/gossil-fossil-baseline-20261117/pristine/src/vfile.c:748:        md5sum_step_text(blob_str(&pathBuf), -1);
+/tmp/gossil-fossil-baseline-20261117/pristine/src/vfile.c:753:          md5sum_step_text(" 0\n", -1);
+/tmp/gossil-fossil-baseline-20261117/pristine/src/vfile.c:759:        md5sum_step_text(zBuf, -1);
+/tmp/gossil-fossil-baseline-20261117/pristine/src/vfile.c:760:        /*printf("%s %s %s",md5sum_current_state(),zName,zBuf);fflush(stdout);*/
+/tmp/gossil-fossil-baseline-20261117/pristine/src/vfile.c:765:          md5sum_step_text(zBuf, n);
+/tmp/gossil-fossil-baseline-20261117/pristine/src/vfile.c:777:        md5sum_step_text(zName, -1);
+/tmp/gossil-fossil-baseline-20261117/pristine/src/vfile.c:781:        md5sum_step_text(zBuf, -1);
+/tmp/gossil-fossil-baseline-20261117/pristine/src/vfile.c:782:        md5sum_step_blob(&file);
+/tmp/gossil-fossil-baseline-20261117/pristine/src/vfile.c:788:  md5sum_finish(pOut);
+/tmp/gossil-fossil-baseline-20261117/pristine/src/vfile.c:823:  md5sum_init();
+/tmp/gossil-fossil-baseline-20261117/pristine/src/vfile.c:885:  md5sum_init();
+/tmp/gossil-fossil-baseline-20261117/pristine/src/vfile.c:892:    md5sum_step_text(zName, -1);
+/tmp/gossil-fossil-baseline-20261117/pristine/src/vfile.c:895:    md5sum_step_text(zBuf, -1);
+/tmp/gossil-fossil-baseline-20261117/pristine/src/vfile.c:896:    /*printf("%s %s %s",md5sum_current_state(),zName,zBuf); fflush(stdout);*/
+/tmp/gossil-fossil-baseline-20261117/pristine/src/vfile.c:897:    md5sum_step_blob(&file);
+/tmp/gossil-fossil-baseline-20261117/pristine/src/vfile.c:901:  md5sum_finish(pOut);
+/tmp/gossil-fossil-baseline-20261117/pristine/src/vfile.c:940:    md5sum_step_text(pFile->zName, -1);
+/tmp/gossil-fossil-baseline-20261117/pristine/src/vfile.c:943:    md5sum_step_text(zBuf, -1);
+/tmp/gossil-fossil-baseline-20261117/pristine/src/vfile.c:944:    md5sum_step_blob(&file);
+/tmp/gossil-fossil-baseline-20261117/pristine/src/vfile.c:955:  md5sum_finish(pOut);
+/tmp/gossil-fossil-baseline-20261117/pristine/src/etag.c:108:  md5sum_init();
+/tmp/gossil-fossil-baseline-20261117/pristine/src/etag.c:111:  md5sum_step_text("exe-id: ", -1);
+/tmp/gossil-fossil-baseline-20261117/pristine/src/etag.c:112:  md5sum_step_text(fossil_exe_id(), -1);
+/tmp/gossil-fossil-baseline-20261117/pristine/src/etag.c:113:  md5sum_step_text("\n", 1);
+/tmp/gossil-fossil-baseline-20261117/pristine/src/etag.c:116:    md5sum_step_text("hash: ", -1);
+/tmp/gossil-fossil-baseline-20261117/pristine/src/etag.c:117:    md5sum_step_text(zHash, -1);
+/tmp/gossil-fossil-baseline-20261117/pristine/src/etag.c:118:    md5sum_step_text("\n", 1);
+/tmp/gossil-fossil-baseline-20261117/pristine/src/etag.c:124:    md5sum_step_text("data: ", -1);
+/tmp/gossil-fossil-baseline-20261117/pristine/src/etag.c:125:    md5sum_step_text(zBuf, -1);
+/tmp/gossil-fossil-baseline-20261117/pristine/src/etag.c:126:    md5sum_step_text("\n", 1);
+/tmp/gossil-fossil-baseline-20261117/pristine/src/etag.c:132:    md5sum_step_text("config: ", -1);
+/tmp/gossil-fossil-baseline-20261117/pristine/src/etag.c:133:    md5sum_step_text(zBuf, -1);
+/tmp/gossil-fossil-baseline-20261117/pristine/src/etag.c:134:    md5sum_step_text("\n", 1);
+/tmp/gossil-fossil-baseline-20261117/pristine/src/etag.c:140:    md5sum_step_text("display-cookie: ", -1);
+/tmp/gossil-fossil-baseline-20261117/pristine/src/etag.c:141:    md5sum_step_text(PD(DISPLAY_SETTINGS_COOKIE,""), -1);
+/tmp/gossil-fossil-baseline-20261117/pristine/src/etag.c:142:    md5sum_step_text("\n", 1);
+/tmp/gossil-fossil-baseline-20261117/pristine/src/etag.c:149:    md5sum_step_text("query: ", -1);
+/tmp/gossil-fossil-baseline-20261117/pristine/src/etag.c:150:    md5sum_step_text(PD("PATH_INFO",""), -1);
+/tmp/gossil-fossil-baseline-20261117/pristine/src/etag.c:152:      md5sum_step_text("?", 1);
+/tmp/gossil-fossil-baseline-20261117/pristine/src/etag.c:153:      md5sum_step_text(zQS, -1);
+/tmp/gossil-fossil-baseline-20261117/pristine/src/etag.c:155:    md5sum_step_text("\n",1);
+/tmp/gossil-fossil-baseline-20261117/pristine/src/etag.c:157:      md5sum_step_text("login: ", -1);
+/tmp/gossil-fossil-baseline-20261117/pristine/src/etag.c:158:      md5sum_step_text(g.zLogin, -1);
+/tmp/gossil-fossil-baseline-20261117/pristine/src/etag.c:159:      md5sum_step_text("\n", 1);
+/tmp/gossil-fossil-baseline-20261117/pristine/src/etag.c:164:  memcpy(zETag, md5sum_finish(0), cchETag+1);
+/tmp/gossil-fossil-baseline-20261117/pristine/src/md5.c:317:void md5sum_init(void){
+/tmp/gossil-fossil-baseline-20261117/pristine/src/md5.c:324:void md5sum_step_text(const char *zText, int nBytes){
+/tmp/gossil-fossil-baseline-20261117/pristine/src/md5.c:339:void md5sum_step_blob(Blob *p){
+/tmp/gossil-fossil-baseline-20261117/pristine/src/md5.c:340:  md5sum_step_text(blob_buffer(p), blob_size(p));
+/tmp/gossil-fossil-baseline-20261117/pristine/src/md5.c:348:const char *md5sum_current_state(void){
+/tmp/gossil-fossil-baseline-20261117/pristine/src/md5.c:371:char *md5sum_finish(Blob *pOut){
+/tmp/gossil-fossil-baseline-20261117/pristine/src/md5.c:374:  md5sum_step_text(0,0);
+/tmp/gossil-fossil-baseline-20261117/pristine/src/md5.c:392:int md5sum_file(const char *zFilename, Blob *pCksum){
+/tmp/gossil-fossil-baseline-20261117/pristine/src/md5.c:424:int md5sum_blob(const Blob *pIn, Blob *pCksum){
+/tmp/gossil-fossil-baseline-20261117/pristine/src/md5.c:459:      md5sum_blob(&in, &cksum);
+/tmp/gossil-fossil-baseline-20261117/pristine/src/md5.c:461:      md5sum_file(g.argv[i], &cksum);
+/tmp/gossil-fossil-baseline-20261117/pristine/src/fileedit.c:383:  md5sum_blob(pOut, &zCard);
+/tmp/gossil-fossil-baseline-20261117/pristine/src/tag.c:354:  md5sum_blob(&ctrl, &cksum);
+/tmp/gossil-fossil-baseline-20261117/pristine/src/branch.c:186:  md5sum_blob(&branch, &mcksum);
+/tmp/gossil-fossil-baseline-20261117/pristine/src/branch.c:473:    md5sum_blob(&manifest, &cksum);
+/tmp/gossil-fossil-baseline-20261117/pristine/src/checkin.c:2115:  md5sum_blob(pOut, &mcksum);
+/tmp/gossil-fossil-baseline-20261117/pristine/src/event.c:339:  md5sum_blob(&event, &cksum);
+/tmp/gossil-fossil-baseline-20261117/pristine/src/manifest.c:301:# define md5sum_init(X)
+/tmp/gossil-fossil-baseline-20261117/pristine/src/manifest.c:302:# define md5sum_step_text(X,Y)
+/tmp/gossil-fossil-baseline-20261117/pristine/src/manifest.c:356:  md5sum_init();
+/tmp/gossil-fossil-baseline-20261117/pristine/src/manifest.c:357:  md5sum_step_text(z, n-35);
+/tmp/gossil-fossil-baseline-20261117/pristine/src/manifest.c:358:  zHash = md5sum_finish(0);
+/tmp/gossil-fossil-baseline-20261117/pristine/src/manifest.c:1133:  md5sum_init();
+/tmp/gossil-fossil-baseline-20261117/pristine/src/manifest.c:1150:  md5sum_init();
