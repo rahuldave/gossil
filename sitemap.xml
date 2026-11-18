@@ -2,98 +2,98 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://rahuldave.com/gossil/artifact-checksum.html</loc>
-    <lastmod>2026-11-18T16:00:43Z</lastmod>
+    <lastmod>2026-11-18T17:56:02Z</lastmod>
   </url>
   <url>
     <loc>https://rahuldave.com/gossil/artifact-parser.html</loc>
-    <lastmod>2026-11-18T16:00:43Z</lastmod>
+    <lastmod>2026-11-18T17:56:02Z</lastmod>
   </url>
   <url>
     <loc>https://rahuldave.com/gossil/blob-primitives.html</loc>
-    <lastmod>2026-11-18T16:00:43Z</lastmod>
+    <lastmod>2026-11-18T17:56:02Z</lastmod>
   </url>
   <url>
     <loc>https://rahuldave.com/gossil/cli.html</loc>
-    <lastmod>2026-11-18T16:00:43Z</lastmod>
+    <lastmod>2026-11-18T17:56:02Z</lastmod>
   </url>
   <url>
     <loc>https://rahuldave.com/gossil/concepts.html</loc>
-    <lastmod>2026-11-18T16:00:43Z</lastmod>
+    <lastmod>2026-11-18T17:56:02Z</lastmod>
   </url>
   <url>
     <loc>https://rahuldave.com/gossil/conformance.html</loc>
-    <lastmod>2026-11-18T16:00:43Z</lastmod>
+    <lastmod>2026-11-18T17:56:02Z</lastmod>
   </url>
   <url>
     <loc>https://rahuldave.com/gossil/delta-decoder.html</loc>
-    <lastmod>2026-11-18T16:00:43Z</lastmod>
+    <lastmod>2026-11-18T17:56:02Z</lastmod>
   </url>
   <url>
     <loc>https://rahuldave.com/gossil/delta-encoder.html</loc>
-    <lastmod>2026-11-18T16:00:43Z</lastmod>
+    <lastmod>2026-11-18T17:56:02Z</lastmod>
   </url>
   <url>
     <loc>https://rahuldave.com/gossil/development-plan.html</loc>
-    <lastmod>2026-11-18T16:00:43Z</lastmod>
+    <lastmod>2026-11-18T17:56:02Z</lastmod>
   </url>
   <url>
     <loc>https://rahuldave.com/gossil/examples.html</loc>
-    <lastmod>2026-11-18T16:00:43Z</lastmod>
+    <lastmod>2026-11-18T17:56:02Z</lastmod>
   </url>
   <url>
     <loc>https://rahuldave.com/gossil/getting-started.html</loc>
-    <lastmod>2026-11-18T16:00:43Z</lastmod>
+    <lastmod>2026-11-18T17:56:02Z</lastmod>
   </url>
   <url>
     <loc>https://rahuldave.com/gossil/index.html</loc>
-    <lastmod>2026-11-18T16:00:43Z</lastmod>
+    <lastmod>2026-11-18T17:56:02Z</lastmod>
   </url>
   <url>
     <loc>https://rahuldave.com/gossil/local-storage.html</loc>
-    <lastmod>2026-11-18T16:00:43Z</lastmod>
+    <lastmod>2026-11-18T17:56:02Z</lastmod>
   </url>
   <url>
     <loc>https://rahuldave.com/gossil/native-storage.html</loc>
-    <lastmod>2026-11-18T16:00:43Z</lastmod>
+    <lastmod>2026-11-18T17:56:02Z</lastmod>
   </url>
   <url>
     <loc>https://rahuldave.com/gossil/token-codec.html</loc>
-    <lastmod>2026-11-18T16:00:43Z</lastmod>
+    <lastmod>2026-11-18T17:56:02Z</lastmod>
   </url>
   <url>
     <loc>https://rahuldave.com/gossil/api/artifact.html</loc>
-    <lastmod>2026-11-18T16:02:18Z</lastmod>
+    <lastmod>2026-11-18T17:57:10Z</lastmod>
   </url>
   <url>
     <loc>https://rahuldave.com/gossil/api/artifact_checksum.html</loc>
-    <lastmod>2026-11-18T16:02:18Z</lastmod>
+    <lastmod>2026-11-18T17:57:10Z</lastmod>
   </url>
   <url>
     <loc>https://rahuldave.com/gossil/api/compression.html</loc>
-    <lastmod>2026-11-18T16:02:18Z</lastmod>
+    <lastmod>2026-11-18T17:57:10Z</lastmod>
   </url>
   <url>
     <loc>https://rahuldave.com/gossil/api/content_hash.html</loc>
-    <lastmod>2026-11-18T16:02:18Z</lastmod>
+    <lastmod>2026-11-18T17:57:10Z</lastmod>
   </url>
   <url>
     <loc>https://rahuldave.com/gossil/api/delta.html</loc>
-    <lastmod>2026-11-18T16:02:18Z</lastmod>
+    <lastmod>2026-11-18T17:57:10Z</lastmod>
   </url>
   <url>
     <loc>https://rahuldave.com/gossil/api/gossil.html</loc>
-    <lastmod>2026-11-18T16:02:18Z</lastmod>
+    <lastmod>2026-11-18T17:57:10Z</lastmod>
   </url>
   <url>
     <loc>https://rahuldave.com/gossil/api/index.html</loc>
-    <lastmod>2026-11-18T16:02:18Z</lastmod>
+    <lastmod>2026-11-18T17:57:10Z</lastmod>
   </url>
   <url>
     <loc>https://rahuldave.com/gossil/api/storage.html</loc>
-    <lastmod>2026-11-18T16:02:18Z</lastmod>
+    <lastmod>2026-11-18T17:57:10Z</lastmod>
   </url>
   <url>
     <loc>https://rahuldave.com/gossil/api/token_codec.html</loc>
-    <lastmod>2026-11-18T16:02:18Z</lastmod>
+    <lastmod>2026-11-18T17:57:10Z</lastmod>
   </url>
 </urlset>
