@@ -37,3 +37,7 @@ path = "tests/delta_cli.rs"
 
 [patch.crates-io]
 libsql-ffi = { path = "vendor/libsql-ffi" }
+
+[[bin]]
+name = "gos"
+path = "src/bin/gos.rs"

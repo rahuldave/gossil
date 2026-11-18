@@ -787,3 +787,6 @@ pub mod gest_task_values;
 pub mod gest_project_values;
 /// Share decoded-value validation without exposing a second public authority.
 mod gest_value_validation;
+
+/// Shared implementation for both product executable names.
+pub mod product;

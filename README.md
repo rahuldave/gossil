@@ -23,6 +23,8 @@ just gossil vcs test-delta FILE1 FILE2
 Replace `FILE1` and `FILE2` with two existing paths. Success prints `ok` after
 creating and applying deltas in both directions. The
 [getting started guide](docs/getting-started.md) includes a complete example.
+The `gos` executable and the `v` group name run the same diagnostics as
+`gossil` and `vcs`. See [short names](docs/cli.md#short-names) to run `gos` from this source checkout.
 
 ## Use the library
 
