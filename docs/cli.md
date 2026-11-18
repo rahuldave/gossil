@@ -17,8 +17,20 @@ just gossil vcs test-delta FILE1 FILE2
 ```
 
 Replace capitalized arguments with file paths. The commands accept exactly the
-number of paths shown. There are no root aliases or help subcommands.
+number of paths shown. Each diagnostic requires the `vcs` or `v` group. Neither executable has help subcommands.
 File data comes from paths and goes to paths. Stdin and stdout do not carry it.
+
+## Short names
+
+The `gos` executable runs the same implementation as `gossil`. Both accept `v`
+as a short name for `vcs`. For example, this runs the same round-trip check:
+
+```sh
+cargo run --locked --bin gos -- v test-delta FILE1 FILE2
+```
+
+Use either executable with either group name for all three diagnostics.
+Usage errors retain the spelling `gossil vcs`, including calls through `gos v`.
 
 ## Exit status and errors
 
@@ -47,8 +59,8 @@ acceptance rules are in the [runner guide](conformance.md).
 ## Planned commands
 
 Broader version-control commands and Gest task commands are planned. They are
-not accepted by the current executable. No shorthand alias is documented as
-runnable here.
+not accepted by `gossil` or `gos`. The short names above apply only to the
+three delta diagnostics.
 
 ## Recommendations
 
