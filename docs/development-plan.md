@@ -4,11 +4,13 @@ Gossil is planned as a Rust library and application for versioned agentic
 project state. It combines Fossil version-control mechanisms with Gest task
 management, commands and an application programming interface (API).
 Axum is the Rust web framework for the embedded server and dashboard.
-The planned storage core uses libsql, a SQLite database implementation.
+The storage boundary uses libsql, a SQLite database implementation.
 Git owns source code.
 
 The checkout implements bounded delta creation and application, their
 `gossil vcs` diagnostics, and the inherited-test runner.
+It also composes [byte primitives](blob-primitives.md), [token escaping](token-codec.md)
+and [local transactions](local-storage.md), with no domain schema or public SQL.
 The [encoder](delta-encoder.md) and [decoder](delta-decoder.md) guides give
 the current scope and limits.
 
@@ -24,10 +26,11 @@ at `~/Projects/AIProjectInfra/docs/gossil/README.md`. Its linked acceptance
 page defines the source inventory and the test families required beyond
 inherited Fossil and Gest tests.
 
-The Gest commands below require an installed Gest tool and this checkout's
-local task database; a fresh clone does not supply those task records.
-
 Development work is tracked in this project's local Gest task database.
+The commands below require an installed Gest tool and that local database.
+A fresh clone does not supply those task records. Follow the installed
+`.agents/skills/gtw/references/gest_codex_workflow.md` for the project workflow.
+
 The product parent task is `xyzzowpv`, and iteration `usytswsv` groups its
 implementation tasks. A leaf is a task with no child tasks.
 The completed environment task `xnuqympy` records bootstrap work.
@@ -51,6 +54,9 @@ These task records are local workflow data, separate from the product specificat
 | 7 | `nmtxoskp` | Specified private/shared records, Git links, discussions, annotations and packages |
 | 8 | `zzqxwppt` | Every inherited contract, build configuration and extra test family specified by the acceptance page |
 
+Cross-links connect stored artifacts to the records derived from them.
+The `/xfer` endpoint carries Fossil synchronization traffic.
+
 The inventory must cover all Fossil and Gest surfaces. For each source and
 test surface, record whether it is ported, adapted or awaiting work, with its
 corresponding tests. An absent UI screen
@@ -66,9 +72,12 @@ configurations and storage encodings open. Historical generation scripts require
 
 ## Checkpoints and ownership
 
-The current encoder topic follows the accepted decoder checkpoint. Independent
-review and the final combined gate precede local integration. The following
-bootstrap notes describe earlier setup, rather than the current branch state.
+The composed core is the library's delta, byte, token and local storage modules
+and their private composition test. Its topic starts at accepted encoder
+`6ea4c22aea10b49a759f26645166193597b165de` and imports accepted blob, token
+and database changes. These imports do not establish ancestry of their source
+commits. Independent review and a final combined gate precede the integration
+checkpoint. The following bootstrap notes describe earlier setup.
 
 Every production change starts with focused tests and checks of the callers
 and tests that depend on the changed behavior. Fresh GPT-6.1 Sol agents
@@ -82,6 +91,8 @@ An agentic target is a Just command that writes a task packet for a fresh agent.
 a result packet, which the parent validates and records. A record identifies
 the reviewed file tree and the packet's nonce, a unique identifier.
 It applies to that content, so edits can require a new check.
+Use the installed workflow guide above for packet dispatch, result validation
+and recording; printing a packet alone does not complete its check.
 
 The following commands create and check those packets as part of the review workflow.
 Run the Just commands in this order.
@@ -92,16 +103,20 @@ agents. Dispatch each packet, validate the returned result, then run
 `just record TARGET RESULT_FILE` before starting the next gate.
 Replace the capitalized arguments with the target name and saved result path.
 
-After the verified initial commit, independent writers may use physical
-worktrees. Each needs an owner, absolute path, topic branch and explicit base.
-Create a worktree after the initial commit with
+A worktree is a separate checkout that shares Git history with the primary
+checkout, the original checkout from which it was created.
+
+Independent writers use physical worktrees. Each needs an owner, absolute path, topic branch and explicit base.
+Create a worktree with
 `just worktree-new NAME BASE`, using an existing branch or commit for
-`BASE`. The recipe reads `.worktreelink` and links the existing ignored `.jlog`
+`BASE`.
+The recipe reads `.worktreelink` and links the existing ignored `.jlog`
 folder from the primary checkout into the new worktree.
 For an existing worktree, `just worktree-sync` applies those links.
 The link does not install tools or share source edits.
 
-Dependent branches remain sequential until their lower checkpoint exists.
+For dependent branches, finish the prerequisite checkpoint before starting work
+that requires it.
 
 Delivery stays local. No remote, push, pull request or publication is selected.
 Keep task records and review evidence local until a delivery destination is selected. Local commits
@@ -130,7 +145,7 @@ The five original C reference cases marked `not-run` keep that status.
 The [decoder evidence section](delta-decoder.md#evidence-and-limits) describes
 those observations and the portable fixtures.
 
-The encoder follows this decoder checkpoint. Its [guide](delta-encoder.md)
+The encoder was implemented after this decoder checkpoint. Its [guide](delta-encoder.md)
 records the implementation and inherited `delta1` evidence. The candidate
 uses an explicit wrapper to map Fossil diagnostics into `gossil vcs`.
 The inherited assertions and original corpus remain unchanged.
@@ -143,13 +158,16 @@ replication rules need byte fixtures before durable extension writes begin.
 Task `qvqyvqlt` tracks those missing contracts. Inspect it with
 `gest task show qvqyvqlt` in the local Gest project. Do not invent storage or wire formats.
 
+These rules remain unsettled.
+
 The private/shared contract must settle dependency closure, transaction identity,
 authorization, declassification and identical-byte visibility.
 
-Dependency closure determines which related objects must travel together.
+Dependency closure includes every object that a record requires and determines
+which related objects must travel together.
 Transaction identity determines how a transaction is identified across replicas.
 Authorization controls access, while declassification permits private data to
-become shared. Identical-byte visibility determines access when private and
+become shared under explicit rules. Identical-byte visibility determines access when private and
 shared objects contain the same bytes. Shared history
 must restore without private objects. Unsupported required extensions must
 fail before an operation reports complete success.
@@ -157,6 +175,7 @@ fail before an operation reports complete success.
 ## Recommendations
 
 Keep the full Gest task hierarchy and deliver small reviewed checkpoints.
-Next, review the encoder and its unchanged `delta1` qualification evidence.
+Next, follow [Checkpoints and ownership](#checkpoints-and-ownership) to review
+the composed core. Preserve the unchanged `delta1` qualification evidence.
 Resolve the inventory's contract and configuration gaps while preserving
 failures and disabled-feature results as classified evidence.

@@ -1,0 +1,13 @@
+{
+  "revision": "b3a1c8efb2731dffbd5cc38c58ac349746de6da6",
+  "source_files": {
+    "/tmp/gossil-fossil-baseline-20261117/pristine/src/encode.c": "a3278e835b15b733bdadf378b5e8050559067ad5cbe745cbc698cdbdc4e1d998",
+    "/tmp/gossil-fossil-baseline-20261117/pristine/src/blob.c": "19f47a4a0e4f9c435aca397ddfb7c0e83e3c6cdf410262e4b030ca2b1296fa9a"
+  },
+  "spans": {
+    "fossilize": "src/encode.c:392-430",
+    "defossilize": "src/encode.c:435-458",
+    "fossil_isspace": "src/blob.c:119-121"
+  },
+  "adapter": "Adds NUL terminator; decode prints entire mutated storage including supplied trailing bytes and terminator, plus strlen. No native emitted length exists. Allocator shim malloc+abort; no failure injection. Inputs generated internally, bounded to 4096 bytes."
+}

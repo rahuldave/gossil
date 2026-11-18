@@ -1,4 +1,4 @@
-//! Run inherited Fossil conformance tests and create or apply bounded deltas.
+//! Run inherited Fossil tests with bounded byte primitives and owned local storage.
 mod invocation;
 pub use invocation::{InvocationId, InvocationPlan, PlanPin, PlanRow, Position};
 use serde::{Deserialize, Serialize};
@@ -764,4 +764,13 @@ mod tests {
     }
 }
 
+/// Pack and unpack Fossil blobs with bounded zlib operations.
+pub mod compression;
+/// Compute Fossil byte digests independently of repository hash policy.
+pub mod content_hash;
 pub mod delta;
+
+/// Own local database connections and exclusive write boundaries.
+pub mod storage;
+/// Encode and decode Fossil token bytes.
+pub mod token_codec;

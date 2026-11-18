@@ -1,0 +1,29 @@
+{
+  "compiler": {
+    "command": [
+      "/usr/bin/cc",
+      "--version"
+    ],
+    "status": 0,
+    "stdout": "Apple clang version 17.0.0 (clang-1700.0.13.3)\nTarget: arm64-apple-darwin24.2.0\nThread model: posix\nInstalledDir: /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin\n",
+    "stderr": ""
+  },
+  "host": {
+    "command": [
+      "uname",
+      "-a"
+    ],
+    "status": 0,
+    "stdout": "Darwin mutant-2.local 24.2.0 Darwin Kernel Version 24.2.0: Fri Dec  6 18:40:14 PST 2024; root:xnu-11215.61.5~2/RELEASE_ARM64_T8103 arm64\n",
+    "stderr": ""
+  },
+  "just": {
+    "command": [
+      "/Users/rahul/.cargo/bin/just",
+      "--version"
+    ],
+    "status": 0,
+    "stdout": "just 1.50.0\n",
+    "stderr": ""
+  }
+}

@@ -1,0 +1,144 @@
+{
+  "status": "implemented library primitives; independent review and final strict gate pending",
+  "scope": "byte hashing and packed compression only; no repository policy, database or CLI integration",
+  "task": "usvwnwtn",
+  "owner": "/root/blob_primitives",
+  "base_commit": "e603376aac1977ca6ba40973d1ae6eca75e8fdf3",
+  "branch": "gest/usvwnwtn-blob-primitives",
+  "workspace": "/Users/rahul/Projects/gossil.worktrees/gest-usvwnwtn-blob-primitives",
+  "primary_workspace": "/Users/rahul/Projects/gossil",
+  "primary_branch": "gest/mpxpvmkq-delta-decoder",
+  "source_revision": "b3a1c8efb2731dffbd5cc38c58ac349746de6da6",
+  "source_surfaces": {
+    "src/blob.c": {
+      "sha256": "19f47a4a0e4f9c435aca397ddfb7c0e83e3c6cdf410262e4b030ca2b1296fa9a",
+      "ported_scope": "blob_compress_level, blob_compress, blob_compress2, blob_uncompress; diagnostics only as fixture producers"
+    },
+    "src/sha1.c": {
+      "sha256": "3882dcde215a1abbda1e8c92974dcfd0994b7466afa46a7c0d0f60dbaae43b87",
+      "ported_scope": "sha1sum_blob byte digest output and ignored collision indication"
+    },
+    "src/sha1hard.c": {
+      "sha256": "9f20fe1690f9d44d09a84376aacc58675f62b23b6d13282f9c8128c05e12791a",
+      "ported_scope": "SHA1DCInit default mitigation/detection behavior via maintained replacement crate"
+    },
+    "src/sha3.c": {
+      "sha256": "157853905d3b2363d73262d242802a4f4c2a9b8b75ccac73e40d579c10ca1a12",
+      "ported_scope": "SHA3Init/Update/Final sponge behavior, sha3sum_blob widths and sha3sum_test accepted widths"
+    }
+  },
+  "unported_surfaces": [
+    "remaining blob APIs",
+    "file and symlink hashing",
+    "incremental global hash APIs",
+    "repository hash-policy selection/migration",
+    "whole hashes/bytes family completion",
+    "CLI integration"
+  ],
+  "dependencies": {
+    "sha1collisiondetection": {
+      "version": "0.3.4",
+      "default_features": false,
+      "features": [
+        "std"
+      ],
+      "rationale": "SHA1DC safe hash defaults match pinned Fossil; plain SHA1 differs on attacks"
+    },
+    "keccak": {
+      "version": "0.1.6",
+      "features": [
+        "default"
+      ],
+      "rationale": "maintained complete permutation; small Fossil sponge adapter preserves all 13 widths"
+    },
+    "flate2": {
+      "version": "1.1.11",
+      "features": [
+        "default",
+        "rust_backend"
+      ],
+      "backend": "miniz_oxide 0.9.1",
+      "rationale": "safe Rust zlib framing with incremental fixed scratch buffers; byte identity not required"
+    }
+  },
+  "observed": {
+    "reference_version": "This is fossil version 2.29 [7e8ecf0ce4] 2026-11-16 11:41:54 UTC",
+    "sha3_native_vectors": 78,
+    "native_packed_vectors": 8,
+    "sha1_collision_vectors": 2,
+    "reference_corpus_sha256": "16bc42d536c3613d797699a034d2543d15020bf46d20f70ed23cbb1e168efabd",
+    "native_to_rust": "pass",
+    "rust_to_native": "pass; levels -1 through 9 and two-input packing over 8 corpus rows",
+    "exact_compressed_byte_identity": "not claimed",
+    "native_invalid_cli": "exits zero and retains input because test-uncompress ignores return",
+    "native_capacity": "oversized capacity and trailing bytes accepted"
+  },
+  "resource_policy": {
+    "caller_limit": "declared u32 capacity checked before decoding",
+    "allocation": "output grows by fallible reservations from bounded 8192-byte scratch chunks; underlying error retained",
+    "format_limit": "unsigned 32-bit uncompressed input length; no universal lower output cap",
+    "c_undefined_behavior": "not emulated"
+  },
+  "verification": {
+    "behavioral_red": "just test --test blob_primitives: two assertions failed after successful minimal-stub compilation",
+    "focused_green": "5 unit functions and 9 portable blob test functions passed; 1 native test explicitly opt-in and passed separately",
+    "strict_coverage": "100% of 175 new executable production lines; no exclusions; refreshed just check run 6a156760-a21d-495e-93e8-76746b564600",
+    "lint": "pass after SHA1 dependency correction",
+    "docstring_check": "pass after final corrections",
+    "refreshed_check": {
+      "run": "6a156760-a21d-495e-93e8-76746b564600",
+      "passed_steps": [
+        "tools-check (8 program floors)",
+        "release-check (no tag present)",
+        "fmt-check",
+        "lint",
+        "typecheck",
+        "test",
+        "integration",
+        "coverage-check (175/175)",
+        "docstring-check",
+        "docs-check",
+        "api-check (28/28)"
+      ],
+      "result": "failed prose-check on eight-sentence paragraph; paragraph split and focused prose-check passed afterward; full rerun still required after independent docs/prose/review",
+      "diff_check": "not reached by combined run"
+    },
+    "final_native_interop_run": "9f8c003c-2d78-41d4-afbc-5d3a2651f9c3; one opt-in test passed, 9 filtered; 96 finite native decode invocations",
+    "outstanding": [
+      "fresh update-docs",
+      "fresh prose revision/record",
+      "parent-owned adversarial review/test-review",
+      "final just check on post-review bytes",
+      "review-gated commit and native task completion by assigned owner"
+    ]
+  },
+  "dependency_impact": {
+    "ast_grep_patterns": [
+      "pack($$$)",
+      "pack_two($$$)",
+      "unpack($$$)",
+      "sha1($$$)",
+      "sha3($$$)"
+    ],
+    "macro_token_search": "rg literal searches supplement ast-grep because Rust assert macro token bodies are not parsed as calls",
+    "dependers": [
+      "tests/blob_primitives.rs",
+      "Rust doc examples"
+    ],
+    "external_depender": "Cargo/lib exports require reviewed integration with decoder"
+  },
+  "tag_classification": {
+    "selected_existing": [
+      "gossil"
+    ],
+    "new": [],
+    "gest_mutation_owner": "/root/delta_implementation"
+  },
+  "delivery": {
+    "commit": "not created; awaiting review and strict final gate",
+    "remote": "none authorized; local-only",
+    "tool_refresh": "separate central installer changes preserved; worker did not edit installed copies"
+  },
+  "recommendation": "Complete fresh docs/prose/adversarial review and final strict check, then reviewed integration of Cargo/lib exports.",
+  "source_freeze": "production code frozen; no commit created; candidate includes separate central tool refresh changes"
+}

@@ -1,0 +1,937 @@
+//! Sole-connection local storage. File opens verify WAL, foreign keys, FULL and 5000 ms.
+//! Unexpected owner destruction poisons the store and closes its connection.
+//! Local SQL blocks its current poll; cancellation after COMMIT cannot undo it.
+//!
+//! ## Recommendations
+//! Use one owner for a complete mutation and explicitly commit or roll back.
+//! Add fixed domain operations here when the domain schema is defined.
+use libsql::{Builder, Connection, Value};
+use std::{fmt, path::Path, sync::Arc, time::Duration};
+
+/// An operation failure, with a separate checked-cleanup failure when present.
+#[derive(Debug, Clone)]
+pub struct StorageError {
+    /// First operation or state failure.
+    pub operation: String,
+    /// Rollback failure; absence does not establish power-loss durability.
+    pub cleanup: Option<String>,
+    /// Original input or engine failure retained for error-chain inspection.
+    source: Option<Arc<dyn std::error::Error + Send + Sync>>,
+}
+impl fmt::Display for StorageError {
+    /// Format the operation failure and any separate cleanup failure.
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(f, "{}", self.operation)?;
+        if let Some(cleanup) = &self.cleanup {
+            write!(f, "; cleanup: {cleanup}")?;
+        }
+        Ok(())
+    }
+}
+impl std::error::Error for StorageError {
+    /// Expose the original input or engine error when one is available.
+    fn source(&self) -> Option<&(dyn std::error::Error + 'static)> {
+        self.source.as_deref().map(|error| error as _)
+    }
+}
+impl From<libsql::Error> for StorageError {
+    /// Preserve the original engine error and its diagnostic.
+    fn from(error: libsql::Error) -> Self {
+        Self {
+            operation: error.to_string(),
+            cleanup: None,
+            source: Some(Arc::new(error)),
+        }
+    }
+}
+impl StorageError {
+    /// Construct a state error without a cleanup failure.
+    /// # Arguments
+    /// * `message` - Explanation of the failed ownership or configuration check.
+    /// # Returns
+    /// An error without an engine source.
+    fn state(message: impl Into<String>) -> Self {
+        Self {
+            operation: message.into(),
+            cleanup: None,
+            source: None,
+        }
+    }
+}
+
+/// A configured local database with exactly one unexposed connection.
+pub struct LocalStore {
+    /// Sole connection, absent while a mutation owns it or after poisoning.
+    connection: Option<Connection>,
+    /// Whether an abnormal exit prevents reuse.
+    poisoned: bool,
+}
+impl LocalStore {
+    /// Open and verify a local file database; never fall back to memory.
+    /// # Arguments
+    /// * `path` - Local database file, whose parent must exist.
+    /// # Returns
+    /// A store with one verified idle connection.
+    /// # Errors
+    /// Returns an error for invalid input, open, configuration or verification failure.
+    /// An embedded NUL returns an error with a [`std::ffi::NulError`] source.
+    /// Driver failures retain their original [`libsql::Error`] source.
+    /// # Examples
+    /// ```no_run
+    /// # async fn lifecycle(path: &std::path::Path) -> Result<(), gossil::storage::StorageError> {
+    /// use gossil::storage::LocalStore;
+    /// let mut store = LocalStore::open(path).await?;
+    /// assert!(!store.is_poisoned());
+    /// store.begin_write().await?.commit().await?;
+    /// store.begin_write().await?.rollback().await?;
+    /// # Ok(())
+    /// # }
+    /// ```
+    pub async fn open(path: impl AsRef<Path>) -> Result<Self, StorageError> {
+        Self::open_inner(path, true).await
+    }
+    /// Construct and verify one retained connection.
+    /// # Arguments
+    /// * `path` - Database path, or the private in-memory fixture name.
+    /// * `file` - Require WAL for files; fixtures instead verify memory mode.
+    /// # Returns
+    /// A configured store or the opening or verification error.
+    /// # Errors
+    /// Returns an input error for an embedded NUL, engine errors for opening or
+    /// configuration failures, or a state error when required settings differ.
+    async fn open_inner(path: impl AsRef<Path>, file: bool) -> Result<Self, StorageError> {
+        let path = path.as_ref();
+        // The pinned driver unwraps CString construction at connect; validate before entering it.
+        std::ffi::CString::new(path.as_os_str().as_encoded_bytes()).map_err(|error| {
+            StorageError {
+                operation: format!("invalid local database path: {error}"),
+                cleanup: None,
+                source: Some(Arc::new(error)),
+            }
+        })?;
+        let database = Builder::new_local(path).build().await?;
+        let connection = database.connect()?;
+        connection.busy_timeout(Duration::from_millis(5000))?;
+        connection.execute("PRAGMA foreign_keys=ON", ()).await?;
+        connection.execute("PRAGMA synchronous=FULL", ()).await?;
+        let journal = if file { "wal" } else { "memory" };
+        if file {
+            materialize(&connection, "PRAGMA journal_mode=WAL").await?;
+        }
+        for (sql, expected) in [
+            ("PRAGMA journal_mode", Value::Text(journal.into())),
+            ("PRAGMA foreign_keys", Value::Integer(1)),
+            ("PRAGMA synchronous", Value::Integer(2)),
+            ("PRAGMA busy_timeout", Value::Integer(5000)),
+        ] {
+            if materialize(&connection, sql).await? != vec![vec![expected]] {
+                return Err(StorageError::state(format!(
+                    "configuration disagreement: {sql}"
+                )));
+            }
+        }
+        Ok(Self {
+            connection: Some(connection),
+            poisoned: false,
+        })
+    }
+    /// Report whether unexpected destruction or failed cleanup prevents reuse.
+    /// # Returns
+    /// True when reconstruction is required.
+    pub fn is_poisoned(&self) -> bool {
+        self.poisoned
+    }
+    /// Begin IMMEDIATE before returning the uniquely borrowed mutation owner.
+    /// # Returns
+    /// The sole write owner after SQLite acquired its write reservation.
+    /// # Errors
+    /// Returns an error for a poisoned store or failed BEGIN; failed BEGIN poisons it.
+    /// # Examples
+    /// A second owner cannot borrow the store while the first owner remains active.
+    /// ```compile_fail
+    /// async fn overlapping(store: &mut gossil::storage::LocalStore) {
+    ///     let first = store.begin_write().await.unwrap();
+    ///     let second = store.begin_write().await.unwrap();
+    ///     first.rollback().await.unwrap();
+    /// }
+    /// ```
+    pub async fn begin_write(&mut self) -> Result<WriteTransaction<'_>, StorageError> {
+        let connection = self
+            .connection
+            .take()
+            .ok_or_else(|| StorageError::state("store poisoned"))?;
+        let mut owner = WriteTransaction {
+            store: self,
+            connection: Some(connection),
+            failure: None,
+            #[cfg(test)]
+            fail_control: None,
+        };
+        owner.execute("BEGIN IMMEDIATE").await?;
+        Ok(owner)
+    }
+}
+/// Own an exclusive write boundary without exposing a connection, statement or lazy result.
+///
+/// # Examples
+/// The raw connection and arbitrary SQL helpers are private to this module.
+/// ```compile_fail
+/// fn raw_alias(owner: &gossil::storage::WriteTransaction<'_>) {
+///     let alias = owner.connection();
+/// }
+/// ```
+/// ```compile_fail
+/// async fn arbitrary_sql(owner: &mut gossil::storage::WriteTransaction<'_>) {
+///     owner.execute("DELETE FROM tasks").await.unwrap();
+/// }
+/// ```
+pub struct WriteTransaction<'a> {
+    /// Exclusively borrowed destination for a confirmed idle connection.
+    store: &'a mut LocalStore,
+    /// Sole connection until explicit checked termination.
+    connection: Option<Connection>,
+    /// First failure, retained even when an internal caller catches its result.
+    failure: Option<StorageError>,
+    #[cfg(test)]
+    /// Narrow control-result failure seam; it does not simulate disk failure.
+    fail_control: Option<&'static str>,
+}
+impl WriteTransaction<'_> {
+    /// Read the sole connection without exposing it outside this module.
+    /// # Returns
+    /// The armed owner's connection; terminal methods never call this after restoration.
+    /// # Panics
+    /// Panics if an internal caller uses the owner after its connection was restored.
+    fn connection(&self) -> &Connection {
+        self.connection.as_ref().expect("armed owner")
+    }
+    /// Latch the first operation failure before returning it.
+    /// # Arguments
+    /// * `result` - Completed execution, stepping or decoding result.
+    /// # Returns
+    /// The unchanged result after retaining its first error.
+    /// # Errors
+    /// Returns the supplied error unchanged.
+    fn record<T>(&mut self, result: Result<T, StorageError>) -> Result<T, StorageError> {
+        if let Err(error) = &result {
+            self.failure.get_or_insert_with(|| error.clone());
+        }
+        result
+    }
+    /// Execute one internal statement; a caught failure still prevents further SQL.
+    /// # Arguments
+    /// * `sql` - Fixed internal SQL or private fixture SQL; no caller-supplied transaction control.
+    /// # Returns
+    /// Success after execution, or the latched failure.
+    /// # Errors
+    /// Returns the first latched error or the current engine execution error.
+    async fn execute(&mut self, sql: &str) -> Result<(), StorageError> {
+        if let Some(error) = &self.failure {
+            return Err(error.clone());
+        }
+        let result = self
+            .connection()
+            .execute(sql, ())
+            .await
+            .map(|_| ())
+            .map_err(Into::into);
+        self.record(result)
+    }
+    #[cfg(test)]
+    /// Fully materialize fixture queries and latch preparation, step and decode errors.
+    /// # Errors
+    /// Returns the first latched error or the current materialization error.
+    async fn query(&mut self, sql: &str) -> Result<Vec<Vec<Value>>, StorageError> {
+        if let Some(error) = &self.failure {
+            return Err(error.clone());
+        }
+        let result = materialize(self.connection(), sql).await;
+        self.record(result)
+    }
+    /// Execute fixed termination SQL, bypassing only the rollback-only latch.
+    /// # Arguments
+    /// * `sql` - COMMIT or ROLLBACK from a terminal method.
+    /// # Returns
+    /// The engine or narrow fixture-control result.
+    /// # Errors
+    /// Returns an engine error or the private injected control failure.
+    async fn control(&self, sql: &'static str) -> Result<(), StorageError> {
+        #[cfg(test)]
+        if self.fail_control == Some(sql) {
+            return Err(StorageError::state("injected control failure"));
+        }
+        self.connection().execute(sql, ()).await?;
+        Ok(())
+    }
+    /// Confirm idle state before restoring the sole connection.
+    /// # Returns
+    /// Success after restoration, or an inconsistent-state error.
+    /// # Errors
+    /// Returns a state error if SQLite still reports an active transaction.
+    fn restore(&mut self) -> Result<(), StorageError> {
+        if !self.connection().is_autocommit() {
+            return Err(StorageError::state("termination left transaction active"));
+        }
+        self.store.connection = self.connection.take();
+        Ok(())
+    }
+    /// Roll back when active and confirm idle state before reuse.
+    /// # Returns
+    /// Success after confirmed idle restoration, or a cleanup failure.
+    /// # Errors
+    /// Returns the rollback engine error or an inconsistent-state error.
+    async fn cleanup(&mut self) -> Result<(), StorageError> {
+        if !self.connection().is_autocommit() {
+            self.control("ROLLBACK").await?;
+        }
+        self.restore()
+    }
+    /// Commit all changes, or reject a rollback-only owner with its original error.
+    /// # Returns
+    /// Success only after COMMIT and confirmed idle restoration.
+    /// # Errors
+    /// Preserves operation and cleanup failures separately; uncertain connections are discarded.
+    pub async fn commit(mut self) -> Result<(), StorageError> {
+        let outcome = if let Some(error) = self.failure.take() {
+            Err(error)
+        } else {
+            self.control("COMMIT").await.and_then(|()| self.restore())
+        };
+        match outcome {
+            Ok(()) => Ok(()),
+            Err(mut error) => {
+                if let Err(cleanup) = self.cleanup().await {
+                    error.cleanup = Some(cleanup.operation);
+                }
+                Err(error)
+            }
+        }
+    }
+    /// Explicitly roll back and restore the connection only after checked cleanup.
+    /// # Returns
+    /// Success after rollback when no earlier operation failed.
+    /// # Errors
+    /// Returns the original operation error if one occurred, with any cleanup error attached.
+    pub async fn rollback(mut self) -> Result<(), StorageError> {
+        let original = self.failure.take();
+        match (original, self.cleanup().await) {
+            (None, result) => result,
+            (Some(mut error), cleanup) => {
+                if let Err(cleanup) = cleanup {
+                    error.cleanup = Some(cleanup.operation);
+                }
+                Err(error)
+            }
+        }
+    }
+}
+impl Drop for WriteTransaction<'_> {
+    /// Poison the store and close its connection without executing SQL.
+    fn drop(&mut self) {
+        if let Some(connection) = self.connection.take() {
+            self.store.poisoned = true;
+            drop(connection);
+        }
+    }
+}
+/// Materialize owned values before returning; no statement, row or alias survives.
+/// # Arguments
+/// * `connection` - Sole connection borrowed within its owner.
+/// * `sql` - Fixed configuration readback or fixture query.
+/// # Returns
+/// Owned values, or the preparation, query, stepping or decoding failure.
+/// # Errors
+/// Returns engine errors from preparation, query execution, stepping or value decoding.
+async fn materialize(connection: &Connection, sql: &str) -> Result<Vec<Vec<Value>>, StorageError> {
+    let statement = connection.prepare(sql).await?;
+    let mut rows = statement.query(()).await?;
+    let mut result = Vec::new();
+    while let Some(row) = rows.next().await? {
+        let mut values = Vec::new();
+        for index in 0..row.column_count() {
+            values.push(row.get_value(index)?);
+        }
+        result.push(values);
+    }
+    Ok(result)
+}
+
+#[cfg(test)]
+/// Check local engine capabilities, ownership and transaction cleanup with fixture tables.
+mod tests {
+    use super::*;
+    /// Verify all required settings on both the first and a later file open.
+    #[tokio::test]
+    async fn settings_every_open() {
+        let temp = tempfile::tempdir().unwrap();
+        let path = temp.path().join("store.db");
+        for _ in 0..2 {
+            let store = LocalStore::open(&path).await.unwrap();
+            let mut rows = store
+                .connection
+                .as_ref()
+                .unwrap()
+                .query("PRAGMA foreign_keys", ())
+                .await
+                .unwrap();
+            assert_eq!(
+                rows.next().await.unwrap().unwrap().get::<i64>(0).unwrap(),
+                1
+            );
+            let mut rows = store
+                .connection
+                .as_ref()
+                .unwrap()
+                .query("PRAGMA journal_mode", ())
+                .await
+                .unwrap();
+            assert_eq!(
+                rows.next()
+                    .await
+                    .unwrap()
+                    .unwrap()
+                    .get::<String>(0)
+                    .unwrap(),
+                "wal"
+            );
+            for (sql, expected) in [("PRAGMA synchronous", 2), ("PRAGMA busy_timeout", 5000)] {
+                assert_eq!(
+                    materialize(store.connection.as_ref().unwrap(), sql)
+                        .await
+                        .unwrap(),
+                    vec![vec![Value::Integer(expected)]]
+                );
+            }
+        }
+    }
+    /// Verify BEGIN reserves the writer before any data modification.
+    #[tokio::test]
+    async fn immediate_before_dml() {
+        let temp = tempfile::tempdir().unwrap();
+        let path = temp.path().join("store.db");
+        let mut first = LocalStore::open(&path).await.unwrap();
+        let second = LocalStore::open(&path).await.unwrap();
+        second
+            .connection
+            .as_ref()
+            .unwrap()
+            .busy_timeout(std::time::Duration::ZERO)
+            .unwrap();
+        let owner = first.begin_write().await.unwrap();
+        assert!(
+            second
+                .connection
+                .as_ref()
+                .unwrap()
+                .execute("BEGIN IMMEDIATE", ())
+                .await
+                .is_err()
+        );
+        owner.rollback().await.unwrap();
+    }
+    /// Verify a caught constraint error blocks later SQL and commit.
+    #[tokio::test]
+    async fn caught_error_rejects_commit_and_later_helper() {
+        let temp = tempfile::tempdir().unwrap();
+        let path = temp.path().join("store.db");
+        let mut store = LocalStore::open(&path).await.unwrap();
+        let mut tx = store.begin_write().await.unwrap();
+        tx.execute("CREATE TABLE item(id INTEGER UNIQUE)")
+            .await
+            .unwrap();
+        tx.commit().await.unwrap();
+        let mut tx = store.begin_write().await.unwrap();
+        tx.execute("INSERT INTO item VALUES(1)").await.unwrap();
+        assert!(tx.execute("INSERT INTO item VALUES(1)").await.is_err());
+        assert!(tx.execute("INSERT INTO item VALUES(2)").await.is_err());
+        assert!(tx.commit().await.is_err());
+        let mut tx = store.begin_write().await.unwrap();
+        assert_eq!(
+            tx.query("SELECT count(*) FROM item").await.unwrap(),
+            vec![vec![Value::Integer(0)]]
+        );
+        tx.rollback().await.unwrap();
+    }
+
+    /// Create fixture tables through the same owner used by domain operations.
+    async fn fixture(store: &mut LocalStore) {
+        let mut tx = store.begin_write().await.unwrap();
+        for sql in [
+            "CREATE TABLE parent(id INTEGER PRIMARY KEY, name TEXT UNIQUE, bytes BLOB)",
+            "CREATE TABLE child(parent INTEGER REFERENCES parent(id) DEFERRABLE INITIALLY DEFERRED)",
+        ] {
+            tx.execute(sql).await.unwrap();
+        }
+        tx.commit().await.unwrap();
+    }
+    /// Return owned results without retaining connection aliases.
+    async fn read(store: &mut LocalStore, sql: &str) -> Vec<Vec<Value>> {
+        let mut tx = store.begin_write().await.unwrap();
+        let result = tx.query(sql).await.unwrap();
+        tx.rollback().await.unwrap();
+        result
+    }
+    /// Verify engine capabilities, persisted commits and complete explicit rollback.
+    #[tokio::test]
+    async fn capabilities_commit_reopen_and_explicit_rollback() {
+        let temp = tempfile::tempdir().unwrap();
+        let path = temp.path().join("store.db");
+        let mut store = LocalStore::open(&path).await.unwrap();
+        fixture(&mut store).await;
+        println!(
+            "native version/source: {:?}",
+            read(&mut store, "SELECT sqlite_version(),sqlite_source_id()").await
+        );
+        let mut tx = store.begin_write().await.unwrap();
+        tx.execute("INSERT INTO parent VALUES(1,'owned',x'00ff80')")
+            .await
+            .unwrap();
+        tx.execute("INSERT INTO child VALUES(1)").await.unwrap();
+        assert_eq!(
+            tx.query("SELECT name,bytes,json_extract('{\"n\":7}', '$.n') FROM parent")
+                .await
+                .unwrap(),
+            vec![vec![
+                Value::Text("owned".into()),
+                Value::Blob(vec![0, 255, 128]),
+                Value::Integer(7)
+            ]]
+        );
+        tx.commit().await.unwrap();
+        drop(store);
+        let mut store = LocalStore::open(&path).await.unwrap();
+        assert_eq!(
+            read(&mut store, "SELECT count(*) FROM child").await,
+            vec![vec![Value::Integer(1)]]
+        );
+        let mut tx = store.begin_write().await.unwrap();
+        tx.execute("INSERT INTO parent VALUES(2,'rollback',NULL)")
+            .await
+            .unwrap();
+        tx.execute("INSERT INTO child VALUES(2)").await.unwrap();
+        tx.rollback().await.unwrap();
+        assert_eq!(
+            read(&mut store, "SELECT id FROM parent").await,
+            vec![vec![Value::Integer(1)]]
+        );
+        assert_eq!(
+            read(&mut store, "PRAGMA integrity_check").await,
+            vec![vec![Value::Text("ok".into())]]
+        );
+        assert!(!store.is_poisoned());
+        assert!(
+            LocalStore::open(temp.path().join("absent").join("db"))
+                .await
+                .is_err()
+        );
+    }
+    /// Verify a deferred constraint failure rolls back before connection reuse.
+    #[tokio::test]
+    async fn commit_failure_rolls_back_and_reuses_idle_connection() {
+        let temp = tempfile::tempdir().unwrap();
+        let mut store = LocalStore::open(temp.path().join("db")).await.unwrap();
+        fixture(&mut store).await;
+        let mut tx = store.begin_write().await.unwrap();
+        tx.execute("INSERT INTO child VALUES(99)").await.unwrap();
+        let error = tx.commit().await.unwrap_err();
+        assert!(error.operation.contains("FOREIGN KEY"));
+        assert_eq!(error.cleanup, None);
+        assert!(!store.is_poisoned());
+        assert!(store.connection.as_ref().unwrap().is_autocommit());
+        assert_eq!(
+            read(&mut store, "SELECT count(*) FROM child").await,
+            vec![vec![Value::Integer(0)]]
+        );
+    }
+    /// Verify cleanup failures retain the first error and poison the store.
+    #[tokio::test]
+    async fn failed_cleanup_preserves_original_and_poison_policy() {
+        let temp = tempfile::tempdir().unwrap();
+        let path = temp.path().join("db");
+        let mut store = LocalStore::open(&path).await.unwrap();
+        fixture(&mut store).await;
+        let mut tx = store.begin_write().await.unwrap();
+        tx.execute("INSERT INTO parent VALUES(1,'lost',NULL)")
+            .await
+            .unwrap();
+        let original = tx
+            .execute("INSERT INTO parent VALUES(1,'duplicate',NULL)")
+            .await
+            .unwrap_err();
+        tx.fail_control = Some("ROLLBACK");
+        let failure = tx.commit().await.unwrap_err();
+        assert_eq!(failure.operation, original.operation);
+        assert_eq!(failure.cleanup.as_deref(), Some("injected control failure"));
+        assert!(failure.to_string().contains("cleanup:"));
+        assert!(store.is_poisoned());
+        assert!(store.begin_write().await.is_err());
+        let mut other = LocalStore::open(&path).await.unwrap();
+        assert_eq!(
+            read(&mut other, "SELECT count(*) FROM parent").await,
+            vec![vec![Value::Integer(0)]]
+        );
+        let mut tx = other.begin_write().await.unwrap();
+        tx.fail_control = Some("ROLLBACK");
+        assert!(tx.rollback().await.is_err());
+        assert!(other.is_poisoned());
+    }
+    /// Verify owner destruction releases the writer and prevents store reuse.
+    #[tokio::test]
+    async fn dropped_owner_releases_aliases_and_poisoned_store() {
+        let temp = tempfile::tempdir().unwrap();
+        let path = temp.path().join("db");
+        let mut store = LocalStore::open(&path).await.unwrap();
+        fixture(&mut store).await;
+        let mut tx = store.begin_write().await.unwrap();
+        tx.execute("INSERT INTO parent VALUES(1,'first',x'00ff')")
+            .await
+            .unwrap();
+        tx.execute("INSERT INTO parent VALUES(2,'second',x'80')")
+            .await
+            .unwrap();
+        let owned = tx
+            .query("SELECT name,bytes FROM parent ORDER BY id")
+            .await
+            .unwrap();
+        drop(tx);
+        assert!(store.is_poisoned());
+        assert_eq!(owned.len(), 2);
+        let mut other = LocalStore::open(&path).await.unwrap();
+        assert_eq!(
+            read(&mut other, "SELECT count(*) FROM parent").await,
+            vec![vec![Value::Integer(0)]]
+        );
+        other.begin_write().await.unwrap().commit().await.unwrap();
+    }
+    /// Verify memory fixtures retain settings and transaction behavior without WAL.
+    #[tokio::test]
+    async fn memory_retains_one_connection_and_excludes_wal_only() {
+        let mut store = LocalStore::open_inner(":memory:", false).await.unwrap();
+        fixture(&mut store).await;
+        assert_eq!(
+            read(&mut store, "PRAGMA journal_mode").await,
+            vec![vec![Value::Text("memory".into())]]
+        );
+        let mut tx = store.begin_write().await.unwrap();
+        tx.execute("INSERT INTO parent VALUES(1,'memory',x'ff00')")
+            .await
+            .unwrap();
+        tx.commit().await.unwrap();
+        assert_eq!(
+            read(&mut store, "SELECT bytes FROM parent").await,
+            vec![vec![Value::Blob(vec![255, 0])]]
+        );
+        let mut tx = store.begin_write().await.unwrap();
+        tx.execute("DELETE FROM parent").await.unwrap();
+        tx.rollback().await.unwrap();
+        assert_eq!(
+            read(&mut store, "SELECT count(*) FROM parent").await,
+            vec![vec![Value::Integer(1)]]
+        );
+        assert_eq!(
+            read(&mut store, "SELECT json_extract('{\"n\":7}', '$.n')").await,
+            vec![vec![Value::Integer(7)]]
+        );
+        assert_eq!(
+            read(&mut store, "PRAGMA integrity_check").await,
+            vec![vec![Value::Text("ok".into())]]
+        );
+        let mut tx = store.begin_write().await.unwrap();
+        assert!(
+            tx.execute("INSERT INTO parent VALUES(1,'duplicate',NULL)")
+                .await
+                .is_err()
+        );
+        assert!(tx.commit().await.is_err());
+        let mut tx = store.begin_write().await.unwrap();
+        tx.execute("INSERT INTO child VALUES(99)").await.unwrap();
+        assert!(tx.commit().await.is_err());
+        assert_eq!(
+            read(&mut store, "SELECT count(*) FROM child").await,
+            vec![vec![Value::Integer(0)]]
+        );
+        drop(store.begin_write().await.unwrap());
+        assert!(store.is_poisoned());
+    }
+    /// Verify cancellation rolls back before commit and preserves completed commits.
+    #[tokio::test]
+    async fn cancellation_at_controlled_await_rolls_back_but_after_commit_preserves() {
+        let temp = tempfile::tempdir().unwrap();
+        let path = temp.path().join("db");
+        let mut initial = LocalStore::open(&path).await.unwrap();
+        fixture(&mut initial).await;
+        drop(initial);
+        for (id, commit, cancel) in [
+            (1, false, true),
+            (2, true, true),
+            (5, false, false),
+            (6, true, false),
+        ] {
+            let task_path = path.clone();
+            let (ready_tx, ready_rx) = tokio::sync::oneshot::channel();
+            let (resume_tx, resume_rx) = tokio::sync::oneshot::channel();
+            let task = tokio::spawn(async move {
+                let mut store = LocalStore::open(task_path).await.unwrap();
+                let mut tx = store.begin_write().await.unwrap();
+                tx.execute(&format!(
+                    "INSERT INTO parent VALUES({id},'owner-{id}',NULL)"
+                ))
+                .await
+                .unwrap();
+                if commit {
+                    tx.commit().await.unwrap();
+                    ready_tx.send(()).unwrap();
+                    resume_rx.await.unwrap();
+                } else {
+                    ready_tx.send(()).unwrap();
+                    resume_rx.await.unwrap();
+                    tx.rollback().await.unwrap();
+                }
+            });
+            ready_rx.await.unwrap();
+            if cancel {
+                task.abort();
+                assert!(task.await.unwrap_err().is_cancelled());
+            } else {
+                resume_tx.send(()).unwrap();
+                task.await.unwrap();
+            }
+            let mut other = LocalStore::open(&path).await.unwrap();
+            let mut tx = other.begin_write().await.unwrap();
+            let competitor = id + 2;
+            tx.execute(&format!(
+                "INSERT INTO parent VALUES({competitor},'competitor-{competitor}',NULL)"
+            ))
+            .await
+            .unwrap();
+            tx.commit().await.unwrap();
+        }
+        let mut reopened = LocalStore::open(&path).await.unwrap();
+        assert_eq!(
+            read(&mut reopened, "SELECT id FROM parent ORDER BY id").await,
+            vec![
+                vec![Value::Integer(2)],
+                vec![Value::Integer(3)],
+                vec![Value::Integer(4)],
+                vec![Value::Integer(6)],
+                vec![Value::Integer(7)],
+                vec![Value::Integer(8)]
+            ]
+        );
+    }
+    /// Verify independent writers contend while a WAL reader sees committed state.
+    #[test]
+    fn writers_on_os_threads_and_wal_reader() {
+        let temp = tempfile::tempdir().unwrap();
+        let path = temp.path().join("db");
+        let runtime = tokio::runtime::Runtime::new().unwrap();
+        runtime.block_on(async {
+            let mut store = LocalStore::open(&path).await.unwrap();
+            fixture(&mut store).await;
+            let mut tx = store.begin_write().await.unwrap();
+            tx.execute("INSERT INTO parent VALUES(1,'pending',NULL)")
+                .await
+                .unwrap();
+            let thread_path = path.clone();
+            let (observed_tx, observed_rx) = std::sync::mpsc::channel();
+            let (release_tx, release_rx) = std::sync::mpsc::channel();
+            let writer = std::thread::spawn(move || {
+                tokio::runtime::Runtime::new().unwrap().block_on(async {
+                    let mut other = LocalStore::open(&thread_path).await.unwrap();
+                    other
+                        .connection
+                        .as_ref()
+                        .unwrap()
+                        .busy_timeout(Duration::ZERO)
+                        .unwrap();
+                    assert_eq!(
+                        materialize(
+                            other.connection.as_ref().unwrap(),
+                            "SELECT count(*) FROM parent"
+                        )
+                        .await
+                        .unwrap(),
+                        vec![vec![Value::Integer(0)]]
+                    );
+                    assert!(other.begin_write().await.is_err());
+                    assert!(other.is_poisoned());
+                    observed_tx.send(()).unwrap();
+                    release_rx.recv().unwrap();
+                    let mut other = LocalStore::open(&thread_path).await.unwrap();
+                    assert_eq!(
+                        read(&mut other, "SELECT count(*) FROM parent").await,
+                        vec![vec![Value::Integer(1)]]
+                    );
+                    let mut tx = other.begin_write().await.unwrap();
+                    tx.execute("INSERT INTO parent VALUES(2,'thread',NULL)")
+                        .await
+                        .unwrap();
+                    tx.commit().await.unwrap();
+                });
+            });
+            observed_rx.recv().unwrap();
+            tx.commit().await.unwrap();
+            release_tx.send(()).unwrap();
+            writer.join().unwrap();
+            assert_eq!(
+                read(&mut store, "SELECT count(*) FROM parent").await,
+                vec![vec![Value::Integer(2)]]
+            );
+        });
+    }
+    /// Verify query failures latch and explicit rollback retains the engine cause.
+    #[tokio::test]
+    async fn preparation_and_step_failures_latch_and_explicit_rollback_keeps_cause() {
+        use std::error::Error;
+        let temp = tempfile::tempdir().unwrap();
+        let mut store = LocalStore::open(temp.path().join("db")).await.unwrap();
+        fixture(&mut store).await;
+        for query in [
+            "SELECT no_such_column FROM parent",
+            "SELECT json_extract('malformed', '$.n')",
+        ] {
+            let mut tx = store.begin_write().await.unwrap();
+            tx.execute("INSERT INTO parent VALUES(1,'must roll back',NULL)")
+                .await
+                .unwrap();
+            let error = tx.query(query).await.unwrap_err();
+            assert!(error.source().is_some());
+            assert_eq!(error.to_string(), error.operation);
+            assert!(tx.query("SELECT 1").await.is_err());
+            assert_eq!(tx.rollback().await.unwrap_err().operation, error.operation);
+            assert!(!store.is_poisoned());
+            assert_eq!(
+                read(&mut store, "SELECT count(*) FROM parent").await,
+                vec![vec![Value::Integer(0)]]
+            );
+        }
+        let mut tx = store.begin_write().await.unwrap();
+        tx.fail_control = Some("COMMIT");
+        assert!(tx.commit().await.is_err());
+        assert!(!store.is_poisoned());
+        let tx = store.begin_write().await.unwrap();
+        drop(tx.commit());
+        assert!(store.is_poisoned());
+        let mut store = LocalStore::open(temp.path().join("db")).await.unwrap();
+        let tx = store.begin_write().await.unwrap();
+        drop(tx.rollback());
+        assert!(store.is_poisoned());
+    }
+    /// Verify configuration disagreement and inconsistent termination reject reuse.
+    #[tokio::test]
+    async fn configuration_mismatch_and_inconsistent_state_are_errors() {
+        let temp = tempfile::tempdir().unwrap();
+        assert!(
+            LocalStore::open_inner(temp.path().join("file"), false)
+                .await
+                .is_err()
+        );
+        assert!(LocalStore::open(":memory:").await.is_err());
+        let mut store = LocalStore::open(temp.path().join("db")).await.unwrap();
+        let mut tx = store.begin_write().await.unwrap();
+        assert!(tx.restore().is_err());
+        tx.rollback().await.unwrap();
+        let mut tx = store.begin_write().await.unwrap();
+        tx.execute("CREATE TABLE auto_rollback(id UNIQUE)")
+            .await
+            .unwrap();
+        tx.commit().await.unwrap();
+        let mut tx = store.begin_write().await.unwrap();
+        tx.execute("INSERT INTO auto_rollback VALUES(1)")
+            .await
+            .unwrap();
+        assert!(
+            tx.execute("INSERT OR ROLLBACK INTO auto_rollback VALUES(1)")
+                .await
+                .is_err()
+        );
+        assert!(tx.connection().is_autocommit());
+        assert!(tx.rollback().await.is_err());
+        assert!(!store.is_poisoned());
+        let mut tx = store.begin_write().await.unwrap();
+        tx.execute("INSERT INTO auto_rollback VALUES(1)")
+            .await
+            .unwrap();
+        assert!(
+            tx.execute("INSERT OR ROLLBACK INTO auto_rollback VALUES(1)")
+                .await
+                .is_err()
+        );
+        tx.fail_control = Some("ROLLBACK");
+        // SQLite already rolled back, so no rollback command should be attempted.
+        assert!(tx.commit().await.unwrap_err().cleanup.is_none());
+        assert!(!store.is_poisoned());
+    }
+    /// Verify explicit rollback reports both the first error and cleanup failure.
+    #[tokio::test]
+    async fn explicit_rollback_cleanup_failure_retains_first_error() {
+        let temp = tempfile::tempdir().unwrap();
+        let path = temp.path().join("db");
+        let mut store = LocalStore::open(&path).await.unwrap();
+        let mut tx = store.begin_write().await.unwrap();
+        let error = tx.query("SELECT absent").await.unwrap_err();
+        tx.fail_control = Some("ROLLBACK");
+        let failure = tx.rollback().await.unwrap_err();
+        assert_eq!(failure.operation, error.operation);
+        assert_eq!(failure.cleanup.as_deref(), Some("injected control failure"));
+        assert!(store.is_poisoned());
+        let mut reopened = LocalStore::open(&path).await.unwrap();
+        reopened
+            .begin_write()
+            .await
+            .unwrap()
+            .rollback()
+            .await
+            .unwrap();
+    }
+    #[tokio::test]
+    /// Reject embedded NUL filenames through the public opening API without panicking.
+    async fn embedded_nul_path_returns_error_with_original_cause() {
+        use std::error::Error;
+        let result = LocalStore::open("bad\0name.db").await;
+        let error = result
+            .err()
+            .expect("embedded NUL path must return an error");
+        assert!(error.operation.contains("path"));
+        let cause = error
+            .source()
+            .unwrap()
+            .downcast_ref::<std::ffi::NulError>()
+            .unwrap();
+        assert_eq!(cause.nul_position(), 3);
+        assert!(error.cleanup.is_none());
+    }
+
+    #[tokio::test]
+    /// Preserve the driver's UTF-8 rejection and SQLite temporary-file semantics.
+    async fn path_validation_preserves_empty_invalid_utf8_and_valid_file_behavior() {
+        use std::{error::Error, os::unix::ffi::OsStrExt};
+        let error = LocalStore::open("")
+            .await
+            .err()
+            .expect("temporary database cannot satisfy required WAL mode");
+        assert_eq!(
+            error.operation,
+            "configuration disagreement: PRAGMA journal_mode"
+        );
+        assert!(error.source().is_none());
+        let invalid = Path::new(std::ffi::OsStr::from_bytes(b"invalid-\xff.db"));
+        let error = LocalStore::open(invalid)
+            .await
+            .err()
+            .expect("invalid UTF-8 path must return an error");
+        assert!(matches!(
+            error.source().unwrap().downcast_ref::<libsql::Error>(),
+            Some(libsql::Error::InvalidUTF8Path)
+        ));
+        let temp = tempfile::tempdir().unwrap();
+        let path = temp.path().join("valid.db");
+        let mut store = LocalStore::open(&path).await.unwrap();
+        store.begin_write().await.unwrap().commit().await.unwrap();
+        assert!(path.is_file());
+    }
+}
+
+#[cfg(test)]
+#[path = "../tests/support/storage_composition.rs"]
+mod composition_tests;

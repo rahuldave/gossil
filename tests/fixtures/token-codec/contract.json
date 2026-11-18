@@ -1,0 +1,19 @@
+{
+  "status": "proposed Rust API; reference characterization observed",
+  "scope": "complete fossilize/defossilize primitives only; no artifact grammar",
+  "apis": [
+    {"signature":"fossilize(input: &[u8]) -> Vec<u8>","meaning":"Encode all slice bytes, including embedded NUL; Rust result excludes C terminator. Corresponds to nonnegative C nIn equal to slice length."},
+    {"signature":"fossilize_c_string(input: &[u8]) -> Vec<u8>","meaning":"Encode bytes preceding first NUL, or all supplied bytes when absent (adapter supplies sentinel). Corresponds to defined negative-nIn strlen mode."},
+    {"signature":"defossilize(input: &[u8]) -> DecodedToken","result":{"bytes":"Vec<u8>: complete decoded prefix, including decoded NUL and subsequent emitted bytes","c_string_len":"usize: index of first decoded NUL or bytes.len(); C consumers see bytes[..c_string_len]"},"meaning":"Stop input at first NUL or slice end. Decode n,s,t,r,v,f,0,backslash; unknown escape drops slash; terminal slash survives. No UTF-8 requirements. bytes length is new safe API metadata derived from algorithm; C returns void, so no inherited native decoded length exists."}
+  ],
+  "compatibility": {
+    "encoding":"NUL=>backslash0, space=>backslashs, TAB=>backslasht, LF=>backslashn, CR=>backslashr, FF=>backslashf, VT=>backslashv, backslash=>double backslash; all other bytes unchanged.",
+    "nul":"Decoded NUL does not stop native loop: reading advances through original source bytes. Later C-string users see prefix only. Native backing buffer also retains stale trailing storage after new terminator; that stale storage is not decoded output.",
+    "no_slash":"Native decoder returns without writing when no slash occurs before initial NUL. New result contains unchanged input prefix.",
+    "lengths":"Explicit C lengths 0..buffer.len characterized through Rust slicing; reject out-of-bounds length if exposing an indexed helper. C negative length means strlen, not a negative slice length.",
+    "excluded_undefined_inputs":"No unterminated C strings, invalid pointers, explicit lengths beyond allocated storage, signed-int output overflow or real allocation exhaustion. Rust safe memory/size errors are not claims about C UB or process allocation failure."
+  },
+  "reference":{"cases":538,"suite":"new scratch characterization, not an inherited Fossil suite","build_command":["just","characterize"],"exit_status":0,"compiler_flags":["-std=c99","-Wall","-Wextra","-Werror","-O2"],"fixtures":"fixtures.json","native_output":"Entire n+1-byte post-decode backing buffer plus native strlen; encoding output bytes plus native strlen.","derived_output":"expected_emitted_hex and emitted length are independent source-derived scan results checked against native buffer prefix/full mutation; never attributed to a C return value."},
+  "unresolved":["API naming and allocation-error convention belong to implementation review.","No direct upstream token-escape diagnostic exists; keep this harness labeled as new reference evidence.","No parser, DB, dates, checksum, serialization integration or inherited suite acceptance established."],
+  "recommendations":"Implement all three safe byte entry points together, import exact fixtures and provenance, and compare both complete decoded bytes and C-string prefix. Keep mpqykton open/blocked."
+}

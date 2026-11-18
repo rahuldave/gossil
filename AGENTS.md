@@ -12,18 +12,23 @@ Read and follow @.agents/instructions/prose.md
 ## Project context
 
 - Project name: Gossil.
-- Source directories: `src/` contains the inherited-test runner and bounded delta encoder/decoder; `tests/` contains their controls and portable fixtures.
-- Local guides: `docs/conformance.md`, `docs/delta-encoder.md`, `docs/delta-decoder.md` and `docs/development-plan.md`.
+- Source directories: `src/` contains the inherited-test runner, delta and byte
+  primitives, token codec and local storage boundary. `tests/` contains controls,
+  portable fixtures and the private storage composition test.
+- Local guides: `docs/conformance.md`, `docs/delta-encoder.md`,
+  `docs/delta-decoder.md`, `docs/blob-primitives.md`, `docs/token-codec.md`,
+  `docs/local-storage.md` and `docs/development-plan.md`.
 - Product specification: `~/Projects/AIProjectInfra/docs/gossil/README.md` and its linked pages.
 - Workflow playbook: `.agents/skills/gtw/references/gest_codex_workflow.md`.
 
 The executable `gossil-conformance` is development infrastructure. It runs
 explicit reference or candidate configurations, preserves evidence and rejects
 failed or incomplete suites. It implements no Gossil engine behavior.
+
 The library also implements bounded delta application, exposed by
 `gossil vcs test-delta-apply ORIGIN DELTA TARGET`. The library also creates deltas through `gossil vcs test-delta-create` and checks
-both directions through `gossil vcs test-delta`. The remaining source port,
-Gest integration and libsql core remain planned work.
+both directions through `gossil vcs test-delta`. The local libSQL boundary owns database lifecycle and exclusive transactions.
+Domain storage, the remaining source port and Gest integration remain planned work.
 
 ## Commands and evidence
 
@@ -47,13 +52,12 @@ Worktrees may share them through `.worktreelink`.
 
 ## Ownership and delivery
 
-The initial bootstrap had no HEAD and used `gest/xnuqympy-bootstrap`.
-The encoder topic is `gest/wovmllom-delta-encoder`, based on accepted decoder
-`8b974992f1ea7513aad16ff6144744c01ad06357`. The coordinator
-`delta_implementation` owns implementation writes. Documentation and review
-agents work only within their assigned scopes and preserve other writers' files.
-Follow the documented order of fresh agent checks before committing.
-No empty commit replaces verification.
+The composed core topic is `gest/ruxnuror-core-integration`, based on accepted
+encoder `6ea4c22aea10b49a759f26645166193597b165de`. It imports accepted blob,
+token and database changes without claiming their source commits as ancestors.
+The coordinator owns Gest commands, final staging, gates and the commit.
+Independent workers preserve each other's files and immutable native evidence.
+The database exposes lifecycle only; arbitrary SQL stays private.
 
 `just install` uses package clones in `~/Projects`, including from worktrees.
 `SKILL_PACKAGES_DIR` can override that location. Distinguish package sources,
@@ -65,5 +69,6 @@ Publishing and GitHub issue promotion remain deferred for that reason.
 
 ## Recommendations
 
-Use the decoder guide for bounded application and the runner guide for explicit
-suite configurations. Next, review the encoder, its diagnostics and the unchanged `delta1` evidence.
+Use the module guides for explicit bounds and lifecycle contracts.
+Next, review the composed core and preserve the unchanged `delta1` evidence
+and its qualifications before adding domain storage.

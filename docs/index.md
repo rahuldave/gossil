@@ -4,12 +4,15 @@ title: Gossil development
 
 Gossil is planned as a Rust library and application for versioned agentic
 project state, combining Fossil version control with Gest task management.
+Fossil is a distributed version-control system. Gest tracks issues and tasks.
 Planned records include tasks, shared issues and private agent traces.
 Git remains the source-code authority in the first release.
 
 This checkout contains a bounded Fossil delta encoder and decoder, their
 `gossil vcs` diagnostics and a runner for inherited Fossil Tcl tests.
-Gest integration, libsql storage and the remaining Fossil mechanisms are planned work.
+It also composes byte primitives, token byte escaping and owned local libSQL
+transactions. Gest integration, domain storage and the remaining Fossil mechanisms
+remain planned work.
 
 - [Delta encoder](delta-encoder.md) explains creation, round-trip diagnostics
   and the finite compatibility evidence.
@@ -17,6 +20,12 @@ Gest integration, libsql storage and the remaining Fossil mechanisms are planned
   preserved fixtures and compatibility limits.
 - [Inherited-test runner](conformance.md) explains prerequisites, configuration,
   evidence and acceptance limits.
+- [Byte digests and packed blobs](blob-primitives.md) describes SHA1DC safe
+  hashes, thirteen SHA3 widths, decoding limits and native interoperability.
+- [Token byte escaping](token-codec.md) describes bounded byte and C-string
+  behavior, fallible allocation and the finite native observations.
+- [Local storage](local-storage.md) describes database lifecycle, exclusive
+  transactions and the private fixture that composes storage with byte primitives.
 - [Development plan](development-plan.md) gives the delivery order, ownership
   and local checkpoint workflow.
 
@@ -41,5 +50,6 @@ Automatic publication is disabled for this checkout.
 ## Recommendations
 
 Use the decoder guide for bounded delta application and the runner guide for
-inherited suites. Next, review the encoder and its recorded qualification of `delta1`,
-the unchanged inherited Fossil delta test suite.
+inherited suites. Next, follow the [review workflow](development-plan.md#checkpoints-and-ownership)
+for the library's delta, byte, token and storage modules together.
+Retain the recorded qualification of `delta1`, the unchanged inherited Fossil delta test suite.

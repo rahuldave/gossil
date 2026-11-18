@@ -2,15 +2,21 @@
 
 Gossil is planned as a Rust library and application for versioned agentic
 project state, combining Fossil version control with Gest task management.
+Fossil is a distributed version-control system. Gest tracks issues and tasks.
 Planned records include tasks, shared issues and private agent traces.
 Git remains the source-code authority in the first release.
 
-This checkout includes a Fossil delta encoder and decoder with explicit input
-and output size limits. They are exposed in
-`gossil::delta`, with create, apply and two-way test diagnostics under `gossil vcs`.
-It also includes `gossil-conformance`, a Rust runner for inherited Fossil Tcl
-tests against an explicit reference or candidate program. Gest integration,
-libsql storage and the remaining Fossil mechanisms are planned work.
+This checkout includes a bounded Fossil delta encoder and decoder, safe hashes,
+packed blobs, token byte escaping and a local libSQL transaction boundary.
+The library exposes these modules together. Its `gossil vcs` diagnostics create,
+apply and test deltas. `gossil-conformance` runs inherited Fossil Tcl tests
+against an explicit reference or candidate program.
+
+The [local storage guide](docs/local-storage.md) describes database lifecycle
+and exclusive transactions. No domain schema or public SQL interface is present.
+The [byte primitives](docs/blob-primitives.md) and [token codec](docs/token-codec.md)
+guides describe the byte contracts and their finite reference checks.
+Gest integration and the remaining Fossil mechanisms remain planned work.
 
 ## Start here
 
@@ -33,8 +39,9 @@ this checkout supplies and what a fresh clone still needs.
 
 From the repository root, run the commands that match your task. Replace
 `ORIGIN`, `DELTA` and `TARGET` with file paths before trying the decoder.
-`just setup` fetches Cargo dependencies, while `just install --check` checks
-the saved workflow-tool installation. The remaining
+`just setup` fetches Cargo dependencies. Run `just install` to refresh the saved
+workflow-tool selection from the package sources described below.
+`just install --check` checks that installation. The remaining
 commands run the decoder, runner checks, a configured suite or documentation checks.
 
 ```sh
@@ -108,9 +115,11 @@ storage rather than keeping every native dependency inside the checkout.
 The local Fossil build omits TLS and FUSE. The ignored `.jlog` files are not
 supplied or automatically acquired by a fresh clone.
 
-The Rust profile supplies check recipes. The Gest workflow skills describe
+The Rust profile is the installed selection of Rust tools and check recipes. The Gest workflow skills describe
 task tracking and review, while prose tools check documentation.
-Hook files connect those checks to supported agent and Git events.
+Hook files run checks at supported agent and Git events.
+See [local prerequisites](docs/conformance.md#local-prerequisites) for tool setup
+and the [development workflow](docs/development-plan.md#checkpoints-and-ownership) for review steps.
 
 Their package sources are `jnterfaces`, `jnprofile-rust`,
 `agent_gest_git_skills` and `nossaifd` under `~/Projects`. `SKILL_PACKAGES_DIR` can select
@@ -130,7 +139,7 @@ has been selected. Automatic docs publication is disabled.
 ## Recommendations
 
 Use the bounded decoder for characterized delta application, and retain the
-explicit runner configurations for inherited suites. Next, review the encoder
-and the recorded `delta1` qualification evidence, which this documentation
-revision leaves unchanged.
+explicit runner configurations for inherited suites. Next, follow the [review workflow](docs/development-plan.md#checkpoints-and-ownership)
+for the composed storage and byte primitives. Retain the recorded `delta1`
+qualification evidence unchanged.
 Keep native acquisition and the remaining reference configurations as open work.
