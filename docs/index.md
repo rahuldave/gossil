@@ -9,6 +9,9 @@ files without a version-control checkout.
 
 Start with a [file round trip](getting-started.md), browse the
 [CLI reference](cli.md), or use the [Rust API reference](api/index.qmd).
+Use [working with repositories](working-with-repositories.md) to plan agent
+files alongside Git. It explains checkouts, stored history and the intended
+private and shared workflows.
 The [examples](examples.md) show library calls for deltas, compressed bytes,
 hashes and token escaping.
 
