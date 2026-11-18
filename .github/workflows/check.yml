@@ -33,10 +33,11 @@ jobs:
         uses: actions/cache@v4
         with:
           path: ~/.cargo/bin/jlog
-          key: jlog-v0.1.1-${{ runner.os }}
+          key: jlog-8febdf18387974f38047abbe88b7473bc5f27bb9-${{ runner.os }}-${{ runner.arch }}
       - name: Install jlog
         if: steps.jlog.outputs.cache-hit != 'true'
-        run: cargo install --locked --git https://github.com/rahuldave/jlog --tag v0.1.1
+        # jlog v0.2.0 provides the run command used by the required recipes.
+        run: cargo install --locked --git https://github.com/rahuldave/jlog --rev 8febdf18387974f38047abbe88b7473bc5f27bb9 jlog
       - name: Verify complete vendored provider
         run: |
           python3 scripts/verify-libsql-vendor.py

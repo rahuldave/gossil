@@ -36,8 +36,8 @@ jobs:
       - uses: astral-sh/setup-uv@v6
       - uses: extractions/setup-just@v3
       - name: Build jlog, the shell of the recipes
-        # The commit 17b5b58 is the tag v0.1.1 of jlog.
-        run: cargo install --locked --git https://github.com/rahuldave/jlog --rev 17b5b58338f45e46412d2e021edb02e6e35da281 jlog
+        # jlog v0.2.0 is the tested runtime shared with the required CI recipes.
+        run: cargo install --locked --git https://github.com/rahuldave/jlog --rev 8febdf18387974f38047abbe88b7473bc5f27bb9 jlog
       - name: Set the git user for the push to gh-pages
         run: |
           git config user.name "github-actions[bot]"
