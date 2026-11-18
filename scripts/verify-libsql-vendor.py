@@ -18,7 +18,7 @@ IDENTITY = {
     "crate_vcs": "0653c5788d77ef16a97c56ff3e9fdc11717a72d9",
     "original_source_sha256": "d9791dc493f043172d75c4fe6ef48307db6534c98f2106c843551ca5cbfa2912",
     "native_source_sha256": "fa1ca7a8ac45af89632ab480a3133556a48120fc76bffdd2d5cbb54cfb2e7ab0",
-    "patched_source_sha256": "1c99ebdc5a6fccdecb30c7702f7f6b07fa8258eea7d4216d878863cb3b7deefd",
+    "patched_source_sha256": "84808835ee823cc6ad4fe14267f6a88ae3077fd877b3fd80007fbb7ff00f9416",
 }
 
 
@@ -154,6 +154,7 @@ def validate(root, indexed=False):
         READER_MAP,
         "scripts/check-preserved-libsql-prose.py",
         "tests/test_libsql_vendor.py",
+        "tests/test_libsql_provider_compile.py",
         "evidence/libsql-provider/upstream-style-original.txt",
     }
     if not isinstance(artifacts, dict) or not required.issubset(artifacts):

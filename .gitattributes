@@ -32,3 +32,6 @@
 /evidence/gest-task-values-cause-fix/source.diff -whitespace
 /evidence/gest-task-values/focused-test.log -whitespace
 /evidence/gest-task-values/source-edge-observation.log -whitespace
+# Preserve pinned Atelier font license notices byte-for-byte, including CRLF.
+/docs/_extensions/atelier/fonts/dmsans-OFL.txt -whitespace
+/docs/_extensions/atelier/fonts/ibmplexmono-OFL.txt -whitespace

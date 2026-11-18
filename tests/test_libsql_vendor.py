@@ -193,6 +193,8 @@ class LiteralWhitespacePolicy(DisposableGitTest):
                 "evidence/gest-task-values-cause-fix/source.diff",
                 "evidence/gest-task-values/focused-test.log",
                 "evidence/gest-task-values/source-edge-observation.log",
+                "docs/_extensions/atelier/fonts/dmsans-OFL.txt",
+                "docs/_extensions/atelier/fonts/ibmplexmono-OFL.txt",
             ]
             for name in literals:
                 path = root / name
@@ -212,6 +214,10 @@ class LiteralWhitespacePolicy(DisposableGitTest):
                 "evidence/gest-task-values/source-edge-observation.log.more",
                 "evidence/gest-task-values-cause-fix/neighbor.log",
                 "evidence/gest-task-values/neighbor.log",
+                "docs/_extensions/atelier/fonts/dmsans-OFL.txt.more",
+                "docs/_extensions/atelier/fonts/ibmplexmono-OFL.txt.more",
+                "docs/_extensions/atelier/fonts/ordinary.txt",
+                "docs/_extensions/atelier/fonts-extra/dmsans-OFL.txt",
             ]
             for name in ordinary:
                 path = root / name

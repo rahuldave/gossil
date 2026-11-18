@@ -1,5 +1,7 @@
 # Fossil token bytes
 
+[API: `fossilize`](api/token_codec.qmd#fossilize) gives the exact contract.
+
 The `gossil::token_codec` module encodes and decodes arbitrary bytes for
 Fossil artifact and protocol tokens.
 It implements the token escape functions from Fossil revision
@@ -43,43 +45,7 @@ allocator error. These errors are Rust resource policies. The C comparison
 requires valid pointers, terminated C strings and explicit lengths within
 allocated storage. It excludes signed C integer overflow and allocation exhaustion.
 
-## Executed reference checks
-
-The fixtures contain 538 native observations from a new characterization
-harness, not an inherited Fossil test suite. They cover every byte, escape
-suffixes, source NUL boundaries, explicit lengths and C-string lengths.
-The native decoder returns `void`. Complete emitted bytes are derived from
-the source algorithm and checked against native buffer mutation; their length
-is not a native return value. Tests also compare the observed native `strlen`.
-Stale bytes in the native backing buffer are not decoded output.
-
-`tests/fixtures/token-codec/` preserves exact fixtures, the proposed reference
-contract, source bodies, adapter, license and build provenance. `fixtures.json`
-is the byte evidence used by the Rust tests. The contract's
-`Vec` signatures describe the earlier proposal; the implemented APIs use `Result`.
-All fifteen reference hashes and both pristine source hashes were verified
-before import. The original hash manifest includes scratch programs and logs
-that are not shipped here.
-
-The hash manifest records the original experiment. It is not a
-manifest of this directory. The adapter and source bodies are evidence only;
-Rust does not invoke C. Compiler flags are recorded in `contract.json`.
-`environment.json` identifies the compiler.
-
-To verify a shipped input, compute
-its SHA-256 and compare the matching entry in `hashes.json`. The source spans
-and pristine source hashes are in `provenance.json`. Rebuilding the full
-characterization requires the original scratch programs; this directory alone
-does not supply them.
-
-Run `just test --test token_codec` for the finite reference checks and
-`just test token_codec::tests` for deterministic resource error checks.
-The callable stub first failed an output assertion for `all256-explicit`;
-the implementation then passed all cases. These focused checks do not establish
-artifact parsing, storage integration or complete engine compatibility.
-
 ## Recommendations
 
-Use `fossilize` for bounded byte slices and choose C-string behavior explicitly
-when needed. Next, follow the [review workflow](development-plan.md#checkpoints-and-ownership),
-including `just check`, for the [artifact parser](artifact-parser.md) composition.
+Use the contracts above with explicit resource limits. Next, consult the
+[generated Rust API](api/index.qmd) for the full signatures and errors.

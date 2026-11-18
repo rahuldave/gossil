@@ -84,18 +84,10 @@ and `product-red.stdout` under `evidence/libsql-provider`.
 These three files retain literal upstream or observed
 bytes. The complete source and evidence inventory still checks their hashes.
 
-Five frozen task-value captures also retain literal whitespace.
-They are `green.log`, `guide.diff` and `source.diff` under
-`evidence/gest-task-values-cause-fix`, plus `focused-test.log` and
-`source-edge-observation.log` under `evidence/gest-task-values`.
-These exact paths preserve command output and patch context without changing
-the captured bytes.
-
 The staged whitespace audit enumerated every affected file before choosing
-these paths. Current authored Rust, docs, scripts and configuration retain
-ordinary whitespace checks. A disposable indexed control confirms that each
-literal path passes while ordinary files, suffixed paths and neighboring path
-names fail.
+these paths. Authored Rust, docs, scripts and configuration retain ordinary
+whitespace checks. A disposable indexed control confirms that literal paths
+pass while ordinary files and neighboring path names fail.
 
 ## Preserved upstream reader pages
 

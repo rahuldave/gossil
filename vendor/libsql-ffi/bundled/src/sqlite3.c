@@ -24832,6 +24832,7 @@ SQLITE_API int sqlite3_db_status(
 /************** End of status.c **********************************************/
 /* Pinned SQLite numerical closure for date text only; original length/encoding API remains unchanged. */
 #include <math.h>
+#include <stdint.h>
 #ifndef INFINITY
 #define INFINITY HUGE_VAL
 #endif

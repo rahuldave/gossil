@@ -1,24 +1,12 @@
 # Native local storage
 
-The storage candidate creates a complete empty native repository and stores
+[API: `LocalOwnerRepository`](api/storage.qmd#LocalOwnerRepository) gives the exact contract.
+
+The storage API creates a complete empty native repository and stores
 private file bytes through one owned libsql transaction. Its supported public
 graph is the initial empty check-in, which contains no files.
 General artifact crosslinks, Gest
-projections and filesystem recovery remain outside this candidate.
-
-The composed implementation remains subject to its ordered acceptance gates.
-Focused results in `evidence/native-storage/` describe the source tests. The
-composed run in `evidence/storage-provider-integration/report.json` records
-69 unit tests, 62 integration tests and one explicit pre-existing native interop
-ignore. Coverage records 2,914 executable changed lines with none missing,
-including full line coverage for all seven storage-owned Rust files.
-These results do not qualify the full accepted storage specification.
-
-This checkpoint adopts parser and storage source on the accepted provider base;
-the separate parser branch is not an ancestor of this checkpoint. Parser
-acceptance is recorded independently at commit
-`36cecd622510ce616a2524145ce887667e79ba2a`. The composed storage gates remain
-open. There is no partial-policy product mode.
+projections and filesystem recovery remain planned.
 
 ## Local owner and shared view
 
@@ -29,19 +17,15 @@ on the same owned SQL connection.
 
 Creation installs all six accepted schema files, native markers, compressed
 root content, native crosslinks, owner, checkout and public receipt together.
-The final complete-policy marker follows those writes. Phase-failure tests
-reopen the database and find no remaining user schema after rollback.
+The final complete-policy marker follows those writes. A failed creation
+rolls back the schema writes.
 
 Root construction computes the encoded user length and complete canonical
 length before allocating either output. The size calculation and encoder use
-the same existing token escape rules. An allocation-sensitive regression first
-observed a 512-byte request with a 256-byte ceiling, then passed after correction.
-Exact-fit and one-byte-under tests also check the complete root bound.
-
+the same existing token escape rules.
 Private decoding boundaries check fully stepped native date values and owned
-catalog fields. Tests pair selected-engine values with malformed typed results
-and verify that a caught failure rolls back an earlier write. Metadata error
-tests preserve the underlying operating-system cause.
+catalog fields. A failure rolls back earlier writes in the transaction.
+Metadata errors preserve the underlying operating-system cause.
 
 `LocalOwnerRepository::open` requires an existing readable and writable regular
 file. Its explicit `AdmissionLimits` bound root reconstruction and parsing.
@@ -123,8 +107,7 @@ The ceiling is not a bound on every allocation in the process.
 
 A hash, policy, codec, schema or resource error makes the borrowed owner
 rollback-only. Catching the error cannot permit later SQL or successful commit.
-The tests include a valid write followed by a caught hash failure, then reopen
-the database to verify that the valid write also disappeared.
+Earlier writes in that transaction also roll back.
 
 Full bytes can replace a phantom or a delta target whose old baseline is
 missing. Replacement removes the stale delta row and clears phantom state.
@@ -134,8 +117,7 @@ their native and typed crosslinks are implemented.
 
 ## Schema and remaining work
 
-The six SQL files under `src/storage/schema/` match the accepted evidence
-copies. The required object inventory and complete stored definitions are
+The complete schema comes from six SQL files under `src/storage/schema/`. The required object inventory and complete stored definitions are
 checked before mutation. Known optional schema families return an unsupported
 configuration error. Unregistered persistent triggers receive a separate error.
 
@@ -144,17 +126,7 @@ remain unimplemented. General public receipts, publication, native and typed
 rebuild, retained-dependency administration and filesystem journals also remain
 unimplemented. The public APIs do not offer those operations.
 
-The test inventory records each executed boundary separately. A source mapping
-or an installed schema is not evidence that its mapped behavior passed.
-The original hash-latch failure, packing-bound failure and setup failures remain
-in the evidence directory beside later results.
-
 ## Recommendations
 
-Use explicit local admission and finite content limits for this bounded API.
-Next, finish the composed acceptance gates, then implement the first private
-file child with real parent and file links under the accepted companion
-`private-file-amendment.md` specification. That amendment, its catalog changes
-and journal operations remain future implementation work.
-File-containing check-ins, traversal and persistent selection commands, issue adapters, UI, sync, publication,
-general graphs, migration, rebuild and filesystem recovery remain unimplemented.
+Use explicit local admission and finite content limits. Next, consult the
+[generated API](api/index.qmd) for repository creation, admission and content methods.
