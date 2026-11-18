@@ -1,0 +1,55 @@
+{
+  "status": "candidate implemented; parent composition and acceptance pending",
+  "base": "ede1f9c56002f122df5c1627b41b8a1d4577aa0a",
+  "tag_classification": "Parent-owned existing Gest parser leaf; no task/tag mutation by worker",
+  "dependency_impact": "New artifact module and read-only records; DateProvider borrows transaction asynchronously; direct AST dependers recorded; no existing public API removed",
+  "test_state": {
+    "grammar_focused": {
+      "passed": 20,
+      "failed": 0,
+      "filtered": 1,
+      "receipt": "evidence/parser/grammar-final-freeze.txt",
+      "filtered_reason": "known selected libsql numerical mismatch; preserved actual parsed D red in exact-parser-provider-red.txt"
+    },
+    "matrix_helpers": {
+      "passed": 2,
+      "receipt": "evidence/parser/unit-handback.txt"
+    },
+    "provider_baselines": "actual selected libsql passed eight-type baseline and timestamp/provider controls; not full numerical parity",
+    "provider_exact": "known parsed D .9999 binary64 mismatch 4142c54b40006117 versus pinned4142c54b400060fe; parent reviewed patch composition required",
+    "mutations": "four compiled behavioral assertion kills, restored production afterward",
+    "lint": "pass evidence/parser/lint-freeze.txt",
+    "docstrings": "pass evidence/parser/docstring-freeze.txt",
+    "prose": "checker0hard; independent declaude revision/record pending parent",
+    "diff_check": "pass"
+  },
+  "surfaces": {
+    "artifact_types": 8,
+    "allowed_matrix_edges": 208,
+    "required_deletions": 29,
+    "optional_absences": 25,
+    "repeat_branches": 21,
+    "repeat_variants_each": 6,
+    "preserved_raw_fixtures": 93,
+    "source_edge_plan_family_map": 109,
+    "date_corpus_provider_rows": 519,
+    "date_corpus_D_E_representability": "raw token admission asserted separately; spaces LF NUL cannot reach provider unchanged as one token; original provider red prevents full run here"
+  },
+  "limits": [
+    "No full conformance claim",
+    "No new native probes/processes",
+    "Windows/Cygwin execution not performed",
+    "No signature authenticity or repository closure/crosslink in parser",
+    "Parent owns ordered gates, independent review, staging, commits and Gest completion"
+  ],
+  "delivery": "Local-only; worker intentionally does not commit because parent owns checkpoint",
+  "terminal_zero_correction": {
+    "supersedes_prior_parser_candidate_only": "/tmp/gossil-parser-final-candidate-20261118-0713",
+    "response": "evidence/parser/terminal-nul-correction/review-response.json",
+    "focused_passed": 22,
+    "filtered_known_provider": 1,
+    "new_cursor_unit_passed": 1,
+    "candidate_changed_production_lines_covered": true,
+    "full_acceptance": "pending parent composition and ordered gates"
+  }
+}

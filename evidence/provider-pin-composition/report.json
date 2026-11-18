@@ -1,0 +1,62 @@
+{
+  "worktree": "/Users/rahul/Projects/gossil.worktrees/gest-upxnmvpv-storage-integration",
+  "vendor_count": 272,
+  "artifacts_count": 159,
+  "mismatches": [
+    {
+      "group": "artifacts",
+      "path": ".gitattributes",
+      "expected": {
+        "length": 1011,
+        "sha256": "db93c153256afa366b5ef6e24218c3fbbd09edeae50baf088d9ebce2beb77d97"
+      },
+      "actual": {
+        "length": 1560,
+        "sha256": "0d405541e26152b4d808beca5375afa62a58a24819931b44fb474bba87e7d661"
+      },
+      "matches": false
+    }
+  ],
+  "manifest_old": {
+    "length": 71307,
+    "sha256": "9dbcfc2b647f32b55389f10342fde5041750718a87aa52a2aa75b6b61337d3a5"
+  },
+  "manifest_new": {
+    "length": 71307,
+    "sha256": "b66b6ee54eb15a28d0c7755ad5ef524b463ff4738dfde7bd925bab6a2ea9a2dd"
+  },
+  "candidate_manifest": "/tmp/gossil-provider-pin-composition-20261118/gest-upxnmvpv-storage-integration/libsql-ffi.manifest.json",
+  "guard": {
+    "returncode": 0,
+    "stdout": "Verified 272 libsql archive files and frozen provenance (worktree).\n"
+  },
+  "provenance": {
+    "baseline_commit": "fea8dcd",
+    "baseline_attributes": {
+      "length": 1011,
+      "sha256": "db93c153256afa366b5ef6e24218c3fbbd09edeae50baf088d9ebce2beb77d97"
+    },
+    "preserved_prefix_exact": true,
+    "addition": "\n# Preserve these signed-header fixture bytes and treat CR at EOL as intentional.\n# Keep the default blank-at-EOL, blank-at-EOF and space-before-tab checks.\n/tests/fixtures/artifact/signed-PGP-CRLF-header.artifact -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol\n/tests/fixtures/artifact/signed-SSH-CRLF-header.artifact -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol\n\n# Preserve hash-verified upstream native schema comments and inherited whitespace.\n/src/storage/schema/native-repository.sql -whitespace\n",
+    "parser_source": "evidence/parser-provider-integration/pre-gate-cleanup.json",
+    "parser_fixture_identity": {
+      "tests/fixtures/artifact/signed-PGP-CRLF-header.artifact": {
+        "length": 169,
+        "sha256": "64cea8db14b775bdda4abf95b3b99cf8723f241a5583fcb552782992c71d9e76"
+      },
+      "tests/fixtures/artifact/signed-SSH-CRLF-header.artifact": {
+        "length": 169,
+        "sha256": "2f465dd10276d8406cf439ed4b9b5551adb58dcfafe0fb4c5d36797bc7a1451f"
+      }
+    },
+    "storage_source": {
+      "source": "/Users/rahul/Projects/AIProjectInfra/docs/gossil/evidence/storage-contract-20261118/reviewed/native-repository.sql",
+      "file": "/Users/rahul/Projects/gossil.worktrees/gest-upxnmvpv-storage-integration/src/storage/schema/native-repository.sql",
+      "identity": {
+        "length": 21349,
+        "sha256": "0dfff91eed27379a093f7ca272ecef8590fe365aa00068b073e8d039e4ebdc90"
+      },
+      "byte_identical": true
+    }
+  }
+}

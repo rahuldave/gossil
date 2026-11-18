@@ -1,0 +1,16 @@
+{
+  "status": "executed owned preflight; independent boundary review and composed acceptance pending",
+  "functional": "48 storage tests pass; selected-engine full functional/integration run passes",
+  "coverage": "seven owned Rust files100%; whole gate exit1 only copied parser58.0%,295 lines; full parser test bundle absent, no parser candidate coverage claim",
+  "first_coverage_failure": "coverage-collision.log: test binary not found; overlap with another instrumented storage run occurred, causal attribution unproven; sequential rerun completed",
+  "private_boundaries": [
+    "metadata io result preserves original source",
+    "fully stepped date column values share decoder",
+    "catalog field encoder shares owned typed validation"
+  ],
+  "latch": "actual prior INSERT; caught malformed decoded result through existing record; denied commit; rollback verified, date case reopens disk database",
+  "public_api": "unchanged",
+  "old_snapshots": "both previous immutable candidates preserved",
+  "prose": "checker0 hard; independent parent prose pending",
+  "unsupported": "general graph, dynamic schema transitions and other prior qualification limitations unchanged"
+}

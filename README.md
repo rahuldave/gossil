@@ -7,21 +7,31 @@ Planned records include tasks, shared issues and private agent traces.
 Git remains the source-code authority in the first release.
 
 This checkout includes a bounded Fossil delta encoder and decoder, safe hashes,
-packed blobs, legacy artifact checksums, token byte escaping and a local libSQL
-transaction boundary.
+packed blobs, legacy artifact checksums and token byte escaping.
+It also supplies a local libSQL transaction boundary, bounded structural
+artifact parsing and native local storage.
 The library exposes these modules together. Its `gossil vcs` diagnostics create,
 apply and test deltas. `gossil-conformance` runs inherited Fossil Tcl tests
 against an explicit reference or candidate program.
 
 The [local storage guide](docs/local-storage.md) describes database lifecycle
-and exclusive transactions. No domain schema or public SQL interface is present.
+and exclusive transactions. The [native storage guide](docs/native-storage.md)
+covers complete empty-root initialization and bounded private content operations.
+An empty root is the initial check-in with no files.
+There is no public SQL interface.
+
 The [native provider guide](docs/libsql-provider.md) describes the vendored date
 corrections, source checks and bounded private regression evidence.
 The [byte primitives](docs/blob-primitives.md) and [token codec](docs/token-codec.md)
 guides describe the byte contracts and their finite reference checks.
 The [artifact checksum guide](docs/artifact-checksum.md) covers bounded MD5
-bytes and owned incremental computations for future artifact validation.
-Gest integration and the remaining Fossil mechanisms remain planned work.
+bytes and owned incremental computations. The [artifact parser](docs/artifact-parser.md)
+uses them to validate Z cards and parses all eight structural artifact types
+with explicit limits and a selected date provider.
+
+File-containing check-ins, traversal and persistent selection commands, Gest
+integration, UI, sync, publication, general crosslinks, migration, rebuild and
+filesystem recovery remain planned work.
 
 ## Start here
 
@@ -149,6 +159,6 @@ has been selected. Automatic docs publication is disabled.
 
 Use the bounded decoder for characterized delta application, and retain the
 explicit runner configurations for inherited suites. Next, follow the [review workflow](docs/development-plan.md#checkpoints-and-ownership)
-for the composed storage and byte primitives. Retain the recorded `delta1`
+for the composed parser, storage and byte primitives. Retain the recorded `delta1`
 qualification evidence unchanged.
 Keep native acquisition and the remaining reference configurations as open work.

@@ -1,0 +1,2 @@
+just --justfile '/Users/rahul/Projects/gossil.worktrees/gest-tmzxtktq-artifact-parser/Justfile' rust fmt "$@"
+cargo fmt --all "$@"

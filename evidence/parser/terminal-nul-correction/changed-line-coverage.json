@@ -1,0 +1,21 @@
+{
+  "kind": "correction-only candidate changed-line coverage against previous frozen142-file candidate; not full gate",
+  "lcov_source": "evidence/parser/terminal-nul-correction/candidate.lcov",
+  "production_changed_executable_lines": [
+    {
+      "line": 443,
+      "count": 4710
+    },
+    {
+      "line": 444,
+      "count": 10
+    },
+    {
+      "line": 445,
+      "count": 4700
+    }
+  ],
+  "uncovered_changed_production_lines": [],
+  "line_scope_note": "New cfg(test) cursor unit module has separate executed unit receipt; this calculation covers added production sentinel guard only",
+  "known_filtered_test": "actual_provider_d_e_preserve_all_pinned_binary64_results; full provider and changed-file coverage remain parent-composition work"
+}

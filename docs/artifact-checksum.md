@@ -1,9 +1,9 @@
 # Artifact byte checksums
 
 `artifact_checksum::md5` computes the sixteen MD5 digest bytes for a byte slice.
-This legacy checksum supports a future Fossil artifact parser's Z-card check.
+The [artifact parser](artifact-parser.md) uses this legacy checksum for its Z-card check. The Z card is the artifact checksum record.
 It does not select repository content identities. SHA-1 and SHA3 remain in
-`content_hash`; the parser and its validation rules remain planned work.
+`content_hash`. Structural parsing has its own explicit limits and validation rules.
 
 `Md5Checksum::new` starts an owned computation. `update` appends the complete
 slice, including zero bytes and bytes outside UTF-8. Empty updates do nothing.
@@ -56,7 +56,7 @@ identity or security policy and forwards no computation to C.
 
 ## Executed checks and limits
 
-The three new test functions in `tests/artifact_checksum.rs` first compiled
+The three test functions in `tests/artifact_checksum.rs` first compiled
 against a zero-result stub and failed digest assertions. They then passed with
 the RustCrypto implementation, as did both module doctests. The seven standard vectors come from
 [RFC 1321, Appendix A.5](https://www.rfc-editor.org/rfc/rfc1321).
@@ -88,5 +88,5 @@ It does not establish coverage of those callers' behavior.
 ## Recommendations
 
 Use this module for bounded byte checksums required by legacy artifacts.
-Next, review its fixtures and API before integrating it into a Z-card parser.
+Next, use the parser guide to select limits for structural artifact validation.
 Keep repository content identity policy in its existing module.

@@ -1,0 +1,127 @@
+just --justfile '/Users/rahul/Projects/gossil.worktrees/gest-upxnmvpv-native-storage/Justfile' rust test "$@"
+uv run --no-project --quiet --python '>=3.11' python '/Users/rahul/Projects/gossil.worktrees/gest-upxnmvpv-native-storage/.agents/just/rust/steps.py' run test "$@"
+WARN `--no-project` was provided, but no project was found
+cargo llvm-cov test --all-features --locked --include-build-script --workspace --lcov --output-path target/llvm-cov/test.part0.lcov --lib storage::tests::caught_hash_mismatch_rolls_back_prior_mutation_after_reopen
+info: cargo-llvm-cov currently setting cfg(coverage); you can opt-out it by passing --no-cfg-coverage
+   Compiling proc-macro2 v1.0.107
+   Compiling quote v1.0.47
+   Compiling unicode-ident v1.0.27
+   Compiling cfg-if v1.0.5
+   Compiling libc v0.2.191
+   Compiling bitflags v2.13.2
+   Compiling glob v0.3.4
+   Compiling prettyplease v0.2.37
+   Compiling rustix v0.38.44
+   Compiling clang-sys v1.9.1
+   Compiling version_check v0.9.5
+   Compiling memchr v2.8.3
+   Compiling minimal-lexical v0.2.1
+   Compiling regex-syntax v0.8.12
+   Compiling typenum v1.20.1
+   Compiling nom v7.1.3
+   Compiling generic-array v0.14.7
+   Compiling libloading v0.8.9
+   Compiling find-msvc-tools v0.1.15
+   Compiling pin-project-lite v0.2.17
+   Compiling either v1.19.0
+   Compiling bindgen v0.66.1
+   Compiling home v0.5.12
+   Compiling shlex v2.0.1
+   Compiling serde_core v1.0.229
+   Compiling cc v1.11.2
+   Compiling shlex v1.3.0
+   Compiling errno v0.3.15
+   Compiling lazycell v1.3.0
+   Compiling syn v2.0.119
+   Compiling syn v3.0.10
+   Compiling rustc-hash v1.1.0
+   Compiling log v0.4.35
+   Compiling regex-automata v0.4.19
+   Compiling cexpr v0.6.0
+   Compiling peeking_take_while v0.1.2
+   Compiling which v4.4.2
+   Compiling lazy_static v1.5.1
+   Compiling cmake v0.1.58
+   Compiling serde v1.0.229
+   Compiling once_cell v1.21.4
+   Compiling futures-core v0.3.34
+   Compiling regex v1.13.2
+   Compiling futures-sink v0.3.34
+   Compiling futures-channel v0.3.34
+   Compiling futures-io v0.3.34
+   Compiling futures-task v0.3.34
+   Compiling parking_lot_core v0.9.12
+   Compiling rustversion v1.0.23
+   Compiling slab v0.4.12
+   Compiling crypto-common v0.1.7
+   Compiling block-buffer v0.10.4
+   Compiling tracing-core v0.1.36
+   Compiling smallvec v1.16.5
+   Compiling crc32fast v1.5.5
+   Compiling thiserror v1.0.69
+   Compiling getrandom v0.4.3
+   Compiling byteorder v1.5.0
+   Compiling rustix v1.1.6
+   Compiling zmij v1.0.23
+   Compiling scopeguard v1.2.0
+   Compiling lock_api v0.4.14
+   Compiling digest v0.10.7
+   Compiling cpufeatures v0.2.17
+   Compiling serde_json v1.0.154
+   Compiling adler2 v2.0.1
+   Compiling sha1collisiondetection v0.3.4
+   Compiling simd-adler32 v0.3.10
+   Compiling generic-array v1.4.5
+   Compiling miniz_oxide v0.9.1
+   Compiling serde_derive v1.0.229
+   Compiling futures-macro v0.3.34
+   Compiling tokio-macros v2.7.2
+   Compiling async-trait v0.1.92
+   Compiling parking_lot v0.12.5
+   Compiling futures-util v0.3.34
+   Compiling tracing-attributes v0.1.31
+   Compiling zerocopy-derive v0.7.35
+   Compiling thiserror-impl v1.0.69
+   Compiling zerocopy v0.7.35
+   Compiling fastrand v2.5.0
+   Compiling itoa v1.0.19
+   Compiling tracing v0.1.44
+   Compiling tempfile v3.27.0
+   Compiling flate2 v1.1.11
+   Compiling tokio v1.54.1
+   Compiling sha2 v0.10.9
+   Compiling md-5 v0.10.6
+   Compiling keccak v0.1.6
+   Compiling futures-executor v0.3.34
+   Compiling futures v0.3.34
+   Compiling bytes v1.12.2
+   Compiling libsql-ffi v0.9.30
+   Compiling libsql-sys v0.9.30
+   Compiling libsql v0.9.30
+   Compiling gossil v0.1.0 (/Users/rahul/Projects/gossil.worktrees/gest-upxnmvpv-native-storage)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 38.60s
+     Running unittests src/lib.rs (target/llvm-cov-target/debug/deps/gossil-fe5ec46fdcdce3bd)
+
+running 1 test
+test storage::tests::caught_hash_mismatch_rolls_back_prior_mutation_after_reopen ... FAILED
+
+failures:
+
+---- storage::tests::caught_hash_mismatch_rolls_back_prior_mutation_after_reopen stdout ----
+
+thread 'storage::tests::caught_hash_mismatch_rolls_back_prior_mutation_after_reopen' (312813719) panicked at src/storage.rs:555:9:
+assertion `left == right` failed
+  left: [[Integer(2)]]
+ right: [[Integer(0)]]
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+
+failures:
+    storage::tests::caught_hash_mismatch_rolls_back_prior_mutation_after_reopen
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 27 filtered out; finished in 0.01s
+
+error: test failed, to rerun pass `--lib`
+error: process didn't exit successfully: `/Users/rahul/.rustup/toolchains/stable-aarch64-apple-darwin/bin/cargo test --manifest-path /Users/rahul/Projects/gossil.worktrees/gest-upxnmvpv-native-storage/Cargo.toml --target-dir /Users/rahul/Projects/gossil.worktrees/gest-upxnmvpv-native-storage/target/llvm-cov-target --all-features --locked --workspace --lib 'storage::tests::caught_hash_mismatch_rolls_back_prior_mutation_after_reopen'` (exit status: 101)
+error: Recipe `test` failed on line 6 with exit code 101
+error: Recipe `test` failed on line 65 with exit code 101

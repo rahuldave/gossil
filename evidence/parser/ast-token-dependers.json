@@ -1,0 +1,1 @@
+[{"text":"defossilize(&input)","range":{"byteOffset":{"start":1365,"end":1384},"start":{"line":39,"column":25},"end":{"line":39,"column":44}},"file":"tests/token_codec.rs","lines":"            let actual = defossilize(&input).unwrap();","charCount":{"leading":25,"trailing":10},"language":"Rust"}]

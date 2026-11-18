@@ -1,0 +1,53 @@
+--- prior/src/artifact.rs
++++ corrected/src/artifact.rs
+@@ -438,6 +438,11 @@
+             _ => return None,
+         }
+         self.pos += 2;
++        // Native next_card consumes the delimiter before returning its zero sentinel.
++        // The caller exits without incrementing its card count or validating this marker.
++        if c == 0 {
++            return None;
++        }
+         self.line += 1;
+         Some(c)
+     }
+@@ -1077,3 +1082,38 @@
+         }
+     }
+ }
++
++#[cfg(test)]
++mod terminal_zero_tests {
++    use super::*;
++    /// Source next_card consumes space/LF before returning zero, without counting a card.
++    #[test]
++    fn zero_sentinel_preserves_native_cursor_and_delimiter_state() {
++        for (bytes, pos, eol) in [
++            (b"\0\n".as_slice(), 2, true),
++            (b"\0 ", 2, false),
++            (b"\0\t", 0, true),
++            (b"\0\nmore\n", 2, true),
++        ] {
++            let mut cursor = Cursor {
++                bytes,
++                pos: 0,
++                eol: true,
++                line: 3,
++            };
++            assert_eq!(cursor.card(), None);
++            assert_eq!(cursor.pos, pos);
++            assert_eq!(cursor.eol, eol);
++            assert_eq!(cursor.line, 3);
++        }
++        let mut cursor = Cursor {
++            bytes: b"\x01\n",
++            pos: 0,
++            eol: true,
++            line: 3,
++        };
++        assert_eq!(cursor.card(), Some(1));
++        assert_eq!(cursor.pos, 2);
++        assert_eq!(cursor.line, 4);
++    }
++}

@@ -1,0 +1,17 @@
+just --justfile '/Users/rahul/Projects/gossil.worktrees/gest-tmzxtktq-artifact-parser/Justfile' rust docstring-check
+uv run --no-project --quiet --python '>=3.11' python '/Users/rahul/Projects/gossil.worktrees/gest-tmzxtktq-artifact-parser/.agents/just/rust/steps.py' docs
+WARN `--no-project` was provided, but no project was found
+docstring-check: 11 items have no doc comment. Write a doc comment for each one
+src/artifact.rs:7:5: missing documentation for a variant (missing_docs)
+src/artifact.rs:8:5: missing documentation for a variant (missing_docs)
+src/artifact.rs:9:5: missing documentation for a variant (missing_docs)
+src/artifact.rs:10:5: missing documentation for a variant (missing_docs)
+src/artifact.rs:11:5: missing documentation for a variant (missing_docs)
+src/artifact.rs:12:5: missing documentation for a variant (missing_docs)
+src/artifact.rs:13:5: missing documentation for a variant (missing_docs)
+src/artifact.rs:14:5: missing documentation for a variant (missing_docs)
+src/artifact.rs:44:9: missing documentation for a struct field (missing_docs)
+src/artifact.rs:45:9: missing documentation for a struct field (missing_docs)
+src/artifact.rs:46:9: missing documentation for a struct field (missing_docs)
+error: Recipe `docstring-check` failed on line 6 with exit code 1
+error: Recipe `docstring-check` failed on line 33 with exit code 1

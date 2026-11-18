@@ -1,0 +1,2 @@
+just --justfile '/Users/rahul/Projects/gossil.worktrees/gest-upxnmvpv-native-storage/Justfile' rust fmt "$@"
+cargo fmt --all "$@"

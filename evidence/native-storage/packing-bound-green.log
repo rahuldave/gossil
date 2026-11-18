@@ -1,0 +1,18 @@
+just --justfile '/Users/rahul/Projects/gossil.worktrees/gest-upxnmvpv-native-storage/Justfile' rust test "$@"
+uv run --no-project --quiet --python '>=3.11' python '/Users/rahul/Projects/gossil.worktrees/gest-upxnmvpv-native-storage/.agents/just/rust/steps.py' run test "$@"
+WARN `--no-project` was provided, but no project was found
+cargo llvm-cov test --all-features --locked --include-build-script --workspace --lcov --output-path target/llvm-cov/test.part0.lcov --lib compression::tests::bounded_packing_header_and_stream_boundaries
+info: cargo-llvm-cov currently setting cfg(coverage); you can opt-out it by passing --no-cfg-coverage
+   Compiling gossil v0.1.0 (/Users/rahul/Projects/gossil.worktrees/gest-upxnmvpv-native-storage)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 4.13s
+     Running unittests src/lib.rs (target/llvm-cov-target/debug/deps/gossil-fe5ec46fdcdce3bd)
+
+running 1 test
+test compression::tests::bounded_packing_header_and_stream_boundaries ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 37 filtered out; finished in 0.01s
+
+
+    Finished report saved to target/llvm-cov/test.part0.lcov
+jlog step test
+{"kind":"step","run":"1c80411e-f15e-4e80-9c70-4f6359a052a0","harness":"codex","session":"01a1ed5f-33fe-7cc3-b8a9-67574476100e","child":null,"time":"2026-11-18T06:55:57Z","argv":["just","test","--lib","compression::tests::bounded_packing_header_and_stream_boundaries"],"step":"test"}

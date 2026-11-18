@@ -1,0 +1,101 @@
+--- prior/tests/artifact_parser.rs
++++ corrected/tests/artifact_parser.rs
+@@ -1051,10 +1051,13 @@
+     }
+     let mut trailing = artifact(b"C c\nD date\n");
+     trailing.extend_from_slice(b"\0\n");
++    // Corrected source-derived expectation: the zero sentinel consumes its LF,
++    // exits the card loop and leaves an exhausted cursor. Historical rejection
++    // remains preserved in the original frozen candidate and receipts.
+     assert!(
+         parse_artifact(&trailing, limits(), &FixtureDates)
+             .await
+-            .is_err()
++            .is_ok()
+     );
+     let crlf = artifact(b"C c\r\nD date\r\n");
+     assert!(parse_artifact(&crlf, limits(), &FixtureDates).await.is_ok());
+@@ -1196,3 +1199,83 @@
+     .unwrap_err();
+     assert_eq!(error.to_string(), "date provider: selected provider failed");
+ }
++
++#[tokio::test]
++async fn source_derived_terminal_zero_card_stops_after_consuming_its_delimiter() {
++    // Source-derived predictions from manifest.c:403-416,552,1077;
++    // no new native execution or observed-native acceptance is claimed.
++    let original = include_bytes!("fixtures/artifact/manifest-valid.artifact");
++    for (tail, accepted) in [
++        (b"\0\n".as_slice(), true),
++        (b"\0 \n", false),
++        (b"\0 ", false),
++        (b"\0\nextra\n", false),
++        (b"\0\n\0\n", false),
++        (b"\0\t\n", false),
++        (b"\0\r\n", false),
++        (b"\x01\n", false),
++    ] {
++        let mut bytes = original.to_vec();
++        bytes.extend_from_slice(tail);
++        let parsed = parse_artifact(&bytes, limits(), &FixtureDates).await;
++        assert_eq!(parsed.is_ok(), accepted, "tail {tail:?}: {parsed:?}");
++        if let Ok(parsed) = parsed {
++            assert_eq!(parsed.artifact_type(), ArtifactType::Manifest);
++            assert_eq!(parsed.raw(), bytes);
++        }
++    }
++}
++
++#[tokio::test]
++async fn terminal_zero_does_not_turn_unread_suffix_or_incomplete_type_into_success() {
++    // Final Z verification only runs at the exact n-35 offset. This is a
++    // source-derived consequence, not a native experiment or authenticity claim.
++    let mut bytes = include_bytes!("fixtures/artifact/checksum-corrupt.artifact").to_vec();
++    bytes.extend_from_slice(b"\0\n");
++    assert!(
++        parse_artifact(&bytes, limits(), &FixtureDates)
++            .await
++            .is_ok()
++    );
++    let missing_date = artifact(b"C c\n");
++    let mut bytes = missing_date;
++    bytes.extend_from_slice(b"\0\n");
++    assert!(matches!(
++        parse_artifact(&bytes, limits(), &FixtureDates).await,
++        Err(ArtifactError::Syntax {
++            message: "artifact card matrix violation",
++            ..
++        })
++    ));
++    let original = include_bytes!("fixtures/artifact/manifest-valid.artifact");
++    for tail in [b"\0 \n".as_slice(), b"\0\n\n"] {
++        let mut bytes = original.to_vec();
++        bytes.extend_from_slice(tail);
++        assert!(
++            matches!(
++                parse_artifact(&bytes, limits(), &FixtureDates).await,
++                Err(ArtifactError::Syntax {
++                    message: "extra characters at end of card",
++                    ..
++                })
++            ),
++            "tail {tail:?}"
++        );
++    }
++    let mut unread = original.to_vec();
++    unread.extend_from_slice(b"\0\n");
++    // A checksum-valid final Z cannot make the parser resume after the sentinel.
++    assert!(matches!(
++        parse_artifact(&artifact(&unread), limits(), &FixtureDates).await,
++        Err(ArtifactError::Syntax {
++            message: "extra characters at end of card",
++            ..
++        })
++    ));
++    unread.extend_from_slice(b"Z aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\n");
++    // When a final checksum is recognizable but wrong, it fails before lexing.
++    assert!(matches!(
++        parse_artifact(&unread, limits(), &FixtureDates).await,
++        Err(ArtifactError::Checksum)
++    ));
++}

@@ -1,0 +1,20 @@
+just --justfile '/Users/rahul/Projects/gossil.worktrees/gest-tmzxtktq-artifact-parser/Justfile' rust test "$@"
+uv run --no-project --quiet --python '>=3.11' python '/Users/rahul/Projects/gossil.worktrees/gest-tmzxtktq-artifact-parser/.agents/just/rust/steps.py' run test "$@"
+WARN `--no-project` was provided, but no project was found
+cargo llvm-cov test --all-features --locked --include-build-script --workspace --lcov --output-path target/llvm-cov/test.part0.lcov --test artifact_parser
+info: cargo-llvm-cov currently setting cfg(coverage); you can opt-out it by passing --no-cfg-coverage
+   Compiling gossil v0.1.0 (/Users/rahul/Projects/gossil.worktrees/gest-tmzxtktq-artifact-parser)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 5.40s
+     Running tests/artifact_parser.rs (target/llvm-cov-target/debug/deps/artifact_parser-c207989fdb07b4d1)
+
+running 3 tests
+test corrupt_checksum_precedes_decoding ... ok
+test eight_preserved_valid_raw_baselines ... ok
+test preserved_fixture_acceptance_receipts ... ok
+
+test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.03s
+
+
+    Finished report saved to target/llvm-cov/test.part0.lcov
+jlog step test
+{"kind":"step","run":"9d574d84-51ce-40eb-80ed-07bffae258d1","harness":"codex","session":"01a1ed67-9772-7d92-a622-2f863b97d210","child":null,"time":"2026-11-18T06:56:37Z","argv":["just","test","--test","artifact_parser"],"step":"test"}

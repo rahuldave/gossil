@@ -1,0 +1,18 @@
+WARN `--no-project` was provided, but no project was found
+docs/native-storage.md: checked by check.py of the skill, 0 hard, 16 soft
+  soft 19: an -ing form: remaining
+  soft 24: an -ing form: existing
+  soft 24: an -ing form: parsing
+  soft 29: an -ing form: Operating
+  soft 29: an -ing form: binding
+  soft 64: maybe passive: are accepted
+  soft 69: an -ing form: existing
+  soft 69: an -ing form: ceiling
+  soft 69: an -ing form: working
+  soft 69: an -ing form: ceiling
+  soft 74: an -ing form: Catching
+  soft 79: maybe passive: are implemented
+  soft 86: maybe passive: are checked
+  soft 96: an -ing form: mapping
+  soft 96: an -ing form: packing
+  soft 103: an -ing form: remaining

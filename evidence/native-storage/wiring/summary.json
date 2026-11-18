@@ -1,0 +1,13 @@
+{
+  "review": "/tmp/gossil-native-storage-correction-review-20261118/v2/report.json",
+  "functional": "49 storage pass",
+  "coverage": "all seven owned Rust files100%; overall gate exit1 solely copied artifact.rs58.6%,291 lines; full parser test bundle absent; no waiver",
+  "test_isolation": "explicit current_thread tokio tests; OS-thread-local one-shot overrides; guard created before assignment, Drop clears both success/panic exits; explicit consumed checks",
+  "date": "real root admission invokes parse_owned and OwnerDates after actual selected-engine query; typed ArtifactError::Provider with StorageError source; failed commit and durable disk rollback",
+  "catalog": "actual query values preserve NULL/text control; injected malformed integer SQL field traverses validate_catalog latch; failed commit and durable disk rollback; malformed result also denies actual repository open",
+  "metadata": "actual File::metadata runs; injected io error5 passes through actual open mapper; no owner handle; source preserved; subsequent unmodified open succeeds",
+  "before_disk_control_coverage": "coverage-before-disk-control.log retained, all owned100%; last test strengthened durable reopen",
+  "default_runtime": "public API unchanged; override state compiled only cfg(test)",
+  "snapshots": "all previous63/78/88-file manifests verified, no mismatches; preserved unchanged",
+  "remaining": "independent v3 review, independent prose and full composed parser/provider/storage gates required; prior unsupported scope unchanged"
+}

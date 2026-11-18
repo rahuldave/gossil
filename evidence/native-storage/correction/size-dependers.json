@@ -1,0 +1,1 @@
+[{"text":"fossilized_size(input, limit)","range":{"byteOffset":{"start":4701,"end":4730},"start":{"line":131,"column":15},"end":{"line":131,"column":44}},"file":"src/token_codec.rs","lines":"    let size = fossilized_size(input, limit)?;","charCount":{"leading":15,"trailing":2},"language":"Rust"}]

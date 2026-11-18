@@ -1,0 +1,23 @@
+just --justfile '/Users/rahul/Projects/gossil.worktrees/gest-upxnmvpv-native-storage/Justfile' rust test "$@"
+uv run --no-project --quiet --python '>=3.11' python '/Users/rahul/Projects/gossil.worktrees/gest-upxnmvpv-native-storage/.agents/just/rust/steps.py' run test "$@"
+WARN `--no-project` was provided, but no project was found
+cargo llvm-cov test --all-features --locked --include-build-script --workspace --lcov --output-path target/llvm-cov/test.part0.lcov --lib storage::
+info: cargo-llvm-cov currently setting cfg(coverage); you can opt-out it by passing --no-cfg-coverage
+   Compiling gossil v0.1.0 (/Users/rahul/Projects/gossil.worktrees/gest-upxnmvpv-native-storage)
+error[E0624]: method `install_schema` is private
+  --> src/storage/repository.rs:59:12
+   |
+59 |         tx.install_schema().await.unwrap();
+   |            ^^^^^^^^^^^^^^ private method
+   |
+  ::: src/storage/schema.rs:40:5
+   |
+40 |     async fn install_schema(&mut self) -> Result<(), StorageError> {
+   |     -------------------------------------------------------------- private method defined here
+
+For more information about this error, try `rustc --explain E0624`.
+error: process didn't exit successfully: `/Users/rahul/.rustup/toolchains/stable-aarch64-apple-darwin/bin/rustc --crate-name gossil --edition=2024 src/lib.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --emit=dep-info,link -C embed-bitcode=no -C debuginfo=2 -C split-debuginfo=unpacked --test --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values())' -C metadata=8d0b1645ff0862be -C extra-filename=-fe5ec46fdcdce3bd --out-dir /Users/rahul/Projects/gossil.worktrees/gest-upxnmvpv-native-storage/target/llvm-cov-target/debug/deps -C incremental=/Users/rahul/Projects/gossil.worktrees/gest-upxnmvpv-native-storage/target/llvm-cov-target/debug/incremental -L dependency=/Users/rahul/Projects/gossil.worktrees/gest-upxnmvpv-native-storage/target/llvm-cov-target/debug/deps --extern flate2=/Users/rahul/Projects/gossil.worktrees/gest-upxnmvpv-native-storage/target/llvm-cov-target/debug/deps/libflate2-8df9ea2d400a3996.rlib --extern keccak=/Users/rahul/Projects/gossil.worktrees/gest-upxnmvpv-native-storage/target/llvm-cov-target/debug/deps/libkeccak-12c4e1b8c443b296.rlib --extern libc=/Users/rahul/Projects/gossil.worktrees/gest-upxnmvpv-native-storage/target/llvm-cov-target/debug/deps/liblibc-10adcd5f3a3900f0.rlib --extern libsql=/Users/rahul/Projects/gossil.worktrees/gest-upxnmvpv-native-storage/target/llvm-cov-target/debug/deps/liblibsql-7c5e61e97cbfe838.rlib --extern md5=/Users/rahul/Projects/gossil.worktrees/gest-upxnmvpv-native-storage/target/llvm-cov-target/debug/deps/libmd5-d39f7f5cdbffc217.rlib --extern serde=/Users/rahul/Projects/gossil.worktrees/gest-upxnmvpv-native-storage/target/llvm-cov-target/debug/deps/libserde-88171be97f5245f9.rlib --extern serde_json=/Users/rahul/Projects/gossil.worktrees/gest-upxnmvpv-native-storage/target/llvm-cov-target/debug/deps/libserde_json-817c5459b5d43833.rlib --extern sha1collisiondetection=/Users/rahul/Projects/gossil.worktrees/gest-upxnmvpv-native-storage/target/llvm-cov-target/debug/deps/libsha1collisiondetection-d9529aeb00b8fede.rlib --extern sha2=/Users/rahul/Projects/gossil.worktrees/gest-upxnmvpv-native-storage/target/llvm-cov-target/debug/deps/libsha2-13e3d0bd843ddf6b.rlib --extern tempfile=/Users/rahul/Projects/gossil.worktrees/gest-upxnmvpv-native-storage/target/llvm-cov-target/debug/deps/libtempfile-dbb0428d4f0c19e1.rlib --extern tokio=/Users/rahul/Projects/gossil.worktrees/gest-upxnmvpv-native-storage/target/llvm-cov-target/debug/deps/libtokio-71fdf3b57d929c17.rlib -L native=/Users/rahul/Projects/gossil.worktrees/gest-upxnmvpv-native-storage/target/llvm-cov-target/debug/build/libsql-ffi-caf35bfa4bf24b31/out -C instrument-coverage --cfg=coverage` (exit status: 1)
+error: could not compile `gossil` (lib test) due to 1 previous error
+error: process didn't exit successfully: `/Users/rahul/.rustup/toolchains/stable-aarch64-apple-darwin/bin/cargo test --manifest-path /Users/rahul/Projects/gossil.worktrees/gest-upxnmvpv-native-storage/Cargo.toml --target-dir /Users/rahul/Projects/gossil.worktrees/gest-upxnmvpv-native-storage/target/llvm-cov-target --all-features --locked --workspace --lib 'storage::'` (exit status: 101)
+error: Recipe `test` failed on line 6 with exit code 101
+error: Recipe `test` failed on line 65 with exit code 101

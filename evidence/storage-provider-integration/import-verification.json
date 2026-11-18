@@ -1,0 +1,6 @@
+{
+  "parser_runtime_and_tests": "v2 inventory matches; src/artifact.rs differs only in /// documentation lines",
+  "original_parser_sha256": "4198c2f4c1c01f31fedc2f7a5a1dc0392b71c796ed316b6e741c599743752f3a",
+  "native_schema_sha256": "0dfff91eed27379a093f7ca272ecef8590fe365aa00068b073e8d039e4ebdc90",
+  "whitespace": "Exact upstream schema path follows existing hash-verified vendor/source policy; six inherited trailing spaces occur in comment lines; authoritative bytes preserved."
+}

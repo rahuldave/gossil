@@ -1,0 +1,42 @@
+just --justfile '/Users/rahul/Projects/gossil.worktrees/gest-upxnmvpv-native-storage/Justfile' rust test "$@"
+uv run --no-project --quiet --python '>=3.11' python '/Users/rahul/Projects/gossil.worktrees/gest-upxnmvpv-native-storage/.agents/just/rust/steps.py' run test "$@"
+WARN `--no-project` was provided, but no project was found
+cargo llvm-cov test --all-features --locked --include-build-script --workspace --lcov --output-path target/llvm-cov/test.part0.lcov --lib storage::
+info: cargo-llvm-cov currently setting cfg(coverage); you can opt-out it by passing --no-cfg-coverage
+   Compiling gossil v0.1.0 (/Users/rahul/Projects/gossil.worktrees/gest-upxnmvpv-native-storage)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 4.65s
+     Running unittests src/lib.rs (target/llvm-cov-target/debug/deps/gossil-fe5ec46fdcdce3bd)
+
+running 25 tests
+test storage::content::tests::exact_budget_boundaries_and_cycles ... ok
+test storage::content::tests::native_envelope_exceptions_and_exact_repository_validation ... ok
+test storage::composition_tests::packed_delta_round_trip_and_atomic_rollback ... ok
+test storage::tests::capabilities_commit_reopen_and_explicit_rollback ... ok
+test storage::tests::caught_error_rejects_commit_and_later_helper ... ok
+test storage::tests::caught_hash_mismatch_rolls_back_prior_mutation_after_reopen ... ok
+test storage::tests::cancellation_at_controlled_await_rolls_back_but_after_commit_preserves ... ok
+test storage::tests::commit_failure_rolls_back_and_reuses_idle_connection ... ok
+test storage::tests::configuration_mismatch_and_inconsistent_state_are_errors ... ok
+test storage::tests::embedded_nul_path_returns_error_with_original_cause ... ok
+test storage::tests::dropped_owner_releases_aliases_and_poisoned_store ... ok
+test storage::tests::explicit_rollback_cleanup_failure_retains_first_error ... ok
+test storage::tests::immediate_before_dml ... ok
+test storage::tests::failed_cleanup_preserves_original_and_poison_policy ... ok
+test storage::tests::memory_retains_one_connection_and_excludes_wal_only ... ok
+test storage::tests::path_validation_preserves_empty_invalid_utf8_and_valid_file_behavior ... ok
+test storage::tests::preparation_and_step_failures_latch_and_explicit_rollback_keeps_cause ... ok
+test storage::tests::settings_every_open ... ok
+test storage::tests::writers_on_os_threads_and_wal_reader ... ok
+test storage::repository::tests::missing_or_changed_catalog_denies_local_owner_admission ... ok
+test storage::repository::tests::native_delta_chain_reconstructs_and_shunned_or_cycle_baselines_fail ... ok
+test storage::repository::tests::local_owner_opens_only_complete_matching_catalog_and_revalidates ... ok
+test storage::repository::tests::caught_private_write_hash_error_rolls_back_entire_operation ... ok
+test storage::repository::tests::private_file_roundtrip_dedup_and_phantom_stale_delta_removal ... ok
+test storage::schema::tests::full_schema_install_is_owned_and_atomic ... ok
+
+test result: ok. 25 passed; 0 failed; 0 ignored; 0 measured; 11 filtered out; finished in 0.62s
+
+
+    Finished report saved to target/llvm-cov/test.part0.lcov
+jlog step test
+{"kind":"step","run":"be18140f-e397-488a-8fda-c0668e1921ae","harness":"codex","session":"01a1ed5f-33fe-7cc3-b8a9-67574476100e","child":null,"time":"2026-11-18T06:45:11Z","argv":["just","test","--lib","storage::"],"step":"test"}

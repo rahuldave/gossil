@@ -1,0 +1,60 @@
+{
+  "status": "mechanical refresh to independently reviewed parser tree; standalone parser final acceptance remains pending",
+  "provider_base": "fea8dcdd3979a30bde80460c39bc299ce286afa3",
+  "parser_old_tree": "6c8605541ce6a2bc0103fb26a7a7200cd2a29d05",
+  "parser_reviewed_tree": "81c70542f0be64314f3d9ac12282f9806781e9e7",
+  "storage_prior_freeze_manifest": "b9dff3ea51342c90a3926d619cd2364b3be8b67ac2fd22edcfb0f29544454183",
+  "runtime_unchanged": true,
+  "paths": [
+    {
+      "path": "README.md",
+      "old_sha256": "fb7675de1aaa6c9e305981811ce65bd72a065c76c78f3819b0b7f53024b394bc",
+      "new_sha256": "264b0e086b953c0d91fd8f1d2823160b4d3e0789fea5c324e42b86ac8119f129"
+    },
+    {
+      "path": "docs/artifact-checksum.md",
+      "old_sha256": "f44e5ccc0f3a9d567b8e3bdc7210f98bae3441d9d53a0aeb09c99c64008dbedc",
+      "new_sha256": "26952d67a71a2e8e6f369ffe36ded52a400d89a287510faaa71a76fad88a71b4"
+    },
+    {
+      "path": "docs/artifact-parser.md",
+      "old_sha256": "cf25fa2f4a1141de95652f10ce76ef296dd6ad25038f3d3aa06640c3bef9d450",
+      "new_sha256": "06b9bdc4749657b4bda05846a925264f90f20515c972a0b569ece449a45fca90"
+    },
+    {
+      "path": "docs/blob-primitives.md",
+      "old_sha256": "5c82ba35eb6f749efb858a3fe292f1fc0166a0a56c25d6f4dc9ca37b2e5888b7",
+      "new_sha256": "1ce0941cb927e6daf673cb2cf33f3907c4d2ddb43bc81bcce7c80046cb56d449"
+    },
+    {
+      "path": "docs/development-plan.md",
+      "old_sha256": "3bf5764231925fe4fcdbbf63e53f10f2e8b5d9bb6e8e6514a531cdc8bfe0328c",
+      "new_sha256": "b103e1dad8fd54ca581051c88259c24a86a8ca27d0accfdf8b7f71e8c98acac3"
+    },
+    {
+      "path": "docs/index.md",
+      "old_sha256": "bb31c1570b2f22fa578b3174a3490ad607063e87cd2bcad29baecf53ac0a94b5",
+      "new_sha256": "99975c8f97c5f60332a9390190b5f3383719f9304c977df7abd986b9fff70497"
+    },
+    {
+      "path": "docs/libsql-provider.md",
+      "old_sha256": "13fc567e3390ca9f2413e47ba9144cf1cd368f216e263307acda7acb0fc5672c",
+      "new_sha256": "78fc531d4c50f9455ea67dd1371e81f3778d8df44cc04b4a7114be25f6ed825a"
+    },
+    {
+      "path": "docs/local-storage.md",
+      "old_sha256": "4ad59404614e5d8188c968d0b901715a28864ed4e2202e35c26ee547ad221005",
+      "new_sha256": "8cd04c3a0e15d06bb97f732150a946c3d2100a9a606cf447a7da18646e82583d"
+    },
+    {
+      "path": "src/artifact.rs",
+      "old_sha256": "a40e7912bd2cc233759bfca08667722142255de84eceb208e6d10047a5ab2d97",
+      "new_sha256": "d607cd77a3adb97ce6df92caf5817c3d577dad51966a3757a38cae23b4e2f860"
+    },
+    {
+      "path": "src/lib.rs",
+      "old_sha256": "6d0e3a48d140a78d1a5975e44db623e978c1e22ab73218a793b183de1153311e",
+      "new_sha256": "c7a3024c2e6e8a3c50e59ec54b63a7516a2769e25adf113b6c672efa080c8ea2"
+    }
+  ]
+}

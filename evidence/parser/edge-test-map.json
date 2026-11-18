@@ -1,0 +1,1364 @@
+{
+  "source_plan": "V2 /tmp/gossil-parser-qualification-20261118/v2/edge-plans.json",
+  "count": 109,
+  "mapping_kind": "family mapping, not claim of109independent native observations or109standalone test functions",
+  "edges": [
+    {
+      "id": "escapes-1",
+      "vector": "\\s",
+      "source": "src/encode.c:435-458; src/manifest.c:383-418",
+      "test_family": [
+        "escape_and_hash_edge_families",
+        "empty_tokens_mixed_hashes_and_shortened_attachment_targets"
+      ],
+      "kind": "source-derived executable product controls, not new native observations",
+      "qualification": "candidate executed controls; independent review pending",
+      "limits": null
+    },
+    {
+      "id": "escapes-2",
+      "vector": "\\n",
+      "source": "src/encode.c:435-458; src/manifest.c:383-418",
+      "test_family": [
+        "escape_and_hash_edge_families",
+        "empty_tokens_mixed_hashes_and_shortened_attachment_targets"
+      ],
+      "kind": "source-derived executable product controls, not new native observations",
+      "qualification": "candidate executed controls; independent review pending",
+      "limits": null
+    },
+    {
+      "id": "escapes-3",
+      "vector": "\\r",
+      "source": "src/encode.c:435-458; src/manifest.c:383-418",
+      "test_family": [
+        "escape_and_hash_edge_families",
+        "empty_tokens_mixed_hashes_and_shortened_attachment_targets"
+      ],
+      "kind": "source-derived executable product controls, not new native observations",
+      "qualification": "candidate executed controls; independent review pending",
+      "limits": null
+    },
+    {
+      "id": "escapes-4",
+      "vector": "\\t",
+      "source": "src/encode.c:435-458; src/manifest.c:383-418",
+      "test_family": [
+        "escape_and_hash_edge_families",
+        "empty_tokens_mixed_hashes_and_shortened_attachment_targets"
+      ],
+      "kind": "source-derived executable product controls, not new native observations",
+      "qualification": "candidate executed controls; independent review pending",
+      "limits": null
+    },
+    {
+      "id": "escapes-5",
+      "vector": "\\v",
+      "source": "src/encode.c:435-458; src/manifest.c:383-418",
+      "test_family": [
+        "escape_and_hash_edge_families",
+        "empty_tokens_mixed_hashes_and_shortened_attachment_targets"
+      ],
+      "kind": "source-derived executable product controls, not new native observations",
+      "qualification": "candidate executed controls; independent review pending",
+      "limits": null
+    },
+    {
+      "id": "escapes-6",
+      "vector": "\\f",
+      "source": "src/encode.c:435-458; src/manifest.c:383-418",
+      "test_family": [
+        "escape_and_hash_edge_families",
+        "empty_tokens_mixed_hashes_and_shortened_attachment_targets"
+      ],
+      "kind": "source-derived executable product controls, not new native observations",
+      "qualification": "candidate executed controls; independent review pending",
+      "limits": null
+    },
+    {
+      "id": "escapes-7",
+      "vector": "\\0",
+      "source": "src/encode.c:435-458; src/manifest.c:383-418",
+      "test_family": [
+        "escape_and_hash_edge_families",
+        "empty_tokens_mixed_hashes_and_shortened_attachment_targets"
+      ],
+      "kind": "source-derived executable product controls, not new native observations",
+      "qualification": "candidate executed controls; independent review pending",
+      "limits": null
+    },
+    {
+      "id": "escapes-8",
+      "vector": "\\\\",
+      "source": "src/encode.c:435-458; src/manifest.c:383-418",
+      "test_family": [
+        "escape_and_hash_edge_families",
+        "empty_tokens_mixed_hashes_and_shortened_attachment_targets"
+      ],
+      "kind": "source-derived executable product controls, not new native observations",
+      "qualification": "candidate executed controls; independent review pending",
+      "limits": null
+    },
+    {
+      "id": "escapes-9",
+      "vector": "\\q",
+      "source": "src/encode.c:435-458; src/manifest.c:383-418",
+      "test_family": [
+        "escape_and_hash_edge_families",
+        "empty_tokens_mixed_hashes_and_shortened_attachment_targets"
+      ],
+      "kind": "source-derived executable product controls, not new native observations",
+      "qualification": "candidate executed controls; independent review pending",
+      "limits": null
+    },
+    {
+      "id": "escapes-10",
+      "vector": "trailing backslash",
+      "source": "src/encode.c:435-458; src/manifest.c:383-418",
+      "test_family": [
+        "escape_and_hash_edge_families",
+        "empty_tokens_mixed_hashes_and_shortened_attachment_targets"
+      ],
+      "kind": "source-derived executable product controls, not new native observations",
+      "qualification": "candidate executed controls; independent review pending",
+      "limits": null
+    },
+    {
+      "id": "escapes-11",
+      "vector": "invalid UTF8 bytes",
+      "source": "src/encode.c:435-458; src/manifest.c:383-418",
+      "test_family": [
+        "escape_and_hash_edge_families",
+        "empty_tokens_mixed_hashes_and_shortened_attachment_targets"
+      ],
+      "kind": "source-derived executable product controls, not new native observations",
+      "qualification": "candidate executed controls; independent review pending",
+      "limits": null
+    },
+    {
+      "id": "escapes-12",
+      "vector": "raw TAB and CR inside token",
+      "source": "src/encode.c:435-458; src/manifest.c:383-418",
+      "test_family": [
+        "escape_and_hash_edge_families",
+        "empty_tokens_mixed_hashes_and_shortened_attachment_targets"
+      ],
+      "kind": "source-derived executable product controls, not new native observations",
+      "qualification": "candidate executed controls; independent review pending",
+      "limits": null
+    },
+    {
+      "id": "escapes-13",
+      "vector": "literal space creates empty next token",
+      "source": "src/encode.c:435-458; src/manifest.c:383-418",
+      "test_family": [
+        "escape_and_hash_edge_families",
+        "empty_tokens_mixed_hashes_and_shortened_attachment_targets"
+      ],
+      "kind": "source-derived executable product controls, not new native observations",
+      "qualification": "candidate executed controls; independent review pending",
+      "limits": null
+    },
+    {
+      "id": "hashes-14",
+      "vector": "length 0",
+      "source": "src/hname.c:80-89; src/encode.c:786-799",
+      "test_family": [
+        "escape_and_hash_edge_families",
+        "preserved_fixture_acceptance_receipts"
+      ],
+      "kind": "source-derived executable product controls, not new native observations",
+      "qualification": "candidate executed controls; independent review pending",
+      "limits": "Generic validate16 alternate nonzero endpoint is unreachable from A and is excluded from artifact acceptance"
+    },
+    {
+      "id": "hashes-15",
+      "vector": "length 1",
+      "source": "src/hname.c:80-89; src/encode.c:786-799",
+      "test_family": [
+        "escape_and_hash_edge_families",
+        "preserved_fixture_acceptance_receipts"
+      ],
+      "kind": "source-derived executable product controls, not new native observations",
+      "qualification": "candidate executed controls; independent review pending",
+      "limits": "Generic validate16 alternate nonzero endpoint is unreachable from A and is excluded from artifact acceptance"
+    },
+    {
+      "id": "hashes-16",
+      "vector": "length 31",
+      "source": "src/hname.c:80-89; src/encode.c:786-799",
+      "test_family": [
+        "escape_and_hash_edge_families",
+        "preserved_fixture_acceptance_receipts"
+      ],
+      "kind": "source-derived executable product controls, not new native observations",
+      "qualification": "candidate executed controls; independent review pending",
+      "limits": "Generic validate16 alternate nonzero endpoint is unreachable from A and is excluded from artifact acceptance"
+    },
+    {
+      "id": "hashes-17",
+      "vector": "length 32",
+      "source": "src/hname.c:80-89; src/encode.c:786-799",
+      "test_family": [
+        "escape_and_hash_edge_families",
+        "preserved_fixture_acceptance_receipts"
+      ],
+      "kind": "source-derived executable product controls, not new native observations",
+      "qualification": "candidate executed controls; independent review pending",
+      "limits": "Generic validate16 alternate nonzero endpoint is unreachable from A and is excluded from artifact acceptance"
+    },
+    {
+      "id": "hashes-18",
+      "vector": "length 33",
+      "source": "src/hname.c:80-89; src/encode.c:786-799",
+      "test_family": [
+        "escape_and_hash_edge_families",
+        "preserved_fixture_acceptance_receipts"
+      ],
+      "kind": "source-derived executable product controls, not new native observations",
+      "qualification": "candidate executed controls; independent review pending",
+      "limits": "Generic validate16 alternate nonzero endpoint is unreachable from A and is excluded from artifact acceptance"
+    },
+    {
+      "id": "hashes-19",
+      "vector": "length 39",
+      "source": "src/hname.c:80-89; src/encode.c:786-799",
+      "test_family": [
+        "escape_and_hash_edge_families",
+        "preserved_fixture_acceptance_receipts"
+      ],
+      "kind": "source-derived executable product controls, not new native observations",
+      "qualification": "candidate executed controls; independent review pending",
+      "limits": "Generic validate16 alternate nonzero endpoint is unreachable from A and is excluded from artifact acceptance"
+    },
+    {
+      "id": "hashes-20",
+      "vector": "length 40",
+      "source": "src/hname.c:80-89; src/encode.c:786-799",
+      "test_family": [
+        "escape_and_hash_edge_families",
+        "preserved_fixture_acceptance_receipts"
+      ],
+      "kind": "source-derived executable product controls, not new native observations",
+      "qualification": "candidate executed controls; independent review pending",
+      "limits": "Generic validate16 alternate nonzero endpoint is unreachable from A and is excluded from artifact acceptance"
+    },
+    {
+      "id": "hashes-21",
+      "vector": "length 41",
+      "source": "src/hname.c:80-89; src/encode.c:786-799",
+      "test_family": [
+        "escape_and_hash_edge_families",
+        "preserved_fixture_acceptance_receipts"
+      ],
+      "kind": "source-derived executable product controls, not new native observations",
+      "qualification": "candidate executed controls; independent review pending",
+      "limits": "Generic validate16 alternate nonzero endpoint is unreachable from A and is excluded from artifact acceptance"
+    },
+    {
+      "id": "hashes-22",
+      "vector": "length 63",
+      "source": "src/hname.c:80-89; src/encode.c:786-799",
+      "test_family": [
+        "escape_and_hash_edge_families",
+        "preserved_fixture_acceptance_receipts"
+      ],
+      "kind": "source-derived executable product controls, not new native observations",
+      "qualification": "candidate executed controls; independent review pending",
+      "limits": "Generic validate16 alternate nonzero endpoint is unreachable from A and is excluded from artifact acceptance"
+    },
+    {
+      "id": "hashes-23",
+      "vector": "length 64",
+      "source": "src/hname.c:80-89; src/encode.c:786-799",
+      "test_family": [
+        "escape_and_hash_edge_families",
+        "preserved_fixture_acceptance_receipts"
+      ],
+      "kind": "source-derived executable product controls, not new native observations",
+      "qualification": "candidate executed controls; independent review pending",
+      "limits": "Generic validate16 alternate nonzero endpoint is unreachable from A and is excluded from artifact acceptance"
+    },
+    {
+      "id": "hashes-24",
+      "vector": "length 65",
+      "source": "src/hname.c:80-89; src/encode.c:786-799",
+      "test_family": [
+        "escape_and_hash_edge_families",
+        "preserved_fixture_acceptance_receipts"
+      ],
+      "kind": "source-derived executable product controls, not new native observations",
+      "qualification": "candidate executed controls; independent review pending",
+      "limits": "Generic validate16 alternate nonzero endpoint is unreachable from A and is excluded from artifact acceptance"
+    },
+    {
+      "id": "hashes-25",
+      "vector": "lowercase",
+      "source": "src/hname.c:80-89; src/encode.c:786-799",
+      "test_family": [
+        "escape_and_hash_edge_families",
+        "preserved_fixture_acceptance_receipts"
+      ],
+      "kind": "source-derived executable product controls, not new native observations",
+      "qualification": "candidate executed controls; independent review pending",
+      "limits": "Generic validate16 alternate nonzero endpoint is unreachable from A and is excluded from artifact acceptance"
+    },
+    {
+      "id": "hashes-26",
+      "vector": "uppercase",
+      "source": "src/hname.c:80-89; src/encode.c:786-799",
+      "test_family": [
+        "escape_and_hash_edge_families",
+        "preserved_fixture_acceptance_receipts"
+      ],
+      "kind": "source-derived executable product controls, not new native observations",
+      "qualification": "candidate executed controls; independent review pending",
+      "limits": "Generic validate16 alternate nonzero endpoint is unreachable from A and is excluded from artifact acceptance"
+    },
+    {
+      "id": "hashes-27",
+      "vector": "mixed case",
+      "source": "src/hname.c:80-89; src/encode.c:786-799",
+      "test_family": [
+        "escape_and_hash_edge_families",
+        "preserved_fixture_acceptance_receipts"
+      ],
+      "kind": "source-derived executable product controls, not new native observations",
+      "qualification": "candidate executed controls; independent review pending",
+      "limits": "Generic validate16 alternate nonzero endpoint is unreachable from A and is excluded from artifact acceptance"
+    },
+    {
+      "id": "hashes-28",
+      "vector": "nonhex g",
+      "source": "src/hname.c:80-89; src/encode.c:786-799",
+      "test_family": [
+        "escape_and_hash_edge_families",
+        "preserved_fixture_acceptance_receipts"
+      ],
+      "kind": "source-derived executable product controls, not new native observations",
+      "qualification": "candidate executed controls; independent review pending",
+      "limits": "Generic validate16 alternate nonzero endpoint is unreachable from A and is excluded from artifact acceptance"
+    },
+    {
+      "id": "hashes-29",
+      "vector": "raw NUL at start/middle/end",
+      "source": "src/hname.c:80-89; src/encode.c:786-799",
+      "test_family": [
+        "escape_and_hash_edge_families",
+        "preserved_fixture_acceptance_receipts"
+      ],
+      "kind": "source-derived executable product controls, not new native observations",
+      "qualification": "candidate executed controls; independent review pending",
+      "limits": "Generic validate16 alternate nonzero endpoint is unreachable from A and is excluded from artifact acceptance"
+    },
+    {
+      "id": "A-30",
+      "vector": "40 raw hex",
+      "source": "src/manifest.c:383-400,580-599; src/encode.c:435-458,786-799; src/hname.c:80-89; src/wiki.c:37-50",
+      "test_family": [
+        "attachment_endpoint_wiki_and_source_edges",
+        "empty_tokens_mixed_hashes_and_shortened_attachment_targets"
+      ],
+      "kind": "source-derived executable product controls, not new native observations",
+      "qualification": "candidate executed controls; independent review pending",
+      "limits": null
+    },
+    {
+      "id": "A-31",
+      "vector": "64 raw hex",
+      "source": "src/manifest.c:383-400,580-599; src/encode.c:435-458,786-799; src/hname.c:80-89; src/wiki.c:37-50",
+      "test_family": [
+        "attachment_endpoint_wiki_and_source_edges",
+        "empty_tokens_mixed_hashes_and_shortened_attachment_targets"
+      ],
+      "kind": "source-derived executable product controls, not new native observations",
+      "qualification": "candidate executed controls; independent review pending",
+      "limits": null
+    },
+    {
+      "id": "A-32",
+      "vector": "39/41 raw hex valid wiki",
+      "source": "src/manifest.c:383-400,580-599; src/encode.c:435-458,786-799; src/hname.c:80-89; src/wiki.c:37-50",
+      "test_family": [
+        "attachment_endpoint_wiki_and_source_edges",
+        "empty_tokens_mixed_hashes_and_shortened_attachment_targets"
+      ],
+      "kind": "source-derived executable product controls, not new native observations",
+      "qualification": "candidate executed controls; independent review pending",
+      "limits": null
+    },
+    {
+      "id": "A-33",
+      "vector": "40 encoded bytes decoding shorter hex",
+      "source": "src/manifest.c:383-400,580-599; src/encode.c:435-458,786-799; src/hname.c:80-89; src/wiki.c:37-50",
+      "test_family": [
+        "attachment_endpoint_wiki_and_source_edges",
+        "empty_tokens_mixed_hashes_and_shortened_attachment_targets"
+      ],
+      "kind": "source-derived executable product controls, not new native observations",
+      "qualification": "candidate executed controls; independent review pending",
+      "limits": null
+    },
+    {
+      "id": "A-34",
+      "vector": "encoded length40 decoded prefix NUL",
+      "source": "src/manifest.c:383-400,580-599; src/encode.c:435-458,786-799; src/hname.c:80-89; src/wiki.c:37-50",
+      "test_family": [
+        "attachment_endpoint_wiki_and_source_edges",
+        "empty_tokens_mixed_hashes_and_shortened_attachment_targets"
+      ],
+      "kind": "source-derived executable product controls, not new native observations",
+      "qualification": "candidate executed controls; independent review pending",
+      "limits": null
+    },
+    {
+      "id": "A-35",
+      "vector": "64 raw bytes decoding to 40 hex bytes",
+      "source": "src/manifest.c:383-400,580-599; src/encode.c:435-458,786-799; src/hname.c:80-89; src/wiki.c:37-50",
+      "test_family": [
+        "attachment_endpoint_wiki_and_source_edges",
+        "empty_tokens_mixed_hashes_and_shortened_attachment_targets"
+      ],
+      "kind": "source-derived executable product controls, not new native observations",
+      "qualification": "candidate executed controls; independent review pending",
+      "limits": null
+    },
+    {
+      "id": "A-36",
+      "vector": "escaped wiki space",
+      "source": "src/manifest.c:383-400,580-599; src/encode.c:435-458,786-799; src/hname.c:80-89; src/wiki.c:37-50",
+      "test_family": [
+        "attachment_endpoint_wiki_and_source_edges",
+        "empty_tokens_mixed_hashes_and_shortened_attachment_targets"
+      ],
+      "kind": "source-derived executable product controls, not new native observations",
+      "qualification": "candidate executed controls; independent review pending",
+      "limits": null
+    },
+    {
+      "id": "A-37",
+      "vector": "wiki title 0/1/100/101 bytes",
+      "source": "src/manifest.c:383-400,580-599; src/encode.c:435-458,786-799; src/hname.c:80-89; src/wiki.c:37-50",
+      "test_family": [
+        "attachment_endpoint_wiki_and_source_edges",
+        "empty_tokens_mixed_hashes_and_shortened_attachment_targets"
+      ],
+      "kind": "source-derived executable product controls, not new native observations",
+      "qualification": "candidate executed controls; independent review pending",
+      "limits": null
+    },
+    {
+      "id": "A-38",
+      "vector": "wiki leading/trailing/double space",
+      "source": "src/manifest.c:383-400,580-599; src/encode.c:435-458,786-799; src/hname.c:80-89; src/wiki.c:37-50",
+      "test_family": [
+        "attachment_endpoint_wiki_and_source_edges",
+        "empty_tokens_mixed_hashes_and_shortened_attachment_targets"
+      ],
+      "kind": "source-derived executable product controls, not new native observations",
+      "qualification": "candidate executed controls; independent review pending",
+      "limits": null
+    },
+    {
+      "id": "A-39",
+      "vector": "wiki control/invalid UTF8",
+      "source": "src/manifest.c:383-400,580-599; src/encode.c:435-458,786-799; src/hname.c:80-89; src/wiki.c:37-50",
+      "test_family": [
+        "attachment_endpoint_wiki_and_source_edges",
+        "empty_tokens_mixed_hashes_and_shortened_attachment_targets"
+      ],
+      "kind": "source-derived executable product controls, not new native observations",
+      "qualification": "candidate executed controls; independent review pending",
+      "limits": null
+    },
+    {
+      "id": "A-40",
+      "vector": "source omitted/40/64/bad hash",
+      "source": "src/manifest.c:383-400,580-599; src/encode.c:435-458,786-799; src/hname.c:80-89; src/wiki.c:37-50",
+      "test_family": [
+        "attachment_endpoint_wiki_and_source_edges",
+        "empty_tokens_mixed_hashes_and_shortened_attachment_targets"
+      ],
+      "kind": "source-derived executable product controls, not new native observations",
+      "qualification": "candidate executed controls; independent review pending",
+      "limits": null
+    },
+    {
+      "id": "raw-NUL-41",
+      "vector": "NUL before first card",
+      "source": "src/manifest.c:383-418,467-555,580-1078,1080-1129",
+      "test_family": [
+        "raw_nul_depends_on_each_token_consumer",
+        "escape_and_hash_edge_families",
+        "order_paths_forum_and_remaining_raw_nul_controls"
+      ],
+      "kind": "source-derived executable product controls, not new native observations",
+      "qualification": "candidate executed controls; independent review pending",
+      "limits": null
+    },
+    {
+      "id": "raw-NUL-42",
+      "vector": "NUL in card marker",
+      "source": "src/manifest.c:383-418,467-555,580-1078,1080-1129",
+      "test_family": [
+        "raw_nul_depends_on_each_token_consumer",
+        "escape_and_hash_edge_families",
+        "order_paths_forum_and_remaining_raw_nul_controls"
+      ],
+      "kind": "source-derived executable product controls, not new native observations",
+      "qualification": "candidate executed controls; independent review pending",
+      "limits": null
+    },
+    {
+      "id": "raw-NUL-43",
+      "vector": "NUL in raw hash at each offset 0..64",
+      "source": "src/manifest.c:383-418,467-555,580-1078,1080-1129",
+      "test_family": [
+        "raw_nul_depends_on_each_token_consumer",
+        "escape_and_hash_edge_families",
+        "order_paths_forum_and_remaining_raw_nul_controls"
+      ],
+      "kind": "source-derived executable product controls, not new native observations",
+      "qualification": "candidate executed controls; independent review pending",
+      "limits": null
+    },
+    {
+      "id": "raw-NUL-44",
+      "vector": "NUL before space/LF token delimiter",
+      "source": "src/manifest.c:383-418,467-555,580-1078,1080-1129",
+      "test_family": [
+        "raw_nul_depends_on_each_token_consumer",
+        "escape_and_hash_edge_families",
+        "order_paths_forum_and_remaining_raw_nul_controls"
+      ],
+      "kind": "source-derived executable product controls, not new native observations",
+      "qualification": "candidate executed controls; independent review pending",
+      "limits": null
+    },
+    {
+      "id": "raw-NUL-45",
+      "vector": "NUL in C/U/J raw token",
+      "source": "src/manifest.c:383-418,467-555,580-1078,1080-1129",
+      "test_family": [
+        "raw_nul_depends_on_each_token_consumer",
+        "escape_and_hash_edge_families",
+        "order_paths_forum_and_remaining_raw_nul_controls"
+      ],
+      "kind": "source-derived executable product controls, not new native observations",
+      "qualification": "candidate executed controls; independent review pending",
+      "limits": null
+    },
+    {
+      "id": "raw-NUL-46",
+      "vector": "NUL inside W body",
+      "source": "src/manifest.c:383-418,467-555,580-1078,1080-1129",
+      "test_family": [
+        "raw_nul_depends_on_each_token_consumer",
+        "escape_and_hash_edge_families",
+        "order_paths_forum_and_remaining_raw_nul_controls"
+      ],
+      "kind": "source-derived executable product controls, not new native observations",
+      "qualification": "candidate executed controls; independent review pending",
+      "limits": null
+    },
+    {
+      "id": "raw-NUL-47",
+      "vector": "NUL after final Z",
+      "source": "src/manifest.c:383-418,467-555,580-1078,1080-1129",
+      "test_family": [
+        "raw_nul_depends_on_each_token_consumer",
+        "escape_and_hash_edge_families",
+        "order_paths_forum_and_remaining_raw_nul_controls"
+      ],
+      "kind": "source-derived executable product controls, not new native observations",
+      "qualification": "candidate executed controls; independent review pending",
+      "limits": null
+    },
+    {
+      "id": "W-48",
+      "vector": "0",
+      "source": "src/manifest.c:1014-1043",
+      "test_family": [
+        "modular_w_scanner_and_exact_body_boundaries",
+        "w_modular_threshold_and_body_edges",
+        "preserved_fixture_acceptance_receipts"
+      ],
+      "kind": "source-derived executable product controls, not new native observations",
+      "qualification": "candidate executed controls; independent review pending",
+      "limits": null
+    },
+    {
+      "id": "W-49",
+      "vector": "00",
+      "source": "src/manifest.c:1014-1043",
+      "test_family": [
+        "modular_w_scanner_and_exact_body_boundaries",
+        "w_modular_threshold_and_body_edges",
+        "preserved_fixture_acceptance_receipts"
+      ],
+      "kind": "source-derived executable product controls, not new native observations",
+      "qualification": "candidate executed controls; independent review pending",
+      "limits": null
+    },
+    {
+      "id": "W-50",
+      "vector": "03",
+      "source": "src/manifest.c:1014-1043",
+      "test_family": [
+        "modular_w_scanner_and_exact_body_boundaries",
+        "w_modular_threshold_and_body_edges",
+        "preserved_fixture_acceptance_receipts"
+      ],
+      "kind": "source-derived executable product controls, not new native observations",
+      "qualification": "candidate executed controls; independent review pending",
+      "limits": null
+    },
+    {
+      "id": "W-51",
+      "vector": "3suffix",
+      "source": "src/manifest.c:1014-1043",
+      "test_family": [
+        "modular_w_scanner_and_exact_body_boundaries",
+        "w_modular_threshold_and_body_edges",
+        "preserved_fixture_acceptance_receipts"
+      ],
+      "kind": "source-derived executable product controls, not new native observations",
+      "qualification": "candidate executed controls; independent review pending",
+      "limits": null
+    },
+    {
+      "id": "W-52",
+      "vector": "x",
+      "source": "src/manifest.c:1014-1043",
+      "test_family": [
+        "modular_w_scanner_and_exact_body_boundaries",
+        "w_modular_threshold_and_body_edges",
+        "preserved_fixture_acceptance_receipts"
+      ],
+      "kind": "source-derived executable product controls, not new native observations",
+      "qualification": "candidate executed controls; independent review pending",
+      "limits": null
+    },
+    {
+      "id": "W-53",
+      "vector": "-1",
+      "source": "src/manifest.c:1014-1043",
+      "test_family": [
+        "modular_w_scanner_and_exact_body_boundaries",
+        "w_modular_threshold_and_body_edges",
+        "preserved_fixture_acceptance_receipts"
+      ],
+      "kind": "source-derived executable product controls, not new native observations",
+      "qualification": "candidate executed controls; independent review pending",
+      "limits": null
+    },
+    {
+      "id": "W-54",
+      "vector": "+3",
+      "source": "src/manifest.c:1014-1043",
+      "test_family": [
+        "modular_w_scanner_and_exact_body_boundaries",
+        "w_modular_threshold_and_body_edges",
+        "preserved_fixture_acceptance_receipts"
+      ],
+      "kind": "source-derived executable product controls, not new native observations",
+      "qualification": "candidate executed controls; independent review pending",
+      "limits": null
+    },
+    {
+      "id": "W-55",
+      "vector": "4294967295",
+      "source": "src/manifest.c:1014-1043",
+      "test_family": [
+        "modular_w_scanner_and_exact_body_boundaries",
+        "w_modular_threshold_and_body_edges",
+        "preserved_fixture_acceptance_receipts"
+      ],
+      "kind": "source-derived executable product controls, not new native observations",
+      "qualification": "candidate executed controls; independent review pending",
+      "limits": null
+    },
+    {
+      "id": "W-56",
+      "vector": "4294967296",
+      "source": "src/manifest.c:1014-1043",
+      "test_family": [
+        "modular_w_scanner_and_exact_body_boundaries",
+        "w_modular_threshold_and_body_edges",
+        "preserved_fixture_acceptance_receipts"
+      ],
+      "kind": "source-derived executable product controls, not new native observations",
+      "qualification": "candidate executed controls; independent review pending",
+      "limits": null
+    },
+    {
+      "id": "W-57",
+      "vector": "4294967297",
+      "source": "src/manifest.c:1014-1043",
+      "test_family": [
+        "modular_w_scanner_and_exact_body_boundaries",
+        "w_modular_threshold_and_body_edges",
+        "preserved_fixture_acceptance_receipts"
+      ],
+      "kind": "source-derived executable product controls, not new native observations",
+      "qualification": "candidate executed controls; independent review pending",
+      "limits": null
+    },
+    {
+      "id": "W-58",
+      "vector": "5000000000",
+      "source": "src/manifest.c:1014-1043",
+      "test_family": [
+        "modular_w_scanner_and_exact_body_boundaries",
+        "w_modular_threshold_and_body_edges",
+        "preserved_fixture_acceptance_receipts"
+      ],
+      "kind": "source-derived executable product controls, not new native observations",
+      "qualification": "candidate executed controls; independent review pending",
+      "limits": null
+    },
+    {
+      "id": "W-59",
+      "vector": "8589934591",
+      "source": "src/manifest.c:1014-1043",
+      "test_family": [
+        "modular_w_scanner_and_exact_body_boundaries",
+        "w_modular_threshold_and_body_edges",
+        "preserved_fixture_acceptance_receipts"
+      ],
+      "kind": "source-derived executable product controls, not new native observations",
+      "qualification": "candidate executed controls; independent review pending",
+      "limits": null
+    },
+    {
+      "id": "W-60",
+      "vector": "18446744073709551616",
+      "source": "src/manifest.c:1014-1043",
+      "test_family": [
+        "modular_w_scanner_and_exact_body_boundaries",
+        "w_modular_threshold_and_body_edges",
+        "preserved_fixture_acceptance_receipts"
+      ],
+      "kind": "source-derived executable product controls, not new native observations",
+      "qualification": "candidate executed controls; independent review pending",
+      "limits": null
+    },
+    {
+      "id": "W-61",
+      "vector": "999999999999999999999999",
+      "source": "src/manifest.c:1014-1043",
+      "test_family": [
+        "modular_w_scanner_and_exact_body_boundaries",
+        "w_modular_threshold_and_body_edges",
+        "preserved_fixture_acceptance_receipts"
+      ],
+      "kind": "source-derived executable product controls, not new native observations",
+      "qualification": "candidate executed controls; independent review pending",
+      "limits": null
+    },
+    {
+      "id": "W-62",
+      "vector": "size equal remaining-2",
+      "source": "src/manifest.c:1014-1043",
+      "test_family": [
+        "modular_w_scanner_and_exact_body_boundaries",
+        "w_modular_threshold_and_body_edges",
+        "preserved_fixture_acceptance_receipts"
+      ],
+      "kind": "source-derived executable product controls, not new native observations",
+      "qualification": "candidate executed controls; independent review pending",
+      "limits": null
+    },
+    {
+      "id": "W-63",
+      "vector": "size equal remaining-1",
+      "source": "src/manifest.c:1014-1043",
+      "test_family": [
+        "modular_w_scanner_and_exact_body_boundaries",
+        "w_modular_threshold_and_body_edges",
+        "preserved_fixture_acceptance_receipts"
+      ],
+      "kind": "source-derived executable product controls, not new native observations",
+      "qualification": "candidate executed controls; independent review pending",
+      "limits": null
+    },
+    {
+      "id": "W-64",
+      "vector": "body shorter/exact/longer",
+      "source": "src/manifest.c:1014-1043",
+      "test_family": [
+        "modular_w_scanner_and_exact_body_boundaries",
+        "w_modular_threshold_and_body_edges",
+        "preserved_fixture_acceptance_receipts"
+      ],
+      "kind": "source-derived executable product controls, not new native observations",
+      "qualification": "candidate executed controls; independent review pending",
+      "limits": null
+    },
+    {
+      "id": "W-65",
+      "vector": "missing following LF",
+      "source": "src/manifest.c:1014-1043",
+      "test_family": [
+        "modular_w_scanner_and_exact_body_boundaries",
+        "w_modular_threshold_and_body_edges",
+        "preserved_fixture_acceptance_receipts"
+      ],
+      "kind": "source-derived executable product controls, not new native observations",
+      "qualification": "candidate executed controls; independent review pending",
+      "limits": null
+    },
+    {
+      "id": "W-66",
+      "vector": "extra W token",
+      "source": "src/manifest.c:1014-1043",
+      "test_family": [
+        "modular_w_scanner_and_exact_body_boundaries",
+        "w_modular_threshold_and_body_edges",
+        "preserved_fixture_acceptance_receipts"
+      ],
+      "kind": "source-derived executable product controls, not new native observations",
+      "qualification": "candidate executed controls; independent review pending",
+      "limits": null
+    },
+    {
+      "id": "W-67",
+      "vector": "multiline/NUL/invalidUTF8 body",
+      "source": "src/manifest.c:1014-1043",
+      "test_family": [
+        "modular_w_scanner_and_exact_body_boundaries",
+        "w_modular_threshold_and_body_edges",
+        "preserved_fixture_acceptance_receipts"
+      ],
+      "kind": "source-derived executable product controls, not new native observations",
+      "qualification": "candidate executed controls; independent review pending",
+      "limits": null
+    },
+    {
+      "id": "signature-68",
+      "vector": "PGP/SSH unsigned envelope header",
+      "source": "src/manifest.c:309-370;498-533",
+      "test_family": [
+        "signature_and_checksum_envelopes_follow_source_scanning",
+        "preserved_fixture_acceptance_receipts"
+      ],
+      "kind": "source-derived executable product controls, not new native observations",
+      "qualification": "candidate executed controls; independent review pending",
+      "limits": null
+    },
+    {
+      "id": "signature-69",
+      "vector": "LF blank header",
+      "source": "src/manifest.c:309-370;498-533",
+      "test_family": [
+        "signature_and_checksum_envelopes_follow_source_scanning",
+        "preserved_fixture_acceptance_receipts"
+      ],
+      "kind": "source-derived executable product controls, not new native observations",
+      "qualification": "candidate executed controls; independent review pending",
+      "limits": null
+    },
+    {
+      "id": "signature-70",
+      "vector": "CRLF blank header",
+      "source": "src/manifest.c:309-370;498-533",
+      "test_family": [
+        "signature_and_checksum_envelopes_follow_source_scanning",
+        "preserved_fixture_acceptance_receipts"
+      ],
+      "kind": "source-derived executable product controls, not new native observations",
+      "qualification": "candidate executed controls; independent review pending",
+      "limits": null
+    },
+    {
+      "id": "signature-71",
+      "vector": "no blank line",
+      "source": "src/manifest.c:309-370;498-533",
+      "test_family": [
+        "signature_and_checksum_envelopes_follow_source_scanning",
+        "preserved_fixture_acceptance_receipts"
+      ],
+      "kind": "source-derived executable product controls, not new native observations",
+      "qualification": "candidate executed controls; independent review pending",
+      "limits": null
+    },
+    {
+      "id": "signature-72",
+      "vector": "wrong opener",
+      "source": "src/manifest.c:309-370;498-533",
+      "test_family": [
+        "signature_and_checksum_envelopes_follow_source_scanning",
+        "preserved_fixture_acceptance_receipts"
+      ],
+      "kind": "source-derived executable product controls, not new native observations",
+      "qualification": "candidate executed controls; independent review pending",
+      "limits": null
+    },
+    {
+      "id": "signature-73",
+      "vector": "matching/different PGP/SSH tail marker",
+      "source": "src/manifest.c:309-370;498-533",
+      "test_family": [
+        "signature_and_checksum_envelopes_follow_source_scanning",
+        "preserved_fixture_acceptance_receipts"
+      ],
+      "kind": "source-derived executable product controls, not new native observations",
+      "qualification": "candidate executed controls; independent review pending",
+      "limits": null
+    },
+    {
+      "id": "signature-74",
+      "vector": "multiple tail markers",
+      "source": "src/manifest.c:309-370;498-533",
+      "test_family": [
+        "signature_and_checksum_envelopes_follow_source_scanning",
+        "preserved_fixture_acceptance_receipts"
+      ],
+      "kind": "source-derived executable product controls, not new native observations",
+      "qualification": "candidate executed controls; independent review pending",
+      "limits": null
+    },
+    {
+      "id": "signature-75",
+      "vector": "tail not line-start",
+      "source": "src/manifest.c:309-370;498-533",
+      "test_family": [
+        "signature_and_checksum_envelopes_follow_source_scanning",
+        "preserved_fixture_acceptance_receipts"
+      ],
+      "kind": "source-derived executable product controls, not new native observations",
+      "qualification": "candidate executed controls; independent review pending",
+      "limits": null
+    },
+    {
+      "id": "signature-76",
+      "vector": "no tail",
+      "source": "src/manifest.c:309-370;498-533",
+      "test_family": [
+        "signature_and_checksum_envelopes_follow_source_scanning",
+        "preserved_fixture_acceptance_receipts"
+      ],
+      "kind": "source-derived executable product controls, not new native observations",
+      "qualification": "candidate executed controls; independent review pending",
+      "limits": null
+    },
+    {
+      "id": "signature-77",
+      "vector": "arbitrary tail garbage",
+      "source": "src/manifest.c:309-370;498-533",
+      "test_family": [
+        "signature_and_checksum_envelopes_follow_source_scanning",
+        "preserved_fixture_acceptance_receipts"
+      ],
+      "kind": "source-derived executable product controls, not new native observations",
+      "qualification": "candidate executed controls; independent review pending",
+      "limits": null
+    },
+    {
+      "id": "signature-78",
+      "vector": "missing outer final LF",
+      "source": "src/manifest.c:309-370;498-533",
+      "test_family": [
+        "signature_and_checksum_envelopes_follow_source_scanning",
+        "preserved_fixture_acceptance_receipts"
+      ],
+      "kind": "source-derived executable product controls, not new native observations",
+      "qualification": "candidate executed controls; independent review pending",
+      "limits": null
+    },
+    {
+      "id": "signature-79",
+      "vector": "CRLF body",
+      "source": "src/manifest.c:309-370;498-533",
+      "test_family": [
+        "signature_and_checksum_envelopes_follow_source_scanning",
+        "preserved_fixture_acceptance_receipts"
+      ],
+      "kind": "source-derived executable product controls, not new native observations",
+      "qualification": "candidate executed controls; independent review pending",
+      "limits": null
+    },
+    {
+      "id": "signature-80",
+      "vector": "uppercase Z digest",
+      "source": "src/manifest.c:309-370;498-533",
+      "test_family": [
+        "signature_and_checksum_envelopes_follow_source_scanning",
+        "preserved_fixture_acceptance_receipts"
+      ],
+      "kind": "source-derived executable product controls, not new native observations",
+      "qualification": "candidate executed controls; independent review pending",
+      "limits": null
+    },
+    {
+      "id": "signature-81",
+      "vector": "duplicate Z",
+      "source": "src/manifest.c:309-370;498-533",
+      "test_family": [
+        "signature_and_checksum_envelopes_follow_source_scanning",
+        "preserved_fixture_acceptance_receipts"
+      ],
+      "kind": "source-derived executable product controls, not new native observations",
+      "qualification": "candidate executed controls; independent review pending",
+      "limits": null
+    },
+    {
+      "id": "order-paths-82",
+      "vector": "technote P then N",
+      "source": "src/manifest.c:550-562,668-717,956-984; src/file.c:1149-1165;3010-3060; src/util.c:419-428",
+      "test_family": [
+        "order_paths_forum_and_remaining_raw_nul_controls",
+        "all_21_repeat_branches_reject_or_accumulate_per_source",
+        "preserved_fixture_acceptance_receipts"
+      ],
+      "kind": "source-derived executable product controls, not new native observations",
+      "qualification": "candidate executed controls; independent review pending",
+      "limits": null
+    },
+    {
+      "id": "order-paths-83",
+      "vector": "nontechnote P then N",
+      "source": "src/manifest.c:550-562,668-717,956-984; src/file.c:1149-1165;3010-3060; src/util.c:419-428",
+      "test_family": [
+        "order_paths_forum_and_remaining_raw_nul_controls",
+        "all_21_repeat_branches_reject_or_accumulate_per_source",
+        "preserved_fixture_acceptance_receipts"
+      ],
+      "kind": "source-derived executable product controls, not new native observations",
+      "qualification": "candidate executed controls; independent review pending",
+      "limits": null
+    },
+    {
+      "id": "order-paths-84",
+      "vector": "F reserved first/after retained/reverse",
+      "source": "src/manifest.c:550-562,668-717,956-984; src/file.c:1149-1165;3010-3060; src/util.c:419-428",
+      "test_family": [
+        "order_paths_forum_and_remaining_raw_nul_controls",
+        "all_21_repeat_branches_reject_or_accumulate_per_source",
+        "preserved_fixture_acceptance_receipts"
+      ],
+      "kind": "source-derived executable product controls, not new native observations",
+      "qualification": "candidate executed controls; independent review pending",
+      "limits": null
+    },
+    {
+      "id": "order-paths-85",
+      "vector": "F old-name invalid",
+      "source": "src/manifest.c:550-562,668-717,956-984; src/file.c:1149-1165;3010-3060; src/util.c:419-428",
+      "test_family": [
+        "order_paths_forum_and_remaining_raw_nul_controls",
+        "all_21_repeat_branches_reject_or_accumulate_per_source",
+        "preserved_fixture_acceptance_receipts"
+      ],
+      "kind": "source-derived executable product controls, not new native observations",
+      "qualification": "candidate executed controls; independent review pending",
+      "limits": null
+    },
+    {
+      "id": "order-paths-86",
+      "vector": "F opaque permissions",
+      "source": "src/manifest.c:550-562,668-717,956-984; src/file.c:1149-1165;3010-3060; src/util.c:419-428",
+      "test_family": [
+        "order_paths_forum_and_remaining_raw_nul_controls",
+        "all_21_repeat_branches_reject_or_accumulate_per_source",
+        "preserved_fixture_acceptance_receipts"
+      ],
+      "kind": "source-derived executable product controls, not new native observations",
+      "qualification": "candidate executed controls; independent review pending",
+      "limits": null
+    },
+    {
+      "id": "order-paths-87",
+      "vector": "empty/dot/dotdot/absolute/double/trailing slash",
+      "source": "src/manifest.c:550-562,668-717,956-984; src/file.c:1149-1165;3010-3060; src/util.c:419-428",
+      "test_family": [
+        "order_paths_forum_and_remaining_raw_nul_controls",
+        "all_21_repeat_branches_reject_or_accumulate_per_source",
+        "preserved_fixture_acceptance_receipts"
+      ],
+      "kind": "source-derived executable product controls, not new native observations",
+      "qualification": "candidate executed controls; independent review pending",
+      "limits": null
+    },
+    {
+      "id": "order-paths-88",
+      "vector": "backslash path",
+      "source": "src/manifest.c:550-562,668-717,956-984; src/file.c:1149-1165;3010-3060; src/util.c:419-428",
+      "test_family": [
+        "order_paths_forum_and_remaining_raw_nul_controls",
+        "all_21_repeat_branches_reject_or_accumulate_per_source",
+        "preserved_fixture_acceptance_receipts"
+      ],
+      "kind": "source-derived executable product controls, not new native observations",
+      "qualification": "candidate executed controls; independent review pending",
+      "limits": null
+    },
+    {
+      "id": "order-paths-89",
+      "vector": "invalidUTF8 path",
+      "source": "src/manifest.c:550-562,668-717,956-984; src/file.c:1149-1165;3010-3060; src/util.c:419-428",
+      "test_family": [
+        "order_paths_forum_and_remaining_raw_nul_controls",
+        "all_21_repeat_branches_reject_or_accumulate_per_source",
+        "preserved_fixture_acceptance_receipts"
+      ],
+      "kind": "source-derived executable product controls, not new native observations",
+      "qualification": "candidate executed controls; independent review pending",
+      "limits": null
+    },
+    {
+      "id": "order-paths-90",
+      "vector": "T same name self then hash/reverse",
+      "source": "src/manifest.c:550-562,668-717,956-984; src/file.c:1149-1165;3010-3060; src/util.c:419-428",
+      "test_family": [
+        "order_paths_forum_and_remaining_raw_nul_controls",
+        "all_21_repeat_branches_reject_or_accumulate_per_source",
+        "preserved_fixture_acceptance_receipts"
+      ],
+      "kind": "source-derived executable product controls, not new native observations",
+      "qualification": "candidate executed controls; independent review pending",
+      "limits": null
+    },
+    {
+      "id": "order-paths-91",
+      "vector": "T empty hex suffix/nonhex suffix",
+      "source": "src/manifest.c:550-562,668-717,956-984; src/file.c:1149-1165;3010-3060; src/util.c:419-428",
+      "test_family": [
+        "order_paths_forum_and_remaining_raw_nul_controls",
+        "all_21_repeat_branches_reject_or_accumulate_per_source",
+        "preserved_fixture_acceptance_receipts"
+      ],
+      "kind": "source-derived executable product controls, not new native observations",
+      "qualification": "candidate executed controls; independent review pending",
+      "limits": null
+    },
+    {
+      "id": "order-paths-92",
+      "vector": "J raw name +append/empty value",
+      "source": "src/manifest.c:550-562,668-717,956-984; src/file.c:1149-1165;3010-3060; src/util.c:419-428",
+      "test_family": [
+        "order_paths_forum_and_remaining_raw_nul_controls",
+        "all_21_repeat_branches_reject_or_accumulate_per_source",
+        "preserved_fixture_acceptance_receipts"
+      ],
+      "kind": "source-derived executable product controls, not new native observations",
+      "qualification": "candidate executed controls; independent review pending",
+      "limits": null
+    },
+    {
+      "id": "order-paths-93",
+      "vector": "forum no G/H/I",
+      "source": "src/manifest.c:550-562,668-717,956-984; src/file.c:1149-1165;3010-3060; src/util.c:419-428",
+      "test_family": [
+        "order_paths_forum_and_remaining_raw_nul_controls",
+        "all_21_repeat_branches_reject_or_accumulate_per_source",
+        "preserved_fixture_acceptance_receipts"
+      ],
+      "kind": "source-derived executable product controls, not new native observations",
+      "qualification": "candidate executed controls; independent review pending",
+      "limits": null
+    },
+    {
+      "id": "order-paths-94",
+      "vector": "forum H+I",
+      "source": "src/manifest.c:550-562,668-717,956-984; src/file.c:1149-1165;3010-3060; src/util.c:419-428",
+      "test_family": [
+        "order_paths_forum_and_remaining_raw_nul_controls",
+        "all_21_repeat_branches_reject_or_accumulate_per_source",
+        "preserved_fixture_acceptance_receipts"
+      ],
+      "kind": "source-derived executable product controls, not new native observations",
+      "qualification": "candidate executed controls; independent review pending",
+      "limits": null
+    },
+    {
+      "id": "order-paths-95",
+      "vector": "forum P repeated empty/one/two",
+      "source": "src/manifest.c:550-562,668-717,956-984; src/file.c:1149-1165;3010-3060; src/util.c:419-428",
+      "test_family": [
+        "order_paths_forum_and_remaining_raw_nul_controls",
+        "all_21_repeat_branches_reject_or_accumulate_per_source",
+        "preserved_fixture_acceptance_receipts"
+      ],
+      "kind": "source-derived executable product controls, not new native observations",
+      "qualification": "candidate executed controls; independent review pending",
+      "limits": null
+    },
+    {
+      "id": "platform-96",
+      "vector": "A dir/name",
+      "source": "src/file.c:92-94,551-559",
+      "test_family": [
+        "attachment_endpoint_wiki_and_source_edges"
+      ],
+      "kind": "source-derived executable product controls, not new native observations",
+      "qualification": "candidate executed controls; independent review pending",
+      "limits": "Windows/Cygwin execution not performed; compile-platform basename assertion only"
+    },
+    {
+      "id": "platform-97",
+      "vector": "A dir\\name",
+      "source": "src/file.c:92-94,551-559",
+      "test_family": [
+        "attachment_endpoint_wiki_and_source_edges"
+      ],
+      "kind": "source-derived executable product controls, not new native observations",
+      "qualification": "candidate executed controls; independent review pending",
+      "limits": "Windows/Cygwin execution not performed; compile-platform basename assertion only"
+    },
+    {
+      "id": "platform-98",
+      "vector": "A mixed/slash\\name",
+      "source": "src/file.c:92-94,551-559",
+      "test_family": [
+        "attachment_endpoint_wiki_and_source_edges"
+      ],
+      "kind": "source-derived executable product controls, not new native observations",
+      "qualification": "candidate executed controls; independent review pending",
+      "limits": "Windows/Cygwin execution not performed; compile-platform basename assertion only"
+    },
+    {
+      "id": "dates-99",
+      "vector": "D/E missing",
+      "source": "src/manifest.c:639-664",
+      "test_family": [
+        "actual_provider_d_e_preserve_all_pinned_binary64_results",
+        "actual_provider_now_stays_within_same_engine_clock_interval",
+        "date_failures_preserve_provider_cause"
+      ],
+      "kind": "source-derived executable product controls, not new native observations",
+      "qualification": "known numerical provider red on original libsql; parent patched composition pending",
+      "limits": null
+    },
+    {
+      "id": "dates-100",
+      "vector": "SQL NULL",
+      "source": "src/manifest.c:639-664",
+      "test_family": [
+        "actual_provider_d_e_preserve_all_pinned_binary64_results",
+        "actual_provider_now_stays_within_same_engine_clock_interval",
+        "date_failures_preserve_provider_cause"
+      ],
+      "kind": "source-derived executable product controls, not new native observations",
+      "qualification": "known numerical provider red on original libsql; parent patched composition pending",
+      "limits": null
+    },
+    {
+      "id": "dates-101",
+      "vector": "zero",
+      "source": "src/manifest.c:639-664",
+      "test_family": [
+        "actual_provider_d_e_preserve_all_pinned_binary64_results",
+        "actual_provider_now_stays_within_same_engine_clock_interval",
+        "date_failures_preserve_provider_cause"
+      ],
+      "kind": "source-derived executable product controls, not new native observations",
+      "qualification": "known numerical provider red on original libsql; parent patched composition pending",
+      "limits": null
+    },
+    {
+      "id": "dates-102",
+      "vector": "negative",
+      "source": "src/manifest.c:639-664",
+      "test_family": [
+        "actual_provider_d_e_preserve_all_pinned_binary64_results",
+        "actual_provider_now_stays_within_same_engine_clock_interval",
+        "date_failures_preserve_provider_cause"
+      ],
+      "kind": "source-derived executable product controls, not new native observations",
+      "qualification": "known numerical provider red on original libsql; parent patched composition pending",
+      "limits": null
+    },
+    {
+      "id": "dates-103",
+      "vector": "fraction .9999",
+      "source": "src/manifest.c:639-664",
+      "test_family": [
+        "actual_provider_d_e_preserve_all_pinned_binary64_results",
+        "actual_provider_now_stays_within_same_engine_clock_interval",
+        "date_failures_preserve_provider_cause"
+      ],
+      "kind": "source-derived executable product controls, not new native observations",
+      "qualification": "known numerical provider red on original libsql; parent patched composition pending",
+      "limits": null
+    },
+    {
+      "id": "dates-104",
+      "vector": "24:01/24:00:00.001",
+      "source": "src/manifest.c:639-664",
+      "test_family": [
+        "actual_provider_d_e_preserve_all_pinned_binary64_results",
+        "actual_provider_now_stays_within_same_engine_clock_interval",
+        "date_failures_preserve_provider_cause"
+      ],
+      "kind": "source-derived executable product controls, not new native observations",
+      "qualification": "known numerical provider red on original libsql; parent patched composition pending",
+      "limits": null
+    },
+    {
+      "id": "dates-105",
+      "vector": "timezone",
+      "source": "src/manifest.c:639-664",
+      "test_family": [
+        "actual_provider_d_e_preserve_all_pinned_binary64_results",
+        "actual_provider_now_stays_within_same_engine_clock_interval",
+        "date_failures_preserve_provider_cause"
+      ],
+      "kind": "source-derived executable product controls, not new native observations",
+      "qualification": "known numerical provider red on original libsql; parent patched composition pending",
+      "limits": null
+    },
+    {
+      "id": "dates-106",
+      "vector": "Julian numeric",
+      "source": "src/manifest.c:639-664",
+      "test_family": [
+        "actual_provider_d_e_preserve_all_pinned_binary64_results",
+        "actual_provider_now_stays_within_same_engine_clock_interval",
+        "date_failures_preserve_provider_cause"
+      ],
+      "kind": "source-derived executable product controls, not new native observations",
+      "qualification": "known numerical provider red on original libsql; parent patched composition pending",
+      "limits": null
+    },
+    {
+      "id": "dates-107",
+      "vector": "nonISO SQL accepted",
+      "source": "src/manifest.c:639-664",
+      "test_family": [
+        "actual_provider_d_e_preserve_all_pinned_binary64_results",
+        "actual_provider_now_stays_within_same_engine_clock_interval",
+        "date_failures_preserve_provider_cause"
+      ],
+      "kind": "source-derived executable product controls, not new native observations",
+      "qualification": "known numerical provider red on original libsql; parent patched composition pending",
+      "limits": null
+    },
+    {
+      "id": "dates-108",
+      "vector": "now",
+      "source": "src/manifest.c:639-664",
+      "test_family": [
+        "actual_provider_d_e_preserve_all_pinned_binary64_results",
+        "actual_provider_now_stays_within_same_engine_clock_interval",
+        "date_failures_preserve_provider_cause"
+      ],
+      "kind": "source-derived executable product controls, not new native observations",
+      "qualification": "known numerical provider red on original libsql; parent patched composition pending",
+      "limits": null
+    },
+    {
+      "id": "dates-109",
+      "vector": "provider failure",
+      "source": "src/manifest.c:639-664",
+      "test_family": [
+        "actual_provider_d_e_preserve_all_pinned_binary64_results",
+        "actual_provider_now_stays_within_same_engine_clock_interval",
+        "date_failures_preserve_provider_cause"
+      ],
+      "kind": "source-derived executable product controls, not new native observations",
+      "qualification": "known numerical provider red on original libsql; parent patched composition pending",
+      "limits": null
+    }
+  ]
+}

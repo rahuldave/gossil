@@ -1,8 +1,11 @@
 # Local database ownership
 
 The `storage` module opens local libSQL files and owns one write transaction
-at a time. It supplies a storage boundary for later domain operations.
-The current crate has no domain tables, migrations or storage adapters.
+at a time. Its low-level lifecycle API also supports the validated
+[native storage boundary](native-storage.md), which installs the complete schema
+and implements empty-root initialization and bounded private content operations.
+Opening that higher-level repository validates its stored root and authority metadata.
+Migration and broader adapters remain unimplemented.
 
 ## Open and terminate a write
 
@@ -18,7 +21,8 @@ async fn lifecycle(path: &std::path::Path) -> Result<(), StorageError> {
 ```
 
 The example opens the database and terminates empty transactions.
-There are no public domain mutations yet.
+Use `LocalOwnerRepository` for admitted native content operations. The example
+above uses only the low-level lifecycle API.
 
 `LocalStore::open(path)` builds a local database and retains one connection.
 Every file open sets and reads back WAL, foreign keys ON, `synchronous=FULL`
@@ -35,8 +39,7 @@ internal operations cannot issue SQL and commit must reject the operation.
 Queries materialize results by collecting rows into owned values before returning.
 They consume their statements and rows inside the owner.
 Preparation, stepping and value-decoding errors follow the same failure path.
-Fixed domain operations and orchestration of non-SQL domain errors remain
-later work. Fixture SQL uses the same private execution and row-collection code as the
+The native content operations also latch non-SQL failures through the owner. Fixture SQL uses the same private execution and row-collection code as the
 storage boundary.
 
 Explicit commit and rollback return the connection only after SQLite reports
@@ -138,14 +141,20 @@ and the failure latch present.
 
 The relative Cargo patch selects a complete, reviewed `libsql-ffi` source
 copy with bounded date corrections for the intended Fossil artifact date fields.
-The artifact parser is still planned; the current date test issues private SQL. The base version and source-ID strings
-above still apply; the patched source hash identifies the provider.
+The [artifact parser](artifact-parser.md) exercises actual D and E cards
+against this provider through a test adapter. Native repository creation and
+admission also parse the empty root on the same owned connection. Root
+crosslinks connect that artifact to its native event and branch records.
+General artifact crosslinks remain unimplemented.
+
+The base version and source-ID strings
+above still apply. The patched source hash identifies the provider.
 [Local native date provider](libsql-provider.md) records its provenance,
 integrity checks, hook ownership and qualification limits.
 
 ## Recommendations
 
 Use one owned transaction for each complete mutation and terminate it explicitly.
-Next, review the schema contracts, then add fixed domain operations that roll
-back when either SQL or another step of the mutation fails. Keep domain atomicity, recovery and server
-cancellation claims separate from these local fixtures.
+Next, implement the first private file child with real parent and file links
+through the admitted native boundary. Keep recovery and server cancellation
+claims separate from these local fixtures.

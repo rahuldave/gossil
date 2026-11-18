@@ -3,12 +3,20 @@
 //! Local SQL blocks its current poll; cancellation after COMMIT cannot undo it.
 //!
 //! The core-only native provider has a reviewed date backport. Its source identity
-//! is recorded in `evidence/libsql-provider/provenance.json`. Artifact parsing,
-//! runtime clocks and broader date-function compatibility remain unqualified.
+//! is recorded in `evidence/libsql-provider/provenance.json`. Native repository
+//! creation and admission parse the empty root on this same connection. General
+//! artifact crosslinks, runtime clocks and broader date compatibility remain unqualified.
 //!
 //! ## Recommendations
 //! Use one owner for a complete mutation and explicitly commit or roll back.
-//! Add fixed domain operations here when the domain schema is defined.
+//! Use LocalOwnerRepository for admitted native content and explicit finite limits.
+mod content;
+mod policy;
+mod repository;
+mod schema;
+pub use content::Limits;
+pub use repository::{AdmissionLimits, CreateOptions, LocalOwnerRepository, SharedView};
+
 use libsql::{Builder, Connection, Value};
 use std::{fmt, path::Path, sync::Arc, time::Duration};
 
@@ -49,6 +57,22 @@ impl From<libsql::Error> for StorageError {
     }
 }
 impl StorageError {
+    /// Preserve a non-SQL failure as the original operation cause.
+    /// # Arguments
+    /// * `message` - Context describing the failed operation.
+    /// * `error` - Underlying error to retain.
+    /// # Returns
+    /// A storage error retaining the original cause.
+    fn caused(
+        message: impl Into<String>,
+        error: impl std::error::Error + Send + Sync + 'static,
+    ) -> Self {
+        Self {
+            operation: message.into(),
+            cleanup: None,
+            source: Some(Arc::new(error)),
+        }
+    }
     /// Construct a state error without a cleanup failure.
     /// # Arguments
     /// * `message` - Explanation of the failed ownership or configuration check.
@@ -222,6 +246,31 @@ impl WriteTransaction<'_> {
         }
         result
     }
+    /// Verify a full native content name before any storage statement.
+    /// # Arguments
+    /// * `name` - Full native content hash to verify.
+    /// * `bytes` - Input bytes for this operation.
+    /// # Returns
+    /// Success when the bytes match their full native name.
+    /// # Errors
+    /// Rejects unsupported names, hash mismatch or a prior latched failure.
+    fn verify_content_name(&mut self, name: &str, bytes: &[u8]) -> Result<(), StorageError> {
+        if let Some(error) = &self.failure {
+            return Err(error.clone());
+        }
+        let result = (|| {
+            let digest = match name.len() {
+                40 => crate::content_hash::hex(&crate::content_hash::sha1(bytes)),
+                64 => crate::content_hash::hex(&crate::content_hash::sha3(bytes, 256).unwrap()),
+                _ => return Err(StorageError::state("unsupported native content name")),
+            };
+            if name != digest {
+                return Err(StorageError::state("native content hash mismatch"));
+            }
+            Ok(())
+        })();
+        self.record(result)
+    }
     /// Execute one internal statement; a caught failure still prevents further SQL.
     /// # Arguments
     /// * `sql` - Fixed internal SQL or private fixture SQL; no caller-supplied transaction control.
@@ -239,6 +288,61 @@ impl WriteTransaction<'_> {
             .await
             .map(|_| ())
             .map_err(Into::into);
+        self.record(result)
+    }
+    /// Execute fixed domain SQL with owned bound parameters and latch every failure.
+    /// # Arguments
+    /// * `sql` - Fixed internal parameterized SQL statement.
+    /// * `values` - Owned SQL values bound to that statement.
+    /// # Returns
+    /// Success after the fixed statement completes.
+    /// # Errors
+    /// Returns the prior latched failure or the current SQL execution error.
+    async fn execute_bound(
+        &mut self,
+        sql: &'static str,
+        values: Vec<Value>,
+    ) -> Result<u64, StorageError> {
+        if let Some(error) = &self.failure {
+            return Err(error.clone());
+        }
+        let result = self
+            .connection()
+            .execute(sql, values)
+            .await
+            .map_err(Into::into);
+        self.record(result)
+    }
+    /// Step a fixed parameterized query completely before releasing owned values.
+    /// # Arguments
+    /// * `sql` - Fixed internal parameterized SQL statement.
+    /// * `values` - Owned SQL values bound to that statement.
+    /// # Returns
+    /// Fully materialized owned result rows.
+    /// # Errors
+    /// Returns the prior latched failure or SQL preparation, stepping or value-decoding errors.
+    async fn query_bound(
+        &mut self,
+        sql: &'static str,
+        values: Vec<Value>,
+    ) -> Result<Vec<Vec<Value>>, StorageError> {
+        if let Some(error) = &self.failure {
+            return Err(error.clone());
+        }
+        let result = async {
+            let statement = self.connection().prepare(sql).await?;
+            let mut rows = statement.query(values).await?;
+            let mut output = Vec::new();
+            while let Some(row) = rows.next().await? {
+                let mut values = Vec::new();
+                for index in 0..row.column_count() {
+                    values.push(row.get_value(index)?);
+                }
+                output.push(values);
+            }
+            Ok(output)
+        }
+        .await;
         self.record(result)
     }
     #[cfg(test)]
@@ -528,6 +632,82 @@ mod tests {
                 .await
                 .is_err()
         );
+    }
+    /// A caught pre-SQL hash error must roll back the whole borrowed operation.
+    #[tokio::test]
+    async fn caught_hash_mismatch_rolls_back_prior_mutation_after_reopen() {
+        let temp = tempfile::tempdir().unwrap();
+        let path = temp.path().join("db");
+        let mut store = LocalStore::open(&path).await.unwrap();
+        fixture(&mut store).await;
+        let mut tx = store.begin_write().await.unwrap();
+        tx.execute("INSERT INTO parent VALUES(1,'must roll back',NULL)")
+            .await
+            .unwrap();
+        let error = tx
+            .verify_content_name(&"0".repeat(64), b"different bytes")
+            .unwrap_err();
+        assert_eq!(error.operation, "native content hash mismatch");
+        let later = tx
+            .execute("INSERT INTO parent VALUES(2,'also forbidden',NULL)")
+            .await;
+        let commit = tx.commit().await;
+        drop(store);
+        let mut reopened = LocalStore::open(&path).await.unwrap();
+        assert_eq!(
+            read(&mut reopened, "SELECT count(*) FROM parent").await,
+            vec![vec![Value::Integer(0)]]
+        );
+        assert!(later.is_err());
+        assert!(commit.is_err());
+    }
+    #[tokio::test]
+    /// Every private domain entry point preserves a prior error without issuing further SQL.
+    async fn latched_domain_helpers_preserve_the_first_failure() {
+        let temp = tempfile::tempdir().unwrap();
+        let mut store = LocalStore::open(temp.path().join("db")).await.unwrap();
+        let mut tx = store.begin_write().await.unwrap();
+        let sha1 = crate::content_hash::hex(&crate::content_hash::sha1(b"abc"));
+        tx.verify_content_name(&sha1, b"abc").unwrap();
+        let error = tx.verify_content_name("invalid", b"abc").unwrap_err();
+        assert_eq!(
+            tx.verify_content_name(&sha1, b"abc").unwrap_err().operation,
+            error.operation
+        );
+        assert_eq!(
+            tx.execute_bound("CREATE TABLE forbidden(id)", vec![])
+                .await
+                .unwrap_err()
+                .operation,
+            error.operation
+        );
+        assert_eq!(
+            tx.query_bound("SELECT 1", vec![])
+                .await
+                .unwrap_err()
+                .operation,
+            error.operation
+        );
+        assert_eq!(
+            tx.install_schema().await.unwrap_err().operation,
+            error.operation
+        );
+        assert_eq!(
+            tx.validate_catalog().await.unwrap_err().operation,
+            error.operation
+        );
+        let principal = policy::Principal {
+            repository: "wrong".into(),
+            owner: "wrong".into(),
+        };
+        assert_eq!(
+            tx.validate_principal(&principal)
+                .await
+                .unwrap_err()
+                .operation,
+            error.operation
+        );
+        assert_eq!(tx.commit().await.unwrap_err().operation, error.operation);
     }
     /// Verify a deferred constraint failure rolls back before connection reuse.
     #[tokio::test]

@@ -1,0 +1,7 @@
+{
+  "raw_sha256": "f17b6042a34ce23778b1010eb121728807c478cf3d858d5b5744b7ae3be7c690",
+  "gzip_sha256": "db3f7b401ce0d5b38393818872ec262663096b8cb80757ffcd80c2a9ac6a017e",
+  "raw_bytes": 25232,
+  "lossless": true,
+  "raw_preserved_in": "/tmp/gossil-native-storage-corrected-candidate-20261118/evidence/native-storage/correction/owned-correction.diff"
+}

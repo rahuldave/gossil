@@ -74,6 +74,28 @@ fn append(output: &mut Vec<u8>, bytes: &[u8]) -> Result<(), BlobError> {
     Ok(())
 }
 
+/// Check packed length before requesting exact output growth.
+/// # Arguments
+/// * `output` - Stored envelope buffer to extend.
+/// * `bytes` - Input bytes for this operation.
+/// * `max_stored` - Maximum complete stored envelope length.
+/// # Returns
+/// Success after bounded append.
+/// # Errors
+/// Returns a stored-length or allocation error before an append exceeds its ceiling.
+fn append_packed(output: &mut Vec<u8>, bytes: &[u8], max_stored: usize) -> Result<(), BlobError> {
+    output
+        .len()
+        .checked_add(bytes.len())
+        .filter(|length| *length <= max_stored)
+        .ok_or(BlobError::Limit)?;
+    output
+        .try_reserve_exact(bytes.len())
+        .map_err(BlobError::Allocation)?;
+    output.extend_from_slice(bytes);
+    Ok(())
+}
+
 /// Pack one byte slice with zlib's default level or a level from zero to nine.
 /// # Arguments
 /// * `input` - Bytes to compress.
@@ -88,7 +110,30 @@ fn append(output: &mut Vec<u8>, bytes: &[u8]) -> Result<(), BlobError> {
 /// assert_eq!(&packed[..4], &[0, 0, 0, 3]);
 /// ```
 pub fn pack(input: &[u8], level: i32) -> Result<Vec<u8>, BlobError> {
-    pack_parts(input, &[], level)
+    pack_parts(input, &[], level, usize::MAX)
+}
+
+/// Pack bytes within a caller-selected stored-envelope ceiling.
+///
+/// The ceiling includes the four-byte header and is checked before every output
+/// reservation. The encoder still uses its fixed 8192-byte working buffer and
+/// the compression backend owns internal state; this is not a global allocator cap.
+/// # Arguments
+/// * `input` - Full bytes to encode.
+/// * `level` - Native zlib level, -1 or zero through nine.
+/// * `max_stored` - Largest returned header plus compressed stream.
+/// # Returns
+/// Exact legacy packed bytes when they fit the ceiling.
+/// # Examples
+/// ```
+/// let packed = gossil::compression::pack_bounded(b"abc", -1, 64).unwrap();
+/// assert_eq!(packed, gossil::compression::pack(b"abc", -1).unwrap());
+/// assert!(gossil::compression::pack_bounded(b"abc", -1, 3).is_err());
+/// ```
+/// # Errors
+/// Rejects output above the ceiling and preserves all ordinary packing errors.
+pub fn pack_bounded(input: &[u8], level: i32, max_stored: usize) -> Result<Vec<u8>, BlobError> {
+    pack_parts(input, &[], level, max_stored)
 }
 
 /// Pack the concatenation of two slices at Fossil's fixed compression level nine.
@@ -104,7 +149,7 @@ pub fn pack(input: &[u8], level: i32) -> Result<Vec<u8>, BlobError> {
 /// assert!(gossil::compression::pack_two(b"a", b"bc").is_ok());
 /// ```
 pub fn pack_two(first: &[u8], second: &[u8]) -> Result<Vec<u8>, BlobError> {
-    pack_parts(first, second, 9)
+    pack_parts(first, second, 9, usize::MAX)
 }
 
 /// Check the format length without allocating or concatenating input.
@@ -127,11 +172,17 @@ fn input_length(first: usize, second: usize) -> Result<u32, BlobError> {
 /// * `first` - Initial content.
 /// * `second` - Additional content.
 /// * `level` - Validated zlib compression level.
+/// * `max_stored` - Maximum complete stored envelope length.
 /// # Returns
 /// Packed bytes for the concatenation.
 /// # Errors
 /// Returns checked length, level, allocation or backend failures.
-fn pack_parts(first: &[u8], second: &[u8], level: i32) -> Result<Vec<u8>, BlobError> {
+fn pack_parts(
+    first: &[u8],
+    second: &[u8],
+    level: i32,
+    max_stored: usize,
+) -> Result<Vec<u8>, BlobError> {
     let compression = match level {
         -1 => Compression::default(),
         0..=9 => Compression::new(level as u32),
@@ -139,7 +190,7 @@ fn pack_parts(first: &[u8], second: &[u8], level: i32) -> Result<Vec<u8>, BlobEr
     };
     let length = input_length(first.len(), second.len())?;
     let mut output = Vec::new();
-    append(&mut output, &length.to_be_bytes())?;
+    append_packed(&mut output, &length.to_be_bytes(), max_stored)?;
     let mut stream = Compress::new(compression, true);
     for (part, finish) in [(first, false), (second, true)] {
         let mut consumed = 0;
@@ -160,7 +211,7 @@ fn pack_parts(first: &[u8], second: &[u8], level: i32) -> Result<Vec<u8>, BlobEr
                 .map_err(BlobError::Compress)?;
             consumed += (stream.total_in() - before_in) as usize;
             let produced = (stream.total_out() - before_out) as usize;
-            append(&mut output, &chunk[..produced])?;
+            append_packed(&mut output, &chunk[..produced], max_stored)?;
             if status == Status::StreamEnd || (!finish && consumed == part.len()) {
                 break;
             }
@@ -228,6 +279,24 @@ pub fn unpack(input: &[u8], max_output: usize) -> Result<Unpacked, BlobError> {
 /// Check error boundaries that need impossible-sized requests or backend misuse.
 mod tests {
     use super::*;
+
+    #[test]
+    /// Stored ceilings include the header and are checked before each vector growth.
+    fn bounded_packing_header_and_stream_boundaries() {
+        for input in [
+            vec![],
+            b"abc".to_vec(),
+            (0..20000).map(|i| (i * 131 % 251) as u8).collect(),
+        ] {
+            let expected = pack(&input, 0).unwrap();
+            assert_eq!(pack_bounded(&input, 0, expected.len()).unwrap(), expected);
+            assert!(matches!(
+                pack_bounded(&input, 0, expected.len() - 1),
+                Err(BlobError::Limit)
+            ));
+            assert!(matches!(pack_bounded(&input, 0, 3), Err(BlobError::Limit)));
+        }
+    }
 
     #[test]
     /// Reject oversized header lengths without allocating multi-gigabyte inputs.

@@ -1,0 +1,47 @@
+{
+  "review_kind": "bounded independent adversarial source preflight; not final ordered review gate",
+  "candidate": "/tmp/gossil-parser-final-candidate-20261118-0713",
+  "manifest_sha256": "2409902316dfc9bce8507da221ccb0cb6db89a025d87a4756b131d861b27677c",
+  "integrity": {
+    "indexed_files": 142,
+    "mismatches": []
+  },
+  "findings": [
+    {
+      "priority": "P1",
+      "title": "Preserve next_card zero sentinel after consuming terminal NUL card",
+      "candidate_location": "src/artifact.rs:434-442; parse loop :682-686",
+      "test_location": "tests/artifact_parser.rs:1052-1058",
+      "source_locations": [
+        "manifest.c:403-416 next_card",
+        "manifest.c:552 while next_card != 0",
+        "manifest.c:1077 final cursor check",
+        "manifest.c:352-369 verify_z_card"
+      ],
+      "reproducer": "Append bytes 00 0a to preserved tests/fixtures/artifact/manifest-valid.artifact without regenerating its Z card.",
+      "source_prediction": "next_card consumes both terminal bytes, sets atEol true, and returns zero. The native loop exits without applying ordering/card validation. Cursor equals end, so final cursor test passes. Existing C/D/Z cards infer Manifest and satisfy its matrix. verify_z_card does not check MD5 because final 35 bytes no longer begin Z-space. Native acceptance is source-predicted only; no native execution occurred.",
+      "candidate_prediction": "Cursor::card returns Some(0), so the loop rejects card 0 as decreasing after Z. The current test explicitly expects this rejection.",
+      "recommendation": "After recognizing and consuming the separator, treat c==0 as the native end sentinel; retain final cursor validation. Correct trailing-NUL test to acceptance and include unread-tail rejection control."
+    }
+  ],
+  "reviewed_surfaces": [
+    "entire src/artifact.rs including public types/getters, errors/date seam, Cursor, Budget, all helpers, all 21 card branches, selection/masks/postconditions, unit tests",
+    "entire tests/artifact_parser.rs: preserved fixtures, typed fields, limits/errors, raw NUL, W arithmetic, repetitions, provider wrappers, matrix/deletion controls, signature/path/hash/escape tests",
+    "accepted V2 report and independent source review; snapshot manifest integrity; source helper implementations in manifest.c, encode.c, blob.c, file.c, wiki.c, util.c; worktree token_codec.rs and artifact_checksum.rs; edge-test-map structure and evidence handback"
+  ],
+  "other_conclusions": {
+    "immutability": "No public record constructor or mutable accessor found; immutable parser result cannot be forged through reviewed safe public API. DecodedToken mutable fields are reachable only by shared references.",
+    "bounds": "No confirmed unbounded allocation bypass: parser copies/decodes/list pushes use aggregate charges and fallible reserve; MD5 uses fixed state; W checks byte bounds before copying. Provider internal allocations remain caller responsibility.",
+    "tests": "Typed payload assertions and selected-provider tests exist; not solely mask self-comparison. Escape expected values reuse the accepted token codec, so those cases prove integration rather than independent codec correctness. The terminal-NUL negative is a concrete incorrect source oracle.",
+    "provider": "Known old-libsql fractional-D binary64 mismatch remains deliberately red pending patched-provider composition; not a new finding."
+  },
+  "uncertainty": [
+    "No product tests rerun in this preflight. No native Fossil process/probe executed. Source-predicted acceptance is not an observed runtime receipt.",
+    "No Windows/Cygwin execution, final provider composition, inherited conformance, or final ordered review gates qualified.",
+    "Source/test-map cardinalities and preserved command receipts are not standalone runtime parity proof."
+  ],
+  "actions": "Read-only source review plus assigned scratch JSON only. No product edits, Git/Gest mutations, installed tool changes or native probes. Gest omitted by explicit leaf instruction.",
+  "recommendations": [
+    "Fix terminal zero sentinel and regression expectation in author worktree, freeze a new candidate, and re-review changed surfaces before final composed gates."
+  ]
+}

@@ -1,0 +1,54 @@
+just --justfile '/Users/rahul/Projects/gossil.worktrees/gest-upxnmvpv-native-storage/Justfile' rust test "$@"
+uv run --no-project --quiet --python '>=3.11' python '/Users/rahul/Projects/gossil.worktrees/gest-upxnmvpv-native-storage/.agents/just/rust/steps.py' run test "$@"
+WARN `--no-project` was provided, but no project was found
+cargo llvm-cov test --all-features --locked --include-build-script --workspace --lcov --output-path target/llvm-cov/test.part0.lcov --test blob_primitives
+info: cargo-llvm-cov currently setting cfg(coverage); you can opt-out it by passing --no-cfg-coverage
+   Compiling gossil v0.1.0 (/Users/rahul/Projects/gossil.worktrees/gest-upxnmvpv-native-storage)
+warning: method `decode_full_content` is never used
+   --> src/storage/content.rs:216:8
+    |
+104 | impl WriteTransaction<'_> {
+    | ------------------------- method in this implementation
+...
+216 |     fn decode_full_content(
+    |        ^^^^^^^^^^^^^^^^^^^
+    |
+    = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: constant `DDL` is never used
+ --> src/storage/schema.rs:8:7
+  |
+8 | const DDL: [&str; 6] = [
+  |       ^^^
+
+warning: method `install_schema` is never used
+  --> src/storage/schema.rs:55:25
+   |
+17 | impl WriteTransaction<'_> {
+   | ------------------------- method in this implementation
+...
+55 |     pub(super) async fn install_schema(&mut self) -> Result<(), StorageError> {
+   |                         ^^^^^^^^^^^^^^
+
+warning: `gossil` (lib) generated 3 warnings
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 3.18s
+     Running tests/blob_primitives.rs (target/llvm-cov-target/debug/deps/blob_primitives-3915751e7c0272d1)
+
+running 10 tests
+test byte_digests_match_known_answers ... ok
+test declared_capacity_limit_is_explicit_caller_policy ... ok
+test capacity_is_upper_bound_and_trailing_bytes_are_ignored ... ok
+test rust_packed_bytes_decode_with_native_fossil ... ignored, requires explicit pinned native Fossil; run just blob-interop
+test malformed_checksums_and_incomplete_streams_fail ... ok
+test packed_capacity_and_no_payload_are_distinct ... ok
+test collision_safe_hashes_match_native_fossil ... ok
+test every_fossil_sha3_width_and_rate_boundary_matches ... ok
+test native_packed_fixtures_decode_and_native_cli_noops_remain_explicit ... ok
+test binary_chunked_round_trips_at_every_level ... ok
+
+test result: ok. 9 passed; 0 failed; 1 ignored; 0 measured; 0 filtered out; finished in 0.05s
+
+
+    Finished report saved to target/llvm-cov/test.part0.lcov
+jlog step test
+{"kind":"step","run":"70d2a92d-4bbe-4fcf-beb6-f5879d0d9470","harness":"codex","session":"01a1ed5f-33fe-7cc3-b8a9-67574476100e","child":null,"time":"2026-11-18T06:56:42Z","argv":["just","test","--test","blob_primitives"],"step":"test"}

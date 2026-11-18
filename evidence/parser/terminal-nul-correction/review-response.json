@@ -1,0 +1,51 @@
+{
+  "finding": "P1 terminal zero next_card sentinel",
+  "disposition": "confirmed and corrected from pinned source only",
+  "source": [
+    "manifest.c:403-416",
+    "manifest.c:552",
+    "manifest.c:1077",
+    "manifest.c:352-369"
+  ],
+  "behavior": "Recognized delimiter advances cursor; zero marker returns no card before loop validation/card count. Earlier artifact masks still apply and any unread suffix fails. Initial structural check and final checksum-offset verification retain precedence.",
+  "historical_incorrect_assertion": {
+    "file": "tests/artifact_parser.rs",
+    "function": "order_paths_forum_and_remaining_raw_nul_controls",
+    "old_expectation": "append00 0a then is_err()",
+    "corrected_expectation": "append00 0a then is_ok() when preceding cards satisfy type and cursor exhausts",
+    "immutable_previous_snapshot": "/tmp/gossil-parser-final-candidate-20261118-0713",
+    "previous_manifest_sha256": "2409902316dfc9bce8507da221ccb0cb6db89a025d87a4756b131d861b27677c"
+  },
+  "red": {
+    "receipt": "evidence/parser/terminal-nul-correction/red.txt",
+    "compiling_behavioral_failure": "source_derived_terminal_zero_card_stops_after_consuming_its_delimiter expected true for00 0a; old candidate returned decreasing-card Syntax"
+  },
+  "green": {
+    "receipt": "evidence/parser/terminal-nul-correction/green.txt",
+    "passed": 22,
+    "filtered": 1,
+    "known_filter": "actual_provider_d_e_preserve_all_pinned_binary64_results"
+  },
+  "unit": {
+    "receipt": "evidence/parser/terminal-nul-correction/unit-green.txt",
+    "passed": 1,
+    "assertions": "space/LF/invalid delimiter cursor,eol,line state; nonzero control remains a card"
+  },
+  "provider": {
+    "receipt": "evidence/parser/terminal-nul-correction/provider-red.txt",
+    "status": "known original libsql numeric mismatch remains actual parsed D behavioral red; no claim of numerical acceptance"
+  },
+  "coverage": {
+    "receipt": "evidence/parser/terminal-nul-correction/changed-line-coverage.json",
+    "scope": "only correction production executable lines against prior frozen candidate",
+    "uncovered": [],
+    "full_coverage_claim": false
+  },
+  "verification": [
+    "lint-final.txt pass",
+    "docstring-check.txt pass",
+    "prose-check.txt0hard; independent revision pending parent",
+    "git diff --check pass"
+  ],
+  "provenance": "New controls are synthetic/source-derived predictions, not observed native behavior. No new native processes/probes, no API/provider/dependency changes, no Git/Gest mutations."
+}

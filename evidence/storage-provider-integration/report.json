@@ -1,0 +1,44 @@
+{
+  "status": "verified candidate composition; final parser acceptance and parent ordered gates pending",
+  "provider_base": "fea8dcdd3979a30bde80460c39bc299ce286afa3",
+  "parser_candidate_tree": "6c8605541ce6a2bc0103fb26a7a7200cd2a29d05",
+  "storage_manifest_sha256": "040d4a9f4a235f08b4ee53a853f4edfc49cb33f95fc53d39cf615e5faec4e1ae",
+  "checks": {
+    "just test": {
+      "exit": 0,
+      "passed": 69,
+      "failed": 0,
+      "note": "initial log mutated worktree freshness; coverage-check reran unit suite successfully"
+    },
+    "just integration": {
+      "exit": 0,
+      "passed": 62,
+      "failed": 0,
+      "ignored": 1,
+      "ignored_case": "rust_packed_bytes_decode_with_native_fossil; explicit native interop only, no probe run"
+    },
+    "just coverage-check": {
+      "exit": 0,
+      "changed_executable_lines": 2914,
+      "missing_lines": 0,
+      "coverage_percent": 100,
+      "storage_owned_rust_files": 7,
+      "all_storage_files_percent": 100
+    }
+  },
+  "changes": "193 complete parser changed paths plus 96 reviewed storage paths, with clean provider/MD5/storage three-way src/storage.rs composition and exact-path upstream schema whitespace attribute",
+  "semantic_corrections": [],
+  "prohibited_work_not_run": [
+    "final just check",
+    "acceptance gates",
+    "staging",
+    "commits",
+    "new native Fossil probes"
+  ],
+  "outstanding": [
+    "accepted parser commit composition refresh",
+    "independent composed review",
+    "parent ordered gates and final staging/commit"
+  ],
+  "recommendations": "Use this verified bounded composition; next import final accepted parser documentation-only changes and run parent acceptance gates."
+}

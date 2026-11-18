@@ -1,0 +1,43 @@
+{
+  "scope": "Executed Rust public-API test correction; no production change or new native Fossil observation.",
+  "reviewed_tree": "81c70542f0be64314f3d9ac12282f9806781e9e7",
+  "tests_added": [
+    "aggregate_owned_budget_counts_escaped_tokens",
+    "aggregate_owned_budget_counts_cumulative_list_slots",
+    "aggregate_owned_budget_counts_body_after_tokens"
+  ],
+  "accounting": {
+    "escaped_tokens": "raw length + 4 encoded comment bytes + 10 retained date bytes + 4 encoded user bytes; decoded tokens are 3 bytes each",
+    "cumulative_cluster": "raw length + 2 * (40 hash bytes + size_of::<Vec<u8>> list slot); raw-only, one-entry-only and exact-minus-one caps reject",
+    "wiki_body": "raw length + 10 date bytes + 5 title bytes + 4 user bytes + 3 body bytes; raw-only, pre-body and exact-minus-one caps reject"
+  },
+  "independent_limits": "All cases keep input_bytes=1000000, cards=10000, entries=20000; checksum helper appends valid MD5 Z card. Exact aggregate succeeds and payload is asserted.",
+  "mutation": {
+    "change": "Budget::charge returns success when self.bytes > 0, preserving initial raw charge and bypassing all later charges",
+    "compiled": true,
+    "exit": 101,
+    "outcome": "3 actual assertion failures, zero passed; not a compiler/setup failure",
+    "restored": true
+  },
+  "green": {
+    "focused": 3,
+    "full_unfiltered_parser_integration": 27,
+    "private_parser_unit": 3,
+    "lint": "passed",
+    "docstring": "passed",
+    "fmt": "passed",
+    "coverage": "703/703 changed executable source lines, zero exceptions"
+  },
+  "initial_fmt": "Initial formatting check rejected the new unformatted test code; cargo fmt corrected it before mutation and final verification. Lossless initial failure log retained.",
+  "source_restoration": {
+    "reviewed_tree": "81c70542f0be64314f3d9ac12282f9806781e9e7",
+    "path": "src/artifact.rs",
+    "sha256": "d607cd77a3adb97ce6df92caf5817c3d577dad51966a3757a38cae23b4e2f860",
+    "reviewed_tree_blob": "2aac12026eb41115b6c7c383cd255d0eeff4e26a",
+    "byte_exact_restoration": true
+  },
+  "tag_classification": "Existing parser/resource-limit test correction; coordinator owns tracked task metadata.",
+  "dependency_impact": "Pre-edit ast-grep Rust method-call inventory captured; relevant Budget charge/copy/decode/push callers retained. No API/runtime dependers changed.",
+  "workflow": "Gest, staging, commits and final ordered acceptance remain coordinator-owned. No just check run, no staging/commit, no historical evidence/fixture edits. Evidence JSON is machine-readable rather than a Markdown prose page.",
+  "recommendations": "Independently review this exact test correction, then run coordinator-owned ordered acceptance on the complete tree."
+}

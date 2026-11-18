@@ -6,8 +6,8 @@ primitives do not select a repository hash policy or store content. The runner
 and these primitives share a crate. CLI integration remains separate work.
 
 Legacy MD5 checksums have a separate [artifact checksum module](artifact-checksum.md).
-That module supplies byte checksums for future artifact validation; it does not
-change the repository content identity policy described here.
+The [artifact parser](artifact-parser.md) uses that module for Z-card validation.
+The checksum module does not select repository content identities.
 
 ## Use the library
 
@@ -72,7 +72,7 @@ format has no additional fixed small cap. Encoding rejects lengths above the
 unsigned 32-bit header range. C overflow and undefined behavior are not ported.
 
 Inputs of at most four bytes produce `Unpacked::NoPayload`. A caller that replaces an existing buffer
-must retain those bytes for that result. A successfully decoded empty
+must leave its existing buffer contents unchanged for that result. A successfully decoded empty
 stream produces `Unpacked::Bytes` with an empty vector. These outcomes differ.
 Fossil's diagnostic `test-uncompress` ignores the C function's error return, so
 CLI exit zero does not prove successful decoding.
@@ -126,13 +126,13 @@ It also checks rollback of a failed transaction. This fixture adds composition
 coverage without changing the native byte evidence above.
 
 See the [development workflow](development-plan.md#checkpoints-and-ownership)
-for review of this composition. Installed tool updates remain a separate refresh
-run by the coordinator. Source
+for review of this composition. The agent coordinating integration refreshes installed tools separately. Source
 changes and passing local checks do not establish a remote release.
 
 ## Recommendations
 
 Use these library primitives with an explicit caller output limit.
 Next, follow the [review workflow](development-plan.md#checkpoints-and-ownership),
-including `just check`, for the composed core before adding domain storage. Keep the finite native observations separate
+including `just check`, for the composed core before extending native storage.
+Keep the finite native observations separate
 from the local storage fixture.

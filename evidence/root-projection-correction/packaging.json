@@ -1,0 +1,16 @@
+{
+  "format": "gossil-mechanical-evidence-packaging-v1",
+  "status": "author packet retained; independent final composition acceptance pending",
+  "source": "/tmp/gossil-storage-root-projection-fix-20261118",
+  "source_manifest_sha256": "97dce06be5134979081a842cf4351dd09df99383cebc23dfcfc5b60fb67131f3",
+  "archive": "packet.tar.gz",
+  "archive_sha256": "6747166b75c611ba7191b996f41e3999ac3f1687500e89bb5880abab5390c926",
+  "archive_bytes": 184369,
+  "entries": 90,
+  "verification": "Every entry matched author bytes, length and hash before packaging and was byte-equal after archive decoding. Complete failed, interrupted, red and green evidence retained; no result reclassified.",
+  "runtime_source_sha256": "d7811b448d2d07da6ad389c0b955bb095c2313ae249a950a9891d2be4edef2fc",
+  "input_index_tree": "d950e65538c037ff9fd682dd57d2349d509679ef",
+  "owned_runtime_delta": [
+    "src/storage/repository.rs"
+  ]
+}

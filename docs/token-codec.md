@@ -82,4 +82,4 @@ artifact parsing, storage integration or complete engine compatibility.
 
 Use `fossilize` for bounded byte slices and choose C-string behavior explicitly
 when needed. Next, follow the [review workflow](development-plan.md#checkpoints-and-ownership),
-including `just check`, before integrating this primitive with artifact parsing.
+including `just check`, for the [artifact parser](artifact-parser.md) composition.

@@ -1,0 +1,51 @@
+just --justfile '/Users/rahul/Projects/gossil.worktrees/gest-tmzxtktq-artifact-parser/Justfile' rust test "$@"
+uv run --no-project --quiet --python '>=3.11' python '/Users/rahul/Projects/gossil.worktrees/gest-tmzxtktq-artifact-parser/.agents/just/rust/steps.py' run test "$@"
+WARN `--no-project` was provided, but no project was found
+cargo llvm-cov test --all-features --locked --include-build-script --workspace --lcov --output-path target/llvm-cov/test.part0.lcov --test artifact_parser -- --skip actual_provider_d_e_preserve
+info: cargo-llvm-cov currently setting cfg(coverage); you can opt-out it by passing --no-cfg-coverage
+   Compiling gossil v0.1.0 (/Users/rahul/Projects/gossil.worktrees/gest-tmzxtktq-artifact-parser)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 4.17s
+     Running tests/artifact_parser.rs (target/llvm-cov-target/debug/deps/artifact_parser-c207989fdb07b4d1)
+
+running 22 tests
+test corrupt_checksum_precedes_decoding ... ok
+test date_failures_preserve_provider_cause ... ok
+test eight_preserved_valid_raw_baselines ... ok
+test empty_tokens_mixed_hashes_and_shortened_attachment_targets ... ok
+test explicit_limits_are_distinct_from_syntax_and_checksum ... ok
+test modular_w_scanner_and_exact_body_boundaries ... ok
+test order_paths_forum_and_remaining_raw_nul_controls ... ok
+test actual_provider_now_stays_within_same_engine_clock_interval ... ok
+test repeated_cards_and_native_inference_are_not_blanket_singletons ... ok
+test raw_nul_depends_on_each_token_consumer ... ok
+test actual_selected_libsql_provider_parses_all_eight_baselines ... ok
+test attachment_endpoint_wiki_and_source_edges ... ok
+test signature_and_checksum_envelopes_follow_source_scanning ... ok
+test source_derived_terminal_zero_card_stops_after_consuming_its_delimiter ... ok
+test terminal_zero_does_not_turn_unread_suffix_or_incomplete_type_into_success ... FAILED
+test typed_fields_are_owned_and_c_prefixes_survive ... ok
+test typed_fields_match_preserved_artifact_payloads ... ok
+test w_modular_threshold_and_body_edges ... ok
+test escape_and_hash_edge_families ... ok
+test all_21_repeat_branches_reject_or_accumulate_per_source ... ok
+test preserved_fixture_acceptance_receipts ... ok
+test all_208_matrix_insertions_and_29_required_deletions ... ok
+
+failures:
+
+---- terminal_zero_does_not_turn_unread_suffix_or_incomplete_type_into_success stdout ----
+
+thread 'terminal_zero_does_not_turn_unread_suffix_or_incomplete_type_into_success' (313016498) panicked at tests/artifact_parser.rs:1258:9:
+tail [0, 10, 90, 32, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 97, 10]
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+
+failures:
+    terminal_zero_does_not_turn_unread_suffix_or_incomplete_type_into_success
+
+test result: FAILED. 21 passed; 1 failed; 0 ignored; 0 measured; 1 filtered out; finished in 0.03s
+
+error: test failed, to rerun pass `--test artifact_parser`
+error: process didn't exit successfully: `/Users/rahul/.rustup/toolchains/stable-aarch64-apple-darwin/bin/cargo test --manifest-path /Users/rahul/Projects/gossil.worktrees/gest-tmzxtktq-artifact-parser/Cargo.toml --target-dir /Users/rahul/Projects/gossil.worktrees/gest-tmzxtktq-artifact-parser/target/llvm-cov-target --all-features --locked --workspace --test artifact_parser -- --skip actual_provider_d_e_preserve` (exit status: 101)
+error: Recipe `test` failed on line 6 with exit code 101
+error: Recipe `test` failed on line 65 with exit code 101

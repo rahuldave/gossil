@@ -1,0 +1,6 @@
+[
+  {
+    "path": "src/storage/schema/native-repository.sql",
+    "diagnostic": "src/storage/schema/native-repository.sql:5: trailing whitespace.\n+-- The BLOB and DELTA tables contain all records held in the \nsrc/storage/schema/native-repository.sql:15: trailing whitespace.\n+-- a Fossil \nsrc/storage/schema/native-repository.sql:72: trailing whitespace.\n+-- The config table holds miscellanous information about the \nsrc/storage/schema/native-repository.sql:86: trailing whitespace.\n+-- the \nsrc/storage/schema/native-repository.sql:106: trailing whitespace.\n+-- \nsrc/storage/schema/native-repository.sql:138: trailing whitespace.\n+-- database as a fossil \n"
+  }
+]

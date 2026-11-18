@@ -1,0 +1,5 @@
+{
+  "files_checked": 298,
+  "failures": [],
+  "policy": "Inherited upstream schema whitespace preserved at exact path; other files retain default checks."
+}

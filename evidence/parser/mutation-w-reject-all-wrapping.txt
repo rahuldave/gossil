@@ -1,0 +1,30 @@
+just --justfile '/Users/rahul/Projects/gossil.worktrees/gest-tmzxtktq-artifact-parser/Justfile' rust test "$@"
+uv run --no-project --quiet --python '>=3.11' python '/Users/rahul/Projects/gossil.worktrees/gest-tmzxtktq-artifact-parser/.agents/just/rust/steps.py' run test "$@"
+WARN `--no-project` was provided, but no project was found
+cargo llvm-cov test --all-features --locked --include-build-script --workspace --lcov --output-path target/llvm-cov/test.part0.lcov --test artifact_parser w_modular_threshold_and_body_edges
+info: cargo-llvm-cov currently setting cfg(coverage); you can opt-out it by passing --no-cfg-coverage
+   Compiling gossil v0.1.0 (/Users/rahul/Projects/gossil.worktrees/gest-tmzxtktq-artifact-parser)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 3.23s
+     Running tests/artifact_parser.rs (target/llvm-cov-target/debug/deps/artifact_parser-c207989fdb07b4d1)
+
+running 1 test
+test w_modular_threshold_and_body_edges ... FAILED
+
+failures:
+
+---- w_modular_threshold_and_body_edges stdout ----
+
+thread 'w_modular_threshold_and_body_edges' (312938784) panicked at tests/artifact_parser.rs:841:27:
+W 5000000000: Err(Syntax { offset: 31, line: 4, message: "size overflow on W-card" })
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+
+failures:
+    w_modular_threshold_and_body_edges
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 18 filtered out; finished in 0.00s
+
+error: test failed, to rerun pass `--test artifact_parser`
+error: process didn't exit successfully: `/Users/rahul/.rustup/toolchains/stable-aarch64-apple-darwin/bin/cargo test --manifest-path /Users/rahul/Projects/gossil.worktrees/gest-tmzxtktq-artifact-parser/Cargo.toml --target-dir /Users/rahul/Projects/gossil.worktrees/gest-tmzxtktq-artifact-parser/target/llvm-cov-target --all-features --locked --workspace --test artifact_parser w_modular_threshold_and_body_edges` (exit status: 101)
+error: Recipe `test` failed on line 6 with exit code 101
+error: Recipe `test` failed on line 65 with exit code 101

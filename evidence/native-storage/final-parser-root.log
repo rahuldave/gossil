@@ -1,0 +1,26 @@
+just --justfile '/Users/rahul/Projects/gossil.worktrees/gest-upxnmvpv-native-storage/Justfile' rust test "$@"
+uv run --no-project --quiet --python '>=3.11' python '/Users/rahul/Projects/gossil.worktrees/gest-upxnmvpv-native-storage/.agents/just/rust/steps.py' run test "$@"
+WARN `--no-project` was provided, but no project was found
+cargo llvm-cov test --all-features --locked --include-build-script --workspace --lcov --output-path target/llvm-cov/test.part0.lcov --lib storage::repository::tests::complete_native_root_creation_reopens_and_refuses_existing_destination
+info: cargo-llvm-cov currently setting cfg(coverage); you can opt-out it by passing --no-cfg-coverage
+   Compiling gossil v0.1.0 (/Users/rahul/Projects/gossil.worktrees/gest-upxnmvpv-native-storage)
+warning: unused variable: `user`
+  --> src/storage/repository.rs:96:17
+   |
+96 |             let user = std::str::from_utf8(options.user).map_err(|e| StorageError::caused("local native user is not UTF-8", e))?;
+   |                 ^^^^ help: if this is intentional, prefix it with an underscore: `_user`
+   |
+   = note: `#[warn(unused_variables)]` (part of `#[warn(unused)]`) on by default
+
+warning: `gossil` (lib test) generated 1 warning (run `cargo fix --lib -p gossil --tests` to apply 1 suggestion)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 31.70s
+     Running unittests src/lib.rs (target/llvm-cov-target/debug/deps/gossil-fe5ec46fdcdce3bd)
+
+running 1 test
+test storage::repository::tests::complete_native_root_creation_reopens_and_refuses_existing_destination ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 42 filtered out; finished in 0.50s
+
+error: failed to collect object files: not found object files (searched directories: /Users/rahul/Projects/gossil.worktrees/gest-upxnmvpv-native-storage/target/llvm-cov-target/debug); this may occur if show-env subcommand is used incorrectly (see docs or other warnings), or unsupported commands or configs are used
+error: Recipe `test` failed on line 6 with exit code 1
+error: Recipe `test` failed on line 65 with exit code 1

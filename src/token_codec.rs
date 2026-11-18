@@ -103,6 +103,22 @@ pub fn fossilize(input: &[u8]) -> Result<Vec<u8>, TokenError> {
     fossilize_with_limit(input, isize::MAX as usize)
 }
 
+/// Plan the exact existing Fossil token encoding before allocating its output.
+/// # Arguments
+/// * `input` - Complete bounded bytes, including embedded NUL.
+/// * `limit` - Maximum encoded size, capped at Rust vector capacity.
+/// # Returns
+/// The exact byte length emitted by the existing encoder.
+/// # Errors
+/// Returns [`TokenError::Size`] on expansion, arithmetic or vector-capacity overflow.
+pub(crate) fn fossilized_size(input: &[u8], limit: usize) -> Result<usize, TokenError> {
+    encoded_size(
+        input.len(),
+        input.iter().filter(|byte| escape(**byte).is_some()).count(),
+        limit,
+    )
+}
+
 /// Encode with an output bound, checking expansion before reservation.
 /// # Arguments
 /// * `input` - Arbitrary bytes, without UTF-8 requirements.
@@ -113,11 +129,7 @@ pub fn fossilize(input: &[u8]) -> Result<Vec<u8>, TokenError> {
 /// Returns [`TokenError::Size`] when expansion exceeds the bound, or
 /// [`TokenError::Allocation`] when output reservation fails.
 fn fossilize_with_limit(input: &[u8], limit: usize) -> Result<Vec<u8>, TokenError> {
-    let size = encoded_size(
-        input.len(),
-        input.iter().filter(|byte| escape(**byte).is_some()).count(),
-        limit,
-    )?;
+    let size = fossilized_size(input, limit)?;
     let mut output = output_buffer(size)?;
     for &byte in input {
         if let Some(letter) = escape(byte) {
@@ -215,6 +227,31 @@ mod tests {
             assert!(matches!(error, TokenError::Size));
             assert!(error.source().is_none());
         }
+    }
+
+    #[test]
+    /// Planning and encoding share all byte escape semantics and exact boundaries.
+    fn exact_size_plan_matches_encoder_for_every_byte_and_escape() {
+        for byte in 0..=u8::MAX {
+            let input = [byte];
+            let expected = fossilize(&input).unwrap();
+            assert_eq!(
+                fossilized_size(&input, expected.len()).unwrap(),
+                expected.len()
+            );
+            assert!(matches!(
+                fossilized_size(&input, expected.len() - 1),
+                Err(TokenError::Size)
+            ));
+        }
+        let all_bytes: Vec<u8> = (0..=u8::MAX).collect();
+        let expected = fossilize(&all_bytes).unwrap();
+        assert_eq!(
+            fossilized_size(&all_bytes, expected.len()).unwrap(),
+            expected.len()
+        );
+        assert!(fossilized_size(&all_bytes, expected.len() - 1).is_err());
+        assert_eq!(fossilized_size(b"", 0).unwrap(), 0);
     }
 
     #[test]

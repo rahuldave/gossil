@@ -1,0 +1,42 @@
+just --justfile '/Users/rahul/Projects/gossil.worktrees/gest-upxnmvpv-native-storage/Justfile' rust test "$@"
+uv run --no-project --quiet --python '>=3.11' python '/Users/rahul/Projects/gossil.worktrees/gest-upxnmvpv-native-storage/.agents/just/rust/steps.py' run test "$@"
+WARN `--no-project` was provided, but no project was found
+cargo llvm-cov test --all-features --locked --include-build-script --workspace --lcov --output-path target/llvm-cov/test.part0.lcov --lib storage::schema::tests::full_schema_install_is_owned_and_atomic
+info: cargo-llvm-cov currently setting cfg(coverage); you can opt-out it by passing --no-cfg-coverage
+   Compiling gossil v0.1.0 (/Users/rahul/Projects/gossil.worktrees/gest-upxnmvpv-native-storage)
+warning: method `execute_bound` is never used
+   --> src/storage.rs:266:14
+    |
+206 | impl WriteTransaction<'_> {
+    | ------------------------- method in this implementation
+...
+266 |     async fn execute_bound(&mut self, sql: &'static str, values: Vec<Value>) -> Result<u64, StorageError> {
+    |              ^^^^^^^^^^^^^
+    |
+    = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: `gossil` (lib test) generated 1 warning
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 3.83s
+     Running unittests src/lib.rs (target/llvm-cov-target/debug/deps/gossil-fe5ec46fdcdce3bd)
+
+running 1 test
+test storage::schema::tests::full_schema_install_is_owned_and_atomic ... FAILED
+
+failures:
+
+---- storage::schema::tests::full_schema_install_is_owned_and_atomic stdout ----
+
+thread 'storage::schema::tests::full_schema_install_is_owned_and_atomic' (312827632) panicked at src/storage/schema.rs:69:37:
+called `Result::unwrap()` on an `Err` value: StorageError { operation: "unsupported repository catalog: 35862e3d85100f9415d63bbb04e6a8e9540e2a53595de25bc44a7ddf478c3e1e", cleanup: None, source: None }
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+
+failures:
+    storage::schema::tests::full_schema_install_is_owned_and_atomic
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 30 filtered out; finished in 0.12s
+
+error: test failed, to rerun pass `--lib`
+error: process didn't exit successfully: `/Users/rahul/.rustup/toolchains/stable-aarch64-apple-darwin/bin/cargo test --manifest-path /Users/rahul/Projects/gossil.worktrees/gest-upxnmvpv-native-storage/Cargo.toml --target-dir /Users/rahul/Projects/gossil.worktrees/gest-upxnmvpv-native-storage/target/llvm-cov-target --all-features --locked --workspace --lib 'storage::schema::tests::full_schema_install_is_owned_and_atomic'` (exit status: 101)
+error: Recipe `test` failed on line 6 with exit code 101
+error: Recipe `test` failed on line 65 with exit code 101

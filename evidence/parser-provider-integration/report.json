@@ -1,0 +1,143 @@
+{
+  "kind": "observed Rust selected-provider composition; not new native Fossil observation or final ordered gate",
+  "provider_base": "fea8dcdd3979a30bde80460c39bc299ce286afa3",
+  "candidate_manifest_sha256": "3d1e5292ac68c7a55274d474a56fcd15186ae99100b3c28bc37d11fa165278b9",
+  "owned_cargo_surfaces": [
+    "src/artifact.rs: three unit tests",
+    "tests/artifact_parser.rs: all24integration tests",
+    "src/lib.rs: module export only"
+  ],
+  "initial_unfiltered_parser": {
+    "passed": 23,
+    "filtered": 0,
+    "failed": 0
+  },
+  "final_unfiltered_parser": {
+    "passed": 24,
+    "filtered": 0,
+    "failed": 0
+  },
+  "actual_D_E": {
+    "original_tokens": 519,
+    "same_engine_provider_comparisons": 519,
+    "actual_parser_calls": 1038,
+    "admitted_per_card": 470,
+    "rejected_per_card": 49,
+    "lexical_admission_excludes": [
+      "space",
+      "LF",
+      "NUL"
+    ],
+    "positive_julianday_required": true,
+    "no_input_substitution": true
+  },
+  "initial_full_coverage": {
+    "exit": 1,
+    "missing_production_lines": [
+      405,
+      691,
+      706,
+      712,
+      779,
+      892,
+      914,
+      998
+    ]
+  },
+  "initial_new_test": {
+    "exit": 101,
+    "reason": "first-card admission rejects lowercase before card-loop diagnostic; moved lowercase control after valid C/D cards"
+  },
+  "final_full_coverage": {
+    "command": "just coverage-check",
+    "exit": 0,
+    "changed_executable_lines": 703,
+    "missing": 0,
+    "percent": 100,
+    "full_reports_preserved": true,
+    "unrelated_ignored_native_blob_test": 1
+  },
+  "correction": "Added8checksum-valid malformed-field controls in one public integration test; no runtime changes;160of161reviewed files identical.",
+  "new_controls_evidence_class": "source-derived malformed inputs executed against Rust parser; no new native probes",
+  "checks": {
+    "lint": 0,
+    "docstring-check": 0,
+    "fmt-check": 0,
+    "diff-check": 0
+  },
+  "remaining": "Parent-owned independent ordered docs/prose/review/test-review, final check, staging and commit.",
+  "files": [
+    {
+      "path": "evidence/parser-provider-integration/candidate-test-change.diff.gz",
+      "sha256": "6206a75ab3c0ea0739bc825f28b7506afc8604890b3f7f6ba9f71b69ec178988"
+    },
+    {
+      "path": "evidence/parser-provider-integration/correction-diff.log.gz",
+      "sha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    },
+    {
+      "path": "evidence/parser-provider-integration/correction-docstring.log.gz",
+      "sha256": "ab973920084ab17a36b510b30f00f875491801a394fe2ddf38bdf994026da7a3"
+    },
+    {
+      "path": "evidence/parser-provider-integration/correction-fmt.log.gz",
+      "sha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    },
+    {
+      "path": "evidence/parser-provider-integration/correction-lint.log.gz",
+      "sha256": "cb7e1ec1936b89abd8baaf5f330c43146660b0742bb0ea606aa2a3979baecb3e"
+    },
+    {
+      "path": "evidence/parser-provider-integration/diff-check.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "evidence/parser-provider-integration/docstring.log",
+      "sha256": "c35d91f1100bdc6fcb75054793b60ba09a00012277801f6d65c84c86c7c58106"
+    },
+    {
+      "path": "evidence/parser-provider-integration/final-integration.lcov.gz",
+      "sha256": "6e955bb23e6ec85de893bd00fa63b7cbffa432c98e8553f51a07500ca0b018bf"
+    },
+    {
+      "path": "evidence/parser-provider-integration/final-test.lcov.gz",
+      "sha256": "aeff8364c3079c593d2ad96ef834099e4c3ba854d26cc1399ccb1b1e72baae35"
+    },
+    {
+      "path": "evidence/parser-provider-integration/fmt.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "evidence/parser-provider-integration/focused-correction-initial.log.gz",
+      "sha256": "16142aecfcb947279b2f4edb37aabb5af265dea72fdb8712b7b56e9ed650791c"
+    },
+    {
+      "path": "evidence/parser-provider-integration/focused-correction-passing.log.gz",
+      "sha256": "d8be8811bf843b4bde85d1f35deb294684095f8cebf73222c8236402d7d75b53"
+    },
+    {
+      "path": "evidence/parser-provider-integration/full-coverage-initial.log.gz",
+      "sha256": "a5e025f5ed8b1b664a0948e90714fdc24e3e2f76e1000e794c8b57fa3ac68286"
+    },
+    {
+      "path": "evidence/parser-provider-integration/full-coverage-passing.log.gz",
+      "sha256": "744761e30dbee42cb5a3f5d02389a9c8ab0c0433a85e78e486b8e50c5c529a9c"
+    },
+    {
+      "path": "evidence/parser-provider-integration/impact.json.gz",
+      "sha256": "7fb15e4b4883fd2af97512fda510403990df5841e37952db96e2ee7d132a973d"
+    },
+    {
+      "path": "evidence/parser-provider-integration/lint.log",
+      "sha256": "4608a11394d96b39ac35a38ea222af1aa22d8de5595f82ab1687bfd84926cb74"
+    },
+    {
+      "path": "evidence/parser-provider-integration/parser-suite.log",
+      "sha256": "41f31f4d621206ae467c357ea32e36c098741fc52c50256009df5ee2c77befbb"
+    },
+    {
+      "path": "evidence/parser-provider-integration/parser-unit.log",
+      "sha256": "0ed3ca76c9f4aba0ce50dadd3144dd8947ae33a572e0786cfdb2167a184a74dc"
+    }
+  ]
+}

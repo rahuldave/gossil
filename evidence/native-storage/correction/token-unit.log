@@ -1,0 +1,20 @@
+just --justfile '/Users/rahul/Projects/gossil.worktrees/gest-upxnmvpv-native-storage/Justfile' rust test "$@"
+uv run --no-project --quiet --python '>=3.11' python '/Users/rahul/Projects/gossil.worktrees/gest-upxnmvpv-native-storage/.agents/just/rust/steps.py' run test "$@"
+WARN `--no-project` was provided, but no project was found
+cargo llvm-cov test --all-features --locked --include-build-script --workspace --lcov --output-path target/llvm-cov/test.part0.lcov --lib token_codec::tests::
+info: cargo-llvm-cov currently setting cfg(coverage); you can opt-out it by passing --no-cfg-coverage
+   Compiling gossil v0.1.0 (/Users/rahul/Projects/gossil.worktrees/gest-upxnmvpv-native-storage)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 8.91s
+     Running unittests src/lib.rs (target/llvm-cov-target/debug/deps/gossil-fe5ec46fdcdce3bd)
+
+running 3 tests
+test token_codec::tests::encoder_propagates_output_size_errors ... ok
+test token_codec::tests::resource_errors_preserve_causes ... ok
+test token_codec::tests::exact_size_plan_matches_encoder_for_every_byte_and_escape ... ok
+
+test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 56 filtered out; finished in 0.00s
+
+
+    Finished report saved to target/llvm-cov/test.part0.lcov
+jlog step test
+{"kind":"step","run":"7fdee3a1-18f5-41aa-9905-4246cddb76ad","harness":"codex","session":"01a1ed5f-33fe-7cc3-b8a9-67574476100e","child":null,"time":"2026-11-18T07:45:24Z","argv":["just","test","--lib","token_codec::tests::"],"step":"test"}

@@ -1,0 +1,26 @@
+just --justfile '/Users/rahul/Projects/gossil.worktrees/gest-tmzxtktq-artifact-parser/Justfile' rust test "$@"
+uv run --no-project --quiet --python '>=3.11' python '/Users/rahul/Projects/gossil.worktrees/gest-tmzxtktq-artifact-parser/.agents/just/rust/steps.py' run test "$@"
+WARN `--no-project` was provided, but no project was found
+cargo llvm-cov test --all-features --locked --include-build-script --workspace --lcov --output-path target/llvm-cov/test.part0.lcov --test artifact_parser
+info: cargo-llvm-cov currently setting cfg(coverage); you can opt-out it by passing --no-cfg-coverage
+   Compiling gossil v0.1.0 (/Users/rahul/Projects/gossil.worktrees/gest-tmzxtktq-artifact-parser)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 4.24s
+     Running tests/artifact_parser.rs (target/llvm-cov-target/debug/deps/artifact_parser-c207989fdb07b4d1)
+
+running 9 tests
+test corrupt_checksum_precedes_decoding ... ok
+test explicit_limits_are_distinct_from_syntax_and_checksum ... ok
+test modular_w_scanner_and_exact_body_boundaries ... ok
+test date_failures_preserve_provider_cause ... ok
+test typed_fields_are_owned_and_c_prefixes_survive ... ok
+test repeated_cards_and_native_inference_are_not_blanket_singletons ... ok
+test raw_nul_depends_on_each_token_consumer ... ok
+test eight_preserved_valid_raw_baselines ... ok
+test preserved_fixture_acceptance_receipts ... ok
+
+test result: ok. 9 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.03s
+
+
+    Finished report saved to target/llvm-cov/test.part0.lcov
+jlog step test
+{"kind":"step","run":"acf348a7-2417-4d6f-b23c-dd5a39d2d23e","harness":"codex","session":"01a1ed67-9772-7d92-a622-2f863b97d210","child":null,"time":"2026-11-18T06:59:08Z","argv":["just","test","--test","artifact_parser"],"step":"test"}

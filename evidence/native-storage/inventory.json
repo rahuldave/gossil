@@ -1,0 +1,848 @@
+{
+  "status": "bounded owned candidate; actual production-boundary test wiring corrected; independent v3 review and parent composition/acceptance pending",
+  "ddl": [
+    {
+      "file": "src/storage/schema/adapter-v4.sql",
+      "accepted_source": "/Users/rahul/Projects/AIProjectInfra/docs/gossil/evidence/storage-contract-20261118/reviewed/adapter-v4.sql",
+      "sha256": "a8cbcd837ecc20aef8cff728e50589e646a5acd23b4f86681a6a0f1c46dc8b78",
+      "byte_identical": true
+    },
+    {
+      "file": "src/storage/schema/checkout.sql",
+      "accepted_source": "/Users/rahul/Projects/AIProjectInfra/docs/gossil/evidence/storage-contract-20261118/reviewed/checkout.sql",
+      "sha256": "4eda46e8b94b39afcafab6e91ab791b11785f33c3f00aaf2b6592652dcbec602",
+      "byte_identical": true
+    },
+    {
+      "file": "src/storage/schema/discussion-projections-v3.sql",
+      "accepted_source": "/Users/rahul/Projects/AIProjectInfra/docs/gossil/evidence/storage-contract-20261118/reviewed/discussion-projections-v3.sql",
+      "sha256": "322098c1afd5d56cd51e74758ae50c445c34e1b979fe8f7d624e9efad1d0efcf",
+      "byte_identical": true
+    },
+    {
+      "file": "src/storage/schema/local-bindings-v3.sql",
+      "accepted_source": "/Users/rahul/Projects/AIProjectInfra/docs/gossil/evidence/storage-contract-20261118/reviewed/local-bindings-v3.sql",
+      "sha256": "32c8346fe14845792cc1470b56644f23e06360866696084471c3a47d926a4703",
+      "byte_identical": true
+    },
+    {
+      "file": "src/storage/schema/native-repository.sql",
+      "accepted_source": "/Users/rahul/Projects/AIProjectInfra/docs/gossil/evidence/storage-contract-20261118/reviewed/native-repository.sql",
+      "sha256": "0dfff91eed27379a093f7ca272ecef8590fe365aa00068b073e8d039e4ebdc90",
+      "byte_identical": true
+    },
+    {
+      "file": "src/storage/schema/typed-projections.sql",
+      "accepted_source": "/Users/rahul/Projects/AIProjectInfra/docs/gossil/evidence/storage-contract-20261118/reviewed/typed-projections.sql",
+      "sha256": "eab4164ea8cb9ae89147fb1df4a4201cff3c306b8d40187e5650ab30e7592f83",
+      "byte_identical": true
+    }
+  ],
+  "focused_test_inventory": [
+    {
+      "file": "src/storage.rs",
+      "test": "settings_every_open"
+    },
+    {
+      "file": "src/storage.rs",
+      "test": "immediate_before_dml"
+    },
+    {
+      "file": "src/storage.rs",
+      "test": "caught_error_rejects_commit_and_later_helper"
+    },
+    {
+      "file": "src/storage.rs",
+      "test": "capabilities_commit_reopen_and_explicit_rollback"
+    },
+    {
+      "file": "src/storage.rs",
+      "test": "caught_hash_mismatch_rolls_back_prior_mutation_after_reopen"
+    },
+    {
+      "file": "src/storage.rs",
+      "test": "latched_domain_helpers_preserve_the_first_failure"
+    },
+    {
+      "file": "src/storage.rs",
+      "test": "commit_failure_rolls_back_and_reuses_idle_connection"
+    },
+    {
+      "file": "src/storage.rs",
+      "test": "failed_cleanup_preserves_original_and_poison_policy"
+    },
+    {
+      "file": "src/storage.rs",
+      "test": "dropped_owner_releases_aliases_and_poisoned_store"
+    },
+    {
+      "file": "src/storage.rs",
+      "test": "memory_retains_one_connection_and_excludes_wal_only"
+    },
+    {
+      "file": "src/storage.rs",
+      "test": "cancellation_at_controlled_await_rolls_back_but_after_commit_preserves"
+    },
+    {
+      "file": "src/storage.rs",
+      "test": "writers_on_os_threads_and_wal_reader"
+    },
+    {
+      "file": "src/storage.rs",
+      "test": "preparation_and_step_failures_latch_and_explicit_rollback_keeps_cause"
+    },
+    {
+      "file": "src/storage.rs",
+      "test": "configuration_mismatch_and_inconsistent_state_are_errors"
+    },
+    {
+      "file": "src/storage.rs",
+      "test": "explicit_rollback_cleanup_failure_retains_first_error"
+    },
+    {
+      "file": "src/storage.rs",
+      "test": "embedded_nul_path_returns_error_with_original_cause"
+    },
+    {
+      "file": "src/storage.rs",
+      "test": "path_validation_preserves_empty_invalid_utf8_and_valid_file_behavior"
+    },
+    {
+      "file": "src/storage/schema.rs",
+      "test": "full_schema_install_is_owned_and_atomic"
+    },
+    {
+      "file": "src/storage/repository.rs",
+      "test": "rejected_root_expansion_cannot_allocate_an_oversized_user_token"
+    },
+    {
+      "file": "src/storage/repository.rs",
+      "test": "whole_root_size_is_checked_before_any_variable_output_allocation"
+    },
+    {
+      "file": "src/storage/repository.rs",
+      "test": "complete_native_root_creation_reopens_and_refuses_existing_destination"
+    },
+    {
+      "file": "src/storage/repository.rs",
+      "test": "native_empty_root_constructor_has_exact_records_and_legacy_checksum"
+    },
+    {
+      "file": "src/storage/repository.rs",
+      "test": "local_owner_opens_only_complete_matching_catalog_and_revalidates"
+    },
+    {
+      "file": "src/storage/repository.rs",
+      "test": "private_file_roundtrip_dedup_and_phantom_stale_delta_removal"
+    },
+    {
+      "file": "src/storage/repository.rs",
+      "test": "verified_full_bytes_replace_unavailable_nonphantom_delta_without_leaving_delta_row"
+    },
+    {
+      "file": "src/storage/repository.rs",
+      "test": "native_delta_chain_reconstructs_and_shunned_or_cycle_baselines_fail"
+    },
+    {
+      "file": "src/storage/repository.rs",
+      "test": "caught_private_write_hash_error_rolls_back_entire_operation"
+    },
+    {
+      "file": "src/storage/repository.rs",
+      "test": "all_post_acquisition_policy_codec_and_limit_errors_latch_prior_writes"
+    },
+    {
+      "file": "src/storage/repository.rs",
+      "test": "restricted_shared_view_hides_private_names_and_keeps_public_identity_public"
+    },
+    {
+      "file": "src/storage/repository.rs",
+      "test": "unsupported_optional_schema_and_unregistered_trigger_are_distinct"
+    },
+    {
+      "file": "src/storage/repository.rs",
+      "test": "every_initialization_phase_failure_rolls_back_all_schema_and_state"
+    },
+    {
+      "file": "src/storage/repository.rs",
+      "test": "admission_detects_external_commit_and_unexpected_same_connection_writes"
+    },
+    {
+      "file": "src/storage/repository.rs",
+      "test": "date_provider_and_invalid_complete_root_fail_without_partial_initialization"
+    },
+    {
+      "file": "src/storage/repository.rs",
+      "test": "valid_native_artifact_with_unsupported_root_semantics_cannot_crosslink"
+    },
+    {
+      "file": "src/storage/repository.rs",
+      "test": "admission_rejects_wrong_root_inode_and_persisted_foreign_key_damage"
+    },
+    {
+      "file": "src/storage/repository.rs",
+      "test": "malformed_old_delta_metadata_and_limits_roll_back_prior_private_puts"
+    },
+    {
+      "file": "src/storage/repository.rs",
+      "test": "full_target_fulfills_with_phantom_old_baseline_without_modifying_that_baseline"
+    },
+    {
+      "file": "src/storage/repository.rs",
+      "test": "creation_rejects_invalid_bindings_and_open_rejects_nonregular_files"
+    },
+    {
+      "file": "src/storage/repository.rs",
+      "test": "admitted_authority_metadata_cannot_be_blessed_by_a_private_operation_counter_refresh"
+    },
+    {
+      "file": "src/storage/repository.rs",
+      "test": "missing_or_changed_catalog_denies_local_owner_admission"
+    },
+    {
+      "file": "src/storage/content.rs",
+      "test": "owned_identity_decoder_rejects_duplicate_and_wrong_type_rows"
+    },
+    {
+      "file": "src/storage/content.rs",
+      "test": "native_envelope_exceptions_and_exact_repository_validation"
+    },
+    {
+      "file": "src/storage/content.rs",
+      "test": "exact_size_failure_latches_all_content_helpers"
+    },
+    {
+      "file": "src/storage/content.rs",
+      "test": "exact_budget_boundaries_and_cycles"
+    },
+    {
+      "file": "src/compression.rs",
+      "test": "bounded_packing_header_and_stream_boundaries"
+    },
+    {
+      "file": "src/compression.rs",
+      "test": "format_length_bounds"
+    },
+    {
+      "file": "src/compression.rs",
+      "test": "error_causes_and_messages"
+    },
+    {
+      "file": "src/token_codec.rs",
+      "test": "encoder_propagates_output_size_errors"
+    },
+    {
+      "file": "src/token_codec.rs",
+      "test": "exact_size_plan_matches_encoder_for_every_byte_and_escape"
+    },
+    {
+      "file": "src/token_codec.rs",
+      "test": "resource_errors_preserve_causes"
+    }
+  ],
+  "real_red": {
+    "command": "just test --lib storage::tests::caught_hash_mismatch_rolls_back_prior_mutation_after_reopen",
+    "log": "hash-latch-red.log",
+    "observed": "compiled behavioral failure; reopened count 2, expected 0"
+  },
+  "green": "hash-latch-green.log",
+  "latest_executed": "wiring/disk-functional.log:49 storage pass; wiring/coverage.log:all functional/integration pass, seven owned Rust files100%; overall gate exit1 only copied parser58.6%/291 lines absent full parser tests",
+  "qualification_limits": [
+    "corrected libsql provider not yet composed",
+    "only frozen parser source/lib copied by parent; full parser test package absent",
+    "supported public closure limited to canonical empty initial root",
+    "general native/typed dependent crosslinks refuse completion",
+    "optional registry transitions, general publication, administration, migration, rebuild and filesystem recovery absent",
+    "no native Fossil probes or Gest/Git mutations; director owns final gates"
+  ],
+  "ownership": {
+    "owned": [
+      "src/storage.rs",
+      "src/storage/",
+      "src/compression.rs",
+      "docs/native-storage.md",
+      "evidence/native-storage/",
+      "src/token_codec.rs"
+    ],
+    "parent_copied_dependencies": [
+      "src/artifact.rs",
+      "src/lib.rs"
+    ],
+    "delivery_rule": "Storage delivery must exclude parent-copied parser/lib; preserve separately composed provider/storage.rs additions."
+  },
+  "source_owned_parser_sha256": "4198c2f4c1c01f31fedc2f7a5a1dc0392b71c796ed316b6e741c599743752f3a",
+  "test_inventory": [
+    {
+      "file": "src/storage.rs",
+      "test": "settings_every_open"
+    },
+    {
+      "file": "src/storage.rs",
+      "test": "immediate_before_dml"
+    },
+    {
+      "file": "src/storage.rs",
+      "test": "caught_error_rejects_commit_and_later_helper"
+    },
+    {
+      "file": "src/storage.rs",
+      "test": "capabilities_commit_reopen_and_explicit_rollback"
+    },
+    {
+      "file": "src/storage.rs",
+      "test": "caught_hash_mismatch_rolls_back_prior_mutation_after_reopen"
+    },
+    {
+      "file": "src/storage.rs",
+      "test": "latched_domain_helpers_preserve_the_first_failure"
+    },
+    {
+      "file": "src/storage.rs",
+      "test": "commit_failure_rolls_back_and_reuses_idle_connection"
+    },
+    {
+      "file": "src/storage.rs",
+      "test": "failed_cleanup_preserves_original_and_poison_policy"
+    },
+    {
+      "file": "src/storage.rs",
+      "test": "dropped_owner_releases_aliases_and_poisoned_store"
+    },
+    {
+      "file": "src/storage.rs",
+      "test": "memory_retains_one_connection_and_excludes_wal_only"
+    },
+    {
+      "file": "src/storage.rs",
+      "test": "cancellation_at_controlled_await_rolls_back_but_after_commit_preserves"
+    },
+    {
+      "file": "src/storage.rs",
+      "test": "writers_on_os_threads_and_wal_reader"
+    },
+    {
+      "file": "src/storage.rs",
+      "test": "preparation_and_step_failures_latch_and_explicit_rollback_keeps_cause"
+    },
+    {
+      "file": "src/storage.rs",
+      "test": "configuration_mismatch_and_inconsistent_state_are_errors"
+    },
+    {
+      "file": "src/storage.rs",
+      "test": "explicit_rollback_cleanup_failure_retains_first_error"
+    },
+    {
+      "file": "src/storage.rs",
+      "test": "embedded_nul_path_returns_error_with_original_cause"
+    },
+    {
+      "file": "src/storage.rs",
+      "test": "path_validation_preserves_empty_invalid_utf8_and_valid_file_behavior"
+    },
+    {
+      "file": "src/storage/schema.rs",
+      "test": "full_schema_install_is_owned_and_atomic"
+    },
+    {
+      "file": "src/storage/repository.rs",
+      "test": "complete_native_root_creation_reopens_and_refuses_existing_destination"
+    },
+    {
+      "file": "src/storage/repository.rs",
+      "test": "native_empty_root_constructor_has_exact_records_and_legacy_checksum"
+    },
+    {
+      "file": "src/storage/repository.rs",
+      "test": "local_owner_opens_only_complete_matching_catalog_and_revalidates"
+    },
+    {
+      "file": "src/storage/repository.rs",
+      "test": "private_file_roundtrip_dedup_and_phantom_stale_delta_removal"
+    },
+    {
+      "file": "src/storage/repository.rs",
+      "test": "verified_full_bytes_replace_unavailable_nonphantom_delta_without_leaving_delta_row"
+    },
+    {
+      "file": "src/storage/repository.rs",
+      "test": "native_delta_chain_reconstructs_and_shunned_or_cycle_baselines_fail"
+    },
+    {
+      "file": "src/storage/repository.rs",
+      "test": "caught_private_write_hash_error_rolls_back_entire_operation"
+    },
+    {
+      "file": "src/storage/repository.rs",
+      "test": "all_post_acquisition_policy_codec_and_limit_errors_latch_prior_writes"
+    },
+    {
+      "file": "src/storage/repository.rs",
+      "test": "restricted_shared_view_hides_private_names_and_keeps_public_identity_public"
+    },
+    {
+      "file": "src/storage/repository.rs",
+      "test": "unsupported_optional_schema_and_unregistered_trigger_are_distinct"
+    },
+    {
+      "file": "src/storage/repository.rs",
+      "test": "every_initialization_phase_failure_rolls_back_all_schema_and_state"
+    },
+    {
+      "file": "src/storage/repository.rs",
+      "test": "admission_detects_external_commit_and_unexpected_same_connection_writes"
+    },
+    {
+      "file": "src/storage/repository.rs",
+      "test": "date_provider_and_invalid_complete_root_fail_without_partial_initialization"
+    },
+    {
+      "file": "src/storage/repository.rs",
+      "test": "valid_native_artifact_with_unsupported_root_semantics_cannot_crosslink"
+    },
+    {
+      "file": "src/storage/repository.rs",
+      "test": "missing_or_changed_catalog_denies_local_owner_admission"
+    },
+    {
+      "file": "src/storage/content.rs",
+      "test": "owned_identity_decoder_rejects_duplicate_and_wrong_type_rows"
+    },
+    {
+      "file": "src/storage/content.rs",
+      "test": "native_envelope_exceptions_and_exact_repository_validation"
+    },
+    {
+      "file": "src/storage/content.rs",
+      "test": "exact_size_failure_latches_all_content_helpers"
+    },
+    {
+      "file": "src/storage/content.rs",
+      "test": "exact_budget_boundaries_and_cycles"
+    },
+    {
+      "file": "src/compression.rs",
+      "test": "bounded_packing_header_and_stream_boundaries"
+    },
+    {
+      "file": "src/compression.rs",
+      "test": "format_length_bounds"
+    },
+    {
+      "file": "src/compression.rs",
+      "test": "error_causes_and_messages"
+    }
+  ],
+  "scope_expansion": "Director authorized compression.rs bounded encoder entry point with same existing backend and exact legacy output. Director also authorized src/token_codec.rs internal exact-size planner extraction reused by unchanged existing encoder and root constructor.",
+  "coverage": {
+    "first": "coverage-first.log",
+    "candidate": "coverage-candidate.log",
+    "freeze": "coverage-freeze.log",
+    "status": "all owned changed Rust lines100%; overall gate fails only copied parser lacking its full candidate test bundle; no exclusions or waivers",
+    "exact_owned_report": {
+      "src/compression.rs": "100%",
+      "src/storage.rs": "100%",
+      "src/storage/policy.rs": "100%",
+      "src/storage/content.rs": {
+        "percent": 97.3,
+        "missing_lines": [
+          128,
+          131,
+          138,
+          141,
+          144,
+          149,
+          168,
+          244
+        ]
+      },
+      "src/storage/repository.rs": {
+        "percent": 97.8,
+        "missing_lines": [
+          "150-152",
+          159,
+          "263-264",
+          "266-268",
+          319,
+          "413-415",
+          494,
+          "512-514",
+          519,
+          "561-563",
+          574,
+          589,
+          612,
+          1100
+        ]
+      },
+      "src/storage/schema.rs": {
+        "percent": 95.5,
+        "missing_lines": [
+          35,
+          "42-43"
+        ]
+      }
+    },
+    "correction": "correction/coverage.log",
+    "latest_owned_report": {
+      "src/compression.rs": "100%",
+      "src/storage.rs": "100%",
+      "src/storage/content.rs": "100%",
+      "src/storage/policy.rs": "100%",
+      "src/token_codec.rs": "100%",
+      "src/storage/repository.rs": {
+        "percent": 99.5,
+        "missing_lines": [
+          "263-264",
+          "512-514",
+          519,
+          1209
+        ],
+        "gap_kinds": [
+          "OS metadata-error mapper after successful open",
+          "impossible extra/non-date rows from fixed selected-provider SELECT",
+          "defensive test fixture panic"
+        ]
+      },
+      "src/storage/schema.rs": {
+        "percent": 97.0,
+        "missing_lines": [
+          "42-43"
+        ],
+        "gap_kinds": [
+          "NULL or wrong-type owned values in fixed SQLite catalog fields"
+        ]
+      }
+    },
+    "closure": "coverage-closure/coverage.log",
+    "closure_owned_report": {
+      "src/compression.rs": "100%",
+      "src/storage.rs": "100%",
+      "src/storage/content.rs": "100%",
+      "src/storage/policy.rs": "100%",
+      "src/storage/repository.rs": "100%",
+      "src/storage/schema.rs": "100%",
+      "src/token_codec.rs": "100%"
+    },
+    "closure_parser": "58.0%,295 missing changed lines, not parser candidate evidence",
+    "wiring": "wiring/coverage.log",
+    "wiring_owned_report": {
+      "src/compression.rs": "100%",
+      "src/storage.rs": "100%",
+      "src/storage/content.rs": "100%",
+      "src/storage/policy.rs": "100%",
+      "src/storage/repository.rs": "100%",
+      "src/storage/schema.rs": "100%",
+      "src/token_codec.rs": "100%"
+    },
+    "wiring_parser": "58.6%,291 missing changed lines; not full parser candidate coverage"
+  },
+  "prose": {
+    "page": "docs/native-storage.md",
+    "checker": "correction/prose-check.log:0 hard/19 soft",
+    "independent_pass": "director-owned just prose pending"
+  },
+  "obligation_map": [
+    {
+      "id": "STOR-01",
+      "scenario": "FK ON with native sentinel IDs",
+      "source": "db.c:2207; schema.c; content.c; merge.c",
+      "related_existing_family": "EXTRA-DB-01",
+      "status": "not-yet-implemented",
+      "inherited_assertion_mapping": "pending semantic adjudication; IDs are obligation links, not claimed coverage",
+      "candidate_tests": [],
+      "candidate_disposition": "not-executed-in-this-candidate"
+    },
+    {
+      "id": "STOR-02",
+      "scenario": "Failure at every canonical/crosslink/projection/receipt/head/undo stage",
+      "source": "sync.md transaction algorithm; Gest V5",
+      "related_existing_family": "EXTRA-DB-02",
+      "status": "not-yet-implemented",
+      "inherited_assertion_mapping": "pending semantic adjudication; IDs are obligation links, not claimed coverage",
+      "candidate_tests": [
+        "every_initialization_phase_failure_rolls_back_all_schema_and_state"
+      ],
+      "candidate_disposition": "partial-executed-supported-cases; not full obligation pass"
+    },
+    {
+      "id": "STOR-03",
+      "scenario": "Crash after commit at every file and final journal cleanup",
+      "source": "sync.md; tracking.md",
+      "related_existing_family": "EXTRA-DB-02",
+      "status": "not-yet-implemented",
+      "inherited_assertion_mapping": "pending semantic adjudication; IDs are obligation links, not claimed coverage",
+      "candidate_tests": [],
+      "candidate_disposition": "not-executed-in-this-candidate"
+    },
+    {
+      "id": "STOR-04",
+      "scenario": "Two checkout namespaces with independent pending merge/stash/undo",
+      "source": "schema.c; stash.c; undo.c; merge.c",
+      "related_existing_family": "EXTRA-TRACK-01",
+      "status": "not-yet-implemented",
+      "inherited_assertion_mapping": "pending semantic adjudication; IDs are obligation links, not claimed coverage",
+      "candidate_tests": [],
+      "candidate_disposition": "not-executed-in-this-candidate"
+    },
+    {
+      "id": "STOR-05",
+      "scenario": "Absent or corrupt policy fails closed after reopen and rebuild",
+      "source": "sync.md",
+      "related_existing_family": "EXTRA-PRIV-02",
+      "status": "not-yet-implemented",
+      "inherited_assertion_mapping": "pending semantic adjudication; IDs are obligation links, not claimed coverage",
+      "candidate_tests": [
+        "local_owner_opens_only_complete_matching_catalog_and_revalidates",
+        "admission_rejects_wrong_root_inode_and_persisted_foreign_key_damage"
+      ],
+      "candidate_disposition": "partial-executed-supported-cases; not full obligation pass"
+    },
+    {
+      "id": "STOR-06",
+      "scenario": "Public hash guesses never publish existing local private bytes",
+      "source": "content.c; manifest.c; xfer.c; sync.md",
+      "related_existing_family": "EXTRA-PRIV-03",
+      "status": "not-yet-implemented",
+      "inherited_assertion_mapping": "pending semantic adjudication; IDs are obligation links, not claimed coverage",
+      "candidate_tests": [
+        "restricted_shared_view_hides_private_names_and_keeps_public_identity_public"
+      ],
+      "candidate_disposition": "partial-executed-supported-cases; not full obligation pass"
+    },
+    {
+      "id": "STOR-07",
+      "scenario": "Alias arrival freezes private selection and exact historical set",
+      "source": "Gest V5; sync.md",
+      "related_existing_family": "GEST-T15",
+      "status": "not-yet-implemented",
+      "inherited_assertion_mapping": "pending semantic adjudication; IDs are obligation links, not claimed coverage",
+      "candidate_tests": [],
+      "candidate_disposition": "not-executed-in-this-candidate"
+    },
+    {
+      "id": "STOR-08",
+      "scenario": "All local durable tables survive rebuild; all derived state equals full replay",
+      "source": "rebuild.c; schema-role-dispositions.json",
+      "related_existing_family": "GEST-T14",
+      "status": "not-yet-implemented",
+      "inherited_assertion_mapping": "pending semantic adjudication; IDs are obligation links, not claimed coverage",
+      "candidate_tests": [],
+      "candidate_disposition": "not-executed-in-this-candidate"
+    },
+    {
+      "id": "STOR-09",
+      "scenario": "Invalid typed contributor is retained raw but blocks typed state in both orders",
+      "source": "Gest V5",
+      "related_existing_family": "GEST-T17",
+      "status": "not-yet-implemented",
+      "inherited_assertion_mapping": "pending semantic adjudication; IDs are obligation links, not claimed coverage",
+      "candidate_tests": [],
+      "candidate_disposition": "not-executed-in-this-candidate"
+    },
+    {
+      "id": "STOR-10",
+      "scenario": "Interrupted version migration rolls back markers and rows",
+      "source": "db.c; rebuild.c; Gest V5",
+      "related_existing_family": "GEST-T18",
+      "status": "not-yet-implemented",
+      "inherited_assertion_mapping": "pending semantic adjudication; IDs are obligation links, not claimed coverage",
+      "candidate_tests": [],
+      "candidate_disposition": "not-executed-in-this-candidate"
+    },
+    {
+      "id": "STOR-11",
+      "scenario": "Delta chain dephantomization, missing baseline, shun and private-base retention",
+      "source": "content.c; rebuild.c; shun.c",
+      "related_existing_family": "EXTRA-PRIV-03",
+      "status": "not-yet-implemented",
+      "inherited_assertion_mapping": "pending semantic adjudication; IDs are obligation links, not claimed coverage",
+      "candidate_tests": [],
+      "candidate_disposition": "not-executed-in-this-candidate"
+    },
+    {
+      "id": "STOR-12",
+      "scenario": "Capture remains after target deletion; unsupported selector remains opaque",
+      "source": "discussions.md",
+      "related_existing_family": "EXTRA-ANCHOR-01",
+      "status": "not-yet-implemented",
+      "inherited_assertion_mapping": "pending semantic adjudication; IDs are obligation links, not claimed coverage",
+      "candidate_tests": [],
+      "candidate_disposition": "not-executed-in-this-candidate"
+    },
+    {
+      "id": "STOR-13",
+      "scenario": "SQLAR selected tree roundtrip is distinct from repository package",
+      "source": "zip.c; UI V3",
+      "related_existing_family": "EXTRA-PACKAGE-01",
+      "status": "not-yet-implemented",
+      "inherited_assertion_mapping": "pending semantic adjudication; IDs are obligation links, not claimed coverage",
+      "candidate_tests": [],
+      "candidate_disposition": "not-executed-in-this-candidate"
+    },
+    {
+      "id": "STOR-14",
+      "scenario": "Repeated and stacked undo exact provenance; failures roll back all inverses",
+      "source": "Gest V5",
+      "related_existing_family": "GEST-T19",
+      "status": "not-yet-implemented",
+      "inherited_assertion_mapping": "pending semantic adjudication; IDs are obligation links, not claimed coverage",
+      "candidate_tests": [],
+      "candidate_disposition": "not-executed-in-this-candidate"
+    },
+    {
+      "id": "STOR-15",
+      "scenario": "Unexpected third filesystem value blocks journal recovery without overwrite",
+      "source": "sync.md; tracking.md",
+      "related_existing_family": "EXTRA-DB-02",
+      "status": "not-yet-implemented",
+      "inherited_assertion_mapping": "pending semantic adjudication; IDs are obligation links, not claimed coverage",
+      "candidate_tests": [],
+      "candidate_disposition": "not-executed-in-this-candidate"
+    },
+    {
+      "id": "STOR-16",
+      "scenario": "Native and typed tied-time replay checked independently",
+      "source": "Gest V5; ticket.c",
+      "related_existing_family": "GEST-T02",
+      "status": "not-yet-implemented",
+      "inherited_assertion_mapping": "pending semantic adjudication; IDs are obligation links, not claimed coverage",
+      "candidate_tests": [],
+      "candidate_disposition": "not-executed-in-this-candidate"
+    },
+    {
+      "id": "STOR-17",
+      "scenario": "Unsupported required kind/version preserves bytes and blocks completeness",
+      "source": "sync.md; Gest V5",
+      "related_existing_family": "EXTRA-EXT-01",
+      "status": "not-yet-implemented",
+      "inherited_assertion_mapping": "pending semantic adjudication; IDs are obligation links, not claimed coverage",
+      "candidate_tests": [],
+      "candidate_disposition": "not-executed-in-this-candidate"
+    },
+    {
+      "id": "STOR-18",
+      "scenario": "Repository identity, content marker and adapter marker mismatch rejects writes",
+      "source": "db.c; schema.c; sync.md",
+      "related_existing_family": "EXTRA-DB-01",
+      "status": "not-yet-implemented",
+      "inherited_assertion_mapping": "pending semantic adjudication; IDs are obligation links, not claimed coverage",
+      "candidate_tests": [],
+      "candidate_disposition": "not-executed-in-this-candidate"
+    },
+    {
+      "id": "CONTENT-01",
+      "setup": "full schema and validated local owner/repository; known complete public empty root",
+      "predicate": "private put/read commit/reopen returns exact bytes/hash/size; shared read of that hash returns the same unavailable shape as an absent hash, with zero private metadata",
+      "candidate_tests": [
+        "private_file_roundtrip_dedup_and_phantom_stale_delta_removal",
+        "restricted_shared_view_hides_private_names_and_keeps_public_identity_public"
+      ],
+      "candidate_disposition": "partial-executed-supported-cases; not full obligation pass"
+    },
+    {
+      "id": "CONTENT-02",
+      "setup": "write one valid object, then call an operation with wrong owner, wrong repository, missing policy, unsupported version or forbidden classification; catch its error",
+      "predicate": "each variant latches the owner; commit fails and zero canonical/local/projection/receipt/head/journal effects from either operation survive",
+      "candidate_tests": [
+        "all_post_acquisition_policy_codec_and_limit_errors_latch_prior_writes"
+      ],
+      "candidate_disposition": "partial-executed-supported-cases; not full obligation pass"
+    },
+    {
+      "id": "CONTENT-03",
+      "setup": "write one valid object, then encounter hash mismatch, conflicting existing bytes, shunned target/base, codec error, limit error or parameter/row decoding error; catch it",
+      "predicate": "same rollback-only result; reopened database equals complete pre-call state",
+      "candidate_tests": [
+        "caught_private_write_hash_error_rolls_back_entire_operation",
+        "all_post_acquisition_policy_codec_and_limit_errors_latch_prior_writes",
+        "owned_identity_decoder_rejects_duplicate_and_wrong_type_rows"
+      ],
+      "candidate_disposition": "partial-executed-supported-cases; not full obligation pass"
+    },
+    {
+      "id": "CONTENT-04",
+      "setup": "known full empty and nonempty envelopes plus source-defined excess-capacity and trailing-byte codec fixtures",
+      "predicate": "native codec semantics preserved; repository size/hash checked separately; short NoPayload cannot report successful empty content",
+      "candidate_tests": [
+        "native_envelope_exceptions_and_exact_repository_validation",
+        "exact_size_failure_latches_all_content_helpers"
+      ],
+      "candidate_disposition": "partial-executed-supported-cases; not full obligation pass"
+    },
+    {
+      "id": "CONTENT-05",
+      "setup": "constructed finite delta chain with exact target hash; variants missing base, phantom base, shunned base, private-only base and cycle",
+      "predicate": "authorized complete chain reconstructs exact bytes; each invalid/unavailable dependency rejects appropriate completeness without scope disclosure or partial mutation",
+      "candidate_tests": [
+        "native_delta_chain_reconstructs_and_shunned_or_cycle_baselines_fail"
+      ],
+      "candidate_disposition": "partial-executed-supported-cases; not full obligation pass"
+    },
+    {
+      "id": "CONTENT-06",
+      "setup": "small explicit budgets max_stored=1024,max_output=16,max_depth=4,max_total_stored=4096,max_total_decoded=64; source-derived boundary fixtures",
+      "predicate": "each exact boundary is honored with checked accounting; one-over variants return limit errors before unbounded allocation; no truncated successful result",
+      "candidate_tests": [
+        "exact_budget_boundaries_and_cycles",
+        "bounded_packing_header_and_stream_boundaries",
+        "admission_detects_external_commit_and_unexpected_same_connection_writes"
+      ],
+      "candidate_disposition": "partial-executed-supported-cases; not full obligation pass"
+    },
+    {
+      "id": "CONTENT-07",
+      "setup": "existing phantom/unavailable target has a stale delta row; admit verified full bytes",
+      "predicate": "target delta row is absent after commit, phantom cleared, size/hash exact, raw/native/typed dependent states recomputed consistently; any required crosslink failure rolls all back",
+      "candidate_tests": [
+        "private_file_roundtrip_dedup_and_phantom_stale_delta_removal",
+        "verified_full_bytes_replace_unavailable_nonphantom_delta_without_leaving_delta_row"
+      ],
+      "candidate_disposition": "partial-executed-supported-cases; not full obligation pass"
+    },
+    {
+      "id": "CONTENT-08",
+      "setup": "same bytes already public, then private association; separately private-origin bytes followed by guessed public reference versus independently validated full receipt",
+      "predicate": "public content is never hidden; association remains scoped; guess grants no authority; independent receipt/publication changes membership/evidence/closure atomically",
+      "candidate_tests": [
+        "restricted_shared_view_hides_private_names_and_keeps_public_identity_public"
+      ],
+      "candidate_disposition": "partial-executed-supported-cases; not full obligation pass"
+    },
+    {
+      "id": "CONTENT-09",
+      "setup": "retain annotation capture, frozen selection and undo dependency; request administrative shun/purge/repack",
+      "predicate": "required retained dependencies cannot be silently lost; accepted operation preserves reconstruction/semantic closure or explicitly refuses completeness before mutation",
+      "candidate_tests": [],
+      "candidate_disposition": "not-executed-in-this-candidate"
+    }
+  ],
+  "additional_POLICY_obligations": "POLICY-01 owner/repository mismatch and missing policy deny before private existence lookup. POLICY-02 guessed private hash versus independent complete receipt remains distinct atomically. POLICY-03 legacy incomplete graph retains all raw candidates but cannot pass complete restore/export. POLICY-04 invalid losing/unknown contributor is not dropped from shared typed candidate set. POLICY-05 rebuild/full backup preserve every durable class and exact private selections; artifact-only import reports unavailable policy. All not-yet-implemented.",
+  "policy_execution": "owner/repository/missing-policy latch and admission tested; general receipt/publication, legacy, typed candidate validation and rebuild absent",
+  "correction": {
+    "prior_manifest": "/tmp/gossil-native-storage-candidate-20261118/manifest.json",
+    "prior_manifest_sha256": "215c93e825d0edf02805fdb563376616444823a5ec72c38ed799ef13cc815e23",
+    "blocker": "P2 root token expansion allocation before whole canonical size bound",
+    "source_predicate": "The existing Fossil escape selector and encoded_size arithmetic now serve fossilized_size, existing encoder, and root preflight; no second escape table or encoder. All fixed/date/encoded-user/checksum lengths are checked before variable root/token output allocation.",
+    "original_review_probe": "correction/original-review-allocation-probe.rs.txt; isolated Rust probe, checksum helpers stubbed; no native Fossil experiment or full root checksum qualification",
+    "actual_crate_red": "correction/root-allocation-red.log: compiling regression failed with largest request512 at ceiling256",
+    "actual_crate_green": "correction/root-allocation-green.log:largest48 fixed diagnostic; correction/root-whole-size-green.log:one-under largest31 fixed diagnostic; exact-fit succeeds",
+    "allocator_scope": "cfg(test), current-thread const TLS only; forwards System allocation unchanged; observes request sizes, not total live process memory",
+    "public_api": "unchanged; new helper pub(crate) only",
+    "review": "independent correction review accepted; /tmp/gossil-native-storage-correction-review-20261118",
+    "comparison": "correction/owned-correction.diff.gz with owned-correction.diff.hashes.json; raw preserved in prior immutable snapshot"
+  },
+  "coverage_boundary_tests": [
+    "owned_date_results_preserve_engine_values_and_abort_prior_writes",
+    "metadata_open_failure_preserves_os_cause_without_owner_handle",
+    "malformed_catalog_query_denies_real_owner_admission",
+    "owned_catalog_fields_decode_native_null_and_reject_typed_corruption_atomically"
+  ],
+  "boundary_wiring": {
+    "reason": "v2 review identified tests manually supplying record; test gap, no reproduced product defect",
+    "seams": "private cfg(test) current-thread one-shot result replacement after actual metadata/SQL execution; Drop reset and consumed assertions",
+    "paths": "validate_initial_repository->parse_owned->OwnerDates date decoder; validate_catalog and open admission catalog decoder; open metadata mapper",
+    "latch": "tests never call record; catch real validation failure, denied commit, reopen disk DB and prove prior write absent",
+    "public_api": "unchanged; no production override state"
+  }
+}

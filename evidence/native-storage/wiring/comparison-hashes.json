@@ -1,0 +1,8 @@
+{
+  "base_manifest_sha256": "543d9acad01919114e865e6f27c24c430be82fbc51df8de57d7667c99f3473c4",
+  "raw_sha256": "27b4ab7ea3abbcf5b927f8097ce369a501df6cd1cbf0c1298274fdfe5e91b331",
+  "gzip_sha256": "ea2f63a2f5acc90a72dc843fb4e3f386b0a9d5c4df7f58d324bcbcf4b45797f2",
+  "raw_bytes": 14557,
+  "lossless": true,
+  "added_line_whitespace_errors": []
+}

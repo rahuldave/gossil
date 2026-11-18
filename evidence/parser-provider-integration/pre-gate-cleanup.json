@@ -1,0 +1,24 @@
+{
+  "kind": "pre-gate evidence and precise fixture attribute cleanup; runtime unchanged",
+  "removed_raw_path": "evidence/parser/terminal-nul-correction/docs-artifact-parser.md.diff",
+  "gzip_path": "evidence/parser/terminal-nul-correction/docs-artifact-parser.md.diff.gz",
+  "raw_sha256": "04947cc13dbcbcc20af29b3c7bc40a9502820012470538c86cca65d301e68cc0",
+  "gzip_sha256": "8eafca4b80b99638c1c5b174fda529e946a190bac8eb394a7cc8f14a43884903",
+  "raw_preserved_at": "/tmp/gossil-parser-provider-pre-gate-cleanup-20261118/docs-artifact-parser.md.diff",
+  "lossless_decompression_verified": true,
+  "attributes": {
+    "paths": [
+      "tests/fixtures/artifact/signed-PGP-CRLF-header.artifact",
+      "tests/fixtures/artifact/signed-SSH-CRLF-header.artifact"
+    ],
+    "text": false,
+    "whitespace": [
+      "blank-at-eol",
+      "blank-at-eof",
+      "space-before-tab",
+      "cr-at-eol"
+    ],
+    "reason": "Disable end-of-line conversion for exact fixture bytes; explicitly admit CR at line endings while retaining standard whitespace checks."
+  },
+  "prior_frozen180_manifest": "/tmp/gossil-parser-provider-frozen-owned-20261118.json"
+}

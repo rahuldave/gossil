@@ -1,0 +1,1849 @@
+{
+  "status": "candidate composition; parser ordered gates pending",
+  "provider_base": "fea8dcdd3979a30bde80460c39bc299ce286afa3",
+  "parser_staged_tree": "6c8605541ce6a2bc0103fb26a7a7200cd2a29d05",
+  "parser_v2_differences": [
+    {
+      "path": "docs/artifact-parser.md",
+      "frozen_sha256": "5d1adb96caf0b0c7f249ac68c5ef30f094234b784112df243b2abbf873083f89",
+      "staged_sha256": "cf25fa2f4a1141de95652f10ce76ef296dd6ad25038f3d3aa06640c3bef9d450"
+    },
+    {
+      "path": "src/artifact.rs",
+      "frozen_sha256": "4198c2f4c1c01f31fedc2f7a5a1dc0392b71c796ed316b6e741c599743752f3a",
+      "staged_sha256": "a40e7912bd2cc233759bfca08667722142255de84eceb208e6d10047a5ab2d97"
+    }
+  ],
+  "paths": [
+    {
+      "path": ".gitattributes",
+      "source": "parser staged Git tree 6c8605541ce6a2bc0103fb26a7a7200cd2a29d05",
+      "source_sha256": "ce28fa6621892d6596f9e192255118256d09097eec3af34c84498045a0ffbb16",
+      "composed_sha256": "ce28fa6621892d6596f9e192255118256d09097eec3af34c84498045a0ffbb16"
+    },
+    {
+      "path": "AGENTS.md",
+      "source": "parser staged Git tree 6c8605541ce6a2bc0103fb26a7a7200cd2a29d05",
+      "source_sha256": "b9d7c359d201a51d26f0696cd05fa5244afae264c35a7c15085ae4d4ae8e143d",
+      "composed_sha256": "b9d7c359d201a51d26f0696cd05fa5244afae264c35a7c15085ae4d4ae8e143d"
+    },
+    {
+      "path": "README.md",
+      "source": "parser staged Git tree 6c8605541ce6a2bc0103fb26a7a7200cd2a29d05",
+      "source_sha256": "fb7675de1aaa6c9e305981811ce65bd72a065c76c78f3819b0b7f53024b394bc",
+      "composed_sha256": "fb7675de1aaa6c9e305981811ce65bd72a065c76c78f3819b0b7f53024b394bc"
+    },
+    {
+      "path": "docs/_smalldocs.yml",
+      "source": "parser staged Git tree 6c8605541ce6a2bc0103fb26a7a7200cd2a29d05",
+      "source_sha256": "6d8584bf26c3fec2a46422a012f4fe650f080a4849b553f2b9ca1e32c3049a9f",
+      "composed_sha256": "6d8584bf26c3fec2a46422a012f4fe650f080a4849b553f2b9ca1e32c3049a9f"
+    },
+    {
+      "path": "docs/artifact-checksum.md",
+      "source": "parser staged Git tree 6c8605541ce6a2bc0103fb26a7a7200cd2a29d05",
+      "source_sha256": "f44e5ccc0f3a9d567b8e3bdc7210f98bae3441d9d53a0aeb09c99c64008dbedc",
+      "composed_sha256": "f44e5ccc0f3a9d567b8e3bdc7210f98bae3441d9d53a0aeb09c99c64008dbedc"
+    },
+    {
+      "path": "docs/artifact-parser.md",
+      "source": "parser staged Git tree 6c8605541ce6a2bc0103fb26a7a7200cd2a29d05",
+      "source_sha256": "cf25fa2f4a1141de95652f10ce76ef296dd6ad25038f3d3aa06640c3bef9d450",
+      "composed_sha256": "cf25fa2f4a1141de95652f10ce76ef296dd6ad25038f3d3aa06640c3bef9d450"
+    },
+    {
+      "path": "docs/blob-primitives.md",
+      "source": "parser staged Git tree 6c8605541ce6a2bc0103fb26a7a7200cd2a29d05",
+      "source_sha256": "5c82ba35eb6f749efb858a3fe292f1fc0166a0a56c25d6f4dc9ca37b2e5888b7",
+      "composed_sha256": "5c82ba35eb6f749efb858a3fe292f1fc0166a0a56c25d6f4dc9ca37b2e5888b7"
+    },
+    {
+      "path": "docs/development-plan.md",
+      "source": "parser staged Git tree 6c8605541ce6a2bc0103fb26a7a7200cd2a29d05",
+      "source_sha256": "3bf5764231925fe4fcdbbf63e53f10f2e8b5d9bb6e8e6514a531cdc8bfe0328c",
+      "composed_sha256": "3bf5764231925fe4fcdbbf63e53f10f2e8b5d9bb6e8e6514a531cdc8bfe0328c"
+    },
+    {
+      "path": "docs/index.md",
+      "source": "parser staged Git tree 6c8605541ce6a2bc0103fb26a7a7200cd2a29d05",
+      "source_sha256": "bb31c1570b2f22fa578b3174a3490ad607063e87cd2bcad29baecf53ac0a94b5",
+      "composed_sha256": "bb31c1570b2f22fa578b3174a3490ad607063e87cd2bcad29baecf53ac0a94b5"
+    },
+    {
+      "path": "docs/libsql-provider.md",
+      "source": "parser staged Git tree 6c8605541ce6a2bc0103fb26a7a7200cd2a29d05",
+      "source_sha256": "13fc567e3390ca9f2413e47ba9144cf1cd368f216e263307acda7acb0fc5672c",
+      "composed_sha256": "13fc567e3390ca9f2413e47ba9144cf1cd368f216e263307acda7acb0fc5672c"
+    },
+    {
+      "path": "docs/local-storage.md",
+      "source": "parser staged Git tree 6c8605541ce6a2bc0103fb26a7a7200cd2a29d05",
+      "source_sha256": "4ad59404614e5d8188c968d0b901715a28864ed4e2202e35c26ee547ad221005",
+      "composed_sha256": "4ad59404614e5d8188c968d0b901715a28864ed4e2202e35c26ee547ad221005"
+    },
+    {
+      "path": "docs/token-codec.md",
+      "source": "parser staged Git tree 6c8605541ce6a2bc0103fb26a7a7200cd2a29d05",
+      "source_sha256": "84e72bae1b21dcf28da3583db87963d5d359e93b348c4fadc956bb1cf536038a",
+      "composed_sha256": "84e72bae1b21dcf28da3583db87963d5d359e93b348c4fadc956bb1cf536038a"
+    },
+    {
+      "path": "evidence/parser-provider-integration/candidate-test-change.diff.gz",
+      "source": "parser staged Git tree 6c8605541ce6a2bc0103fb26a7a7200cd2a29d05",
+      "source_sha256": "6206a75ab3c0ea0739bc825f28b7506afc8604890b3f7f6ba9f71b69ec178988",
+      "composed_sha256": "6206a75ab3c0ea0739bc825f28b7506afc8604890b3f7f6ba9f71b69ec178988"
+    },
+    {
+      "path": "evidence/parser-provider-integration/correction-diff.log.gz",
+      "source": "parser staged Git tree 6c8605541ce6a2bc0103fb26a7a7200cd2a29d05",
+      "source_sha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "composed_sha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    },
+    {
+      "path": "evidence/parser-provider-integration/correction-docstring.log.gz",
+      "source": "parser staged Git tree 6c8605541ce6a2bc0103fb26a7a7200cd2a29d05",
+      "source_sha256": "ab973920084ab17a36b510b30f00f875491801a394fe2ddf38bdf994026da7a3",
+      "composed_sha256": "ab973920084ab17a36b510b30f00f875491801a394fe2ddf38bdf994026da7a3"
+    },
+    {
+      "path": "evidence/parser-provider-integration/correction-fmt.log.gz",
+      "source": "parser staged Git tree 6c8605541ce6a2bc0103fb26a7a7200cd2a29d05",
+      "source_sha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83",
+      "composed_sha256": "ac73670af3abed54ac6fb4695131f4099be9fbe39d6076c5d0264a6bbdae9d83"
+    },
+    {
+      "path": "evidence/parser-provider-integration/correction-lint.log.gz",
+      "source": "parser staged Git tree 6c8605541ce6a2bc0103fb26a7a7200cd2a29d05",
+      "source_sha256": "cb7e1ec1936b89abd8baaf5f330c43146660b0742bb0ea606aa2a3979baecb3e",
+      "composed_sha256": "cb7e1ec1936b89abd8baaf5f330c43146660b0742bb0ea606aa2a3979baecb3e"
+    },
+    {
+      "path": "evidence/parser-provider-integration/diff-check.log",
+      "source": "parser staged Git tree 6c8605541ce6a2bc0103fb26a7a7200cd2a29d05",
+      "source_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "composed_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "evidence/parser-provider-integration/docstring.log",
+      "source": "parser staged Git tree 6c8605541ce6a2bc0103fb26a7a7200cd2a29d05",
+      "source_sha256": "c35d91f1100bdc6fcb75054793b60ba09a00012277801f6d65c84c86c7c58106",
+      "composed_sha256": "c35d91f1100bdc6fcb75054793b60ba09a00012277801f6d65c84c86c7c58106"
+    },
+    {
+      "path": "evidence/parser-provider-integration/final-integration.lcov.gz",
+      "source": "parser staged Git tree 6c8605541ce6a2bc0103fb26a7a7200cd2a29d05",
+      "source_sha256": "6e955bb23e6ec85de893bd00fa63b7cbffa432c98e8553f51a07500ca0b018bf",
+      "composed_sha256": "6e955bb23e6ec85de893bd00fa63b7cbffa432c98e8553f51a07500ca0b018bf"
+    },
+    {
+      "path": "evidence/parser-provider-integration/final-test.lcov.gz",
+      "source": "parser staged Git tree 6c8605541ce6a2bc0103fb26a7a7200cd2a29d05",
+      "source_sha256": "aeff8364c3079c593d2ad96ef834099e4c3ba854d26cc1399ccb1b1e72baae35",
+      "composed_sha256": "aeff8364c3079c593d2ad96ef834099e4c3ba854d26cc1399ccb1b1e72baae35"
+    },
+    {
+      "path": "evidence/parser-provider-integration/fmt.log",
+      "source": "parser staged Git tree 6c8605541ce6a2bc0103fb26a7a7200cd2a29d05",
+      "source_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "composed_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "evidence/parser-provider-integration/focused-correction-initial.log.gz",
+      "source": "parser staged Git tree 6c8605541ce6a2bc0103fb26a7a7200cd2a29d05",
+      "source_sha256": "16142aecfcb947279b2f4edb37aabb5af265dea72fdb8712b7b56e9ed650791c",
+      "composed_sha256": "16142aecfcb947279b2f4edb37aabb5af265dea72fdb8712b7b56e9ed650791c"
+    },
+    {
+      "path": "evidence/parser-provider-integration/focused-correction-passing.log.gz",
+      "source": "parser staged Git tree 6c8605541ce6a2bc0103fb26a7a7200cd2a29d05",
+      "source_sha256": "d8be8811bf843b4bde85d1f35deb294684095f8cebf73222c8236402d7d75b53",
+      "composed_sha256": "d8be8811bf843b4bde85d1f35deb294684095f8cebf73222c8236402d7d75b53"
+    },
+    {
+      "path": "evidence/parser-provider-integration/full-coverage-initial.log.gz",
+      "source": "parser staged Git tree 6c8605541ce6a2bc0103fb26a7a7200cd2a29d05",
+      "source_sha256": "a5e025f5ed8b1b664a0948e90714fdc24e3e2f76e1000e794c8b57fa3ac68286",
+      "composed_sha256": "a5e025f5ed8b1b664a0948e90714fdc24e3e2f76e1000e794c8b57fa3ac68286"
+    },
+    {
+      "path": "evidence/parser-provider-integration/full-coverage-passing.log.gz",
+      "source": "parser staged Git tree 6c8605541ce6a2bc0103fb26a7a7200cd2a29d05",
+      "source_sha256": "744761e30dbee42cb5a3f5d02389a9c8ab0c0433a85e78e486b8e50c5c529a9c",
+      "composed_sha256": "744761e30dbee42cb5a3f5d02389a9c8ab0c0433a85e78e486b8e50c5c529a9c"
+    },
+    {
+      "path": "evidence/parser-provider-integration/impact.json.gz",
+      "source": "parser staged Git tree 6c8605541ce6a2bc0103fb26a7a7200cd2a29d05",
+      "source_sha256": "7fb15e4b4883fd2af97512fda510403990df5841e37952db96e2ee7d132a973d",
+      "composed_sha256": "7fb15e4b4883fd2af97512fda510403990df5841e37952db96e2ee7d132a973d"
+    },
+    {
+      "path": "evidence/parser-provider-integration/lint.log",
+      "source": "parser staged Git tree 6c8605541ce6a2bc0103fb26a7a7200cd2a29d05",
+      "source_sha256": "4608a11394d96b39ac35a38ea222af1aa22d8de5595f82ab1687bfd84926cb74",
+      "composed_sha256": "4608a11394d96b39ac35a38ea222af1aa22d8de5595f82ab1687bfd84926cb74"
+    },
+    {
+      "path": "evidence/parser-provider-integration/parser-suite.log",
+      "source": "parser staged Git tree 6c8605541ce6a2bc0103fb26a7a7200cd2a29d05",
+      "source_sha256": "41f31f4d621206ae467c357ea32e36c098741fc52c50256009df5ee2c77befbb",
+      "composed_sha256": "41f31f4d621206ae467c357ea32e36c098741fc52c50256009df5ee2c77befbb"
+    },
+    {
+      "path": "evidence/parser-provider-integration/parser-unit.log",
+      "source": "parser staged Git tree 6c8605541ce6a2bc0103fb26a7a7200cd2a29d05",
+      "source_sha256": "0ed3ca76c9f4aba0ce50dadd3144dd8947ae33a572e0786cfdb2167a184a74dc",
+      "composed_sha256": "0ed3ca76c9f4aba0ce50dadd3144dd8947ae33a572e0786cfdb2167a184a74dc"
+    },
+    {
+      "path": "evidence/parser-provider-integration/pre-gate-cleanup.json",
+      "source": "parser staged Git tree 6c8605541ce6a2bc0103fb26a7a7200cd2a29d05",
+      "source_sha256": "a2c36d1e96f6714410dd1424f42b317ffe84a595bbeb39c969337830e77048dd",
+      "composed_sha256": "a2c36d1e96f6714410dd1424f42b317ffe84a595bbeb39c969337830e77048dd"
+    },
+    {
+      "path": "evidence/parser-provider-integration/report.json",
+      "source": "parser staged Git tree 6c8605541ce6a2bc0103fb26a7a7200cd2a29d05",
+      "source_sha256": "ca96eea4a7c8b54a56a6b556a18eaa1791fdf62252694a7e76eaa0bde760c96b",
+      "composed_sha256": "ca96eea4a7c8b54a56a6b556a18eaa1791fdf62252694a7e76eaa0bde760c96b"
+    },
+    {
+      "path": "evidence/parser/all-matrix-repeat-tests.txt",
+      "source": "parser staged Git tree 6c8605541ce6a2bc0103fb26a7a7200cd2a29d05",
+      "source_sha256": "64fd986c9dedbe86d97f689d942a00348abff2d0c72975265e40903200fbf59c",
+      "composed_sha256": "64fd986c9dedbe86d97f689d942a00348abff2d0c72975265e40903200fbf59c"
+    },
+    {
+      "path": "evidence/parser/ast-parser-dependers.json",
+      "source": "parser staged Git tree 6c8605541ce6a2bc0103fb26a7a7200cd2a29d05",
+      "source_sha256": "fc8b28a2b83d0e52182327cec827250b132fc995d3c100dc7117fd2897d7fa3b",
+      "composed_sha256": "fc8b28a2b83d0e52182327cec827250b132fc995d3c100dc7117fd2897d7fa3b"
+    },
+    {
+      "path": "evidence/parser/ast-token-dependers.json",
+      "source": "parser staged Git tree 6c8605541ce6a2bc0103fb26a7a7200cd2a29d05",
+      "source_sha256": "3189045833643b4f8ea2ef01be9cab4415fd7e92d32ef3c57e779d27e6c28c3a",
+      "composed_sha256": "3189045833643b4f8ea2ef01be9cab4415fd7e92d32ef3c57e779d27e6c28c3a"
+    },
+    {
+      "path": "evidence/parser/baseline-green.txt",
+      "source": "parser staged Git tree 6c8605541ce6a2bc0103fb26a7a7200cd2a29d05",
+      "source_sha256": "16a243498352ed72a34320908f1f59503d72ae91f1d3c153654dd881430894b4",
+      "composed_sha256": "16a243498352ed72a34320908f1f59503d72ae91f1d3c153654dd881430894b4"
+    },
+    {
+      "path": "evidence/parser/corrected-baselines-red.txt",
+      "source": "parser staged Git tree 6c8605541ce6a2bc0103fb26a7a7200cd2a29d05",
+      "source_sha256": "5adf434a0560b8842477f1b08a50c06ec75d9729fe48882529d47d1ca3953837",
+      "composed_sha256": "5adf434a0560b8842477f1b08a50c06ec75d9729fe48882529d47d1ca3953837"
+    },
+    {
+      "path": "evidence/parser/docstring-check-2.txt",
+      "source": "parser staged Git tree 6c8605541ce6a2bc0103fb26a7a7200cd2a29d05",
+      "source_sha256": "5e8c87ed563b59f3e0f0ddd6fe2b3cfe3cbeea1e3e5d10665fa7fc4bd3508e3c",
+      "composed_sha256": "5e8c87ed563b59f3e0f0ddd6fe2b3cfe3cbeea1e3e5d10665fa7fc4bd3508e3c"
+    },
+    {
+      "path": "evidence/parser/docstring-check-3.txt",
+      "source": "parser staged Git tree 6c8605541ce6a2bc0103fb26a7a7200cd2a29d05",
+      "source_sha256": "b6cefa59273c2677edb03e2f33a515874aee95d579f5e9e5b7236982d251d50c",
+      "composed_sha256": "b6cefa59273c2677edb03e2f33a515874aee95d579f5e9e5b7236982d251d50c"
+    },
+    {
+      "path": "evidence/parser/docstring-check.txt",
+      "source": "parser staged Git tree 6c8605541ce6a2bc0103fb26a7a7200cd2a29d05",
+      "source_sha256": "fe92c35b56d0ec41d9f9755897494d4a64f9a0b3e964b864d293510b06358d88",
+      "composed_sha256": "fe92c35b56d0ec41d9f9755897494d4a64f9a0b3e964b864d293510b06358d88"
+    },
+    {
+      "path": "evidence/parser/docstring-final.txt",
+      "source": "parser staged Git tree 6c8605541ce6a2bc0103fb26a7a7200cd2a29d05",
+      "source_sha256": "a2e343bf50556c2620a1202db77b463e5fa7e5cca64eb8d44d06e786eca0cbe4",
+      "composed_sha256": "a2e343bf50556c2620a1202db77b463e5fa7e5cca64eb8d44d06e786eca0cbe4"
+    },
+    {
+      "path": "evidence/parser/docstring-freeze.txt",
+      "source": "parser staged Git tree 6c8605541ce6a2bc0103fb26a7a7200cd2a29d05",
+      "source_sha256": "053e5b4db3dc6c8d2b71dfe3b86aebdf6ab536d9b45376d323d76f7968fa5813",
+      "composed_sha256": "053e5b4db3dc6c8d2b71dfe3b86aebdf6ab536d9b45376d323d76f7968fa5813"
+    },
+    {
+      "path": "evidence/parser/edge-test-map.json",
+      "source": "parser staged Git tree 6c8605541ce6a2bc0103fb26a7a7200cd2a29d05",
+      "source_sha256": "55d0a143b3601b8a183d30e3f6089e836bd8c5bcba9431dff601b972c02fad9d",
+      "composed_sha256": "55d0a143b3601b8a183d30e3f6089e836bd8c5bcba9431dff601b972c02fad9d"
+    },
+    {
+      "path": "evidence/parser/exact-parser-provider-red.txt",
+      "source": "parser staged Git tree 6c8605541ce6a2bc0103fb26a7a7200cd2a29d05",
+      "source_sha256": "361ee84957d33746d21e1d6c89d59b932dc0adda0f8718fe3144f95188de18f5",
+      "composed_sha256": "361ee84957d33746d21e1d6c89d59b932dc0adda0f8718fe3144f95188de18f5"
+    },
+    {
+      "path": "evidence/parser/exact-provider-red.txt",
+      "source": "parser staged Git tree 6c8605541ce6a2bc0103fb26a7a7200cd2a29d05",
+      "source_sha256": "554c9cf850b6156aaaeffd4dfa0f66b59f6631ca7d75c05b80e0d21730b0cb9a",
+      "composed_sha256": "554c9cf850b6156aaaeffd4dfa0f66b59f6631ca7d75c05b80e0d21730b0cb9a"
+    },
+    {
+      "path": "evidence/parser/expanded-tests-green.txt",
+      "source": "parser staged Git tree 6c8605541ce6a2bc0103fb26a7a7200cd2a29d05",
+      "source_sha256": "457e9a79ac80c7e266d676466d4017b1525ea8e9dbe2386609c54133b9fd4195",
+      "composed_sha256": "457e9a79ac80c7e266d676466d4017b1525ea8e9dbe2386609c54133b9fd4195"
+    },
+    {
+      "path": "evidence/parser/expanded-tests.txt",
+      "source": "parser staged Git tree 6c8605541ce6a2bc0103fb26a7a7200cd2a29d05",
+      "source_sha256": "cc4f4e0fcad8e5c2d240dc39e84b99fd7ac12fa4a7f50e56db1ee206ac450969",
+      "composed_sha256": "cc4f4e0fcad8e5c2d240dc39e84b99fd7ac12fa4a7f50e56db1ee206ac450969"
+    },
+    {
+      "path": "evidence/parser/fixture-provenance.json",
+      "source": "parser staged Git tree 6c8605541ce6a2bc0103fb26a7a7200cd2a29d05",
+      "source_sha256": "36b5b87fa1aa9b16c73451fd014dc622c6e12788c8deecaa3752df4f2c01b9e9",
+      "composed_sha256": "36b5b87fa1aa9b16c73451fd014dc622c6e12788c8deecaa3752df4f2c01b9e9"
+    },
+    {
+      "path": "evidence/parser/fixture-replay.txt",
+      "source": "parser staged Git tree 6c8605541ce6a2bc0103fb26a7a7200cd2a29d05",
+      "source_sha256": "89b73979419df3ddc4172baec83ed227c9bae24e58a2cbc9d9fa7f98a88b3153",
+      "composed_sha256": "89b73979419df3ddc4172baec83ed227c9bae24e58a2cbc9d9fa7f98a88b3153"
+    },
+    {
+      "path": "evidence/parser/format.txt",
+      "source": "parser staged Git tree 6c8605541ce6a2bc0103fb26a7a7200cd2a29d05",
+      "source_sha256": "d87e9d17e69b8a63b392009256057a71a267512645b3d8e218fc30e22fb58aab",
+      "composed_sha256": "d87e9d17e69b8a63b392009256057a71a267512645b3d8e218fc30e22fb58aab"
+    },
+    {
+      "path": "evidence/parser/grammar-expanded-green-2.txt",
+      "source": "parser staged Git tree 6c8605541ce6a2bc0103fb26a7a7200cd2a29d05",
+      "source_sha256": "46a5179555b74be131646ebb9da24f5b11a595438e1f8f5f7155306b42bb17ef",
+      "composed_sha256": "46a5179555b74be131646ebb9da24f5b11a595438e1f8f5f7155306b42bb17ef"
+    },
+    {
+      "path": "evidence/parser/grammar-expanded-green.txt",
+      "source": "parser staged Git tree 6c8605541ce6a2bc0103fb26a7a7200cd2a29d05",
+      "source_sha256": "8123c34867e79df8cdc23f78d3e8e81bbef85bb2ba8588041688dd3eae7e6739",
+      "composed_sha256": "8123c34867e79df8cdc23f78d3e8e81bbef85bb2ba8588041688dd3eae7e6739"
+    },
+    {
+      "path": "evidence/parser/grammar-expanded.txt",
+      "source": "parser staged Git tree 6c8605541ce6a2bc0103fb26a7a7200cd2a29d05",
+      "source_sha256": "a280efcdcc430efb3010639c9b4b82d4f8fdae139f77361d947cd5bcf69892bf",
+      "composed_sha256": "a280efcdcc430efb3010639c9b4b82d4f8fdae139f77361d947cd5bcf69892bf"
+    },
+    {
+      "path": "evidence/parser/grammar-final-2.txt",
+      "source": "parser staged Git tree 6c8605541ce6a2bc0103fb26a7a7200cd2a29d05",
+      "source_sha256": "ba4d019da69afb4a5eacbf46521e8ebdc2d74240ce6c6a8de8e78c884a28c239",
+      "composed_sha256": "ba4d019da69afb4a5eacbf46521e8ebdc2d74240ce6c6a8de8e78c884a28c239"
+    },
+    {
+      "path": "evidence/parser/grammar-final-freeze.txt",
+      "source": "parser staged Git tree 6c8605541ce6a2bc0103fb26a7a7200cd2a29d05",
+      "source_sha256": "2f9ba33f2f658d645e0c6a8821c0da1bc7ea1c16e1e62a4e78caf82ecac1ddf2",
+      "composed_sha256": "2f9ba33f2f658d645e0c6a8821c0da1bc7ea1c16e1e62a4e78caf82ecac1ddf2"
+    },
+    {
+      "path": "evidence/parser/grammar-final.txt",
+      "source": "parser staged Git tree 6c8605541ce6a2bc0103fb26a7a7200cd2a29d05",
+      "source_sha256": "50273ec2ac26bc30c9fc8f57193c8954b09b27dd44c1091b59ea00d1f225c81c",
+      "composed_sha256": "50273ec2ac26bc30c9fc8f57193c8954b09b27dd44c1091b59ea00d1f225c81c"
+    },
+    {
+      "path": "evidence/parser/grammar-handback.txt",
+      "source": "parser staged Git tree 6c8605541ce6a2bc0103fb26a7a7200cd2a29d05",
+      "source_sha256": "e2c32528b35a1540e85a859513509bd4ad627e5e699b2d31f212aa26d25885c6",
+      "composed_sha256": "e2c32528b35a1540e85a859513509bd4ad627e5e699b2d31f212aa26d25885c6"
+    },
+    {
+      "path": "evidence/parser/handback.json",
+      "source": "parser staged Git tree 6c8605541ce6a2bc0103fb26a7a7200cd2a29d05",
+      "source_sha256": "d00d18f44bfb1f4f8c575fe1bb3efd13e9bed18e1d68eb671769001fb78a495e",
+      "composed_sha256": "d00d18f44bfb1f4f8c575fe1bb3efd13e9bed18e1d68eb671769001fb78a495e"
+    },
+    {
+      "path": "evidence/parser/initial-red.txt",
+      "source": "parser staged Git tree 6c8605541ce6a2bc0103fb26a7a7200cd2a29d05",
+      "source_sha256": "740a4620130107624e3fe6912bed022d3edd822c81497fb4345d3a738cbe4191",
+      "composed_sha256": "740a4620130107624e3fe6912bed022d3edd822c81497fb4345d3a738cbe4191"
+    },
+    {
+      "path": "evidence/parser/lint-2.txt",
+      "source": "parser staged Git tree 6c8605541ce6a2bc0103fb26a7a7200cd2a29d05",
+      "source_sha256": "dd0bba4ce822e75bfda0c18e89cffc7d2b6d756d68826d1ede3ce56f2e742f1f",
+      "composed_sha256": "dd0bba4ce822e75bfda0c18e89cffc7d2b6d756d68826d1ede3ce56f2e742f1f"
+    },
+    {
+      "path": "evidence/parser/lint-final.txt",
+      "source": "parser staged Git tree 6c8605541ce6a2bc0103fb26a7a7200cd2a29d05",
+      "source_sha256": "f49ea710d60c860edb1f0354b6984198a6edfa8f1a51e3c535f64b5810fab76d",
+      "composed_sha256": "f49ea710d60c860edb1f0354b6984198a6edfa8f1a51e3c535f64b5810fab76d"
+    },
+    {
+      "path": "evidence/parser/lint-freeze.txt",
+      "source": "parser staged Git tree 6c8605541ce6a2bc0103fb26a7a7200cd2a29d05",
+      "source_sha256": "ed92c9f904a379adab79e4f4a88554d7417c539934555b9e8c1f29462bed8672",
+      "composed_sha256": "ed92c9f904a379adab79e4f4a88554d7417c539934555b9e8c1f29462bed8672"
+    },
+    {
+      "path": "evidence/parser/lint.txt",
+      "source": "parser staged Git tree 6c8605541ce6a2bc0103fb26a7a7200cd2a29d05",
+      "source_sha256": "9b8c9094fd6f39909f019e6dcf3a4f9d6cfaa60495f40869f3888d99eabe1ce8",
+      "composed_sha256": "9b8c9094fd6f39909f019e6dcf3a4f9d6cfaa60495f40869f3888d99eabe1ce8"
+    },
+    {
+      "path": "evidence/parser/matrix-unit-tests.txt",
+      "source": "parser staged Git tree 6c8605541ce6a2bc0103fb26a7a7200cd2a29d05",
+      "source_sha256": "bf2546ccdedb4200381fb1991977e05be784abcd50417638910db41e7bcc475f",
+      "composed_sha256": "bf2546ccdedb4200381fb1991977e05be784abcd50417638910db41e7bcc475f"
+    },
+    {
+      "path": "evidence/parser/mutation-driver.txt",
+      "source": "parser staged Git tree 6c8605541ce6a2bc0103fb26a7a7200cd2a29d05",
+      "source_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "composed_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "evidence/parser/mutation-manifest-z-not-required.txt",
+      "source": "parser staged Git tree 6c8605541ce6a2bc0103fb26a7a7200cd2a29d05",
+      "source_sha256": "f794b9625f29122c4ec0556e60928444c6177da9ffd6d9a38a9778cde2ec4db3",
+      "composed_sha256": "f794b9625f29122c4ec0556e60928444c6177da9ffd6d9a38a9778cde2ec4db3"
+    },
+    {
+      "path": "evidence/parser/mutation-reject-all-raw-nul.txt",
+      "source": "parser staged Git tree 6c8605541ce6a2bc0103fb26a7a7200cd2a29d05",
+      "source_sha256": "fc3dd2ea85b493e70a2299bfa41c15c5b729dbde9c56a21a8d0045ebd27425a3",
+      "composed_sha256": "fc3dd2ea85b493e70a2299bfa41c15c5b729dbde9c56a21a8d0045ebd27425a3"
+    },
+    {
+      "path": "evidence/parser/mutation-skip-final-checksum.txt",
+      "source": "parser staged Git tree 6c8605541ce6a2bc0103fb26a7a7200cd2a29d05",
+      "source_sha256": "2d3fb57e08632fe435aeb4a64d49c6fb214ef4ea061cb2f1f7c523c927d861be",
+      "composed_sha256": "2d3fb57e08632fe435aeb4a64d49c6fb214ef4ea061cb2f1f7c523c927d861be"
+    },
+    {
+      "path": "evidence/parser/mutation-w-reject-all-wrapping.txt",
+      "source": "parser staged Git tree 6c8605541ce6a2bc0103fb26a7a7200cd2a29d05",
+      "source_sha256": "d3493a6599a0cb5ca8fda1640f15c507943a16b2db371dbb7b60a0c2a2e61bac",
+      "composed_sha256": "d3493a6599a0cb5ca8fda1640f15c507943a16b2db371dbb7b60a0c2a2e61bac"
+    },
+    {
+      "path": "evidence/parser/mutations.json",
+      "source": "parser staged Git tree 6c8605541ce6a2bc0103fb26a7a7200cd2a29d05",
+      "source_sha256": "216dff5120a7d273bfdddb74a56ce00aaf492a016d9fc7998043e69bfef718f8",
+      "composed_sha256": "216dff5120a7d273bfdddb74a56ce00aaf492a016d9fc7998043e69bfef718f8"
+    },
+    {
+      "path": "evidence/parser/prose-check.txt",
+      "source": "parser staged Git tree 6c8605541ce6a2bc0103fb26a7a7200cd2a29d05",
+      "source_sha256": "32fd2ea7200496ae61b4b60f16bbeb9a7cd46cb144c038d8639494291b935fc5",
+      "composed_sha256": "32fd2ea7200496ae61b4b60f16bbeb9a7cd46cb144c038d8639494291b935fc5"
+    },
+    {
+      "path": "evidence/parser/selected-provider-pass.txt",
+      "source": "parser staged Git tree 6c8605541ce6a2bc0103fb26a7a7200cd2a29d05",
+      "source_sha256": "730b6eb41bdab2e513606462803780b71a2b3f5604cf4c4af3c96795e5181b66",
+      "composed_sha256": "730b6eb41bdab2e513606462803780b71a2b3f5604cf4c4af3c96795e5181b66"
+    },
+    {
+      "path": "evidence/parser/terminal-nul-correction/candidate.lcov",
+      "source": "parser staged Git tree 6c8605541ce6a2bc0103fb26a7a7200cd2a29d05",
+      "source_sha256": "e8b6b5cf93f10dca36eaa69530fed5e1f96a0c27806d4548168ec0aa20689484",
+      "composed_sha256": "e8b6b5cf93f10dca36eaa69530fed5e1f96a0c27806d4548168ec0aa20689484"
+    },
+    {
+      "path": "evidence/parser/terminal-nul-correction/changed-line-coverage.json",
+      "source": "parser staged Git tree 6c8605541ce6a2bc0103fb26a7a7200cd2a29d05",
+      "source_sha256": "3f9332a8430230025b192096ea95c37c8d69b072a7af9ba87305a197a4c69cf5",
+      "composed_sha256": "3f9332a8430230025b192096ea95c37c8d69b072a7af9ba87305a197a4c69cf5"
+    },
+    {
+      "path": "evidence/parser/terminal-nul-correction/coverage-export-corrected.txt",
+      "source": "parser staged Git tree 6c8605541ce6a2bc0103fb26a7a7200cd2a29d05",
+      "source_sha256": "a9b2180bbab9a42ae37b77e29e3490cdbf5011da56b34aa55a81df1927aa3428",
+      "composed_sha256": "a9b2180bbab9a42ae37b77e29e3490cdbf5011da56b34aa55a81df1927aa3428"
+    },
+    {
+      "path": "evidence/parser/terminal-nul-correction/coverage-export.txt",
+      "source": "parser staged Git tree 6c8605541ce6a2bc0103fb26a7a7200cd2a29d05",
+      "source_sha256": "9e4772e887b751da699237ae2d8f0f7f767cf4881cf9361a0e5ec9a219fbddea",
+      "composed_sha256": "9e4772e887b751da699237ae2d8f0f7f767cf4881cf9361a0e5ec9a219fbddea"
+    },
+    {
+      "path": "evidence/parser/terminal-nul-correction/docs-artifact-parser.md.diff.gz",
+      "source": "parser staged Git tree 6c8605541ce6a2bc0103fb26a7a7200cd2a29d05",
+      "source_sha256": "8eafca4b80b99638c1c5b174fda529e946a190bac8eb394a7cc8f14a43884903",
+      "composed_sha256": "8eafca4b80b99638c1c5b174fda529e946a190bac8eb394a7cc8f14a43884903"
+    },
+    {
+      "path": "evidence/parser/terminal-nul-correction/docstring-check.txt",
+      "source": "parser staged Git tree 6c8605541ce6a2bc0103fb26a7a7200cd2a29d05",
+      "source_sha256": "8136efc25d82e1d3df759ea1132c1335f49650a51fce94cb2affff2d092b73b4",
+      "composed_sha256": "8136efc25d82e1d3df759ea1132c1335f49650a51fce94cb2affff2d092b73b4"
+    },
+    {
+      "path": "evidence/parser/terminal-nul-correction/format.txt",
+      "source": "parser staged Git tree 6c8605541ce6a2bc0103fb26a7a7200cd2a29d05",
+      "source_sha256": "d87e9d17e69b8a63b392009256057a71a267512645b3d8e218fc30e22fb58aab",
+      "composed_sha256": "d87e9d17e69b8a63b392009256057a71a267512645b3d8e218fc30e22fb58aab"
+    },
+    {
+      "path": "evidence/parser/terminal-nul-correction/green-initial-control-error.txt",
+      "source": "parser staged Git tree 6c8605541ce6a2bc0103fb26a7a7200cd2a29d05",
+      "source_sha256": "2186ee4ed39c2e6fc7d193e38389432fdda6edb200e9ba3d607619b520e1aa9b",
+      "composed_sha256": "2186ee4ed39c2e6fc7d193e38389432fdda6edb200e9ba3d607619b520e1aa9b"
+    },
+    {
+      "path": "evidence/parser/terminal-nul-correction/green.txt",
+      "source": "parser staged Git tree 6c8605541ce6a2bc0103fb26a7a7200cd2a29d05",
+      "source_sha256": "677d58a99057e3a82da822995d023fe93545b8128e2d9545950f84e7c7ef2817",
+      "composed_sha256": "677d58a99057e3a82da822995d023fe93545b8128e2d9545950f84e7c7ef2817"
+    },
+    {
+      "path": "evidence/parser/terminal-nul-correction/lint-final.txt",
+      "source": "parser staged Git tree 6c8605541ce6a2bc0103fb26a7a7200cd2a29d05",
+      "source_sha256": "61ad348e76afaf495b3273fb2f9ed30044c085c1598cd39befb93d37fb132beb",
+      "composed_sha256": "61ad348e76afaf495b3273fb2f9ed30044c085c1598cd39befb93d37fb132beb"
+    },
+    {
+      "path": "evidence/parser/terminal-nul-correction/lint.txt",
+      "source": "parser staged Git tree 6c8605541ce6a2bc0103fb26a7a7200cd2a29d05",
+      "source_sha256": "9434da561ea0775c80f030c7b93ee3cc003bb5446abf02b526015dd05149c8c4",
+      "composed_sha256": "9434da561ea0775c80f030c7b93ee3cc003bb5446abf02b526015dd05149c8c4"
+    },
+    {
+      "path": "evidence/parser/terminal-nul-correction/preflight-report.json",
+      "source": "parser staged Git tree 6c8605541ce6a2bc0103fb26a7a7200cd2a29d05",
+      "source_sha256": "5f7b2983d392b92b29c3f2123d3f433a08e572ccbbc8ff1c0b592d40d698554c",
+      "composed_sha256": "5f7b2983d392b92b29c3f2123d3f433a08e572ccbbc8ff1c0b592d40d698554c"
+    },
+    {
+      "path": "evidence/parser/terminal-nul-correction/prose-check.txt",
+      "source": "parser staged Git tree 6c8605541ce6a2bc0103fb26a7a7200cd2a29d05",
+      "source_sha256": "0b5472be87010f63f62a91eefc38e1a5057b3389a1b62fb95cce9906a030ae44",
+      "composed_sha256": "0b5472be87010f63f62a91eefc38e1a5057b3389a1b62fb95cce9906a030ae44"
+    },
+    {
+      "path": "evidence/parser/terminal-nul-correction/provider-red.txt",
+      "source": "parser staged Git tree 6c8605541ce6a2bc0103fb26a7a7200cd2a29d05",
+      "source_sha256": "6224270304f88bb64a405fb29eda076a39ca4562e5275942b0c95904bdeafcb3",
+      "composed_sha256": "6224270304f88bb64a405fb29eda076a39ca4562e5275942b0c95904bdeafcb3"
+    },
+    {
+      "path": "evidence/parser/terminal-nul-correction/red.txt",
+      "source": "parser staged Git tree 6c8605541ce6a2bc0103fb26a7a7200cd2a29d05",
+      "source_sha256": "e55289d0d152f32b7725a43e56122249eeb7d4211c7887a9c515faeed8fad219",
+      "composed_sha256": "e55289d0d152f32b7725a43e56122249eeb7d4211c7887a9c515faeed8fad219"
+    },
+    {
+      "path": "evidence/parser/terminal-nul-correction/review-response.json",
+      "source": "parser staged Git tree 6c8605541ce6a2bc0103fb26a7a7200cd2a29d05",
+      "source_sha256": "6f89ec9e999ea98f76e7576da152716ad5a67eccf7567e2dec56f0d8f06df75b",
+      "composed_sha256": "6f89ec9e999ea98f76e7576da152716ad5a67eccf7567e2dec56f0d8f06df75b"
+    },
+    {
+      "path": "evidence/parser/terminal-nul-correction/src-artifact.rs.diff",
+      "source": "parser staged Git tree 6c8605541ce6a2bc0103fb26a7a7200cd2a29d05",
+      "source_sha256": "30af5eda9f64fbf61b2184ef7390c05073992d3d1610c7997ded45221d775c6b",
+      "composed_sha256": "30af5eda9f64fbf61b2184ef7390c05073992d3d1610c7997ded45221d775c6b"
+    },
+    {
+      "path": "evidence/parser/terminal-nul-correction/tests-artifact_parser.rs.diff",
+      "source": "parser staged Git tree 6c8605541ce6a2bc0103fb26a7a7200cd2a29d05",
+      "source_sha256": "287688f1b5e07204ee6cb20ff765963b15553637b4af0dd0835043f03ca5342d",
+      "composed_sha256": "287688f1b5e07204ee6cb20ff765963b15553637b4af0dd0835043f03ca5342d"
+    },
+    {
+      "path": "evidence/parser/terminal-nul-correction/unit-green.txt",
+      "source": "parser staged Git tree 6c8605541ce6a2bc0103fb26a7a7200cd2a29d05",
+      "source_sha256": "dd4f0e5d8637f5c8a0db74eaf24093dc76d5cd20827da9dc1d357c1ecc9aae9b",
+      "composed_sha256": "dd4f0e5d8637f5c8a0db74eaf24093dc76d5cd20827da9dc1d357c1ecc9aae9b"
+    },
+    {
+      "path": "evidence/parser/unit-handback.txt",
+      "source": "parser staged Git tree 6c8605541ce6a2bc0103fb26a7a7200cd2a29d05",
+      "source_sha256": "c411c4700c18ecdca801a50231c65b8c5e99804efd239a085886b16b91951179",
+      "composed_sha256": "c411c4700c18ecdca801a50231c65b8c5e99804efd239a085886b16b91951179"
+    },
+    {
+      "path": "src/artifact.rs",
+      "source": "parser staged Git tree 6c8605541ce6a2bc0103fb26a7a7200cd2a29d05",
+      "source_sha256": "a40e7912bd2cc233759bfca08667722142255de84eceb208e6d10047a5ab2d97",
+      "composed_sha256": "a40e7912bd2cc233759bfca08667722142255de84eceb208e6d10047a5ab2d97"
+    },
+    {
+      "path": "src/artifact_checksum.rs",
+      "source": "parser staged Git tree 6c8605541ce6a2bc0103fb26a7a7200cd2a29d05",
+      "source_sha256": "a883cb9ac1464c01d8fec115af08b374f15b5f35a0379e6ce7878daad841d98c",
+      "composed_sha256": "a883cb9ac1464c01d8fec115af08b374f15b5f35a0379e6ce7878daad841d98c"
+    },
+    {
+      "path": "src/lib.rs",
+      "source": "parser staged Git tree 6c8605541ce6a2bc0103fb26a7a7200cd2a29d05",
+      "source_sha256": "6d0e3a48d140a78d1a5975e44db623e978c1e22ab73218a793b183de1153311e",
+      "composed_sha256": "6d0e3a48d140a78d1a5975e44db623e978c1e22ab73218a793b183de1153311e"
+    },
+    {
+      "path": "tests/artifact_parser.rs",
+      "source": "parser staged Git tree 6c8605541ce6a2bc0103fb26a7a7200cd2a29d05",
+      "source_sha256": "e6dcc6399907c41578cafeb9aebdbe46569aad8fcc8e35436d343dcb1a320cbc",
+      "composed_sha256": "e6dcc6399907c41578cafeb9aebdbe46569aad8fcc8e35436d343dcb1a320cbc"
+    },
+    {
+      "path": "tests/fixtures/artifact/F-NUL.artifact",
+      "source": "parser staged Git tree 6c8605541ce6a2bc0103fb26a7a7200cd2a29d05",
+      "source_sha256": "cd9cdb6f0704bea15c631872c5c7d9f447684a7d438f027bc36b68099f2319e2",
+      "composed_sha256": "cd9cdb6f0704bea15c631872c5c7d9f447684a7d438f027bc36b68099f2319e2"
+    },
+    {
+      "path": "tests/fixtures/artifact/F-absolute.artifact",
+      "source": "parser staged Git tree 6c8605541ce6a2bc0103fb26a7a7200cd2a29d05",
+      "source_sha256": "e3c41360360c8c1f307bdbd66bea4c27dc70417cfd34e169b53f17026b6004b6",
+      "composed_sha256": "e3c41360360c8c1f307bdbd66bea4c27dc70417cfd34e169b53f17026b6004b6"
+    },
+    {
+      "path": "tests/fixtures/artifact/F-backslash.artifact",
+      "source": "parser staged Git tree 6c8605541ce6a2bc0103fb26a7a7200cd2a29d05",
+      "source_sha256": "ac96d5e6750dbe52446a9d982231691c705c9a79532add66f3093e4984dd9d30",
+      "composed_sha256": "ac96d5e6750dbe52446a9d982231691c705c9a79532add66f3093e4984dd9d30"
+    },
+    {
+      "path": "tests/fixtures/artifact/F-dotdot.artifact",
+      "source": "parser staged Git tree 6c8605541ce6a2bc0103fb26a7a7200cd2a29d05",
+      "source_sha256": "6af8372e31ce0b24eb730ee2cb6ddb7b38c165ab645d6476699cf6fe37314e80",
+      "composed_sha256": "6af8372e31ce0b24eb730ee2cb6ddb7b38c165ab645d6476699cf6fe37314e80"
+    },
+    {
+      "path": "tests/fixtures/artifact/F-double.artifact",
+      "source": "parser staged Git tree 6c8605541ce6a2bc0103fb26a7a7200cd2a29d05",
+      "source_sha256": "db41985d3fae16b8598392bcbf704c8b37d9b46f090937c47dedcad8ed538596",
+      "composed_sha256": "db41985d3fae16b8598392bcbf704c8b37d9b46f090937c47dedcad8ed538596"
+    },
+    {
+      "path": "tests/fixtures/artifact/F-duplicate.artifact",
+      "source": "parser staged Git tree 6c8605541ce6a2bc0103fb26a7a7200cd2a29d05",
+      "source_sha256": "352c1dae8f0b0139c7a2433cc73896cc548ef3303f17aa7243ad01f9fb109d98",
+      "composed_sha256": "352c1dae8f0b0139c7a2433cc73896cc548ef3303f17aa7243ad01f9fb109d98"
+    },
+    {
+      "path": "tests/fixtures/artifact/F-invalid-utf8.artifact",
+      "source": "parser staged Git tree 6c8605541ce6a2bc0103fb26a7a7200cd2a29d05",
+      "source_sha256": "32be237cd02b033d2e773740d11b12f3c8cc75fa63c9b1d0b308b0f6472887ed",
+      "composed_sha256": "32be237cd02b033d2e773740d11b12f3c8cc75fa63c9b1d0b308b0f6472887ed"
+    },
+    {
+      "path": "tests/fixtures/artifact/F-reserved-nested.artifact",
+      "source": "parser staged Git tree 6c8605541ce6a2bc0103fb26a7a7200cd2a29d05",
+      "source_sha256": "cfd107ac6de0c4fc6a283042842abcd0c2a4cf33efe75d91441341040dff4263",
+      "composed_sha256": "cfd107ac6de0c4fc6a283042842abcd0c2a4cf33efe75d91441341040dff4263"
+    },
+    {
+      "path": "tests/fixtures/artifact/F-reserved.artifact",
+      "source": "parser staged Git tree 6c8605541ce6a2bc0103fb26a7a7200cd2a29d05",
+      "source_sha256": "feb373199403bf120faf091eba194a507355733fa013dc26bf90e64bb1e21535",
+      "composed_sha256": "feb373199403bf120faf091eba194a507355733fa013dc26bf90e64bb1e21535"
+    },
+    {
+      "path": "tests/fixtures/artifact/F-reverse.artifact",
+      "source": "parser staged Git tree 6c8605541ce6a2bc0103fb26a7a7200cd2a29d05",
+      "source_sha256": "1e6e8c73dd6b3c62e50d49882721f547207aec7aec4450fd4d21cddfe966bcd3",
+      "composed_sha256": "1e6e8c73dd6b3c62e50d49882721f547207aec7aec4450fd4d21cddfe966bcd3"
+    },
+    {
+      "path": "tests/fixtures/artifact/F-suppression-first.artifact",
+      "source": "parser staged Git tree 6c8605541ce6a2bc0103fb26a7a7200cd2a29d05",
+      "source_sha256": "adedff9c68bdf95f1beccefe1bfe4abb12d1dd43d034c94a2dd8972aa8991572",
+      "composed_sha256": "adedff9c68bdf95f1beccefe1bfe4abb12d1dd43d034c94a2dd8972aa8991572"
+    },
+    {
+      "path": "tests/fixtures/artifact/F-suppression-sort.artifact",
+      "source": "parser staged Git tree 6c8605541ce6a2bc0103fb26a7a7200cd2a29d05",
+      "source_sha256": "79bd677a5bfa6c8b99b54e403c959dc231a5714f03127d86db57a0fcb6bab801",
+      "composed_sha256": "79bd677a5bfa6c8b99b54e403c959dc231a5714f03127d86db57a0fcb6bab801"
+    },
+    {
+      "path": "tests/fixtures/artifact/F-trailing.artifact",
+      "source": "parser staged Git tree 6c8605541ce6a2bc0103fb26a7a7200cd2a29d05",
+      "source_sha256": "4c9ebf962805ef66f8ccf058237fca7840ff21a553639452cb8799f9dccc17fb",
+      "composed_sha256": "4c9ebf962805ef66f8ccf058237fca7840ff21a553639452cb8799f9dccc17fb"
+    },
+    {
+      "path": "tests/fixtures/artifact/R-syntax-only.artifact",
+      "source": "parser staged Git tree 6c8605541ce6a2bc0103fb26a7a7200cd2a29d05",
+      "source_sha256": "5da572ae1dd48a430dfaa2e0e84d6ca0d40bff8fdc47aa46ed0f9e3f9bef9741",
+      "composed_sha256": "5da572ae1dd48a430dfaa2e0e84d6ca0d40bff8fdc47aa46ed0f9e3f9bef9741"
+    },
+    {
+      "path": "tests/fixtures/artifact/W-+3.artifact",
+      "source": "parser staged Git tree 6c8605541ce6a2bc0103fb26a7a7200cd2a29d05",
+      "source_sha256": "9a4d13a408c0aeccbac18001ce8fa7b627e1533236fafbcf67087dfbd039d449",
+      "composed_sha256": "9a4d13a408c0aeccbac18001ce8fa7b627e1533236fafbcf67087dfbd039d449"
+    },
+    {
+      "path": "tests/fixtures/artifact/W--1.artifact",
+      "source": "parser staged Git tree 6c8605541ce6a2bc0103fb26a7a7200cd2a29d05",
+      "source_sha256": "90de288ca65062db239554c66a0b38ea1ebdfc7d70c4cfd73248224738e6c5ca",
+      "composed_sha256": "90de288ca65062db239554c66a0b38ea1ebdfc7d70c4cfd73248224738e6c5ca"
+    },
+    {
+      "path": "tests/fixtures/artifact/W-0.artifact",
+      "source": "parser staged Git tree 6c8605541ce6a2bc0103fb26a7a7200cd2a29d05",
+      "source_sha256": "ec7ca74318d847f622dd66a0b4963d78c96fcf1882c519126eb4ea454d4a0484",
+      "composed_sha256": "ec7ca74318d847f622dd66a0b4963d78c96fcf1882c519126eb4ea454d4a0484"
+    },
+    {
+      "path": "tests/fixtures/artifact/W-03.artifact",
+      "source": "parser staged Git tree 6c8605541ce6a2bc0103fb26a7a7200cd2a29d05",
+      "source_sha256": "85f885b7a13ff96cbbec93d3b4c8b41f8d92d40cf251b0693b5a2658db888ff9",
+      "composed_sha256": "85f885b7a13ff96cbbec93d3b4c8b41f8d92d40cf251b0693b5a2658db888ff9"
+    },
+    {
+      "path": "tests/fixtures/artifact/W-18446744073709551616.artifact",
+      "source": "parser staged Git tree 6c8605541ce6a2bc0103fb26a7a7200cd2a29d05",
+      "source_sha256": "49db228fa03a20ece486d47491823d33ea9fbd3feb31285c70f338b5ac704796",
+      "composed_sha256": "49db228fa03a20ece486d47491823d33ea9fbd3feb31285c70f338b5ac704796"
+    },
+    {
+      "path": "tests/fixtures/artifact/W-3suffix.artifact",
+      "source": "parser staged Git tree 6c8605541ce6a2bc0103fb26a7a7200cd2a29d05",
+      "source_sha256": "284029649438af14034d98ebbe3ac3d2f1cd87cb23e45641feeefa8f93af019c",
+      "composed_sha256": "284029649438af14034d98ebbe3ac3d2f1cd87cb23e45641feeefa8f93af019c"
+    },
+    {
+      "path": "tests/fixtures/artifact/W-4294967296.artifact",
+      "source": "parser staged Git tree 6c8605541ce6a2bc0103fb26a7a7200cd2a29d05",
+      "source_sha256": "f1fff8dc4a71a40872ddd4efb456b9b8921b781764e840f203480d64d9a32bd0",
+      "composed_sha256": "f1fff8dc4a71a40872ddd4efb456b9b8921b781764e840f203480d64d9a32bd0"
+    },
+    {
+      "path": "tests/fixtures/artifact/W-4294967297.artifact",
+      "source": "parser staged Git tree 6c8605541ce6a2bc0103fb26a7a7200cd2a29d05",
+      "source_sha256": "da21fe84e63697f03b49d5a1c5fc29c12ba02748fdace752c10f36b1f6212ebf",
+      "composed_sha256": "da21fe84e63697f03b49d5a1c5fc29c12ba02748fdace752c10f36b1f6212ebf"
+    },
+    {
+      "path": "tests/fixtures/artifact/W-999999999999999999999999.artifact",
+      "source": "parser staged Git tree 6c8605541ce6a2bc0103fb26a7a7200cd2a29d05",
+      "source_sha256": "7f2de32c9944c6a77ce18979f8d2a2974c946d373793b0298ca09065004c8d2f",
+      "composed_sha256": "7f2de32c9944c6a77ce18979f8d2a2974c946d373793b0298ca09065004c8d2f"
+    },
+    {
+      "path": "tests/fixtures/artifact/W-NUL.artifact",
+      "source": "parser staged Git tree 6c8605541ce6a2bc0103fb26a7a7200cd2a29d05",
+      "source_sha256": "94d2d5c0713b86ec5b1cce30b3772730ad31d0b04c00c3e934c08bda2c4ba304",
+      "composed_sha256": "94d2d5c0713b86ec5b1cce30b3772730ad31d0b04c00c3e934c08bda2c4ba304"
+    },
+    {
+      "path": "tests/fixtures/artifact/W-invalid-utf8.artifact",
+      "source": "parser staged Git tree 6c8605541ce6a2bc0103fb26a7a7200cd2a29d05",
+      "source_sha256": "be49bda06df814d7363a376e76013588f30de81ee2d24ad3d504756345591038",
+      "composed_sha256": "be49bda06df814d7363a376e76013588f30de81ee2d24ad3d504756345591038"
+    },
+    {
+      "path": "tests/fixtures/artifact/W-multiline.artifact",
+      "source": "parser staged Git tree 6c8605541ce6a2bc0103fb26a7a7200cd2a29d05",
+      "source_sha256": "e979cb949da5b4cc057d6ec5f6e19b18e1031c1d1b2cdfc6eb7d46e2e2114ece",
+      "composed_sha256": "e979cb949da5b4cc057d6ec5f6e19b18e1031c1d1b2cdfc6eb7d46e2e2114ece"
+    },
+    {
+      "path": "tests/fixtures/artifact/W-x.artifact",
+      "source": "parser staged Git tree 6c8605541ce6a2bc0103fb26a7a7200cd2a29d05",
+      "source_sha256": "ff789fd5faf20150b0e465135cb2cb5e4a82b27f5cf0da11b31cec98f259b93a",
+      "composed_sha256": "ff789fd5faf20150b0e465135cb2cb5e4a82b27f5cf0da11b31cec98f259b93a"
+    },
+    {
+      "path": "tests/fixtures/artifact/attachment-backslash.artifact",
+      "source": "parser staged Git tree 6c8605541ce6a2bc0103fb26a7a7200cd2a29d05",
+      "source_sha256": "a42d9d02b147844a17f35359c3fab2e832097ef7113a86e7de9edde85435f825",
+      "composed_sha256": "a42d9d02b147844a17f35359c3fab2e832097ef7113a86e7de9edde85435f825"
+    },
+    {
+      "path": "tests/fixtures/artifact/attachment-delete.artifact",
+      "source": "parser staged Git tree 6c8605541ce6a2bc0103fb26a7a7200cd2a29d05",
+      "source_sha256": "7c37474c32425a2a9e384619dfbbe4c039d53b2a186dc749611a5e8a4691f56b",
+      "composed_sha256": "7c37474c32425a2a9e384619dfbbe4c039d53b2a186dc749611a5e8a4691f56b"
+    },
+    {
+      "path": "tests/fixtures/artifact/attachment-missing-A.artifact",
+      "source": "parser staged Git tree 6c8605541ce6a2bc0103fb26a7a7200cd2a29d05",
+      "source_sha256": "d5a0e6b19560ac7d798ad31856145a5a15eb970a670260dfe0db20400108e39b",
+      "composed_sha256": "d5a0e6b19560ac7d798ad31856145a5a15eb970a670260dfe0db20400108e39b"
+    },
+    {
+      "path": "tests/fixtures/artifact/attachment-missing-D.artifact",
+      "source": "parser staged Git tree 6c8605541ce6a2bc0103fb26a7a7200cd2a29d05",
+      "source_sha256": "beffcfa0df44c77f20187df6f497d7740effb39c72c3e5a2d44b2d9606efe4b2",
+      "composed_sha256": "beffcfa0df44c77f20187df6f497d7740effb39c72c3e5a2d44b2d9606efe4b2"
+    },
+    {
+      "path": "tests/fixtures/artifact/attachment-missing-Z.artifact",
+      "source": "parser staged Git tree 6c8605541ce6a2bc0103fb26a7a7200cd2a29d05",
+      "source_sha256": "4e0c6385713f472f7d405bcdd983cb3dedad432c67f9abcf8c8d355e25309670",
+      "composed_sha256": "4e0c6385713f472f7d405bcdd983cb3dedad432c67f9abcf8c8d355e25309670"
+    },
+    {
+      "path": "tests/fixtures/artifact/attachment-target-NUL.artifact",
+      "source": "parser staged Git tree 6c8605541ce6a2bc0103fb26a7a7200cd2a29d05",
+      "source_sha256": "a7a45df362438770a7732dd3e007c610d0651aa6ef5de968f4a776351ef1c2ec",
+      "composed_sha256": "a7a45df362438770a7732dd3e007c610d0651aa6ef5de968f4a776351ef1c2ec"
+    },
+    {
+      "path": "tests/fixtures/artifact/attachment-target-escaped-hash.artifact",
+      "source": "parser staged Git tree 6c8605541ce6a2bc0103fb26a7a7200cd2a29d05",
+      "source_sha256": "a9e2fd7e2418f062c1c3fe558b891646cc910f6a909fc3cf2d1ff1ab37597c32",
+      "composed_sha256": "a9e2fd7e2418f062c1c3fe558b891646cc910f6a909fc3cf2d1ff1ab37597c32"
+    },
+    {
+      "path": "tests/fixtures/artifact/attachment.artifact",
+      "source": "parser staged Git tree 6c8605541ce6a2bc0103fb26a7a7200cd2a29d05",
+      "source_sha256": "b0ed140e5bccc28fbe239816843642a6fc67f297b271b6b873f3177773e69369",
+      "composed_sha256": "b0ed140e5bccc28fbe239816843642a6fc67f297b271b6b873f3177773e69369"
+    },
+    {
+      "path": "tests/fixtures/artifact/card-matrix.json",
+      "source": "parser staged Git tree 6c8605541ce6a2bc0103fb26a7a7200cd2a29d05",
+      "source_sha256": "1105974218615c38531a4f6515131a733f401aa4f42b08366c4180bcaf8dffde",
+      "composed_sha256": "1105974218615c38531a4f6515131a733f401aa4f42b08366c4180bcaf8dffde"
+    },
+    {
+      "path": "tests/fixtures/artifact/checksum-corrupt.artifact",
+      "source": "parser staged Git tree 6c8605541ce6a2bc0103fb26a7a7200cd2a29d05",
+      "source_sha256": "87bcba3f55f92932303d346da8df7bffbf1beb4f238977eabd35b3b57aaec698",
+      "composed_sha256": "87bcba3f55f92932303d346da8df7bffbf1beb4f238977eabd35b3b57aaec698"
+    },
+    {
+      "path": "tests/fixtures/artifact/checksum-uppercase.artifact",
+      "source": "parser staged Git tree 6c8605541ce6a2bc0103fb26a7a7200cd2a29d05",
+      "source_sha256": "d331195f24b5c1308d3ae07f9926333c00010cccfce6048c4d6090f21178e953",
+      "composed_sha256": "d331195f24b5c1308d3ae07f9926333c00010cccfce6048c4d6090f21178e953"
+    },
+    {
+      "path": "tests/fixtures/artifact/cluster-duplicate.artifact",
+      "source": "parser staged Git tree 6c8605541ce6a2bc0103fb26a7a7200cd2a29d05",
+      "source_sha256": "590409820320d8b62213a7a0c8ba889c6ca458a9c86fc177d7de6c12fac00b35",
+      "composed_sha256": "590409820320d8b62213a7a0c8ba889c6ca458a9c86fc177d7de6c12fac00b35"
+    },
+    {
+      "path": "tests/fixtures/artifact/cluster-missing-M.artifact",
+      "source": "parser staged Git tree 6c8605541ce6a2bc0103fb26a7a7200cd2a29d05",
+      "source_sha256": "52447e9ec34b7ea941f71147b9ad533c7321fba68b379bdc0fb3b083d9d3eba4",
+      "composed_sha256": "52447e9ec34b7ea941f71147b9ad533c7321fba68b379bdc0fb3b083d9d3eba4"
+    },
+    {
+      "path": "tests/fixtures/artifact/cluster-missing-Z.artifact",
+      "source": "parser staged Git tree 6c8605541ce6a2bc0103fb26a7a7200cd2a29d05",
+      "source_sha256": "8e10f8b2add0859eb9d379cb5349dc9af7b7632aeb7546727858a4194c3a3ea4",
+      "composed_sha256": "8e10f8b2add0859eb9d379cb5349dc9af7b7632aeb7546727858a4194c3a3ea4"
+    },
+    {
+      "path": "tests/fixtures/artifact/cluster-reverse.artifact",
+      "source": "parser staged Git tree 6c8605541ce6a2bc0103fb26a7a7200cd2a29d05",
+      "source_sha256": "f7d39b8ca30f65f14a57a57921192ee0c7217e79d72246db2a021f941bcd5017",
+      "composed_sha256": "f7d39b8ca30f65f14a57a57921192ee0c7217e79d72246db2a021f941bcd5017"
+    },
+    {
+      "path": "tests/fixtures/artifact/cluster.artifact",
+      "source": "parser staged Git tree 6c8605541ce6a2bc0103fb26a7a7200cd2a29d05",
+      "source_sha256": "697f74d9133bce433fc4de4ec14b658d0285d5e6570aea3cb9e7c75a0c0dee9e",
+      "composed_sha256": "697f74d9133bce433fc4de4ec14b658d0285d5e6570aea3cb9e7c75a0c0dee9e"
+    },
+    {
+      "path": "tests/fixtures/artifact/control-missing-D.artifact",
+      "source": "parser staged Git tree 6c8605541ce6a2bc0103fb26a7a7200cd2a29d05",
+      "source_sha256": "1abce4098d5a3cda8745f0ce5a7cbac54e75677969547059fa29f1ed0782077a",
+      "composed_sha256": "1abce4098d5a3cda8745f0ce5a7cbac54e75677969547059fa29f1ed0782077a"
+    },
+    {
+      "path": "tests/fixtures/artifact/control-missing-T.artifact",
+      "source": "parser staged Git tree 6c8605541ce6a2bc0103fb26a7a7200cd2a29d05",
+      "source_sha256": "33c8fb17e189fb24306be07c911d16673532d9e669c8e62650307b0a49a5bded",
+      "composed_sha256": "33c8fb17e189fb24306be07c911d16673532d9e669c8e62650307b0a49a5bded"
+    },
+    {
+      "path": "tests/fixtures/artifact/control-missing-U.artifact",
+      "source": "parser staged Git tree 6c8605541ce6a2bc0103fb26a7a7200cd2a29d05",
+      "source_sha256": "df82fcae60363120182b324c3ed0fa20189d1a2dcba26798c024c4318d008658",
+      "composed_sha256": "df82fcae60363120182b324c3ed0fa20189d1a2dcba26798c024c4318d008658"
+    },
+    {
+      "path": "tests/fixtures/artifact/control-missing-Z.artifact",
+      "source": "parser staged Git tree 6c8605541ce6a2bc0103fb26a7a7200cd2a29d05",
+      "source_sha256": "608d71e63cc8e4c910ddfefb69acd4c1f403af8fd0ae694928a2fc88327d923e",
+      "composed_sha256": "608d71e63cc8e4c910ddfefb69acd4c1f403af8fd0ae694928a2fc88327d923e"
+    },
+    {
+      "path": "tests/fixtures/artifact/control-self.artifact",
+      "source": "parser staged Git tree 6c8605541ce6a2bc0103fb26a7a7200cd2a29d05",
+      "source_sha256": "1db9221b280eda44cbcc2ddb40d87483a31cad5f3ff2730891f0ae3b2ef5a150",
+      "composed_sha256": "1db9221b280eda44cbcc2ddb40d87483a31cad5f3ff2730891f0ae3b2ef5a150"
+    },
+    {
+      "path": "tests/fixtures/artifact/control.artifact",
+      "source": "parser staged Git tree 6c8605541ce6a2bc0103fb26a7a7200cd2a29d05",
+      "source_sha256": "70a719bb91d9f19467ca6bb5dd2e3dfc8729299beafe4f4e6abf9a195ee3677e",
+      "composed_sha256": "70a719bb91d9f19467ca6bb5dd2e3dfc8729299beafe4f4e6abf9a195ee3677e"
+    },
+    {
+      "path": "tests/fixtures/artifact/dates/main.json",
+      "source": "parser staged Git tree 6c8605541ce6a2bc0103fb26a7a7200cd2a29d05",
+      "source_sha256": "e875afd016ffb875a923112c929a048b8360b8ba6b0265e6d8c7f3574acb1dc3",
+      "composed_sha256": "e875afd016ffb875a923112c929a048b8360b8ba6b0265e6d8c7f3574acb1dc3"
+    },
+    {
+      "path": "tests/fixtures/artifact/dates/provenance.json",
+      "source": "parser staged Git tree 6c8605541ce6a2bc0103fb26a7a7200cd2a29d05",
+      "source_sha256": "5659dcd8a7eadd13c9d39940a085daa767364ffeed47038ef245ef5d500aecc6",
+      "composed_sha256": "5659dcd8a7eadd13c9d39940a085daa767364ffeed47038ef245ef5d500aecc6"
+    },
+    {
+      "path": "tests/fixtures/artifact/dates/threshold.json",
+      "source": "parser staged Git tree 6c8605541ce6a2bc0103fb26a7a7200cd2a29d05",
+      "source_sha256": "bf41011ed9136fe4f1819d4586ae84e6d37bad648c7a522193f8375d10cc476a",
+      "composed_sha256": "bf41011ed9136fe4f1819d4586ae84e6d37bad648c7a522193f8375d10cc476a"
+    },
+    {
+      "path": "tests/fixtures/artifact/delta-file-delete.artifact",
+      "source": "parser staged Git tree 6c8605541ce6a2bc0103fb26a7a7200cd2a29d05",
+      "source_sha256": "7460ee0de852a9fb09f28a799dbbc2f08350e6df836f3af73b54c38d64c8af82",
+      "composed_sha256": "7460ee0de852a9fb09f28a799dbbc2f08350e6df836f3af73b54c38d64c8af82"
+    },
+    {
+      "path": "tests/fixtures/artifact/escaped-NUL-comment.artifact",
+      "source": "parser staged Git tree 6c8605541ce6a2bc0103fb26a7a7200cd2a29d05",
+      "source_sha256": "5a7149c352b469c4f2dad224fe8d6f6246197aba22cd1c6e299ca2bbe6a160f9",
+      "composed_sha256": "5a7149c352b469c4f2dad224fe8d6f6246197aba22cd1c6e299ca2bbe6a160f9"
+    },
+    {
+      "path": "tests/fixtures/artifact/forum-H-I.artifact",
+      "source": "parser staged Git tree 6c8605541ce6a2bc0103fb26a7a7200cd2a29d05",
+      "source_sha256": "a4248762cb3289e82c2788761b68bfda6a719f1ffec8c98eceb4a79ffc639d7c",
+      "composed_sha256": "a4248762cb3289e82c2788761b68bfda6a719f1ffec8c98eceb4a79ffc639d7c"
+    },
+    {
+      "path": "tests/fixtures/artifact/forum-edit.artifact",
+      "source": "parser staged Git tree 6c8605541ce6a2bc0103fb26a7a7200cd2a29d05",
+      "source_sha256": "1664a40735b7f67b2acdc2e5a527d3d6e1a4679971a54c08adc8420cd99517ea",
+      "composed_sha256": "1664a40735b7f67b2acdc2e5a527d3d6e1a4679971a54c08adc8420cd99517ea"
+    },
+    {
+      "path": "tests/fixtures/artifact/forum-missing-D.artifact",
+      "source": "parser staged Git tree 6c8605541ce6a2bc0103fb26a7a7200cd2a29d05",
+      "source_sha256": "55ff4905f715acff61f8495f780407af9b09a180461926cc78afa6c4d90a0ea7",
+      "composed_sha256": "55ff4905f715acff61f8495f780407af9b09a180461926cc78afa6c4d90a0ea7"
+    },
+    {
+      "path": "tests/fixtures/artifact/forum-missing-U.artifact",
+      "source": "parser staged Git tree 6c8605541ce6a2bc0103fb26a7a7200cd2a29d05",
+      "source_sha256": "831c936aae231645aca121708c294286acec5db7189a0077aac3a9df8a3cfbba",
+      "composed_sha256": "831c936aae231645aca121708c294286acec5db7189a0077aac3a9df8a3cfbba"
+    },
+    {
+      "path": "tests/fixtures/artifact/forum-missing-W.artifact",
+      "source": "parser staged Git tree 6c8605541ce6a2bc0103fb26a7a7200cd2a29d05",
+      "source_sha256": "7035a35bdd2b3bdd21d6c2e78e6ba65d1097a6141e9096e1a296988c5487f3a4",
+      "composed_sha256": "7035a35bdd2b3bdd21d6c2e78e6ba65d1097a6141e9096e1a296988c5487f3a4"
+    },
+    {
+      "path": "tests/fixtures/artifact/forum-missing-Z.artifact",
+      "source": "parser staged Git tree 6c8605541ce6a2bc0103fb26a7a7200cd2a29d05",
+      "source_sha256": "896b4c0a84eb05cc9f28c852f33b12d14bafdf83c1ab564cb8b9725255328e92",
+      "composed_sha256": "896b4c0a84eb05cc9f28c852f33b12d14bafdf83c1ab564cb8b9725255328e92"
+    },
+    {
+      "path": "tests/fixtures/artifact/forum-reply.artifact",
+      "source": "parser staged Git tree 6c8605541ce6a2bc0103fb26a7a7200cd2a29d05",
+      "source_sha256": "45b3379a2ef403419788f0e875a441ebab2354e9d1da11a63512c1db9b5869f6",
+      "composed_sha256": "45b3379a2ef403419788f0e875a441ebab2354e9d1da11a63512c1db9b5869f6"
+    },
+    {
+      "path": "tests/fixtures/artifact/forum-root.artifact",
+      "source": "parser staged Git tree 6c8605541ce6a2bc0103fb26a7a7200cd2a29d05",
+      "source_sha256": "96f66d8acf5f2fc9e5142a28574c3c4ca981e32c62eee3da95d8dd1b7673f8d6",
+      "composed_sha256": "96f66d8acf5f2fc9e5142a28574c3c4ca981e32c62eee3da95d8dd1b7673f8d6"
+    },
+    {
+      "path": "tests/fixtures/artifact/forum-two-P.artifact",
+      "source": "parser staged Git tree 6c8605541ce6a2bc0103fb26a7a7200cd2a29d05",
+      "source_sha256": "1c07cb0f87f180b8a999e88c86f8ee7ae5ffdf75fa5f95ac632b6112bb999656",
+      "composed_sha256": "1c07cb0f87f180b8a999e88c86f8ee7ae5ffdf75fa5f95ac632b6112bb999656"
+    },
+    {
+      "path": "tests/fixtures/artifact/forum.artifact",
+      "source": "parser staged Git tree 6c8605541ce6a2bc0103fb26a7a7200cd2a29d05",
+      "source_sha256": "16a551bc8895051752d3627e8ab864ea9ace71220c4cee2e69252fd7d7a5fd50",
+      "composed_sha256": "16a551bc8895051752d3627e8ab864ea9ace71220c4cee2e69252fd7d7a5fd50"
+    },
+    {
+      "path": "tests/fixtures/artifact/hash-uppercase.artifact",
+      "source": "parser staged Git tree 6c8605541ce6a2bc0103fb26a7a7200cd2a29d05",
+      "source_sha256": "860274bb35ad692b8e22bb35e6bf7d392cb45ed92c90e178ad3604b0ab26a976",
+      "composed_sha256": "860274bb35ad692b8e22bb35e6bf7d392cb45ed92c90e178ad3604b0ab26a976"
+    },
+    {
+      "path": "tests/fixtures/artifact/manifest-missing-D.artifact",
+      "source": "parser staged Git tree 6c8605541ce6a2bc0103fb26a7a7200cd2a29d05",
+      "source_sha256": "52447e9ec34b7ea941f71147b9ad533c7321fba68b379bdc0fb3b083d9d3eba4",
+      "composed_sha256": "52447e9ec34b7ea941f71147b9ad533c7321fba68b379bdc0fb3b083d9d3eba4"
+    },
+    {
+      "path": "tests/fixtures/artifact/manifest-missing-Z.artifact",
+      "source": "parser staged Git tree 6c8605541ce6a2bc0103fb26a7a7200cd2a29d05",
+      "source_sha256": "c928911b1a83129e84dc8fed8c50fd0586c04ad3aae381cf93b0a6523338055e",
+      "composed_sha256": "c928911b1a83129e84dc8fed8c50fd0586c04ad3aae381cf93b0a6523338055e"
+    },
+    {
+      "path": "tests/fixtures/artifact/manifest-valid.artifact",
+      "source": "parser staged Git tree 6c8605541ce6a2bc0103fb26a7a7200cd2a29d05",
+      "source_sha256": "d84b3f9c59287e90142d0c84da805a325e1f56155d9a4b89b5cd108ca54362ca",
+      "composed_sha256": "d84b3f9c59287e90142d0c84da805a325e1f56155d9a4b89b5cd108ca54362ca"
+    },
+    {
+      "path": "tests/fixtures/artifact/manifest.artifact",
+      "source": "parser staged Git tree 6c8605541ce6a2bc0103fb26a7a7200cd2a29d05",
+      "source_sha256": "d5a0e6b19560ac7d798ad31856145a5a15eb970a670260dfe0db20400108e39b",
+      "composed_sha256": "d5a0e6b19560ac7d798ad31856145a5a15eb970a670260dfe0db20400108e39b"
+    },
+    {
+      "path": "tests/fixtures/artifact/missing-LF.artifact",
+      "source": "parser staged Git tree 6c8605541ce6a2bc0103fb26a7a7200cd2a29d05",
+      "source_sha256": "a2155bd72f7101ec17c2d645b0624437f1252c8639804e334801da5748b1e286",
+      "composed_sha256": "a2155bd72f7101ec17c2d645b0624437f1252c8639804e334801da5748b1e286"
+    },
+    {
+      "path": "tests/fixtures/artifact/native-root-manifest.artifact",
+      "source": "parser staged Git tree 6c8605541ce6a2bc0103fb26a7a7200cd2a29d05",
+      "source_sha256": "a43c79c31c74c57c61f8cc33aced8c2f7face32f1de57d31e9e9b810e62df661",
+      "composed_sha256": "a43c79c31c74c57c61f8cc33aced8c2f7face32f1de57d31e9e9b810e62df661"
+    },
+    {
+      "path": "tests/fixtures/artifact/native-root-trailer-removed.artifact",
+      "source": "parser staged Git tree 6c8605541ce6a2bc0103fb26a7a7200cd2a29d05",
+      "source_sha256": "5c885f6f74aa6d343af6e60263eeed60e1d16228146d92da8fdb583390f93beb",
+      "composed_sha256": "5c885f6f74aa6d343af6e60263eeed60e1d16228146d92da8fdb583390f93beb"
+    },
+    {
+      "path": "tests/fixtures/artifact/raw-NUL-comment.artifact",
+      "source": "parser staged Git tree 6c8605541ce6a2bc0103fb26a7a7200cd2a29d05",
+      "source_sha256": "a6075fa1cdbd89bef6ebc524fabb98747a65a20d46c2e7a507ebdf5de8f8c926",
+      "composed_sha256": "a6075fa1cdbd89bef6ebc524fabb98747a65a20d46c2e7a507ebdf5de8f8c926"
+    },
+    {
+      "path": "tests/fixtures/artifact/repeated-empty-P.artifact",
+      "source": "parser staged Git tree 6c8605541ce6a2bc0103fb26a7a7200cd2a29d05",
+      "source_sha256": "0dfaf944bbbade4e1e8657e540db35efb74d47915cd2c83d31f2508286bc2da6",
+      "composed_sha256": "0dfaf944bbbade4e1e8657e540db35efb74d47915cd2c83d31f2508286bc2da6"
+    },
+    {
+      "path": "tests/fixtures/artifact/signed-PGP-CRLF-header.artifact",
+      "source": "parser staged Git tree 6c8605541ce6a2bc0103fb26a7a7200cd2a29d05",
+      "source_sha256": "64cea8db14b775bdda4abf95b3b99cf8723f241a5583fcb552782992c71d9e76",
+      "composed_sha256": "64cea8db14b775bdda4abf95b3b99cf8723f241a5583fcb552782992c71d9e76"
+    },
+    {
+      "path": "tests/fixtures/artifact/signed-PGP.artifact",
+      "source": "parser staged Git tree 6c8605541ce6a2bc0103fb26a7a7200cd2a29d05",
+      "source_sha256": "d23f145afdccda1e576919e33168d18ef70e2074deafc69bc5791133ec8ce5ab",
+      "composed_sha256": "d23f145afdccda1e576919e33168d18ef70e2074deafc69bc5791133ec8ce5ab"
+    },
+    {
+      "path": "tests/fixtures/artifact/signed-SSH-CRLF-header.artifact",
+      "source": "parser staged Git tree 6c8605541ce6a2bc0103fb26a7a7200cd2a29d05",
+      "source_sha256": "2f465dd10276d8406cf439ed4b9b5551adb58dcfafe0fb4c5d36797bc7a1451f",
+      "composed_sha256": "2f465dd10276d8406cf439ed4b9b5551adb58dcfafe0fb4c5d36797bc7a1451f"
+    },
+    {
+      "path": "tests/fixtures/artifact/signed-SSH.artifact",
+      "source": "parser staged Git tree 6c8605541ce6a2bc0103fb26a7a7200cd2a29d05",
+      "source_sha256": "3db0914d13df25ab8f0296d800eb4b8043d7e0e56bb51c89bf6c3ecdd357ec8c",
+      "composed_sha256": "3db0914d13df25ab8f0296d800eb4b8043d7e0e56bb51c89bf6c3ecdd357ec8c"
+    },
+    {
+      "path": "tests/fixtures/artifact/technote-legacy-PN.artifact",
+      "source": "parser staged Git tree 6c8605541ce6a2bc0103fb26a7a7200cd2a29d05",
+      "source_sha256": "e992666c2641c6e116e1b8c38e467f3d9792def7d721b50e2298b5426ef91002",
+      "composed_sha256": "e992666c2641c6e116e1b8c38e467f3d9792def7d721b50e2298b5426ef91002"
+    },
+    {
+      "path": "tests/fixtures/artifact/technote-missing-D.artifact",
+      "source": "parser staged Git tree 6c8605541ce6a2bc0103fb26a7a7200cd2a29d05",
+      "source_sha256": "2b3bbc3dadabaa5d46946d1b1ec9f29fbe97d2998ca2543aa7ef3751b0fc29fc",
+      "composed_sha256": "2b3bbc3dadabaa5d46946d1b1ec9f29fbe97d2998ca2543aa7ef3751b0fc29fc"
+    },
+    {
+      "path": "tests/fixtures/artifact/technote-missing-E.artifact",
+      "source": "parser staged Git tree 6c8605541ce6a2bc0103fb26a7a7200cd2a29d05",
+      "source_sha256": "831c936aae231645aca121708c294286acec5db7189a0077aac3a9df8a3cfbba",
+      "composed_sha256": "831c936aae231645aca121708c294286acec5db7189a0077aac3a9df8a3cfbba"
+    },
+    {
+      "path": "tests/fixtures/artifact/technote-missing-W.artifact",
+      "source": "parser staged Git tree 6c8605541ce6a2bc0103fb26a7a7200cd2a29d05",
+      "source_sha256": "3b233091205ea86cc208445bee10e655587e4bdb4a23542f1701adde25191230",
+      "composed_sha256": "3b233091205ea86cc208445bee10e655587e4bdb4a23542f1701adde25191230"
+    },
+    {
+      "path": "tests/fixtures/artifact/technote-missing-Z.artifact",
+      "source": "parser staged Git tree 6c8605541ce6a2bc0103fb26a7a7200cd2a29d05",
+      "source_sha256": "a23e110ddf63f1a4b6a292eec86d3a8f9ea08b406954792d98cb346021586671",
+      "composed_sha256": "a23e110ddf63f1a4b6a292eec86d3a8f9ea08b406954792d98cb346021586671"
+    },
+    {
+      "path": "tests/fixtures/artifact/technote.artifact",
+      "source": "parser staged Git tree 6c8605541ce6a2bc0103fb26a7a7200cd2a29d05",
+      "source_sha256": "9cd46dba1aa5c7254c2a33954094d3867f02a462bfd48fcd7964132929f25b15",
+      "composed_sha256": "9cd46dba1aa5c7254c2a33954094d3867f02a462bfd48fcd7964132929f25b15"
+    },
+    {
+      "path": "tests/fixtures/artifact/ticket-append-empty.artifact",
+      "source": "parser staged Git tree 6c8605541ce6a2bc0103fb26a7a7200cd2a29d05",
+      "source_sha256": "69b533dfab1ba447a73032918c387ef00fd8469cfaee219394d8873261c4d723",
+      "composed_sha256": "69b533dfab1ba447a73032918c387ef00fd8469cfaee219394d8873261c4d723"
+    },
+    {
+      "path": "tests/fixtures/artifact/ticket-missing-D.artifact",
+      "source": "parser staged Git tree 6c8605541ce6a2bc0103fb26a7a7200cd2a29d05",
+      "source_sha256": "9a17a7c9cd9759b596e6af35fa241c5a5bce800427def90650cf2fc14af6d8fb",
+      "composed_sha256": "9a17a7c9cd9759b596e6af35fa241c5a5bce800427def90650cf2fc14af6d8fb"
+    },
+    {
+      "path": "tests/fixtures/artifact/ticket-missing-J.artifact",
+      "source": "parser staged Git tree 6c8605541ce6a2bc0103fb26a7a7200cd2a29d05",
+      "source_sha256": "51ac83428d09402531619a17dbe51e09c0913ac3ea8bbd603da92c2d68b3d862",
+      "composed_sha256": "51ac83428d09402531619a17dbe51e09c0913ac3ea8bbd603da92c2d68b3d862"
+    },
+    {
+      "path": "tests/fixtures/artifact/ticket-missing-K.artifact",
+      "source": "parser staged Git tree 6c8605541ce6a2bc0103fb26a7a7200cd2a29d05",
+      "source_sha256": "2d7b2af4217141f844df14f939cc4f1a4b8756f2268c51c463426b2ca8320353",
+      "composed_sha256": "2d7b2af4217141f844df14f939cc4f1a4b8756f2268c51c463426b2ca8320353"
+    },
+    {
+      "path": "tests/fixtures/artifact/ticket-missing-U.artifact",
+      "source": "parser staged Git tree 6c8605541ce6a2bc0103fb26a7a7200cd2a29d05",
+      "source_sha256": "13ee5c0d17631ec32cd5a53cb8066369326f48390828db8835e9541460c49664",
+      "composed_sha256": "13ee5c0d17631ec32cd5a53cb8066369326f48390828db8835e9541460c49664"
+    },
+    {
+      "path": "tests/fixtures/artifact/ticket-missing-Z.artifact",
+      "source": "parser staged Git tree 6c8605541ce6a2bc0103fb26a7a7200cd2a29d05",
+      "source_sha256": "a36b2ae1f363550b9aaa74461d0d9ebcfa1dbec39eae374193203cc74d23191c",
+      "composed_sha256": "a36b2ae1f363550b9aaa74461d0d9ebcfa1dbec39eae374193203cc74d23191c"
+    },
+    {
+      "path": "tests/fixtures/artifact/ticket.artifact",
+      "source": "parser staged Git tree 6c8605541ce6a2bc0103fb26a7a7200cd2a29d05",
+      "source_sha256": "064f94247132d3c1477dba74cb5046d83db7b0ca24e22b24a67665cd0480ffeb",
+      "composed_sha256": "064f94247132d3c1477dba74cb5046d83db7b0ca24e22b24a67665cd0480ffeb"
+    },
+    {
+      "path": "tests/fixtures/artifact/wiki-missing-D.artifact",
+      "source": "parser staged Git tree 6c8605541ce6a2bc0103fb26a7a7200cd2a29d05",
+      "source_sha256": "9cd7c7e6d3b9e1eb2b56c9cee51d90a045ae5e66113e8e606d21602bd0307f3b",
+      "composed_sha256": "9cd7c7e6d3b9e1eb2b56c9cee51d90a045ae5e66113e8e606d21602bd0307f3b"
+    },
+    {
+      "path": "tests/fixtures/artifact/wiki-missing-L.artifact",
+      "source": "parser staged Git tree 6c8605541ce6a2bc0103fb26a7a7200cd2a29d05",
+      "source_sha256": "16a551bc8895051752d3627e8ab864ea9ace71220c4cee2e69252fd7d7a5fd50",
+      "composed_sha256": "16a551bc8895051752d3627e8ab864ea9ace71220c4cee2e69252fd7d7a5fd50"
+    },
+    {
+      "path": "tests/fixtures/artifact/wiki-missing-U.artifact",
+      "source": "parser staged Git tree 6c8605541ce6a2bc0103fb26a7a7200cd2a29d05",
+      "source_sha256": "387221cefc4a6f50d0f57358c48d70fba63bc726d91b0908a15b6ebab8842a62",
+      "composed_sha256": "387221cefc4a6f50d0f57358c48d70fba63bc726d91b0908a15b6ebab8842a62"
+    },
+    {
+      "path": "tests/fixtures/artifact/wiki-missing-W.artifact",
+      "source": "parser staged Git tree 6c8605541ce6a2bc0103fb26a7a7200cd2a29d05",
+      "source_sha256": "76263905185f83b3562f99206340831daca78d9a26a5962a818acb50aa2d446f",
+      "composed_sha256": "76263905185f83b3562f99206340831daca78d9a26a5962a818acb50aa2d446f"
+    },
+    {
+      "path": "tests/fixtures/artifact/wiki-missing-Z.artifact",
+      "source": "parser staged Git tree 6c8605541ce6a2bc0103fb26a7a7200cd2a29d05",
+      "source_sha256": "acc115cfbca5bd5807cdbacb397ef093559dbcbc03c5a0d850d36841c8227cf5",
+      "composed_sha256": "acc115cfbca5bd5807cdbacb397ef093559dbcbc03c5a0d850d36841c8227cf5"
+    },
+    {
+      "path": "tests/fixtures/artifact/wiki.artifact",
+      "source": "parser staged Git tree 6c8605541ce6a2bc0103fb26a7a7200cd2a29d05",
+      "source_sha256": "3e6c359ebb778ac3eeb360abd2811be25e02edb699eaa54da50cc3aaf87c1aa5",
+      "composed_sha256": "3e6c359ebb778ac3eeb360abd2811be25e02edb699eaa54da50cc3aaf87c1aa5"
+    },
+    {
+      "path": "docs/native-storage.md",
+      "source": "storage reviewed manifest 040d4a9f4a235f08b4ee53a853f4edfc49cb33f95fc53d39cf615e5faec4e1ae",
+      "source_sha256": "3a53b1e603711b3c25cd6dd723bf67930faf752d57a1bb6de76d39a40670a37b",
+      "composed_sha256": "3a53b1e603711b3c25cd6dd723bf67930faf752d57a1bb6de76d39a40670a37b",
+      "composition": "exact"
+    },
+    {
+      "path": "evidence/native-storage/admission-api-dependers.json",
+      "source": "storage reviewed manifest 040d4a9f4a235f08b4ee53a853f4edfc49cb33f95fc53d39cf615e5faec4e1ae",
+      "source_sha256": "d54d421f7d683245ce4217c37c6fd6725d5fef2dbf814a5918e542d1b84b2b29",
+      "composed_sha256": "d54d421f7d683245ce4217c37c6fd6725d5fef2dbf814a5918e542d1b84b2b29",
+      "composition": "exact"
+    },
+    {
+      "path": "evidence/native-storage/bounded-pack-dependers.json",
+      "source": "storage reviewed manifest 040d4a9f4a235f08b4ee53a853f4edfc49cb33f95fc53d39cf615e5faec4e1ae",
+      "source_sha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+      "composed_sha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+      "composition": "exact"
+    },
+    {
+      "path": "evidence/native-storage/catalog-pin-red.log",
+      "source": "storage reviewed manifest 040d4a9f4a235f08b4ee53a853f4edfc49cb33f95fc53d39cf615e5faec4e1ae",
+      "source_sha256": "008faa503d596c25f4a0a8235d4dbb5c11fde3accfdc8e1ee33d8b1bdc7558cf",
+      "composed_sha256": "008faa503d596c25f4a0a8235d4dbb5c11fde3accfdc8e1ee33d8b1bdc7558cf",
+      "composition": "exact"
+    },
+    {
+      "path": "evidence/native-storage/compression-dependers.json",
+      "source": "storage reviewed manifest 040d4a9f4a235f08b4ee53a853f4edfc49cb33f95fc53d39cf615e5faec4e1ae",
+      "source_sha256": "14bfbfb79acd12d63939cfd9c3304629b5d27bc76a8493b3c3b7c82a9e206eaa",
+      "composed_sha256": "14bfbfb79acd12d63939cfd9c3304629b5d27bc76a8493b3c3b7c82a9e206eaa",
+      "composition": "exact"
+    },
+    {
+      "path": "evidence/native-storage/compression-legacy-regression.log",
+      "source": "storage reviewed manifest 040d4a9f4a235f08b4ee53a853f4edfc49cb33f95fc53d39cf615e5faec4e1ae",
+      "source_sha256": "7d4dbc40bf316f500474c06b2e81e0273f4917917051f119350919cd627f60d0",
+      "composed_sha256": "7d4dbc40bf316f500474c06b2e81e0273f4917917051f119350919cd627f60d0",
+      "composition": "exact"
+    },
+    {
+      "path": "evidence/native-storage/correction/baselines.json",
+      "source": "storage reviewed manifest 040d4a9f4a235f08b4ee53a853f4edfc49cb33f95fc53d39cf615e5faec4e1ae",
+      "source_sha256": "eccf02c4bc9349df46259b894e70e5b1c88d66dfa086c1e61d7d0f3e704675d3",
+      "composed_sha256": "eccf02c4bc9349df46259b894e70e5b1c88d66dfa086c1e61d7d0f3e704675d3",
+      "composition": "exact"
+    },
+    {
+      "path": "evidence/native-storage/correction/coupled-text-dependers.txt",
+      "source": "storage reviewed manifest 040d4a9f4a235f08b4ee53a853f4edfc49cb33f95fc53d39cf615e5faec4e1ae",
+      "source_sha256": "c2e0472153bfaffc52d8bc145bde0b404934bfa8d384ac346a1439c0f70c09fd",
+      "composed_sha256": "c2e0472153bfaffc52d8bc145bde0b404934bfa8d384ac346a1439c0f70c09fd",
+      "composition": "exact"
+    },
+    {
+      "path": "evidence/native-storage/correction/coverage.log",
+      "source": "storage reviewed manifest 040d4a9f4a235f08b4ee53a853f4edfc49cb33f95fc53d39cf615e5faec4e1ae",
+      "source_sha256": "811e75c0583b81c1143de92da807cb8e076a5053165abaff5f3c2f082ebacf8b",
+      "composed_sha256": "811e75c0583b81c1143de92da807cb8e076a5053165abaff5f3c2f082ebacf8b",
+      "composition": "exact"
+    },
+    {
+      "path": "evidence/native-storage/correction/functional.log",
+      "source": "storage reviewed manifest 040d4a9f4a235f08b4ee53a853f4edfc49cb33f95fc53d39cf615e5faec4e1ae",
+      "source_sha256": "49ea50cf027b1d0b5b48c2d22531ea947a86449edc6ef891200fb0a88d2258ca",
+      "composed_sha256": "49ea50cf027b1d0b5b48c2d22531ea947a86449edc6ef891200fb0a88d2258ca",
+      "composition": "exact"
+    },
+    {
+      "path": "evidence/native-storage/correction/original-review-allocation-probe.rs.txt",
+      "source": "storage reviewed manifest 040d4a9f4a235f08b4ee53a853f4edfc49cb33f95fc53d39cf615e5faec4e1ae",
+      "source_sha256": "a1c8196ceed618e397eef1d69c1dfc4c68526f13bddaf8312daabc4277b7a671",
+      "composed_sha256": "a1c8196ceed618e397eef1d69c1dfc4c68526f13bddaf8312daabc4277b7a671",
+      "composition": "exact"
+    },
+    {
+      "path": "evidence/native-storage/correction/owned-correction.diff.gz",
+      "source": "storage reviewed manifest 040d4a9f4a235f08b4ee53a853f4edfc49cb33f95fc53d39cf615e5faec4e1ae",
+      "source_sha256": "db3f7b401ce0d5b38393818872ec262663096b8cb80757ffcd80c2a9ac6a017e",
+      "composed_sha256": "db3f7b401ce0d5b38393818872ec262663096b8cb80757ffcd80c2a9ac6a017e",
+      "composition": "exact"
+    },
+    {
+      "path": "evidence/native-storage/correction/owned-correction.diff.hashes.json",
+      "source": "storage reviewed manifest 040d4a9f4a235f08b4ee53a853f4edfc49cb33f95fc53d39cf615e5faec4e1ae",
+      "source_sha256": "a3728d0216874283416629f016e89f5b3fb0cb5929d23d1bf54a724257ee3223",
+      "composed_sha256": "a3728d0216874283416629f016e89f5b3fb0cb5929d23d1bf54a724257ee3223",
+      "composition": "exact"
+    },
+    {
+      "path": "evidence/native-storage/correction/prose-check.log",
+      "source": "storage reviewed manifest 040d4a9f4a235f08b4ee53a853f4edfc49cb33f95fc53d39cf615e5faec4e1ae",
+      "source_sha256": "b325c5ce06fc8b75020350cb9dd98a0c0f8ee83fa7a7edb4339efeb777f82602",
+      "composed_sha256": "b325c5ce06fc8b75020350cb9dd98a0c0f8ee83fa7a7edb4339efeb777f82602",
+      "composition": "exact"
+    },
+    {
+      "path": "evidence/native-storage/correction/root-allocation-green.log",
+      "source": "storage reviewed manifest 040d4a9f4a235f08b4ee53a853f4edfc49cb33f95fc53d39cf615e5faec4e1ae",
+      "source_sha256": "1d914dee41fa895669b81f22d34bbcc44f8f2b3a750018ed4bb745c445db1675",
+      "composed_sha256": "1d914dee41fa895669b81f22d34bbcc44f8f2b3a750018ed4bb745c445db1675",
+      "composition": "exact"
+    },
+    {
+      "path": "evidence/native-storage/correction/root-allocation-red.log",
+      "source": "storage reviewed manifest 040d4a9f4a235f08b4ee53a853f4edfc49cb33f95fc53d39cf615e5faec4e1ae",
+      "source_sha256": "c586e7906597cc1b55d3b5370c6746ca15b8bbdc2f1c4ab0ddf442fe0d38d31e",
+      "composed_sha256": "c586e7906597cc1b55d3b5370c6746ca15b8bbdc2f1c4ab0ddf442fe0d38d31e",
+      "composition": "exact"
+    },
+    {
+      "path": "evidence/native-storage/correction/root-whole-size-green.log",
+      "source": "storage reviewed manifest 040d4a9f4a235f08b4ee53a853f4edfc49cb33f95fc53d39cf615e5faec4e1ae",
+      "source_sha256": "08e35745aaa0f46ca50e394811c507eb41cc74e30b6e1eca583e3960caf90a66",
+      "composed_sha256": "08e35745aaa0f46ca50e394811c507eb41cc74e30b6e1eca583e3960caf90a66",
+      "composition": "exact"
+    },
+    {
+      "path": "evidence/native-storage/correction/size-dependers.json",
+      "source": "storage reviewed manifest 040d4a9f4a235f08b4ee53a853f4edfc49cb33f95fc53d39cf615e5faec4e1ae",
+      "source_sha256": "8c5c2ce8be802bec2dd8d02f62f6adcfc96e464ebc4dfffff99cc9295e388824",
+      "composed_sha256": "8c5c2ce8be802bec2dd8d02f62f6adcfc96e464ebc4dfffff99cc9295e388824",
+      "composition": "exact"
+    },
+    {
+      "path": "evidence/native-storage/correction/token-dependers-before.json",
+      "source": "storage reviewed manifest 040d4a9f4a235f08b4ee53a853f4edfc49cb33f95fc53d39cf615e5faec4e1ae",
+      "source_sha256": "d6003b2dfa3331380557d9b9edbc74d972100de0f63b796d2eb764cace11ec47",
+      "composed_sha256": "d6003b2dfa3331380557d9b9edbc74d972100de0f63b796d2eb764cace11ec47",
+      "composition": "exact"
+    },
+    {
+      "path": "evidence/native-storage/correction/token-fixtures.log",
+      "source": "storage reviewed manifest 040d4a9f4a235f08b4ee53a853f4edfc49cb33f95fc53d39cf615e5faec4e1ae",
+      "source_sha256": "9ca061500f374f248a35be3514353b7e0747bb4f315e78e962bc08f0237942a1",
+      "composed_sha256": "9ca061500f374f248a35be3514353b7e0747bb4f315e78e962bc08f0237942a1",
+      "composition": "exact"
+    },
+    {
+      "path": "evidence/native-storage/correction/token-unit.log",
+      "source": "storage reviewed manifest 040d4a9f4a235f08b4ee53a853f4edfc49cb33f95fc53d39cf615e5faec4e1ae",
+      "source_sha256": "d6d08b1697cbc06fdc676486fffd591937c59b7c81d1ec4757a17cb069a06f33",
+      "composed_sha256": "d6d08b1697cbc06fdc676486fffd591937c59b7c81d1ec4757a17cb069a06f33",
+      "composition": "exact"
+    },
+    {
+      "path": "evidence/native-storage/coverage-candidate.log",
+      "source": "storage reviewed manifest 040d4a9f4a235f08b4ee53a853f4edfc49cb33f95fc53d39cf615e5faec4e1ae",
+      "source_sha256": "8dad0d925a26fa95248f586827ba0e60208110dbb46a543de8aafcf177a5a953",
+      "composed_sha256": "8dad0d925a26fa95248f586827ba0e60208110dbb46a543de8aafcf177a5a953",
+      "composition": "exact"
+    },
+    {
+      "path": "evidence/native-storage/coverage-closure/catalog-dependers.json",
+      "source": "storage reviewed manifest 040d4a9f4a235f08b4ee53a853f4edfc49cb33f95fc53d39cf615e5faec4e1ae",
+      "source_sha256": "eeb53c78d4253e88c4f5a14c32b08648f4aa6a9b4b1c329cac60fbad79eba96a",
+      "composed_sha256": "eeb53c78d4253e88c4f5a14c32b08648f4aa6a9b4b1c329cac60fbad79eba96a",
+      "composition": "exact"
+    },
+    {
+      "path": "evidence/native-storage/coverage-closure/comparison-hashes.json",
+      "source": "storage reviewed manifest 040d4a9f4a235f08b4ee53a853f4edfc49cb33f95fc53d39cf615e5faec4e1ae",
+      "source_sha256": "4308f3bacade6073829c0fff20b40f310e171abb2bf6226638926739a58832c6",
+      "composed_sha256": "4308f3bacade6073829c0fff20b40f310e171abb2bf6226638926739a58832c6",
+      "composition": "exact"
+    },
+    {
+      "path": "evidence/native-storage/coverage-closure/coverage-collision.log",
+      "source": "storage reviewed manifest 040d4a9f4a235f08b4ee53a853f4edfc49cb33f95fc53d39cf615e5faec4e1ae",
+      "source_sha256": "17980641c23141f068a43b0bce92f6672e8c3d0bce025b47b33ec6a0495b20c4",
+      "composed_sha256": "17980641c23141f068a43b0bce92f6672e8c3d0bce025b47b33ec6a0495b20c4",
+      "composition": "exact"
+    },
+    {
+      "path": "evidence/native-storage/coverage-closure/coverage.log",
+      "source": "storage reviewed manifest 040d4a9f4a235f08b4ee53a853f4edfc49cb33f95fc53d39cf615e5faec4e1ae",
+      "source_sha256": "533af117e231dc72e9beda9c7dc1c9ad546291503e80e27b509a5675ff2a4b22",
+      "composed_sha256": "533af117e231dc72e9beda9c7dc1c9ad546291503e80e27b509a5675ff2a4b22",
+      "composition": "exact"
+    },
+    {
+      "path": "evidence/native-storage/coverage-closure/date-dependers.json",
+      "source": "storage reviewed manifest 040d4a9f4a235f08b4ee53a853f4edfc49cb33f95fc53d39cf615e5faec4e1ae",
+      "source_sha256": "5c8d49ea6c442d28f2eb8e224fb8d9d1bf4e0662cbdbf892c49a686f801ef947",
+      "composed_sha256": "5c8d49ea6c442d28f2eb8e224fb8d9d1bf4e0662cbdbf892c49a686f801ef947",
+      "composition": "exact"
+    },
+    {
+      "path": "evidence/native-storage/coverage-closure/functional.log",
+      "source": "storage reviewed manifest 040d4a9f4a235f08b4ee53a853f4edfc49cb33f95fc53d39cf615e5faec4e1ae",
+      "source_sha256": "62909de95f84e00be32e05661439cbaf5542892b6b77bb0f807e21f59c52916d",
+      "composed_sha256": "62909de95f84e00be32e05661439cbaf5542892b6b77bb0f807e21f59c52916d",
+      "composition": "exact"
+    },
+    {
+      "path": "evidence/native-storage/coverage-closure/owned-closure.diff.gz",
+      "source": "storage reviewed manifest 040d4a9f4a235f08b4ee53a853f4edfc49cb33f95fc53d39cf615e5faec4e1ae",
+      "source_sha256": "ee6e50cd02a79c6ce2ea9701f378e66bd9a769e680fa17ca0c48b2ff898db1c5",
+      "composed_sha256": "ee6e50cd02a79c6ce2ea9701f378e66bd9a769e680fa17ca0c48b2ff898db1c5",
+      "composition": "exact"
+    },
+    {
+      "path": "evidence/native-storage/coverage-closure/prose-check.log",
+      "source": "storage reviewed manifest 040d4a9f4a235f08b4ee53a853f4edfc49cb33f95fc53d39cf615e5faec4e1ae",
+      "source_sha256": "d6a88e94870f670ad9dbd9ad416d11cfc8d3ac0435947bbbc61ba8275bc766d1",
+      "composed_sha256": "d6a88e94870f670ad9dbd9ad416d11cfc8d3ac0435947bbbc61ba8275bc766d1",
+      "composition": "exact"
+    },
+    {
+      "path": "evidence/native-storage/coverage-closure/summary.json",
+      "source": "storage reviewed manifest 040d4a9f4a235f08b4ee53a853f4edfc49cb33f95fc53d39cf615e5faec4e1ae",
+      "source_sha256": "479b3ba0ca27d8d2e5102b7280e16c979a5ddab1bd841d753b173815181c7c1f",
+      "composed_sha256": "479b3ba0ca27d8d2e5102b7280e16c979a5ddab1bd841d753b173815181c7c1f",
+      "composition": "exact"
+    },
+    {
+      "path": "evidence/native-storage/coverage-first.log",
+      "source": "storage reviewed manifest 040d4a9f4a235f08b4ee53a853f4edfc49cb33f95fc53d39cf615e5faec4e1ae",
+      "source_sha256": "facaf58a4ffff94240835bc3240878ea0bf0f7861bc3febce1205227b1a64573",
+      "composed_sha256": "facaf58a4ffff94240835bc3240878ea0bf0f7861bc3febce1205227b1a64573",
+      "composition": "exact"
+    },
+    {
+      "path": "evidence/native-storage/coverage-freeze.log",
+      "source": "storage reviewed manifest 040d4a9f4a235f08b4ee53a853f4edfc49cb33f95fc53d39cf615e5faec4e1ae",
+      "source_sha256": "6252e54d34658ad0d18b9dbfc9b3fb3ef24840e21d5ba7422ca6e2eab77bd7e7",
+      "composed_sha256": "6252e54d34658ad0d18b9dbfc9b3fb3ef24840e21d5ba7422ca6e2eab77bd7e7",
+      "composition": "exact"
+    },
+    {
+      "path": "evidence/native-storage/final-parser-root.log",
+      "source": "storage reviewed manifest 040d4a9f4a235f08b4ee53a853f4edfc49cb33f95fc53d39cf615e5faec4e1ae",
+      "source_sha256": "106b39eb91f20cc77d122743236123099c7c0ed08c31c6bd209a1ecd47dfda65",
+      "composed_sha256": "106b39eb91f20cc77d122743236123099c7c0ed08c31c6bd209a1ecd47dfda65",
+      "composition": "exact"
+    },
+    {
+      "path": "evidence/native-storage/focused-admission-stamp.log",
+      "source": "storage reviewed manifest 040d4a9f4a235f08b4ee53a853f4edfc49cb33f95fc53d39cf615e5faec4e1ae",
+      "source_sha256": "a0e93ca81584280ab510482101a8fe4b94480c9ce28780db486cf3852eed0895",
+      "composed_sha256": "a0e93ca81584280ab510482101a8fe4b94480c9ce28780db486cf3852eed0895",
+      "composition": "exact"
+    },
+    {
+      "path": "evidence/native-storage/focused-bounded-root-construction.log",
+      "source": "storage reviewed manifest 040d4a9f4a235f08b4ee53a853f4edfc49cb33f95fc53d39cf615e5faec4e1ae",
+      "source_sha256": "a665664b8b5d2f31adf976aa90087883f5d7bb588c7d3b0d19f2c20fac7e03a1",
+      "composed_sha256": "a665664b8b5d2f31adf976aa90087883f5d7bb588c7d3b0d19f2c20fac7e03a1",
+      "composition": "exact"
+    },
+    {
+      "path": "evidence/native-storage/focused-candidate.log",
+      "source": "storage reviewed manifest 040d4a9f4a235f08b4ee53a853f4edfc49cb33f95fc53d39cf615e5faec4e1ae",
+      "source_sha256": "4c4cca8a42887eac2abe52a91e18fa3462fbea016cc4872d01753af679ae03d8",
+      "composed_sha256": "4c4cca8a42887eac2abe52a91e18fa3462fbea016cc4872d01753af679ae03d8",
+      "composition": "exact"
+    },
+    {
+      "path": "evidence/native-storage/focused-catalog-classification.log",
+      "source": "storage reviewed manifest 040d4a9f4a235f08b4ee53a853f4edfc49cb33f95fc53d39cf615e5faec4e1ae",
+      "source_sha256": "d2163cbd36a5c02b26c8e08fb684b496ad6f83351fe10ec4b0bd58b5fba276d6",
+      "composed_sha256": "d2163cbd36a5c02b26c8e08fb684b496ad6f83351fe10ec4b0bd58b5fba276d6",
+      "composition": "exact"
+    },
+    {
+      "path": "evidence/native-storage/focused-coverage-predicates.log",
+      "source": "storage reviewed manifest 040d4a9f4a235f08b4ee53a853f4edfc49cb33f95fc53d39cf615e5faec4e1ae",
+      "source_sha256": "0bb5ed58b6d5e845e7f385b650944f3772c48b9cb2ce91cd4ee3848cf2d23fa6",
+      "composed_sha256": "0bb5ed58b6d5e845e7f385b650944f3772c48b9cb2ce91cd4ee3848cf2d23fa6",
+      "composition": "exact"
+    },
+    {
+      "path": "evidence/native-storage/focused-delta.log",
+      "source": "storage reviewed manifest 040d4a9f4a235f08b4ee53a853f4edfc49cb33f95fc53d39cf615e5faec4e1ae",
+      "source_sha256": "a0b1b8340353715ac9a734b93458476a9e687dac76ebbd71f77181008125854c",
+      "composed_sha256": "a0b1b8340353715ac9a734b93458476a9e687dac76ebbd71f77181008125854c",
+      "composition": "exact"
+    },
+    {
+      "path": "evidence/native-storage/focused-explicit-admission.log",
+      "source": "storage reviewed manifest 040d4a9f4a235f08b4ee53a853f4edfc49cb33f95fc53d39cf615e5faec4e1ae",
+      "source_sha256": "11de75dbc6e388b77461f95d0b260954ad06fca35c0e6ddbfeb5a44d595fda6f",
+      "composed_sha256": "11de75dbc6e388b77461f95d0b260954ad06fca35c0e6ddbfeb5a44d595fda6f",
+      "composition": "exact"
+    },
+    {
+      "path": "evidence/native-storage/focused-formatted-candidate.log",
+      "source": "storage reviewed manifest 040d4a9f4a235f08b4ee53a853f4edfc49cb33f95fc53d39cf615e5faec4e1ae",
+      "source_sha256": "f5a113726bd21602f4930da7d5abeaf4cedacb9e1ab43c589c825dd06592557e",
+      "composed_sha256": "f5a113726bd21602f4930da7d5abeaf4cedacb9e1ab43c589c825dd06592557e",
+      "composition": "exact"
+    },
+    {
+      "path": "evidence/native-storage/focused-formatted.log",
+      "source": "storage reviewed manifest 040d4a9f4a235f08b4ee53a853f4edfc49cb33f95fc53d39cf615e5faec4e1ae",
+      "source_sha256": "0b268b2a15f8e3bf5d7337fbca62c6374cea456c1456ce8989c2e1a7bde11c2c",
+      "composed_sha256": "0b268b2a15f8e3bf5d7337fbca62c6374cea456c1456ce8989c2e1a7bde11c2c",
+      "composition": "exact"
+    },
+    {
+      "path": "evidence/native-storage/focused-freeze.log",
+      "source": "storage reviewed manifest 040d4a9f4a235f08b4ee53a853f4edfc49cb33f95fc53d39cf615e5faec4e1ae",
+      "source_sha256": "f03dfaed5ae335a1cd9543f70aca6ef4b11195a01975b822e4d9970bf51d99f2",
+      "composed_sha256": "f03dfaed5ae335a1cd9543f70aca6ef4b11195a01975b822e4d9970bf51d99f2",
+      "composition": "exact"
+    },
+    {
+      "path": "evidence/native-storage/focused-initial.log",
+      "source": "storage reviewed manifest 040d4a9f4a235f08b4ee53a853f4edfc49cb33f95fc53d39cf615e5faec4e1ae",
+      "source_sha256": "d78b6b4baee6df0d404acb27fb563424ec4c3761ec979b97472399d9995c9c69",
+      "composed_sha256": "d78b6b4baee6df0d404acb27fb563424ec4c3761ec979b97472399d9995c9c69",
+      "composition": "exact"
+    },
+    {
+      "path": "evidence/native-storage/focused-latch-matrix.log",
+      "source": "storage reviewed manifest 040d4a9f4a235f08b4ee53a853f4edfc49cb33f95fc53d39cf615e5faec4e1ae",
+      "source_sha256": "f30d914cd10f39ddb8b0499bf8f708f59b6466b3f1da531847340d888a1927f0",
+      "composed_sha256": "f30d914cd10f39ddb8b0499bf8f708f59b6466b3f1da531847340d888a1927f0",
+      "composition": "exact"
+    },
+    {
+      "path": "evidence/native-storage/focused-local-owner.log",
+      "source": "storage reviewed manifest 040d4a9f4a235f08b4ee53a853f4edfc49cb33f95fc53d39cf615e5faec4e1ae",
+      "source_sha256": "daae0911f53cc40dde33972ebacdcd3e4af4d028cb22fe507932d10ea5bce51f",
+      "composed_sha256": "daae0911f53cc40dde33972ebacdcd3e4af4d028cb22fe507932d10ea5bce51f",
+      "composition": "exact"
+    },
+    {
+      "path": "evidence/native-storage/focused-owner-policy-retry.log",
+      "source": "storage reviewed manifest 040d4a9f4a235f08b4ee53a853f4edfc49cb33f95fc53d39cf615e5faec4e1ae",
+      "source_sha256": "e7d9cbe7686f3a467903186cc34544e437a201646cdf10a3b29940b58ba38641",
+      "composed_sha256": "e7d9cbe7686f3a467903186cc34544e437a201646cdf10a3b29940b58ba38641",
+      "composition": "exact"
+    },
+    {
+      "path": "evidence/native-storage/focused-owner-policy.log",
+      "source": "storage reviewed manifest 040d4a9f4a235f08b4ee53a853f4edfc49cb33f95fc53d39cf615e5faec4e1ae",
+      "source_sha256": "f4b11d6662dea3164e091cadfea20b773e5c4be93153b3e7f6bcd526c5141a14",
+      "composed_sha256": "f4b11d6662dea3164e091cadfea20b773e5c4be93153b3e7f6bcd526c5141a14",
+      "composition": "exact"
+    },
+    {
+      "path": "evidence/native-storage/focused-preserved-errors.log",
+      "source": "storage reviewed manifest 040d4a9f4a235f08b4ee53a853f4edfc49cb33f95fc53d39cf615e5faec4e1ae",
+      "source_sha256": "b86a95539115d899d441b243e6ed9cf858af253f612976c019a7dd99a899cfdd",
+      "composed_sha256": "b86a95539115d899d441b243e6ed9cf858af253f612976c019a7dd99a899cfdd",
+      "composition": "exact"
+    },
+    {
+      "path": "evidence/native-storage/focused-private-behavior.log",
+      "source": "storage reviewed manifest 040d4a9f4a235f08b4ee53a853f4edfc49cb33f95fc53d39cf615e5faec4e1ae",
+      "source_sha256": "26e04b303aa39759fd78888624fb96e22810b9be3908ccbafb99bc5f5594d8f6",
+      "composed_sha256": "26e04b303aa39759fd78888624fb96e22810b9be3908ccbafb99bc5f5594d8f6",
+      "composition": "exact"
+    },
+    {
+      "path": "evidence/native-storage/focused-private-write.log",
+      "source": "storage reviewed manifest 040d4a9f4a235f08b4ee53a853f4edfc49cb33f95fc53d39cf615e5faec4e1ae",
+      "source_sha256": "4b115af835fb26206e7a443a427c3484f6a373f78daeb71985d3cf88fccc353c",
+      "composed_sha256": "4b115af835fb26206e7a443a427c3484f6a373f78daeb71985d3cf88fccc353c",
+      "composition": "exact"
+    },
+    {
+      "path": "evidence/native-storage/focused-real-initialization.log",
+      "source": "storage reviewed manifest 040d4a9f4a235f08b4ee53a853f4edfc49cb33f95fc53d39cf615e5faec4e1ae",
+      "source_sha256": "f68066b7e13838427a554c988b2fafefc93caffb9815bf8b14ef685e9bc27cdb",
+      "composed_sha256": "f68066b7e13838427a554c988b2fafefc93caffb9815bf8b14ef685e9bc27cdb",
+      "composition": "exact"
+    },
+    {
+      "path": "evidence/native-storage/focused-reconstruction.log",
+      "source": "storage reviewed manifest 040d4a9f4a235f08b4ee53a853f4edfc49cb33f95fc53d39cf615e5faec4e1ae",
+      "source_sha256": "1583c14c2e78894708ff26dc4808991bbd4df4cd237a24ed2b78efb6dbc65c3e",
+      "composed_sha256": "1583c14c2e78894708ff26dc4808991bbd4df4cd237a24ed2b78efb6dbc65c3e",
+      "composition": "exact"
+    },
+    {
+      "path": "evidence/native-storage/focused-root-atomicity.log",
+      "source": "storage reviewed manifest 040d4a9f4a235f08b4ee53a853f4edfc49cb33f95fc53d39cf615e5faec4e1ae",
+      "source_sha256": "2111a98a249fcc34a363e7980173e01a031873e68d760b9d46c18e03440fd740",
+      "composed_sha256": "2111a98a249fcc34a363e7980173e01a031873e68d760b9d46c18e03440fd740",
+      "composition": "exact"
+    },
+    {
+      "path": "evidence/native-storage/focused-root-bindings.log",
+      "source": "storage reviewed manifest 040d4a9f4a235f08b4ee53a853f4edfc49cb33f95fc53d39cf615e5faec4e1ae",
+      "source_sha256": "26d7fcb3b2fcc7d6e5caa4ef272a8a3a872f9a58d3afb6b8dbbd10900114f315",
+      "composed_sha256": "26d7fcb3b2fcc7d6e5caa4ef272a8a3a872f9a58d3afb6b8dbbd10900114f315",
+      "composition": "exact"
+    },
+    {
+      "path": "evidence/native-storage/focused-root-bytes.log",
+      "source": "storage reviewed manifest 040d4a9f4a235f08b4ee53a853f4edfc49cb33f95fc53d39cf615e5faec4e1ae",
+      "source_sha256": "cab91c19f4e78a980fd6b395dffcc685d5003f602e6ed9f51db2d54614c04eeb",
+      "composed_sha256": "cab91c19f4e78a980fd6b395dffcc685d5003f602e6ed9f51db2d54614c04eeb",
+      "composition": "exact"
+    },
+    {
+      "path": "evidence/native-storage/focused-shared-root.log",
+      "source": "storage reviewed manifest 040d4a9f4a235f08b4ee53a853f4edfc49cb33f95fc53d39cf615e5faec4e1ae",
+      "source_sha256": "d58e259e4cb495a0f5d5146a7359ba17eb9760d575b5f77972a2696f6878a052",
+      "composed_sha256": "d58e259e4cb495a0f5d5146a7359ba17eb9760d575b5f77972a2696f6878a052",
+      "composition": "exact"
+    },
+    {
+      "path": "evidence/native-storage/focused-unavailable-fulfillment.log",
+      "source": "storage reviewed manifest 040d4a9f4a235f08b4ee53a853f4edfc49cb33f95fc53d39cf615e5faec4e1ae",
+      "source_sha256": "22dafba3c37ad6e87c1d7554f1923fbdbcbaf72d0b102d5f426c826b751e2948",
+      "composed_sha256": "22dafba3c37ad6e87c1d7554f1923fbdbcbaf72d0b102d5f426c826b751e2948",
+      "composition": "exact"
+    },
+    {
+      "path": "evidence/native-storage/focused-work-budget.log",
+      "source": "storage reviewed manifest 040d4a9f4a235f08b4ee53a853f4edfc49cb33f95fc53d39cf615e5faec4e1ae",
+      "source_sha256": "7e576f36d85f1e95776920feba28ca052c7455aff121372182dd999d702f7284",
+      "composed_sha256": "7e576f36d85f1e95776920feba28ca052c7455aff121372182dd999d702f7284",
+      "composition": "exact"
+    },
+    {
+      "path": "evidence/native-storage/format.log",
+      "source": "storage reviewed manifest 040d4a9f4a235f08b4ee53a853f4edfc49cb33f95fc53d39cf615e5faec4e1ae",
+      "source_sha256": "96dc592106093f3e6d52c25ed119450db7d692d69dd211c183815a3d2b8e27b5",
+      "composed_sha256": "96dc592106093f3e6d52c25ed119450db7d692d69dd211c183815a3d2b8e27b5",
+      "composition": "exact"
+    },
+    {
+      "path": "evidence/native-storage/hash-latch-green.log",
+      "source": "storage reviewed manifest 040d4a9f4a235f08b4ee53a853f4edfc49cb33f95fc53d39cf615e5faec4e1ae",
+      "source_sha256": "2ce77dd9b4aee0ad927a4ed8443a5c7e6a9bb275960966b5b437a0fbdf5f874d",
+      "composed_sha256": "2ce77dd9b4aee0ad927a4ed8443a5c7e6a9bb275960966b5b437a0fbdf5f874d",
+      "composition": "exact"
+    },
+    {
+      "path": "evidence/native-storage/hash-latch-red.log",
+      "source": "storage reviewed manifest 040d4a9f4a235f08b4ee53a853f4edfc49cb33f95fc53d39cf615e5faec4e1ae",
+      "source_sha256": "d72fb9b59e7dad87a5cf2063bdee18b1f00696f3e9e666f3990c3df4199d1241",
+      "composed_sha256": "d72fb9b59e7dad87a5cf2063bdee18b1f00696f3e9e666f3990c3df4199d1241",
+      "composition": "exact"
+    },
+    {
+      "path": "evidence/native-storage/inventory.json",
+      "source": "storage reviewed manifest 040d4a9f4a235f08b4ee53a853f4edfc49cb33f95fc53d39cf615e5faec4e1ae",
+      "source_sha256": "90c0395e61ac3581c212946e0c789bef99bd7cd3449e597e647ee4d667a66701",
+      "composed_sha256": "90c0395e61ac3581c212946e0c789bef99bd7cd3449e597e647ee4d667a66701",
+      "composition": "exact"
+    },
+    {
+      "path": "evidence/native-storage/owner-dependers.json",
+      "source": "storage reviewed manifest 040d4a9f4a235f08b4ee53a853f4edfc49cb33f95fc53d39cf615e5faec4e1ae",
+      "source_sha256": "4429e6cecbac3c0f17734aca8bd3bfbd4fee1b1fce860eef741ee4f67a1c6bce",
+      "composed_sha256": "4429e6cecbac3c0f17734aca8bd3bfbd4fee1b1fce860eef741ee4f67a1c6bce",
+      "composition": "exact"
+    },
+    {
+      "path": "evidence/native-storage/packing-bound-green.log",
+      "source": "storage reviewed manifest 040d4a9f4a235f08b4ee53a853f4edfc49cb33f95fc53d39cf615e5faec4e1ae",
+      "source_sha256": "57fea8f063c5cc52a39c4ef9717a803fd1bd8bb23e82cfdb6ee4051248b27821",
+      "composed_sha256": "57fea8f063c5cc52a39c4ef9717a803fd1bd8bb23e82cfdb6ee4051248b27821",
+      "composition": "exact"
+    },
+    {
+      "path": "evidence/native-storage/packing-bound-red.log",
+      "source": "storage reviewed manifest 040d4a9f4a235f08b4ee53a853f4edfc49cb33f95fc53d39cf615e5faec4e1ae",
+      "source_sha256": "60317ffde1af4aecb92fc78e7de5b853cba1b3ae2e4ad0bfc0838cc05b3d3b2c",
+      "composed_sha256": "60317ffde1af4aecb92fc78e7de5b853cba1b3ae2e4ad0bfc0838cc05b3d3b2c",
+      "composition": "exact"
+    },
+    {
+      "path": "evidence/native-storage/prose-check.log",
+      "source": "storage reviewed manifest 040d4a9f4a235f08b4ee53a853f4edfc49cb33f95fc53d39cf615e5faec4e1ae",
+      "source_sha256": "a25a80b34927adaadc4a664b03288c6da5181717abcc2024b7f11572a8a9629b",
+      "composed_sha256": "a25a80b34927adaadc4a664b03288c6da5181717abcc2024b7f11572a8a9629b",
+      "composition": "exact"
+    },
+    {
+      "path": "evidence/native-storage/prose-verbose.log",
+      "source": "storage reviewed manifest 040d4a9f4a235f08b4ee53a853f4edfc49cb33f95fc53d39cf615e5faec4e1ae",
+      "source_sha256": "21327bcaab512259b5427d1ba7befcb8b98f375b99e16e0579b4be167023ef18",
+      "composed_sha256": "21327bcaab512259b5427d1ba7befcb8b98f375b99e16e0579b4be167023ef18",
+      "composition": "exact"
+    },
+    {
+      "path": "evidence/native-storage/read-api-dependers.json",
+      "source": "storage reviewed manifest 040d4a9f4a235f08b4ee53a853f4edfc49cb33f95fc53d39cf615e5faec4e1ae",
+      "source_sha256": "69c4a4da9875bb2b8db2eeef876bfc819fe48fbed65b7bf3ffaf5bf56541e30d",
+      "composed_sha256": "69c4a4da9875bb2b8db2eeef876bfc819fe48fbed65b7bf3ffaf5bf56541e30d",
+      "composition": "exact"
+    },
+    {
+      "path": "evidence/native-storage/root-init-closure.log",
+      "source": "storage reviewed manifest 040d4a9f4a235f08b4ee53a853f4edfc49cb33f95fc53d39cf615e5faec4e1ae",
+      "source_sha256": "16afc56e08a092efe0aa6e46ce13e501f85548097dd39905b45e093051e8098d",
+      "composed_sha256": "16afc56e08a092efe0aa6e46ce13e501f85548097dd39905b45e093051e8098d",
+      "composition": "exact"
+    },
+    {
+      "path": "evidence/native-storage/root-init-first.log",
+      "source": "storage reviewed manifest 040d4a9f4a235f08b4ee53a853f4edfc49cb33f95fc53d39cf615e5faec4e1ae",
+      "source_sha256": "ee4dcf2df162ee4551557b5d4bc78a7ec130d71ef3d84b1136d34fcf44cf322b",
+      "composed_sha256": "ee4dcf2df162ee4551557b5d4bc78a7ec130d71ef3d84b1136d34fcf44cf322b",
+      "composition": "exact"
+    },
+    {
+      "path": "evidence/native-storage/root-init-provider.log",
+      "source": "storage reviewed manifest 040d4a9f4a235f08b4ee53a853f4edfc49cb33f95fc53d39cf615e5faec4e1ae",
+      "source_sha256": "9fc3232084fb9741628d455163f08022ecab5b61c520c7eac8e6e375a76c7660",
+      "composed_sha256": "9fc3232084fb9741628d455163f08022ecab5b61c520c7eac8e6e375a76c7660",
+      "composition": "exact"
+    },
+    {
+      "path": "evidence/native-storage/root-init-red.log",
+      "source": "storage reviewed manifest 040d4a9f4a235f08b4ee53a853f4edfc49cb33f95fc53d39cf615e5faec4e1ae",
+      "source_sha256": "ce335ba3fa002b8e320534adf1f4123421951329aa0dab430e70b50b08d8bbc5",
+      "composed_sha256": "ce335ba3fa002b8e320534adf1f4123421951329aa0dab430e70b50b08d8bbc5",
+      "composition": "exact"
+    },
+    {
+      "path": "evidence/native-storage/wiring/comparison-hashes.json",
+      "source": "storage reviewed manifest 040d4a9f4a235f08b4ee53a853f4edfc49cb33f95fc53d39cf615e5faec4e1ae",
+      "source_sha256": "ae5650c6131d1c13bc9f094e8aaabecdd19b84ab63a9a55dc7595ce7caff3ce7",
+      "composed_sha256": "ae5650c6131d1c13bc9f094e8aaabecdd19b84ab63a9a55dc7595ce7caff3ce7",
+      "composition": "exact"
+    },
+    {
+      "path": "evidence/native-storage/wiring/coverage-before-disk-control.log",
+      "source": "storage reviewed manifest 040d4a9f4a235f08b4ee53a853f4edfc49cb33f95fc53d39cf615e5faec4e1ae",
+      "source_sha256": "fe909ac59484d0b38ccaa2fcc846547a773dd3e507804b1d5279ac6c34ae0fa0",
+      "composed_sha256": "fe909ac59484d0b38ccaa2fcc846547a773dd3e507804b1d5279ac6c34ae0fa0",
+      "composition": "exact"
+    },
+    {
+      "path": "evidence/native-storage/wiring/coverage.log",
+      "source": "storage reviewed manifest 040d4a9f4a235f08b4ee53a853f4edfc49cb33f95fc53d39cf615e5faec4e1ae",
+      "source_sha256": "b9cdc7efa682a4b2442f305db8d796a5c824088fa525dd4247e1812ef56bb709",
+      "composed_sha256": "b9cdc7efa682a4b2442f305db8d796a5c824088fa525dd4247e1812ef56bb709",
+      "composition": "exact"
+    },
+    {
+      "path": "evidence/native-storage/wiring/disk-functional.log",
+      "source": "storage reviewed manifest 040d4a9f4a235f08b4ee53a853f4edfc49cb33f95fc53d39cf615e5faec4e1ae",
+      "source_sha256": "576e363786644fe2f5b062227a5e6c674d5fc374d145325ea608225d95d13b8b",
+      "composed_sha256": "576e363786644fe2f5b062227a5e6c674d5fc374d145325ea608225d95d13b8b",
+      "composition": "exact"
+    },
+    {
+      "path": "evidence/native-storage/wiring/first-functional.log",
+      "source": "storage reviewed manifest 040d4a9f4a235f08b4ee53a853f4edfc49cb33f95fc53d39cf615e5faec4e1ae",
+      "source_sha256": "6a33e989335ed312f9f86ca0b1fe7db50c88ed077210d40335efb284be9e16c1",
+      "composed_sha256": "6a33e989335ed312f9f86ca0b1fe7db50c88ed077210d40335efb284be9e16c1",
+      "composition": "exact"
+    },
+    {
+      "path": "evidence/native-storage/wiring/functional.log",
+      "source": "storage reviewed manifest 040d4a9f4a235f08b4ee53a853f4edfc49cb33f95fc53d39cf615e5faec4e1ae",
+      "source_sha256": "2b291f698f5f1515fbe061ce08a4ff3908dc502ddf562d4f2996feed14d6dfe1",
+      "composed_sha256": "2b291f698f5f1515fbe061ce08a4ff3908dc502ddf562d4f2996feed14d6dfe1",
+      "composition": "exact"
+    },
+    {
+      "path": "evidence/native-storage/wiring/owned-wiring.diff.gz",
+      "source": "storage reviewed manifest 040d4a9f4a235f08b4ee53a853f4edfc49cb33f95fc53d39cf615e5faec4e1ae",
+      "source_sha256": "ea2f63a2f5acc90a72dc843fb4e3f386b0a9d5c4df7f58d324bcbcf4b45797f2",
+      "composed_sha256": "ea2f63a2f5acc90a72dc843fb4e3f386b0a9d5c4df7f58d324bcbcf4b45797f2",
+      "composition": "exact"
+    },
+    {
+      "path": "evidence/native-storage/wiring/summary.json",
+      "source": "storage reviewed manifest 040d4a9f4a235f08b4ee53a853f4edfc49cb33f95fc53d39cf615e5faec4e1ae",
+      "source_sha256": "6d8e0164cf8ece49e7d4b8788f97521de4ac1b1dfc38fd82e9ce4ed394d76acd",
+      "composed_sha256": "6d8e0164cf8ece49e7d4b8788f97521de4ac1b1dfc38fd82e9ce4ed394d76acd",
+      "composition": "exact"
+    },
+    {
+      "path": "src/compression.rs",
+      "source": "storage reviewed manifest 040d4a9f4a235f08b4ee53a853f4edfc49cb33f95fc53d39cf615e5faec4e1ae",
+      "source_sha256": "fa83fb326d6c2908c69c1d51a86b5f18e08ae766620f8e2ccab1788475497dd8",
+      "composed_sha256": "fa83fb326d6c2908c69c1d51a86b5f18e08ae766620f8e2ccab1788475497dd8",
+      "composition": "exact"
+    },
+    {
+      "path": "src/storage.rs",
+      "source": "storage reviewed manifest 040d4a9f4a235f08b4ee53a853f4edfc49cb33f95fc53d39cf615e5faec4e1ae",
+      "source_sha256": "91eab4a2f7408c63009189efe4d64c0aab59c6a0218a7e0789be7f0e0798dbe0",
+      "composed_sha256": "cd490483c531ff63ded23ae36d7530b0fdcfe564a9be298ab94271af0ee2c902",
+      "composition": "git merge-file provider/MD5/storage"
+    },
+    {
+      "path": "src/storage/content.rs",
+      "source": "storage reviewed manifest 040d4a9f4a235f08b4ee53a853f4edfc49cb33f95fc53d39cf615e5faec4e1ae",
+      "source_sha256": "78509fa21b3efbe75cbe11abfc20602fdd7d6827eb21af5dd486c7409282d700",
+      "composed_sha256": "78509fa21b3efbe75cbe11abfc20602fdd7d6827eb21af5dd486c7409282d700",
+      "composition": "exact"
+    },
+    {
+      "path": "src/storage/policy.rs",
+      "source": "storage reviewed manifest 040d4a9f4a235f08b4ee53a853f4edfc49cb33f95fc53d39cf615e5faec4e1ae",
+      "source_sha256": "8b7e5b2451bcfd4150424b17759de72e1cbc3b90295c1601ba43f8754e466054",
+      "composed_sha256": "8b7e5b2451bcfd4150424b17759de72e1cbc3b90295c1601ba43f8754e466054",
+      "composition": "exact"
+    },
+    {
+      "path": "src/storage/repository.rs",
+      "source": "storage reviewed manifest 040d4a9f4a235f08b4ee53a853f4edfc49cb33f95fc53d39cf615e5faec4e1ae",
+      "source_sha256": "7f91839fca24cb36f978aee5109b79b38665f04a86e084d5867a76f68e6aa3ad",
+      "composed_sha256": "7f91839fca24cb36f978aee5109b79b38665f04a86e084d5867a76f68e6aa3ad",
+      "composition": "exact"
+    },
+    {
+      "path": "src/storage/schema.rs",
+      "source": "storage reviewed manifest 040d4a9f4a235f08b4ee53a853f4edfc49cb33f95fc53d39cf615e5faec4e1ae",
+      "source_sha256": "e284098eb58cc416389cc886259d8325d90cf9a4a72018820e9c970df10c2041",
+      "composed_sha256": "e284098eb58cc416389cc886259d8325d90cf9a4a72018820e9c970df10c2041",
+      "composition": "exact"
+    },
+    {
+      "path": "src/storage/schema/adapter-v4.sql",
+      "source": "storage reviewed manifest 040d4a9f4a235f08b4ee53a853f4edfc49cb33f95fc53d39cf615e5faec4e1ae",
+      "source_sha256": "a8cbcd837ecc20aef8cff728e50589e646a5acd23b4f86681a6a0f1c46dc8b78",
+      "composed_sha256": "a8cbcd837ecc20aef8cff728e50589e646a5acd23b4f86681a6a0f1c46dc8b78",
+      "composition": "exact"
+    },
+    {
+      "path": "src/storage/schema/checkout.sql",
+      "source": "storage reviewed manifest 040d4a9f4a235f08b4ee53a853f4edfc49cb33f95fc53d39cf615e5faec4e1ae",
+      "source_sha256": "4eda46e8b94b39afcafab6e91ab791b11785f33c3f00aaf2b6592652dcbec602",
+      "composed_sha256": "4eda46e8b94b39afcafab6e91ab791b11785f33c3f00aaf2b6592652dcbec602",
+      "composition": "exact"
+    },
+    {
+      "path": "src/storage/schema/discussion-projections-v3.sql",
+      "source": "storage reviewed manifest 040d4a9f4a235f08b4ee53a853f4edfc49cb33f95fc53d39cf615e5faec4e1ae",
+      "source_sha256": "322098c1afd5d56cd51e74758ae50c445c34e1b979fe8f7d624e9efad1d0efcf",
+      "composed_sha256": "322098c1afd5d56cd51e74758ae50c445c34e1b979fe8f7d624e9efad1d0efcf",
+      "composition": "exact"
+    },
+    {
+      "path": "src/storage/schema/local-bindings-v3.sql",
+      "source": "storage reviewed manifest 040d4a9f4a235f08b4ee53a853f4edfc49cb33f95fc53d39cf615e5faec4e1ae",
+      "source_sha256": "32c8346fe14845792cc1470b56644f23e06360866696084471c3a47d926a4703",
+      "composed_sha256": "32c8346fe14845792cc1470b56644f23e06360866696084471c3a47d926a4703",
+      "composition": "exact"
+    },
+    {
+      "path": "src/storage/schema/native-repository.sql",
+      "source": "storage reviewed manifest 040d4a9f4a235f08b4ee53a853f4edfc49cb33f95fc53d39cf615e5faec4e1ae",
+      "source_sha256": "0dfff91eed27379a093f7ca272ecef8590fe365aa00068b073e8d039e4ebdc90",
+      "composed_sha256": "0dfff91eed27379a093f7ca272ecef8590fe365aa00068b073e8d039e4ebdc90",
+      "composition": "exact"
+    },
+    {
+      "path": "src/storage/schema/required-names.txt",
+      "source": "storage reviewed manifest 040d4a9f4a235f08b4ee53a853f4edfc49cb33f95fc53d39cf615e5faec4e1ae",
+      "source_sha256": "95adf7d45a094c99615f896400c47d2fa51165bbfd63c2c9ecdd268cc16b2b27",
+      "composed_sha256": "95adf7d45a094c99615f896400c47d2fa51165bbfd63c2c9ecdd268cc16b2b27",
+      "composition": "exact"
+    },
+    {
+      "path": "src/storage/schema/typed-projections.sql",
+      "source": "storage reviewed manifest 040d4a9f4a235f08b4ee53a853f4edfc49cb33f95fc53d39cf615e5faec4e1ae",
+      "source_sha256": "eab4164ea8cb9ae89147fb1df4a4201cff3c306b8d40187e5650ab30e7592f83",
+      "composed_sha256": "eab4164ea8cb9ae89147fb1df4a4201cff3c306b8d40187e5650ab30e7592f83",
+      "composition": "exact"
+    },
+    {
+      "path": "src/token_codec.rs",
+      "source": "storage reviewed manifest 040d4a9f4a235f08b4ee53a853f4edfc49cb33f95fc53d39cf615e5faec4e1ae",
+      "source_sha256": "f4f8a2902e642dee6d57acc6089d0f5d754ec3ff4a42d872b64417fafff82097",
+      "composed_sha256": "f4f8a2902e642dee6d57acc6089d0f5d754ec3ff4a42d872b64417fafff82097",
+      "composition": "exact"
+    }
+  ]
+}

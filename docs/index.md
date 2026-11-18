@@ -11,7 +11,9 @@ Git remains the source-code authority in the first release.
 This checkout contains a bounded Fossil delta encoder and decoder, their
 `gossil vcs` diagnostics and a runner for inherited Fossil Tcl tests.
 It also composes byte primitives, legacy artifact checksums, token byte escaping
-and owned local libSQL transactions. Gest integration, domain storage and the remaining Fossil mechanisms
+and owned local libSQL transactions. It includes bounded structural artifact
+parsing, complete empty-root initialization and bounded private content storage.
+File-containing check-ins, Gest integration and the remaining Fossil mechanisms
 remain planned work.
 
 - [Delta encoder](delta-encoder.md) explains creation, round-trip diagnostics
@@ -26,8 +28,12 @@ remain planned work.
   owned incremental computations and finite reference checks.
 - [Token byte escaping](token-codec.md) describes bounded byte and C-string
   behavior, fallible allocation and the finite native observations.
+- [Artifact parser](artifact-parser.md) describes the eight structural types,
+  explicit resource limits and selected-provider date tests.
 - [Local storage](local-storage.md) describes database lifecycle, exclusive
   transactions and the private fixture that composes storage with byte primitives.
+- [Native local storage](native-storage.md) describes empty-root admission,
+  local owner authority, finite content budgets and rollback.
 - [libSQL source import boundary](libsql-import-boundary.md) records exact upstream
   classifications and the controls required before importing the provider.
 - [Native date provider](libsql-provider.md) describes the pinned source,

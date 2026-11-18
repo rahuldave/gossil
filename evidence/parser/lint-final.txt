@@ -1,0 +1,6 @@
+just --justfile '/Users/rahul/Projects/gossil.worktrees/gest-tmzxtktq-artifact-parser/Justfile' rust lint "$@"
+cargo clippy --workspace --all-targets --all-features --locked "$@" -- -D warnings
+    Checking gossil v0.1.0 (/Users/rahul/Projects/gossil.worktrees/gest-tmzxtktq-artifact-parser)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 1.59s
+jlog step lint
+{"kind":"step","run":"2a356eda-0ba1-4e91-b2f0-a13e44da9129","harness":"codex","session":"01a1ed67-9772-7d92-a622-2f863b97d210","child":null,"time":"2026-11-18T07:10:07Z","argv":["just","lint"],"step":"lint"}

@@ -1,0 +1,31 @@
+just --justfile '/Users/rahul/Projects/gossil.worktrees/gest-tmzxtktq-artifact-parser/Justfile' rust test "$@"
+uv run --no-project --quiet --python '>=3.11' python '/Users/rahul/Projects/gossil.worktrees/gest-tmzxtktq-artifact-parser/.agents/just/rust/steps.py' run test "$@"
+WARN `--no-project` was provided, but no project was found
+cargo llvm-cov test --all-features --locked --include-build-script --workspace --lcov --output-path target/llvm-cov/test.part0.lcov --test artifact_parser corrupt_checksum_precedes_decoding
+info: cargo-llvm-cov currently setting cfg(coverage); you can opt-out it by passing --no-cfg-coverage
+   Compiling gossil v0.1.0 (/Users/rahul/Projects/gossil.worktrees/gest-tmzxtktq-artifact-parser)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 4.05s
+     Running tests/artifact_parser.rs (target/llvm-cov-target/debug/deps/artifact_parser-c207989fdb07b4d1)
+
+running 1 test
+test corrupt_checksum_precedes_decoding ... FAILED
+
+failures:
+
+---- corrupt_checksum_precedes_decoding stdout ----
+
+thread 'corrupt_checksum_precedes_decoding' (312937149) panicked at tests/artifact_parser.rs:42:5:
+assertion failed: matches!(parse_artifact(input, limits(), &FixtureDates).await,
+    Err(ArtifactError::Checksum))
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+
+failures:
+    corrupt_checksum_precedes_decoding
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 18 filtered out; finished in 0.00s
+
+error: test failed, to rerun pass `--test artifact_parser`
+error: process didn't exit successfully: `/Users/rahul/.rustup/toolchains/stable-aarch64-apple-darwin/bin/cargo test --manifest-path /Users/rahul/Projects/gossil.worktrees/gest-tmzxtktq-artifact-parser/Cargo.toml --target-dir /Users/rahul/Projects/gossil.worktrees/gest-tmzxtktq-artifact-parser/target/llvm-cov-target --all-features --locked --workspace --test artifact_parser corrupt_checksum_precedes_decoding` (exit status: 101)
+error: Recipe `test` failed on line 6 with exit code 101
+error: Recipe `test` failed on line 65 with exit code 101

@@ -21,8 +21,12 @@ website:
         text: Artifact checksums
       - href: token-codec.md
         text: Token byte escaping
+      - href: artifact-parser.md
+        text: Artifact parser
       - href: local-storage.md
         text: Local storage
+      - href: native-storage.md
+        text: Native local storage
       - href: libsql-provider.md
         text: Native date provider
       - href: development-plan.md

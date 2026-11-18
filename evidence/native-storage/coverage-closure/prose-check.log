@@ -1,0 +1,7 @@
+uv run --no-project --quiet python .agents/skills/nossaifd/scripts/prose_gate.py check-changed "$@"
+WARN `--no-project` was provided, but no project was found
+docs/native-storage.md: checked by check.py of the skill, 0 hard, 22 soft
+recipes="$(just --justfile '/Users/rahul/Projects/gossil.worktrees/gest-upxnmvpv-native-storage/Justfile' --summary)" && if printf '%s\n' $recipes | grep -qx api-prose-check; then b=; for a in "$@"; do shift; if [ -n "$b" ]; then b=; set -- "$@" "$a"; else case "$a" in -v) ;; --base) b=1; set -- "$@" "$a" ;; --base=*) set -- "$@" "$a" ;; *) echo "prose-check: no API pages with names of pages or --"; exit 0 ;; esac; fi; done; just --justfile '/Users/rahul/Projects/gossil.worktrees/gest-upxnmvpv-native-storage/Justfile' api-prose-check "$@"; fi
+prose-check: no API pages with names of pages or --
+jlog step prose-check
+{"kind":"step","run":"97fcb393-5c0e-4e9f-af99-c1f75b7a683e","harness":"codex","session":"01a1ed5f-33fe-7cc3-b8a9-67574476100e","child":null,"time":"2026-11-18T08:00:48Z","argv":["just","prose-check","docs/native-storage.md"],"step":"prose-check"}

@@ -775,5 +775,7 @@ pub mod storage;
 /// Encode and decode Fossil token bytes.
 pub mod token_codec;
 
+/// Parse structural artifacts with explicit resource limits.
+pub mod artifact;
 /// Compute legacy Fossil artifact checksums over bytes.
 pub mod artifact_checksum;

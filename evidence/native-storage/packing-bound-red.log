@@ -1,0 +1,30 @@
+just --justfile '/Users/rahul/Projects/gossil.worktrees/gest-upxnmvpv-native-storage/Justfile' rust test "$@"
+uv run --no-project --quiet --python '>=3.11' python '/Users/rahul/Projects/gossil.worktrees/gest-upxnmvpv-native-storage/.agents/just/rust/steps.py' run test "$@"
+WARN `--no-project` was provided, but no project was found
+cargo llvm-cov test --all-features --locked --include-build-script --workspace --lcov --output-path target/llvm-cov/test.part0.lcov --lib compression::tests::bounded_packing_header_and_stream_boundaries
+info: cargo-llvm-cov currently setting cfg(coverage); you can opt-out it by passing --no-cfg-coverage
+   Compiling gossil v0.1.0 (/Users/rahul/Projects/gossil.worktrees/gest-upxnmvpv-native-storage)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 4.58s
+     Running unittests src/lib.rs (target/llvm-cov-target/debug/deps/gossil-fe5ec46fdcdce3bd)
+
+running 1 test
+test compression::tests::bounded_packing_header_and_stream_boundaries ... FAILED
+
+failures:
+
+---- compression::tests::bounded_packing_header_and_stream_boundaries stdout ----
+
+thread 'compression::tests::bounded_packing_header_and_stream_boundaries' (312875066) panicked at src/compression.rs:245:13:
+assertion failed: matches!(pack_bounded(&input, 0, expected.len()-1), Err(BlobError::Limit))
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+
+failures:
+    compression::tests::bounded_packing_header_and_stream_boundaries
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 37 filtered out; finished in 0.00s
+
+error: test failed, to rerun pass `--lib`
+error: process didn't exit successfully: `/Users/rahul/.rustup/toolchains/stable-aarch64-apple-darwin/bin/cargo test --manifest-path /Users/rahul/Projects/gossil.worktrees/gest-upxnmvpv-native-storage/Cargo.toml --target-dir /Users/rahul/Projects/gossil.worktrees/gest-upxnmvpv-native-storage/target/llvm-cov-target --all-features --locked --workspace --lib 'compression::tests::bounded_packing_header_and_stream_boundaries'` (exit status: 101)
+error: Recipe `test` failed on line 6 with exit code 101
+error: Recipe `test` failed on line 65 with exit code 101

@@ -1,0 +1,21 @@
+just --justfile '/Users/rahul/Projects/gossil.worktrees/gest-tmzxtktq-artifact-parser/Justfile' rust test "$@"
+uv run --no-project --quiet --python '>=3.11' python '/Users/rahul/Projects/gossil.worktrees/gest-tmzxtktq-artifact-parser/.agents/just/rust/steps.py' run test "$@"
+WARN `--no-project` was provided, but no project was found
+cargo llvm-cov test --all-features --locked --include-build-script --workspace --lcov --output-path target/llvm-cov/test.part0.lcov --test artifact_parser
+info: cargo-llvm-cov currently setting cfg(coverage); you can opt-out it by passing --no-cfg-coverage
+   Compiling gossil v0.1.0 (/Users/rahul/Projects/gossil.worktrees/gest-tmzxtktq-artifact-parser)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 4.99s
+     Running tests/artifact_parser.rs (target/llvm-cov-target/debug/deps/artifact_parser-c207989fdb07b4d1)
+
+running 2 tests
+test corrupt_checksum_precedes_decoding ... ok
+test eight_preserved_valid_raw_baselines ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+error: failed to generate report: process didn't exit successfully: `/Users/rahul/.rustup/toolchains/stable-aarch64-apple-darwin/lib/rustlib/aarch64-apple-darwin/bin/llvm-cov export -format=lcov -instr-profile=/Users/rahul/Projects/gossil.worktrees/gest-tmzxtktq-artifact-parser/target/llvm-cov-target/gest-tmzxtktq-artifact-parser.profdata -object target/llvm-cov-target/debug/deps/artifact_parser-c207989fdb07b4d1 -object target/llvm-cov-target/debug/deps/gossil-adfb0e634e8f7375 -object target/llvm-cov-target/debug/deps/gossil_conformance-81203985f7d2d761 -object target/llvm-cov-target/debug/gossil -object target/llvm-cov-target/debug/gossil-conformance -ignore-filename-regex '/rustc/([0-9a-f]+|[0-9]+\.[0-9]+\.[0-9]+)/|^/Users/rahul/Projects/gossil\.worktrees/gest\-tmzxtktq\-artifact\-parser(/.*)?/(tests|examples|benches)/|^/Users/rahul/Projects/gossil\.worktrees/gest\-tmzxtktq\-artifact\-parser(/.*)?/(tests\.rs|[0-9a-zA-Z_-]+[_-]tests\.rs)$|^/Users/rahul/Projects/gossil\.worktrees/gest\-tmzxtktq\-artifact\-parser/target/llvm\-cov\-target($|/)|^/Users/rahul/\.cargo/(registry|git)/|^/Users/rahul/\.rustup/toolchains($|/)'` (exit status: 1)
+--- stderr
+error: /Users/rahul/Projects/gossil.worktrees/gest-tmzxtktq-artifact-parser/target/llvm-cov-target/gest-tmzxtktq-artifact-parser.profdata: could not read profile data!No such file or directory
+
+error: Recipe `test` failed on line 6 with exit code 1
+error: Recipe `test` failed on line 65 with exit code 1

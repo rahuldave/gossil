@@ -1,0 +1,37 @@
+{
+  "source_sha256": "f65af1b8a6d7eaac24ad3488a8448f8de0b31dae1531cf2271d7e847b11d8057",
+  "results": [
+    {
+      "mutation": "skip-final-checksum",
+      "test": "corrupt_checksum_precedes_decoding",
+      "exit": 101,
+      "behavioral_assertion_failure": true,
+      "compiled": true,
+      "receipt": "evidence/parser/mutation-skip-final-checksum.txt"
+    },
+    {
+      "mutation": "reject-all-raw-nul",
+      "test": "raw_nul_depends_on_each_token_consumer",
+      "exit": 101,
+      "behavioral_assertion_failure": true,
+      "compiled": true,
+      "receipt": "evidence/parser/mutation-reject-all-raw-nul.txt"
+    },
+    {
+      "mutation": "w-reject-all-wrapping",
+      "test": "w_modular_threshold_and_body_edges",
+      "exit": 101,
+      "behavioral_assertion_failure": true,
+      "compiled": true,
+      "receipt": "evidence/parser/mutation-w-reject-all-wrapping.txt"
+    },
+    {
+      "mutation": "manifest-z-not-required",
+      "test": "all_208_matrix_insertions_and_29_required_deletions",
+      "exit": 101,
+      "behavioral_assertion_failure": true,
+      "compiled": true,
+      "receipt": "evidence/parser/mutation-manifest-z-not-required.txt"
+    }
+  ]
+}

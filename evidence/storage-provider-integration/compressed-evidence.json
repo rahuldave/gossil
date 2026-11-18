@@ -1,0 +1,38 @@
+[
+  {
+    "original_path": "/Users/rahul/Projects/gossil.worktrees/gest-upxnmvpv-storage-integration/evidence/storage-provider-integration/full-test.log",
+    "artifact": "evidence/storage-provider-integration/full-test.log.gz",
+    "original_sha256": "4948f6494f27652a24670fac4551d67b3864429ec8c00f8c3ceb1e4d61da7ac0",
+    "gzip_sha256": "e323e13743a0636fd91a2b5e0cbc8a3f7d5fed7dadf6263a6c69b7e9aebfa858",
+    "round_trip_verified": true,
+    "preserved_original_path": "/tmp/gossil-storage-provider-full-test-original.log"
+  },
+  {
+    "original_path": "/private/tmp/gossil-storage-provider-integration.log",
+    "artifact": "evidence/storage-provider-integration/full-integration.log.gz",
+    "original_sha256": "8a5958805d4bc6f33fe04c1175a762b1d0ad21bb29677ae322961a97df5a74a0",
+    "gzip_sha256": "48ecb74d28228d5227d2eb2fb9ab47b7411a9e1d98395a5f641e8602db6a8d3a",
+    "round_trip_verified": true
+  },
+  {
+    "original_path": "/private/tmp/gossil-storage-provider-coverage.log",
+    "artifact": "evidence/storage-provider-integration/full-coverage.log.gz",
+    "original_sha256": "7144ab039c72bcebf36e957f4ac9b7b43ff3962df377903fcfd818f4ca8744d0",
+    "gzip_sha256": "d5fd6c69d8fe37c52bafd1054a1e3deab26d5457baefafbf23e1820b86ffa354",
+    "round_trip_verified": true
+  },
+  {
+    "original_path": "/Users/rahul/Projects/gossil.worktrees/gest-upxnmvpv-storage-integration/target/llvm-cov/test.lcov",
+    "artifact": "evidence/storage-provider-integration/composed-test.lcov.gz",
+    "original_sha256": "b1e3fe84f6312d870e14c1f50e7d407d9ea9cdfc0dc03bf7221ee52565eb09eb",
+    "gzip_sha256": "4a9469968262a68fca6f3ab45314edef53973d10ff76e3246f8071c882e334da",
+    "round_trip_verified": true
+  },
+  {
+    "original_path": "/Users/rahul/Projects/gossil.worktrees/gest-upxnmvpv-storage-integration/target/llvm-cov/integration.lcov",
+    "artifact": "evidence/storage-provider-integration/composed-integration.lcov.gz",
+    "original_sha256": "66993df6bdcd9fc96c2639acfeb30ad8785d0c46250d19eb8acc132f1c259253",
+    "gzip_sha256": "4458ce0348463d586dd348552be57027d2630854f69fc27f0d947a9d70c78d43",
+    "round_trip_verified": true
+  }
+]

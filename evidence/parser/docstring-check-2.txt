@@ -1,0 +1,28 @@
+just --justfile '/Users/rahul/Projects/gossil.worktrees/gest-tmzxtktq-artifact-parser/Justfile' rust docstring-check
+uv run --no-project --quiet --python '>=3.11' python '/Users/rahul/Projects/gossil.worktrees/gest-tmzxtktq-artifact-parser/.agents/just/rust/steps.py' docs
+WARN `--no-project` was provided, but no project was found
+error: could not compile `gossil` (lib) due to 3 previous errors
+error: documentation comments cannot be applied to function parameters
+   --> src/artifact.rs:567:5
+    |
+567 |     /// Input.
+    |     ^^^^^^^^^^ doc comments are not allowed here
+
+
+error: documentation comments cannot be applied to function parameters
+   --> src/artifact.rs:569:5
+    |
+569 |     /// Caller-selected resource policy.
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ doc comments are not allowed here
+
+
+error: documentation comments cannot be applied to function parameters
+   --> src/artifact.rs:571:5
+    |
+571 |     /// Dates.
+    |     ^^^^^^^^^^ doc comments are not allowed here
+
+
+docstring-check: cargo clippy exited with 101
+error: Recipe `docstring-check` failed on line 6 with exit code 101
+error: Recipe `docstring-check` failed on line 33 with exit code 101

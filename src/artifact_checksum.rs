@@ -1,6 +1,6 @@
 //! Compute legacy MD5 checksums for Fossil artifact bytes, separate from content identity.
 //!
-//! This byte primitive supports future artifact validation. It parses no artifact
+//! The artifact parser uses this byte primitive for Z-card validation. It parses no artifact
 //! and exposes no filesystem or CLI adapter. MD5 supplies legacy compatibility,
 //! not a security hash.
 

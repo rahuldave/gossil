@@ -1,0 +1,40 @@
+just --justfile '/Users/rahul/Projects/gossil.worktrees/gest-tmzxtktq-artifact-parser/Justfile' rust test "$@"
+uv run --no-project --quiet --python '>=3.11' python '/Users/rahul/Projects/gossil.worktrees/gest-tmzxtktq-artifact-parser/.agents/just/rust/steps.py' run test "$@"
+WARN `--no-project` was provided, but no project was found
+cargo llvm-cov test --all-features --locked --include-build-script --workspace --lcov --output-path target/llvm-cov/test.part0.lcov --test artifact_parser
+info: cargo-llvm-cov currently setting cfg(coverage); you can opt-out it by passing --no-cfg-coverage
+   Compiling gossil v0.1.0 (/Users/rahul/Projects/gossil.worktrees/gest-tmzxtktq-artifact-parser)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 7.05s
+     Running tests/artifact_parser.rs (target/llvm-cov-target/debug/deps/artifact_parser-c207989fdb07b4d1)
+
+running 9 tests
+test corrupt_checksum_precedes_decoding ... ok
+test repeated_cards_and_native_inference_are_not_blanket_singletons ... ok
+test modular_w_scanner_and_exact_body_boundaries ... FAILED
+test date_failures_preserve_provider_cause ... ok
+test explicit_limits_are_distinct_from_syntax_and_checksum ... ok
+test raw_nul_depends_on_each_token_consumer ... ok
+test typed_fields_are_owned_and_c_prefixes_survive ... ok
+test eight_preserved_valid_raw_baselines ... ok
+test preserved_fixture_acceptance_receipts ... ok
+
+failures:
+
+---- modular_w_scanner_and_exact_body_boundaries stdout ----
+
+thread 'modular_w_scanner_and_exact_body_boundaries' (312894300) panicked at tests/artifact_parser.rs:200:9:
+assertion `left == right` failed: 8589934592: Err(Syntax { offset: 31, line: 4, message: "size overflow on W-card" })
+  left: false
+ right: true
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+
+failures:
+    modular_w_scanner_and_exact_body_boundaries
+
+test result: FAILED. 8 passed; 1 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.14s
+
+error: test failed, to rerun pass `--test artifact_parser`
+error: process didn't exit successfully: `/Users/rahul/.rustup/toolchains/stable-aarch64-apple-darwin/bin/cargo test --manifest-path /Users/rahul/Projects/gossil.worktrees/gest-tmzxtktq-artifact-parser/Cargo.toml --target-dir /Users/rahul/Projects/gossil.worktrees/gest-tmzxtktq-artifact-parser/target/llvm-cov-target --all-features --locked --workspace --test artifact_parser` (exit status: 101)
+error: Recipe `test` failed on line 6 with exit code 101
+error: Recipe `test` failed on line 65 with exit code 101

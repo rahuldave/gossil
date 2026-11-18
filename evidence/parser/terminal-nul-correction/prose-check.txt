@@ -1,0 +1,2 @@
+WARN `--no-project` was provided, but no project was found
+docs/artifact-parser.md: checked by check.py of the skill, 0 hard, 26 soft

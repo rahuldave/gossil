@@ -1,0 +1,35 @@
+just --justfile '/Users/rahul/Projects/gossil.worktrees/gest-tmzxtktq-artifact-parser/Justfile' rust test "$@"
+uv run --no-project --quiet --python '>=3.11' python '/Users/rahul/Projects/gossil.worktrees/gest-tmzxtktq-artifact-parser/.agents/just/rust/steps.py' run test "$@"
+WARN `--no-project` was provided, but no project was found
+cargo llvm-cov test --all-features --locked --include-build-script --workspace --lcov --output-path target/llvm-cov/test.part0.lcov --test artifact_parser -- --skip actual_provider_d_e_preserve
+info: cargo-llvm-cov currently setting cfg(coverage); you can opt-out it by passing --no-cfg-coverage
+   Compiling gossil v0.1.0 (/Users/rahul/Projects/gossil.worktrees/gest-tmzxtktq-artifact-parser)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 4.12s
+     Running tests/artifact_parser.rs (target/llvm-cov-target/debug/deps/artifact_parser-c207989fdb07b4d1)
+
+running 18 tests
+test corrupt_checksum_precedes_decoding ... ok
+test date_failures_preserve_provider_cause ... ok
+test eight_preserved_valid_raw_baselines ... ok
+test explicit_limits_are_distinct_from_syntax_and_checksum ... ok
+test modular_w_scanner_and_exact_body_boundaries ... ok
+test order_paths_forum_and_remaining_raw_nul_controls ... ok
+test actual_provider_now_stays_within_same_engine_clock_interval ... ok
+test raw_nul_depends_on_each_token_consumer ... ok
+test signature_and_checksum_envelopes_follow_source_scanning ... ok
+test repeated_cards_and_native_inference_are_not_blanket_singletons ... ok
+test typed_fields_are_owned_and_c_prefixes_survive ... ok
+test attachment_endpoint_wiki_and_source_edges ... ok
+test actual_selected_libsql_provider_parses_all_eight_baselines ... ok
+test w_modular_threshold_and_body_edges ... ok
+test escape_and_hash_edge_families ... ok
+test all_21_repeat_branches_reject_or_accumulate_per_source ... ok
+test preserved_fixture_acceptance_receipts ... ok
+test all_208_matrix_insertions_and_29_required_deletions ... ok
+
+test result: ok. 18 passed; 0 failed; 0 ignored; 0 measured; 1 filtered out; finished in 0.02s
+
+
+    Finished report saved to target/llvm-cov/test.part0.lcov
+jlog step test
+{"kind":"step","run":"7688657c-224d-413f-9aed-0632c984ee87","harness":"codex","session":"01a1ed67-9772-7d92-a622-2f863b97d210","child":null,"time":"2026-11-18T07:09:03Z","argv":["just","test","--test","artifact_parser","--","--skip","actual_provider_d_e_preserve"],"step":"test"}

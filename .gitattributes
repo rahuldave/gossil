@@ -17,3 +17,11 @@
 /evidence/libsql-provider/adapted.patch -whitespace
 /evidence/libsql-provider/fossil-configure.stdout -whitespace
 /evidence/libsql-provider/product-red.stdout -whitespace
+
+# Preserve these signed-header fixture bytes and treat CR at EOL as intentional.
+# Keep the default blank-at-EOL, blank-at-EOF and space-before-tab checks.
+/tests/fixtures/artifact/signed-PGP-CRLF-header.artifact -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
+/tests/fixtures/artifact/signed-SSH-CRLF-header.artifact -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
+
+# Preserve hash-verified upstream native schema comments and inherited whitespace.
+/src/storage/schema/native-repository.sql -whitespace

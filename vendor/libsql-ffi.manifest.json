@@ -1613,8 +1613,8 @@
       "sha256": "bf41011ed9136fe4f1819d4586ae84e6d37bad648c7a522193f8375d10cc476a"
     },
     ".gitattributes": {
-      "length": 1011,
-      "sha256": "db93c153256afa366b5ef6e24218c3fbbd09edeae50baf088d9ebce2beb77d97"
+      "length": 1560,
+      "sha256": "0d405541e26152b4d808beca5375afa62a58a24819931b44fb474bba87e7d661"
     },
     "evidence/libsql-provider/product-whitespace-controls.stdin": {
       "length": 0,

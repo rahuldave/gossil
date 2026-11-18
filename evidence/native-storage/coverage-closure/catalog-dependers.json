@@ -1,0 +1,1 @@
+[{"text":"encode_catalog_value(value, &mut bytes)","range":{"byteOffset":{"start":2814,"end":2853},"start":{"line":52,"column":20},"end":{"line":52,"column":59}},"file":"src/storage/schema.rs","lines":"                    encode_catalog_value(value, &mut bytes)?;","charCount":{"leading":20,"trailing":2},"language":"Rust"}]

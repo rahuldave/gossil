@@ -11,7 +11,11 @@ The checkout implements bounded delta creation and application, their
 `gossil vcs` diagnostics, and the inherited-test runner.
 It also composes [byte primitives](blob-primitives.md), [token escaping](token-codec.md),
 [artifact checksums](artifact-checksum.md)
-and [local transactions](local-storage.md), with no domain schema or public SQL.
+and [local transactions](local-storage.md). [Native storage](native-storage.md)
+adds complete empty-root initialization and bounded private content operations.
+There is no public SQL interface.
+The [artifact parser](artifact-parser.md) adds bounded structural parsing of all
+eight artifact types with an asynchronous selected-engine date provider.
 The [encoder](delta-encoder.md) and [decoder](delta-decoder.md) guides give
 the current scope and limits.
 
@@ -73,7 +77,7 @@ configurations and storage encodings open. Historical generation scripts require
 
 ## Checkpoints and ownership
 
-The composed core is the library's delta, byte, token and local storage modules
+The historical composed core is the library's delta, byte, token and local storage modules
 and their private composition test. The historical topic
 `gest/ruxnuror-core-integration` started at accepted encoder
 `6ea4c22aea10b49a759f26645166193597b165de` and imported accepted blob, token
@@ -155,12 +159,34 @@ passes 489 fixed tokens and 30 numeric threshold inputs with the adopted source.
 The retained run against the original provider fails the fractional-second case.
 The existing fifteen storage tests and private composition fixture also pass.
 
-Those retained candidate checks precede this composition with accepted MD5.
-Independent documentation, prose, product and test reviews and a fresh final
-check remain pending for this composed tree. These checks leave artifact parsing,
-runtime clocks, optional engine features and the platform matrix open.
+The provider composition was accepted at
+`fea8dcdd3979a30bde80460c39bc299ce286afa3`. The parser builds on that
+checkpoint. Its selected-provider tests exercise actual D and E cards with
+519 preserved inputs. Each card admits 470 and rejects 49. The integration
+report is `evidence/parser-provider-integration/report.json`.
 
-## Decoder checkpoint and next integration
+The current checkpoint adopts parser source alongside the reviewed native
+storage source on the accepted provider base. It does not claim the separate
+parser branch as an ancestor. The parser was accepted independently at
+`36cecd622510ce616a2524145ce887667e79ba2a`. The composed storage ordered gates
+remain open.
+
+The composed test report in `evidence/storage-provider-integration/report.json`
+records 69 unit tests, 62 integration tests and one explicit pre-existing native
+interop ignore. Its coverage run records 2,914 executable changed lines with
+none missing; all seven storage-owned Rust files have full line coverage. These
+results qualify the bounded composition, not complete storage version 1.
+
+Native crosslinks support only the empty root. The next storage task is the
+first private file child with real parent and file links under the accepted
+companion `private-file-amendment.md` specification. The amendment specifies
+future behavior. This checkpoint implements no catalog2 or journal operations.
+File-containing check-ins, traversal and persistent selection commands, the issue adapter, UI,
+sync, publication, general graphs, migration, rebuild and filesystem recovery
+remain open. Runtime clocks, optional engine features and the platform matrix
+also remain open.
+
+## Decoder and encoder checkpoints
 
 The pure decoder validates commands before it reserves output storage, then
 replays checked slices. Its command reads both inputs and decodes before opening
@@ -176,8 +202,9 @@ The inherited assertions and original corpus remain unchanged.
 
 ## Extension contracts and remaining work
 
-The companion specification now contains accepted normative Gest, sync and UI
-contracts. Exact storage encodings and their test inventory remain in progress.
+The companion specification contains accepted normative Gest, sync and UI
+contracts and an accepted storage specification. Its full fixture inventory
+still requires runtime implementation and qualification.
 Issue revisions, Git-link encodings and annotation descriptors need byte fixtures
 before durable extension writes begin. Task `qvqyvqlt` tracks this contract work.
 Inspect it with `gest task show qvqyvqlt` in the local Gest project.
@@ -201,6 +228,8 @@ fail before an operation reports complete success.
 
 Keep the full Gest task hierarchy and deliver small reviewed checkpoints.
 Next, follow [Checkpoints and ownership](#checkpoints-and-ownership) to review
-the composed core. Preserve the unchanged `delta1` qualification evidence.
+the composed parser and native storage checkpoint. Then implement the first
+private file child with real parent and file links. Preserve the unchanged
+`delta1` qualification evidence.
 Resolve the inventory's contract and configuration gaps while preserving
 failures and disabled-feature results as classified evidence.

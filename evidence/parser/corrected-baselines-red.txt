@@ -1,0 +1,136 @@
+just --justfile '/Users/rahul/Projects/gossil.worktrees/gest-tmzxtktq-artifact-parser/Justfile' rust test "$@"
+uv run --no-project --quiet --python '>=3.11' python '/Users/rahul/Projects/gossil.worktrees/gest-tmzxtktq-artifact-parser/.agents/just/rust/steps.py' run test "$@"
+WARN `--no-project` was provided, but no project was found
+cargo llvm-cov test --all-features --locked --include-build-script --workspace --lcov --output-path target/llvm-cov/test.part0.lcov --test artifact_parser
+info: cargo-llvm-cov currently setting cfg(coverage); you can opt-out it by passing --no-cfg-coverage
+   Compiling gossil v0.1.0 (/Users/rahul/Projects/gossil.worktrees/gest-tmzxtktq-artifact-parser)
+warning: struct `Cursor` is never constructed
+   --> src/artifact.rs:213:8
+    |
+213 | struct Cursor<'a> { bytes:&'a [u8], pos:usize, eol:bool, line:usize }
+    |        ^^^^^^
+    |
+    = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: methods `syntax`, `card`, `token`, and `required` are never used
+   --> src/artifact.rs:216:8
+    |
+214 | impl<'a> Cursor<'a> {
+    | ------------------- methods in this implementation
+215 |     /// Attach a syntax diagnostic to the current card and cursor.
+216 |     fn syntax(&self,message:&'static str)->ArtifactError { ArtifactError::Syntax{offset:self.pos,line:self.line,message} }
+    |        ^^^^^^
+217 |     /// Read the next card only when all its predecessor's tokens were consumed.
+218 |     fn card(&mut self)->Option<u8> {
+    |        ^^^^
+...
+229 |     fn token(&mut self)->Option<&'a [u8]> {
+    |        ^^^^^
+...
+237 |     fn required(&mut self)->Result<&'a [u8],ArtifactError> { self.token().ok_or_else(||self.syntax("missing token")) }
+    |        ^^^^^^^^
+
+warning: struct `Budget` is never constructed
+   --> src/artifact.rs:240:8
+    |
+240 | struct Budget { limits:ParseLimits, bytes:usize, entries:usize }
+    |        ^^^^^^
+
+warning: methods `charge`, `copy`, `decode`, and `push` are never used
+   --> src/artifact.rs:243:8
+    |
+241 | impl Budget {
+    | ----------- methods in this implementation
+242 |     /// Charge bytes before allocation.
+243 |     fn charge(&mut self,n:usize)->Result<(),ArtifactError> {
+    |        ^^^^^^
+...
+247 |     fn copy(&mut self,b:&[u8])->Result<Vec<u8>,ArtifactError> {
+    |        ^^^^
+...
+251 |     fn decode(&mut self,b:&[u8])->Result<DecodedToken,ArtifactError> {
+    |        ^^^^^^
+...
+255 |     fn push<T>(&mut self,v:&mut Vec<T>,item:T)->Result<(),ArtifactError> {
+    |        ^^^^
+
+warning: function `visible` is never used
+   --> src/artifact.rs:262:4
+    |
+262 | fn visible(t:&DecodedToken)->&[u8] { &t.bytes[..t.c_string_len] }
+    |    ^^^^^^^
+
+warning: function `hex` is never used
+   --> src/artifact.rs:264:4
+    |
+264 | fn hex(b:&[u8])->bool { b.iter().all(u8::is_ascii_hexdigit) }
+    |    ^^^
+
+warning: function `hash` is never used
+   --> src/artifact.rs:266:4
+    |
+266 | fn hash(b:&[u8])->bool { matches!(b.len(),40|64) && hex(b) }
+    |    ^^^^
+
+warning: function `path` is never used
+   --> src/artifact.rs:268:4
+    |
+268 | fn path(b:&[u8])->bool { !b.is_empty() && b.split(|b|*b==b'/').all(|p|!p.is_empty() && p!=b"." && p!=b"..") }
+    |    ^^^^
+
+warning: function `wiki_name` is never used
+   --> src/artifact.rs:270:4
+    |
+270 | fn wiki_name(b:&[u8])->bool {
+    |    ^^^^^^^^^
+
+warning: function `reserved` is never used
+   --> src/artifact.rs:274:4
+    |
+274 | fn reserved(mut b:&[u8])->bool {
+    |    ^^^^^^^^
+
+warning: function `unsigned` is never used
+   --> src/artifact.rs:294:4
+    |
+294 | fn unsigned(input:&[u8])->&[u8] {
+    |    ^^^^^^^^
+
+warning: function `matrix` is never used
+   --> src/artifact.rs:302:4
+    |
+302 | fn matrix(kind:ArtifactType)->(&'static [u8],&'static [u8]) {
+    |    ^^^^^^
+
+warning: `gossil` (lib) generated 12 warnings
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 3.89s
+     Running tests/artifact_parser.rs (target/llvm-cov-target/debug/deps/artifact_parser-c207989fdb07b4d1)
+
+running 2 tests
+test eight_preserved_valid_raw_baselines ... FAILED
+test corrupt_checksum_precedes_decoding ... FAILED
+
+failures:
+
+---- eight_preserved_valid_raw_baselines stdout ----
+
+thread 'eight_preserved_valid_raw_baselines' (312883794) panicked at tests/artifact_parser.rs:14:90:
+manifest-valid: Syntax { offset: 0, line: 0, message: "parser not implemented" }
+
+---- corrupt_checksum_precedes_decoding stdout ----
+
+thread 'corrupt_checksum_precedes_decoding' (312883793) panicked at tests/artifact_parser.rs:22:5:
+assertion failed: matches!(parse_artifact(input,limits(),&FixtureDates).await,Err(ArtifactError::Checksum))
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+
+failures:
+    corrupt_checksum_precedes_decoding
+    eight_preserved_valid_raw_baselines
+
+test result: FAILED. 0 passed; 2 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+error: test failed, to rerun pass `--test artifact_parser`
+error: process didn't exit successfully: `/Users/rahul/.rustup/toolchains/stable-aarch64-apple-darwin/bin/cargo test --manifest-path /Users/rahul/Projects/gossil.worktrees/gest-tmzxtktq-artifact-parser/Cargo.toml --target-dir /Users/rahul/Projects/gossil.worktrees/gest-tmzxtktq-artifact-parser/target/llvm-cov-target --all-features --locked --workspace --test artifact_parser` (exit status: 101)
+error: Recipe `test` failed on line 6 with exit code 101
+error: Recipe `test` failed on line 65 with exit code 101

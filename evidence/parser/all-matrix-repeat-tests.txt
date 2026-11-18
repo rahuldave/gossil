@@ -1,0 +1,47 @@
+just --justfile '/Users/rahul/Projects/gossil.worktrees/gest-tmzxtktq-artifact-parser/Justfile' rust test "$@"
+uv run --no-project --quiet --python '>=3.11' python '/Users/rahul/Projects/gossil.worktrees/gest-tmzxtktq-artifact-parser/.agents/just/rust/steps.py' run test "$@"
+WARN `--no-project` was provided, but no project was found
+cargo llvm-cov test --all-features --locked --include-build-script --workspace --lcov --output-path target/llvm-cov/test.part0.lcov --test artifact_parser all_
+info: cargo-llvm-cov currently setting cfg(coverage); you can opt-out it by passing --no-cfg-coverage
+   Compiling gossil v0.1.0 (/Users/rahul/Projects/gossil.worktrees/gest-tmzxtktq-artifact-parser)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 7.00s
+     Running tests/artifact_parser.rs (target/llvm-cov-target/debug/deps/artifact_parser-c207989fdb07b4d1)
+
+running 4 tests
+test actual_selected_libsql_provider_parses_all_eight_baselines ... ok
+test all_21_repeat_branches_reject_or_accumulate_per_source ... FAILED
+test actual_provider_d_e_preserve_all_pinned_binary64_results ... FAILED
+test all_208_matrix_insertions_and_29_required_deletions ... FAILED
+
+failures:
+
+---- all_21_repeat_branches_reject_or_accumulate_per_source stdout ----
+
+thread 'all_21_repeat_branches_reject_or_accumulate_per_source' (312920102) panicked at tests/artifact_parser.rs:483:78:
+called `Option::unwrap()` on a `None` value
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+---- actual_provider_d_e_preserve_all_pinned_binary64_results stdout ----
+
+thread 'actual_provider_d_e_preserve_all_pinned_binary64_results' (312920099) panicked at tests/artifact_parser.rs:414:13:
+assertion `left == right` failed: provider bits [50, 48, 50, 52, 45, 48, 49, 45, 48, 49, 84, 48, 48, 58, 48, 48, 58, 48, 48, 46, 57, 57, 57, 57]
+  left: "4142c54b40006117"
+ right: "4142c54b400060fe"
+
+---- all_208_matrix_insertions_and_29_required_deletions stdout ----
+
+thread 'all_208_matrix_insertions_and_29_required_deletions' (312920101) panicked at tests/artifact_parser.rs:458:75:
+called `Option::unwrap()` on a `None` value
+
+
+failures:
+    actual_provider_d_e_preserve_all_pinned_binary64_results
+    all_208_matrix_insertions_and_29_required_deletions
+    all_21_repeat_branches_reject_or_accumulate_per_source
+
+test result: FAILED. 1 passed; 3 failed; 0 ignored; 0 measured; 9 filtered out; finished in 0.01s
+
+error: test failed, to rerun pass `--test artifact_parser`
+error: process didn't exit successfully: `/Users/rahul/.rustup/toolchains/stable-aarch64-apple-darwin/bin/cargo test --manifest-path /Users/rahul/Projects/gossil.worktrees/gest-tmzxtktq-artifact-parser/Cargo.toml --target-dir /Users/rahul/Projects/gossil.worktrees/gest-tmzxtktq-artifact-parser/target/llvm-cov-target --all-features --locked --workspace --test artifact_parser all_` (exit status: 101)
+error: Recipe `test` failed on line 6 with exit code 101
+error: Recipe `test` failed on line 65 with exit code 101

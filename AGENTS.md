@@ -13,11 +13,11 @@ Read and follow @.agents/instructions/prose.md
 
 - Project name: Gossil.
 - Source directories: `src/` contains the inherited-test runner, delta and byte
-  primitives, token codec and local storage boundary. `tests/` contains controls,
+  primitives, token codec, structural artifact parser and local storage boundary. `tests/` contains controls,
   portable fixtures and the private storage composition test.
 - Local guides: `docs/conformance.md`, `docs/delta-encoder.md`,
   `docs/delta-decoder.md`, `docs/blob-primitives.md`, `docs/token-codec.md`,
-  `docs/local-storage.md` and `docs/development-plan.md`.
+  `docs/local-storage.md`, `docs/native-storage.md`, `docs/artifact-parser.md` and `docs/development-plan.md`.
 - Product specification: `~/Projects/AIProjectInfra/docs/gossil/README.md` and its linked pages.
 - Workflow playbook: `.agents/skills/gtw/references/gest_codex_workflow.md`.
 
@@ -28,7 +28,9 @@ failed or incomplete suites. It implements no Gossil engine behavior.
 The library also implements bounded delta application, exposed by
 `gossil vcs test-delta-apply ORIGIN DELTA TARGET`. The library also creates deltas through `gossil vcs test-delta-create` and checks
 both directions through `gossil vcs test-delta`. The local libSQL boundary owns database lifecycle and exclusive transactions.
-Domain storage, the remaining source port and Gest integration remain planned work.
+Native local storage initializes the complete schema and empty public root, with
+bounded private content operations. File-containing check-ins, broader crosslinks,
+the remaining source port and Gest integration remain planned work.
 
 ## Commands and evidence
 
@@ -57,7 +59,8 @@ encoder `6ea4c22aea10b49a759f26645166193597b165de`. It imports accepted blob,
 token and database changes without claiming their source commits as ancestors.
 The coordinator owns Gest commands, final staging, gates and the commit.
 Independent workers preserve each other's files and immutable native evidence.
-The database exposes lifecycle only; arbitrary SQL stays private.
+The database exposes lifecycle and admitted native content operations; arbitrary
+SQL stays private.
 
 `just install` uses package clones in `~/Projects`, including from worktrees.
 `SKILL_PACKAGES_DIR` can override that location. Distinguish package sources,
@@ -71,4 +74,5 @@ Publishing and GitHub issue promotion remain deferred for that reason.
 
 Use the module guides for explicit bounds and lifecycle contracts.
 Next, review the composed core and preserve the unchanged `delta1` evidence
-and its qualifications before adding domain storage.
+and its qualifications. Next, implement the first private file child with real
+parent and file links after the composed checkpoint passes its ordered gates.

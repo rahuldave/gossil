@@ -2,7 +2,7 @@
 
 Gossil uses `libsql = 0.9.30` with `default-features = false` and `core` only.
 A relative Cargo patch selects the complete published `libsql-ffi` source in
-`vendor/libsql-ffi`. One native engine serves the existing local Rust API.
+`vendor/libsql-ffi`. One selected local libSQL engine serves the local Rust API.
 Cargo uses the upstream build script without changes or source downloads.
 
 ## Source identity and bounds
@@ -53,8 +53,8 @@ builds. Source URLs, revisions and input hashes are in the provenance record.
 
 The project owns the `local` and
 `https://github.com/pre-commit/pre-commit-hooks` units in `.pre-commit-config.yaml`.
-The original commit gate checks recorded evidence. Its message hook adds the
-commit trailer, and the pre-push hook runs `just ci`. Those entries remain unchanged.
+The commit gate checks recorded evidence. Its message hook adds the
+commit trailer, and the pre-push hook runs `just ci`.
 Future upstream hook updates need deliberate reconciliation in these units.
 
 The 1000 KB size hook excludes exactly these four upstream paths under
@@ -102,7 +102,7 @@ This policy checks source preservation instead of rewriting upstream prose.
 Authored project pages continue to use the installed normal style checker.
 
 The map and adapter are project-owned files outside the installer's managed
-files. A disposable official `just install --defaults` refresh checks retention.
+files. A disposable `just install --defaults` refresh checks retention.
 
 ## Executed evidence and limits
 
@@ -112,7 +112,13 @@ unchanged numeric conversion callers. The original provider fails the known
 fractional-second case; the adopted provider passes the retained corpus.
 
 Fossil D cards carry artifact dates, and E cards carry event dates.
-These SQL tests do not execute an inherited or Gossil parser for those cards.
+Those private SQL tests remain separate from the newer
+[artifact parser](artifact-parser.md) tests. The parser tests exercise both cards
+with all 519 preserved inputs through the selected engine. Each card admits
+470 inputs and rejects 49 under its lexical and positive-date rules.
+The receipts are in `evidence/parser-provider-integration/report.json`;
+they preserve exact binary64 expectations and add no native Fossil probes.
+
 A shared-clock test must compare native Fossil and Gossil against the same
 injected current time, or explicit time bounds, before claiming runtime parity.
 Runtime clock comparisons, date modifiers, formatting, alternate build flags
@@ -123,5 +129,5 @@ That compile failure establishes no date behavior.
 ## Recommendations
 
 Keep the pinned core-only provider and verify its full source inventory.
-Next, test the actual artifact parser and shared-clock behavior before claiming
-D/E compatibility or expanding the supported engine features.
+Next, qualify shared-clock behavior before expanding the finite D/E evidence
+or the supported engine features.

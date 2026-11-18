@@ -1,0 +1,204 @@
+just --justfile '/Users/rahul/Projects/gossil.worktrees/gest-upxnmvpv-native-storage/Justfile' rust coverage-check
+uv run --no-project --quiet --python '>=3.11' python '/Users/rahul/Projects/gossil.worktrees/gest-upxnmvpv-native-storage/.agents/just/rust/steps.py' fresh test || uv run --no-project --quiet --python '>=3.11' python '/Users/rahul/Projects/gossil.worktrees/gest-upxnmvpv-native-storage/.agents/just/rust/steps.py' run test
+WARN `--no-project` was provided, but no project was found
+coverage-check: no report of test for this run and this tree, so the tests run now
+WARN `--no-project` was provided, but no project was found
+cargo llvm-cov test --all-features --locked --include-build-script --workspace --lib --bin gossil --bin gossil-conformance --lcov --output-path target/llvm-cov/test.part0.lcov
+info: cargo-llvm-cov currently setting cfg(coverage); you can opt-out it by passing --no-cfg-coverage
+   Compiling gossil v0.1.0 (/Users/rahul/Projects/gossil.worktrees/gest-upxnmvpv-native-storage)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 11.07s
+     Running unittests src/lib.rs (target/llvm-cov-target/debug/deps/gossil-fe5ec46fdcdce3bd)
+
+running 54 tests
+test compression::tests::format_length_bounds ... ok
+test artifact::terminal_zero_tests::zero_sentinel_preserves_native_cursor_and_delimiter_state ... ok
+test artifact::tests::exhaustive_native_card_matrix ... ok
+test delta::encoder_tests::arithmetic_and_resource_policy ... ok
+test delta::encoder_tests::source_decision_boundaries ... ok
+test compression::tests::error_causes_and_messages ... ok
+test artifact::tests::zero_endpoint_hash_and_legacy_paths ... ok
+test delta::tests::input_envelope ... ok
+test delta::tests::reserve_failure_and_validate_before_reserve ... ok
+test storage::content::tests::exact_budget_boundaries_and_cycles ... ok
+test storage::content::tests::owned_identity_decoder_rejects_duplicate_and_wrong_type_rows ... ok
+test storage::content::tests::exact_size_failure_latches_all_content_helpers ... ok
+test compression::tests::bounded_packing_header_and_stream_boundaries ... ok
+test storage::content::tests::native_envelope_exceptions_and_exact_repository_validation ... ok
+test storage::composition_tests::packed_delta_round_trip_and_atomic_rollback ... ok
+test storage::repository::tests::date_provider_and_invalid_complete_root_fail_without_partial_initialization ... ok
+test storage::repository::tests::complete_native_root_creation_reopens_and_refuses_existing_destination ... ok
+test storage::repository::tests::missing_or_changed_catalog_denies_local_owner_admission ... ok
+test storage::repository::tests::native_empty_root_constructor_has_exact_records_and_legacy_checksum ... ok
+test storage::repository::tests::caught_private_write_hash_error_rolls_back_entire_operation ... ok
+test storage::repository::tests::local_owner_opens_only_complete_matching_catalog_and_revalidates ... ok
+test storage::repository::tests::admission_detects_external_commit_and_unexpected_same_connection_writes ... ok
+test storage::repository::tests::valid_native_artifact_with_unsupported_root_semantics_cannot_crosslink ... ok
+test storage::repository::tests::restricted_shared_view_hides_private_names_and_keeps_public_identity_public ... ok
+test storage::repository::tests::admission_rejects_wrong_root_inode_and_persisted_foreign_key_damage ... ok
+test storage::tests::cancellation_at_controlled_await_rolls_back_but_after_commit_preserves ... ok
+test storage::tests::capabilities_commit_reopen_and_explicit_rollback ... ok
+test storage::tests::caught_error_rejects_commit_and_later_helper ... ok
+test storage::tests::caught_hash_mismatch_rolls_back_prior_mutation_after_reopen ... ok
+test storage::tests::commit_failure_rolls_back_and_reuses_idle_connection ... ok
+test storage::tests::configuration_mismatch_and_inconsistent_state_are_errors ... ok
+test storage::tests::dropped_owner_releases_aliases_and_poisoned_store ... ok
+test storage::tests::embedded_nul_path_returns_error_with_original_cause ... ok
+test storage::tests::explicit_rollback_cleanup_failure_retains_first_error ... ok
+test storage::tests::failed_cleanup_preserves_original_and_poison_policy ... ok
+test storage::tests::immediate_before_dml ... ok
+test storage::tests::latched_domain_helpers_preserve_the_first_failure ... ok
+test storage::tests::memory_retains_one_connection_and_excludes_wal_only ... ok
+test storage::tests::path_validation_preserves_empty_invalid_utf8_and_valid_file_behavior ... ok
+test storage::tests::preparation_and_step_failures_latch_and_explicit_rollback_keeps_cause ... ok
+test storage::tests::settings_every_open ... ok
+test storage::tests::writers_on_os_threads_and_wal_reader ... ok
+test storage::repository::tests::private_file_roundtrip_dedup_and_phantom_stale_delta_removal ... ok
+test storage::repository::tests::native_delta_chain_reconstructs_and_shunned_or_cycle_baselines_fail ... ok
+test tests::preserves_error_causes_and_diagnostics ... ok
+test token_codec::tests::encoder_propagates_output_size_errors ... ok
+test token_codec::tests::resource_errors_preserve_causes ... ok
+test storage::repository::tests::verified_full_bytes_replace_unavailable_nonphantom_delta_without_leaving_delta_row ... ok
+test storage::repository::tests::unsupported_optional_schema_and_unregistered_trigger_are_distinct ... ok
+test storage::schema::tests::full_schema_install_is_owned_and_atomic ... ok
+test storage::repository::tests::every_initialization_phase_failure_rolls_back_all_schema_and_state ... ok
+test tests::interrupted_observation_retries_without_global_state ... ok
+test storage::repository::tests::all_post_acquisition_policy_codec_and_limit_errors_latch_prior_writes ... ok
+test tests::every_post_spawn_failure_reaps_owned_child ... ok
+
+test result: ok. 54 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 8.05s
+
+     Running unittests src/bin/gossil.rs (target/llvm-cov-target/debug/deps/gossil-f5bd3987d9105802)
+
+running 3 tests
+test tests::read_causes ... ok
+test tests::both_directions_are_verified ... ok
+test tests::allocation_preserves_target_and_error_chains ... ok
+
+test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running unittests src/main.rs (target/llvm-cov-target/debug/deps/gossil_conformance-1cfb05b3bf3bab29)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+    Finished report saved to target/llvm-cov/test.part0.lcov
+uv run --no-project --quiet --python '>=3.11' python '/Users/rahul/Projects/gossil.worktrees/gest-upxnmvpv-native-storage/.agents/just/rust/steps.py' fresh integration || uv run --no-project --quiet --python '>=3.11' python '/Users/rahul/Projects/gossil.worktrees/gest-upxnmvpv-native-storage/.agents/just/rust/steps.py' run integration
+WARN `--no-project` was provided, but no project was found
+coverage-check: no report of integration for this run and this tree, so the tests run now
+WARN `--no-project` was provided, but no project was found
+cargo llvm-cov test --all-features --locked --include-build-script --workspace --test artifact_checksum --test blob_primitives --test conformance --test delta_cli --test delta_decoder --test delta_encoder --test token_codec --lcov --output-path target/llvm-cov/integration.part0.lcov
+info: cargo-llvm-cov currently setting cfg(coverage); you can opt-out it by passing --no-cfg-coverage
+   Compiling gossil v0.1.0 (/Users/rahul/Projects/gossil.worktrees/gest-upxnmvpv-native-storage)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 6.28s
+     Running tests/artifact_checksum.rs (target/llvm-cov-target/debug/deps/artifact_checksum-9ebf1dc308066b99)
+
+running 3 tests
+test independent_owned_computations ... ok
+test rfc_1321_vectors ... ok
+test native_bytes_and_chunking ... ok
+
+test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+
+     Running tests/blob_primitives.rs (target/llvm-cov-target/debug/deps/blob_primitives-3915751e7c0272d1)
+
+running 10 tests
+test byte_digests_match_known_answers ... ok
+test capacity_is_upper_bound_and_trailing_bytes_are_ignored ... ok
+test rust_packed_bytes_decode_with_native_fossil ... ignored, requires explicit pinned native Fossil; run just blob-interop
+test malformed_checksums_and_incomplete_streams_fail ... ok
+test declared_capacity_limit_is_explicit_caller_policy ... ok
+test packed_capacity_and_no_payload_are_distinct ... ok
+test collision_safe_hashes_match_native_fossil ... ok
+test every_fossil_sha3_width_and_rate_boundary_matches ... ok
+test native_packed_fixtures_decode_and_native_cli_noops_remain_explicit ... ok
+test binary_chunked_round_trips_at_every_level ... ok
+
+test result: ok. 9 passed; 0 failed; 1 ignored; 0 measured; 0 filtered out; finished in 0.04s
+
+     Running tests/conformance.rs (target/llvm-cov-target/debug/deps/conformance-637ea65e0b92e051)
+
+running 14 tests
+test accepts_only_executed_matching_assertions ... ok
+test malformed_summary_numbers_are_permanently_rejected ... ok
+test plan_binding_controls ... ok
+test plan_cli_and_evidence ... ok
+test rejects_false_success_missing_counts_and_nonzero_processes ... ok
+/var/folders/wq/mr3zj9r14dzgjnq9rjx_vqbc0000gn/T/.tmpGJDjGk/pass/report.json
+test rejects_missing_inputs_nonexecutables_reused_directories_and_invalid_config ... ok
+test pinned_plan_duplicate_regression ... ok
+/var/folders/wq/mr3zj9r14dzgjnq9rjx_vqbc0000gn/T/.tmpGJDjGk/fail/report.json
+test cli_reports_actual_status_and_setup_failures ... ok
+test complete_delta1_plan_integrity_and_relocation ... ok
+test kills_owned_descendants_on_timeout_and_preserves_truncated_output ... ok
+test malformed_summary_controls_never_exit_successfully ... ok
+test planned_acceptance_controls ... ok
+test runs_real_inherited_driver_and_retains_failed_results ... ok
+test planned_run_archive_integrity ... ok
+
+test result: ok. 14 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 21.28s
+
+     Running tests/delta_cli.rs (target/llvm-cov-target/debug/deps/delta_cli-eac8cf3930471e0e)
+
+running 4 tests
+test cli_paths_and_usage ... ok
+test encoder_file_and_usage_policy ... ok
+test cli_encoder_vectors ... ok
+test cli_pinned_observations ... ok
+
+test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.90s
+
+     Running tests/delta_decoder.rs (target/llvm-cov-target/debug/deps/delta_decoder-5260118f19c83239)
+
+running 5 tests
+test header_only_and_limits ... ok
+test typed_failures_and_explicit_cap ... ok
+test all_header_bytes ... ok
+test pinned_observations ... ok
+test portable_fixture_integrity ... ok
+
+test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.10s
+
+     Running tests/delta_encoder.rs (target/llvm-cov-target/debug/deps/delta_encoder-2857bb73f5012a9b)
+
+running 2 tests
+test native_encoder_vectors ... ok
+test encoder_fixture_integrity ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+
+     Running tests/token_codec.rs (target/llvm-cov-target/debug/deps/token_codec-c4532293f4808d78)
+
+running 1 test
+test pinned_reference_cases ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.03s
+
+
+    Finished report saved to target/llvm-cov/integration.part0.lcov
+integration: a file changed during the run, so the next step that needs it runs it again
+uv run --no-project --quiet --python '>=3.11' python '/Users/rahul/Projects/gossil.worktrees/gest-upxnmvpv-native-storage/.agents/just/rust/steps.py' coverage
+WARN `--no-project` was provided, but no project was found
+WARN `--no-project` was provided, but no project was found
+Failure. Coverage is below 100%.
+-------------
+Diff Coverage
+Diff: HEAD...HEAD, staged, unstaged and untracked changes
+-------------
+src/artifact.rs (58.0%): Missing lines 225-227,257-259,261-263,265-267,269-271,273-275,277-279,281-283,285-287,289-291,293-295,297-299,301-303,321-323,325-327,329-331,333-335,339-341,343-345,349-351,353-355,359-361,363-365,367-369,374-376,380-382,386-387,389-395,397,401-403,405,407,533-540,577-582,584-589,622,632,635,644,647,685,688,691,697-707,709-712,714-730,732,736-739,743,747,749,752,756-757,764-766,770,779,783,785,792,807-814,818-833,835-844,846-847,850-854,856-860,863-864,866,868-869,871-875,877,879-887,890-900,902-903,911-912,914,919,925,934,937-947,949-961,966,969,973,979,986,989-991,994-996,998,1001,1003
+src/compression.rs (100%)
+src/storage.rs (100%)
+src/storage/content.rs (97.3%): Missing lines 128,131,138,141,144,149,168,244
+src/storage/policy.rs (100%)
+src/storage/repository.rs (97.8%): Missing lines 150-152,159,263-264,266-268,319,413-415,494,512-514,519,561-563,574,589,612,1100
+src/storage/schema.rs (95.5%): Missing lines 35,42-43
+-------------
+Total:   2381 lines
+Missing: 331 lines
+Coverage: 86%
+-------------
+
+coverage-check: write tests for the missing lines. A file that no test can run goes in .agents/coverage-exclude.txt, in a commit of its own before this one
+error: Recipe `coverage-check` failed on line 12 with exit code 1
+error: Recipe `coverage-check` failed on line 28 with exit code 1

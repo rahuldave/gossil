@@ -1,0 +1,52 @@
+tests/token_codec.rs:2:use gossil::token_codec::{defossilize, fossilize, fossilize_c_string};
+tests/token_codec.rs:28:                fossilize_c_string(&input)
+tests/token_codec.rs:30:                fossilize(&input[..length as usize])
+tests/token_codec.rs:40:            let actual = defossilize(&input).unwrap();
+tests/fixtures/token-codec/contract.json:3:  "scope": "complete fossilize/defossilize primitives only; no artifact grammar",
+tests/fixtures/token-codec/contract.json:5:    {"signature":"fossilize(input: &[u8]) -> Vec<u8>","meaning":"Encode all slice bytes, including embedded NUL; Rust result excludes C terminator. Corresponds to nonnegative C nIn equal to slice length."},
+tests/fixtures/token-codec/contract.json:6:    {"signature":"fossilize_c_string(input: &[u8]) -> Vec<u8>","meaning":"Encode bytes preceding first NUL, or all supplied bytes when absent (adapter supplies sentinel). Corresponds to defined negative-nIn strlen mode."},
+tests/fixtures/token-codec/contract.json:7:    {"signature":"defossilize(input: &[u8]) -> DecodedToken","result":{"bytes":"Vec<u8>: complete decoded prefix, including decoded NUL and subsequent emitted bytes","c_string_len":"usize: index of first decoded NUL or bytes.len(); C consumers see bytes[..c_string_len]"},"meaning":"Stop input at first NUL or slice end. Decode n,s,t,r,v,f,0,backslash; unknown escape drops slash; terminal slash survives. No UTF-8 requirements. bytes length is new safe API metadata derived from algorithm; C returns void, so no inherited native decoded length exists."}
+src/token_codec.rs:100:/// assert_eq!(gossil::token_codec::fossilize(b"a b\0").unwrap(), b"a\\sb\\0");
+src/token_codec.rs:102:pub fn fossilize(input: &[u8]) -> Result<Vec<u8>, TokenError> {
+src/token_codec.rs:103:    fossilize_with_limit(input, isize::MAX as usize)
+src/token_codec.rs:114:pub(crate) fn fossilized_size(input: &[u8], limit: usize) -> Result<usize, TokenError> {
+src/token_codec.rs:131:fn fossilize_with_limit(input: &[u8], limit: usize) -> Result<Vec<u8>, TokenError> {
+src/token_codec.rs:132:    let size = fossilized_size(input, limit)?;
+src/token_codec.rs:154:/// assert_eq!(gossil::token_codec::fossilize_c_string(b"a\0b").unwrap(), b"a");
+src/token_codec.rs:156:pub fn fossilize_c_string(input: &[u8]) -> Result<Vec<u8>, TokenError> {
+src/token_codec.rs:157:    fossilize(
+src/token_codec.rs:176:/// let decoded = gossil::token_codec::defossilize(b"a\\0b").unwrap();
+src/token_codec.rs:180:pub fn defossilize(input: &[u8]) -> Result<DecodedToken, TokenError> {
+src/token_codec.rs:222:        assert_eq!(fossilize_with_limit(b"a b", 4).unwrap(), b"a\\sb");
+src/token_codec.rs:223:        assert_eq!(fossilize_with_limit(b"abc", 3).unwrap(), b"abc");
+src/token_codec.rs:224:        assert_eq!(fossilize_with_limit(b"", 0).unwrap(), b"");
+src/token_codec.rs:226:            let error = fossilize_with_limit(input, limit).unwrap_err();
+src/token_codec.rs:237:            let expected = fossilize(&input).unwrap();
+src/token_codec.rs:239:                fossilized_size(&input, expected.len()).unwrap(),
+src/token_codec.rs:243:                fossilized_size(&input, expected.len() - 1),
+src/token_codec.rs:248:        let expected = fossilize(&all_bytes).unwrap();
+src/token_codec.rs:250:            fossilized_size(&all_bytes, expected.len()).unwrap(),
+src/token_codec.rs:253:        assert!(fossilized_size(&all_bytes, expected.len() - 1).is_err());
+src/token_codec.rs:254:        assert_eq!(fossilized_size(b"", 0).unwrap(), 0);
+src/artifact.rs:498:        crate::token_codec::defossilize(b).map_err(|_| ArtifactError::ResourceLimit)
+tests/fixtures/token-codec/adapter.c:14: if(!strcmp(argv[1],"decode")){defossilize((char*)b); hex(b,n+1); printf(" %zu\n",strlen((char*)b));}
+tests/fixtures/token-codec/adapter.c:15: else if(!strcmp(argv[1],"encode")) {int len=atoi(argv[3]); if(len < -1 || (len>=0 && (size_t)len>n)) return 6; char *out=fossilize((char*)b,len); hex((unsigned char*)out,strlen(out)); printf(" %zu\n",strlen(out)); free(out);}
+src/storage/repository.rs:170:        let bytes = empty_root_bytes(options.date, options.user, root_ceiling)?;
+src/storage/repository.rs:572:    if empty_root_bytes(date_token, &user.bytes, parsed.raw().len())? != parsed.raw() {
+src/storage/repository.rs:581:fn empty_root_bytes(date: &[u8], user: &[u8], max_output: usize) -> Result<Vec<u8>, StorageError> {
+src/storage/repository.rs:594:    let user_size = crate::token_codec::fossilized_size(user, max_output).map_err(|error| {
+src/storage/repository.rs:611:    let user = crate::token_codec::fossilize(user)
+src/storage/repository.rs:699:            allocation_probe::measure(|| empty_root_bytes(b"2026-11-18T00:00:00.000", &user, 256));
+src/storage/repository.rs:713:        let expected = empty_root_bytes(date, &user, 4096).unwrap();
+src/storage/repository.rs:715:            allocation_probe::measure(|| empty_root_bytes(date, &user, expected.len() - 1));
+src/storage/repository.rs:724:            allocation_probe::measure(|| empty_root_bytes(date, &user, expected.len()));
+src/storage/repository.rs:728:        let expected = empty_root_bytes(date, escapes, 4096).unwrap();
+src/storage/repository.rs:730:            empty_root_bytes(date, escapes, expected.len()).unwrap(),
+src/storage/repository.rs:733:        assert!(empty_root_bytes(date, escapes, expected.len() - 1).is_err());
+src/storage/repository.rs:776:        let bytes = empty_root_bytes(b"2026-11-18T00:00:00.000", b"Local Owner", 65536).unwrap();
+src/storage/repository.rs:787:        assert!(empty_root_bytes(b"bad\nD injected", b"owner", 65536).is_err());
+src/storage/repository.rs:1425:        let original = empty_root_bytes(b"2026-11-18T00:00:00.000", b"Owner", 65536).unwrap();
+tests/fixtures/token-codec/upstream-bodies.c:1:char *fossilize(const char *zIn, int nIn){
+tests/fixtures/token-codec/upstream-bodies.c:41:void defossilize(char *z){
+tests/fixtures/token-codec/provenance.json:8:    "fossilize": "src/encode.c:392-430",
+tests/fixtures/token-codec/provenance.json:9:    "defossilize": "src/encode.c:435-458",
