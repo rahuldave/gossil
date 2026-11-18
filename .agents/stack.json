@@ -23,7 +23,7 @@
     "tasker": "git"
   },
   "answers": {
-    "docs-publish": "no",
+    "docs-publish": "yes",
     "integration": "check",
     "issues": "top",
     "review-model": "strongest",
@@ -68,7 +68,7 @@
     "diff-check"
   ],
   "generated": {
-    ".agents/just/index.just": "b6c406ef7cd5e232a638ca2af0827867a981faf015422af409234007997818c0",
+    ".agents/just/index.just": "d4111ded3c60476d4b795e4ce586a37e78dcc1634604e1d135e646ed14e08d9b",
     ".agents/just/rust.just": "04a1142ada68e3eda4a7a60d51bf2c2ab786138fe32a9c4464bdcf2628f51638"
   },
   "started": true,
@@ -424,100 +424,16 @@
     },
     ".pre-commit-config.yaml": {
       "repos[repo=local]": {
-        "state": "added",
+        "state": "present",
         "needs": [
           "tasker"
-        ],
-        "holder": "tasker",
-        "value": {
-          "repo": "local",
-          "hooks": [
-            {
-              "id": "commit-gate",
-              "name": "commit gate",
-              "entry": "uv run --no-project --quiet --no-python-downloads --python '>=3.9' python .agents/skills/gcm/scripts/commit_gate.py",
-              "language": "system",
-              "pass_filenames": false,
-              "always_run": true,
-              "stages": [
-                "pre-commit",
-                "pre-merge-commit"
-              ]
-            },
-            {
-              "id": "commit-gate-trailer",
-              "name": "commit gate trailer",
-              "entry": "uv run --no-project --quiet --no-python-downloads --python '>=3.9' python .agents/skills/gcm/scripts/commit_gate.py --hook commit-msg",
-              "language": "system",
-              "always_run": true,
-              "stages": [
-                "commit-msg"
-              ]
-            },
-            {
-              "id": "just-ci",
-              "name": "just ci",
-              "entry": "just ci",
-              "language": "system",
-              "pass_filenames": false,
-              "always_run": true,
-              "stages": [
-                "pre-push"
-              ]
-            }
-          ]
-        }
+        ]
       },
       "repos[repo=https://github.com/pre-commit/pre-commit-hooks]": {
-        "state": "added",
+        "state": "present",
         "needs": [
           "tasker"
-        ],
-        "holder": "tasker",
-        "value": {
-          "repo": "https://github.com/pre-commit/pre-commit-hooks",
-          "rev": "v6.0.0",
-          "hooks": [
-            {
-              "id": "check-yaml",
-              "stages": [
-                "pre-commit",
-                "pre-merge-commit"
-              ]
-            },
-            {
-              "id": "check-json",
-              "stages": [
-                "pre-commit",
-                "pre-merge-commit"
-              ]
-            },
-            {
-              "id": "check-added-large-files",
-              "args": [
-                "--maxkb=1000"
-              ],
-              "stages": [
-                "pre-commit",
-                "pre-merge-commit"
-              ]
-            },
-            {
-              "id": "check-merge-conflict",
-              "stages": [
-                "pre-commit",
-                "pre-merge-commit"
-              ]
-            },
-            {
-              "id": "detect-private-key",
-              "stages": [
-                "pre-commit",
-                "pre-merge-commit"
-              ]
-            }
-          ]
-        }
+        ]
       }
     },
     ".agents/instructions/tasker.md": {

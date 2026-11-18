@@ -30,13 +30,18 @@ unchanged; enabling optional engine features requires separate qualification.
 Run `just libsql-vendor-check` to check every vendor path, length and SHA256,
 plus frozen provenance, fixtures and maintenance artifacts. Missing or extra
 files, symlinks and unreadable or inconsistent manifests fail the check.
-`just libsql-vendor-test` runs twelve controls for tampering, staged bytes,
-regeneration, literal whitespace and upstream reader preservation.
+`just libsql-vendor-test` runs thirteen controls for tampering, staged bytes,
+regeneration, literal whitespace, upstream reader preservation and Git hook
+isolation. The controls remove inherited Git repository selectors before they
+create disposable repositories. A regression runs the controls from a real
+worktree pre-push hook and checks the calling repository before and after
+the push.
+
 Both checks require Python 3 and the repository files. The test controls also
 require Git and create disposable indexes. The hook adds `--index` to the
 verifier and requires the reviewed artifacts to match staged bytes.
 
-Both checks are required by `typecheck` and `ci`; CI also invokes them directly.
+Both checks are required by `typecheck` and `ci`. CI also invokes them directly.
 
 Regeneration is a maintenance operation. Supply the original registry
 `bundled/src/sqlite3.c` and the pinned Fossil `extsrc/sqlite3.c` as local files:
@@ -45,7 +50,7 @@ Regeneration is a maintenance operation. Supply the original registry
 python3 scripts/regenerate-libsql.py ORIGINAL NATIVE NEW_OUTPUT
 ```
 
-The recipe checks both input hashes, the patch hash, all eight hunk counts and
+The script checks both input hashes, the patch hash, all eight hunk counts and
 the final output hash. It creates a new output file and never runs during Cargo
 builds. Source URLs, revisions and input hashes are in the provenance record.
 
@@ -98,7 +103,7 @@ The always-run source verifier also checks the exact map.
 These pages are readable third-party prose. The original MultipleCiphers README
 still has four hard style findings under the normal checker. Its verbatim
 checker output is retained in `evidence/libsql-provider/upstream-style-original.txt`.
-This policy checks source preservation instead of rewriting upstream prose.
+The policy verifies that the upstream prose retains its original bytes.
 Authored project pages continue to use the installed normal style checker.
 
 The map and adapter are project-owned files outside the installer's managed

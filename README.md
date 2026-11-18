@@ -43,8 +43,7 @@ exit statuses and evidence limits. The [development plan](docs/development-plan.
 gives the delivery order and local review workflow. The product specification
 remains at `~/Projects/AIProjectInfra/docs/gossil/README.md`.
 
-The product specification is a local companion checkout, rather than a page
-supplied by this repository.
+The product specification requires a separate local companion checkout.
 
 The commands below require Rust with Cargo, Git, Just and uv on `PATH`.
 Just runs the recipes in `Justfile`, and uv runs the installed Python tools.
@@ -152,8 +151,18 @@ acquires the pinned Fossil source or the local Tcl and Fossil binaries.
 Installed copies and hook files do not prove live hook execution or a complete
 gate pass. Keep installation receipts separate from executed check records.
 
-Delivery stays local. No remote, push, pull request or publication workflow
-has been selected. Automatic docs publication is disabled.
+The public repository is [rahuldave/gossil](https://github.com/rahuldave/gossil).
+Subsequent changes use reviewed pull requests to `main`. No release is requested.
+
+The saved answer `docs-publish=yes` enables `just docs-publish` with smalldocs
+0.5.12. The main-only workflow also deploys the built site through the GitHub
+Pages artifact API. Set the Pages source to GitHub Actions. The expected site
+is [Gossil development](https://rahuldave.com/gossil/). Confirm the deployed
+site before treating publication as complete.
+
+GitHub documents that a branch push using `GITHUB_TOKEN` does not trigger a
+Pages build. The workflow retains the Just publication command and
+uses an explicit [Pages deployment](https://docs.github.com/en/pages/getting-started-with-github-pages/using-custom-workflows-with-github-pages).
 
 ## Recommendations
 

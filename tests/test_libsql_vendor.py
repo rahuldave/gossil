@@ -1,11 +1,13 @@
 """Adversarial controls for the project-owned native-source integrity gate."""
 import importlib.util
 import json
+import os
 from pathlib import Path
 import shutil
 import subprocess
 import tempfile
 import unittest
+from unittest.mock import patch
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -22,11 +24,27 @@ VERIFY = load("vendor_verify", ROOT / "scripts/verify-libsql-vendor.py")
 REGENERATE = load("vendor_regenerate", ROOT / "scripts/regenerate-libsql.py")
 
 
-class VendorIntegrity(unittest.TestCase):
+class DisposableGitTest(unittest.TestCase):
+    """Keep synthetic repositories separate from the invoking Git hook."""
+
+    def setUp(self):
+        """Remove Git repository selectors before any disposable subprocess."""
+        # git rev-parse documents this list for commands run in another repository.
+        names = subprocess.check_output(
+            ["git", "rev-parse", "--local-env-vars"], text=True
+        ).splitlines()
+        environment = {key: value for key, value in os.environ.items() if key not in names}
+        isolated = patch.dict(os.environ, environment, clear=True)
+        isolated.start()
+        self.addCleanup(isolated.stop)
+
+
+class VendorIntegrity(DisposableGitTest):
     """Mutate disposable copies; never bless changed product or staged files."""
 
     def setUp(self):
         """Copy the complete reviewed tree and its frozen control artifacts."""
+        DisposableGitTest.setUp(self)
         self.temp = tempfile.TemporaryDirectory()
         self.root = Path(self.temp.name)
         shutil.copytree(ROOT / VERIFY.VENDOR, self.root / VERIFY.VENDOR)
@@ -156,7 +174,7 @@ class VendorIntegrity(unittest.TestCase):
             REGENERATE.apply(b"a\n", b"--- a/bundled/src/sqlite3.c\n+++ b/bundled/src/sqlite3.c\n")
 
 
-class LiteralWhitespacePolicy(unittest.TestCase):
+class LiteralWhitespacePolicy(DisposableGitTest):
     """Preserve frozen source bytes while rejecting ordinary authored whitespace."""
 
     def test_literal_paths_pass_and_ordinary_paths_fail(self):
@@ -196,7 +214,7 @@ class LiteralWhitespacePolicy(unittest.TestCase):
                 self.assertNotIn((name + ":1:").encode(), checked.stdout)
 
 
-class PreservedReaderPolicy(unittest.TestCase):
+class PreservedReaderPolicy(DisposableGitTest):
     """Exercise the installed page-map contract with disposable complete sources."""
 
     setUp = VendorIntegrity.setUp
@@ -278,6 +296,56 @@ class PreservedReaderPolicy(unittest.TestCase):
         value["files"]["bundled/SQLite3MultipleCiphers/readme.md"]["sha256"] = "0" * 64
         manifest.write_text(json.dumps(value))
         self.assertTrue(self.policy().problems("vendor/libsql-ffi/bundled/SQLite3MultipleCiphers/readme.md")[0])
+
+
+class HookIsolation(DisposableGitTest):
+    """Run the real controls from a worktree pre-push hook."""
+
+    def test_hook_preserves_calling_repository(self):
+        """A successful hook leaves the caller's config, index and files intact."""
+        import sys
+        import shlex
+
+        with tempfile.TemporaryDirectory() as directory:
+            base = Path(directory)
+            source, remote, worktree = (base / name for name in ("source", "remote", "worktree"))
+
+            def git(root, *args):
+                return subprocess.run(["git", *args], cwd=root, check=True, capture_output=True)
+
+            source.mkdir()
+            git(source, "init", "-q")
+            git(source, "config", "user.name", "Hook isolation control")
+            git(source, "config", "user.email", "control@example.invalid")
+            (source / "sentinel").write_bytes(b"caller bytes\n")
+            git(source, "add", ".")
+            git(source, "-c", "core.hooksPath=/dev/null", "commit", "-qm", "control")
+            git(source, "init", "--bare", "-q", str(remote))
+            git(source, "worktree", "add", "-qb", "hook-control", str(worktree))
+            git(worktree, "remote", "add", "origin", str(remote))
+            hook = source / ".git/hooks/pre-push"
+            # Git itself supplies GIT_DIR for this real push. Explicitly export
+            # the calling index too, as hook managers can do.
+            hook.write_text(
+                "#!/bin/sh\nexport GIT_INDEX_FILE=\"$(git rev-parse --path-format=absolute --git-path index)\"\nexec "
+                + shlex.join([sys.executable, str(Path(__file__).resolve()),
+                              "VendorIntegrity", "LiteralWhitespacePolicy", "PreservedReaderPolicy"])
+                + "\n"
+            )
+            hook.chmod(0o755)
+            index = Path(git(worktree, "rev-parse", "--path-format=absolute", "--git-path", "index").stdout.decode().strip())
+            config = source / ".git/config"
+            before = (index.read_bytes(), config.read_bytes(), (worktree / "sentinel").read_bytes(),
+                      git(worktree, "status", "--porcelain").stdout,
+                      git(worktree, "ls-files", "--stage", "-z").stdout)
+            pushed = git(worktree, "push", "origin", "HEAD:refs/heads/hook-control")
+            self.assertIn(b"Ran 12 tests", pushed.stderr)
+            self.assertIn(b"OK", pushed.stderr)
+            after = (index.read_bytes(), config.read_bytes(), (worktree / "sentinel").read_bytes(),
+                     git(worktree, "status", "--porcelain").stdout,
+                     git(worktree, "ls-files", "--stage", "-z").stdout)
+            self.assertEqual(before, after)
+            self.assertEqual(git(worktree, "rev-parse", "--is-bare-repository").stdout.strip(), b"false")
 
 
 if __name__ == "__main__":

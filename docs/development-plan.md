@@ -100,7 +100,7 @@ a result packet, which the parent validates and records. A record identifies
 the reviewed file tree and the packet's nonce, a unique identifier.
 It applies to that content, so edits can require a new check.
 Use the installed workflow guide above for packet dispatch, result validation
-and recording; printing a packet alone does not complete its check.
+and recording. Printing a packet alone does not complete its check.
 
 The following commands create and check those packets as part of the review workflow.
 Run the Just commands in this order.
@@ -126,9 +126,17 @@ The link does not install tools or share source edits.
 For dependent branches, finish the prerequisite checkpoint before starting work
 that requires it.
 
-Delivery stays local. No remote, push, pull request or publication is selected.
-Keep task records and review evidence local until a delivery destination is selected. Local commits
-still require complete verification and independent review.
+The public delivery destination is [rahuldave/gossil](https://github.com/rahuldave/gossil).
+After the initial accepted checkpoint reaches `main`, deliver subsequent changes
+through reviewed pull requests to `main`. The coordinator owns pushes and
+GitHub changes. Commits require complete verification and independent review.
+
+The saved answer `docs-publish=yes` selects `just docs-publish` with smalldocs
+0.5.12. The workflow runs on `main` in the public repository, publishes through
+Just, then builds and deploys the GitHub Pages artifact. Use GitHub Actions
+as the Pages source. Confirm the deployed site at
+[Gossil development](https://rahuldave.com/gossil/) before recording publication
+as complete. No release is requested.
 
 ### Historical bootstrap context
 
@@ -150,7 +158,7 @@ The accepted prerequisite `880538cd99d7640297f872a766415d129fb45503`
 includes artifact MD5 and the exact upstream coverage/import classifications.
 The [import boundary](libsql-import-boundary.md) records four exact Rust paths,
 with no folder or wildcard exemption. Its historical failed product gate remains
-a failure; committing the prerequisite does not accept the composed provider.
+a failure. Committing the prerequisite does not accept the composed provider.
 The imported source guards must run at the new product gates.
 
 The [native provider guide](libsql-provider.md) describes the adopted core-only
@@ -174,7 +182,7 @@ remain open.
 The composed test report in `evidence/storage-provider-integration/report.json`
 records 69 unit tests, 62 integration tests and one explicit pre-existing native
 interop ignore. Its coverage run records 2,914 executable changed lines with
-none missing; all seven storage-owned Rust files have full line coverage. These
+none missing. All seven storage-owned Rust files have full line coverage. These
 results qualify the bounded composition, not complete storage version 1.
 
 Native crosslinks support only the empty root. The next storage task is the

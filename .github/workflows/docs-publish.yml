@@ -1,6 +1,6 @@
 # Written once by the docs role of jnterfaces. It is yours from then on.
-# After a push to main, publish the docs site to the gh-pages branch. just docs-publish skips a private repository.
-# GitHub Pages needs one setting by a person, once: Settings, Pages, the branch gh-pages.
+# Main publishes through Just/smalldocs, then deploys the built site with the Pages artifact API.
+# Set Settings, Pages, Source to GitHub Actions. A GITHUB_TOKEN branch push alone does not deploy Pages.
 name: Publish the docs
 
 on:
@@ -9,7 +9,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: write
+  contents: read
 
 # Two quick merges publish one after the other, so the later push to gh-pages does not race the first.
 concurrency:
@@ -19,7 +19,14 @@ concurrency:
 jobs:
   publish:
     # A private repository skips the job, and does not build jlog only to skip. just docs-publish checks again.
-    if: github.event.repository.visibility == 'public'
+    if: github.event.repository.visibility == 'public' && github.ref == 'refs/heads/main'
+    permissions:
+      contents: write
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-24.04
     timeout-minutes: 20
     env:
@@ -29,11 +36,22 @@ jobs:
       - uses: astral-sh/setup-uv@v6
       - uses: extractions/setup-just@v3
       - name: Build jlog, the shell of the recipes
-        # The commit 17b5b58 is the tag v0.1.1 of jlog.
-        run: cargo install --locked --git https://github.com/rahuldave/jlog --rev 17b5b58338f45e46412d2e021edb02e6e35da281 jlog
+        # jlog v0.2.0 is the tested runtime shared with the required CI recipes.
+        run: cargo install --locked --git https://github.com/rahuldave/jlog --rev 8febdf18387974f38047abbe88b7473bc5f27bb9 jlog
       - name: Set the git user for the push to gh-pages
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-      - name: Publish
+      - name: Configure Pages
+        uses: actions/configure-pages@v5
+      - name: Publish through Just and smalldocs
         run: just docs-publish
+      - name: Build the Pages artifact
+        run: just docs-build
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: docs/_site
+      - name: Deploy Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
