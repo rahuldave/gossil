@@ -75,3 +75,7 @@ typecheck *args: libsql-vendor-check libsql-vendor-test
 
 # Required CI verifies vendor bytes as well as the existing commit evidence gate.
 ci: libsql-vendor-check libsql-vendor-test ci-gate
+
+# Run the current product CLI without coverage instrumentation.
+gossil *args:
+    jlog run cargo run --locked --bin gossil -- "$@"

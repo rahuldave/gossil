@@ -188,6 +188,8 @@ class LiteralWhitespacePolicy(DisposableGitTest):
                 "evidence/libsql-provider/adapted.patch",
                 "evidence/libsql-provider/fossil-configure.stdout",
                 "evidence/libsql-provider/product-red.stdout",
+                "docs/_extensions/atelier/fonts/dmsans-OFL.txt",
+                "docs/_extensions/atelier/fonts/ibmplexmono-OFL.txt",
             ]
             for name in literals:
                 path = root / name
@@ -200,6 +202,10 @@ class LiteralWhitespacePolicy(DisposableGitTest):
                 "ordinary.rs", "docs/ordinary.md", "scripts/ordinary.py", "config.toml",
                 "vendor/libsql-ffi-extra/file.c",
                 "evidence/libsql-provider/product-red.stdout.more",
+                "docs/_extensions/atelier/fonts/dmsans-OFL.txt.more",
+                "docs/_extensions/atelier/fonts/ibmplexmono-OFL.txt.more",
+                "docs/_extensions/atelier/fonts/ordinary.txt",
+                "docs/_extensions/atelier/fonts-extra/dmsans-OFL.txt",
             ]
             for name in ordinary:
                 path = root / name

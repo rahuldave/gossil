@@ -1,36 +1,69 @@
 project:
   type: website
   output-dir: _site
+  resources:
+    - libsql-provider.html
+    - libsql-import-boundary.html
 
 website:
-  title: Gossil development
+  title: Gossil
+  description: Rust library and CLI for Fossil delta bytes, artifacts and local storage
+  site-url: https://rahuldave.com/gossil/
+  repo-url: https://github.com/rahuldave/gossil
+  repo-subdir: docs
   page-navigation: true
   navbar:
     left:
-      - href: index.md
-        text: Home
-      - href: conformance.md
-        text: Inherited-test runner
-      - href: delta-encoder.md
-        text: Delta encoder
-      - href: delta-decoder.md
-        text: Delta decoder
-      - href: blob-primitives.md
-        text: Byte primitives
-      - href: artifact-checksum.md
-        text: Artifact checksums
-      - href: token-codec.md
-        text: Token byte escaping
-      - href: artifact-parser.md
-        text: Artifact parser
-      - href: local-storage.md
-        text: Local storage
-      - href: native-storage.md
-        text: Native local storage
-      - href: libsql-provider.md
-        text: Native date provider
+      - href: getting-started.md
+        text: Start
+      - href: concepts.md
+        text: Guides
+      - href: cli.md
+        text: CLI
+      - href: api/index.qmd
+        text: Rust API
       - href: development-plan.md
-        text: Development plan
+        text: Development
+    tools:
+      - icon: github
+        href: https://github.com/rahuldave/gossil
+  sidebar:
+    search: true
+    contents:
+      - index.md
+      - getting-started.md
+      - cli.md
+      - section: Guides
+        contents:
+          - concepts.md
+          - examples.md
+          - delta-encoder.md
+          - delta-decoder.md
+          - blob-primitives.md
+          - artifact-checksum.md
+          - token-codec.md
+          - artifact-parser.md
+          - local-storage.md
+          - native-storage.md
+      - section: Rust API
+        href: api/index.qmd
+        contents:
+          - auto: "api/**"
+      - section: Development
+        contents:
+          - development-plan.md
+          - conformance.md
 
+# Installed from the canonical repository; exact revision and licenses ship in the extension.
+theme: atelier
 toc: true
 code-copy: true
+search: true
+
+api:
+  language: rust
+  manifest: ../Cargo.toml
+  toolchain: nightly-2026-11-12
+  root: ..
+  source: https://github.com/rahuldave/gossil/blob/main
+  out: api

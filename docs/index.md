@@ -1,73 +1,36 @@
 ---
-title: Gossil development
+title: Gossil
 ---
 
-Gossil is planned as a Rust library and application for versioned agentic
-project state. It combines Fossil version control with Gest task management.
-Fossil is a distributed version-control system. Gest tracks issues and tasks.
-Planned records include tasks, shared issues and private agent traces.
-Git remains the source-code authority in the first release.
+Gossil aims to keep agent work, issues and file history together alongside Git.
+This build exposes a Rust library for Fossil delta bytes, artifact parsing and
+local storage. The `gossil` command creates, applies and checks deltas between
+files without a version-control checkout.
 
-This checkout contains a bounded Fossil delta encoder and decoder, their
-`gossil vcs` diagnostics and a runner for inherited Fossil Tcl tests.
-It also composes byte primitives, legacy artifact checksums, token byte escaping
-and owned local libSQL transactions. It includes bounded structural artifact
-parsing, complete empty-root initialization and bounded private content storage.
-File-containing check-ins, Gest integration and the remaining Fossil mechanisms
-remain planned work.
+Start with a [file round trip](getting-started.md), browse the
+[CLI reference](cli.md), or use the [Rust API reference](api/index.qmd).
+The [examples](examples.md) show library calls for deltas, compressed bytes,
+hashes and token escaping.
 
-- [Delta encoder](delta-encoder.md) explains creation, round-trip diagnostics
-  and the finite compatibility evidence.
-- [Delta decoder](delta-decoder.md) explains the library, diagnostic command,
-  preserved fixtures and compatibility limits.
-- [Inherited-test runner](conformance.md) explains prerequisites, configuration,
-  evidence and acceptance limits.
-- [Byte digests and packed blobs](blob-primitives.md) describes SHA1DC safe
-  hashes, thirteen SHA3 widths, decoding limits and native interoperability.
-- [Artifact byte checksums](artifact-checksum.md) explains bounded MD5 bytes,
-  owned incremental computations and finite reference checks.
-- [Token byte escaping](token-codec.md) describes bounded byte and C-string
-  behavior, fallible allocation and the finite native observations.
-- [Artifact parser](artifact-parser.md) describes the eight structural types,
-  explicit resource limits and selected-provider date tests.
-- [Local storage](local-storage.md) describes database lifecycle, exclusive
-  transactions and the private fixture that composes storage with byte primitives.
-- [Native local storage](native-storage.md) describes empty-root admission,
-  local owner authority, finite content budgets and rollback.
-- [libSQL source import boundary](libsql-import-boundary.md) records exact upstream
-  classifications and the controls required before importing the provider.
-- [Native date provider](libsql-provider.md) describes the pinned source,
-  integrity checks and limits of the private date regression.
-- [Development plan](development-plan.md) gives the delivery order, ownership
-  and local checkpoint workflow.
+## Choose a library module
 
-The product specification is in a local companion checkout at
-`~/Projects/AIProjectInfra/docs/gossil/README.md`. Reference experiment files
-are described by `evidence/baselines/README.md` at the repository root.
-The complete source and test mappings are described in
-`evidence/inventories/README.md`, including corrections to groups of related Fossil mechanisms and Git
-identities for every pinned path. `evidence/review-correction/checkpoint.json`
-records tests that reject malformed and duplicate result summaries.
+| Task | Guide |
+|---|---|
+| Create a delta from two byte slices | [Delta encoder](delta-encoder.md) |
+| Apply a delta with a size limit | [Delta decoder](delta-decoder.md) |
+| Compress bytes or compute a content hash | [Byte primitives](blob-primitives.md) |
+| Compute a legacy artifact checksum | [Artifact checksums](artifact-checksum.md) |
+| Escape bytes in Fossil tokens | [Token codec](token-codec.md) |
+| Parse structural artifact records | [Artifact parser](artifact-parser.md) |
+| Own a local database transaction | [Local storage](local-storage.md) |
+| Initialize an empty root or store private bytes | [Native storage](native-storage.md) |
 
-These archives are outside this documentation site. Open their paths from
-the root of the local checkout. Those historical results
-remain separate from runner controls and future Gossil compatibility.
-
-The local commands require Rust with Cargo, Git, Just and uv on `PATH`.
-See the runner guide for Tcl, Fossil and fresh-clone setup limits.
-Use `just docs-check` to check site links and API documentation, and
-`just docs-build` to render the site. `just docs` serves a local preview.
-
-The saved answer `docs-publish=yes` enables publication through
-`just docs-publish` with smalldocs 0.5.12. The main-only GitHub workflow
-uploads the built site and deploys it through GitHub Pages. Set the Pages
-source to GitHub Actions. The expected public site is
-[Gossil development](https://rahuldave.com/gossil/). A passing local build
-does not establish that deployment succeeded.
+The [concepts guide](concepts.md) explains how these modules fit together.
+Gossil is under development. General version-control commands, Gest task
+management, a server and a user interface remain planned.
+See [development](development-plan.md) for current limits and contribution steps.
 
 ## Recommendations
 
-Use the decoder guide for bounded delta application and the runner guide for
-inherited suites. Next, follow the [review workflow](development-plan.md#checkpoints-and-ownership)
-for the library's delta, byte, token and storage modules together.
-Retain the recorded qualification of `delta1`, the unchanged inherited Fossil delta test suite.
+Try the file round trip first. Next, choose a module guide and use the generated
+API reference for its exact types, methods and errors.

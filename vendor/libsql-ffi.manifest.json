@@ -1613,8 +1613,8 @@
       "sha256": "bf41011ed9136fe4f1819d4586ae84e6d37bad648c7a522193f8375d10cc476a"
     },
     ".gitattributes": {
-      "length": 1560,
-      "sha256": "0d405541e26152b4d808beca5375afa62a58a24819931b44fb474bba87e7d661"
+      "length": 1762,
+      "sha256": "1814b0f239e8d51a26b2ad7218e10bb88164643defe2deb8ebc949d91303dbd0"
     },
     "evidence/libsql-provider/product-whitespace-controls.stdin": {
       "length": 0,
@@ -1689,8 +1689,8 @@
       "sha256": "8a08bf79bec17ab6a9fa41d8a21c3bb83d0012ac6566257f99d79b968d090b67"
     },
     "tests/test_libsql_vendor.py": {
-      "length": 16638,
-      "sha256": "bc07e9744fe6c1af4f6e141113229173263ff05f6f1296f7e8c73fae2613ac79"
+      "length": 17052,
+      "sha256": "6dd134e6b263e4bb11886fe9d53ca1f19edcc9e1a3c65238add2e1cf7aef9b96"
     },
     "evidence/libsql-provider/reader-policy-green.txt": {
       "length": 2578,
