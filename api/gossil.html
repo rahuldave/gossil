@@ -1,0 +1,699 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="generator" content="smalldocs-0.5.12"><meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes"><meta name="description" content="Run inherited Fossil tests with bounded byte primitives and owned local storage."><title>gossil – Gossil</title><link rel="icon" href="../site_libs/themes/atelier/logo.svg"><link rel="stylesheet" href="../site_libs/themes/atelier/atelier.css" data-mode="light" class="quarto-color-scheme" id="quarto-bootstrap-light" media="not all and (prefers-color-scheme: dark)"><link rel="stylesheet" href="../site_libs/themes/atelier/atelier-dark.css" data-mode="dark" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap-dark" media="(prefers-color-scheme: dark)"><link rel="stylesheet" href="../site_libs/bootstrap-icons/bootstrap-icons.min.css"><link rel="stylesheet" href="../site_libs/smalldocs.css"><meta name="smalldocs:offset" content="../"><script src="../site_libs/bootstrap/bootstrap.bundle.min.js"></script><script src="../site_libs/fuse/fuse.min.js"></script><script src="../site_libs/smalldocs.js" defer></script><script>(function(){var d=document.documentElement,s=null;try{s=localStorage.getItem('smalldocs-scheme')}catch(e){}var alt=s?s==='alternate':!!(window.matchMedia&&matchMedia('(prefers-color-scheme: dark)').matches);var ls=document.querySelectorAll('link.quarto-color-scheme');if(alt)d.dataset.scheme='alternate';if(s)ls.forEach(function(l){var on=l.classList.contains('quarto-color-alternate')===alt;if(on)l.setAttribute('blocking','render');l.media=on?'all':'not all'});var on=ls[alt?1:0];if(on&&on.dataset.mode==='dark')d.classList.add('quarto-dark')})();</script></head><body class="nav-sidebar floating nav-fixed"><header id="quarto-header" class="headroom sticky-top"><nav class="navbar navbar-expand-lg sd-navbar-default"><div class="navbar-container container-fluid"><div class="navbar-brand-container mx-auto"><a class="navbar-brand" href="../index.html"><span class="navbar-title">Gossil</span></a></div><button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button><div class="collapse navbar-collapse" id="navbarCollapse"><ul class="navbar-nav navbar-nav-scroll me-auto"><li class="nav-item"><a class="nav-link" href="../getting-started.html"><span class="menu-text">Start</span></a></li><li class="nav-item"><a class="nav-link" href="../concepts.html"><span class="menu-text">Guides</span></a></li><li class="nav-item"><a class="nav-link" href="../cli.html"><span class="menu-text">CLI</span></a></li><li class="nav-item"><a class="nav-link" href="index.html"><span class="menu-text">Rust API</span></a></li><li class="nav-item"><a class="nav-link" href="../development-plan.html"><span class="menu-text">Development</span></a></li></ul><ul class="navbar-nav navbar-nav-scroll ms-auto"><li class="nav-item compact"><a class="nav-link" href="https://github.com/rahuldave/gossil" aria-label="github"><i class="bi bi-github" role="img"></i></a></li><li class="nav-item compact"><a class="quarto-color-scheme-toggle nav-link" href="" title="Toggle dark mode" onclick="window.smalldocsToggleScheme(); return false;"><i class="bi"></i></a></li></ul><div class="quarto-navbar-tools"><div class="smalldocs-search" id="quarto-search"><i class="bi bi-search" aria-hidden="true"></i><input type="search" class="form-control form-control-sm" placeholder="Search" aria-label="Search" autocomplete="off"><div class="smalldocs-search-results dropdown-menu"></div></div></div></div></div></nav><nav class="quarto-secondary-nav"><div class="container-fluid d-flex"><button type="button" class="quarto-btn-toggle btn" aria-controls="quarto-sidebar" aria-label="Toggle sidebar navigation"><i class="bi bi-layout-text-sidebar-reverse"></i></button><nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="index.html">Rust API</a></li><li class="breadcrumb-item"><a href="gossil.html">gossil</a></li></ol></nav></div></nav></header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article has-sidebar has-margin"><nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto"><div class="sidebar-menu-container"><ul class="list-unstyled mt-1"><li class="sidebar-item"><div class="sidebar-item-container"><a href="../index.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Gossil</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="../getting-started.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Get started</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="../cli.html" class="sidebar-item-text sidebar-link"><span class="menu-text">CLI reference</span></a></div></li><li class="sidebar-item sidebar-item-section"><div class="sidebar-item-container"><a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true"><span class="menu-text">Guides</span></a><a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section"><i class="bi bi-chevron-right ms-2"></i></a></div><ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show"><li class="sidebar-item"><div class="sidebar-item-container"><a href="../concepts.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Library concepts</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="../examples.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Rust library examples</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="../delta-encoder.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Bounded delta encoder</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="../delta-decoder.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Bounded delta decoder</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="../blob-primitives.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Byte digests and packed blobs</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="../artifact-checksum.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Artifact byte checksums</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="../token-codec.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Fossil token bytes</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="../artifact-parser.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Artifact parser</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="../local-storage.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Local database ownership</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="../native-storage.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Native local storage</span></a></div></li></ul></li><li class="sidebar-item sidebar-item-section"><div class="sidebar-item-container"><a class="sidebar-item-text sidebar-link" href="index.html"><span class="menu-text">Rust API</span></a><a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Toggle section"><i class="bi bi-chevron-right ms-2"></i></a></div><ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show"><li class="sidebar-item"><div class="sidebar-item-container"><a href="artifact.html" class="sidebar-item-text sidebar-link"><span class="menu-text">artifact</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="artifact_checksum.html" class="sidebar-item-text sidebar-link"><span class="menu-text">artifact_checksum</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="compression.html" class="sidebar-item-text sidebar-link"><span class="menu-text">compression</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="content_hash.html" class="sidebar-item-text sidebar-link"><span class="menu-text">content_hash</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="delta.html" class="sidebar-item-text sidebar-link"><span class="menu-text">delta</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="gossil.html" class="sidebar-item-text sidebar-link active" aria-current="page"><span class="menu-text">gossil</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="storage.html" class="sidebar-item-text sidebar-link"><span class="menu-text">storage</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="token_codec.html" class="sidebar-item-text sidebar-link"><span class="menu-text">token_codec</span></a></div></li></ul></li><li class="sidebar-item sidebar-item-section"><div class="sidebar-item-container"><a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true"><span class="menu-text">Development</span></a><a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true" aria-label="Toggle section"><i class="bi bi-chevron-right ms-2"></i></a></div><ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show"><li class="sidebar-item"><div class="sidebar-item-container"><a href="../development-plan.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Development and contributing</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="../conformance.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Inherited-test runner</span></a></div></li></ul></li></ul></div></nav><div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item"></div><div id="quarto-margin-sidebar" class="sidebar margin-sidebar"><nav id="TOC" role="doc-toc" class="toc-active"><h2 id="toc-title">On this page</h2><ul><li><a href="#InvocationId" id="toc-InvocationId" class="nav-link" data-scroll-target="#InvocationId">struct InvocationId</a></li><li><a href="#InvocationPlan" id="toc-InvocationPlan" class="nav-link" data-scroll-target="#InvocationPlan">struct InvocationPlan</a></li><li><a href="#PlanPin" id="toc-PlanPin" class="nav-link" data-scroll-target="#PlanPin">struct PlanPin</a></li><li><a href="#PlanRow" id="toc-PlanRow" class="nav-link" data-scroll-target="#PlanRow">struct PlanRow</a></li><li><a href="#Position" id="toc-Position" class="nav-link" data-scroll-target="#Position">enum Position</a></li><li><a href="#RunnerError" id="toc-RunnerError" class="nav-link" data-scroll-target="#RunnerError">enum RunnerError</a></li><li><a href="#Assertion" id="toc-Assertion" class="nav-link" data-scroll-target="#Assertion">struct Assertion</a></li><li><a href="#Report" id="toc-Report" class="nav-link" data-scroll-target="#Report">struct Report</a></li><li><a href="#parse_report" id="toc-parse_report" class="nav-link" data-scroll-target="#parse_report">fn parse_report</a></li><li><a href="#validate_report" id="toc-validate_report" class="nav-link" data-scroll-target="#validate_report">fn validate_report</a></li><li><a href="#Config" id="toc-Config" class="nav-link" data-scroll-target="#Config">struct Config</a></li><li><a href="#Run" id="toc-Run" class="nav-link" data-scroll-target="#Run">struct Run</a></li><li><a href="#execute" id="toc-execute" class="nav-link" data-scroll-target="#execute">fn execute</a></li><li><a href="#cli" id="toc-cli" class="nav-link" data-scroll-target="#cli">fn cli</a></li></ul></nav></div><main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="index.html">Rust API</a></li><li class="breadcrumb-item"><a href="gossil.html">gossil</a></li></ol></nav><div class="quarto-title"><h1 class="title">gossil</h1></div><div><div class="description">Run inherited Fossil tests with bounded byte primitives and owned local storage.</div></div><div class="quarto-title-meta"></div></header><div class="sd-table">
+<table class="caption-top table">
+<thead>
+<tr>
+<th>Name</th>
+<th>Summary</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="compression.html"><code>compression</code></a></td>
+<td>Pack and unpack Fossil blobs with bounded zlib operations. Pack and unpack Fossil’s four-byte big-endian capacity and zlib stream.</td>
+</tr>
+<tr>
+<td><a href="content_hash.html"><code>content_hash</code></a></td>
+<td>Compute Fossil byte digests independently of repository hash policy. Compute Fossil byte digests independently of repository hash policy.</td>
+</tr>
+<tr>
+<td><a href="delta.html"><code>delta</code></a></td>
+<td>Create and apply bounded Fossil deltas; application leaves checksum verification disabled.</td>
+</tr>
+<tr>
+<td><a href="storage.html"><code>storage</code></a></td>
+<td>Own local database connections and exclusive write boundaries. Sole-connection local storage. File opens verify WAL, foreign keys, FULL and 5000 ms. Unexpected owner destruction poisons the store and closes its connection. Local SQL blocks its current poll; cancellation after COMMIT cannot undo it.</td>
+</tr>
+<tr>
+<td><a href="token_codec.html"><code>token_codec</code></a></td>
+<td>Encode and decode Fossil token bytes. Encode and decode Fossil token bytes without text conversion.</td>
+</tr>
+<tr>
+<td><a href="artifact.html"><code>artifact</code></a></td>
+<td>Parse structural artifacts with explicit resource limits. Parse bounded structural artifacts with an explicit date provider.</td>
+</tr>
+<tr>
+<td><a href="artifact_checksum.html"><code>artifact_checksum</code></a></td>
+<td>Compute legacy Fossil artifact checksums over bytes. Compute legacy MD5 checksums for Fossil artifact bytes, separate from content identity.</td>
+</tr>
+</tbody>
+</table>
+</div>
+<section id="InvocationId" class="level2">
+<h2 class="anchored" data-anchor-id="InvocationId">struct InvocationId</h2>
+<p><a href="https://github.com/rahuldave/gossil/blob/main/src/invocation.rs#L32" class="source-link">source</a></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span class="kw">pub</span> <span class="kw">struct</span> InvocationId</code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Portable expected source correspondence, not an observed trace identity.</p>
+<div class="sd-table">
+<table class="caption-top table">
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>suite</code></td>
+<td>String</td>
+<td>Original suite basename.</td>
+</tr>
+<tr>
+<td><code>position</code></td>
+<td>Position</td>
+<td>Structured identity within that suite.</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Implements <a href="https://doc.rust-lang.org/nightly/core/fmt/trait.Debug.html"><code>Debug</code></a>, <a href="https://doc.rust-lang.org/nightly/core/clone/trait.Clone.html"><code>Clone</code></a>, <a href="https://doc.rust-lang.org/nightly/core/cmp/trait.PartialEq.html"><code>PartialEq</code></a>, <a href="https://doc.rust-lang.org/nightly/core/cmp/trait.Eq.html"><code>Eq</code></a>, <a href="https://doc.rust-lang.org/nightly/core/cmp/trait.PartialOrd.html"><code>PartialOrd</code></a>, <a href="https://doc.rust-lang.org/nightly/core/cmp/trait.Ord.html"><code>Ord</code></a>, <a href="https://docs.rs/serde_core/1.0.229/serde_core/ser/trait.Serialize.html"><code>Serialize</code></a>, <a href="https://docs.rs/serde_core/1.0.229/serde_core/de/trait.Deserialize.html"><code>Deserialize&lt;&#x27;de&gt;</code></a>.</p>
+</section>
+<section id="InvocationPlan" class="level2">
+<h2 class="anchored" data-anchor-id="InvocationPlan">struct InvocationPlan</h2>
+<p><a href="https://github.com/rahuldave/gossil/blob/main/src/invocation.rs#L71" class="source-link">source</a></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span class="kw">pub</span> <span class="kw">struct</span> InvocationPlan</code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Complete ordered plan bound to upstream source, suite and original corpus bytes.</p>
+<div class="sd-table">
+<table class="caption-top table">
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>schema</code></td>
+<td>String</td>
+<td>Supported identity schema namespace.</td>
+</tr>
+<tr>
+<td><code>suite</code></td>
+<td>String</td>
+<td>Exact configured upstream suite.</td>
+</tr>
+<tr>
+<td><code>revision</code></td>
+<td>String</td>
+<td>Exact configured upstream source revision.</td>
+</tr>
+<tr>
+<td><code>suite_sha256</code></td>
+<td>String</td>
+<td>Expected original suite bytes.</td>
+</tr>
+<tr>
+<td><code>corpus_manifest_sha256</code></td>
+<td>String</td>
+<td>Expected original corpus manifest bytes.</td>
+</tr>
+<tr>
+<td><code>rows</code></td>
+<td>Vec&lt;PlanRow&gt;</td>
+<td>Every invocation, including unique names and framework assertions, in order.</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Implements <a href="https://doc.rust-lang.org/nightly/core/fmt/trait.Debug.html"><code>Debug</code></a>, <a href="https://docs.rs/serde_core/1.0.229/serde_core/ser/trait.Serialize.html"><code>Serialize</code></a>, <a href="https://docs.rs/serde_core/1.0.229/serde_core/de/trait.Deserialize.html"><code>Deserialize&lt;&#x27;de&gt;</code></a>.</p>
+</section>
+<section id="PlanPin" class="level2">
+<h2 class="anchored" data-anchor-id="PlanPin">struct PlanPin</h2>
+<p><a href="https://github.com/rahuldave/gossil/blob/main/src/invocation.rs#L14" class="source-link">source</a></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span class="kw">pub</span> <span class="kw">struct</span> PlanPin</code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Expected hash and physical bindings for one optional complete plan.</p>
+<div class="sd-table">
+<table class="caption-top table">
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>path</code></td>
+<td>PathBuf</td>
+<td>Absolute path of the plan JSON.</td>
+</tr>
+<tr>
+<td><code>sha256</code></td>
+<td>String</td>
+<td>Expected SHA-256 of those exact bytes.</td>
+</tr>
+<tr>
+<td><code>expected_invocations</code></td>
+<td>usize</td>
+<td>Expected full row count; a setup check, not proof of source correspondence.</td>
+</tr>
+<tr>
+<td><code>corpus_manifest</code></td>
+<td>PathBuf</td>
+<td>Absolute path of the original corpus manifest JSON.</td>
+</tr>
+<tr>
+<td><code>corpus_manifest_sha256</code></td>
+<td>String</td>
+<td>Expected SHA-256 of the manifest bytes.</td>
+</tr>
+<tr>
+<td><code>corpus_root</code></td>
+<td>PathBuf</td>
+<td>Physical root used to resolve portable corpus paths.</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Implements <a href="https://doc.rust-lang.org/nightly/core/fmt/trait.Debug.html"><code>Debug</code></a>, <a href="https://docs.rs/serde_core/1.0.229/serde_core/ser/trait.Serialize.html"><code>Serialize</code></a>, <a href="https://docs.rs/serde_core/1.0.229/serde_core/de/trait.Deserialize.html"><code>Deserialize&lt;&#x27;de&gt;</code></a>.</p>
+</section>
+<section id="PlanRow" class="level2">
+<h2 class="anchored" data-anchor-id="PlanRow">struct PlanRow</h2>
+<p><a href="https://github.com/rahuldave/gossil/blob/main/src/invocation.rs#L62" class="source-link">source</a></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span class="kw">pub</span> <span class="kw">struct</span> PlanRow</code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>One expected original assertion name and portable source correspondence.</p>
+<div class="sd-table">
+<table class="caption-top table">
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>name</code></td>
+<td>String</td>
+<td>Original upstream assertion name.</td>
+</tr>
+<tr>
+<td><code>id</code></td>
+<td>InvocationId</td>
+<td>Expected source-derived invocation identity.</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Implements <a href="https://doc.rust-lang.org/nightly/core/fmt/trait.Debug.html"><code>Debug</code></a>, <a href="https://doc.rust-lang.org/nightly/core/clone/trait.Clone.html"><code>Clone</code></a>, <a href="https://docs.rs/serde_core/1.0.229/serde_core/ser/trait.Serialize.html"><code>Serialize</code></a>, <a href="https://docs.rs/serde_core/1.0.229/serde_core/de/trait.Deserialize.html"><code>Deserialize&lt;&#x27;de&gt;</code></a>.</p>
+</section>
+<section id="Position" class="level2">
+<h2 class="anchored" data-anchor-id="Position">enum Position</h2>
+<p><a href="https://github.com/rahuldave/gossil/blob/main/src/invocation.rs#L41" class="source-link">source</a></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span class="kw">pub</span> <span class="kw">enum</span> Position</code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Source-derived identity parameters within the versioned plan namespace.</p>
+<div class="sd-table">
+<table class="caption-top table">
+<thead>
+<tr>
+<th>Variant</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Corpus { source: String, iteration: u32, slot: u32 }</code></td>
+<td>One corpus mutation invocation.</td>
+</tr>
+<tr>
+<td><code>Empty { index: u32 }</code></td>
+<td>One explicit empty-input control.</td>
+</tr>
+<tr>
+<td><code>Framework</code></td>
+<td>The final upstream framework assertion.</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Implements <a href="https://doc.rust-lang.org/nightly/core/fmt/trait.Debug.html"><code>Debug</code></a>, <a href="https://doc.rust-lang.org/nightly/core/clone/trait.Clone.html"><code>Clone</code></a>, <a href="https://doc.rust-lang.org/nightly/core/cmp/trait.PartialEq.html"><code>PartialEq</code></a>, <a href="https://doc.rust-lang.org/nightly/core/cmp/trait.Eq.html"><code>Eq</code></a>, <a href="https://doc.rust-lang.org/nightly/core/cmp/trait.PartialOrd.html"><code>PartialOrd</code></a>, <a href="https://doc.rust-lang.org/nightly/core/cmp/trait.Ord.html"><code>Ord</code></a>, <a href="https://docs.rs/serde_core/1.0.229/serde_core/ser/trait.Serialize.html"><code>Serialize</code></a>, <a href="https://docs.rs/serde_core/1.0.229/serde_core/de/trait.Deserialize.html"><code>Deserialize&lt;&#x27;de&gt;</code></a>.</p>
+</section>
+<section id="RunnerError" class="level2">
+<h2 class="anchored" data-anchor-id="RunnerError">enum RunnerError</h2>
+<p><a href="https://github.com/rahuldave/gossil/blob/main/src/lib.rs#L99" class="source-link">source</a></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span class="kw">pub</span> <span class="kw">enum</span> RunnerError</code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>A preserved setup, configuration or I/O failure, distinct from failed assertions.</p>
+<div class="sd-table">
+<table class="caption-top table">
+<thead>
+<tr>
+<th>Variant</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Io(std::io::Error)</code></td>
+<td>Underlying filesystem or process error.</td>
+</tr>
+<tr>
+<td><code>Json(serde_json::Error)</code></td>
+<td>Invalid JSON configuration or report serialization.</td>
+</tr>
+<tr>
+<td><code>Invalid(&amp;&#x27;static str)</code></td>
+<td>Invalid configuration or incomplete assertion report.</td>
+</tr>
+<tr>
+<td><code>NotExecutable(PathBuf)</code></td>
+<td>Explicit input is not an executable regular file.</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Implements <a href="https://doc.rust-lang.org/nightly/core/fmt/trait.Debug.html"><code>Debug</code></a>, <a href="https://doc.rust-lang.org/nightly/core/convert/trait.From.html"><code>From&lt;Error&gt;</code></a>, <a href="https://doc.rust-lang.org/nightly/core/fmt/trait.Display.html"><code>Display</code></a>, <a href="https://doc.rust-lang.org/nightly/core/error/trait.Error.html"><code>Error</code></a>.</p>
+</section>
+<section id="Assertion" class="level2">
+<h2 class="anchored" data-anchor-id="Assertion">struct Assertion</h2>
+<p><a href="https://github.com/rahuldave/gossil/blob/main/src/lib.rs#L145" class="source-link">source</a></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span class="kw">pub</span> <span class="kw">struct</span> Assertion</code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>One unchanged upstream assertion.</p>
+<div class="sd-table">
+<table class="caption-top table">
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>name</code></td>
+<td>String</td>
+<td>Original assertion name, including spaces.</td>
+</tr>
+<tr>
+<td><code>state</code></td>
+<td>String</td>
+<td>The status <code>pass</code> or <code>fail</code>. Only <code>pass</code> contributes to passing totals.</td>
+</tr>
+<tr>
+<td><code>known_bug</code></td>
+<td>bool</td>
+<td>Upstream <code>knownBug</code> annotation, retained independently from acceptance status.</td>
+</tr>
+<tr>
+<td><code>framework</code></td>
+<td>bool</td>
+<td>Synthetic framework assertion, separate from real suite assertions.</td>
+</tr>
+<tr>
+<td><code>expected_invocation_id</code></td>
+<td>Option&lt;InvocationId&gt;</td>
+<td>Expected source-derived identity assigned only after exact plan matching.</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Implements <a href="https://doc.rust-lang.org/nightly/core/fmt/trait.Debug.html"><code>Debug</code></a>, <a href="https://docs.rs/serde_core/1.0.229/serde_core/ser/trait.Serialize.html"><code>Serialize</code></a>, <a href="https://docs.rs/serde_core/1.0.229/serde_core/de/trait.Deserialize.html"><code>Deserialize&lt;&#x27;de&gt;</code></a>.</p>
+</section>
+<section id="Report" class="level2">
+<h2 class="anchored" data-anchor-id="Report">struct Report</h2>
+<p><a href="https://github.com/rahuldave/gossil/blob/main/src/lib.rs#L160" class="source-link">source</a></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span class="kw">pub</span> <span class="kw">struct</span> Report</code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Individual results and independently reported upstream totals.</p>
+<div class="sd-table">
+<table class="caption-top table">
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>assertions</code></td>
+<td>Vec&lt;Assertion&gt;</td>
+<td>Assertions in execution order.</td>
+</tr>
+<tr>
+<td><code>errors</code></td>
+<td>Option&lt;usize&gt;</td>
+<td>Upstream error count; absent for truncated or disabled drivers.</td>
+</tr>
+<tr>
+<td><code>total</code></td>
+<td>Option&lt;usize&gt;</td>
+<td>Upstream assertion count, including framework checks.</td>
+</tr>
+<tr>
+<td><code>summary_count</code></td>
+<td>usize</td>
+<td>Every observed final-summary occurrence, including malformed numeric fields.</td>
+</tr>
+<tr>
+<td><code>malformed</code></td>
+<td>bool</td>
+<td>Malformed or duplicate records invalidate the run.</td>
+</tr>
+<tr>
+<td><code>skipped</code></td>
+<td>Vec&lt;String&gt;</td>
+<td>Unmodified upstream skipped-test summaries, never counted as passing.</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Implements <a href="https://doc.rust-lang.org/nightly/core/fmt/trait.Debug.html"><code>Debug</code></a>, <a href="https://doc.rust-lang.org/nightly/core/default/trait.Default.html"><code>Default</code></a>, <a href="https://docs.rs/serde_core/1.0.229/serde_core/ser/trait.Serialize.html"><code>Serialize</code></a>, <a href="https://docs.rs/serde_core/1.0.229/serde_core/de/trait.Deserialize.html"><code>Deserialize&lt;&#x27;de&gt;</code></a>.</p>
+</section>
+<section id="parse_report" class="level2">
+<h2 class="anchored" data-anchor-id="parse_report">fn parse_report</h2>
+<p><a href="https://github.com/rahuldave/gossil/blob/main/src/lib.rs#L189" class="source-link">source</a></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span class="kw">pub</span> <span class="kw">fn</span> <span class="fu">parse_report</span>(text: <span class="kw">&amp;</span><span class="dt">str</span>) -&gt; Report</code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Parse exact Fossil driver output.</p>
+<p>Every final-summary occurrence counts, even if its numeric fields are invalid.
+Nonnumeric or overflowing counts and duplicate summaries permanently mark
+the report malformed. Call <a href="gossil.html#validate_report"><code>validate_report</code></a> before accepting it.</p>
+<section id="examples" class="level4">
+<h4 class="anchored" data-anchor-id="examples">Examples</h4>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span class="kw">let</span> report <span class="op">=</span> gossil::parse_report(<span class="st">&quot;</span><span class="st">test example OK</span><span class="sc">\n</span><span class="st">***** Final results: 0 errors out of 1 tests</span><span class="sc">\n</span><span class="st">&quot;</span>);
+<span class="fu">assert_eq!</span>(report.assertions[<span class="dv">0</span>].name, <span class="st">&quot;</span><span class="st">example</span><span class="st">&quot;</span>);
+<span class="fu">assert!</span>(gossil::validate_report(<span class="op">&amp;</span>report, <span class="bu">Some</span>(<span class="dv">0</span>)).is_ok());</code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="sd-table">
+<table class="caption-top table">
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>text</code></td>
+<td>&amp;str</td>
+<td>Captured process output.</td>
+</tr>
+<tr>
+<td>returns</td>
+<td>Report</td>
+<td>Individual results and totals, requiring separate validation.</td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+</section>
+<section id="validate_report" class="level2">
+<h2 class="anchored" data-anchor-id="validate_report">fn validate_report</h2>
+<p><a href="https://github.com/rahuldave/gossil/blob/main/src/lib.rs#L289" class="source-link">source</a></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb11"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span class="kw">pub</span> <span class="kw">fn</span> <span class="fu">validate_report</span>(report: <span class="kw">&amp;</span>Report, exit_code: <span class="bu">Option</span><span class="op">&lt;</span><span class="dt">i32</span><span class="op">&gt;</span>) -&gt; <span class="bu">Result</span><span class="op">&lt;</span>(), RunnerError<span class="op">&gt;</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Validate execution, real assertions and exact count reconciliation.</p>
+<section id="errors" class="level4">
+<h4 class="anchored" data-anchor-id="errors">Errors</h4>
+<p>Returns <a href="gossil.html#RunnerError"><code>RunnerError::Invalid</code></a> for a nonzero or absent exit code, malformed
+output, missing or inconsistent counts, skips, failed assertions or no real assertion.</p>
+</section>
+<section id="examples-1" class="level4">
+<h4 class="anchored" data-anchor-id="examples-1">Examples</h4>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb12"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span class="kw">let</span> report <span class="op">=</span> gossil::parse_report(<span class="st">&quot;</span><span class="st">Ok</span><span class="sc">\n</span><span class="st">&quot;</span>);
+<span class="fu">assert!</span>(gossil::validate_report(<span class="op">&amp;</span>report, <span class="bu">Some</span>(<span class="dv">0</span>)).is_err());</code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="sd-table">
+<table class="caption-top table">
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>report</code></td>
+<td>&amp;Report</td>
+<td>Parsed assertions and totals.</td>
+</tr>
+<tr>
+<td><code>exit_code</code></td>
+<td>Option&lt;i32&gt;</td>
+<td>Actual process exit status, absent for a signal.</td>
+</tr>
+<tr>
+<td>returns</td>
+<td>Result&lt;(), RunnerError&gt;</td>
+<td>Success only when real assertions pass and all totals reconcile.</td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+</section>
+<section id="Config" class="level2">
+<h2 class="anchored" data-anchor-id="Config">struct Config</h2>
+<p><a href="https://github.com/rahuldave/gossil/blob/main/src/lib.rs#L306" class="source-link">source</a></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb13"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span class="kw">pub</span> <span class="kw">struct</span> Config</code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Explicit pinned inputs for one reference or candidate run, with no fallback.</p>
+<div class="sd-table">
+<table class="caption-top table">
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>role</code></td>
+<td>String</td>
+<td>reference or candidate; never an overall compatibility claim.</td>
+</tr>
+<tr>
+<td><code>revision</code></td>
+<td>String</td>
+<td>Pinned upstream source revision.</td>
+</tr>
+<tr>
+<td><code>tcl</code></td>
+<td>PathBuf</td>
+<td>Explicit Tcl executable.</td>
+</tr>
+<tr>
+<td><code>driver</code></td>
+<td>PathBuf</td>
+<td>Separately patched <code>tester.tcl</code>.</td>
+</tr>
+<tr>
+<td><code>executable</code></td>
+<td>PathBuf</td>
+<td>Explicit program under test.</td>
+</tr>
+<tr>
+<td><code>suite</code></td>
+<td>String</td>
+<td>One suite basename.</td>
+</tr>
+<tr>
+<td><code>run_dir</code></td>
+<td>PathBuf</td>
+<td>New owned directory; existing directories are refused.</td>
+</tr>
+<tr>
+<td><code>timeout_ms</code></td>
+<td>u64</td>
+<td>Driver deadline in milliseconds.</td>
+</tr>
+<tr>
+<td><code>seed</code></td>
+<td>u32</td>
+<td>Deterministic Tcl random seed.</td>
+</tr>
+<tr>
+<td><code>inputs</code></td>
+<td>Vec&lt;PathBuf&gt;</td>
+<td>Pristine source, fixture and patch inputs recorded by SHA-256.</td>
+</tr>
+<tr>
+<td><code>capabilities</code></td>
+<td>BTreeMap&lt;String, String&gt;</td>
+<td>Explicit build capabilities.</td>
+</tr>
+<tr>
+<td><code>invocation_plan</code></td>
+<td>Option&lt;PlanPin&gt;</td>
+<td>Optional expected-hash pin for a complete ordered invocation plan.</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Implements <a href="https://doc.rust-lang.org/nightly/core/fmt/trait.Debug.html"><code>Debug</code></a>, <a href="https://docs.rs/serde_core/1.0.229/serde_core/ser/trait.Serialize.html"><code>Serialize</code></a>, <a href="https://docs.rs/serde_core/1.0.229/serde_core/de/trait.Deserialize.html"><code>Deserialize&lt;&#x27;de&gt;</code></a>.</p>
+</section>
+<section id="Run" class="level2">
+<h2 class="anchored" data-anchor-id="Run">struct Run</h2>
+<p><a href="https://github.com/rahuldave/gossil/blob/main/src/lib.rs#L335" class="source-link">source</a></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb14"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span class="kw">pub</span> <span class="kw">struct</span> Run</code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Durable run evidence with exact command and isolated environment additions.</p>
+<div class="sd-table">
+<table class="caption-top table">
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>config</code></td>
+<td>Config</td>
+<td>Complete invocation configuration.</td>
+</tr>
+<tr>
+<td><code>hashes</code></td>
+<td>BTreeMap&lt;String, String&gt;</td>
+<td>Exact configured source, fixture and patch hashes.</td>
+</tr>
+<tr>
+<td><code>command</code></td>
+<td>Vec&lt;String&gt;</td>
+<td>Argument vector without shell interpretation.</td>
+</tr>
+<tr>
+<td><code>environment</code></td>
+<td>BTreeMap&lt;String, String&gt;</td>
+<td>Environment additions overriding personal state.</td>
+</tr>
+<tr>
+<td><code>exit_code</code></td>
+<td>Option&lt;i32&gt;</td>
+<td>Driver exit status; absent after a signal.</td>
+</tr>
+<tr>
+<td><code>timed_out</code></td>
+<td>bool</td>
+<td>Whether the owned process group exceeded its deadline.</td>
+</tr>
+<tr>
+<td><code>stdout</code></td>
+<td>String</td>
+<td>Decoded stdout view; exact bytes remain in stdout.log.</td>
+</tr>
+<tr>
+<td><code>stderr</code></td>
+<td>String</td>
+<td>Decoded stderr view; exact bytes remain in stderr.log.</td>
+</tr>
+<tr>
+<td><code>output_utf8</code></td>
+<td>bool</td>
+<td>Whether both output streams are valid UTF-8; invalid bytes reject acceptance.</td>
+</tr>
+<tr>
+<td><code>stdout_sha256</code></td>
+<td>String</td>
+<td>Hash binding the retained stdout.log bytes.</td>
+</tr>
+<tr>
+<td><code>stderr_sha256</code></td>
+<td>String</td>
+<td>Hash binding the retained stderr.log bytes.</td>
+</tr>
+<tr>
+<td><code>report</code></td>
+<td>Report</td>
+<td>Individual assertion results.</td>
+</tr>
+<tr>
+<td><code>invocation_plan</code></td>
+<td>Option&lt;InvocationPlan&gt;</td>
+<td>Complete verified plan retained with every original row and identity.</td>
+</tr>
+<tr>
+<td><code>accepted</code></td>
+<td>bool</td>
+<td>Strict acceptance of this suite alone.</td>
+</tr>
+<tr>
+<td><code>status</code></td>
+<td>String</td>
+<td>pass, fail, blocked, or not-run for this invocation.</td>
+</tr>
+<tr>
+<td><code>cleanup</code></td>
+<td>String</td>
+<td>Whether cleanup signaled the owned group or found no signalable members.</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Implements <a href="https://doc.rust-lang.org/nightly/core/fmt/trait.Debug.html"><code>Debug</code></a>, <a href="https://docs.rs/serde_core/1.0.229/serde_core/ser/trait.Serialize.html"><code>Serialize</code></a>, <a href="https://docs.rs/serde_core/1.0.229/serde_core/de/trait.Deserialize.html"><code>Deserialize&lt;&#x27;de&gt;</code></a>.</p>
+</section>
+<section id="execute" class="level2">
+<h2 class="anchored" data-anchor-id="execute">fn execute</h2>
+<p><a href="https://github.com/rahuldave/gossil/blob/main/src/lib.rs#L419" class="source-link">source</a></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb15"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span class="kw">pub</span> <span class="kw">fn</span> <span class="fu">execute</span>(config: Config) -&gt; <span class="bu">Result</span><span class="op">&lt;</span>Run, RunnerError<span class="op">&gt;</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Run one inherited suite in fresh scratch storage and persist <code>report.json</code>.</p>
+<section id="errors-1" class="level4">
+<h4 class="anchored" data-anchor-id="errors-1">Errors</h4>
+<p>Returns <a href="gossil.html#RunnerError"><code>RunnerError::Invalid</code></a> for invalid configuration or unsafe process ownership,
+<a href="gossil.html#RunnerError"><code>RunnerError::NotExecutable</code></a> for an unsuitable executable, <a href="gossil.html#RunnerError"><code>RunnerError::Io</code></a>
+for filesystem or process failures, or <a href="gossil.html#RunnerError"><code>RunnerError::Json</code></a> for serialization failures.
+A rejected suite normally returns a <a href="gossil.html#Run"><code>Run</code></a> with <code>accepted</code> set to false.</p>
+</section>
+<section id="examples-2" class="level4">
+<h4 class="anchored" data-anchor-id="examples-2">Examples</h4>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb16"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span class="kw">let</span> config: gossil::Config <span class="op">=</span> serde_json::from_slice(<span class="op">&amp;</span>std::fs::read(<span class="st">&quot;</span><span class="st">CONFIG.json</span><span class="st">&quot;</span>)<span class="op">?</span>)<span class="op">?</span>;
+<span class="kw">let</span> run <span class="op">=</span> gossil::execute(config)<span class="op">?</span>;
+<span class="fu">println!</span>(<span class="st">&quot;</span><span class="st">accepted: {}</span><span class="st">&quot;</span>, run.accepted);</code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="sd-table">
+<table class="caption-top table">
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>config</code></td>
+<td>Config</td>
+<td>Explicit inputs and owned output directory.</td>
+</tr>
+<tr>
+<td>returns</td>
+<td>Result&lt;Run, RunnerError&gt;</td>
+<td>Recorded results, including failed suites; setup failures return an error.</td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+</section>
+<section id="cli" class="level2">
+<h2 class="anchored" data-anchor-id="cli">fn cli</h2>
+<p><a href="https://github.com/rahuldave/gossil/blob/main/src/lib.rs#L634" class="source-link">source</a></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb17"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span class="kw">pub</span> <span class="kw">fn</span> <span class="fu">cli</span>(args: <span class="kw">&amp;</span>[<span class="bu">String</span>]) -&gt; <span class="dt">i32</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Run the CLI with one JSON configuration path.</p>
+<section id="examples-3" class="level4">
+<h4 class="anchored" data-anchor-id="examples-3">Examples</h4>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb18"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span class="fu">assert_eq!</span>(gossil::cli(<span class="op">&amp;</span>[]), <span class="dv">2</span>);</code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="sd-table">
+<table class="caption-top table">
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>args</code></td>
+<td>&amp;[String]</td>
+<td>Arguments after the executable name.</td>
+</tr>
+<tr>
+<td>returns</td>
+<td>i32</td>
+<td>Zero for accepted suite, one for failed suite, two for invalid setup.</td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+</section>
+<nav class="page-navigation"><div class="nav-page nav-page-previous"><a href="delta.html" class="pagination-link"><i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">delta</span></a></div><div class="nav-page nav-page-next"><a href="storage.html" class="pagination-link"><span class="nav-page-text">storage</span> <i class="bi bi-arrow-right-short"></i></a></div></nav></main></div></body></html>

@@ -1,0 +1,175 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="generator" content="smalldocs-0.5.12"><meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes"><meta name="description" content="Encode and decode Fossil token bytes. Encode and decode Fossil token bytes without text conversion."><title>token_codec – Gossil</title><link rel="icon" href="../site_libs/themes/atelier/logo.svg"><link rel="stylesheet" href="../site_libs/themes/atelier/atelier.css" data-mode="light" class="quarto-color-scheme" id="quarto-bootstrap-light" media="not all and (prefers-color-scheme: dark)"><link rel="stylesheet" href="../site_libs/themes/atelier/atelier-dark.css" data-mode="dark" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap-dark" media="(prefers-color-scheme: dark)"><link rel="stylesheet" href="../site_libs/bootstrap-icons/bootstrap-icons.min.css"><link rel="stylesheet" href="../site_libs/smalldocs.css"><meta name="smalldocs:offset" content="../"><script src="../site_libs/bootstrap/bootstrap.bundle.min.js"></script><script src="../site_libs/fuse/fuse.min.js"></script><script src="../site_libs/smalldocs.js" defer></script><script>(function(){var d=document.documentElement,s=null;try{s=localStorage.getItem('smalldocs-scheme')}catch(e){}var alt=s?s==='alternate':!!(window.matchMedia&&matchMedia('(prefers-color-scheme: dark)').matches);var ls=document.querySelectorAll('link.quarto-color-scheme');if(alt)d.dataset.scheme='alternate';if(s)ls.forEach(function(l){var on=l.classList.contains('quarto-color-alternate')===alt;if(on)l.setAttribute('blocking','render');l.media=on?'all':'not all'});var on=ls[alt?1:0];if(on&&on.dataset.mode==='dark')d.classList.add('quarto-dark')})();</script></head><body class="nav-sidebar floating nav-fixed"><header id="quarto-header" class="headroom sticky-top"><nav class="navbar navbar-expand-lg sd-navbar-default"><div class="navbar-container container-fluid"><div class="navbar-brand-container mx-auto"><a class="navbar-brand" href="../index.html"><span class="navbar-title">Gossil</span></a></div><button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button><div class="collapse navbar-collapse" id="navbarCollapse"><ul class="navbar-nav navbar-nav-scroll me-auto"><li class="nav-item"><a class="nav-link" href="../getting-started.html"><span class="menu-text">Start</span></a></li><li class="nav-item"><a class="nav-link" href="../concepts.html"><span class="menu-text">Guides</span></a></li><li class="nav-item"><a class="nav-link" href="../cli.html"><span class="menu-text">CLI</span></a></li><li class="nav-item"><a class="nav-link" href="index.html"><span class="menu-text">Rust API</span></a></li><li class="nav-item"><a class="nav-link" href="../development-plan.html"><span class="menu-text">Development</span></a></li></ul><ul class="navbar-nav navbar-nav-scroll ms-auto"><li class="nav-item compact"><a class="nav-link" href="https://github.com/rahuldave/gossil" aria-label="github"><i class="bi bi-github" role="img"></i></a></li><li class="nav-item compact"><a class="quarto-color-scheme-toggle nav-link" href="" title="Toggle dark mode" onclick="window.smalldocsToggleScheme(); return false;"><i class="bi"></i></a></li></ul><div class="quarto-navbar-tools"><div class="smalldocs-search" id="quarto-search"><i class="bi bi-search" aria-hidden="true"></i><input type="search" class="form-control form-control-sm" placeholder="Search" aria-label="Search" autocomplete="off"><div class="smalldocs-search-results dropdown-menu"></div></div></div></div></div></nav><nav class="quarto-secondary-nav"><div class="container-fluid d-flex"><button type="button" class="quarto-btn-toggle btn" aria-controls="quarto-sidebar" aria-label="Toggle sidebar navigation"><i class="bi bi-layout-text-sidebar-reverse"></i></button><nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="index.html">Rust API</a></li><li class="breadcrumb-item"><a href="token_codec.html">token_codec</a></li></ol></nav></div></nav></header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article has-sidebar has-margin"><nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto"><div class="sidebar-menu-container"><ul class="list-unstyled mt-1"><li class="sidebar-item"><div class="sidebar-item-container"><a href="../index.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Gossil</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="../getting-started.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Get started</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="../cli.html" class="sidebar-item-text sidebar-link"><span class="menu-text">CLI reference</span></a></div></li><li class="sidebar-item sidebar-item-section"><div class="sidebar-item-container"><a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true"><span class="menu-text">Guides</span></a><a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section"><i class="bi bi-chevron-right ms-2"></i></a></div><ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show"><li class="sidebar-item"><div class="sidebar-item-container"><a href="../concepts.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Library concepts</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="../examples.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Rust library examples</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="../delta-encoder.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Bounded delta encoder</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="../delta-decoder.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Bounded delta decoder</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="../blob-primitives.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Byte digests and packed blobs</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="../artifact-checksum.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Artifact byte checksums</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="../token-codec.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Fossil token bytes</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="../artifact-parser.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Artifact parser</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="../local-storage.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Local database ownership</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="../native-storage.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Native local storage</span></a></div></li></ul></li><li class="sidebar-item sidebar-item-section"><div class="sidebar-item-container"><a class="sidebar-item-text sidebar-link" href="index.html"><span class="menu-text">Rust API</span></a><a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Toggle section"><i class="bi bi-chevron-right ms-2"></i></a></div><ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show"><li class="sidebar-item"><div class="sidebar-item-container"><a href="artifact.html" class="sidebar-item-text sidebar-link"><span class="menu-text">artifact</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="artifact_checksum.html" class="sidebar-item-text sidebar-link"><span class="menu-text">artifact_checksum</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="compression.html" class="sidebar-item-text sidebar-link"><span class="menu-text">compression</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="content_hash.html" class="sidebar-item-text sidebar-link"><span class="menu-text">content_hash</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="delta.html" class="sidebar-item-text sidebar-link"><span class="menu-text">delta</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="gossil.html" class="sidebar-item-text sidebar-link"><span class="menu-text">gossil</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="storage.html" class="sidebar-item-text sidebar-link"><span class="menu-text">storage</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="token_codec.html" class="sidebar-item-text sidebar-link active" aria-current="page"><span class="menu-text">token_codec</span></a></div></li></ul></li><li class="sidebar-item sidebar-item-section"><div class="sidebar-item-container"><a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true"><span class="menu-text">Development</span></a><a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true" aria-label="Toggle section"><i class="bi bi-chevron-right ms-2"></i></a></div><ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show"><li class="sidebar-item"><div class="sidebar-item-container"><a href="../development-plan.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Development and contributing</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="../conformance.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Inherited-test runner</span></a></div></li></ul></li></ul></div></nav><div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item"></div><div id="quarto-margin-sidebar" class="sidebar margin-sidebar"><nav id="TOC" role="doc-toc" class="toc-active"><h2 id="toc-title">On this page</h2><ul><li><a href="#TokenError" id="toc-TokenError" class="nav-link" data-scroll-target="#TokenError">enum TokenError</a></li><li><a href="#DecodedToken" id="toc-DecodedToken" class="nav-link" data-scroll-target="#DecodedToken">struct DecodedToken</a></li><li><a href="#fossilize" id="toc-fossilize" class="nav-link" data-scroll-target="#fossilize">fn fossilize</a></li><li><a href="#fossilize_c_string" id="toc-fossilize_c_string" class="nav-link" data-scroll-target="#fossilize_c_string">fn fossilize_c_string</a></li><li><a href="#defossilize" id="toc-defossilize" class="nav-link" data-scroll-target="#defossilize">fn defossilize</a></li></ul></nav></div><main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="index.html">Rust API</a></li><li class="breadcrumb-item"><a href="token_codec.html">token_codec</a></li></ol></nav><div class="quarto-title"><h1 class="title">token_codec</h1></div><div><div class="description">Encode and decode Fossil token bytes. Encode and decode Fossil token bytes without text conversion.</div></div><div class="quarto-title-meta"></div></header><section id="TokenError" class="level2">
+<h2 class="anchored" data-anchor-id="TokenError">enum TokenError</h2>
+<p><a href="https://github.com/rahuldave/gossil/blob/main/src/token_codec.rs#L6" class="source-link">source</a></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span class="kw">pub</span> <span class="kw">enum</span> TokenError</code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>A size boundary or allocation failure in a safe token operation.</p>
+<div class="sd-table">
+<table class="caption-top table">
+<thead>
+<tr>
+<th>Variant</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Size</code></td>
+<td>The exact encoded length cannot fit Rust vector capacity.</td>
+</tr>
+<tr>
+<td><code>Allocation(TryReserveError)</code></td>
+<td>The allocator could not reserve output storage.</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Implements <a href="https://doc.rust-lang.org/nightly/core/fmt/trait.Debug.html"><code>Debug</code></a>, <a href="https://doc.rust-lang.org/nightly/core/fmt/trait.Display.html"><code>Display</code></a>, <a href="https://doc.rust-lang.org/nightly/core/error/trait.Error.html"><code>Error</code></a>.</p>
+</section>
+<section id="DecodedToken" class="level2">
+<h2 class="anchored" data-anchor-id="DecodedToken">struct DecodedToken</h2>
+<p><a href="https://github.com/rahuldave/gossil/blob/main/src/token_codec.rs#L33" class="source-link">source</a></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span class="kw">pub</span> <span class="kw">struct</span> DecodedToken</code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Complete decoded output and the prefix visible to C-string consumers.</p>
+<div class="sd-table">
+<table class="caption-top table">
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>bytes</code></td>
+<td>Vec&lt;u8&gt;</td>
+<td>All emitted bytes, including bytes following a decoded NUL.</td>
+</tr>
+<tr>
+<td><code>c_string_len</code></td>
+<td>usize</td>
+<td>Index of the first decoded NUL, or the output length.</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Implements <a href="https://doc.rust-lang.org/nightly/core/fmt/trait.Debug.html"><code>Debug</code></a>, <a href="https://doc.rust-lang.org/nightly/core/cmp/trait.PartialEq.html"><code>PartialEq</code></a>, <a href="https://doc.rust-lang.org/nightly/core/cmp/trait.Eq.html"><code>Eq</code></a>.</p>
+</section>
+<section id="fossilize" class="level2">
+<h2 class="anchored" data-anchor-id="fossilize">fn fossilize</h2>
+<p><a href="https://github.com/rahuldave/gossil/blob/main/src/token_codec.rs#L102" class="source-link">source</a></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span class="kw">pub</span> <span class="kw">fn</span> <span class="fu">fossilize</span>(input: <span class="kw">&amp;</span>[<span class="dt">u8</span>]) -&gt; <span class="bu">Result</span><span class="op">&lt;</span><span class="bu">Vec</span><span class="op">&lt;</span><span class="dt">u8</span><span class="op">&gt;</span>, TokenError<span class="op">&gt;</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Encode every supplied byte, including embedded NUL.</p>
+<section id="errors" class="level4">
+<h4 class="anchored" data-anchor-id="errors">Errors</h4>
+<p>Returns <a href="token_codec.html#TokenError"><code>TokenError::Size</code></a> on encoded-size overflow or lengths above
+<code>isize::MAX</code>, or <a href="token_codec.html#TokenError"><code>TokenError::Allocation</code></a> if reservation fails.</p>
+</section>
+<section id="examples" class="level4">
+<h4 class="anchored" data-anchor-id="examples">Examples</h4>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span class="fu">assert_eq!</span>(gossil::token_codec::fossilize(<span class="st">b&quot;</span><span class="st">a b</span><span class="sc">\0</span><span class="st">&quot;</span>).unwrap(), <span class="st">b&quot;</span><span class="st">a</span><span class="sc">\\</span><span class="st">sb</span><span class="sc">\\</span><span class="st">0</span><span class="st">&quot;</span>);</code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="sd-table">
+<table class="caption-top table">
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>input</code></td>
+<td>&amp;[u8]</td>
+<td>Arbitrary bytes, without UTF-8 requirements.</td>
+</tr>
+<tr>
+<td>returns</td>
+<td>Result&lt;Vec&lt;u8&gt;, TokenError&gt;</td>
+<td>Encoded bytes without a C terminator.</td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+</section>
+<section id="fossilize_c_string" class="level2">
+<h2 class="anchored" data-anchor-id="fossilize_c_string">fn fossilize_c_string</h2>
+<p><a href="https://github.com/rahuldave/gossil/blob/main/src/token_codec.rs#L156" class="source-link">source</a></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span class="kw">pub</span> <span class="kw">fn</span> <span class="fu">fossilize_c_string</span>(input: <span class="kw">&amp;</span>[<span class="dt">u8</span>]) -&gt; <span class="bu">Result</span><span class="op">&lt;</span><span class="bu">Vec</span><span class="op">&lt;</span><span class="dt">u8</span><span class="op">&gt;</span>, TokenError<span class="op">&gt;</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Encode bytes preceding the first NUL, or the full slice when absent.</p>
+<section id="errors-1" class="level4">
+<h4 class="anchored" data-anchor-id="errors-1">Errors</h4>
+<p>Returns <a href="token_codec.html#TokenError"><code>TokenError::Size</code></a> on encoded-size overflow or lengths above
+<code>isize::MAX</code>, or <a href="token_codec.html#TokenError"><code>TokenError::Allocation</code></a> if reservation fails.</p>
+</section>
+<section id="examples-1" class="level4">
+<h4 class="anchored" data-anchor-id="examples-1">Examples</h4>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span class="fu">assert_eq!</span>(gossil::token_codec::fossilize_c_string(<span class="st">b&quot;</span><span class="st">a</span><span class="sc">\0</span><span class="st">b</span><span class="st">&quot;</span>).unwrap(), <span class="st">b&quot;</span><span class="st">a</span><span class="st">&quot;</span>);</code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="sd-table">
+<table class="caption-top table">
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>input</code></td>
+<td>&amp;[u8]</td>
+<td>Bounded C-string contents; a terminator is optional.</td>
+</tr>
+<tr>
+<td>returns</td>
+<td>Result&lt;Vec&lt;u8&gt;, TokenError&gt;</td>
+<td>Encoded prefix without a C terminator.</td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+</section>
+<section id="defossilize" class="level2">
+<h2 class="anchored" data-anchor-id="defossilize">fn defossilize</h2>
+<p><a href="https://github.com/rahuldave/gossil/blob/main/src/token_codec.rs#L180" class="source-link">source</a></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span class="kw">pub</span> <span class="kw">fn</span> <span class="fu">defossilize</span>(input: <span class="kw">&amp;</span>[<span class="dt">u8</span>]) -&gt; <span class="bu">Result</span><span class="op">&lt;</span>DecodedToken, TokenError<span class="op">&gt;</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Decode bytes before the first source NUL or the slice end.
+Preserve all emitted bytes, including bytes after a decoded NUL.
+Unknown escapes discard the slash; a terminal slash survives.</p>
+<section id="errors-2" class="level4">
+<h4 class="anchored" data-anchor-id="errors-2">Errors</h4>
+<p>Returns <a href="token_codec.html#TokenError"><code>TokenError::Allocation</code></a> if reservation fails before output is emitted.</p>
+</section>
+<section id="examples-2" class="level4">
+<h4 class="anchored" data-anchor-id="examples-2">Examples</h4>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span class="kw">let</span> decoded <span class="op">=</span> gossil::token_codec::defossilize(<span class="st">b&quot;</span><span class="st">a</span><span class="sc">\\</span><span class="st">0b</span><span class="st">&quot;</span>).unwrap();
+<span class="fu">assert_eq!</span>(decoded.bytes, <span class="st">b&quot;</span><span class="st">a</span><span class="sc">\0</span><span class="st">b</span><span class="st">&quot;</span>);
+<span class="fu">assert_eq!</span>(decoded.c_string_len, <span class="dv">1</span>);</code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="sd-table">
+<table class="caption-top table">
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>input</code></td>
+<td>&amp;[u8]</td>
+<td>Arbitrary bounded token bytes; a terminator is optional.</td>
+</tr>
+<tr>
+<td>returns</td>
+<td>Result&lt;DecodedToken, TokenError&gt;</td>
+<td>Complete emitted bytes and their C-string prefix length.</td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+</section>
+<nav class="page-navigation"><div class="nav-page nav-page-previous"><a href="storage.html" class="pagination-link"><i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">storage</span></a></div><div class="nav-page nav-page-next"><a href="../development-plan.html" class="pagination-link"><span class="nav-page-text">Development and contributing</span> <i class="bi bi-arrow-right-short"></i></a></div></nav></main></div></body></html>

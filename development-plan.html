@@ -1,256 +1,141 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="generator" content="smalldocs-0.5.12"><meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes"><title>Gossil development plan – Gossil development</title><link rel="stylesheet" href="site_libs/themes/cosmo.min.css" data-mode="light" class="quarto-color-scheme" id="quarto-bootstrap-light"><link rel="stylesheet" href="site_libs/bootstrap-icons/bootstrap-icons.min.css"><link rel="stylesheet" href="site_libs/smalldocs.css"><meta name="smalldocs:offset" content="./"><script src="site_libs/bootstrap/bootstrap.bundle.min.js"></script><script src="site_libs/fuse/fuse.min.js"></script><script src="site_libs/smalldocs.js" defer></script></head><body class="nav-fixed"><header id="quarto-header" class="headroom sticky-top"><nav class="navbar navbar-expand-lg sd-navbar-default"><div class="navbar-container container-fluid"><div class="navbar-brand-container mx-auto"><a class="navbar-brand" href="index.html"><span class="navbar-title">Gossil development</span></a></div><button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button><div class="collapse navbar-collapse" id="navbarCollapse"><ul class="navbar-nav navbar-nav-scroll me-auto"><li class="nav-item"><a class="nav-link" href="index.html"><span class="menu-text">Home</span></a></li><li class="nav-item"><a class="nav-link" href="conformance.html"><span class="menu-text">Inherited-test runner</span></a></li><li class="nav-item"><a class="nav-link" href="delta-encoder.html"><span class="menu-text">Delta encoder</span></a></li><li class="nav-item"><a class="nav-link" href="delta-decoder.html"><span class="menu-text">Delta decoder</span></a></li><li class="nav-item"><a class="nav-link" href="blob-primitives.html"><span class="menu-text">Byte primitives</span></a></li><li class="nav-item"><a class="nav-link" href="artifact-checksum.html"><span class="menu-text">Artifact checksums</span></a></li><li class="nav-item"><a class="nav-link" href="token-codec.html"><span class="menu-text">Token byte escaping</span></a></li><li class="nav-item"><a class="nav-link" href="artifact-parser.html"><span class="menu-text">Artifact parser</span></a></li><li class="nav-item"><a class="nav-link" href="local-storage.html"><span class="menu-text">Local storage</span></a></li><li class="nav-item"><a class="nav-link" href="native-storage.html"><span class="menu-text">Native local storage</span></a></li><li class="nav-item"><a class="nav-link" href="libsql-provider.html"><span class="menu-text">Native date provider</span></a></li><li class="nav-item"><a class="nav-link active" href="development-plan.html" aria-current="page"><span class="menu-text">Development plan</span></a></li></ul><ul class="navbar-nav navbar-nav-scroll ms-auto"></ul><div class="quarto-navbar-tools"><div class="smalldocs-search" id="quarto-search"><i class="bi bi-search" aria-hidden="true"></i><input type="search" class="form-control form-control-sm" placeholder="Search" aria-label="Search" autocomplete="off"><div class="smalldocs-search-results dropdown-menu"></div></div></div></div></div></nav></header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article has-margin"><div id="quarto-margin-sidebar" class="sidebar margin-sidebar"><nav id="TOC" role="doc-toc" class="toc-active"><h2 id="toc-title">On this page</h2><ul><li><a href="#execution-order" id="toc-execution-order" class="nav-link" data-scroll-target="#execution-order">Execution order</a></li><li><a href="#checkpoints-and-ownership" id="toc-checkpoints-and-ownership" class="nav-link" data-scroll-target="#checkpoints-and-ownership">Checkpoints and ownership</a><ul><li><a href="#historical-bootstrap-context" id="toc-historical-bootstrap-context" class="nav-link" data-scroll-target="#historical-bootstrap-context">Historical bootstrap context</a></li></ul></li><li><a href="#native-provider-composition" id="toc-native-provider-composition" class="nav-link" data-scroll-target="#native-provider-composition">Native provider composition</a></li><li><a href="#decoder-and-encoder-checkpoints" id="toc-decoder-and-encoder-checkpoints" class="nav-link" data-scroll-target="#decoder-and-encoder-checkpoints">Decoder and encoder checkpoints</a></li><li><a href="#extension-contracts-and-remaining-work" id="toc-extension-contracts-and-remaining-work" class="nav-link" data-scroll-target="#extension-contracts-and-remaining-work">Extension contracts and remaining work</a></li><li><a href="#recommendations" id="toc-recommendations" class="nav-link" data-scroll-target="#recommendations">Recommendations</a></li></ul></nav></div><main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block default"><div class="quarto-title"><h1 class="title">Gossil development plan</h1></div><div class="quarto-title-meta"></div></header><p>Gossil is planned as a Rust library and application for versioned agentic
-project state. It combines Fossil version-control mechanisms with Gest task
-management, commands and an application programming interface (API).
-Axum is the Rust web framework for the embedded server and dashboard.
-The storage boundary uses libsql, a SQLite database implementation.
-Git owns source code.</p>
-<p>The checkout implements bounded delta creation and application, their
-<code>gossil vcs</code> diagnostics, and the inherited-test runner.
-It also composes <a href="blob-primitives.html">byte primitives</a>, <a href="token-codec.html">token escaping</a>,
-<a href="artifact-checksum.html">artifact checksums</a>
-and <a href="local-storage.html">local transactions</a>. <a href="native-storage.html">Native storage</a>
-adds complete empty-root initialization and bounded private content operations.
-There is no public SQL interface.
-The <a href="artifact-parser.html">artifact parser</a> adds bounded structural parsing of all
-eight artifact types with an asynchronous selected-engine date provider.
-The <a href="delta-encoder.html">encoder</a> and <a href="delta-decoder.html">decoder</a> guides give
-the current scope and limits.</p>
-<p>The planned public command domains are <code>issue</code> and <code>vcs</code>. The planned <code>ui</code>
-command starts an embedded Gest/Axum server and opens a browser, while <code>serve</code>
-runs the server without a browser. The implemented diagnostics are
-<code>vcs test-delta-apply</code>, <code>vcs test-delta-create</code> and <code>vcs test-delta</code>.
-A public wiki or forum product is outside the design, but
-inherited Fossil mechanisms and tests remain internal compatibility obligations.</p>
-<p>The design and acceptance requirements are in the separate local specification
-at <code>~/Projects/AIProjectInfra/docs/gossil/README.md</code>. Its linked acceptance
-page defines the source inventory and the test families required beyond
-inherited Fossil and Gest tests.</p>
-<p>Development work is tracked in this project’s local Gest task database.
-The commands below require an installed Gest tool and that local database.
-A fresh clone does not supply those task records. Follow the installed
-<code>.agents/skills/gtw/references/gest_codex_workflow.md</code> for the project workflow.</p>
-<p>The product parent task is <code>xyzzowpv</code>, and iteration <code>usytswsv</code> groups its
-implementation tasks. A leaf is a task with no child tasks.
-The completed environment task <code>xnuqympy</code> records bootstrap work.
-Parent tasks stay open until their complete scope passes.</p>
-<p>With Gest installed and the local task database available, run
-<code>gest task show xyzzowpv</code> from the repository root to inspect the parent.
-Use <code>gest task show ID</code> for any task ID in the table below.
-These task records are local workflow data, separate from the product specification.</p>
-<section id="execution-order" class="level2">
-<h2 class="anchored" data-anchor-id="execution-order">Execution order</h2>
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="generator" content="smalldocs-0.5.12"><meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes"><title>Development and contributing – Gossil</title><link rel="icon" href="site_libs/themes/atelier/logo.svg"><link rel="stylesheet" href="site_libs/themes/atelier/atelier.css" data-mode="light" class="quarto-color-scheme" id="quarto-bootstrap-light" media="not all and (prefers-color-scheme: dark)"><link rel="stylesheet" href="site_libs/themes/atelier/atelier-dark.css" data-mode="dark" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap-dark" media="(prefers-color-scheme: dark)"><link rel="stylesheet" href="site_libs/bootstrap-icons/bootstrap-icons.min.css"><link rel="stylesheet" href="site_libs/smalldocs.css"><meta name="smalldocs:offset" content="./"><script src="site_libs/bootstrap/bootstrap.bundle.min.js"></script><script src="site_libs/fuse/fuse.min.js"></script><script src="site_libs/smalldocs.js" defer></script><script>(function(){var d=document.documentElement,s=null;try{s=localStorage.getItem('smalldocs-scheme')}catch(e){}var alt=s?s==='alternate':!!(window.matchMedia&&matchMedia('(prefers-color-scheme: dark)').matches);var ls=document.querySelectorAll('link.quarto-color-scheme');if(alt)d.dataset.scheme='alternate';if(s)ls.forEach(function(l){var on=l.classList.contains('quarto-color-alternate')===alt;if(on)l.setAttribute('blocking','render');l.media=on?'all':'not all'});var on=ls[alt?1:0];if(on&&on.dataset.mode==='dark')d.classList.add('quarto-dark')})();</script></head><body class="nav-sidebar floating nav-fixed"><header id="quarto-header" class="headroom sticky-top"><nav class="navbar navbar-expand-lg sd-navbar-default"><div class="navbar-container container-fluid"><div class="navbar-brand-container mx-auto"><a class="navbar-brand" href="index.html"><span class="navbar-title">Gossil</span></a></div><button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button><div class="collapse navbar-collapse" id="navbarCollapse"><ul class="navbar-nav navbar-nav-scroll me-auto"><li class="nav-item"><a class="nav-link" href="getting-started.html"><span class="menu-text">Start</span></a></li><li class="nav-item"><a class="nav-link" href="concepts.html"><span class="menu-text">Guides</span></a></li><li class="nav-item"><a class="nav-link" href="cli.html"><span class="menu-text">CLI</span></a></li><li class="nav-item"><a class="nav-link" href="api/index.html"><span class="menu-text">Rust API</span></a></li><li class="nav-item"><a class="nav-link active" href="development-plan.html" aria-current="page"><span class="menu-text">Development</span></a></li></ul><ul class="navbar-nav navbar-nav-scroll ms-auto"><li class="nav-item compact"><a class="nav-link" href="https://github.com/rahuldave/gossil" aria-label="github"><i class="bi bi-github" role="img"></i></a></li><li class="nav-item compact"><a class="quarto-color-scheme-toggle nav-link" href="" title="Toggle dark mode" onclick="window.smalldocsToggleScheme(); return false;"><i class="bi"></i></a></li></ul><div class="quarto-navbar-tools"><div class="smalldocs-search" id="quarto-search"><i class="bi bi-search" aria-hidden="true"></i><input type="search" class="form-control form-control-sm" placeholder="Search" aria-label="Search" autocomplete="off"><div class="smalldocs-search-results dropdown-menu"></div></div></div></div></div></nav><nav class="quarto-secondary-nav"><div class="container-fluid d-flex"><button type="button" class="quarto-btn-toggle btn" aria-controls="quarto-sidebar" aria-label="Toggle sidebar navigation"><i class="bi bi-layout-text-sidebar-reverse"></i></button><nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="development-plan.html">Development</a></li><li class="breadcrumb-item"><a href="development-plan.html">Development and contributing</a></li></ol></nav></div></nav></header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article has-sidebar has-margin"><nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto"><div class="sidebar-menu-container"><ul class="list-unstyled mt-1"><li class="sidebar-item"><div class="sidebar-item-container"><a href="index.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Gossil</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="getting-started.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Get started</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="cli.html" class="sidebar-item-text sidebar-link"><span class="menu-text">CLI reference</span></a></div></li><li class="sidebar-item sidebar-item-section"><div class="sidebar-item-container"><a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true"><span class="menu-text">Guides</span></a><a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section"><i class="bi bi-chevron-right ms-2"></i></a></div><ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show"><li class="sidebar-item"><div class="sidebar-item-container"><a href="concepts.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Library concepts</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="examples.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Rust library examples</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="delta-encoder.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Bounded delta encoder</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="delta-decoder.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Bounded delta decoder</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="blob-primitives.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Byte digests and packed blobs</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="artifact-checksum.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Artifact byte checksums</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="token-codec.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Fossil token bytes</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="artifact-parser.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Artifact parser</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="local-storage.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Local database ownership</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="native-storage.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Native local storage</span></a></div></li></ul></li><li class="sidebar-item sidebar-item-section"><div class="sidebar-item-container"><a class="sidebar-item-text sidebar-link" href="api/index.html"><span class="menu-text">Rust API</span></a><a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Toggle section"><i class="bi bi-chevron-right ms-2"></i></a></div><ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show"><li class="sidebar-item"><div class="sidebar-item-container"><a href="api/artifact.html" class="sidebar-item-text sidebar-link"><span class="menu-text">artifact</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="api/artifact_checksum.html" class="sidebar-item-text sidebar-link"><span class="menu-text">artifact_checksum</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="api/compression.html" class="sidebar-item-text sidebar-link"><span class="menu-text">compression</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="api/content_hash.html" class="sidebar-item-text sidebar-link"><span class="menu-text">content_hash</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="api/delta.html" class="sidebar-item-text sidebar-link"><span class="menu-text">delta</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="api/gossil.html" class="sidebar-item-text sidebar-link"><span class="menu-text">gossil</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="api/storage.html" class="sidebar-item-text sidebar-link"><span class="menu-text">storage</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="api/token_codec.html" class="sidebar-item-text sidebar-link"><span class="menu-text">token_codec</span></a></div></li></ul></li><li class="sidebar-item sidebar-item-section"><div class="sidebar-item-container"><a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true"><span class="menu-text">Development</span></a><a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true" aria-label="Toggle section"><i class="bi bi-chevron-right ms-2"></i></a></div><ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show"><li class="sidebar-item"><div class="sidebar-item-container"><a href="development-plan.html" class="sidebar-item-text sidebar-link active" aria-current="page"><span class="menu-text">Development and contributing</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="conformance.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Inherited-test runner</span></a></div></li></ul></li></ul></div></nav><div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item"></div><div id="quarto-margin-sidebar" class="sidebar margin-sidebar"><nav id="TOC" role="doc-toc" class="toc-active"><h2 id="toc-title">On this page</h2><ul><li><a href="#current-scope" id="toc-current-scope" class="nav-link" data-scroll-target="#current-scope">Current scope</a></li><li><a href="#contributor-setup" id="toc-contributor-setup" class="nav-link" data-scroll-target="#contributor-setup">Contributor setup</a></li><li><a href="#check-a-change" id="toc-check-a-change" class="nav-link" data-scroll-target="#check-a-change">Check a change</a></li><li><a href="#documentation-build" id="toc-documentation-build" class="nav-link" data-scroll-target="#documentation-build">Documentation build</a></li><li><a href="#maintain-the-bundled-provider" id="toc-maintain-the-bundled-provider" class="nav-link" data-scroll-target="#maintain-the-bundled-provider">Maintain the bundled provider</a></li><li><a href="#evidence-archive" id="toc-evidence-archive" class="nav-link" data-scroll-target="#evidence-archive">Evidence archive</a></li><li><a href="#recommendations" id="toc-recommendations" class="nav-link" data-scroll-target="#recommendations">Recommendations</a></li></ul></nav></div><main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="development-plan.html">Development</a></li><li class="breadcrumb-item"><a href="development-plan.html">Development and contributing</a></li></ol></nav><div class="quarto-title"><h1 class="title">Development and contributing</h1></div><div class="quarto-title-meta"></div></header><p>Gossil implements byte primitives, structural artifact parsing and bounded local
+storage. The <code>gossil</code> executable implements three delta diagnostics.
+The generated <a href="api/index.html">Rust API</a> describes the public library surface.</p>
+<section id="current-scope" class="level2">
+<h2 class="anchored" data-anchor-id="current-scope">Current scope</h2>
 <div class="sd-table">
 <table class="caption-top table">
 <thead>
 <tr>
-<th>Phase</th>
-<th>Parent</th>
-<th>Required result</th>
+<th>Available</th>
+<th>Planned</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td>1</td>
-<td><code>zlwzpnkx</code></td>
-<td>Working runner, a recorded decision for every source/test surface, complete Fossil and Gest baselines</td>
+<td>Delta create, apply and two-way file checks</td>
+<td>General version-control CLI</td>
 </tr>
 <tr>
-<td>2</td>
-<td><code>tkqnmpkv</code></td>
-<td>libsql transactions, hashes, compression, delta, artifacts, cross-links and rebuild</td>
+<td>Compression, hashes, token escaping and artifact checksums</td>
+<td>Repository traversal and persistent selection commands</td>
 </tr>
 <tr>
-<td>3</td>
-<td><code>rtkpowvn</code></td>
-<td>Tracking, manifests, branches, diff, merge, update, undo and stash</td>
+<td>Eight structural artifact types with explicit limits</td>
+<td>General crosslinks, migration, rebuild and filesystem recovery</td>
 </tr>
 <tr>
-<td>4</td>
-<td><code>ukqklzmm</code></td>
-<td>Records, rendering, scripting, administration, alerts, chat and platform mechanisms</td>
+<td>Complete empty-root initialization and bounded private content</td>
+<td>File-containing check-ins, sync and publication</td>
 </tr>
 <tr>
-<td>5</td>
-<td><code>nuszyluo</code></td>
-<td>Fossil clone, pull, push, xfer, autosync and failure recovery</td>
-</tr>
-<tr>
-<td>6</td>
-<td><code>uvswrttq</code></td>
-<td>Gest core adaptation, CLI/API parity, server, dashboard and Git browsing</td>
-</tr>
-<tr>
-<td>7</td>
-<td><code>nmtxoskp</code></td>
-<td>Specified private/shared records, Git links, discussions, annotations and packages</td>
-</tr>
-<tr>
-<td>8</td>
-<td><code>zzqxwppt</code></td>
-<td>Every inherited contract, build configuration and extra test family specified by the acceptance page</td>
+<td>Explicit inherited-test runner configurations</td>
+<td>Gest task CLI, server and user interface</td>
 </tr>
 </tbody>
 </table>
 </div>
-<p>Cross-links connect stored artifacts to the records derived from them.
-The <code>/xfer</code> endpoint carries Fossil synchronization traffic.</p>
-<p>The inventory must cover all Fossil and Gest surfaces. For each source and
-test surface, record whether it is ported, adapted or awaiting work, with its
-corresponding tests. An absent UI screen
-never removes an engine mechanism. Assertions and fixtures remain unchanged
-unless an explicit requirement has a recorded replacement mapping.</p>
-<p>The repository archive <code>evidence/inventories/README.md</code> describes the mapped
-984 Fossil files and 544 Gest entries, with declared test and API sets.
-Read the archived Fossil mappings with the current family corrections and
-pinned Git identities described there. The archive preserves original artifacts
-and hashes. Its identity and mapping checks leave semantic coverage, required
-configurations and storage encodings open. Historical generation scripts require their original inputs.</p>
+<p>An empty root is a check-in with no files. Private content operations do not
+extend that public graph. Build this version from source. The implemented modules do not establish
+full-engine compatibility. Git remains the source-code authority for this project.</p>
+<p>Historical results qualify only their recorded source, inputs and environment.
+The accepted bounded <code>delta1</code> run does not qualify storage or the full engine.
+Linux qualification and clean-clone CI remain separate work.</p>
 </section>
-<section id="checkpoints-and-ownership" class="level2">
-<h2 class="anchored" data-anchor-id="checkpoints-and-ownership">Checkpoints and ownership</h2>
-<p>The historical composed core is the library’s delta, byte, token and local storage modules
-and their private composition test. The historical topic
-<code>gest/ruxnuror-core-integration</code> started at accepted encoder
-<code>6ea4c22aea10b49a759f26645166193597b165de</code> and imported accepted blob, token
-and database changes. Those imports do not establish ancestry of their source
-commits. Independent review and a final combined gate preceded the accepted
-integration checkpoint <code>de790aeab99012034f4b0bc9f9074181c935cd49</code>.
-The bootstrap notes below describe earlier setup.</p>
-<p>Every production change starts with focused tests and checks of the callers
-and tests that depend on the changed behavior. Fresh GPT-6.1 Sol agents
-review changes independently and challenge assumptions.
-The installed guide <code>.agents/skills/gtw/references/gest_codex_workflow.md</code>
-and root <code>AGENTS.md</code> describe the full process in the checkout.
-Follow that workflow guide for packet dispatch and result validation before
-using the commands below.</p>
-<p>An agentic target is a Just command that writes a task packet for a fresh agent. The agent returns
-a result packet, which the parent validates and records. A record identifies
-the reviewed file tree and the packet’s nonce, a unique identifier.
-It applies to that content, so edits can require a new check.
-Use the installed workflow guide above for packet dispatch, result validation
-and recording. Printing a packet alone does not complete its check.</p>
-<p>The following commands create and check those packets as part of the review workflow.
-Run the Just commands in this order.
-<code>just update-docs</code>, <code>just prose</code>, <code>just review</code>, <code>just test-review</code>, then
-<code>just check</code> on the final tree.
-The first four targets emit packets for fresh
-agents. Dispatch each packet, validate the returned result, then run
-<code>just record TARGET RESULT_FILE</code> before starting the next gate.
-Replace the capitalized arguments with the target name and saved result path.</p>
-<p>A worktree is a separate checkout that shares Git history with the primary
-checkout, the original checkout from which it was created.</p>
-<p>Independent writers use physical worktrees. Each needs an owner, absolute path, topic branch and explicit base.
-Create a worktree with
-<code>just worktree-new NAME BASE</code>, using an existing branch or commit for
-<code>BASE</code>.
-The recipe reads <code>.worktreelink</code> and links the existing ignored <code>.jlog</code>
-folder from the primary checkout into the new worktree.
-For an existing worktree, <code>just worktree-sync</code> applies those links.
-The link does not install tools or share source edits.</p>
-<p>For dependent branches, finish the prerequisite checkpoint before starting work
-that requires it.</p>
-<p>The public delivery destination is <a href="https://github.com/rahuldave/gossil">rahuldave/gossil</a>.
-After the initial accepted checkpoint reaches <code>main</code>, deliver subsequent changes
-through reviewed pull requests to <code>main</code>. The coordinator owns pushes and
-GitHub changes. Commits require complete verification and independent review.</p>
-<p>The saved answer <code>docs-publish=yes</code> selects <code>just docs-publish</code> with smalldocs
-0.5.12. The workflow runs on <code>main</code> in the public repository, publishes through
-Just, then builds and deploys the GitHub Pages artifact. Use GitHub Actions
-as the Pages source. Confirm the deployed site at
-<a href="https://rahuldave.com/gossil/">Gossil development</a> before recording publication
-as complete. No release is requested.</p>
-<section id="historical-bootstrap-context" class="level3">
-<h3 class="anchored" data-anchor-id="historical-bootstrap-context">Historical bootstrap context</h3>
-<p>The historical bootstrap checkpoint had no HEAD and used the primary branch
-<code>gest/xnuqympy-bootstrap</code>. The branch <code>main</code> was the intended later integration target.</p>
-<p>The initial runner work preserved the staged bootstrap, including the repository’s
-workflow and tool setup. Those instructions describe the initial checkpoint,
-not the current commit or branch state.
-No empty commit or coverage exclusion may replace a genuine checkpoint.</p>
-<p><code>just test-parent</code>, a dependency of <code>test-review</code>, runs added or changed tests
-on the parent commit. The first checkout had no parent, so that step was
-skipped. The skip does not show that the tests failed on earlier behavior.</p>
+<section id="contributor-setup" class="level2">
+<h2 class="anchored" data-anchor-id="contributor-setup">Contributor setup</h2>
+<p>Install Rust with Cargo, Git, Just, uv and the <code>jlog</code> command recorder.
+The repository has installed workflow copies under <code>.agents/</code>.
+Their owning packages are <code>jnterfaces</code>, <code>jnprofile-rust</code>,
+<code>agent_gest_git_skills</code> and <code>nossaifd</code> under <code>~/Projects</code>.
+Use <code>SKILL_PACKAGES_DIR</code> to select another package location.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode sh code-with-copy"><code class="sourceCode sh">just setup
+just install --check</code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><code>just setup</code> fetches Cargo dependencies. <code>just install</code> refreshes the saved tool
+selection from those companion packages. Neither command acquires the pinned
+Fossil source or local Tcl and Fossil binaries.
+The <a href="conformance.html#local-prerequisites">runner guide</a> describes those prerequisites.</p>
+<p>Read <code>AGENTS.md</code> before changing the repository. Follow the installed Gest
+workflow for task ownership, tag classification, dependency impact and review.
+Keep reusable tool changes in their owning packages.</p>
 </section>
+<section id="check-a-change" class="level2">
+<h2 class="anchored" data-anchor-id="check-a-change">Check a change</h2>
+<p>Use the repository’s Just entry points:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode sh code-with-copy"><code class="sourceCode sh">just fmt-check
+just lint
+just typecheck
+just <span class="bu">test</span>
+just integration
+just doctests
+just docstring-check
+just docs-check
+just docs-build</code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><code>just test</code> and <code>just integration</code> use the installed coverage workflow.
+Keep failed, blocked, skipped and disabled-feature observations distinct from
+passes. Installed tool copies and hook files do not prove actual executions.
+The coordinator owns final ordered gates and reviewed delivery to <code>main</code>.</p>
 </section>
-<section id="native-provider-composition" class="level2">
-<h2 class="anchored" data-anchor-id="native-provider-composition">Native provider composition</h2>
-<p>The accepted prerequisite <code>880538cd99d7640297f872a766415d129fb45503</code>
-includes artifact MD5 and the exact upstream coverage/import classifications.
-The <a href="libsql-import-boundary.html">import boundary</a> records four exact Rust paths,
-with no folder or wildcard exemption. Its historical failed product gate remains
-a failure. Committing the prerequisite does not accept the composed provider.
-The imported source guards must run at the new product gates.</p>
-<p>The <a href="libsql-provider.html">native provider guide</a> describes the adopted core-only
-libSQL source and the project-owned hook policy. The private date regression
-passes 489 fixed tokens and 30 numeric threshold inputs with the adopted source.
-The retained run against the original provider fails the fractional-second case.
-The existing fifteen storage tests and private composition fixture also pass.</p>
-<p>The provider composition was accepted at
-<code>fea8dcdd3979a30bde80460c39bc299ce286afa3</code>. The parser builds on that
-checkpoint. Its selected-provider tests exercise actual D and E cards with
-519 preserved inputs. Each card admits 470 and rejects 49. The integration
-report is <code>evidence/parser-provider-integration/report.json</code>.</p>
-<p>The current checkpoint adopts parser source alongside the reviewed native
-storage source on the accepted provider base. It does not claim the separate
-parser branch as an ancestor. The parser was accepted independently at
-<code>36cecd622510ce616a2524145ce887667e79ba2a</code>. The composed storage ordered gates
-remain open.</p>
-<p>The composed test report in <code>evidence/storage-provider-integration/report.json</code>
-records 69 unit tests, 62 integration tests and one explicit pre-existing native
-interop ignore. Its coverage run records 2,914 executable changed lines with
-none missing. All seven storage-owned Rust files have full line coverage. These
-results qualify the bounded composition, not complete storage version 1.</p>
-<p>Native crosslinks support only the empty root. The next storage task is the
-first private file child with real parent and file links under the accepted
-companion <code>private-file-amendment.md</code> specification. The amendment specifies
-future behavior. This checkpoint implements no catalog2 or journal operations.
-File-containing check-ins, traversal and persistent selection commands, the issue adapter, UI,
-sync, publication, general graphs, migration, rebuild and filesystem recovery
-remain open. Runtime clocks, optional engine features and the platform matrix
-also remain open.</p>
+<section id="documentation-build" class="level2">
+<h2 class="anchored" data-anchor-id="documentation-build">Documentation build</h2>
+<p>Documentation uses smalldocs 0.5.12 and the installed Atelier extension.
+The theme comes from <a href="https://github.com/rahuldave/smalldocs-atelier">smalldocs-atelier</a>
+at commit <code>b285e162eed9521114745e34ce3b3d3af5474177</code>.
+Its source receipt, licenses and local fonts ship under <code>docs/_extensions/atelier/</code>.</p>
+<p>The API reference comes from Rust source comments through rustdoc JSON.
+Install the required toolchain before a first documentation build:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode sh code-with-copy"><code class="sourceCode sh">rustup toolchain install nightly-2026-11-12 --profile minimal
+just docs-check
+just docs-build
+just docs</code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Generated <code>docs/api/</code> pages and <code>docs/_site/</code> output are ignored by Git.
+Edit source comments to change API content. The site has generated API navigation
+and search, with source links to the published <code>main</code> branch.</p>
+<p>The main-only Pages workflow retains <code>just docs-publish</code> and deploys the rendered
+artifact through GitHub Pages. It installs the pinned nightly toolchain before
+generation. Local rendering does not establish a successful deployment.</p>
 </section>
-<section id="decoder-and-encoder-checkpoints" class="level2">
-<h2 class="anchored" data-anchor-id="decoder-and-encoder-checkpoints">Decoder and encoder checkpoints</h2>
-<p>The pure decoder validates commands before it reserves output storage, then
-replays checked slices. Its command reads both inputs and decodes before opening
-the target. The preserved fixtures cover bounded application and command framing.
-The five original C reference cases marked <code>not-run</code> keep that status.
-The <a href="delta-decoder.html#evidence-and-limits">decoder evidence section</a> describes
-those observations and the portable fixtures.</p>
-<p>The encoder was implemented after this decoder checkpoint. Its <a href="delta-encoder.html">guide</a>
-records the implementation and inherited <code>delta1</code> evidence. The candidate
-uses an explicit wrapper to map Fossil diagnostics into <code>gossil vcs</code>.
-The inherited assertions and original corpus remain unchanged.</p>
+<section id="maintain-the-bundled-provider" class="level2">
+<h2 class="anchored" data-anchor-id="maintain-the-bundled-provider">Maintain the bundled provider</h2>
+<p>The root Cargo patch selects the complete <code>libsql-ffi</code> 0.9.30 archive under
+<code>vendor/libsql-ffi</code>. Its adapted date conversion includes <code>&lt;stdint.h&gt;</code> itself
+because it uses <code>UINT64_C</code>. The upstream build script does not define
+<code>HAVE_STDINT_H</code> or <code>HAVE_INTTYPES_H</code> for the core build.</p>
+<p>Use these checks when changing the provider:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode sh code-with-copy"><code class="sourceCode sh">just libsql-vendor-check
+just libsql-vendor-test
+just libsql-provider-compile
+just libsql-provider-dates</code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>The compile regression builds the complete adapted C source with the core feature
+flags and both optional header defines unset. On Linux it also reconstructs the
+exact previous adapted source and requires its integer initializers to fail.
+macOS skips that negative control because its transitive headers supply the macro.
+The date recipe runs the retained finite date tests through the bundled Rust provider
+without coverage instrumentation.</p>
+<p>The existing required PR job <code>check / ci</code> runs these compile and semantic checks
+on Ubuntu 24.04, then builds the site and Rust API with <code>just docs-build</code>.
+A successful local macOS run does not establish a Linux pass or a Pages deployment.</p>
+<p>For regeneration, supply the pinned original registry source and native Fossil
+source to <code>scripts/regenerate-libsql.py ORIGINAL NATIVE NEW_OUTPUT</code>.
+The script verifies both input hashes, all eight patch hunks and the output hash.
+Keep canonical baselines unchanged. Review the source diff before updating the
+adapted patch, source identity and affected manifest receipts together.
+The provenance record is <code>evidence/libsql-provider/provenance.json</code>.</p>
 </section>
-<section id="extension-contracts-and-remaining-work" class="level2">
-<h2 class="anchored" data-anchor-id="extension-contracts-and-remaining-work">Extension contracts and remaining work</h2>
-<p>The companion specification contains accepted normative Gest, sync and UI
-contracts and an accepted storage specification. Its full fixture inventory
-still requires runtime implementation and qualification.
-Issue revisions, Git-link encodings and annotation descriptors need byte fixtures
-before durable extension writes begin. Task <code>qvqyvqlt</code> tracks this contract work.
-Inspect it with <code>gest task show qvqyvqlt</code> in the local Gest project.
-Do not invent storage or wire formats.</p>
-<p>The private/shared implementation must follow the companion sync contract for
-dependency closure, transaction identity, authorization, declassification and
-identical-byte visibility.</p>
-<p>Dependency closure includes every object that a record requires and determines
-which related objects must travel together.
-Transaction identity determines how a transaction is identified across replicas.
-Authorization controls access, while declassification permits private data to
-become shared under explicit rules. Identical-byte visibility determines access when private and
-shared objects contain the same bytes. Shared history
-must restore without private objects. Unsupported required extensions must
-fail before an operation reports complete success.</p>
+<section id="evidence-archive" class="level2">
+<h2 class="anchored" data-anchor-id="evidence-archive">Evidence archive</h2>
+<p>The repository keeps exact experiments in
+<a href="https://github.com/rahuldave/gossil/tree/main/evidence">the evidence directory</a>.
+The complete earlier guide narratives remain in
+<a href="https://github.com/rahuldave/gossil/tree/main/docs/_history">the documentation history</a>,
+which is excluded from rendering, navigation and search.
+These archives preserve source identities, failures and qualifications.
+The local companion specification is <code>~/Projects/AIProjectInfra/docs/gossil/README.md</code>.
+It is not required to use the current CLI or library.</p>
 </section>
 <section id="recommendations" class="level2">
 <h2 class="anchored" data-anchor-id="recommendations">Recommendations</h2>
-<p>Keep the full Gest task hierarchy and deliver small reviewed checkpoints.
-Next, follow <a href="#checkpoints-and-ownership">Checkpoints and ownership</a> to review
-the composed parser and native storage checkpoint. Then implement the first
-private file child with real parent and file links. Preserve the unchanged
-<code>delta1</code> qualification evidence.
-Resolve the inventory’s contract and configuration gaps while preserving
-failures and disabled-feature results as classified evidence.</p>
+<p>Use module guides and the generated API for library work. Next, run the relevant
+Just checks and get independent review before a pull request to <code>main</code>.</p>
 </section>
-</main></div></body></html>
+<nav class="page-navigation"><div class="nav-page nav-page-previous"><a href="api/token_codec.html" class="pagination-link"><i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">token_codec</span></a></div><div class="nav-page nav-page-next"><a href="conformance.html" class="pagination-link"><span class="nav-page-text">Inherited-test runner</span> <i class="bi bi-arrow-right-short"></i></a></div></nav></main></div></body></html>

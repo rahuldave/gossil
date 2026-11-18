@@ -1,66 +1,65 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="generator" content="smalldocs-0.5.12"><meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes"><title>Gossil development</title><link rel="stylesheet" href="site_libs/themes/cosmo.min.css" data-mode="light" class="quarto-color-scheme" id="quarto-bootstrap-light"><link rel="stylesheet" href="site_libs/bootstrap-icons/bootstrap-icons.min.css"><link rel="stylesheet" href="site_libs/smalldocs.css"><meta name="smalldocs:offset" content="./"><script src="site_libs/bootstrap/bootstrap.bundle.min.js"></script><script src="site_libs/fuse/fuse.min.js"></script><script src="site_libs/smalldocs.js" defer></script></head><body class="nav-fixed"><header id="quarto-header" class="headroom sticky-top"><nav class="navbar navbar-expand-lg sd-navbar-default"><div class="navbar-container container-fluid"><div class="navbar-brand-container mx-auto"><a class="navbar-brand" href="index.html"><span class="navbar-title">Gossil development</span></a></div><button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button><div class="collapse navbar-collapse" id="navbarCollapse"><ul class="navbar-nav navbar-nav-scroll me-auto"><li class="nav-item"><a class="nav-link active" href="index.html" aria-current="page"><span class="menu-text">Home</span></a></li><li class="nav-item"><a class="nav-link" href="conformance.html"><span class="menu-text">Inherited-test runner</span></a></li><li class="nav-item"><a class="nav-link" href="delta-encoder.html"><span class="menu-text">Delta encoder</span></a></li><li class="nav-item"><a class="nav-link" href="delta-decoder.html"><span class="menu-text">Delta decoder</span></a></li><li class="nav-item"><a class="nav-link" href="blob-primitives.html"><span class="menu-text">Byte primitives</span></a></li><li class="nav-item"><a class="nav-link" href="artifact-checksum.html"><span class="menu-text">Artifact checksums</span></a></li><li class="nav-item"><a class="nav-link" href="token-codec.html"><span class="menu-text">Token byte escaping</span></a></li><li class="nav-item"><a class="nav-link" href="artifact-parser.html"><span class="menu-text">Artifact parser</span></a></li><li class="nav-item"><a class="nav-link" href="local-storage.html"><span class="menu-text">Local storage</span></a></li><li class="nav-item"><a class="nav-link" href="native-storage.html"><span class="menu-text">Native local storage</span></a></li><li class="nav-item"><a class="nav-link" href="libsql-provider.html"><span class="menu-text">Native date provider</span></a></li><li class="nav-item"><a class="nav-link" href="development-plan.html"><span class="menu-text">Development plan</span></a></li></ul><ul class="navbar-nav navbar-nav-scroll ms-auto"></ul><div class="quarto-navbar-tools"><div class="smalldocs-search" id="quarto-search"><i class="bi bi-search" aria-hidden="true"></i><input type="search" class="form-control form-control-sm" placeholder="Search" aria-label="Search" autocomplete="off"><div class="smalldocs-search-results dropdown-menu"></div></div></div></div></div></nav></header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article has-margin"><div id="quarto-margin-sidebar" class="sidebar margin-sidebar"><nav id="TOC" role="doc-toc" class="toc-active"><h2 id="toc-title">On this page</h2><ul><li><a href="#recommendations" id="toc-recommendations" class="nav-link" data-scroll-target="#recommendations">Recommendations</a></li></ul></nav></div><main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block default"><div class="quarto-title"><h1 class="title">Gossil development</h1></div><div class="quarto-title-meta"></div></header><p>Gossil is planned as a Rust library and application for versioned agentic
-project state. It combines Fossil version control with Gest task management.
-Fossil is a distributed version-control system. Gest tracks issues and tasks.
-Planned records include tasks, shared issues and private agent traces.
-Git remains the source-code authority in the first release.</p>
-<p>This checkout contains a bounded Fossil delta encoder and decoder, their
-<code>gossil vcs</code> diagnostics and a runner for inherited Fossil Tcl tests.
-It also composes byte primitives, legacy artifact checksums, token byte escaping
-and owned local libSQL transactions. It includes bounded structural artifact
-parsing, complete empty-root initialization and bounded private content storage.
-File-containing check-ins, Gest integration and the remaining Fossil mechanisms
-remain planned work.</p>
-<ul>
-<li><a href="delta-encoder.html">Delta encoder</a> explains creation, round-trip diagnostics
-and the finite compatibility evidence.</li>
-<li><a href="delta-decoder.html">Delta decoder</a> explains the library, diagnostic command,
-preserved fixtures and compatibility limits.</li>
-<li><a href="conformance.html">Inherited-test runner</a> explains prerequisites, configuration,
-evidence and acceptance limits.</li>
-<li><a href="blob-primitives.html">Byte digests and packed blobs</a> describes SHA1DC safe
-hashes, thirteen SHA3 widths, decoding limits and native interoperability.</li>
-<li><a href="artifact-checksum.html">Artifact byte checksums</a> explains bounded MD5 bytes,
-owned incremental computations and finite reference checks.</li>
-<li><a href="token-codec.html">Token byte escaping</a> describes bounded byte and C-string
-behavior, fallible allocation and the finite native observations.</li>
-<li><a href="artifact-parser.html">Artifact parser</a> describes the eight structural types,
-explicit resource limits and selected-provider date tests.</li>
-<li><a href="local-storage.html">Local storage</a> describes database lifecycle, exclusive
-transactions and the private fixture that composes storage with byte primitives.</li>
-<li><a href="native-storage.html">Native local storage</a> describes empty-root admission,
-local owner authority, finite content budgets and rollback.</li>
-<li><a href="libsql-import-boundary.html">libSQL source import boundary</a> records exact upstream
-classifications and the controls required before importing the provider.</li>
-<li><a href="libsql-provider.html">Native date provider</a> describes the pinned source,
-integrity checks and limits of the private date regression.</li>
-<li><a href="development-plan.html">Development plan</a> gives the delivery order, ownership
-and local checkpoint workflow.</li>
-</ul>
-<p>The product specification is in a local companion checkout at
-<code>~/Projects/AIProjectInfra/docs/gossil/README.md</code>. Reference experiment files
-are described by <code>evidence/baselines/README.md</code> at the repository root.
-The complete source and test mappings are described in
-<code>evidence/inventories/README.md</code>, including corrections to groups of related Fossil mechanisms and Git
-identities for every pinned path. <code>evidence/review-correction/checkpoint.json</code>
-records tests that reject malformed and duplicate result summaries.</p>
-<p>These archives are outside this documentation site. Open their paths from
-the root of the local checkout. Those historical results
-remain separate from runner controls and future Gossil compatibility.</p>
-<p>The local commands require Rust with Cargo, Git, Just and uv on <code>PATH</code>.
-See the runner guide for Tcl, Fossil and fresh-clone setup limits.
-Use <code>just docs-check</code> to check site links and API documentation, and
-<code>just docs-build</code> to render the site. <code>just docs</code> serves a local preview.</p>
-<p>The saved answer <code>docs-publish=yes</code> enables publication through
-<code>just docs-publish</code> with smalldocs 0.5.12. The main-only GitHub workflow
-uploads the built site and deploys it through GitHub Pages. Set the Pages
-source to GitHub Actions. The expected public site is
-<a href="https://rahuldave.com/gossil/">Gossil development</a>. A passing local build
-does not establish that deployment succeeded.</p>
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="generator" content="smalldocs-0.5.12"><meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes"><meta name="description" content="Rust library and CLI for Fossil delta bytes, artifacts and local storage"><title>Gossil</title><link rel="icon" href="site_libs/themes/atelier/logo.svg"><link rel="stylesheet" href="site_libs/themes/atelier/atelier.css" data-mode="light" class="quarto-color-scheme" id="quarto-bootstrap-light" media="not all and (prefers-color-scheme: dark)"><link rel="stylesheet" href="site_libs/themes/atelier/atelier-dark.css" data-mode="dark" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap-dark" media="(prefers-color-scheme: dark)"><link rel="stylesheet" href="site_libs/bootstrap-icons/bootstrap-icons.min.css"><link rel="stylesheet" href="site_libs/smalldocs.css"><meta name="smalldocs:offset" content="./"><script src="site_libs/bootstrap/bootstrap.bundle.min.js"></script><script src="site_libs/fuse/fuse.min.js"></script><script src="site_libs/smalldocs.js" defer></script><script>(function(){var d=document.documentElement,s=null;try{s=localStorage.getItem('smalldocs-scheme')}catch(e){}var alt=s?s==='alternate':!!(window.matchMedia&&matchMedia('(prefers-color-scheme: dark)').matches);var ls=document.querySelectorAll('link.quarto-color-scheme');if(alt)d.dataset.scheme='alternate';if(s)ls.forEach(function(l){var on=l.classList.contains('quarto-color-alternate')===alt;if(on)l.setAttribute('blocking','render');l.media=on?'all':'not all'});var on=ls[alt?1:0];if(on&&on.dataset.mode==='dark')d.classList.add('quarto-dark')})();</script></head><body class="nav-sidebar floating nav-fixed"><header id="quarto-header" class="headroom sticky-top"><nav class="navbar navbar-expand-lg sd-navbar-default"><div class="navbar-container container-fluid"><div class="navbar-brand-container mx-auto"><a class="navbar-brand" href="index.html"><span class="navbar-title">Gossil</span></a></div><button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button><div class="collapse navbar-collapse" id="navbarCollapse"><ul class="navbar-nav navbar-nav-scroll me-auto"><li class="nav-item"><a class="nav-link" href="getting-started.html"><span class="menu-text">Start</span></a></li><li class="nav-item"><a class="nav-link" href="concepts.html"><span class="menu-text">Guides</span></a></li><li class="nav-item"><a class="nav-link" href="cli.html"><span class="menu-text">CLI</span></a></li><li class="nav-item"><a class="nav-link" href="api/index.html"><span class="menu-text">Rust API</span></a></li><li class="nav-item"><a class="nav-link" href="development-plan.html"><span class="menu-text">Development</span></a></li></ul><ul class="navbar-nav navbar-nav-scroll ms-auto"><li class="nav-item compact"><a class="nav-link" href="https://github.com/rahuldave/gossil" aria-label="github"><i class="bi bi-github" role="img"></i></a></li><li class="nav-item compact"><a class="quarto-color-scheme-toggle nav-link" href="" title="Toggle dark mode" onclick="window.smalldocsToggleScheme(); return false;"><i class="bi"></i></a></li></ul><div class="quarto-navbar-tools"><div class="smalldocs-search" id="quarto-search"><i class="bi bi-search" aria-hidden="true"></i><input type="search" class="form-control form-control-sm" placeholder="Search" aria-label="Search" autocomplete="off"><div class="smalldocs-search-results dropdown-menu"></div></div></div></div></div></nav><nav class="quarto-secondary-nav"><div class="container-fluid d-flex"><button type="button" class="quarto-btn-toggle btn" aria-controls="quarto-sidebar" aria-label="Toggle sidebar navigation"><i class="bi bi-layout-text-sidebar-reverse"></i></button><nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="index.html">Gossil</a></li></ol></nav></div></nav></header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article has-sidebar has-margin"><nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto"><div class="sidebar-menu-container"><ul class="list-unstyled mt-1"><li class="sidebar-item"><div class="sidebar-item-container"><a href="index.html" class="sidebar-item-text sidebar-link active" aria-current="page"><span class="menu-text">Gossil</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="getting-started.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Get started</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="cli.html" class="sidebar-item-text sidebar-link"><span class="menu-text">CLI reference</span></a></div></li><li class="sidebar-item sidebar-item-section"><div class="sidebar-item-container"><a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true"><span class="menu-text">Guides</span></a><a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section"><i class="bi bi-chevron-right ms-2"></i></a></div><ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show"><li class="sidebar-item"><div class="sidebar-item-container"><a href="concepts.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Library concepts</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="examples.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Rust library examples</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="delta-encoder.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Bounded delta encoder</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="delta-decoder.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Bounded delta decoder</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="blob-primitives.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Byte digests and packed blobs</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="artifact-checksum.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Artifact byte checksums</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="token-codec.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Fossil token bytes</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="artifact-parser.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Artifact parser</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="local-storage.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Local database ownership</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="native-storage.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Native local storage</span></a></div></li></ul></li><li class="sidebar-item sidebar-item-section"><div class="sidebar-item-container"><a class="sidebar-item-text sidebar-link" href="api/index.html"><span class="menu-text">Rust API</span></a><a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Toggle section"><i class="bi bi-chevron-right ms-2"></i></a></div><ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show"><li class="sidebar-item"><div class="sidebar-item-container"><a href="api/artifact.html" class="sidebar-item-text sidebar-link"><span class="menu-text">artifact</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="api/artifact_checksum.html" class="sidebar-item-text sidebar-link"><span class="menu-text">artifact_checksum</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="api/compression.html" class="sidebar-item-text sidebar-link"><span class="menu-text">compression</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="api/content_hash.html" class="sidebar-item-text sidebar-link"><span class="menu-text">content_hash</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="api/delta.html" class="sidebar-item-text sidebar-link"><span class="menu-text">delta</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="api/gossil.html" class="sidebar-item-text sidebar-link"><span class="menu-text">gossil</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="api/storage.html" class="sidebar-item-text sidebar-link"><span class="menu-text">storage</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="api/token_codec.html" class="sidebar-item-text sidebar-link"><span class="menu-text">token_codec</span></a></div></li></ul></li><li class="sidebar-item sidebar-item-section"><div class="sidebar-item-container"><a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true"><span class="menu-text">Development</span></a><a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true" aria-label="Toggle section"><i class="bi bi-chevron-right ms-2"></i></a></div><ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show"><li class="sidebar-item"><div class="sidebar-item-container"><a href="development-plan.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Development and contributing</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="conformance.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Inherited-test runner</span></a></div></li></ul></li></ul></div></nav><div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item"></div><div id="quarto-margin-sidebar" class="sidebar margin-sidebar"><nav id="TOC" role="doc-toc" class="toc-active"><h2 id="toc-title">On this page</h2><ul><li><a href="#choose-a-library-module" id="toc-choose-a-library-module" class="nav-link" data-scroll-target="#choose-a-library-module">Choose a library module</a></li><li><a href="#recommendations" id="toc-recommendations" class="nav-link" data-scroll-target="#recommendations">Recommendations</a></li></ul></nav></div><main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block default"><div class="quarto-title"><h1 class="title">Gossil</h1></div><div class="quarto-title-meta"></div></header><p>Gossil aims to keep agent work, issues and file history together alongside Git.
+This build exposes a Rust library for Fossil delta bytes, artifact parsing and
+local storage. The <code>gossil</code> command creates, applies and checks deltas between
+files without a version-control checkout.</p>
+<p>Start with a <a href="getting-started.html">file round trip</a>, browse the
+<a href="cli.html">CLI reference</a>, or use the <a href="api/index.html">Rust API reference</a>.
+The <a href="examples.html">examples</a> show library calls for deltas, compressed bytes,
+hashes and token escaping.</p>
+<section id="choose-a-library-module" class="level2">
+<h2 class="anchored" data-anchor-id="choose-a-library-module">Choose a library module</h2>
+<div class="sd-table">
+<table class="caption-top table">
+<thead>
+<tr>
+<th>Task</th>
+<th>Guide</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Create a delta from two byte slices</td>
+<td><a href="delta-encoder.html">Delta encoder</a></td>
+</tr>
+<tr>
+<td>Apply a delta with a size limit</td>
+<td><a href="delta-decoder.html">Delta decoder</a></td>
+</tr>
+<tr>
+<td>Compress bytes or compute a content hash</td>
+<td><a href="blob-primitives.html">Byte primitives</a></td>
+</tr>
+<tr>
+<td>Compute a legacy artifact checksum</td>
+<td><a href="artifact-checksum.html">Artifact checksums</a></td>
+</tr>
+<tr>
+<td>Escape bytes in Fossil tokens</td>
+<td><a href="token-codec.html">Token codec</a></td>
+</tr>
+<tr>
+<td>Parse structural artifact records</td>
+<td><a href="artifact-parser.html">Artifact parser</a></td>
+</tr>
+<tr>
+<td>Own a local database transaction</td>
+<td><a href="local-storage.html">Local storage</a></td>
+</tr>
+<tr>
+<td>Initialize an empty root or store private bytes</td>
+<td><a href="native-storage.html">Native storage</a></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>The <a href="concepts.html">concepts guide</a> explains how these modules fit together.
+Gossil is under development. General version-control commands, Gest task
+management, a server and a user interface remain planned.
+See <a href="development-plan.html">development</a> for current limits and contribution steps.</p>
+</section>
 <section id="recommendations" class="level2">
 <h2 class="anchored" data-anchor-id="recommendations">Recommendations</h2>
-<p>Use the decoder guide for bounded delta application and the runner guide for
-inherited suites. Next, follow the <a href="development-plan.html#checkpoints-and-ownership">review workflow</a>
-for the library’s delta, byte, token and storage modules together.
-Retain the recorded qualification of <code>delta1</code>, the unchanged inherited Fossil delta test suite.</p>
+<p>Try the file round trip first. Next, choose a module guide and use the generated
+API reference for its exact types, methods and errors.</p>
 </section>
-</main></div></body></html>
+<nav class="page-navigation"><div class="nav-page nav-page-previous"></div><div class="nav-page nav-page-next"><a href="getting-started.html" class="pagination-link"><span class="nav-page-text">Get started</span> <i class="bi bi-arrow-right-short"></i></a></div></nav></main></div></body></html>
