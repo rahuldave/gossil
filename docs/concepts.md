@@ -4,14 +4,18 @@ Gossil separates byte operations, artifact structure and local database ownershi
 A byte operation does not create a repository, and a parsed artifact does not
 establish its place in a repository graph.
 
+For file selection, check-ins, branches and sharing, read
+[working with repositories](working-with-repositories.md). This page describes
+the library modules available to application authors.
+
 ## Bytes and identities
 
 The `delta` module creates and applies Fossil deltas. Application takes an
 explicit output limit. The `compression` module packs and unpacks blobs, which
 are stored byte sequences. Unpacking also takes a decoded size limit.
 
-The `content_hash` module computes content digests. A digest identifies bytes.
-It does not grant access to those bytes. The `artifact_checksum` module computes
+The `content_hash` module computes content digests. A digest identifies bytes
+but does not grant access to them. The `artifact_checksum` module computes
 legacy MD5 checksums for artifact records. It does not choose the repository's
 content hash policy.
 
@@ -22,8 +26,8 @@ Its byte and C-string forms have different zero-byte behavior.
 The [token guide](token-codec.md) defines those contracts.
 
 The `artifact` module parses eight structural artifact types with explicit
-limits. A caller supplies the date provider, which converts date fields.
-Parsing checks structure and checksums. Repository graph validation requires
+limits and checks their structure and checksums. A caller supplies the date
+provider, which converts date fields. Repository graph validation requires
 more storage rules. See the [parser guide](artifact-parser.md).
 
 ## Local storage and authority
@@ -34,29 +38,32 @@ store. The public interface does not expose arbitrary SQL.
 
 `LocalOwnerRepository` initializes a complete empty public root.
 It also supports bounded private content operations. The empty root is a
-check-in with no files. A private content write does not create a file-containing
-check-in.
+check-in with no files. A private content write does not create a check-in that contains files.
 
-Admission validates the stored root before repository operations.
-`SharedView` restricts access to admitted public content.
-Operating-system access establishes local owner authority.
+Admission is the validation of the stored root required before repository
+operations. `SharedView` restricts access to public content that passed this
+validation. Read and write access to the database file through the operating
+system establishes local owner authority.
 
 The [native storage guide](native-storage.md) defines admission, content bounds
-and access rules. General crosslinks, sync and team authentication remain planned.
+and access rules. General links between artifacts in the repository graph, sync and team
+authentication remain planned.
 
 ## Task and project values
 
 Gest is a task and artifact tracker. These converters use its task and project record model.
 The `gest_task_values` module validates eleven already decoded task fields.
-It returns an owned record with canonical status and UTC timestamps.
+It returns an owned record with a standardized status and UTC timestamps.
 The [task values guide](gest-task-values.md) defines validation and caller responsibilities.
 
-The `gest_project_values` module validates the four canonical project fields,
+The `gest_project_values` module validates the four fields that make up the
+canonical Gest project record,
 `gest_id`, `archived_at`, `created_at` and `updated_at`.
 It returns an owned record with an identifier, nullable archive time and UTC timestamps.
 The [project values guide](gest-project-values.md) defines the complete field contract.
 A local checkout root is outside the canonical project record.
-Raw input admission, storage integration and task or project commands remain separate work.
+Checks of raw input, storage integration and task or project commands remain
+separate work.
 
 ## Recommendations
 
