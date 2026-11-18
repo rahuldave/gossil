@@ -1,0 +1,13 @@
+    Blocking waiting for file lock on artifact directory
+   Compiling gossil v0.1.0 (/Users/rahul/Projects/gossil.worktrees/gest-project-values-integration)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 17.40s
+     Running unittests src/lib.rs (/tmp/gossil-project-values-integration-target/debug/deps/gossil-476158cc01c74583)
+
+running 5 tests
+test gest_value_validation::tests::timestamp_success_normalizes_without_ordering_or_clock ... ok
+test gest_value_validation::tests::wrong_type_and_identifier_failures_have_no_parse_cause ... ok
+test gest_value_validation::tests::input_parse_failure_retains_actual_cause ... ok
+test gest_value_validation::tests::canonical_parse_failure_retains_actual_cause ... ok
+test gest_value_validation::tests::string_and_identifier_success_domains ... ok
+
+test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 70 filtered out; finished in 0.00s

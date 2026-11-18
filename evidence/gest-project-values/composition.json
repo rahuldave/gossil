@@ -1,0 +1,89 @@
+{
+  "base": "add7e254a7da74afe54271f3cd1d270fe34ef5fd",
+  "accepted_main": "0a4e691252110052c3867dac078cb28120fc1117",
+  "stack_parent": "gest/oyntmozu-gest-values-delivery",
+  "helper_body_parity_ignoring_whitespace_and_error_type_name": {
+    "string": true,
+    "identifier": true,
+    "timestamp": true
+  },
+  "accepted_task_public_content_preserved": true,
+  "exact_composition": [
+    {
+      "path": "src/gest_project_values.rs",
+      "sha256": "0dac15c1fe9a66079d68ce9b1bc3da370f4ca44f01fab3089ea73834d573969a",
+      "exact_source_equal": true
+    },
+    {
+      "path": "src/gest_value_validation.rs",
+      "sha256": "3e72f89bcdfbdfae216611f052851e5287d39762fad13b076cffda6215503a20",
+      "exact_source_equal": true
+    },
+    {
+      "path": "tests/gest_project_values.rs",
+      "sha256": "d20246ad08634975ca65b8b015c96382bac5ee5bb3fa018645a62f63210d0381",
+      "exact_source_equal": true
+    },
+    {
+      "path": "tests/fixtures/gest_project_values/records.json",
+      "sha256": "cbc77b3e49e4b77cd0d50b275de8b2f7b6e5a55c943d4de7880a231e81bb712a",
+      "exact_source_equal": true
+    },
+    {
+      "path": "tests/fixtures/gest_project_values/source-map.json",
+      "sha256": "6a9c6149760ae0597748fe6abe52c2885b6b4412a631a0210cd1639775761771",
+      "exact_source_equal": true
+    },
+    {
+      "path": "tests/fixtures/gest_catalog_values/source-map.json",
+      "sha256": "e5e335a85a8c715c1fd92ef9fbb05532cc82e056ddb3525825f41b1329c4a870",
+      "exact_source_equal": true
+    }
+  ],
+  "broader_catalog_map": "Frozen provenance only, retained to resolve exact project map relative reference; no other model implementations copied.",
+  "source_review": "evidence/gest-project-values/source-review.json; frozen prior bounded independent source review, not integration gate",
+  "tests": "24 existing TaskValues and seven existing ProjectValues controls plus five helper controls; no new tests needed because these exercise adapter type/ID/initial/canonical cause paths",
+  "incomplete": [
+    "lower prerequisite acceptance",
+    "fresh independent integration/extraction/prose review",
+    "formal gates",
+    "persistence",
+    "full inherited project API tests",
+    "CLI"
+  ],
+  "prose_status": "Author check 0 hard; independent revision and formal records pending coordinator gates. Applied nossaifd (Rosalind Reid, Shreya Shankar) and declaude (Oskar Austegard); no source prose copied.",
+  "focused_execution": {
+    "tests": 31,
+    "helpers": 5,
+    "failures": 0,
+    "ignored": 0,
+    "LLVM": false,
+    "target": "/tmp/gossil-project-values-integration-target"
+  },
+  "evidence_presentation": {
+    "historical_reviewed_tree": "4c50e22ddeafa3de6874ebb9c0315dc9fb8466b5",
+    "raw_logs_preserved": true,
+    "records": [
+      {
+        "raw_archive": "evidence/gest-project-values/focused-tests.raw.log.gz",
+        "raw_archive_sha256": "f3e67eaf03cbdb18d0a566d68a30617d7272d89edd2579c0bffc1e1d881e3172",
+        "decompressed_raw_sha256": "3d2c4cb492c74a44e7e5d37a5f7095ce0ab06d59fa29e8ec7f5436535ce1e6e7",
+        "normalized_log": "evidence/gest-project-values/focused-tests.log",
+        "normalized_sha256": "ae41d369e55e0f2801da148c7d9c09b5eb72f9c9ee2d71adc6147239817bac3d",
+        "removed_trailing_newline_bytes": 1,
+        "normalization": "Remove only extra terminal LF bytes, leaving exactly one terminal LF; all preceding bytes unchanged.",
+        "gzip_mtime": 0
+      },
+      {
+        "raw_archive": "evidence/gest-project-values/helper-tests.raw.log.gz",
+        "raw_archive_sha256": "f4ce9e4d065c4ff427fd759ea2ba2e2a7c327cc1fe7c562b42f944b219df465b",
+        "decompressed_raw_sha256": "9103529c60d9faa22dfd9ae451759a7516a5aae998cd5c64e2fed0a8e1b6ec5f",
+        "normalized_log": "evidence/gest-project-values/helper-tests.log",
+        "normalized_sha256": "c2611b410a3043b9e3706bbe18fa4d86ce411b103089b7251ad5c3b05c101843",
+        "removed_trailing_newline_bytes": 1,
+        "normalization": "Remove only extra terminal LF bytes, leaving exactly one terminal LF; all preceding bytes unchanged.",
+        "gzip_mtime": 0
+      }
+    ]
+  }
+}

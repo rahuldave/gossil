@@ -1,0 +1,78 @@
+{
+  "model": "project",
+  "canonical_fields": [
+    {
+      "name": "id",
+      "sql": "TEXT PRIMARY KEY NOT NULL",
+      "nullable": false,
+      "canonical_field": "gest_id",
+      "sqlite_decl_allows_null": false,
+      "owned_value_rule": "full 32-character [k-z] ID",
+      "local_surface": "src/gest_project_values.rs:gest_id",
+      "local_test_file": "tests/gest_project_values.rs"
+    },
+    {
+      "name": "created_at",
+      "sql": "TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))",
+      "nullable": false,
+      "canonical_field": "created_at",
+      "sqlite_decl_allows_null": false,
+      "owned_value_rule": "source chrono 0.4.44 RFC3339 -> UTC; canonical output reparse and <=9 fractional digits, no ordering",
+      "local_surface": "src/gest_project_values.rs:created_at",
+      "local_test_file": "tests/gest_project_values.rs"
+    },
+    {
+      "name": "updated_at",
+      "sql": "TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))",
+      "nullable": false,
+      "canonical_field": "updated_at",
+      "sqlite_decl_allows_null": false,
+      "owned_value_rule": "source chrono 0.4.44 RFC3339 -> UTC; canonical output reparse and <=9 fractional digits, no ordering",
+      "local_surface": "src/gest_project_values.rs:updated_at",
+      "local_test_file": "tests/gest_project_values.rs"
+    },
+    {
+      "name": "archived_at",
+      "sql": "TEXT",
+      "nullable": true,
+      "canonical_field": "archived_at",
+      "source": "src/store/migration/m00015_add_projects_archived_at.rs",
+      "sqlite_decl_allows_null": true,
+      "owned_value_rule": "null or source chrono 0.4.44 RFC3339 -> UTC; canonical output reparse and <=9 fractional digits, no ordering",
+      "local_surface": "src/gest_project_values.rs:archived_at",
+      "local_test_file": "tests/gest_project_values.rs"
+    }
+  ],
+  "complete_catalog_map": "../gest_catalog_values/source-map.json",
+  "new_converter_controls": [
+    {
+      "id": "tests/gest_project_values.rs:complete_output_round_trips_and_is_independent",
+      "classification": "new converter source-behavior control; not inherited API fixture port"
+    },
+    {
+      "id": "tests/gest_project_values.rs:every_field_rejects_wrong_types_without_parser_causes",
+      "classification": "new converter source-behavior control; not inherited API fixture port"
+    },
+    {
+      "id": "tests/gest_project_values.rs:full_identifier_domain_and_boundaries",
+      "classification": "new converter source-behavior control; not inherited API fixture port"
+    },
+    {
+      "id": "tests/gest_project_values.rs:each_timestamp_normalizes_and_round_trips",
+      "classification": "new converter source-behavior control; not inherited API fixture port"
+    },
+    {
+      "id": "tests/gest_project_values.rs:every_timestamp_retains_initial_and_canonical_parse_causes",
+      "classification": "new converter source-behavior control; not inherited API fixture port"
+    },
+    {
+      "id": "tests/gest_project_values.rs:required_fields_reject_null",
+      "classification": "new converter source-behavior control; not inherited API fixture port"
+    },
+    {
+      "id": "tests/gest_project_values.rs:archive_null_and_present_are_distinct",
+      "classification": "new converter source-behavior control; not inherited API fixture port"
+    }
+  ],
+  "exact_inherited_api_ports": 0
+}

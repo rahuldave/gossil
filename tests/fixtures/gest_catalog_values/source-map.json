@@ -1,0 +1,2763 @@
+{
+  "gest_pin": "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8",
+  "status": "source inventory plus new converter control mapping; no source API port claim",
+  "sources": [
+    {
+      "path": "/Users/rahul/Projects/gest/src/store/model/author.rs",
+      "sha256": "fe3fb4a00f27bb7c70a111c1070c3e4107c26459350ad5f7f632d32aead3bba4"
+    },
+    {
+      "path": "/Users/rahul/Projects/gest/src/store/model/primitives/author_type.rs",
+      "sha256": "51933978a31f2470e6de30d9edbdc058e0477a7156d86d6c045780267910cc9a"
+    },
+    {
+      "path": "/Users/rahul/Projects/gest/src/store/model/primitives/id.rs",
+      "sha256": "1e257f775bdbdff3922f68af9a64a374ee48c12b2b587ab8c315218e19577bbc"
+    },
+    {
+      "path": "/Users/rahul/Projects/gest/src/store/model/project.rs",
+      "sha256": "3a95afe11cf39b88a20af1ceb34a2255441c30bc9849a21d717691961eaf89c8"
+    },
+    {
+      "path": "/Users/rahul/Projects/gest/src/store/model/tag.rs",
+      "sha256": "40c657ba2dd3695c385e1485ba1e58a57d7f67622665dd736efc10b30f51c6b5"
+    }
+  ],
+  "plan_inputs": [
+    {
+      "path": "/tmp/gossil-next-gest-domain-plan-20261118/report.json",
+      "sha256": "0ee792352100083ff8ffd51ee99f2e4fe468d3ac7744defcfd407394bc2aa8da"
+    },
+    {
+      "path": "/tmp/gossil-next-gest-domain-plan-20261118/test-accounting-addendum.json",
+      "sha256": "afddd1c2f5e905f72126209605737cc80e63791870d3ce8bd59f26c9589d8454"
+    },
+    {
+      "path": "/tmp/gossil-next-gest-domain-plan-20261118/remaining-model-fields.json",
+      "sha256": "d3003b61df971a5e163229e1a12cb24d1338a868ef3160f66b63f63e9cad496f"
+    },
+    {
+      "path": "/tmp/gossil-next-gest-domain-plan-20261118/source-hashes.json",
+      "sha256": "ca5fbd3a71ec952b3f7a0c34faf231bb15ecf6759bee99ed3822f9bd2e269aa0"
+    },
+    {
+      "path": "/tmp/gossil-next-gest-domain-plan-20261118/inherited-test-map.json",
+      "sha256": "8facda5b0f30a933729882bbc65077f35c7dd2ba9b19c681bc32433c9c127aa9"
+    }
+  ],
+  "models": [
+    {
+      "table": "projects",
+      "canonical_kind": "project",
+      "canonical_fields": [
+        {
+          "name": "id",
+          "sql": "TEXT PRIMARY KEY NOT NULL",
+          "nullable": false,
+          "canonical_field": "gest_id",
+          "sqlite_decl_allows_null": false,
+          "owned_value_rule": "full 32-character [k-z] ID",
+          "local_surface": "src/gest_project_values.rs:gest_id",
+          "local_test_file": "tests/gest_project_values.rs"
+        },
+        {
+          "name": "created_at",
+          "sql": "TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))",
+          "nullable": false,
+          "canonical_field": "created_at",
+          "sqlite_decl_allows_null": false,
+          "owned_value_rule": "source chrono 0.4.44 RFC3339 -> UTC; canonical output reparse and <=9 fractional digits, no ordering",
+          "local_surface": "src/gest_project_values.rs:created_at",
+          "local_test_file": "tests/gest_project_values.rs"
+        },
+        {
+          "name": "updated_at",
+          "sql": "TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))",
+          "nullable": false,
+          "canonical_field": "updated_at",
+          "sqlite_decl_allows_null": false,
+          "owned_value_rule": "source chrono 0.4.44 RFC3339 -> UTC; canonical output reparse and <=9 fractional digits, no ordering",
+          "local_surface": "src/gest_project_values.rs:updated_at",
+          "local_test_file": "tests/gest_project_values.rs"
+        },
+        {
+          "name": "archived_at",
+          "sql": "TEXT",
+          "nullable": true,
+          "canonical_field": "archived_at",
+          "source": "src/store/migration/m00015_add_projects_archived_at.rs",
+          "sqlite_decl_allows_null": true,
+          "owned_value_rule": "null or source chrono 0.4.44 RFC3339 -> UTC; canonical output reparse and <=9 fractional digits, no ordering",
+          "local_surface": "src/gest_project_values.rs:archived_at",
+          "local_test_file": "tests/gest_project_values.rs"
+        }
+      ],
+      "excluded_fields": [
+        {
+          "name": "root",
+          "sql": "TEXT NOT NULL UNIQUE",
+          "nullable": false,
+          "canonical_field": null,
+          "classification": "local checkout binding; never automatic publication",
+          "sqlite_decl_allows_null": false
+        }
+      ],
+      "field_count": 4,
+      "source_model": "/Users/rahul/Projects/gest/src/store/model/project.rs",
+      "source_sha256": "3a95afe11cf39b88a20af1ceb34a2255441c30bc9849a21d717691961eaf89c8",
+      "source_anchors": [
+        {
+          "line": 18,
+          "source": "pub struct Model {"
+        },
+        {
+          "line": 78,
+          "source": "  pub fn new(root: PathBuf) -> Self {"
+        },
+        {
+          "line": 93,
+          "source": "impl TryFrom<Row> for Model {"
+        },
+        {
+          "line": 96,
+          "source": "  fn try_from(row: Row) -> Result<Self, Self::Error> {"
+        }
+      ],
+      "constraints": [],
+      "indexes": [],
+      "foreign_keys": [],
+      "native_identity": null,
+      "configured_envelope_fields": [
+        "gossil_kind",
+        "gossil_schema",
+        "gossil_deleted"
+      ]
+    },
+    {
+      "table": "authors",
+      "canonical_kind": "author",
+      "canonical_fields": [
+        {
+          "name": "id",
+          "sql": "TEXT PRIMARY KEY",
+          "nullable": false,
+          "canonical_field": "gest_id",
+          "sqlite_decl_allows_null": true,
+          "owned_value_rule": "full 32-character [k-z] ID",
+          "local_surface": "src/gest_author_values.rs:gest_id",
+          "local_test_file": "tests/gest_author_values.rs"
+        },
+        {
+          "name": "author_type",
+          "sql": "TEXT NOT NULL DEFAULT 'human'",
+          "nullable": false,
+          "canonical_field": "author_type",
+          "sqlite_decl_allows_null": false,
+          "owned_value_rule": "AuthorType::FromStr case-insensitive agent/human; Display output",
+          "local_surface": "src/gest_author_values.rs:author_type",
+          "local_test_file": "tests/gest_author_values.rs"
+        },
+        {
+          "name": "name",
+          "sql": "TEXT NOT NULL",
+          "nullable": false,
+          "canonical_field": "name",
+          "sqlite_decl_allows_null": false,
+          "owned_value_rule": "exact string, no content restriction",
+          "local_surface": "src/gest_author_values.rs:name",
+          "local_test_file": "tests/gest_author_values.rs"
+        },
+        {
+          "name": "email",
+          "sql": "TEXT",
+          "nullable": true,
+          "canonical_field": "email",
+          "sqlite_decl_allows_null": true,
+          "owned_value_rule": "null or exact string, no content restriction",
+          "local_surface": "src/gest_author_values.rs:email",
+          "local_test_file": "tests/gest_author_values.rs"
+        },
+        {
+          "name": "created_at",
+          "sql": "TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))",
+          "nullable": false,
+          "canonical_field": "created_at",
+          "sqlite_decl_allows_null": false,
+          "owned_value_rule": "source chrono 0.4.44 RFC3339 -> UTC; canonical output reparse and <=9 fractional digits, no ordering",
+          "local_surface": "src/gest_author_values.rs:created_at",
+          "local_test_file": "tests/gest_author_values.rs"
+        },
+        {
+          "name": "updated_at",
+          "sql": "TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))",
+          "nullable": false,
+          "canonical_field": "updated_at",
+          "sqlite_decl_allows_null": false,
+          "owned_value_rule": "source chrono 0.4.44 RFC3339 -> UTC; canonical output reparse and <=9 fractional digits, no ordering",
+          "local_surface": "src/gest_author_values.rs:updated_at",
+          "local_test_file": "tests/gest_author_values.rs"
+        }
+      ],
+      "excluded_fields": [],
+      "field_count": 6,
+      "source_model": "/Users/rahul/Projects/gest/src/store/model/author.rs",
+      "source_sha256": "fe3fb4a00f27bb7c70a111c1070c3e4107c26459350ad5f7f632d32aead3bba4",
+      "source_anchors": [
+        {
+          "line": 13,
+          "source": "pub struct Model {"
+        },
+        {
+          "line": 45,
+          "source": "  pub fn new(name: impl Into<String>, author_type: AuthorType) -> Self {"
+        },
+        {
+          "line": 75,
+          "source": "impl TryFrom<Row> for Model {"
+        },
+        {
+          "line": 78,
+          "source": "  fn try_from(row: Row) -> Result<Self, Self::Error> {"
+        }
+      ],
+      "constraints": [],
+      "indexes": [
+        {
+          "name": "idx_authors_name_email",
+          "unique": true,
+          "ordered_columns": [
+            "name",
+            "email"
+          ],
+          "source": "src/store/migration/m00003_create_authors.rs",
+          "line": 17,
+          "null_semantics": "any NULL component permits another row under SQLite UNIQUE"
+        }
+      ],
+      "foreign_keys": [],
+      "native_identity": null,
+      "configured_envelope_fields": [
+        "gossil_kind",
+        "gossil_schema",
+        "gossil_deleted"
+      ]
+    },
+    {
+      "table": "tags",
+      "canonical_kind": "tag",
+      "canonical_fields": [
+        {
+          "name": "id",
+          "sql": "TEXT PRIMARY KEY",
+          "nullable": false,
+          "canonical_field": "gest_id",
+          "sqlite_decl_allows_null": true,
+          "owned_value_rule": "full 32-character [k-z] ID",
+          "local_surface": "src/gest_tag_values.rs:gest_id",
+          "local_test_file": "tests/gest_tag_values.rs"
+        },
+        {
+          "name": "label",
+          "sql": "TEXT NOT NULL UNIQUE",
+          "nullable": false,
+          "canonical_field": "label",
+          "sqlite_decl_allows_null": false,
+          "owned_value_rule": "exact string, no content restriction",
+          "local_surface": "src/gest_tag_values.rs:label",
+          "local_test_file": "tests/gest_tag_values.rs"
+        },
+        {
+          "name": "created_at",
+          "sql": "TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))",
+          "nullable": false,
+          "canonical_field": "created_at",
+          "sqlite_decl_allows_null": false,
+          "owned_value_rule": "source chrono 0.4.44 RFC3339 -> UTC; canonical output reparse and <=9 fractional digits, no ordering",
+          "local_surface": "src/gest_tag_values.rs:created_at",
+          "local_test_file": "tests/gest_tag_values.rs"
+        },
+        {
+          "name": "updated_at",
+          "sql": "TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))",
+          "nullable": false,
+          "canonical_field": "updated_at",
+          "sqlite_decl_allows_null": false,
+          "owned_value_rule": "source chrono 0.4.44 RFC3339 -> UTC; canonical output reparse and <=9 fractional digits, no ordering",
+          "local_surface": "src/gest_tag_values.rs:updated_at",
+          "local_test_file": "tests/gest_tag_values.rs"
+        }
+      ],
+      "excluded_fields": [],
+      "field_count": 4,
+      "source_model": "/Users/rahul/Projects/gest/src/store/model/tag.rs",
+      "source_sha256": "40c657ba2dd3695c385e1485ba1e58a57d7f67622665dd736efc10b30f51c6b5",
+      "source_anchors": [
+        {
+          "line": 13,
+          "source": "pub struct Model {"
+        },
+        {
+          "line": 38,
+          "source": "  pub fn new(label: impl Into<String>) -> Self {"
+        },
+        {
+          "line": 52,
+          "source": "impl TryFrom<Row> for Model {"
+        },
+        {
+          "line": 55,
+          "source": "  fn try_from(row: Row) -> Result<Self, Self::Error> {"
+        }
+      ],
+      "constraints": [],
+      "indexes": [],
+      "foreign_keys": [],
+      "native_identity": null,
+      "configured_envelope_fields": [
+        "gossil_kind",
+        "gossil_schema",
+        "gossil_deleted"
+      ]
+    }
+  ],
+  "source_api_obligations": [
+    {
+      "test_id": "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/model/author.rs:115:it_creates_a_human_author",
+      "fixture_sha256": "1ba99c58ebd43e6afe4a86a17663c24a4797d554e51867142c8b03a1bf081559",
+      "assertion_ids": [
+        "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/model/author.rs:119:assert_eq",
+        "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/model/author.rs:120:assert_eq",
+        "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/model/author.rs:121:assert_eq"
+      ],
+      "subject": "constructor/builder/getter",
+      "classification": "later exact API/domain-primitive obligation",
+      "exact_port_in_minimal_owned_seam": false,
+      "adopted_replacement": false,
+      "reason": "Exact fixture invokes Model::new (ID/clock generation) and/or with_email/getters, none exposed by owned input conversion. Explicit fixture fields may supply new value controls but are not exact source ports."
+    },
+    {
+      "test_id": "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/model/author.rs:124:it_creates_an_agent_author",
+      "fixture_sha256": "2f72bedf4587633c311fa37bd8b9b9467eb8a2850aed30006101f2d3f8c6a8db",
+      "assertion_ids": [
+        "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/model/author.rs:128:assert_eq"
+      ],
+      "subject": "constructor/builder/getter",
+      "classification": "later exact API/domain-primitive obligation",
+      "exact_port_in_minimal_owned_seam": false,
+      "adopted_replacement": false,
+      "reason": "Exact fixture invokes Model::new (ID/clock generation) and/or with_email/getters, none exposed by owned input conversion. Explicit fixture fields may supply new value controls but are not exact source ports."
+    },
+    {
+      "test_id": "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/model/author.rs:137:it_sets_the_email",
+      "fixture_sha256": "cce7ec4d124b730575452cccd0cf42cdc4359ecf4ad07d4f76859d09be0bfb6e",
+      "assertion_ids": [
+        "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/model/author.rs:141:assert_eq"
+      ],
+      "subject": "constructor/builder/getter",
+      "classification": "later exact API/domain-primitive obligation",
+      "exact_port_in_minimal_owned_seam": false,
+      "adopted_replacement": false,
+      "reason": "Exact fixture invokes Model::new (ID/clock generation) and/or with_email/getters, none exposed by owned input conversion. Explicit fixture fields may supply new value controls but are not exact source ports."
+    },
+    {
+      "test_id": "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/model/primitives/author_type.rs:52:it_formats_agent",
+      "fixture_sha256": "1a0620a50eeab4f51753b31541146ca68382885fb183c32c42a2a05bc76248a6",
+      "assertion_ids": [
+        "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/model/primitives/author_type.rs:54:assert_eq"
+      ],
+      "subject": "enum Display",
+      "classification": "later exact API/domain-primitive obligation",
+      "exact_port_in_minimal_owned_seam": false,
+      "adopted_replacement": false,
+      "reason": "Canonical string field output is related but does not invoke Primitive variant Display. Preserve at later enum/API seam; string output assertions now are new source-behavior controls."
+    },
+    {
+      "test_id": "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/model/primitives/author_type.rs:57:it_formats_human",
+      "fixture_sha256": "5a798b0a79d17e36f9993b780025d5044842794974a5e5b51af2577e038e522c",
+      "assertion_ids": [
+        "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/model/primitives/author_type.rs:59:assert_eq"
+      ],
+      "subject": "enum Display",
+      "classification": "later exact API/domain-primitive obligation",
+      "exact_port_in_minimal_owned_seam": false,
+      "adopted_replacement": false,
+      "reason": "Canonical string field output is related but does not invoke Primitive variant Display. Preserve at later enum/API seam; string output assertions now are new source-behavior controls."
+    },
+    {
+      "test_id": "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/model/primitives/author_type.rs:66:it_parses_case_insensitively",
+      "fixture_sha256": "3339af663f44f823b6d5f2686835d5530583bfc85a7bf49fea810d50ef15fbf3",
+      "assertion_ids": [
+        "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/model/primitives/author_type.rs:68:assert_eq",
+        "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/model/primitives/author_type.rs:69:assert_eq"
+      ],
+      "subject": "enum FromStr",
+      "classification": "later exact API/domain-primitive obligation",
+      "exact_port_in_minimal_owned_seam": false,
+      "adopted_replacement": false,
+      "reason": "String-field validator accepts/rejects same source spellings but returns validated record/canonical string, not Primitive. Preserve exact .parse::<Primitive>() assertions at later primitive/API seam; conversion case controls are new source-behavior controls."
+    },
+    {
+      "test_id": "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/model/primitives/author_type.rs:72:it_rejects_invalid",
+      "fixture_sha256": "9db923388ca89cff960a6d590fcd4b032e3e9bce7bdcbe10ea5f3a0f6e6ab1f4",
+      "assertion_ids": [
+        "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/model/primitives/author_type.rs:74:assert"
+      ],
+      "subject": "enum FromStr",
+      "classification": "later exact API/domain-primitive obligation",
+      "exact_port_in_minimal_owned_seam": false,
+      "adopted_replacement": false,
+      "reason": "String-field validator accepts/rejects same source spellings but returns validated record/canonical string, not Primitive. Preserve exact .parse::<Primitive>() assertions at later primitive/API seam; conversion case controls are new source-behavior controls."
+    },
+    {
+      "test_id": "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/model/project.rs:137:it_sets_timestamps_to_now",
+      "fixture_sha256": "131450377ee1e6f92f8f4e06da84674fd66462907ac83643071e5553e4b1c588",
+      "assertion_ids": [
+        "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/model/project.rs:143:assert",
+        "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/model/project.rs:144:assert_eq"
+      ],
+      "subject": "constructor/builder/getter",
+      "classification": "later exact API/domain-primitive obligation",
+      "exact_port_in_minimal_owned_seam": false,
+      "adopted_replacement": false,
+      "reason": "Exact fixture invokes Model::new (ID/clock generation) and/or with_email/getters, none exposed by owned input conversion. Explicit fixture fields may supply new value controls but are not exact source ports."
+    },
+    {
+      "test_id": "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/model/tag.rs:87:it_creates_a_tag_with_label",
+      "fixture_sha256": "6a5dd6e4fdba81e64a28b814e14d107703b55832622141144114b33fa959b7b9",
+      "assertion_ids": [
+        "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/model/tag.rs:91:assert_eq"
+      ],
+      "subject": "constructor/builder/getter",
+      "classification": "later exact API/domain-primitive obligation",
+      "exact_port_in_minimal_owned_seam": false,
+      "adopted_replacement": false,
+      "reason": "Exact fixture invokes Model::new (ID/clock generation) and/or with_email/getters, none exposed by owned input conversion. Explicit fixture fields may supply new value controls but are not exact source ports."
+    }
+  ],
+  "source_repository_obligations": [
+    {
+      "file": "src/store/repo/author.rs",
+      "line": 178,
+      "function": "it_returns_authors_sorted_by_name",
+      "ignored": false,
+      "stable_id": "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/author.rs:178:it_returns_authors_sorted_by_name",
+      "disposition": "preserve inherited assertions under domain-adapter; no schema-roundtrip claim",
+      "result": "not-run by draft revision",
+      "family": "domain",
+      "owner": "domain-adapter",
+      "operation_refs": [
+        "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/author.rs:30:create"
+      ],
+      "assertion_ids": [
+        "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/author.rs:188:assert_eq",
+        "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/author.rs:189:assert_eq",
+        "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/author.rs:190:assert_eq"
+      ],
+      "operation_link_evidence": [
+        {
+          "line": 184,
+          "call": "create",
+          "operations": [
+            "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/author.rs:30:create"
+          ]
+        },
+        {
+          "line": 184,
+          "call": "create",
+          "operations": [
+            "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/author.rs:30:create"
+          ]
+        },
+        {
+          "line": 185,
+          "call": "create",
+          "operations": [
+            "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/author.rs:30:create"
+          ]
+        },
+        {
+          "line": 185,
+          "call": "create",
+          "operations": [
+            "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/author.rs:30:create"
+          ]
+        }
+      ],
+      "ownership_class": "direct operation contract",
+      "ownership_reason": "Exact calls or literal CLI input in this inherited test resolve to the listed operations; setup helpers are retained in the fixture, not linked universally.",
+      "fixture_source": "async fn it_returns_authors_sorted_by_name() {\n      let (_store, conn, _tmp) = setup().await;\n\n      let b = Author::new(\"Bravo\", AuthorType::Human);\n      let a = Author::new(\"Alpha\", AuthorType::Agent);\n      create(&conn, &b).await.unwrap();\n      create(&conn, &a).await.unwrap();\n\n      let authors = all(&conn).await.unwrap();\n      assert_eq!(authors.len(), 2);\n      assert_eq!(authors[0].name(), \"Alpha\");\n      assert_eq!(authors[1].name(), \"Bravo\");\n    }",
+      "fixture_sha256": "e84dea5e58f717499d5ec7fefea54d73d2462366d654ac13fc07d385bd632018"
+    },
+    {
+      "file": "src/store/repo/author.rs",
+      "line": 199,
+      "function": "it_persists_the_author",
+      "ignored": false,
+      "stable_id": "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/author.rs:199:it_persists_the_author",
+      "disposition": "preserve inherited assertions under domain-adapter; no schema-roundtrip claim",
+      "result": "not-run by draft revision",
+      "family": "domain",
+      "owner": "domain-adapter",
+      "operation_refs": [
+        "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/author.rs:30:create"
+      ],
+      "assertion_ids": [
+        "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/author.rs:206:assert_eq",
+        "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/author.rs:207:assert_eq",
+        "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/author.rs:208:assert_eq"
+      ],
+      "operation_link_evidence": [
+        {
+          "line": 204,
+          "call": "create",
+          "operations": [
+            "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/author.rs:30:create"
+          ]
+        },
+        {
+          "line": 204,
+          "call": "create",
+          "operations": [
+            "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/author.rs:30:create"
+          ]
+        }
+      ],
+      "ownership_class": "direct operation contract",
+      "ownership_reason": "Exact calls or literal CLI input in this inherited test resolve to the listed operations; setup helpers are retained in the fixture, not linked universally.",
+      "fixture_source": "async fn it_persists_the_author() {\n      let (_store, conn, _tmp) = setup().await;\n\n      let author = Author::new(\"Alice\", AuthorType::Human).with_email(\"alice@example.com\");\n      let created = create(&conn, &author).await.unwrap();\n\n      assert_eq!(created.name(), \"Alice\");\n      assert_eq!(created.email().as_deref(), Some(\"alice@example.com\"));\n      assert_eq!(created.author_type(), AuthorType::Human);\n    }",
+      "fixture_sha256": "364f758b6fb574e4cdf1faa965d0e6c29b244c8b382e8863435c4dbfd0b431d0"
+    },
+    {
+      "file": "src/store/repo/author.rs",
+      "line": 217,
+      "function": "it_finds_by_name_without_email",
+      "ignored": false,
+      "stable_id": "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/author.rs:217:it_finds_by_name_without_email",
+      "disposition": "preserve inherited assertions under domain-adapter; no schema-roundtrip claim",
+      "result": "not-run by draft revision",
+      "family": "domain",
+      "owner": "domain-adapter",
+      "operation_refs": [
+        "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/author.rs:30:create",
+        "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/author.rs:92:find_by_name"
+      ],
+      "assertion_ids": [
+        "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/author.rs:226:assert_eq"
+      ],
+      "operation_link_evidence": [
+        {
+          "line": 222,
+          "call": "create",
+          "operations": [
+            "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/author.rs:30:create"
+          ]
+        },
+        {
+          "line": 222,
+          "call": "create",
+          "operations": [
+            "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/author.rs:30:create"
+          ]
+        },
+        {
+          "line": 224,
+          "call": "find_by_name",
+          "operations": [
+            "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/author.rs:92:find_by_name"
+          ]
+        },
+        {
+          "line": 224,
+          "call": "find_by_name",
+          "operations": [
+            "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/author.rs:92:find_by_name"
+          ]
+        }
+      ],
+      "ownership_class": "direct operation contract",
+      "ownership_reason": "Exact calls or literal CLI input in this inherited test resolve to the listed operations; setup helpers are retained in the fixture, not linked universally.",
+      "fixture_source": "async fn it_finds_by_name_without_email() {\n      let (_store, conn, _tmp) = setup().await;\n\n      let author = Author::new(\"Bob\", AuthorType::Agent);\n      create(&conn, &author).await.unwrap();\n\n      let found = find_by_name(&conn, \"Bob\", None).await.unwrap();\n\n      assert_eq!(found.as_ref().map(|a| a.name().as_str()), Some(\"Bob\"));\n    }",
+      "fixture_sha256": "4ecd3250ef674d832e975f823275fe02278e307192c0da4a4258c0b570b9c18c"
+    },
+    {
+      "file": "src/store/repo/author.rs",
+      "line": 229,
+      "function": "it_returns_none_when_not_found",
+      "ignored": false,
+      "stable_id": "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/author.rs:229:it_returns_none_when_not_found",
+      "disposition": "preserve inherited assertions under domain-adapter; no schema-roundtrip claim",
+      "result": "not-run by draft revision",
+      "family": "domain",
+      "owner": "domain-adapter",
+      "operation_refs": [
+        "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/author.rs:92:find_by_name"
+      ],
+      "assertion_ids": [
+        "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/author.rs:235:assert_eq"
+      ],
+      "operation_link_evidence": [
+        {
+          "line": 233,
+          "call": "find_by_name",
+          "operations": [
+            "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/author.rs:92:find_by_name"
+          ]
+        },
+        {
+          "line": 233,
+          "call": "find_by_name",
+          "operations": [
+            "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/author.rs:92:find_by_name"
+          ]
+        }
+      ],
+      "ownership_class": "direct operation contract",
+      "ownership_reason": "Exact calls or literal CLI input in this inherited test resolve to the listed operations; setup helpers are retained in the fixture, not linked universally.",
+      "fixture_source": "async fn it_returns_none_when_not_found() {\n      let (_store, conn, _tmp) = setup().await;\n\n      let found = find_by_name(&conn, \"Nobody\", None).await.unwrap();\n\n      assert_eq!(found, None);\n    }",
+      "fixture_sha256": "339efa30148685d98be7250713833805a45029f9e4ee17565ee858a505b9c516"
+    },
+    {
+      "file": "src/store/repo/author.rs",
+      "line": 244,
+      "function": "it_creates_when_not_found",
+      "ignored": false,
+      "stable_id": "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/author.rs:244:it_creates_when_not_found",
+      "disposition": "preserve inherited assertions under domain-adapter; no schema-roundtrip claim",
+      "result": "not-run by draft revision",
+      "family": "domain",
+      "owner": "domain-adapter",
+      "operation_refs": [
+        "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/author.rs:127:find_or_create"
+      ],
+      "assertion_ids": [
+        "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/author.rs:252:assert_eq"
+      ],
+      "operation_link_evidence": [
+        {
+          "line": 248,
+          "call": "find_or_create",
+          "operations": [
+            "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/author.rs:127:find_or_create"
+          ]
+        },
+        {
+          "line": 248,
+          "call": "find_or_create",
+          "operations": [
+            "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/author.rs:127:find_or_create"
+          ]
+        }
+      ],
+      "ownership_class": "direct operation contract",
+      "ownership_reason": "Exact calls or literal CLI input in this inherited test resolve to the listed operations; setup helpers are retained in the fixture, not linked universally.",
+      "fixture_source": "async fn it_creates_when_not_found() {\n      let (_store, conn, _tmp) = setup().await;\n\n      let author = find_or_create(&conn, \"New Author\", None, AuthorType::Human)\n        .await\n        .unwrap();\n\n      assert_eq!(author.name(), \"New Author\");\n    }",
+      "fixture_sha256": "541a6b2b126ef73a36d8c910e1855214140ffa0054ebf1cf8ad070e6488c99c3"
+    },
+    {
+      "file": "src/store/repo/author.rs",
+      "line": 255,
+      "function": "it_returns_existing_when_found",
+      "ignored": false,
+      "stable_id": "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/author.rs:255:it_returns_existing_when_found",
+      "disposition": "preserve inherited assertions under domain-adapter; no schema-roundtrip claim",
+      "result": "not-run by draft revision",
+      "family": "domain",
+      "owner": "domain-adapter",
+      "operation_refs": [
+        "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/author.rs:127:find_or_create"
+      ],
+      "assertion_ids": [
+        "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/author.rs:266:assert_eq"
+      ],
+      "operation_link_evidence": [
+        {
+          "line": 259,
+          "call": "find_or_create",
+          "operations": [
+            "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/author.rs:127:find_or_create"
+          ]
+        },
+        {
+          "line": 259,
+          "call": "find_or_create",
+          "operations": [
+            "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/author.rs:127:find_or_create"
+          ]
+        },
+        {
+          "line": 262,
+          "call": "find_or_create",
+          "operations": [
+            "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/author.rs:127:find_or_create"
+          ]
+        },
+        {
+          "line": 262,
+          "call": "find_or_create",
+          "operations": [
+            "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/author.rs:127:find_or_create"
+          ]
+        }
+      ],
+      "ownership_class": "direct operation contract",
+      "ownership_reason": "Exact calls or literal CLI input in this inherited test resolve to the listed operations; setup helpers are retained in the fixture, not linked universally.",
+      "fixture_source": "async fn it_returns_existing_when_found() {\n      let (_store, conn, _tmp) = setup().await;\n\n      let first = find_or_create(&conn, \"Same Author\", None, AuthorType::Human)\n        .await\n        .unwrap();\n      let second = find_or_create(&conn, \"Same Author\", None, AuthorType::Human)\n        .await\n        .unwrap();\n\n      assert_eq!(first.id(), second.id());\n    }",
+      "fixture_sha256": "12bc8d8de592c0bd83f64c24dae9136bbab2901f7cc0a81aa21a78dfe5a3c87e"
+    },
+    {
+      "file": "src/store/repo/project.rs",
+      "line": 640,
+      "function": "it_excludes_archived_projects_by_default",
+      "ignored": false,
+      "stable_id": "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/project.rs:640:it_excludes_archived_projects_by_default",
+      "disposition": "preserve inherited assertions under domain-adapter; no schema-roundtrip claim",
+      "result": "not-run by draft revision",
+      "family": "domain",
+      "owner": "domain-adapter",
+      "operation_refs": [
+        "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/project.rs:150:create",
+        "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/project.rs:37:all",
+        "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/project.rs:64:archive"
+      ],
+      "assertion_ids": [
+        "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/project.rs:650:assert_eq",
+        "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/project.rs:651:assert_eq"
+      ],
+      "operation_link_evidence": [
+        {
+          "line": 644,
+          "call": "create",
+          "operations": [
+            "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/project.rs:150:create"
+          ]
+        },
+        {
+          "line": 644,
+          "call": "create",
+          "operations": [
+            "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/project.rs:150:create"
+          ]
+        },
+        {
+          "line": 645,
+          "call": "create",
+          "operations": [
+            "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/project.rs:150:create"
+          ]
+        },
+        {
+          "line": 645,
+          "call": "create",
+          "operations": [
+            "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/project.rs:150:create"
+          ]
+        },
+        {
+          "line": 646,
+          "call": "archive",
+          "operations": [
+            "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/project.rs:64:archive"
+          ]
+        },
+        {
+          "line": 646,
+          "call": "archive",
+          "operations": [
+            "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/project.rs:64:archive"
+          ]
+        },
+        {
+          "line": 648,
+          "call": "all",
+          "operations": [
+            "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/project.rs:37:all"
+          ]
+        },
+        {
+          "line": 648,
+          "call": "all",
+          "operations": [
+            "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/project.rs:37:all"
+          ]
+        }
+      ],
+      "ownership_class": "direct operation contract",
+      "ownership_reason": "Exact calls or literal CLI input in this inherited test resolve to the listed operations; setup helpers are retained in the fixture, not linked universally.",
+      "fixture_source": "async fn it_excludes_archived_projects_by_default() {\n      let (_store, conn, _tmp) = setup().await;\n\n      create(&conn, \"/tmp/active\").await.unwrap();\n      let archived = create(&conn, \"/tmp/archived\").await.unwrap();\n      archive(&conn, archived.id()).await.unwrap();\n\n      let projects = all(&conn, false).await.unwrap();\n\n      assert_eq!(projects.len(), 1);\n      assert_eq!(projects[0].root().to_string_lossy(), \"/tmp/active\");\n    }",
+      "fixture_sha256": "27ff25b4e25c36e76987d813798b7684be2ccf585defb8f5c82fa1403350c289"
+    },
+    {
+      "file": "src/store/repo/project.rs",
+      "line": 654,
+      "function": "it_includes_archived_projects_when_requested",
+      "ignored": false,
+      "stable_id": "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/project.rs:654:it_includes_archived_projects_when_requested",
+      "disposition": "preserve inherited assertions under domain-adapter; no schema-roundtrip claim",
+      "result": "not-run by draft revision",
+      "family": "domain",
+      "owner": "domain-adapter",
+      "operation_refs": [
+        "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/project.rs:150:create",
+        "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/project.rs:37:all",
+        "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/project.rs:64:archive"
+      ],
+      "assertion_ids": [
+        "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/project.rs:664:assert_eq"
+      ],
+      "operation_link_evidence": [
+        {
+          "line": 658,
+          "call": "create",
+          "operations": [
+            "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/project.rs:150:create"
+          ]
+        },
+        {
+          "line": 658,
+          "call": "create",
+          "operations": [
+            "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/project.rs:150:create"
+          ]
+        },
+        {
+          "line": 659,
+          "call": "create",
+          "operations": [
+            "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/project.rs:150:create"
+          ]
+        },
+        {
+          "line": 659,
+          "call": "create",
+          "operations": [
+            "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/project.rs:150:create"
+          ]
+        },
+        {
+          "line": 660,
+          "call": "archive",
+          "operations": [
+            "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/project.rs:64:archive"
+          ]
+        },
+        {
+          "line": 660,
+          "call": "archive",
+          "operations": [
+            "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/project.rs:64:archive"
+          ]
+        },
+        {
+          "line": 662,
+          "call": "all",
+          "operations": [
+            "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/project.rs:37:all"
+          ]
+        },
+        {
+          "line": 662,
+          "call": "all",
+          "operations": [
+            "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/project.rs:37:all"
+          ]
+        }
+      ],
+      "ownership_class": "direct operation contract",
+      "ownership_reason": "Exact calls or literal CLI input in this inherited test resolve to the listed operations; setup helpers are retained in the fixture, not linked universally.",
+      "fixture_source": "async fn it_includes_archived_projects_when_requested() {\n      let (_store, conn, _tmp) = setup().await;\n\n      create(&conn, \"/tmp/active\").await.unwrap();\n      let archived = create(&conn, \"/tmp/archived\").await.unwrap();\n      archive(&conn, archived.id()).await.unwrap();\n\n      let projects = all(&conn, true).await.unwrap();\n\n      assert_eq!(projects.len(), 2);\n    }",
+      "fixture_sha256": "9728a769e90519734a62f1eb4646c1159b3f9357097c79cbb07107a334df3854"
+    },
+    {
+      "file": "src/store/repo/project.rs",
+      "line": 667,
+      "function": "it_returns_an_empty_vec_when_empty",
+      "ignored": false,
+      "stable_id": "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/project.rs:667:it_returns_an_empty_vec_when_empty",
+      "disposition": "preserve inherited assertions under domain-adapter; no schema-roundtrip claim",
+      "result": "not-run by draft revision",
+      "family": "domain",
+      "owner": "domain-adapter",
+      "operation_refs": [
+        "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/project.rs:37:all"
+      ],
+      "assertion_ids": [
+        "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/project.rs:672:assert_eq"
+      ],
+      "operation_link_evidence": [
+        {
+          "line": 671,
+          "call": "all",
+          "operations": [
+            "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/project.rs:37:all"
+          ]
+        },
+        {
+          "line": 671,
+          "call": "all",
+          "operations": [
+            "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/project.rs:37:all"
+          ]
+        }
+      ],
+      "ownership_class": "direct operation contract",
+      "ownership_reason": "Exact calls or literal CLI input in this inherited test resolve to the listed operations; setup helpers are retained in the fixture, not linked universally.",
+      "fixture_source": "async fn it_returns_an_empty_vec_when_empty() {\n      let (_store, conn, _tmp) = setup().await;\n\n      let projects = all(&conn, false).await.unwrap();\n      assert_eq!(projects.len(), 0);\n    }",
+      "fixture_sha256": "32d8f4ffba6a7e7bab17bc20c0737a3776586597304abf4f4ad5b582a701bd21"
+    },
+    {
+      "file": "src/store/repo/project.rs",
+      "line": 675,
+      "function": "it_returns_projects_newest_first",
+      "ignored": false,
+      "stable_id": "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/project.rs:675:it_returns_projects_newest_first",
+      "disposition": "preserve inherited assertions under domain-adapter; no schema-roundtrip claim",
+      "result": "not-run by draft revision",
+      "family": "domain",
+      "owner": "domain-adapter",
+      "operation_refs": [
+        "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/project.rs:150:create",
+        "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/project.rs:37:all"
+      ],
+      "assertion_ids": [
+        "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/project.rs:683:assert_eq",
+        "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/project.rs:684:assert_eq",
+        "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/project.rs:685:assert_eq"
+      ],
+      "operation_link_evidence": [
+        {
+          "line": 679,
+          "call": "create",
+          "operations": [
+            "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/project.rs:150:create"
+          ]
+        },
+        {
+          "line": 679,
+          "call": "create",
+          "operations": [
+            "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/project.rs:150:create"
+          ]
+        },
+        {
+          "line": 680,
+          "call": "create",
+          "operations": [
+            "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/project.rs:150:create"
+          ]
+        },
+        {
+          "line": 680,
+          "call": "create",
+          "operations": [
+            "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/project.rs:150:create"
+          ]
+        },
+        {
+          "line": 682,
+          "call": "all",
+          "operations": [
+            "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/project.rs:37:all"
+          ]
+        },
+        {
+          "line": 682,
+          "call": "all",
+          "operations": [
+            "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/project.rs:37:all"
+          ]
+        }
+      ],
+      "ownership_class": "direct operation contract",
+      "ownership_reason": "Exact calls or literal CLI input in this inherited test resolve to the listed operations; setup helpers are retained in the fixture, not linked universally.",
+      "fixture_source": "async fn it_returns_projects_newest_first() {\n      let (_store, conn, _tmp) = setup().await;\n\n      let p1 = create(&conn, \"/tmp/first\").await.unwrap();\n      let p2 = create(&conn, \"/tmp/second\").await.unwrap();\n\n      let projects = all(&conn, false).await.unwrap();\n      assert_eq!(projects.len(), 2);\n      assert_eq!(projects[0].id(), p2.id());\n      assert_eq!(projects[1].id(), p1.id());\n    }",
+      "fixture_sha256": "e41f3cadbd80a8fc36e57c248b95edd5bc71bf36bddd6c4b533801953e4aeea5"
+    },
+    {
+      "file": "src/store/repo/project.rs",
+      "line": 694,
+      "function": "it_deletes_associated_workspaces",
+      "ignored": false,
+      "stable_id": "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/project.rs:694:it_deletes_associated_workspaces",
+      "disposition": "preserve inherited assertions under domain-adapter; no schema-roundtrip claim",
+      "result": "not-run by draft revision",
+      "family": "domain",
+      "owner": "domain-adapter",
+      "operation_refs": [
+        "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/project.rs:150:create",
+        "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/project.rs:64:archive",
+        "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/project.rs:91:attach_workspace"
+      ],
+      "assertion_ids": [
+        "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/project.rs:712:assert_eq"
+      ],
+      "operation_link_evidence": [
+        {
+          "line": 697,
+          "call": "create",
+          "operations": [
+            "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/project.rs:150:create"
+          ]
+        },
+        {
+          "line": 697,
+          "call": "create",
+          "operations": [
+            "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/project.rs:150:create"
+          ]
+        },
+        {
+          "line": 698,
+          "call": "attach_workspace",
+          "operations": [
+            "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/project.rs:91:attach_workspace"
+          ]
+        },
+        {
+          "line": 698,
+          "call": "attach_workspace",
+          "operations": [
+            "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/project.rs:91:attach_workspace"
+          ]
+        },
+        {
+          "line": 699,
+          "call": "attach_workspace",
+          "operations": [
+            "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/project.rs:91:attach_workspace"
+          ]
+        },
+        {
+          "line": 699,
+          "call": "attach_workspace",
+          "operations": [
+            "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/project.rs:91:attach_workspace"
+          ]
+        },
+        {
+          "line": 701,
+          "call": "archive",
+          "operations": [
+            "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/project.rs:64:archive"
+          ]
+        },
+        {
+          "line": 701,
+          "call": "archive",
+          "operations": [
+            "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/project.rs:64:archive"
+          ]
+        }
+      ],
+      "ownership_class": "direct operation contract",
+      "ownership_reason": "Exact calls or literal CLI input in this inherited test resolve to the listed operations; setup helpers are retained in the fixture, not linked universally.",
+      "fixture_source": "async fn it_deletes_associated_workspaces() {\n      let (_store, conn, _tmp) = setup().await;\n      let project = create(&conn, \"/tmp/archive-ws\").await.unwrap();\n      attach_workspace(&conn, project.id(), \"/tmp/ws1\").await.unwrap();\n      attach_workspace(&conn, project.id(), \"/tmp/ws2\").await.unwrap();\n\n      archive(&conn, project.id()).await.unwrap();\n\n      let mut rows = conn\n        .query(\n          \"SELECT COUNT(*) FROM project_workspaces WHERE project_id = ?1\",\n          [project.id().to_string()],\n        )\n        .await\n        .unwrap();\n      let row = rows.next().await.unwrap().unwrap();\n      let count: i64 = row.get(0).unwrap();\n      assert_eq!(count, 0);\n    }",
+      "fixture_sha256": "3341d055b17951b75f5ebe01311aa78cf8f9a18df3b2c23f07a7f5bb8d7717ad"
+    },
+    {
+      "file": "src/store/repo/project.rs",
+      "line": 715,
+      "function": "it_sets_archived_at",
+      "ignored": false,
+      "stable_id": "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/project.rs:715:it_sets_archived_at",
+      "disposition": "preserve inherited assertions under domain-adapter; no schema-roundtrip claim",
+      "result": "not-run by draft revision",
+      "family": "domain",
+      "owner": "domain-adapter",
+      "operation_refs": [
+        "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/project.rs:150:create",
+        "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/project.rs:401:find_by_id",
+        "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/project.rs:64:archive"
+      ],
+      "assertion_ids": [
+        "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/project.rs:720:assert_eq",
+        "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/project.rs:725:assert"
+      ],
+      "operation_link_evidence": [
+        {
+          "line": 718,
+          "call": "create",
+          "operations": [
+            "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/project.rs:150:create"
+          ]
+        },
+        {
+          "line": 718,
+          "call": "create",
+          "operations": [
+            "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/project.rs:150:create"
+          ]
+        },
+        {
+          "line": 722,
+          "call": "archive",
+          "operations": [
+            "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/project.rs:64:archive"
+          ]
+        },
+        {
+          "line": 722,
+          "call": "archive",
+          "operations": [
+            "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/project.rs:64:archive"
+          ]
+        },
+        {
+          "line": 724,
+          "call": "find_by_id",
+          "operations": [
+            "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/project.rs:401:find_by_id"
+          ]
+        },
+        {
+          "line": 724,
+          "call": "find_by_id",
+          "operations": [
+            "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/project.rs:401:find_by_id"
+          ]
+        },
+        {
+          "line": 724,
+          "call": "find_by_id",
+          "operations": [
+            "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/project.rs:401:find_by_id"
+          ]
+        }
+      ],
+      "ownership_class": "direct operation contract",
+      "ownership_reason": "Exact calls or literal CLI input in this inherited test resolve to the listed operations; setup helpers are retained in the fixture, not linked universally.",
+      "fixture_source": "async fn it_sets_archived_at() {\n      let (_store, conn, _tmp) = setup().await;\n      let project = create(&conn, \"/tmp/archive-test\").await.unwrap();\n\n      assert_eq!(project.archived_at(), &None);\n\n      archive(&conn, project.id()).await.unwrap();\n\n      let found = find_by_id(&conn, project.id().clone()).await.unwrap().unwrap();\n      assert!(found.archived_at().is_some());\n    }",
+      "fixture_sha256": "af72693a9a2976842c47bd20252987c27046859c7c648039f5380a8dad3a34b9"
+    },
+    {
+      "file": "src/store/repo/project.rs",
+      "line": 734,
+      "function": "it_does_not_write_yaml_when_no_gest_dir",
+      "ignored": false,
+      "stable_id": "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/project.rs:734:it_does_not_write_yaml_when_no_gest_dir",
+      "disposition": "preserve inherited assertions under domain-adapter; no schema-roundtrip claim",
+      "result": "not-run by draft revision",
+      "family": "domain",
+      "owner": "domain-adapter",
+      "operation_refs": [
+        "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/project.rs:150:create"
+      ],
+      "assertion_ids": [
+        "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/project.rs:742:assert"
+      ],
+      "operation_link_evidence": [
+        {
+          "line": 740,
+          "call": "create",
+          "operations": [
+            "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/project.rs:150:create"
+          ]
+        },
+        {
+          "line": 740,
+          "call": "create",
+          "operations": [
+            "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/project.rs:150:create"
+          ]
+        }
+      ],
+      "ownership_class": "direct operation contract",
+      "ownership_reason": "Exact calls or literal CLI input in this inherited test resolve to the listed operations; setup helpers are retained in the fixture, not linked universally.",
+      "fixture_source": "async fn it_does_not_write_yaml_when_no_gest_dir() {\n      let tmp = tempfile::tempdir().unwrap();\n      let root = tmp.path().to_path_buf();\n\n      let (_store, conn, _tmp) = setup().await;\n      create(&conn, &root).await.unwrap();\n\n      assert!(!root.join(\".gest/project.yaml\").exists());\n    }",
+      "fixture_sha256": "2475dd0f0ac17acaba8878a482624dfd459e53c4f8496c7e2ec698490b8e404a"
+    },
+    {
+      "file": "src/store/repo/project.rs",
+      "line": 745,
+      "function": "it_persists_the_project",
+      "ignored": false,
+      "stable_id": "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/project.rs:745:it_persists_the_project",
+      "disposition": "preserve inherited assertions under domain-adapter; no schema-roundtrip claim",
+      "result": "not-run by draft revision",
+      "family": "domain",
+      "owner": "domain-adapter",
+      "operation_refs": [
+        "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/project.rs:150:create"
+      ],
+      "assertion_ids": [
+        "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/project.rs:750:assert_eq"
+      ],
+      "operation_link_evidence": [
+        {
+          "line": 749,
+          "call": "create",
+          "operations": [
+            "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/project.rs:150:create"
+          ]
+        },
+        {
+          "line": 749,
+          "call": "create",
+          "operations": [
+            "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/project.rs:150:create"
+          ]
+        }
+      ],
+      "ownership_class": "direct operation contract",
+      "ownership_reason": "Exact calls or literal CLI input in this inherited test resolve to the listed operations; setup helpers are retained in the fixture, not linked universally.",
+      "fixture_source": "async fn it_persists_the_project() {\n      let (_store, conn, _tmp) = setup().await;\n\n      let created = create(&conn, \"/tmp/created\").await.unwrap();\n      assert_eq!(created.root(), &PathBuf::from(\"/tmp/created\"));\n    }",
+      "fixture_sha256": "ed86f19f07ef1871cb741b5e91fd8316f1de9b635e475dd19328177f72bffe19"
+    },
+    {
+      "file": "src/store/repo/project.rs",
+      "line": 753,
+      "function": "it_reads_id_from_file_when_project_yaml_exists",
+      "ignored": false,
+      "stable_id": "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/project.rs:753:it_reads_id_from_file_when_project_yaml_exists",
+      "disposition": "preserve inherited assertions under domain-adapter; no schema-roundtrip claim",
+      "result": "not-run by draft revision",
+      "family": "domain",
+      "owner": "domain-adapter",
+      "operation_refs": [
+        "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/project.rs:150:create"
+      ],
+      "assertion_ids": [
+        "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/project.rs:772:assert_eq",
+        "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/project.rs:773:assert_eq"
+      ],
+      "operation_link_evidence": [
+        {
+          "line": 770,
+          "call": "create",
+          "operations": [
+            "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/project.rs:150:create"
+          ]
+        },
+        {
+          "line": 770,
+          "call": "create",
+          "operations": [
+            "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/project.rs:150:create"
+          ]
+        }
+      ],
+      "ownership_class": "direct operation contract",
+      "ownership_reason": "Exact calls or literal CLI input in this inherited test resolve to the listed operations; setup helpers are retained in the fixture, not linked universally.",
+      "fixture_source": "async fn it_reads_id_from_file_when_project_yaml_exists() {\n      let tmp = tempfile::tempdir().unwrap();\n      let root = tmp.path().to_path_buf();\n      std::fs::create_dir_all(root.join(\".gest\")).unwrap();\n\n      let existing = Project::new(root.clone());\n      let stored = ProjectFile {\n        id: existing.id().clone(),\n        created_at: *existing.created_at(),\n        updated_at: *existing.updated_at(),\n        deleted_at: None,\n      };\n      let yaml = yaml_serde::to_string(&stored).unwrap();\n      std::fs::write(root.join(\".gest/project.yaml\"), yaml).unwrap();\n\n      let (_store, conn, _tmp) = setup().await;\n      let created = create(&conn, &root).await.unwrap();\n\n      assert_eq!(created.id(), existing.id());\n      assert_eq!(created.root(), existing.root());\n    }",
+      "fixture_sha256": "0f081f47408753a32b9a33dc36de5575f6fb50113fae758eb7f9fb7291adba99"
+    },
+    {
+      "file": "src/store/repo/project.rs",
+      "line": 776,
+      "function": "it_rejects_duplicate_root",
+      "ignored": false,
+      "stable_id": "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/project.rs:776:it_rejects_duplicate_root",
+      "disposition": "preserve inherited assertions under domain-adapter; no schema-roundtrip claim",
+      "result": "not-run by draft revision",
+      "family": "domain",
+      "owner": "domain-adapter",
+      "operation_refs": [
+        "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/project.rs:150:create"
+      ],
+      "assertion_ids": [
+        "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/project.rs:782:assert"
+      ],
+      "operation_link_evidence": [
+        {
+          "line": 780,
+          "call": "create",
+          "operations": [
+            "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/project.rs:150:create"
+          ]
+        },
+        {
+          "line": 780,
+          "call": "create",
+          "operations": [
+            "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/project.rs:150:create"
+          ]
+        },
+        {
+          "line": 781,
+          "call": "create",
+          "operations": [
+            "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/project.rs:150:create"
+          ]
+        },
+        {
+          "line": 781,
+          "call": "create",
+          "operations": [
+            "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/project.rs:150:create"
+          ]
+        }
+      ],
+      "ownership_class": "direct operation contract",
+      "ownership_reason": "Exact calls or literal CLI input in this inherited test resolve to the listed operations; setup helpers are retained in the fixture, not linked universally.",
+      "fixture_source": "async fn it_rejects_duplicate_root() {\n      let (_store, conn, _tmp) = setup().await;\n\n      create(&conn, \"/tmp/dup\").await.unwrap();\n      let err = create(&conn, \"/tmp/dup\").await.unwrap_err();\n      assert!(\n        err.to_string().contains(\"UNIQUE\"),\n        \"expected unique constraint error, got: {err}\"\n      );\n    }",
+      "fixture_sha256": "4267a886fe3b9e4b785b1078cf80325a1609eda36312a26d36bdb94c0de6a823"
+    },
+    {
+      "file": "src/store/repo/project.rs",
+      "line": 788,
+      "function": "it_writes_project_yaml_when_gest_dir_exists",
+      "ignored": false,
+      "stable_id": "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/project.rs:788:it_writes_project_yaml_when_gest_dir_exists",
+      "disposition": "preserve inherited assertions under domain-adapter; no schema-roundtrip claim",
+      "result": "not-run by draft revision",
+      "family": "domain",
+      "owner": "domain-adapter",
+      "operation_refs": [
+        "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/project.rs:150:create"
+      ],
+      "assertion_ids": [
+        "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/project.rs:798:assert",
+        "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/project.rs:801:assert"
+      ],
+      "operation_link_evidence": [
+        {
+          "line": 795,
+          "call": "create",
+          "operations": [
+            "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/project.rs:150:create"
+          ]
+        },
+        {
+          "line": 795,
+          "call": "create",
+          "operations": [
+            "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/project.rs:150:create"
+          ]
+        }
+      ],
+      "ownership_class": "direct operation contract",
+      "ownership_reason": "Exact calls or literal CLI input in this inherited test resolve to the listed operations; setup helpers are retained in the fixture, not linked universally.",
+      "fixture_source": "async fn it_writes_project_yaml_when_gest_dir_exists() {\n      let tmp = tempfile::tempdir().unwrap();\n      let root = tmp.path().to_path_buf();\n      std::fs::create_dir_all(root.join(\".gest\")).unwrap();\n\n      let (_store, conn, _tmp) = setup().await;\n      let created = create(&conn, &root).await.unwrap();\n\n      let yaml_path = root.join(\".gest/project.yaml\");\n      assert!(yaml_path.exists());\n\n      let contents = std::fs::read_to_string(&yaml_path).unwrap();\n      assert!(contents.contains(&format!(\"id: {}\", created.id())));\n    }",
+      "fixture_sha256": "4ff282926aad6ab91e29328bc5d1375305a89d56311edf99e5f3fc93e461d990"
+    },
+    {
+      "file": "src/store/repo/project.rs",
+      "line": 804,
+      "function": "it_writes_project_yaml_when_gest_dir_in_ancestor",
+      "ignored": false,
+      "stable_id": "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/project.rs:804:it_writes_project_yaml_when_gest_dir_in_ancestor",
+      "disposition": "preserve inherited assertions under domain-adapter; no schema-roundtrip claim",
+      "result": "not-run by draft revision",
+      "family": "domain",
+      "owner": "domain-adapter",
+      "operation_refs": [
+        "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/project.rs:150:create"
+      ],
+      "assertion_ids": [
+        "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/project.rs:816:assert"
+      ],
+      "operation_link_evidence": [
+        {
+          "line": 813,
+          "call": "create",
+          "operations": [
+            "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/project.rs:150:create"
+          ]
+        },
+        {
+          "line": 813,
+          "call": "create",
+          "operations": [
+            "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/project.rs:150:create"
+          ]
+        }
+      ],
+      "ownership_class": "direct operation contract",
+      "ownership_reason": "Exact calls or literal CLI input in this inherited test resolve to the listed operations; setup helpers are retained in the fixture, not linked universally.",
+      "fixture_source": "async fn it_writes_project_yaml_when_gest_dir_in_ancestor() {\n      let tmp = tempfile::tempdir().unwrap();\n      let ancestor = tmp.path().to_path_buf();\n      std::fs::create_dir_all(ancestor.join(\".gest\")).unwrap();\n      let child = ancestor.join(\"sub/dir\");\n      std::fs::create_dir_all(&child).unwrap();\n\n      let (_store, conn, _tmp) = setup().await;\n      create(&conn, &child).await.unwrap();\n\n      let yaml_path = ancestor.join(\".gest/project.yaml\");\n      assert!(yaml_path.exists());\n    }",
+      "fixture_sha256": "2507488ba62ccf3aec29b6ac73ebfea621cdfa5e8667a1b6ee12767d438f5359"
+    },
+    {
+      "file": "src/store/repo/project.rs",
+      "line": 846,
+      "function": "it_cascades_all_owned_entities_and_their_children",
+      "ignored": false,
+      "stable_id": "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/project.rs:846:it_cascades_all_owned_entities_and_their_children",
+      "disposition": "preserve inherited assertions under domain-adapter; no schema-roundtrip claim",
+      "result": "not-run by draft revision",
+      "family": "domain",
+      "owner": "domain-adapter",
+      "operation_refs": [
+        "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/artifact.rs:99:create",
+        "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/iteration.rs:155:create",
+        "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/iteration.rs:67:add_task",
+        "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/note.rs:18:create",
+        "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/project.rs:150:create",
+        "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/project.rs:267:delete",
+        "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/relationship.rs:21:create",
+        "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/tag.rs:43:attach",
+        "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/task.rs:80:create",
+        "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/transaction.rs:21:begin"
+      ],
+      "assertion_ids": [
+        "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/project.rs:918:assert_eq",
+        "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/project.rs:919:assert_eq",
+        "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/project.rs:920:assert_eq",
+        "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/project.rs:921:assert_eq",
+        "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/project.rs:922:assert_eq",
+        "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/project.rs:923:assert_eq",
+        "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/project.rs:926:assert_eq",
+        "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/project.rs:935:assert_eq",
+        "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/project.rs:944:assert_eq",
+        "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/project.rs:953:assert_eq",
+        "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/project.rs:962:assert_eq",
+        "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/project.rs:971:assert_eq",
+        "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/project.rs:980:assert_eq",
+        "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/project.rs:989:assert_eq"
+      ],
+      "operation_link_evidence": [
+        {
+          "line": 849,
+          "call": "create",
+          "operations": [
+            "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/project.rs:150:create"
+          ]
+        },
+        {
+          "line": 849,
+          "call": "create",
+          "operations": [
+            "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/project.rs:150:create"
+          ]
+        },
+        {
+          "line": 853,
+          "call": "task_repo::create",
+          "operations": [
+            "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/task.rs:80:create"
+          ]
+        },
+        {
+          "line": 853,
+          "call": "task_repo::create",
+          "operations": [
+            "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/task.rs:80:create"
+          ]
+        },
+        {
+          "line": 863,
+          "call": "iteration_repo::create",
+          "operations": [
+            "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/iteration.rs:155:create"
+          ]
+        },
+        {
+          "line": 863,
+          "call": "iteration_repo::create",
+          "operations": [
+            "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/iteration.rs:155:create"
+          ]
+        },
+        {
+          "line": 873,
+          "call": "artifact_repo::create",
+          "operations": [
+            "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/artifact.rs:99:create"
+          ]
+        },
+        {
+          "line": 873,
+          "call": "artifact_repo::create",
+          "operations": [
+            "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/artifact.rs:99:create"
+          ]
+        },
+        {
+          "line": 885,
+          "call": "note_repo::create",
+          "operations": [
+            "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/note.rs:18:create"
+          ]
+        },
+        {
+          "line": 885,
+          "call": "note_repo::create",
+          "operations": [
+            "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/note.rs:18:create"
+          ]
+        },
+        {
+          "line": 896,
+          "call": "tag_repo::attach",
+          "operations": [
+            "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/tag.rs:43:attach"
+          ]
+        },
+        {
+          "line": 896,
+          "call": "tag_repo::attach",
+          "operations": [
+            "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/tag.rs:43:attach"
+          ]
+        },
+        {
+          "line": 899,
+          "call": "iteration_repo::add_task",
+          "operations": [
+            "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/iteration.rs:67:add_task"
+          ]
+        },
+        {
+          "line": 899,
+          "call": "iteration_repo::add_task",
+          "operations": [
+            "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/iteration.rs:67:add_task"
+          ]
+        },
+        {
+          "line": 902,
+          "call": "relationship_repo::create",
+          "operations": [
+            "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/relationship.rs:21:create"
+          ]
+        },
+        {
+          "line": 902,
+          "call": "relationship_repo::create",
+          "operations": [
+            "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/relationship.rs:21:create"
+          ]
+        },
+        {
+          "line": 914,
+          "call": "transaction_repo::begin",
+          "operations": [
+            "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/transaction.rs:21:begin"
+          ]
+        },
+        {
+          "line": 914,
+          "call": "transaction_repo::begin",
+          "operations": [
+            "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/transaction.rs:21:begin"
+          ]
+        },
+        {
+          "line": 916,
+          "call": "delete",
+          "operations": [
+            "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/project.rs:267:delete"
+          ]
+        },
+        {
+          "line": 916,
+          "call": "delete",
+          "operations": [
+            "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/project.rs:267:delete"
+          ]
+        }
+      ],
+      "ownership_class": "direct operation contract",
+      "ownership_reason": "Exact calls or literal CLI input in this inherited test resolve to the listed operations; setup helpers are retained in the fixture, not linked universally.",
+      "fixture_source": "async fn it_cascades_all_owned_entities_and_their_children() {\n      let (_store, conn, _tmp) = setup().await;\n      let project = create(&conn, \"/tmp/del-cascade\").await.unwrap();\n      let pid = project.id();\n\n      // Create owned entities.\n      let task = task_repo::create(\n        &conn,\n        pid,\n        &crate::store::model::task::New {\n          title: \"T\".into(),\n          ..Default::default()\n        },\n      )\n      .await\n      .unwrap();\n      let iteration = iteration_repo::create(\n        &conn,\n        pid,\n        &crate::store::model::iteration::New {\n          title: \"I\".into(),\n          ..Default::default()\n        },\n      )\n      .await\n      .unwrap();\n      let artifact = artifact_repo::create(\n        &conn,\n        pid,\n        &crate::store::model::artifact::New {\n          title: \"A\".into(),\n          ..Default::default()\n        },\n      )\n      .await\n      .unwrap();\n\n      // Add children: notes, tags, relationships, iteration_tasks.\n      note_repo::create(\n        &conn,\n        EntityType::Task,\n        task.id(),\n        &crate::store::model::note::New {\n          body: \"note\".into(),\n          author_id: None,\n        },\n      )\n      .await\n      .unwrap();\n      tag_repo::attach(&conn, EntityType::Task, task.id(), \"urgent\")\n        .await\n        .unwrap();\n      iteration_repo::add_task(&conn, iteration.id(), task.id(), 1)\n        .await\n        .unwrap();\n      relationship_repo::create(\n        &conn,\n        RelationshipType::RelatesTo,\n        EntityType::Task,\n        task.id(),\n        EntityType::Artifact,\n        artifact.id(),\n      )\n      .await\n      .unwrap();\n\n      // Create a transaction record so we can verify it gets cleaned up.\n      transaction_repo::begin(&conn, pid, \"task create\").await.unwrap();\n\n      let summary = delete(&conn, pid, None, sample_deleted_at()).await.unwrap();\n\n      assert_eq!(summary.tasks, 1);\n      assert_eq!(summary.iterations, 1);\n      assert_eq!(summary.artifacts, 1);\n      assert_eq!(summary.notes, 1);\n      assert_eq!(summary.tags, 1);\n      assert_eq!(summary.relationships, 1);\n\n      // All rows gone.\n      assert_eq!(\n        row_count(\n          &conn,\n          \"SELECT COUNT(*) FROM projects WHERE id = ?1\",\n          &[pid.to_string().into()]\n        )\n        .await,\n        0\n      );\n      assert_eq!(\n        row_count(\n          &conn,\n          \"SELECT COUNT(*) FROM tasks WHERE project_id = ?1\",\n          &[pid.to_string().into()]\n        )\n        .await,\n        0\n      );\n      assert_eq!(\n        row_count(\n          &conn,\n          \"SELECT COUNT(*) FROM iterations WHERE project_id = ?1\",\n          &[pid.to_string().into()]\n        )\n        .await,\n        0\n      );\n      assert_eq!(\n        row_count(\n          &conn,\n          \"SELECT COUNT(*) FROM artifacts WHERE project_id = ?1\",\n          &[pid.to_string().into()]\n        )\n        .await,\n        0\n      );\n      assert_eq!(\n        row_count(\n          &conn,\n          \"SELECT COUNT(*) FROM transactions WHERE project_id = ?1\",\n          &[pid.to_string().into()]\n        )\n        .await,\n        0\n      );\n      assert_eq!(\n        row_count(\n          &conn,\n          \"SELECT COUNT(*) FROM notes WHERE entity_id = ?1\",\n          &[task.id().to_string().into()]\n        )\n        .await,\n        0\n      );\n      assert_eq!(\n        row_count(\n          &conn,\n          \"SELECT COUNT(*) FROM entity_tags WHERE entity_id = ?1\",\n          &[task.id().to_string().into()]\n        )\n        .await,\n        0\n      );\n      assert_eq!(\n        row_count(\n          &conn,\n          \"SELECT COUNT(*) FROM relationships WHERE source_id = ?1 OR target_id = ?1\",\n          &[task.id().to_string().into()]\n        )\n        .await,\n        0\n      );\n    }",
+      "fixture_sha256": "5e7e7e18c8519844d58723bcd89941a7cf18d841e0bcedd97a32e243cb52e650"
+    },
+    {
+      "file": "src/store/repo/project.rs",
+      "line": 1000,
+      "function": "it_writes_tombstone_files_for_all_entities",
+      "ignored": false,
+      "stable_id": "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/project.rs:1000:it_writes_tombstone_files_for_all_entities",
+      "disposition": "preserve inherited assertions under domain-adapter; no schema-roundtrip claim",
+      "result": "not-run by draft revision",
+      "family": "domain",
+      "owner": "domain-adapter",
+      "operation_refs": [
+        "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/artifact.rs:99:create",
+        "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/iteration.rs:155:create",
+        "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/project.rs:150:create",
+        "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/project.rs:267:delete",
+        "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/task.rs:80:create"
+      ],
+      "assertion_ids": [
+        "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/project.rs:1067:assert",
+        "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/project.rs:1070:assert",
+        "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/project.rs:1076:assert",
+        "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/project.rs:1082:assert"
+      ],
+      "operation_link_evidence": [
+        {
+          "line": 1003,
+          "call": "create",
+          "operations": [
+            "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/project.rs:150:create"
+          ]
+        },
+        {
+          "line": 1003,
+          "call": "create",
+          "operations": [
+            "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/project.rs:150:create"
+          ]
+        },
+        {
+          "line": 1006,
+          "call": "task_repo::create",
+          "operations": [
+            "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/task.rs:80:create"
+          ]
+        },
+        {
+          "line": 1006,
+          "call": "task_repo::create",
+          "operations": [
+            "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/task.rs:80:create"
+          ]
+        },
+        {
+          "line": 1016,
+          "call": "iteration_repo::create",
+          "operations": [
+            "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/iteration.rs:155:create"
+          ]
+        },
+        {
+          "line": 1016,
+          "call": "iteration_repo::create",
+          "operations": [
+            "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/iteration.rs:155:create"
+          ]
+        },
+        {
+          "line": 1026,
+          "call": "artifact_repo::create",
+          "operations": [
+            "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/artifact.rs:99:create"
+          ]
+        },
+        {
+          "line": 1026,
+          "call": "artifact_repo::create",
+          "operations": [
+            "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/artifact.rs:99:create"
+          ]
+        },
+        {
+          "line": 1063,
+          "call": "delete",
+          "operations": [
+            "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/project.rs:267:delete"
+          ]
+        },
+        {
+          "line": 1063,
+          "call": "delete",
+          "operations": [
+            "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/project.rs:267:delete"
+          ]
+        }
+      ],
+      "ownership_class": "direct operation contract",
+      "ownership_reason": "Exact calls or literal CLI input in this inherited test resolve to the listed operations; setup helpers are retained in the fixture, not linked universally.",
+      "fixture_source": "async fn it_writes_tombstone_files_for_all_entities() {\n      let (_store, conn, _tmp) = setup().await;\n      let project = create(&conn, \"/tmp/del-tomb\").await.unwrap();\n      let pid = project.id();\n\n      let task = task_repo::create(\n        &conn,\n        pid,\n        &crate::store::model::task::New {\n          title: \"T\".into(),\n          ..Default::default()\n        },\n      )\n      .await\n      .unwrap();\n      let iteration = iteration_repo::create(\n        &conn,\n        pid,\n        &crate::store::model::iteration::New {\n          title: \"I\".into(),\n          ..Default::default()\n        },\n      )\n      .await\n      .unwrap();\n      let artifact = artifact_repo::create(\n        &conn,\n        pid,\n        &crate::store::model::artifact::New {\n          title: \"A\".into(),\n          ..Default::default()\n        },\n      )\n      .await\n      .unwrap();\n\n      // Create on-disk files in a temp gest_dir.\n      let gest_tmp = tempfile::tempdir().unwrap();\n      let gest_dir = gest_tmp.path();\n\n      let task_path = paths::task_path(gest_dir, task.id());\n      fs::create_dir_all(task_path.parent().unwrap()).unwrap();\n      fs::write(&task_path, \"id: placeholder\\ntitle: T\\n\").unwrap();\n\n      let iteration_path = paths::iteration_path(gest_dir, iteration.id());\n      fs::create_dir_all(iteration_path.parent().unwrap()).unwrap();\n      fs::write(&iteration_path, \"id: placeholder\\ntitle: I\\n\").unwrap();\n\n      let artifact_path = paths::artifact_path(gest_dir, artifact.id());\n      fs::create_dir_all(artifact_path.parent().unwrap()).unwrap();\n      fs::write(&artifact_path, \"---\\nid: placeholder\\ntitle: A\\n---\\nBody.\\n\").unwrap();\n\n      let project_path = paths::project_path(gest_dir);\n      fs::write(\n        &project_path,\n        format!(\n          \"id: {}\\ncreated_at: 2026-04-01T00:00:00Z\\nupdated_at: 2026-04-01T00:00:00Z\\n\",\n          pid\n        ),\n      )\n      .unwrap();\n\n      delete(&conn, pid, Some(gest_dir), sample_deleted_at()).await.unwrap();\n\n      // All files should contain deleted_at.\n      let task_raw = fs::read_to_string(&task_path).unwrap();\n      assert!(task_raw.contains(\"deleted_at:\"), \"task file should be tombstoned\");\n\n      let iteration_raw = fs::read_to_string(&iteration_path).unwrap();\n      assert!(\n        iteration_raw.contains(\"deleted_at:\"),\n        \"iteration file should be tombstoned\"\n      );\n\n      let artifact_raw = fs::read_to_string(&artifact_path).unwrap();\n      assert!(\n        artifact_raw.contains(\"deleted_at:\"),\n        \"artifact file should be tombstoned\"\n      );\n\n      let project_raw = fs::read_to_string(&project_path).unwrap();\n      assert!(project_raw.contains(\"deleted_at:\"), \"project file should be tombstoned\");\n    }",
+      "fixture_sha256": "7d67d10d1dfd7b1202711ea161a69565b567be2ecfa5f2f2f0bd7a3f7356d394"
+    },
+    {
+      "file": "src/store/repo/project.rs",
+      "line": 1085,
+      "function": "it_prevents_sync_resurrection_after_delete",
+      "ignored": false,
+      "stable_id": "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/project.rs:1085:it_prevents_sync_resurrection_after_delete",
+      "disposition": "preserve inherited assertions under domain-adapter; no schema-roundtrip claim",
+      "result": "not-run by draft revision",
+      "family": "domain",
+      "owner": "domain-adapter",
+      "operation_refs": [
+        "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/project.rs:150:create",
+        "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/project.rs:267:delete",
+        "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/task.rs:80:create"
+      ],
+      "assertion_ids": [
+        "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/project.rs:1133:assert_eq",
+        "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/project.rs:1143:assert_eq"
+      ],
+      "operation_link_evidence": [
+        {
+          "line": 1088,
+          "call": "create",
+          "operations": [
+            "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/project.rs:150:create"
+          ]
+        },
+        {
+          "line": 1088,
+          "call": "create",
+          "operations": [
+            "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/project.rs:150:create"
+          ]
+        },
+        {
+          "line": 1091,
+          "call": "task_repo::create",
+          "operations": [
+            "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/task.rs:80:create"
+          ]
+        },
+        {
+          "line": 1091,
+          "call": "task_repo::create",
+          "operations": [
+            "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/task.rs:80:create"
+          ]
+        },
+        {
+          "line": 1127,
+          "call": "delete",
+          "operations": [
+            "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/project.rs:267:delete"
+          ]
+        },
+        {
+          "line": 1127,
+          "call": "delete",
+          "operations": [
+            "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/project.rs:267:delete"
+          ]
+        }
+      ],
+      "ownership_class": "direct operation contract",
+      "ownership_reason": "Exact calls or literal CLI input in this inherited test resolve to the listed operations; setup helpers are retained in the fixture, not linked universally.",
+      "fixture_source": "async fn it_prevents_sync_resurrection_after_delete() {\n      let (_store, conn, _tmp) = setup().await;\n      let project = create(&conn, \"/tmp/del-no-resurrect\").await.unwrap();\n      let pid = project.id().clone();\n\n      let task = task_repo::create(\n        &conn,\n        &pid,\n        &crate::store::model::task::New {\n          title: \"Ephemeral\".into(),\n          ..Default::default()\n        },\n      )\n      .await\n      .unwrap();\n\n      // Set up a gest_dir with an on-disk task file.\n      let gest_tmp = tempfile::tempdir().unwrap();\n      let gest_dir = gest_tmp.path();\n\n      let task_path = paths::task_path(gest_dir, task.id());\n      fs::create_dir_all(task_path.parent().unwrap()).unwrap();\n      fs::write(\n        &task_path,\n        format!(\n          \"id: {}\\ntitle: Ephemeral\\nstatus: open\\ncreated_at: 2026-04-01T00:00:00Z\\nupdated_at: 2026-04-01T00:00:00Z\\n\",\n          task.id()\n        ),\n      )\n      .unwrap();\n\n      let project_path = paths::project_path(gest_dir);\n      fs::write(\n        &project_path,\n        format!(\n          \"id: {}\\ncreated_at: 2026-04-01T00:00:00Z\\nupdated_at: 2026-04-01T00:00:00Z\\n\",\n          pid\n        ),\n      )\n      .unwrap();\n\n      delete(&conn, &pid, Some(gest_dir), sample_deleted_at()).await.unwrap();\n\n      // Now simulate a sync import -- the tombstoned files should prevent\n      // resurrection.\n      crate::store::sync::import(&conn, &pid, gest_dir).await.unwrap();\n\n      assert_eq!(\n        row_count(\n          &conn,\n          \"SELECT COUNT(*) FROM tasks WHERE id = ?1\",\n          &[task.id().to_string().into()]\n        )\n        .await,\n        0,\n        \"task must not be resurrected after tombstone\"\n      );\n      assert_eq!(\n        row_count(\n          &conn,\n          \"SELECT COUNT(*) FROM projects WHERE id = ?1\",\n          &[pid.to_string().into()]\n        )\n        .await,\n        0,\n        \"project must not be resurrected after tombstone\"\n      );\n    }",
+      "fixture_sha256": "fbb07b5abdf5cde834895da2f054a15679401a59ee8ad90b6b279ce1814f6448"
+    },
+    {
+      "file": "src/store/repo/project.rs",
+      "line": 1161,
+      "function": "it_returns_none_when_project_does_not_exist",
+      "ignored": false,
+      "stable_id": "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/project.rs:1161:it_returns_none_when_project_does_not_exist",
+      "disposition": "preserve inherited assertions under domain-adapter; no schema-roundtrip claim",
+      "result": "not-run by draft revision",
+      "family": "domain",
+      "owner": "domain-adapter",
+      "operation_refs": [
+        "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/project.rs:401:find_by_id"
+      ],
+      "assertion_ids": [
+        "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/project.rs:1166:assert_eq"
+      ],
+      "operation_link_evidence": [
+        {
+          "line": 1165,
+          "call": "find_by_id",
+          "operations": [
+            "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/project.rs:401:find_by_id"
+          ]
+        },
+        {
+          "line": 1165,
+          "call": "find_by_id",
+          "operations": [
+            "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/project.rs:401:find_by_id"
+          ]
+        }
+      ],
+      "ownership_class": "direct operation contract",
+      "ownership_reason": "Exact calls or literal CLI input in this inherited test resolve to the listed operations; setup helpers are retained in the fixture, not linked universally.",
+      "fixture_source": "async fn it_returns_none_when_project_does_not_exist() {\n      let (_store, conn, _tmp) = setup().await;\n\n      let found = find_by_id(&conn, Id::new()).await.unwrap();\n      assert_eq!(found, None);\n    }",
+      "fixture_sha256": "895ccaca924b29c33b7f782a6ea0c8528da845f313e8cb4b1ebd0a3b1a960148"
+    },
+    {
+      "file": "src/store/repo/project.rs",
+      "line": 1169,
+      "function": "it_returns_the_project_when_project_exists",
+      "ignored": false,
+      "stable_id": "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/project.rs:1169:it_returns_the_project_when_project_exists",
+      "disposition": "preserve inherited assertions under domain-adapter; no schema-roundtrip claim",
+      "result": "not-run by draft revision",
+      "family": "domain",
+      "owner": "domain-adapter",
+      "operation_refs": [
+        "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/project.rs:150:create",
+        "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/project.rs:401:find_by_id"
+      ],
+      "assertion_ids": [
+        "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/project.rs:1175:assert_eq"
+      ],
+      "operation_link_evidence": [
+        {
+          "line": 1172,
+          "call": "create",
+          "operations": [
+            "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/project.rs:150:create"
+          ]
+        },
+        {
+          "line": 1172,
+          "call": "create",
+          "operations": [
+            "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/project.rs:150:create"
+          ]
+        },
+        {
+          "line": 1174,
+          "call": "find_by_id",
+          "operations": [
+            "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/project.rs:401:find_by_id"
+          ]
+        },
+        {
+          "line": 1174,
+          "call": "find_by_id",
+          "operations": [
+            "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/project.rs:401:find_by_id"
+          ]
+        }
+      ],
+      "ownership_class": "direct operation contract",
+      "ownership_reason": "Exact calls or literal CLI input in this inherited test resolve to the listed operations; setup helpers are retained in the fixture, not linked universally.",
+      "fixture_source": "async fn it_returns_the_project_when_project_exists() {\n      let (_store, conn, _tmp) = setup().await;\n      let created = create(&conn, \"/tmp/my-project\").await.unwrap();\n\n      let found = find_by_id(&conn, created.id().clone()).await.unwrap();\n      assert_eq!(found.as_ref().map(|p| p.id()), Some(created.id()));\n    }",
+      "fixture_sha256": "4d9fbe1e42933523ac29f6049c87422ae2f25cd0c52b1fdceca6c04bba4929c8"
+    },
+    {
+      "file": "src/store/repo/project.rs",
+      "line": 1184,
+      "function": "it_returns_none_when_no_match",
+      "ignored": false,
+      "stable_id": "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/project.rs:1184:it_returns_none_when_no_match",
+      "disposition": "preserve inherited assertions under domain-adapter; no schema-roundtrip claim",
+      "result": "not-run by draft revision",
+      "family": "domain",
+      "owner": "domain-adapter",
+      "operation_refs": [
+        "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/project.rs:427:find_by_path"
+      ],
+      "assertion_ids": [
+        "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/project.rs:1189:assert_eq"
+      ],
+      "operation_link_evidence": [
+        {
+          "line": 1188,
+          "call": "find_by_path",
+          "operations": [
+            "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/project.rs:427:find_by_path"
+          ]
+        },
+        {
+          "line": 1188,
+          "call": "find_by_path",
+          "operations": [
+            "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/project.rs:427:find_by_path"
+          ]
+        }
+      ],
+      "ownership_class": "direct operation contract",
+      "ownership_reason": "Exact calls or literal CLI input in this inherited test resolve to the listed operations; setup helpers are retained in the fixture, not linked universally.",
+      "fixture_source": "async fn it_returns_none_when_no_match() {\n      let (_store, conn, _tmp) = setup().await;\n\n      let found = find_by_path(&conn, Path::new(\"/does/not/exist\")).await.unwrap();\n      assert_eq!(found, None);\n    }",
+      "fixture_sha256": "d8fda1acd58f71978253db43bb0bb6417794383f271415d586fad1a7bf16ecf2"
+    },
+    {
+      "file": "src/store/repo/project.rs",
+      "line": 1192,
+      "function": "it_returns_the_project_when_matching_root",
+      "ignored": false,
+      "stable_id": "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/project.rs:1192:it_returns_the_project_when_matching_root",
+      "disposition": "preserve inherited assertions under domain-adapter; no schema-roundtrip claim",
+      "result": "not-run by draft revision",
+      "family": "domain",
+      "owner": "domain-adapter",
+      "operation_refs": [
+        "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/project.rs:150:create",
+        "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/project.rs:427:find_by_path"
+      ],
+      "assertion_ids": [
+        "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/project.rs:1198:assert_eq"
+      ],
+      "operation_link_evidence": [
+        {
+          "line": 1195,
+          "call": "create",
+          "operations": [
+            "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/project.rs:150:create"
+          ]
+        },
+        {
+          "line": 1195,
+          "call": "create",
+          "operations": [
+            "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/project.rs:150:create"
+          ]
+        },
+        {
+          "line": 1197,
+          "call": "find_by_path",
+          "operations": [
+            "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/project.rs:427:find_by_path"
+          ]
+        },
+        {
+          "line": 1197,
+          "call": "find_by_path",
+          "operations": [
+            "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/project.rs:427:find_by_path"
+          ]
+        }
+      ],
+      "ownership_class": "direct operation contract",
+      "ownership_reason": "Exact calls or literal CLI input in this inherited test resolve to the listed operations; setup helpers are retained in the fixture, not linked universally.",
+      "fixture_source": "async fn it_returns_the_project_when_matching_root() {\n      let (_store, conn, _tmp) = setup().await;\n      let created = create(&conn, \"/tmp/my-project\").await.unwrap();\n\n      let found = find_by_path(&conn, Path::new(\"/tmp/my-project\")).await.unwrap();\n      assert_eq!(found.as_ref().map(|p| p.id()), Some(created.id()));\n    }",
+      "fixture_sha256": "922981daa0304f6aa09709f097970e81684ae3e40222aa3f78f136022d339975"
+    },
+    {
+      "file": "src/store/repo/project.rs",
+      "line": 1201,
+      "function": "it_returns_the_project_when_matching_workspace_path",
+      "ignored": false,
+      "stable_id": "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/project.rs:1201:it_returns_the_project_when_matching_workspace_path",
+      "disposition": "preserve inherited assertions under domain-adapter; no schema-roundtrip claim",
+      "result": "not-run by draft revision",
+      "family": "domain",
+      "owner": "domain-adapter",
+      "operation_refs": [
+        "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/project.rs:150:create",
+        "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/project.rs:427:find_by_path"
+      ],
+      "assertion_ids": [
+        "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/project.rs:1224:assert_eq"
+      ],
+      "operation_link_evidence": [
+        {
+          "line": 1204,
+          "call": "create",
+          "operations": [
+            "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/project.rs:150:create"
+          ]
+        },
+        {
+          "line": 1204,
+          "call": "create",
+          "operations": [
+            "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/project.rs:150:create"
+          ]
+        },
+        {
+          "line": 1223,
+          "call": "find_by_path",
+          "operations": [
+            "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/project.rs:427:find_by_path"
+          ]
+        },
+        {
+          "line": 1223,
+          "call": "find_by_path",
+          "operations": [
+            "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/project.rs:427:find_by_path"
+          ]
+        }
+      ],
+      "ownership_class": "direct operation contract",
+      "ownership_reason": "Exact calls or literal CLI input in this inherited test resolve to the listed operations; setup helpers are retained in the fixture, not linked universally.",
+      "fixture_source": "async fn it_returns_the_project_when_matching_workspace_path() {\n      let (_store, conn, _tmp) = setup().await;\n      let project = create(&conn, \"/tmp/my-project\").await.unwrap();\n\n      let ws = ProjectWorkspace::new(PathBuf::from(\"/tmp/my-workspace\"), project.id().clone());\n      let params: [String; 5] = [\n        ws.id().to_string(),\n        ws.project_id().to_string(),\n        ws.path().to_string_lossy().into_owned(),\n        ws.created_at().to_rfc3339(),\n        ws.updated_at().to_rfc3339(),\n      ];\n      conn\n        .execute(\n          \"INSERT INTO project_workspaces (id, project_id, path, created_at, updated_at) \\\n          VALUES (?1, ?2, ?3, ?4, ?5)\",\n          params,\n        )\n        .await\n        .unwrap();\n\n      let found = find_by_path(&conn, Path::new(\"/tmp/my-workspace\")).await.unwrap();\n      assert_eq!(found.as_ref().map(|p| p.id()), Some(project.id()));\n    }",
+      "fixture_sha256": "23dc16b641b61b841a16578ff7e1e40ba65b8b339a6a88d41aced3c80ade0e77"
+    },
+    {
+      "file": "src/store/repo/project.rs",
+      "line": 1231,
+      "function": "it_returns_it_when_gest_dir_at_start",
+      "ignored": false,
+      "stable_id": "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/project.rs:1231:it_returns_it_when_gest_dir_at_start",
+      "disposition": "preserve inherited assertions under domain-adapter; no schema-roundtrip claim",
+      "result": "not-run by draft revision",
+      "family": "domain",
+      "owner": "domain-adapter",
+      "operation_refs": [],
+      "assertion_ids": [
+        "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/project.rs:1238:assert_eq"
+      ],
+      "operation_link_evidence": [],
+      "ownership_class": "supporting source helper behavior",
+      "ownership_reason": "Exact calls, including calls inside assertion macros, resolve to store::repo::project::find_gest_dir. These are supporting free-function contracts, not product operation boundaries.",
+      "fixture_source": "fn it_returns_it_when_gest_dir_at_start() {\n      let tmp = tempfile::tempdir().unwrap();\n      let root = tmp.path().to_path_buf();\n      let gest = root.join(\".gest\");\n      std::fs::create_dir_all(&gest).unwrap();\n\n      assert_eq!(find_gest_dir(&root), Some(gest));\n    }",
+      "fixture_sha256": "f7d7b1e06a48ea5e5a0e00d422ef70b910a3b6b9859305c97dab6fb2a8238e1b",
+      "support_subject": {
+        "source": "src/store/repo/project.rs",
+        "test": "it_returns_it_when_gest_dir_at_start",
+        "fixture_sha256": "f7d7b1e06a48ea5e5a0e00d422ef70b910a3b6b9859305c97dab6fb2a8238e1b",
+        "classification": "supporting source helper behavior",
+        "reason": "Exact calls, including calls inside assertion macros, resolve to store::repo::project::find_gest_dir. These are supporting free-function contracts, not product operation boundaries.",
+        "supporting_function_refs": [
+          "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/project.rs:576:find_gest_dir"
+        ]
+      },
+      "supporting_function_refs": [
+        "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/project.rs:576:find_gest_dir"
+      ],
+      "source_link_evidence": [
+        {
+          "line": 1238,
+          "call": "find_gest_dir(",
+          "operations": [
+            "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/project.rs:576:find_gest_dir"
+          ],
+          "entrypoint": false,
+          "resolution": "same-source production free function; lexical token scan also covers assertion macro bodies",
+          "source_contract": "store::repo::project::find_gest_dir"
+        }
+      ]
+    },
+    {
+      "file": "src/store/repo/project.rs",
+      "line": 1241,
+      "function": "it_returns_it_when_gest_dir_in_ancestor",
+      "ignored": false,
+      "stable_id": "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/project.rs:1241:it_returns_it_when_gest_dir_in_ancestor",
+      "disposition": "preserve inherited assertions under domain-adapter; no schema-roundtrip claim",
+      "result": "not-run by draft revision",
+      "family": "domain",
+      "owner": "domain-adapter",
+      "operation_refs": [],
+      "assertion_ids": [
+        "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/project.rs:1250:assert_eq"
+      ],
+      "operation_link_evidence": [],
+      "ownership_class": "supporting source helper behavior",
+      "ownership_reason": "Exact calls, including calls inside assertion macros, resolve to store::repo::project::find_gest_dir. These are supporting free-function contracts, not product operation boundaries.",
+      "fixture_source": "fn it_returns_it_when_gest_dir_in_ancestor() {\n      let tmp = tempfile::tempdir().unwrap();\n      let ancestor = tmp.path().to_path_buf();\n      let gest = ancestor.join(\".gest\");\n      std::fs::create_dir_all(&gest).unwrap();\n      let child = ancestor.join(\"sub/dir\");\n      std::fs::create_dir_all(&child).unwrap();\n\n      assert_eq!(find_gest_dir(&child), Some(gest));\n    }",
+      "fixture_sha256": "59e8bb3d1c40dba025575c783066dad0252b7f1c39da9c43b0c907e532aba2ec",
+      "support_subject": {
+        "source": "src/store/repo/project.rs",
+        "test": "it_returns_it_when_gest_dir_in_ancestor",
+        "fixture_sha256": "59e8bb3d1c40dba025575c783066dad0252b7f1c39da9c43b0c907e532aba2ec",
+        "classification": "supporting source helper behavior",
+        "reason": "Exact calls, including calls inside assertion macros, resolve to store::repo::project::find_gest_dir. These are supporting free-function contracts, not product operation boundaries.",
+        "supporting_function_refs": [
+          "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/project.rs:576:find_gest_dir"
+        ]
+      },
+      "supporting_function_refs": [
+        "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/project.rs:576:find_gest_dir"
+      ],
+      "source_link_evidence": [
+        {
+          "line": 1250,
+          "call": "find_gest_dir(",
+          "operations": [
+            "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/project.rs:576:find_gest_dir"
+          ],
+          "entrypoint": false,
+          "resolution": "same-source production free function; lexical token scan also covers assertion macro bodies",
+          "source_contract": "store::repo::project::find_gest_dir"
+        }
+      ]
+    },
+    {
+      "file": "src/store/repo/project.rs",
+      "line": 1253,
+      "function": "it_returns_none_when_no_gest_dir",
+      "ignored": false,
+      "stable_id": "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/project.rs:1253:it_returns_none_when_no_gest_dir",
+      "disposition": "preserve inherited assertions under domain-adapter; no schema-roundtrip claim",
+      "result": "not-run by draft revision",
+      "family": "domain",
+      "owner": "domain-adapter",
+      "operation_refs": [],
+      "assertion_ids": [
+        "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/project.rs:1258:assert_eq"
+      ],
+      "operation_link_evidence": [],
+      "ownership_class": "supporting source helper behavior",
+      "ownership_reason": "Exact calls, including calls inside assertion macros, resolve to store::repo::project::find_gest_dir. These are supporting free-function contracts, not product operation boundaries.",
+      "fixture_source": "fn it_returns_none_when_no_gest_dir() {\n      let tmp = tempfile::tempdir().unwrap();\n      let root = tmp.path().to_path_buf();\n\n      assert_eq!(find_gest_dir(&root), None);\n    }",
+      "fixture_sha256": "cee64cc5d0f25db2d7e10f278a0d70f1c1f3d79abe2c14a8d510451cb3e583cf",
+      "support_subject": {
+        "source": "src/store/repo/project.rs",
+        "test": "it_returns_none_when_no_gest_dir",
+        "fixture_sha256": "cee64cc5d0f25db2d7e10f278a0d70f1c1f3d79abe2c14a8d510451cb3e583cf",
+        "classification": "supporting source helper behavior",
+        "reason": "Exact calls, including calls inside assertion macros, resolve to store::repo::project::find_gest_dir. These are supporting free-function contracts, not product operation boundaries.",
+        "supporting_function_refs": [
+          "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/project.rs:576:find_gest_dir"
+        ]
+      },
+      "supporting_function_refs": [
+        "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/project.rs:576:find_gest_dir"
+      ],
+      "source_link_evidence": [
+        {
+          "line": 1258,
+          "call": "find_gest_dir(",
+          "operations": [
+            "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/project.rs:576:find_gest_dir"
+          ],
+          "entrypoint": false,
+          "resolution": "same-source production free function; lexical token scan also covers assertion macro bodies",
+          "source_contract": "store::repo::project::find_gest_dir"
+        }
+      ]
+    },
+    {
+      "file": "src/store/repo/project.rs",
+      "line": 1267,
+      "function": "it_clears_archived_at",
+      "ignored": false,
+      "stable_id": "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/project.rs:1267:it_clears_archived_at",
+      "disposition": "preserve inherited assertions under domain-adapter; no schema-roundtrip claim",
+      "result": "not-run by draft revision",
+      "family": "domain",
+      "owner": "domain-adapter",
+      "operation_refs": [
+        "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/project.rs:150:create",
+        "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/project.rs:401:find_by_id",
+        "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/project.rs:500:unarchive",
+        "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/project.rs:64:archive"
+      ],
+      "assertion_ids": [
+        "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/project.rs:1276:assert_eq"
+      ],
+      "operation_link_evidence": [
+        {
+          "line": 1270,
+          "call": "create",
+          "operations": [
+            "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/project.rs:150:create"
+          ]
+        },
+        {
+          "line": 1270,
+          "call": "create",
+          "operations": [
+            "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/project.rs:150:create"
+          ]
+        },
+        {
+          "line": 1271,
+          "call": "archive",
+          "operations": [
+            "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/project.rs:64:archive"
+          ]
+        },
+        {
+          "line": 1271,
+          "call": "archive",
+          "operations": [
+            "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/project.rs:64:archive"
+          ]
+        },
+        {
+          "line": 1273,
+          "call": "unarchive",
+          "operations": [
+            "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/project.rs:500:unarchive"
+          ]
+        },
+        {
+          "line": 1273,
+          "call": "unarchive",
+          "operations": [
+            "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/project.rs:500:unarchive"
+          ]
+        },
+        {
+          "line": 1275,
+          "call": "find_by_id",
+          "operations": [
+            "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/project.rs:401:find_by_id"
+          ]
+        },
+        {
+          "line": 1275,
+          "call": "find_by_id",
+          "operations": [
+            "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/project.rs:401:find_by_id"
+          ]
+        },
+        {
+          "line": 1275,
+          "call": "find_by_id",
+          "operations": [
+            "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/project.rs:401:find_by_id"
+          ]
+        }
+      ],
+      "ownership_class": "direct operation contract",
+      "ownership_reason": "Exact calls or literal CLI input in this inherited test resolve to the listed operations; setup helpers are retained in the fixture, not linked universally.",
+      "fixture_source": "async fn it_clears_archived_at() {\n      let (_store, conn, _tmp) = setup().await;\n      let project = create(&conn, \"/tmp/unarchive-test\").await.unwrap();\n      archive(&conn, project.id()).await.unwrap();\n\n      unarchive(&conn, project.id()).await.unwrap();\n\n      let found = find_by_id(&conn, project.id().clone()).await.unwrap().unwrap();\n      assert_eq!(found.archived_at(), &None);\n    }",
+      "fixture_sha256": "d38ef1bc49221194dbb686c2453876c153fd8f008c21af08f8e0c9737192e3f6"
+    },
+    {
+      "file": "src/store/repo/tag.rs",
+      "line": 386,
+      "function": "it_returns_tags_sorted_by_label",
+      "ignored": false,
+      "stable_id": "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/tag.rs:386:it_returns_tags_sorted_by_label",
+      "disposition": "preserve inherited assertions under domain-adapter; no schema-roundtrip claim",
+      "result": "not-run by draft revision",
+      "family": "domain",
+      "owner": "domain-adapter",
+      "operation_refs": [
+        "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/tag.rs:103:create",
+        "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/tag.rs:21:all"
+      ],
+      "assertion_ids": [
+        "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/tag.rs:396:assert_eq",
+        "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/tag.rs:397:assert_eq",
+        "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/tag.rs:398:assert_eq"
+      ],
+      "operation_link_evidence": [
+        {
+          "line": 392,
+          "call": "create",
+          "operations": [
+            "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/tag.rs:103:create"
+          ]
+        },
+        {
+          "line": 392,
+          "call": "create",
+          "operations": [
+            "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/tag.rs:103:create"
+          ]
+        },
+        {
+          "line": 393,
+          "call": "create",
+          "operations": [
+            "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/tag.rs:103:create"
+          ]
+        },
+        {
+          "line": 393,
+          "call": "create",
+          "operations": [
+            "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/tag.rs:103:create"
+          ]
+        },
+        {
+          "line": 395,
+          "call": "all",
+          "operations": [
+            "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/tag.rs:21:all"
+          ]
+        },
+        {
+          "line": 395,
+          "call": "all",
+          "operations": [
+            "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/tag.rs:21:all"
+          ]
+        }
+      ],
+      "ownership_class": "direct operation contract",
+      "ownership_reason": "Exact calls or literal CLI input in this inherited test resolve to the listed operations; setup helpers are retained in the fixture, not linked universally.",
+      "fixture_source": "async fn it_returns_tags_sorted_by_label() {\n      let (_store, conn, _tmp) = setup().await;\n\n      let z = Tag::new(\"zebra\");\n      let a = Tag::new(\"alpha\");\n      create(&conn, &z).await.unwrap();\n      create(&conn, &a).await.unwrap();\n\n      let tags = all(&conn).await.unwrap();\n      assert_eq!(tags.len(), 2);\n      assert_eq!(tags[0].label(), \"alpha\");\n      assert_eq!(tags[1].label(), \"zebra\");\n    }",
+      "fixture_sha256": "e1271ff5955d9bae3175b08c15a57fbdc6ade39100cabfefe119e2de2700ad26"
+    },
+    {
+      "file": "src/store/repo/tag.rs",
+      "line": 407,
+      "function": "it_creates_tag_and_attaches",
+      "ignored": false,
+      "stable_id": "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/tag.rs:407:it_creates_tag_and_attaches",
+      "disposition": "preserve inherited assertions under domain-adapter; no schema-roundtrip claim",
+      "result": "not-run by draft revision",
+      "family": "domain",
+      "owner": "domain-adapter",
+      "operation_refs": [
+        "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/tag.rs:305:for_entity",
+        "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/tag.rs:43:attach"
+      ],
+      "assertion_ids": [
+        "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/tag.rs:414:assert_eq",
+        "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/tag.rs:417:assert_eq"
+      ],
+      "operation_link_evidence": [
+        {
+          "line": 413,
+          "call": "attach",
+          "operations": [
+            "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/tag.rs:43:attach"
+          ]
+        },
+        {
+          "line": 413,
+          "call": "attach",
+          "operations": [
+            "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/tag.rs:43:attach"
+          ]
+        },
+        {
+          "line": 416,
+          "call": "for_entity",
+          "operations": [
+            "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/tag.rs:305:for_entity"
+          ]
+        },
+        {
+          "line": 416,
+          "call": "for_entity",
+          "operations": [
+            "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/tag.rs:305:for_entity"
+          ]
+        }
+      ],
+      "ownership_class": "direct operation contract",
+      "ownership_reason": "Exact calls or literal CLI input in this inherited test resolve to the listed operations; setup helpers are retained in the fixture, not linked universally.",
+      "fixture_source": "async fn it_creates_tag_and_attaches() {\n      let (_store, conn, _tmp) = setup().await;\n      let project_id = create_project(&conn).await;\n      let task_id = create_task(&conn, &project_id).await;\n\n      let tag = attach(&conn, EntityType::Task, &task_id, \"urgent\").await.unwrap();\n      assert_eq!(tag.label(), \"urgent\");\n\n      let labels = for_entity(&conn, EntityType::Task, &task_id).await.unwrap();\n      assert_eq!(labels, vec![\"urgent\"]);\n    }",
+      "fixture_sha256": "ed00ec20b286d146a02f99091b66360fa838a2a124ed5a8bd0527db0a5879780"
+    },
+    {
+      "file": "src/store/repo/tag.rs",
+      "line": 420,
+      "function": "it_does_not_duplicate_attachment",
+      "ignored": false,
+      "stable_id": "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/tag.rs:420:it_does_not_duplicate_attachment",
+      "disposition": "preserve inherited assertions under domain-adapter; no schema-roundtrip claim",
+      "result": "not-run by draft revision",
+      "family": "domain",
+      "owner": "domain-adapter",
+      "operation_refs": [
+        "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/tag.rs:305:for_entity",
+        "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/tag.rs:43:attach"
+      ],
+      "assertion_ids": [
+        "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/tag.rs:430:assert_eq"
+      ],
+      "operation_link_evidence": [
+        {
+          "line": 426,
+          "call": "attach",
+          "operations": [
+            "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/tag.rs:43:attach"
+          ]
+        },
+        {
+          "line": 426,
+          "call": "attach",
+          "operations": [
+            "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/tag.rs:43:attach"
+          ]
+        },
+        {
+          "line": 427,
+          "call": "attach",
+          "operations": [
+            "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/tag.rs:43:attach"
+          ]
+        },
+        {
+          "line": 427,
+          "call": "attach",
+          "operations": [
+            "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/tag.rs:43:attach"
+          ]
+        },
+        {
+          "line": 429,
+          "call": "for_entity",
+          "operations": [
+            "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/tag.rs:305:for_entity"
+          ]
+        },
+        {
+          "line": 429,
+          "call": "for_entity",
+          "operations": [
+            "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/tag.rs:305:for_entity"
+          ]
+        }
+      ],
+      "ownership_class": "direct operation contract",
+      "ownership_reason": "Exact calls or literal CLI input in this inherited test resolve to the listed operations; setup helpers are retained in the fixture, not linked universally.",
+      "fixture_source": "async fn it_does_not_duplicate_attachment() {\n      let (_store, conn, _tmp) = setup().await;\n      let project_id = create_project(&conn).await;\n      let task_id = create_task(&conn, &project_id).await;\n\n      attach(&conn, EntityType::Task, &task_id, \"urgent\").await.unwrap();\n      attach(&conn, EntityType::Task, &task_id, \"urgent\").await.unwrap();\n\n      let labels = for_entity(&conn, EntityType::Task, &task_id).await.unwrap();\n      assert_eq!(labels, vec![\"urgent\"]);\n    }",
+      "fixture_sha256": "ed78bdc8c1d643be7b988545439eee4a2c8e3da5fc6b7fe20d34c1ca1b6fde80"
+    },
+    {
+      "file": "src/store/repo/tag.rs",
+      "line": 439,
+      "function": "it_removes_tag_from_entity",
+      "ignored": false,
+      "stable_id": "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/tag.rs:439:it_removes_tag_from_entity",
+      "disposition": "preserve inherited assertions under domain-adapter; no schema-roundtrip claim",
+      "result": "not-run by draft revision",
+      "family": "domain",
+      "owner": "domain-adapter",
+      "operation_refs": [
+        "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/tag.rs:133:detach",
+        "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/tag.rs:305:for_entity",
+        "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/tag.rs:43:attach"
+      ],
+      "assertion_ids": [
+        "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/tag.rs:448:assert",
+        "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/tag.rs:451:assert_eq"
+      ],
+      "operation_link_evidence": [
+        {
+          "line": 445,
+          "call": "attach",
+          "operations": [
+            "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/tag.rs:43:attach"
+          ]
+        },
+        {
+          "line": 445,
+          "call": "attach",
+          "operations": [
+            "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/tag.rs:43:attach"
+          ]
+        },
+        {
+          "line": 446,
+          "call": "detach",
+          "operations": [
+            "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/tag.rs:133:detach"
+          ]
+        },
+        {
+          "line": 446,
+          "call": "detach",
+          "operations": [
+            "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/tag.rs:133:detach"
+          ]
+        },
+        {
+          "line": 450,
+          "call": "for_entity",
+          "operations": [
+            "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/tag.rs:305:for_entity"
+          ]
+        },
+        {
+          "line": 450,
+          "call": "for_entity",
+          "operations": [
+            "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/tag.rs:305:for_entity"
+          ]
+        }
+      ],
+      "ownership_class": "direct operation contract",
+      "ownership_reason": "Exact calls or literal CLI input in this inherited test resolve to the listed operations; setup helpers are retained in the fixture, not linked universally.",
+      "fixture_source": "async fn it_removes_tag_from_entity() {\n      let (_store, conn, _tmp) = setup().await;\n      let project_id = create_project(&conn).await;\n      let task_id = create_task(&conn, &project_id).await;\n\n      attach(&conn, EntityType::Task, &task_id, \"remove-me\").await.unwrap();\n      let removed = detach(&conn, EntityType::Task, &task_id, \"remove-me\").await.unwrap();\n\n      assert!(removed);\n\n      let labels = for_entity(&conn, EntityType::Task, &task_id).await.unwrap();\n      assert_eq!(labels.len(), 0);\n    }",
+      "fixture_sha256": "eb2830eff8d2b11cdf0565d01708d80519a6d4843a3fae01ee461f54355e54e0"
+    },
+    {
+      "file": "src/store/repo/tag.rs",
+      "line": 454,
+      "function": "it_returns_false_when_tag_not_found",
+      "ignored": false,
+      "stable_id": "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/tag.rs:454:it_returns_false_when_tag_not_found",
+      "disposition": "preserve inherited assertions under domain-adapter; no schema-roundtrip claim",
+      "result": "not-run by draft revision",
+      "family": "domain",
+      "owner": "domain-adapter",
+      "operation_refs": [
+        "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/tag.rs:133:detach"
+      ],
+      "assertion_ids": [
+        "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/tag.rs:461:assert"
+      ],
+      "operation_link_evidence": [
+        {
+          "line": 460,
+          "call": "detach",
+          "operations": [
+            "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/tag.rs:133:detach"
+          ]
+        },
+        {
+          "line": 460,
+          "call": "detach",
+          "operations": [
+            "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/tag.rs:133:detach"
+          ]
+        }
+      ],
+      "ownership_class": "direct operation contract",
+      "ownership_reason": "Exact calls or literal CLI input in this inherited test resolve to the listed operations; setup helpers are retained in the fixture, not linked universally.",
+      "fixture_source": "async fn it_returns_false_when_tag_not_found() {\n      let (_store, conn, _tmp) = setup().await;\n      let project_id = create_project(&conn).await;\n      let task_id = create_task(&conn, &project_id).await;\n\n      let removed = detach(&conn, EntityType::Task, &task_id, \"nonexistent\").await.unwrap();\n      assert!(!removed);\n    }",
+      "fixture_sha256": "c10dca8fe6d667c752bf8a3da0a96804020c816ffea515c6ecc0a91a38702861"
+    },
+    {
+      "file": "src/store/repo/tag.rs",
+      "line": 470,
+      "function": "it_groups_tags_by_entity_in_one_query",
+      "ignored": false,
+      "stable_id": "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/tag.rs:470:it_groups_tags_by_entity_in_one_query",
+      "disposition": "preserve inherited assertions under domain-adapter; no schema-roundtrip claim",
+      "result": "not-run by draft revision",
+      "family": "domain",
+      "owner": "domain-adapter",
+      "operation_refs": [
+        "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/tag.rs:252:for_entities",
+        "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/tag.rs:43:attach"
+      ],
+      "assertion_ids": [
+        "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/tag.rs:487:assert_eq",
+        "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/tag.rs:489:assert_eq",
+        "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/tag.rs:490:assert_eq",
+        "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/tag.rs:491:assert_eq",
+        "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/tag.rs:493:assert_eq",
+        "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/tag.rs:494:assert_eq",
+        "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/tag.rs:495:assert"
+      ],
+      "operation_link_evidence": [
+        {
+          "line": 478,
+          "call": "attach",
+          "operations": [
+            "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/tag.rs:43:attach"
+          ]
+        },
+        {
+          "line": 478,
+          "call": "attach",
+          "operations": [
+            "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/tag.rs:43:attach"
+          ]
+        },
+        {
+          "line": 479,
+          "call": "attach",
+          "operations": [
+            "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/tag.rs:43:attach"
+          ]
+        },
+        {
+          "line": 479,
+          "call": "attach",
+          "operations": [
+            "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/tag.rs:43:attach"
+          ]
+        },
+        {
+          "line": 480,
+          "call": "attach",
+          "operations": [
+            "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/tag.rs:43:attach"
+          ]
+        },
+        {
+          "line": 480,
+          "call": "attach",
+          "operations": [
+            "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/tag.rs:43:attach"
+          ]
+        },
+        {
+          "line": 483,
+          "call": "for_entities",
+          "operations": [
+            "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/tag.rs:252:for_entities"
+          ]
+        },
+        {
+          "line": 483,
+          "call": "for_entities",
+          "operations": [
+            "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/tag.rs:252:for_entities"
+          ]
+        }
+      ],
+      "ownership_class": "direct operation contract",
+      "ownership_reason": "Exact calls or literal CLI input in this inherited test resolve to the listed operations; setup helpers are retained in the fixture, not linked universally.",
+      "fixture_source": "async fn it_groups_tags_by_entity_in_one_query() {\n      let (_store, conn, _tmp) = setup().await;\n      let project_id = create_project(&conn).await;\n      let t1 = create_task(&conn, &project_id).await;\n      let t2 = create_task(&conn, &project_id).await;\n      let t3 = create_task(&conn, &project_id).await;\n\n      attach(&conn, EntityType::Task, &t1, \"alpha\").await.unwrap();\n      attach(&conn, EntityType::Task, &t1, \"zebra\").await.unwrap();\n      attach(&conn, EntityType::Task, &t2, \"alpha\").await.unwrap();\n      // t3 has no tags\n\n      let map = for_entities(&conn, EntityType::Task, &[t1.clone(), t2.clone(), t3.clone()])\n        .await\n        .unwrap();\n\n      assert_eq!(map.len(), 2);\n      let t1_tags = map.get(&t1).unwrap();\n      assert_eq!(t1_tags.len(), 2);\n      assert_eq!(t1_tags[0].label(), \"alpha\");\n      assert_eq!(t1_tags[1].label(), \"zebra\");\n      let t2_tags = map.get(&t2).unwrap();\n      assert_eq!(t2_tags.len(), 1);\n      assert_eq!(t2_tags[0].label(), \"alpha\");\n      assert!(!map.contains_key(&t3));\n    }",
+      "fixture_sha256": "e67dda676beb4d4c30c7e444c46f9bcd345884f055dd10b96deb9e092d632abd"
+    },
+    {
+      "file": "src/store/repo/tag.rs",
+      "line": 498,
+      "function": "it_returns_empty_map_for_empty_input",
+      "ignored": false,
+      "stable_id": "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/tag.rs:498:it_returns_empty_map_for_empty_input",
+      "disposition": "preserve inherited assertions under domain-adapter; no schema-roundtrip claim",
+      "result": "not-run by draft revision",
+      "family": "domain",
+      "owner": "domain-adapter",
+      "operation_refs": [
+        "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/tag.rs:252:for_entities"
+      ],
+      "assertion_ids": [
+        "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/tag.rs:504:assert"
+      ],
+      "operation_link_evidence": [
+        {
+          "line": 502,
+          "call": "for_entities",
+          "operations": [
+            "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/tag.rs:252:for_entities"
+          ]
+        },
+        {
+          "line": 502,
+          "call": "for_entities",
+          "operations": [
+            "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/tag.rs:252:for_entities"
+          ]
+        }
+      ],
+      "ownership_class": "direct operation contract",
+      "ownership_reason": "Exact calls or literal CLI input in this inherited test resolve to the listed operations; setup helpers are retained in the fixture, not linked universally.",
+      "fixture_source": "async fn it_returns_empty_map_for_empty_input() {\n      let (_store, conn, _tmp) = setup().await;\n\n      let map = for_entities(&conn, EntityType::Task, &[]).await.unwrap();\n\n      assert!(map.is_empty());\n    }",
+      "fixture_sha256": "20ddc7370f7ccc6d5a14180b448a16a34d03b96778c47a628b97a182534085b3"
+    },
+    {
+      "file": "src/store/repo/tag.rs",
+      "line": 507,
+      "function": "it_scopes_by_entity_type",
+      "ignored": false,
+      "stable_id": "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/tag.rs:507:it_scopes_by_entity_type",
+      "disposition": "preserve inherited assertions under domain-adapter; no schema-roundtrip claim",
+      "result": "not-run by draft revision",
+      "family": "domain",
+      "owner": "domain-adapter",
+      "operation_refs": [
+        "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/tag.rs:252:for_entities",
+        "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/tag.rs:43:attach"
+      ],
+      "assertion_ids": [
+        "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/tag.rs:526:assert_eq",
+        "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/tag.rs:527:assert_eq"
+      ],
+      "operation_link_evidence": [
+        {
+          "line": 513,
+          "call": "attach",
+          "operations": [
+            "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/tag.rs:43:attach"
+          ]
+        },
+        {
+          "line": 513,
+          "call": "attach",
+          "operations": [
+            "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/tag.rs:43:attach"
+          ]
+        },
+        {
+          "line": 517,
+          "call": "attach",
+          "operations": [
+            "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/tag.rs:43:attach"
+          ]
+        },
+        {
+          "line": 517,
+          "call": "attach",
+          "operations": [
+            "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/tag.rs:43:attach"
+          ]
+        },
+        {
+          "line": 521,
+          "call": "for_entities",
+          "operations": [
+            "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/tag.rs:252:for_entities"
+          ]
+        },
+        {
+          "line": 521,
+          "call": "for_entities",
+          "operations": [
+            "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/tag.rs:252:for_entities"
+          ]
+        }
+      ],
+      "ownership_class": "direct operation contract",
+      "ownership_reason": "Exact calls or literal CLI input in this inherited test resolve to the listed operations; setup helpers are retained in the fixture, not linked universally.",
+      "fixture_source": "async fn it_scopes_by_entity_type() {\n      let (_store, conn, _tmp) = setup().await;\n      let project_id = create_project(&conn).await;\n      let task_id = create_task(&conn, &project_id).await;\n\n      attach(&conn, EntityType::Task, &task_id, \"task-tag\").await.unwrap();\n      // Attach the same id as an artifact tag would go to a different type, so\n      // the task lookup should ignore it. Simulate by attaching a different\n      // type with the same id.\n      attach(&conn, EntityType::Artifact, &task_id, \"artifact-tag\")\n        .await\n        .unwrap();\n\n      let map = for_entities(&conn, EntityType::Task, std::slice::from_ref(&task_id))\n        .await\n        .unwrap();\n\n      let tags = map.get(&task_id).unwrap();\n      assert_eq!(tags.len(), 1);\n      assert_eq!(tags[0].label(), \"task-tag\");\n    }",
+      "fixture_sha256": "f742542a4120144ec6a6cc3215d67f1804f8e2bf91c812410651cab45b3d6fcd"
+    }
+  ],
+  "new_converter_controls": {
+    "project": [
+      {
+        "id": "tests/gest_project_values.rs:complete_output_round_trips_and_is_independent",
+        "classification": "new converter source-behavior control; not inherited API fixture port"
+      },
+      {
+        "id": "tests/gest_project_values.rs:every_field_rejects_wrong_types_without_parser_causes",
+        "classification": "new converter source-behavior control; not inherited API fixture port"
+      },
+      {
+        "id": "tests/gest_project_values.rs:full_identifier_domain_and_boundaries",
+        "classification": "new converter source-behavior control; not inherited API fixture port"
+      },
+      {
+        "id": "tests/gest_project_values.rs:each_timestamp_normalizes_and_round_trips",
+        "classification": "new converter source-behavior control; not inherited API fixture port"
+      },
+      {
+        "id": "tests/gest_project_values.rs:every_timestamp_retains_initial_and_canonical_parse_causes",
+        "classification": "new converter source-behavior control; not inherited API fixture port"
+      },
+      {
+        "id": "tests/gest_project_values.rs:required_fields_reject_null",
+        "classification": "new converter source-behavior control; not inherited API fixture port"
+      },
+      {
+        "id": "tests/gest_project_values.rs:archive_null_and_present_are_distinct",
+        "classification": "new converter source-behavior control; not inherited API fixture port"
+      }
+    ],
+    "author": [
+      {
+        "id": "tests/gest_author_values.rs:complete_output_round_trips_and_is_independent",
+        "classification": "new converter source-behavior control; not inherited API fixture port"
+      },
+      {
+        "id": "tests/gest_author_values.rs:every_field_rejects_wrong_types_without_parser_causes",
+        "classification": "new converter source-behavior control; not inherited API fixture port"
+      },
+      {
+        "id": "tests/gest_author_values.rs:full_identifier_domain_and_boundaries",
+        "classification": "new converter source-behavior control; not inherited API fixture port"
+      },
+      {
+        "id": "tests/gest_author_values.rs:each_timestamp_normalizes_and_round_trips",
+        "classification": "new converter source-behavior control; not inherited API fixture port"
+      },
+      {
+        "id": "tests/gest_author_values.rs:every_timestamp_retains_initial_and_canonical_parse_causes",
+        "classification": "new converter source-behavior control; not inherited API fixture port"
+      },
+      {
+        "id": "tests/gest_author_values.rs:required_fields_reject_null",
+        "classification": "new converter source-behavior control; not inherited API fixture port"
+      },
+      {
+        "id": "tests/gest_author_values.rs:author_types_are_case_insensitive_and_canonical",
+        "classification": "new converter source-behavior control; not inherited API fixture port"
+      },
+      {
+        "id": "tests/gest_author_values.rs:exact_names_and_nullable_email_text",
+        "classification": "new converter source-behavior control; not inherited API fixture port"
+      }
+    ],
+    "tag": [
+      {
+        "id": "tests/gest_tag_values.rs:complete_output_round_trips_and_is_independent",
+        "classification": "new converter source-behavior control; not inherited API fixture port"
+      },
+      {
+        "id": "tests/gest_tag_values.rs:every_field_rejects_wrong_types_without_parser_causes",
+        "classification": "new converter source-behavior control; not inherited API fixture port"
+      },
+      {
+        "id": "tests/gest_tag_values.rs:full_identifier_domain_and_boundaries",
+        "classification": "new converter source-behavior control; not inherited API fixture port"
+      },
+      {
+        "id": "tests/gest_tag_values.rs:each_timestamp_normalizes_and_round_trips",
+        "classification": "new converter source-behavior control; not inherited API fixture port"
+      },
+      {
+        "id": "tests/gest_tag_values.rs:every_timestamp_retains_initial_and_canonical_parse_causes",
+        "classification": "new converter source-behavior control; not inherited API fixture port"
+      },
+      {
+        "id": "tests/gest_tag_values.rs:required_fields_reject_null",
+        "classification": "new converter source-behavior control; not inherited API fixture port"
+      },
+      {
+        "id": "tests/gest_tag_values.rs:labels_remain_exact_without_global_uniqueness_policy",
+        "classification": "new converter source-behavior control; not inherited API fixture port"
+      }
+    ]
+  },
+  "accounting": {
+    "canonical_fields": 14,
+    "source_api_obligations": 9,
+    "exact_inherited_ports": 0,
+    "adopted_replacements": 0,
+    "new_converter_tests": 22
+  },
+  "remaining": "Constructors/builders/getters, source enum APIs, repository operations and full contract inventories remain deferred. No clocks/defaults/ID generation, SQL, carrier parsing, replay or uniqueness implemented."
+}

@@ -1,0 +1,1258 @@
+{
+  "status": "independent bounded catalog component review passed; no product findings",
+  "findings": [],
+  "scope": "Project 4, Author 6, Tag 4 complete owned decoded Value conversion. Not whole product acceptance or final composition.",
+  "worktree": "/Users/rahul/Projects/gossil.worktrees/gest-ynoruszp-catalog-values",
+  "base_commit": "18063efd8ba770efd728e30d1b522abc01e23f37",
+  "candidate_sha256": "5fc28c49714abe8402b77a4b211781ea4ba96adc9eacecc01e87ab790ad0acb5",
+  "manifest_sha256": "e1e26e20c1b186c29662fbe031cce108b55fd193b9e83c870d7628acb2f038a4",
+  "identity_note": "candidate.json is not a physical file; parent clarified candidate identity is documented compact sorted feature_entries digest. Followup candidate digest similarly identifies compact sorted entries.",
+  "audited_surfaces": {
+    "complete_frozen_inventory": [
+      {
+        "path": "docs/gest-catalog-values.md",
+        "sha256": "6feb44a93d43eb2077bc0c3c1792d789e416054703cb05c71d835276d202b5f0",
+        "bytes": 5255,
+        "baseline_status": "new"
+      },
+      {
+        "path": "evidence/gest-catalog-values/baseline-comparison.json",
+        "sha256": "474f22ecc23a06884e4c7c4f85eda756bc745ff127133da5307dd162169e6c86",
+        "bytes": 24258,
+        "baseline_status": "new"
+      },
+      {
+        "path": "evidence/gest-catalog-values/dependers-author.json",
+        "sha256": "090b798e92da29681db92844f1386d9cf2d586aa1e4f2f815517571dbc8a3a03",
+        "bytes": 2850,
+        "baseline_status": "new"
+      },
+      {
+        "path": "evidence/gest-catalog-values/dependers-project.json",
+        "sha256": "e839bf7f09a52c60f38785edb646ae01ac8b49b9705acd89e139afcde7878e32",
+        "bytes": 2576,
+        "baseline_status": "new"
+      },
+      {
+        "path": "evidence/gest-catalog-values/dependers-tag.json",
+        "sha256": "44d052708a2461320c21ba1133c80b0234ec8768ceea77fcd7561bc78621a767",
+        "bytes": 2136,
+        "baseline_status": "new"
+      },
+      {
+        "path": "evidence/gest-catalog-values/diff-check.log",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "bytes": 0,
+        "baseline_status": "new"
+      },
+      {
+        "path": "evidence/gest-catalog-values/executions.json",
+        "sha256": "514a19283500f92bc2ffb69b599cc1e877068aa70f9620fb10c543da3376db70",
+        "bytes": 6624,
+        "baseline_status": "new"
+      },
+      {
+        "path": "evidence/gest-catalog-values/existing-gest-examples.log",
+        "sha256": "2c62a373e244b4ca48b46a1f2765856fb5b949212908e4499424bed3136d406b",
+        "bytes": 665,
+        "baseline_status": "new"
+      },
+      {
+        "path": "evidence/gest-catalog-values/focused-final.log",
+        "sha256": "579679e2ac53b790fe2e8f98d2db70226007774e75cd16480c7a28928e7861e1",
+        "bytes": 2023,
+        "baseline_status": "new"
+      },
+      {
+        "path": "evidence/gest-catalog-values/focused.log",
+        "sha256": "36a01b2e9108e1830374e926ba0b0799e6bd484ace2d51708f31af83417dcdff",
+        "bytes": 5226,
+        "baseline_status": "new"
+      },
+      {
+        "path": "evidence/gest-catalog-values/format.log",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "bytes": 0,
+        "baseline_status": "new"
+      },
+      {
+        "path": "evidence/gest-catalog-values/mutant-author-cause-loss.log",
+        "sha256": "91206eaca6e52f0cec0e4957ccbc3e4970021289fbf64243e49eef4ae6ca185d",
+        "bytes": 997,
+        "baseline_status": "new"
+      },
+      {
+        "path": "evidence/gest-catalog-values/mutant-author-type-collapse.log",
+        "sha256": "ecdcc91c7252aea1440997d7fd0bab086a3ae5dbde12ef518f4fc45a02745a78",
+        "bytes": 1411,
+        "baseline_status": "new"
+      },
+      {
+        "path": "evidence/gest-catalog-values/mutant-project-archive-loss.log",
+        "sha256": "e0c940d45c1595890e32bfe27ee60479348f36f6225d7ab3651a63c1da33ac16",
+        "bytes": 1300,
+        "baseline_status": "new"
+      },
+      {
+        "path": "evidence/gest-catalog-values/mutant-tag-label-loss.log",
+        "sha256": "41ea72aa3262d9071ab169d2e49cf797899eb52056b43d604f9af0b3ad7936ac",
+        "bytes": 1306,
+        "baseline_status": "new"
+      },
+      {
+        "path": "evidence/gest-catalog-values/prose-author-verbose.log",
+        "sha256": "2d3c288dba1ae8b40e1860bbc8143e8ac741050ef5680697147217d28014dbd5",
+        "bytes": 390,
+        "baseline_status": "new"
+      },
+      {
+        "path": "evidence/gest-catalog-values/prose-check-verbose.log",
+        "sha256": "3bf5d9903173eb255d59a7c2a253a4d37c3ffea6d08780b210f925541dd0a1e1",
+        "bytes": 118,
+        "baseline_status": "new"
+      },
+      {
+        "path": "evidence/gest-catalog-values/prose-check.log",
+        "sha256": "3518ae5dc8768bafd0d210d284ebfd4b3f2899a05892ac77047d6398294b601d",
+        "bytes": 79,
+        "baseline_status": "new"
+      },
+      {
+        "path": "evidence/gest-catalog-values/regression.log",
+        "sha256": "743cb2c738fa8971e6b63e26b8e0f62e16965ea67f93b35dd17312b93fdd2202",
+        "bytes": 5223,
+        "baseline_status": "new"
+      },
+      {
+        "path": "evidence/gest-catalog-values/report.json",
+        "sha256": "e28e09edf4442819c43c65d2ced7817ce589e0d5a5fd66197855a3cc4443b5de",
+        "bytes": 11990,
+        "baseline_status": "new"
+      },
+      {
+        "path": "evidence/gest-catalog-values/shared-helper.log",
+        "sha256": "6d53225d0ef7e24353e6e941b396fadf5c5ad5879b7c1dbb8d388feecf839405",
+        "bytes": 833,
+        "baseline_status": "new"
+      },
+      {
+        "path": "src/gest_author_values.rs",
+        "sha256": "c87c83e0f8eb0b72c890d132f59609ed7b65ebaa31f52334320f899d06df8448",
+        "bytes": 5305,
+        "baseline_status": "new"
+      },
+      {
+        "path": "src/gest_project_values.rs",
+        "sha256": "0dac15c1fe9a66079d68ce9b1bc3da370f4ca44f01fab3089ea73834d573969a",
+        "bytes": 4350,
+        "baseline_status": "new"
+      },
+      {
+        "path": "src/gest_tag_values.rs",
+        "sha256": "9e5e86720533709d0ae5bf76d3fbcf946c7634de262ebacd2bff31efda2a328b",
+        "bytes": 4012,
+        "baseline_status": "new"
+      },
+      {
+        "path": "src/lib.rs",
+        "sha256": "760be3ef5fbfb5424c159c1080225deb3125297387658c9dcc6c93a262ec48a0",
+        "bytes": 30357,
+        "baseline_status": "changed"
+      },
+      {
+        "path": "tests/fixtures/gest_author_values/records.json",
+        "sha256": "b1f1a582991ab7bb9d35c4c54c3468ddca62cac195d10ba1cc80ab8a17d8b39d",
+        "bytes": 243,
+        "baseline_status": "new"
+      },
+      {
+        "path": "tests/fixtures/gest_author_values/source-map.json",
+        "sha256": "8b1001953dc518a8a12c929fba527971359f4768cc216020bbce4fcf6590e172",
+        "bytes": 4123,
+        "baseline_status": "new"
+      },
+      {
+        "path": "tests/fixtures/gest_catalog_values/source-map.json",
+        "sha256": "e5e335a85a8c715c1fd92ef9fbb05532cc82e056ddb3525825f41b1329c4a870",
+        "bytes": 137469,
+        "baseline_status": "new"
+      },
+      {
+        "path": "tests/fixtures/gest_project_values/records.json",
+        "sha256": "cbc77b3e49e4b77cd0d50b275de8b2f7b6e5a55c943d4de7880a231e81bb712a",
+        "bytes": 189,
+        "baseline_status": "new"
+      },
+      {
+        "path": "tests/fixtures/gest_project_values/source-map.json",
+        "sha256": "6a9c6149760ae0597748fe6abe52c2885b6b4412a631a0210cd1639775761771",
+        "bytes": 3360,
+        "baseline_status": "new"
+      },
+      {
+        "path": "tests/fixtures/gest_tag_values/records.json",
+        "sha256": "2629c9b8eafa08fdfef6596d7cdaaca8284a5c235d3c52f0ce84cef049ba4b7e",
+        "bytes": 200,
+        "baseline_status": "new"
+      },
+      {
+        "path": "tests/fixtures/gest_tag_values/source-map.json",
+        "sha256": "81491773dc0a4231981169f5ce41d255ea94d8c78fda9821bb4abfb1099f3e15",
+        "bytes": 3155,
+        "baseline_status": "new"
+      },
+      {
+        "path": "tests/gest_author_values.rs",
+        "sha256": "02634ad8db06a2e35cd0f7b09d977c0291b741c0e9a7920991074dc92048eb4c",
+        "bytes": 7522,
+        "baseline_status": "new"
+      },
+      {
+        "path": "tests/gest_project_values.rs",
+        "sha256": "d20246ad08634975ca65b8b015c96382bac5ee5bb3fa018645a62f63210d0381",
+        "bytes": 6432,
+        "baseline_status": "new"
+      },
+      {
+        "path": "tests/gest_tag_values.rs",
+        "sha256": "30bc3866a20b8e04f522f8a287978ecc92095a821d62c9e31608f652fdfda9f3",
+        "bytes": 6090,
+        "baseline_status": "new"
+      }
+    ],
+    "complete_baseline_inventory": [
+      {
+        "path": "Cargo.lock",
+        "sha256": "d72be381635cfdb1b5bbb4dc4790817af9008ff22f4bae271811a5c5013241f9",
+        "bytes": 26910,
+        "base_sha256": "7e50440fa7e7c7ee3b4033c649f278ea0dcd105244ae333979b19bcc0f089731"
+      },
+      {
+        "path": "Cargo.toml",
+        "sha256": "e0537ecdaf5f07c5ad73f8b91afba211cdb20b184a5f914b103c6b1ab9523e6f",
+        "bytes": 873,
+        "base_sha256": "e783c578efd5ce4b016e5e830d2cdcc882a527e0eea9c6b718628c5e6501f986"
+      },
+      {
+        "path": "README.md",
+        "sha256": "e38edb84eb880901ca4b737bf14e4ec5f2befe2ce87bab0d7d2bdcebe4c7436d",
+        "bytes": 9253,
+        "base_sha256": "67521b35442b16c849bcd081e70ab00499082d6e91317c54e570bf0329e0450f"
+      },
+      {
+        "path": "docs/_smalldocs.yml",
+        "sha256": "22c84648f7e2736f3021a1439a2a4ca9f27212bbcb0aac1ab07196ce1be165db",
+        "bytes": 960,
+        "base_sha256": "c5227179710e72d9a9da6851ee889e254aa726e93f8f500dde98a4b7dcc5aa39"
+      },
+      {
+        "path": "docs/development-plan.md",
+        "sha256": "3e846eea01b51a27e4ac4aaa056f66ad32519ae2843abe07c032927433c60ad8",
+        "bytes": 13330,
+        "base_sha256": "4ff7f372a6793c92ccd65c21dda9fff3e299a3cb26e1245f809e88be0a2995d1"
+      },
+      {
+        "path": "docs/gest-domain-values.md",
+        "sha256": "78d5e2cdb05b72bd5db78f12efab0227a3241830528f432593cd9a1aa53168fd",
+        "bytes": 5845,
+        "base_sha256": null
+      },
+      {
+        "path": "docs/gest-task-values.md",
+        "sha256": "bd7571c1ad3c6c5ab40940834cacd1b8d9dd9f4aacc433d123478eaf19904b7c",
+        "bytes": 9284,
+        "base_sha256": null
+      },
+      {
+        "path": "docs/index.md",
+        "sha256": "012b50430f2883f7e30e50bb03c882424e66c0409e8f961f1eeae490f3f6ab4b",
+        "bytes": 4152,
+        "base_sha256": "fd9290477149c9c325cd3694be419ef88c5d4f1e359e2d55cc6bb2e3ba85e403"
+      },
+      {
+        "path": "evidence/gest-domain-values/artifact-body-loss-mutation-red.log",
+        "sha256": "4bee8339424ce3105950af388d124177cf636cf0e9acc2442388be3b46effdcc",
+        "bytes": 1730,
+        "base_sha256": null
+      },
+      {
+        "path": "evidence/gest-domain-values/ast-public-task-dependers.json",
+        "sha256": "067097cde1563012d56f73c0cec3d893726ec2edca76a58694a672544a2df3e5",
+        "bytes": 2418,
+        "base_sha256": null
+      },
+      {
+        "path": "evidence/gest-domain-values/ast-shared-dependers.json",
+        "sha256": "2b0ad6d20f5dd8ec4525abaf5dc905e99fd3f255d2d03c8f1d623c8a950f7927",
+        "bytes": 9372,
+        "base_sha256": null
+      },
+      {
+        "path": "evidence/gest-domain-values/ast-task-dependers.json",
+        "sha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+        "bytes": 3,
+        "base_sha256": null
+      },
+      {
+        "path": "evidence/gest-domain-values/doctest-command-rejected.log",
+        "sha256": "f13947ece644db4d22f3b44a8af537f8b3cca94a49772431b58f21829bcfd188",
+        "bytes": 59,
+        "base_sha256": null
+      },
+      {
+        "path": "evidence/gest-domain-values/domain-doctests.log",
+        "sha256": "8e2d577a4389e8ee98d6335fbe5c3424d4df6d944b767ffdc32368665b55d4d3",
+        "bytes": 665,
+        "base_sha256": null
+      },
+      {
+        "path": "evidence/gest-domain-values/feature-manifest.json",
+        "sha256": "86030c0b5f785e04cccd4e550fcddafc9b9b43aa9528603d2d74abf3ed24cdd1",
+        "bytes": 6639,
+        "base_sha256": null
+      },
+      {
+        "path": "evidence/gest-domain-values/focused-tests.log",
+        "sha256": "6403b0d44453435870adbdc3e451f718293b0519fb3c0cf7f8b8345978783345",
+        "bytes": 3269,
+        "base_sha256": null
+      },
+      {
+        "path": "evidence/gest-domain-values/iteration-pairing-removed-mutation-red.log",
+        "sha256": "28427b0ca7130787e8fb3e8cf8309a5867fc8c63662364d275eae814b7a561a5",
+        "bytes": 1162,
+        "base_sha256": null
+      },
+      {
+        "path": "evidence/gest-domain-values/mutation-controls.json",
+        "sha256": "b00336d9dc4adf9b3eb6b026884ce24b2b39d569f8975b8520627cda039863cb",
+        "bytes": 1625,
+        "base_sha256": null
+      },
+      {
+        "path": "evidence/gest-domain-values/prose-author-check.log",
+        "sha256": "7f59df95aca55a51414cbf21c2c9488a79165547706efc458125c4032cdb8921",
+        "bytes": 623,
+        "base_sha256": null
+      },
+      {
+        "path": "evidence/gest-domain-values/report.json",
+        "sha256": "dcca3523a26f9af78b847a02f056758ca747e0f94dc6b9bc5f46853dffe7f94a",
+        "bytes": 3793,
+        "base_sha256": null
+      },
+      {
+        "path": "evidence/gest-domain-values/shared-cause-discarded-mutation-red.log",
+        "sha256": "b003fd999c2be8a46b9a52748a5cd57609cb9623f3bf1306ad43fe9445eec20e",
+        "bytes": 1818,
+        "base_sha256": null
+      },
+      {
+        "path": "evidence/gest-domain-values/shared-helper-tests.log",
+        "sha256": "9e3d084c182b08ca7c4c43caa9ef426b8ed51111cfbe18ac60649ea04b7dcbd5",
+        "bytes": 883,
+        "base_sha256": null
+      },
+      {
+        "path": "evidence/gest-domain-values/source-hashes.json",
+        "sha256": "eed3eee10bc4c800d29af4e2582caaf1ae7b4b14aa9a510c0fcc13e1b71a1d5b",
+        "bytes": 1133,
+        "base_sha256": null
+      },
+      {
+        "path": "evidence/gest-domain-values/starting-files.json",
+        "sha256": "a822bcadb461f3b5a8566a1370cbf2c277d7fc86546bcd3e44e9a88a4bf94abd",
+        "bytes": 451,
+        "base_sha256": null
+      },
+      {
+        "path": "evidence/gest-domain-values/test-first-missing-api.log",
+        "sha256": "671bf25de5a7d70fb5d0acdb42b8aa9de31ebe092a9eab99047b3319d234cda3",
+        "bytes": 4108,
+        "base_sha256": null
+      },
+      {
+        "path": "evidence/gest-task-values-cause-fix/ast-api-module.json",
+        "sha256": "8f5065dd22244f1e2e5b8ef72cc47db1c2e461f707f47dcc9bdad2a2c2140fd0",
+        "bytes": 1687,
+        "base_sha256": null
+      },
+      {
+        "path": "evidence/gest-task-values-cause-fix/ast-cause-fields.json",
+        "sha256": "90117e9b7e4caeb685877fc1c98bb70904dd5502766fce5de12351704a73f04f",
+        "bytes": 7456,
+        "base_sha256": null
+      },
+      {
+        "path": "evidence/gest-task-values-cause-fix/ast-error-identifiers.json",
+        "sha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+        "bytes": 3,
+        "base_sha256": null
+      },
+      {
+        "path": "evidence/gest-task-values-cause-fix/ast-error-types.json",
+        "sha256": "5ef62ed632ea180d02c89df224bb2d4b3274a70f459954103017805b306b244b",
+        "bytes": 12704,
+        "base_sha256": null
+      },
+      {
+        "path": "evidence/gest-task-values-cause-fix/ast-error.before.json",
+        "sha256": "0980ad27a34fca3f79274d6c4e63ac0eb1d4df49e2b708bb282615b35c26dc06",
+        "bytes": 15699,
+        "base_sha256": null
+      },
+      {
+        "path": "evidence/gest-task-values-cause-fix/ast-error.json",
+        "sha256": "126ea8e7f572eb290736285bc8e401408ee4b3c07d88e74324bba7cd48efb721",
+        "bytes": 21329,
+        "base_sha256": null
+      },
+      {
+        "path": "evidence/gest-task-values-cause-fix/ast-from.before.json",
+        "sha256": "1d16eb578e9c8517ae3411473338d8874d8b8d4b308e87bc98a46be69e5b5a67",
+        "bytes": 3640,
+        "base_sha256": null
+      },
+      {
+        "path": "evidence/gest-task-values-cause-fix/ast-from.json",
+        "sha256": "280b7b89f5a4df4f00ca83e17c1def4df358606c1ae07437fd2fa04f61bd9452",
+        "bytes": 5470,
+        "base_sha256": null
+      },
+      {
+        "path": "evidence/gest-task-values-cause-fix/ast-inputs.json",
+        "sha256": "344269411556df24a78de458d5df825e0a853e84bbead1f944c8d2a499023177",
+        "bytes": 20247,
+        "base_sha256": null
+      },
+      {
+        "path": "evidence/gest-task-values-cause-fix/ast-parse-cause-identifiers.json",
+        "sha256": "3435c2d868ab3ef0122aab60370a326661babe9975183d580fa6a9d331880e8c",
+        "bytes": 2560,
+        "base_sha256": null
+      },
+      {
+        "path": "evidence/gest-task-values-cause-fix/ast-parse-cause.json",
+        "sha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+        "bytes": 3,
+        "base_sha256": null
+      },
+      {
+        "path": "evidence/gest-task-values-cause-fix/ast-to.before.json",
+        "sha256": "c90cac551853eddc67b37119dbe8be7b627599095480535c7d4dfca3b401a4a8",
+        "bytes": 955,
+        "base_sha256": null
+      },
+      {
+        "path": "evidence/gest-task-values-cause-fix/ast-to.json",
+        "sha256": "c90cac551853eddc67b37119dbe8be7b627599095480535c7d4dfca3b401a4a8",
+        "bytes": 955,
+        "base_sha256": null
+      },
+      {
+        "path": "evidence/gest-task-values-cause-fix/checks.json",
+        "sha256": "d2994d43c9cec530fd183234c9a6dc61f8c5b467a4a8fad9105e3b27539f95b1",
+        "bytes": 2133,
+        "base_sha256": null
+      },
+      {
+        "path": "evidence/gest-task-values-cause-fix/declaude-lint.log",
+        "sha256": "7686c62ee5d5c7a31e5b54b43027f8ea0844dcda86cf7d81bf123c820e5389d0",
+        "bytes": 1191,
+        "base_sha256": null
+      },
+      {
+        "path": "evidence/gest-task-values-cause-fix/diff-check.log",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "bytes": 0,
+        "base_sha256": null
+      },
+      {
+        "path": "evidence/gest-task-values-cause-fix/first-party-rust-files.txt",
+        "sha256": "904f3355d74b7d2d029f55130f13f71029282a6287dcca7c12c2fb9e71c6da58",
+        "bytes": 581,
+        "base_sha256": null
+      },
+      {
+        "path": "evidence/gest-task-values-cause-fix/format-check.log",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "bytes": 0,
+        "base_sha256": null
+      },
+      {
+        "path": "evidence/gest-task-values-cause-fix/green.log",
+        "sha256": "6d497558bf514b57eac536f403e8fcdc82d429314bbf6e638fa6905aae12d051",
+        "bytes": 2331,
+        "base_sha256": null
+      },
+      {
+        "path": "evidence/gest-task-values-cause-fix/guide.before.txt",
+        "sha256": "f28b6b54068597f28bc0737f6f0e4f1e28ca47e07606af5de5ef7df8dd1a2229",
+        "bytes": 8857,
+        "base_sha256": null
+      },
+      {
+        "path": "evidence/gest-task-values-cause-fix/guide.diff",
+        "sha256": "b29d8585062362246397b84058ab17fcde9b55c86153cb9c5f27d2f4774859d8",
+        "bytes": 969,
+        "base_sha256": null
+      },
+      {
+        "path": "evidence/gest-task-values-cause-fix/literal-inventory.before.txt",
+        "sha256": "0e058b667d3af50cd9b57fdd60d56ceb32442c313ce363d58a0587cda3b0d779",
+        "bytes": 3949,
+        "base_sha256": null
+      },
+      {
+        "path": "evidence/gest-task-values-cause-fix/literal-inventory.txt",
+        "sha256": "92c470ee5d20f9656a7b8530b1db8735b451e210b15bde26808964625ed425c0",
+        "bytes": 5381,
+        "base_sha256": null
+      },
+      {
+        "path": "evidence/gest-task-values-cause-fix/original-evidence-sha256.json",
+        "sha256": "1f0af06fae1e15d298d6b2e0d668b5095e25a5b6aa584fcb9e362c6bb8b342b4",
+        "bytes": 1428,
+        "base_sha256": null
+      },
+      {
+        "path": "evidence/gest-task-values-cause-fix/original-evidence-verification.json",
+        "sha256": "b41beea41ca44e9196d308bc540c4159131b1642178fb44669762fab4da098fa",
+        "bytes": 39,
+        "base_sha256": null
+      },
+      {
+        "path": "evidence/gest-task-values-cause-fix/prose-check.log",
+        "sha256": "e0ce516859f13d3cedb9205f57901782d732694257389c793852ac61bc880ac5",
+        "bytes": 135,
+        "base_sha256": null
+      },
+      {
+        "path": "evidence/gest-task-values-cause-fix/prose-soft-notes.log",
+        "sha256": "334e5bcf926885a740d098c5fdb43ae1cb1fa79f77aa81b8ade3544a922af180",
+        "bytes": 949,
+        "base_sha256": null
+      },
+      {
+        "path": "evidence/gest-task-values-cause-fix/red.log",
+        "sha256": "6552123ff92e415a83911212dacbbc7be12a3d33b0cf5f2ac80846f4eefce46a",
+        "bytes": 6086,
+        "base_sha256": null
+      },
+      {
+        "path": "evidence/gest-task-values-cause-fix/report.json",
+        "sha256": "4174d11d3a31d3bcc5e402e0b02ed2e39ea3dc6b01609461fe3683fbe464314e",
+        "bytes": 5079,
+        "base_sha256": null
+      },
+      {
+        "path": "evidence/gest-task-values-cause-fix/source.before.txt",
+        "sha256": "9a680e3a4b5a169478283cbef45370e2aabe30123fce8b6600dd2761e611570f",
+        "bytes": 12019,
+        "base_sha256": null
+      },
+      {
+        "path": "evidence/gest-task-values-cause-fix/source.diff",
+        "sha256": "53eec9517e4802f99c68ff9db7f95402d435a58a2f15a5f2b4f3c169347d9bd5",
+        "bytes": 2977,
+        "base_sha256": null
+      },
+      {
+        "path": "evidence/gest-task-values-cause-fix/tests.before.txt",
+        "sha256": "40ea23d50c0e9f1a36c43a21a06afef41a19a1a3a6bd3d3d310878ef4bd37b81",
+        "bytes": 14602,
+        "base_sha256": null
+      },
+      {
+        "path": "evidence/gest-task-values-cause-fix/tests.diff",
+        "sha256": "3a14458314fec10f9a9613b6041146f35c97169f09e1314aa3d40948d96577b3",
+        "bytes": 3589,
+        "base_sha256": null
+      },
+      {
+        "path": "evidence/gest-task-values/ast-from.json",
+        "sha256": "e1bb46de95f6297da085adc70b0e2b3aa98c2e29ff362744f54accf2d2749688",
+        "bytes": 629,
+        "base_sha256": null
+      },
+      {
+        "path": "evidence/gest-task-values/ast-inputs.json",
+        "sha256": "02f98d3085136f1ca38c2d296d05232e7dbbe4afa7fc50d23991be31849a84f6",
+        "bytes": 3149,
+        "base_sha256": null
+      },
+      {
+        "path": "evidence/gest-task-values/ast-to.json",
+        "sha256": "63f69b65816b6bed31a2fe90b57368098def20e632a92b1cfffb0cce3360afb3",
+        "bytes": 331,
+        "base_sha256": null
+      },
+      {
+        "path": "evidence/gest-task-values/candidate.json",
+        "sha256": "4210120ce6de8605b4e4e4c554147f430a5c44c40a8341a94c9cfe78883d239b",
+        "bytes": 12020,
+        "base_sha256": null
+      },
+      {
+        "path": "evidence/gest-task-values/canonical-time-red.log",
+        "sha256": "98844c62ea529410d4deef4cf72b59874d05e9a68e566d9e8a97514084d5152f",
+        "bytes": 3030,
+        "base_sha256": null
+      },
+      {
+        "path": "evidence/gest-task-values/chrono-features.txt",
+        "sha256": "ab8b510ad72041039b3dd825f829aea2aa96deb5e5ccade12bee0add5924d88e",
+        "bytes": 201,
+        "base_sha256": null
+      },
+      {
+        "path": "evidence/gest-task-values/first-party-rust-files.txt",
+        "sha256": "eb5c616b02b7f8943423972ace9b866020413c3a9d8eeb9990451c21b1bc6dc5",
+        "bytes": 581,
+        "base_sha256": null
+      },
+      {
+        "path": "evidence/gest-task-values/focused-test.log",
+        "sha256": "8e929768ed4c9ea13f58947007211044042e21f93db81d6e5ad16f9c13905b89",
+        "bytes": 2114,
+        "base_sha256": null
+      },
+      {
+        "path": "evidence/gest-task-values/literal-macro-inventory.txt",
+        "sha256": "a8f5bf98686f26bf00d37a2d879ad381094187af29f7efed634dc6410c38b44a",
+        "bytes": 3860,
+        "base_sha256": null
+      },
+      {
+        "path": "evidence/gest-task-values/prose-check.log",
+        "sha256": "47531cd2af59abcd8c71d2178267f4ff06554402b6bd785ba89151a496886905",
+        "bytes": 135,
+        "base_sha256": null
+      },
+      {
+        "path": "evidence/gest-task-values/prose-soft-notes.log",
+        "sha256": "d23fe27cbc5c8b301b1bda50d88a91b329758be33d96f1b8387d8909b6daec18",
+        "bytes": 665,
+        "base_sha256": null
+      },
+      {
+        "path": "evidence/gest-task-values/source-edge-observation.log",
+        "sha256": "ec6c9ca764220fb039ee967632a4da308c5c2eb32cb6e74ed82d0844c7750c5f",
+        "bytes": 2145,
+        "base_sha256": null
+      },
+      {
+        "path": "src/gest_artifact_values.rs",
+        "sha256": "3c62860f45f95f8efe04b7e5033e65045f1881d6f442f428fbc594d8ba801b8a",
+        "bytes": 6566,
+        "base_sha256": null
+      },
+      {
+        "path": "src/gest_iteration_values.rs",
+        "sha256": "6f0b0c4c67494bfb1be0249a317c315457e00ae584c18316af052151c537e8ce",
+        "bytes": 7771,
+        "base_sha256": null
+      },
+      {
+        "path": "src/gest_task_values.rs",
+        "sha256": "e82de06f7bd32e30e4792cd15172641e58dfac917f57c98042afd674bab3acd8",
+        "bytes": 11121,
+        "base_sha256": null
+      },
+      {
+        "path": "src/gest_value_validation.rs",
+        "sha256": "3e72f89bcdfbdfae216611f052851e5287d39762fad13b076cffda6215503a20",
+        "bytes": 6239,
+        "base_sha256": null
+      },
+      {
+        "path": "src/lib.rs",
+        "sha256": "78ed18f66e1db03946c0d0af67dca84f373d10c787de0a26f6cad1b0e0ba2ca6",
+        "bytes": 30077,
+        "base_sha256": "c7a3024c2e6e8a3c50e59ec54b63a7516a2769e25adf113b6c672efa080c8ea2"
+      },
+      {
+        "path": "tests/fixtures/gest_artifact_values/records.json",
+        "sha256": "1ebbdda7f37fdd135a80443ef496be460e35abd6496523d99f51c30f62497efb",
+        "bytes": 298,
+        "base_sha256": null
+      },
+      {
+        "path": "tests/fixtures/gest_domain_values/source-map.json",
+        "sha256": "78ec35069d2a375a214722147182408404ba079f0c9a90a82cc6e3220ed13737",
+        "bytes": 16664,
+        "base_sha256": null
+      },
+      {
+        "path": "tests/fixtures/gest_iteration_values/records.json",
+        "sha256": "0e2ec8b4a4ae9b81a422cb752059a82f4015112b8f5933f21189be46191d8617",
+        "bytes": 330,
+        "base_sha256": null
+      },
+      {
+        "path": "tests/fixtures/gest_task_values/records.json",
+        "sha256": "1bd57fed9def0eb1ebb0ff7018d2d7409fd0845f00d345080eb2a1bc58751a33",
+        "bytes": 3332,
+        "base_sha256": null
+      },
+      {
+        "path": "tests/fixtures/gest_task_values/source-map.json",
+        "sha256": "31f82e657fd4d44d8299f034beb4467baa7f87a4bf062200daee0aafe8d9b654",
+        "bytes": 14280,
+        "base_sha256": null
+      },
+      {
+        "path": "tests/gest_artifact_values.rs",
+        "sha256": "d6b47b801e40f753e752dd7936e50e044b94f626cfff63880bf9f7c166c28aa2",
+        "bytes": 9917,
+        "base_sha256": null
+      },
+      {
+        "path": "tests/gest_iteration_values.rs",
+        "sha256": "b34ff725e086d9ef5fe7fc451e1c3e1d3cee86a826a48b46a608186f297de200",
+        "bytes": 11518,
+        "base_sha256": null
+      },
+      {
+        "path": "tests/gest_task_values.rs",
+        "sha256": "f9f98796e7842bb8f46737afcc3e31afa328e87f96e7e6a45a13449449c04f86",
+        "bytes": 18011,
+        "base_sha256": null
+      }
+    ],
+    "source_files": [
+      {
+        "path": "/Users/rahul/Projects/gest/src/store/model/author.rs",
+        "sha256": "fe3fb4a00f27bb7c70a111c1070c3e4107c26459350ad5f7f632d32aead3bba4"
+      },
+      {
+        "path": "/Users/rahul/Projects/gest/src/store/model/primitives/author_type.rs",
+        "sha256": "51933978a31f2470e6de30d9edbdc058e0477a7156d86d6c045780267910cc9a"
+      },
+      {
+        "path": "/Users/rahul/Projects/gest/src/store/model/primitives/id.rs",
+        "sha256": "1e257f775bdbdff3922f68af9a64a374ee48c12b2b587ab8c315218e19577bbc"
+      },
+      {
+        "path": "/Users/rahul/Projects/gest/src/store/model/project.rs",
+        "sha256": "3a95afe11cf39b88a20af1ceb34a2255441c30bc9849a21d717691961eaf89c8"
+      },
+      {
+        "path": "/Users/rahul/Projects/gest/src/store/model/tag.rs",
+        "sha256": "40c657ba2dd3695c385e1485ba1e58a57d7f67622665dd736efc10b30f51c6b5"
+      }
+    ],
+    "source_plan_inputs": [
+      {
+        "path": "/tmp/gossil-next-gest-domain-plan-20261118/report.json",
+        "sha256": "0ee792352100083ff8ffd51ee99f2e4fe468d3ac7744defcfd407394bc2aa8da"
+      },
+      {
+        "path": "/tmp/gossil-next-gest-domain-plan-20261118/test-accounting-addendum.json",
+        "sha256": "afddd1c2f5e905f72126209605737cc80e63791870d3ce8bd59f26c9589d8454"
+      },
+      {
+        "path": "/tmp/gossil-next-gest-domain-plan-20261118/remaining-model-fields.json",
+        "sha256": "d3003b61df971a5e163229e1a12cb24d1338a868ef3160f66b63f63e9cad496f"
+      },
+      {
+        "path": "/tmp/gossil-next-gest-domain-plan-20261118/source-hashes.json",
+        "sha256": "ca5fbd3a71ec952b3f7a0c34faf231bb15ecf6759bee99ed3822f9bd2e269aa0"
+      },
+      {
+        "path": "/tmp/gossil-next-gest-domain-plan-20261118/inherited-test-map.json",
+        "sha256": "8facda5b0f30a933729882bbc65077f35c7dd2ba9b19c681bc32433c9c127aa9"
+      }
+    ],
+    "source_api_obligations": [
+      {
+        "test_id": "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/model/author.rs:115:it_creates_a_human_author",
+        "fixture_sha256": "1ba99c58ebd43e6afe4a86a17663c24a4797d554e51867142c8b03a1bf081559",
+        "assertion_ids": [
+          "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/model/author.rs:119:assert_eq",
+          "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/model/author.rs:120:assert_eq",
+          "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/model/author.rs:121:assert_eq"
+        ],
+        "subject": "constructor/builder/getter",
+        "classification": "later exact API/domain-primitive obligation",
+        "exact_port_in_minimal_owned_seam": false,
+        "adopted_replacement": false,
+        "reason": "Exact fixture invokes Model::new (ID/clock generation) and/or with_email/getters, none exposed by owned input conversion. Explicit fixture fields may supply new value controls but are not exact source ports."
+      },
+      {
+        "test_id": "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/model/author.rs:124:it_creates_an_agent_author",
+        "fixture_sha256": "2f72bedf4587633c311fa37bd8b9b9467eb8a2850aed30006101f2d3f8c6a8db",
+        "assertion_ids": [
+          "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/model/author.rs:128:assert_eq"
+        ],
+        "subject": "constructor/builder/getter",
+        "classification": "later exact API/domain-primitive obligation",
+        "exact_port_in_minimal_owned_seam": false,
+        "adopted_replacement": false,
+        "reason": "Exact fixture invokes Model::new (ID/clock generation) and/or with_email/getters, none exposed by owned input conversion. Explicit fixture fields may supply new value controls but are not exact source ports."
+      },
+      {
+        "test_id": "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/model/author.rs:137:it_sets_the_email",
+        "fixture_sha256": "cce7ec4d124b730575452cccd0cf42cdc4359ecf4ad07d4f76859d09be0bfb6e",
+        "assertion_ids": [
+          "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/model/author.rs:141:assert_eq"
+        ],
+        "subject": "constructor/builder/getter",
+        "classification": "later exact API/domain-primitive obligation",
+        "exact_port_in_minimal_owned_seam": false,
+        "adopted_replacement": false,
+        "reason": "Exact fixture invokes Model::new (ID/clock generation) and/or with_email/getters, none exposed by owned input conversion. Explicit fixture fields may supply new value controls but are not exact source ports."
+      },
+      {
+        "test_id": "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/model/primitives/author_type.rs:52:it_formats_agent",
+        "fixture_sha256": "1a0620a50eeab4f51753b31541146ca68382885fb183c32c42a2a05bc76248a6",
+        "assertion_ids": [
+          "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/model/primitives/author_type.rs:54:assert_eq"
+        ],
+        "subject": "enum Display",
+        "classification": "later exact API/domain-primitive obligation",
+        "exact_port_in_minimal_owned_seam": false,
+        "adopted_replacement": false,
+        "reason": "Canonical string field output is related but does not invoke Primitive variant Display. Preserve at later enum/API seam; string output assertions now are new source-behavior controls."
+      },
+      {
+        "test_id": "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/model/primitives/author_type.rs:57:it_formats_human",
+        "fixture_sha256": "5a798b0a79d17e36f9993b780025d5044842794974a5e5b51af2577e038e522c",
+        "assertion_ids": [
+          "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/model/primitives/author_type.rs:59:assert_eq"
+        ],
+        "subject": "enum Display",
+        "classification": "later exact API/domain-primitive obligation",
+        "exact_port_in_minimal_owned_seam": false,
+        "adopted_replacement": false,
+        "reason": "Canonical string field output is related but does not invoke Primitive variant Display. Preserve at later enum/API seam; string output assertions now are new source-behavior controls."
+      },
+      {
+        "test_id": "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/model/primitives/author_type.rs:66:it_parses_case_insensitively",
+        "fixture_sha256": "3339af663f44f823b6d5f2686835d5530583bfc85a7bf49fea810d50ef15fbf3",
+        "assertion_ids": [
+          "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/model/primitives/author_type.rs:68:assert_eq",
+          "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/model/primitives/author_type.rs:69:assert_eq"
+        ],
+        "subject": "enum FromStr",
+        "classification": "later exact API/domain-primitive obligation",
+        "exact_port_in_minimal_owned_seam": false,
+        "adopted_replacement": false,
+        "reason": "String-field validator accepts/rejects same source spellings but returns validated record/canonical string, not Primitive. Preserve exact .parse::<Primitive>() assertions at later primitive/API seam; conversion case controls are new source-behavior controls."
+      },
+      {
+        "test_id": "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/model/primitives/author_type.rs:72:it_rejects_invalid",
+        "fixture_sha256": "9db923388ca89cff960a6d590fcd4b032e3e9bce7bdcbe10ea5f3a0f6e6ab1f4",
+        "assertion_ids": [
+          "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/model/primitives/author_type.rs:74:assert"
+        ],
+        "subject": "enum FromStr",
+        "classification": "later exact API/domain-primitive obligation",
+        "exact_port_in_minimal_owned_seam": false,
+        "adopted_replacement": false,
+        "reason": "String-field validator accepts/rejects same source spellings but returns validated record/canonical string, not Primitive. Preserve exact .parse::<Primitive>() assertions at later primitive/API seam; conversion case controls are new source-behavior controls."
+      },
+      {
+        "test_id": "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/model/project.rs:137:it_sets_timestamps_to_now",
+        "fixture_sha256": "131450377ee1e6f92f8f4e06da84674fd66462907ac83643071e5553e4b1c588",
+        "assertion_ids": [
+          "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/model/project.rs:143:assert",
+          "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/model/project.rs:144:assert_eq"
+        ],
+        "subject": "constructor/builder/getter",
+        "classification": "later exact API/domain-primitive obligation",
+        "exact_port_in_minimal_owned_seam": false,
+        "adopted_replacement": false,
+        "reason": "Exact fixture invokes Model::new (ID/clock generation) and/or with_email/getters, none exposed by owned input conversion. Explicit fixture fields may supply new value controls but are not exact source ports."
+      },
+      {
+        "test_id": "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/model/tag.rs:87:it_creates_a_tag_with_label",
+        "fixture_sha256": "6a5dd6e4fdba81e64a28b814e14d107703b55832622141144114b33fa959b7b9",
+        "assertion_ids": [
+          "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/model/tag.rs:91:assert_eq"
+        ],
+        "subject": "constructor/builder/getter",
+        "classification": "later exact API/domain-primitive obligation",
+        "exact_port_in_minimal_owned_seam": false,
+        "adopted_replacement": false,
+        "reason": "Exact fixture invokes Model::new (ID/clock generation) and/or with_email/getters, none exposed by owned input conversion. Explicit fixture fields may supply new value controls but are not exact source ports."
+      }
+    ],
+    "source_repository_obligations": [
+      {
+        "id": "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/author.rs:178:it_returns_authors_sorted_by_name",
+        "fixture_sha256": "e84dea5e58f717499d5ec7fefea54d73d2462366d654ac13fc07d385bd632018",
+        "assertion_ids": [
+          "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/author.rs:188:assert_eq",
+          "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/author.rs:189:assert_eq",
+          "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/author.rs:190:assert_eq"
+        ]
+      },
+      {
+        "id": "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/author.rs:199:it_persists_the_author",
+        "fixture_sha256": "364f758b6fb574e4cdf1faa965d0e6c29b244c8b382e8863435c4dbfd0b431d0",
+        "assertion_ids": [
+          "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/author.rs:206:assert_eq",
+          "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/author.rs:207:assert_eq",
+          "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/author.rs:208:assert_eq"
+        ]
+      },
+      {
+        "id": "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/author.rs:217:it_finds_by_name_without_email",
+        "fixture_sha256": "4ecd3250ef674d832e975f823275fe02278e307192c0da4a4258c0b570b9c18c",
+        "assertion_ids": [
+          "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/author.rs:226:assert_eq"
+        ]
+      },
+      {
+        "id": "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/author.rs:229:it_returns_none_when_not_found",
+        "fixture_sha256": "339efa30148685d98be7250713833805a45029f9e4ee17565ee858a505b9c516",
+        "assertion_ids": [
+          "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/author.rs:235:assert_eq"
+        ]
+      },
+      {
+        "id": "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/author.rs:244:it_creates_when_not_found",
+        "fixture_sha256": "541a6b2b126ef73a36d8c910e1855214140ffa0054ebf1cf8ad070e6488c99c3",
+        "assertion_ids": [
+          "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/author.rs:252:assert_eq"
+        ]
+      },
+      {
+        "id": "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/author.rs:255:it_returns_existing_when_found",
+        "fixture_sha256": "12bc8d8de592c0bd83f64c24dae9136bbab2901f7cc0a81aa21a78dfe5a3c87e",
+        "assertion_ids": [
+          "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/author.rs:266:assert_eq"
+        ]
+      },
+      {
+        "id": "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/project.rs:640:it_excludes_archived_projects_by_default",
+        "fixture_sha256": "27ff25b4e25c36e76987d813798b7684be2ccf585defb8f5c82fa1403350c289",
+        "assertion_ids": [
+          "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/project.rs:650:assert_eq",
+          "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/project.rs:651:assert_eq"
+        ]
+      },
+      {
+        "id": "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/project.rs:654:it_includes_archived_projects_when_requested",
+        "fixture_sha256": "9728a769e90519734a62f1eb4646c1159b3f9357097c79cbb07107a334df3854",
+        "assertion_ids": [
+          "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/project.rs:664:assert_eq"
+        ]
+      },
+      {
+        "id": "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/project.rs:667:it_returns_an_empty_vec_when_empty",
+        "fixture_sha256": "32d8f4ffba6a7e7bab17bc20c0737a3776586597304abf4f4ad5b582a701bd21",
+        "assertion_ids": [
+          "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/project.rs:672:assert_eq"
+        ]
+      },
+      {
+        "id": "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/project.rs:675:it_returns_projects_newest_first",
+        "fixture_sha256": "e41f3cadbd80a8fc36e57c248b95edd5bc71bf36bddd6c4b533801953e4aeea5",
+        "assertion_ids": [
+          "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/project.rs:683:assert_eq",
+          "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/project.rs:684:assert_eq",
+          "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/project.rs:685:assert_eq"
+        ]
+      },
+      {
+        "id": "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/project.rs:694:it_deletes_associated_workspaces",
+        "fixture_sha256": "3341d055b17951b75f5ebe01311aa78cf8f9a18df3b2c23f07a7f5bb8d7717ad",
+        "assertion_ids": [
+          "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/project.rs:712:assert_eq"
+        ]
+      },
+      {
+        "id": "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/project.rs:715:it_sets_archived_at",
+        "fixture_sha256": "af72693a9a2976842c47bd20252987c27046859c7c648039f5380a8dad3a34b9",
+        "assertion_ids": [
+          "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/project.rs:720:assert_eq",
+          "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/project.rs:725:assert"
+        ]
+      },
+      {
+        "id": "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/project.rs:734:it_does_not_write_yaml_when_no_gest_dir",
+        "fixture_sha256": "2475dd0f0ac17acaba8878a482624dfd459e53c4f8496c7e2ec698490b8e404a",
+        "assertion_ids": [
+          "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/project.rs:742:assert"
+        ]
+      },
+      {
+        "id": "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/project.rs:745:it_persists_the_project",
+        "fixture_sha256": "ed86f19f07ef1871cb741b5e91fd8316f1de9b635e475dd19328177f72bffe19",
+        "assertion_ids": [
+          "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/project.rs:750:assert_eq"
+        ]
+      },
+      {
+        "id": "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/project.rs:753:it_reads_id_from_file_when_project_yaml_exists",
+        "fixture_sha256": "0f081f47408753a32b9a33dc36de5575f6fb50113fae758eb7f9fb7291adba99",
+        "assertion_ids": [
+          "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/project.rs:772:assert_eq",
+          "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/project.rs:773:assert_eq"
+        ]
+      },
+      {
+        "id": "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/project.rs:776:it_rejects_duplicate_root",
+        "fixture_sha256": "4267a886fe3b9e4b785b1078cf80325a1609eda36312a26d36bdb94c0de6a823",
+        "assertion_ids": [
+          "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/project.rs:782:assert"
+        ]
+      },
+      {
+        "id": "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/project.rs:788:it_writes_project_yaml_when_gest_dir_exists",
+        "fixture_sha256": "4ff282926aad6ab91e29328bc5d1375305a89d56311edf99e5f3fc93e461d990",
+        "assertion_ids": [
+          "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/project.rs:798:assert",
+          "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/project.rs:801:assert"
+        ]
+      },
+      {
+        "id": "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/project.rs:804:it_writes_project_yaml_when_gest_dir_in_ancestor",
+        "fixture_sha256": "2507488ba62ccf3aec29b6ac73ebfea621cdfa5e8667a1b6ee12767d438f5359",
+        "assertion_ids": [
+          "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/project.rs:816:assert"
+        ]
+      },
+      {
+        "id": "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/project.rs:846:it_cascades_all_owned_entities_and_their_children",
+        "fixture_sha256": "5e7e7e18c8519844d58723bcd89941a7cf18d841e0bcedd97a32e243cb52e650",
+        "assertion_ids": [
+          "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/project.rs:918:assert_eq",
+          "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/project.rs:919:assert_eq",
+          "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/project.rs:920:assert_eq",
+          "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/project.rs:921:assert_eq",
+          "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/project.rs:922:assert_eq",
+          "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/project.rs:923:assert_eq",
+          "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/project.rs:926:assert_eq",
+          "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/project.rs:935:assert_eq",
+          "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/project.rs:944:assert_eq",
+          "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/project.rs:953:assert_eq",
+          "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/project.rs:962:assert_eq",
+          "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/project.rs:971:assert_eq",
+          "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/project.rs:980:assert_eq",
+          "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/project.rs:989:assert_eq"
+        ]
+      },
+      {
+        "id": "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/project.rs:1000:it_writes_tombstone_files_for_all_entities",
+        "fixture_sha256": "7d67d10d1dfd7b1202711ea161a69565b567be2ecfa5f2f2f0bd7a3f7356d394",
+        "assertion_ids": [
+          "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/project.rs:1067:assert",
+          "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/project.rs:1070:assert",
+          "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/project.rs:1076:assert",
+          "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/project.rs:1082:assert"
+        ]
+      },
+      {
+        "id": "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/project.rs:1085:it_prevents_sync_resurrection_after_delete",
+        "fixture_sha256": "fbb07b5abdf5cde834895da2f054a15679401a59ee8ad90b6b279ce1814f6448",
+        "assertion_ids": [
+          "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/project.rs:1133:assert_eq",
+          "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/project.rs:1143:assert_eq"
+        ]
+      },
+      {
+        "id": "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/project.rs:1161:it_returns_none_when_project_does_not_exist",
+        "fixture_sha256": "895ccaca924b29c33b7f782a6ea0c8528da845f313e8cb4b1ebd0a3b1a960148",
+        "assertion_ids": [
+          "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/project.rs:1166:assert_eq"
+        ]
+      },
+      {
+        "id": "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/project.rs:1169:it_returns_the_project_when_project_exists",
+        "fixture_sha256": "4d9fbe1e42933523ac29f6049c87422ae2f25cd0c52b1fdceca6c04bba4929c8",
+        "assertion_ids": [
+          "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/project.rs:1175:assert_eq"
+        ]
+      },
+      {
+        "id": "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/project.rs:1184:it_returns_none_when_no_match",
+        "fixture_sha256": "d8fda1acd58f71978253db43bb0bb6417794383f271415d586fad1a7bf16ecf2",
+        "assertion_ids": [
+          "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/project.rs:1189:assert_eq"
+        ]
+      },
+      {
+        "id": "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/project.rs:1192:it_returns_the_project_when_matching_root",
+        "fixture_sha256": "922981daa0304f6aa09709f097970e81684ae3e40222aa3f78f136022d339975",
+        "assertion_ids": [
+          "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/project.rs:1198:assert_eq"
+        ]
+      },
+      {
+        "id": "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/project.rs:1201:it_returns_the_project_when_matching_workspace_path",
+        "fixture_sha256": "23dc16b641b61b841a16578ff7e1e40ba65b8b339a6a88d41aced3c80ade0e77",
+        "assertion_ids": [
+          "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/project.rs:1224:assert_eq"
+        ]
+      },
+      {
+        "id": "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/project.rs:1231:it_returns_it_when_gest_dir_at_start",
+        "fixture_sha256": "f7d7b1e06a48ea5e5a0e00d422ef70b910a3b6b9859305c97dab6fb2a8238e1b",
+        "assertion_ids": [
+          "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/project.rs:1238:assert_eq"
+        ]
+      },
+      {
+        "id": "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/project.rs:1241:it_returns_it_when_gest_dir_in_ancestor",
+        "fixture_sha256": "59e8bb3d1c40dba025575c783066dad0252b7f1c39da9c43b0c907e532aba2ec",
+        "assertion_ids": [
+          "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/project.rs:1250:assert_eq"
+        ]
+      },
+      {
+        "id": "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/project.rs:1253:it_returns_none_when_no_gest_dir",
+        "fixture_sha256": "cee64cc5d0f25db2d7e10f278a0d70f1c1f3d79abe2c14a8d510451cb3e583cf",
+        "assertion_ids": [
+          "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/project.rs:1258:assert_eq"
+        ]
+      },
+      {
+        "id": "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/project.rs:1267:it_clears_archived_at",
+        "fixture_sha256": "d38ef1bc49221194dbb686c2453876c153fd8f008c21af08f8e0c9737192e3f6",
+        "assertion_ids": [
+          "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/project.rs:1276:assert_eq"
+        ]
+      },
+      {
+        "id": "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/tag.rs:386:it_returns_tags_sorted_by_label",
+        "fixture_sha256": "e1271ff5955d9bae3175b08c15a57fbdc6ade39100cabfefe119e2de2700ad26",
+        "assertion_ids": [
+          "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/tag.rs:396:assert_eq",
+          "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/tag.rs:397:assert_eq",
+          "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/tag.rs:398:assert_eq"
+        ]
+      },
+      {
+        "id": "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/tag.rs:407:it_creates_tag_and_attaches",
+        "fixture_sha256": "ed00ec20b286d146a02f99091b66360fa838a2a124ed5a8bd0527db0a5879780",
+        "assertion_ids": [
+          "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/tag.rs:414:assert_eq",
+          "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/tag.rs:417:assert_eq"
+        ]
+      },
+      {
+        "id": "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/tag.rs:420:it_does_not_duplicate_attachment",
+        "fixture_sha256": "ed78bdc8c1d643be7b988545439eee4a2c8e3da5fc6b7fe20d34c1ca1b6fde80",
+        "assertion_ids": [
+          "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/tag.rs:430:assert_eq"
+        ]
+      },
+      {
+        "id": "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/tag.rs:439:it_removes_tag_from_entity",
+        "fixture_sha256": "eb2830eff8d2b11cdf0565d01708d80519a6d4843a3fae01ee461f54355e54e0",
+        "assertion_ids": [
+          "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/tag.rs:448:assert",
+          "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/tag.rs:451:assert_eq"
+        ]
+      },
+      {
+        "id": "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/tag.rs:454:it_returns_false_when_tag_not_found",
+        "fixture_sha256": "c10dca8fe6d667c752bf8a3da0a96804020c816ffea515c6ecc0a91a38702861",
+        "assertion_ids": [
+          "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/tag.rs:461:assert"
+        ]
+      },
+      {
+        "id": "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/tag.rs:470:it_groups_tags_by_entity_in_one_query",
+        "fixture_sha256": "e67dda676beb4d4c30c7e444c46f9bcd345884f055dd10b96deb9e092d632abd",
+        "assertion_ids": [
+          "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/tag.rs:487:assert_eq",
+          "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/tag.rs:489:assert_eq",
+          "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/tag.rs:490:assert_eq",
+          "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/tag.rs:491:assert_eq",
+          "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/tag.rs:493:assert_eq",
+          "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/tag.rs:494:assert_eq",
+          "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/tag.rs:495:assert"
+        ]
+      },
+      {
+        "id": "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/tag.rs:498:it_returns_empty_map_for_empty_input",
+        "fixture_sha256": "20ddc7370f7ccc6d5a14180b448a16a34d03b96778c47a628b97a182534085b3",
+        "assertion_ids": [
+          "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/tag.rs:504:assert"
+        ]
+      },
+      {
+        "id": "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/tag.rs:507:it_scopes_by_entity_type",
+        "fixture_sha256": "f742542a4120144ec6a6cc3215d67f1804f8e2bf91c812410651cab45b3d6fcd",
+        "assertion_ids": [
+          "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/tag.rs:526:assert_eq",
+          "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/repo/tag.rs:527:assert_eq"
+        ]
+      }
+    ],
+    "followup_manifest": {
+      "status": "separate postfreeze API evidence",
+      "candidate_sha256": "897a50b81b18645a21419cc240f9071afaf1675c91beeb8c3dbfa98aef770197",
+      "initial_candidate_sha256": "5fc28c49714abe8402b77a4b211781ea4ba96adc9eacecc01e87ab790ad0acb5",
+      "entries": [
+        {
+          "path": "api-check.log",
+          "sha256": "9371e91684e236e8e02b8943bfa581489fb74ab5ba2af321592248977970ec2b",
+          "bytes": 4949
+        },
+        {
+          "path": "report.json",
+          "sha256": "10fce40d6773cf3d4a59b6be00449bd21890da96a1627f7e7c66882459cff20e",
+          "bytes": 1170
+        }
+      ]
+    }
+  },
+  "integrity_results": {
+    "all_35_feature_bytes": "match",
+    "all_83_baseline_paths": "only src/lib.rs changed",
+    "shared_helpers_task_artifact_iteration_cargo_tests": "unchanged from full baseline",
+    "all_5_pinned_source_files_and_5_plan_inputs": "hash match",
+    "all_38_repo_fixtures": "embedded fixture exact substring of pinned source; fixture hash and all assertion line anchors match",
+    "all_9_api_tests": "all identity lines point to #[test] with named function immediately following; all assertion line anchors match",
+    "source_git_HEAD": "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8",
+    "followup_log_and_report": "byte hashes match"
+  },
+  "semantic_review": {
+    "fields": "all 14 fields checked in inputs, private owned representation, from conversion, to output, required/null/type controls, source model and field maps",
+    "identifier": "all 32 lowercase k-z letters; no prefixes accepted",
+    "text": "source empty, Unicode, whitespace, NUL preserved; nullable email distinct from empty; no syntax restriction",
+    "author_type": "same to_lowercase matching as pinned source; human/agent canonical lower output",
+    "project": "nullable archive retained; local root excluded",
+    "timestamps": "shared parser remains unchanged; exact typed initial/canonical chrono cause; UTC canonical reparse; 7 timestamp fields tested independently; no ordering imposed",
+    "ownership_presence": "explicit Value struct fields required by API; omitted/raw/unknown field admission correctly caller-owned; output copies independent",
+    "safety": "no new production unsafe, index, cast, panic, unwrap or suppressions; errors retain typed parser causes via accessor under chrono alloc-only"
+  },
+  "test_review": {
+    "new_tests": 22,
+    "exact_source_ports": 0,
+    "outstanding_source_api_tests": 9,
+    "outstanding_repo_tests": 38,
+    "mutants": "all four logs show successful compilation followed by targeted runtime assertion failures for archive loss, author type collapse, label loss, typed cause loss; final frozen production restored and independent rerun passes",
+    "preserved_evidence": "41 existing task/artifact/iteration tests plus 5 helpers and 3 existing doc examples pass in hashed author logs; not independently rerun"
+  },
+  "independent_execution": {
+    "command": "CARGO_TARGET_DIR=/tmp/gossil-catalog-values-target cargo test --test gest_project_values --test gest_author_values --test gest_tag_values",
+    "lease": "parent confirmed existing ordinary target idle and reserved; instrumentation target untouched",
+    "exit": 0,
+    "results": "22 passed; 0 failed; no ignored",
+    "log_sha256": "2ce5e2cb7ddc0446193b2260239cf2b599d2e0dd5bde04cf01aad02938f4d9ee"
+  },
+  "prose_review": {
+    "attribution": "nossaifd credits Rosalind Reid, Shreya Shankar and Oskar Austegard retained",
+    "point": "Converters consume explicit complete admitted catalog fields and return owned validated records, with source-compatible text and adopted canonical timestamps.",
+    "whole_guide_and_public_comments": "read in full independently; newcomer can identify contract, boundaries, errors, example and next step",
+    "mechanical": "declaude lint 3 soft candidates: required null clarification retained, descriptive enumeration header retained, sentence-length density is not a defect",
+    "structural_prompt": "independent answer: findings empty; header is literal topic enumeration not comma clause, closer is concrete next action required by repo",
+    "recommendations": "present; preferred approach and concrete next action named",
+    "edits": "none needed; no source rewrite/diff necessary"
+  },
+  "commands_and_limits": [
+    "Read AGENTS and tasker/prose/review/test-review and installed review/prose skill instructions; no Gest calls under coordinator ownership.",
+    "Read all three modules, all 22 test functions/assertions, all seven fixture/map files, shared validator and full catalog guide.",
+    "Verified all manifest entries and baseline entries with SHA256; read all mutation and focused/regression/helper/doc/API logs.",
+    "Ran declaude_lint.py and declaude_review.py --emit-prompt with outputs in review directory; manually answered structural and newcomer read independently.",
+    "No source/evidence edits, staging, commits, formal gates, subagents or native Fossil probes.",
+    "No final accepted checkpoint, coverage, Linux or parent composition claim. Navigation updates remain parent GDO."
+  ],
+  "recommendation": "Use the bounded converters after caller admission; next perform parent composition and formal documentation gates."
+}

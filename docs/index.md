@@ -12,6 +12,8 @@ Start with a [file round trip](getting-started.md), browse the
 The [examples](examples.md) show library calls for deltas, compressed bytes,
 hashes and token escaping.
 
+Gest is a task and artifact tracker. The converters below use its task and project record model.
+
 ## Choose a library module
 
 | Task | Guide |
@@ -25,6 +27,7 @@ hashes and token escaping.
 | Own a local database transaction | [Local storage](local-storage.md) |
 | Initialize an empty root or store private bytes | [Native storage](native-storage.md) |
 | Validate decoded task snapshots in memory | [Gest task values](gest-task-values.md) |
+| Validate decoded project snapshots in memory | [Gest project values](gest-project-values.md) |
 
 The [concepts guide](concepts.md) explains how these modules fit together.
 Gossil is under development. General version-control commands, Gest task

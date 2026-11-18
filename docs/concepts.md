@@ -44,12 +44,19 @@ Operating-system access establishes local owner authority.
 The [native storage guide](native-storage.md) defines admission, content bounds
 and access rules. General crosslinks, sync and team authentication remain planned.
 
-## Task values
+## Task and project values
 
+Gest is a task and artifact tracker. These converters use its task and project record model.
 The `gest_task_values` module validates eleven already decoded task fields.
 It returns an owned record with canonical status and UTC timestamps.
 The [task values guide](gest-task-values.md) defines validation and caller responsibilities.
-Raw input admission, storage integration and task commands remain separate work.
+
+The `gest_project_values` module validates the four canonical project fields,
+`gest_id`, `archived_at`, `created_at` and `updated_at`.
+It returns an owned record with an identifier, nullable archive time and UTC timestamps.
+The [project values guide](gest-project-values.md) defines the complete field contract.
+A local checkout root is outside the canonical project record.
+Raw input admission, storage integration and task or project commands remain separate work.
 
 ## Recommendations
 
