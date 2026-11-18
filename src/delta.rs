@@ -1,4 +1,4 @@
-//! Decode Fossil deltas with wrapping unsigned integers and disabled checksum verification.
+//! Create and apply bounded Fossil deltas; application leaves checksum verification disabled.
 //!
 //! Validation finishes before output allocation. A second pass copies checked slices.
 use std::collections::TryReserveError;
@@ -90,6 +90,15 @@ pub enum DeltaError {
         /// Actual produced byte length.
         produced: u64,
     },
+    /// Encoder storage reservation failed, preserving its stage and cause.
+    EncoderAllocationFailed {
+        /// Output, collision table or landmark table.
+        stage: &'static str,
+        /// Additional elements requested.
+        requested: usize,
+        /// Original fallible reservation error.
+        source: TryReserveError,
+    },
     /// Output reservation failed, preserving the genuine allocator cause.
     AllocationFailed {
         /// Exact output bytes requested.
@@ -109,7 +118,8 @@ impl std::error::Error for DeltaError {
     /// Expose the original reservation failure for callers to inspect.
     fn source(&self) -> Option<&(dyn std::error::Error + 'static)> {
         match self {
-            Self::AllocationFailed { source, .. } => Some(source),
+            Self::AllocationFailed { source, .. }
+            | Self::EncoderAllocationFailed { source, .. } => Some(source),
             _ => None,
         }
     }
@@ -382,5 +392,337 @@ mod tests {
         assert!(
             matches!(input_length("source", i32::MAX as usize + 1), Err(DeltaError::InputTooLarge { input: "source", length }) if length == i32::MAX as usize + 1)
         );
+    }
+}
+
+/// Signed-char rolling hash for the selected native build's sixteen-byte window.
+struct Rolling {
+    /// Sum of signed bytes modulo 65536.
+    a: u16,
+    /// Weighted sum modulo 65536.
+    b: u16,
+    /// Circular buffer position of the outgoing byte.
+    at: usize,
+    /// Current window bytes, interpreted as signed during arithmetic.
+    bytes: [u8; 16],
+}
+impl Rolling {
+    /// Initialize weighted sums with explicitly sign-extended bytes.
+    /// # Arguments
+    /// * `bytes` - Slice containing at least sixteen bytes.
+    /// # Returns
+    /// Initialized circular hash window.
+    fn new(bytes: &[u8]) -> Self {
+        let mut hash = Self {
+            a: 0,
+            b: 0,
+            at: 0,
+            bytes: bytes[..16].try_into().unwrap(),
+        };
+        for byte in hash.bytes {
+            hash.a = hash.a.wrapping_add(byte as i8 as u16);
+            hash.b = hash.b.wrapping_add(hash.a);
+        }
+        hash
+    }
+    /// Advance one byte, retaining signed outgoing and incoming operands.
+    /// # Arguments
+    /// * `byte` - Incoming byte interpreted as a signed char.
+    fn next(&mut self, byte: u8) {
+        let old = self.bytes[self.at] as i8 as u16;
+        self.bytes[self.at] = byte;
+        self.at = (self.at + 1) & 15;
+        self.a = self.a.wrapping_sub(old).wrapping_add(byte as i8 as u16);
+        self.b = self
+            .b
+            .wrapping_sub(old.wrapping_mul(16))
+            .wrapping_add(self.a);
+    }
+    /// Combine the two sixteen-bit sums.
+    /// # Returns
+    /// Low sum bits followed by high weighted-sum bits.
+    fn value(&self) -> u32 {
+        u32::from(self.a) | (u32::from(self.b) << 16)
+    }
+}
+
+/// Sum unsigned big-endian words, padding the last short word on the right.
+/// # Arguments
+/// * `bytes` - Target bytes to checksum.
+/// # Returns
+/// Wrapping unsigned word sum.
+fn checksum(bytes: &[u8]) -> u32 {
+    bytes.chunks(4).fold(0u32, |sum, chunk| {
+        let mut word = [0; 4];
+        word[..chunk.len()].copy_from_slice(chunk);
+        sum.wrapping_add(u32::from_be_bytes(word))
+    })
+}
+
+/// Count base-64 digits with defined unsigned arithmetic even above 2^30.
+/// # Arguments
+/// * `value` - Unsigned integer to represent.
+/// # Returns
+/// Number of digits, from one through six.
+fn digit_count(mut value: u32) -> usize {
+    let mut count = 1;
+    while value >= 64 {
+        value >>= 6;
+        count += 1;
+    }
+    count
+}
+
+/// Preserve the exact reservation cause and allocation stage for any encoder buffer.
+/// # Arguments
+/// * `values` - Buffer whose capacity may grow.
+/// * `requested` - Additional elements required.
+/// * `stage` - Buffer identity retained in errors.
+/// # Returns
+/// Success after capacity covers the additional elements.
+/// # Errors
+/// Returns the original reservation cause with its stage and requested count.
+fn reserve_encoder<T>(
+    values: &mut Vec<T>,
+    requested: usize,
+    stage: &'static str,
+) -> Result<(), DeltaError> {
+    values
+        .try_reserve_exact(requested)
+        .map_err(|source| DeltaError::EncoderAllocationFailed {
+            stage,
+            requested,
+            source,
+        })
+}
+
+/// Reserve before every append so no later extension can allocate implicitly.
+/// # Arguments
+/// * `output` - Accumulated delta bytes.
+/// * `bytes` - Next encoded bytes to append.
+/// # Returns
+/// Success after appending all bytes.
+/// # Errors
+/// Returns a causal output reservation failure.
+fn append(output: &mut Vec<u8>, bytes: &[u8]) -> Result<(), DeltaError> {
+    reserve_encoder(output, bytes.len(), "output")?;
+    output.extend_from_slice(bytes);
+    Ok(())
+}
+
+/// Write the native integer alphabet, with a single zero digit and no leading zeros.
+/// # Arguments
+/// * `output` - Accumulated delta bytes.
+/// * `value` - Integer to encode.
+/// # Returns
+/// Success after appending its digit representation.
+/// # Errors
+/// Returns a causal output reservation failure.
+fn put_int(output: &mut Vec<u8>, mut value: u32) -> Result<(), DeltaError> {
+    const DIGITS: &[u8] = b"0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ_abcdefghijklmnopqrstuvwxyz~";
+    let mut digits = [0; 6];
+    let mut at = digits.len();
+    loop {
+        at -= 1;
+        digits[at] = DIGITS[(value & 63) as usize];
+        value >>= 6;
+        if value == 0 {
+            break;
+        }
+    }
+    append(output, &digits[at..])
+}
+
+/// Emit one literal, including a zero literal on the short-source branch.
+/// # Arguments
+/// * `output` - Accumulated delta bytes.
+/// * `bytes` - Literal payload within the input-length ceiling.
+/// # Returns
+/// Success after appending the length, colon and payload.
+/// # Errors
+/// Returns a causal output reservation failure.
+fn literal(output: &mut Vec<u8>, bytes: &[u8]) -> Result<(), DeltaError> {
+    put_int(output, bytes.len() as u32)?;
+    append(output, b":")?;
+    append(output, bytes)
+}
+
+/// Allocate and initialize one hash table with a genuine fallible reservation.
+/// # Arguments
+/// * `length` - Number of table entries.
+/// * `stage` - Table identity retained in errors.
+/// # Returns
+/// Table initialized with absent-entry sentinels.
+/// # Errors
+/// Returns a causal table reservation failure.
+fn table(length: usize, stage: &'static str) -> Result<Vec<usize>, DeltaError> {
+    let mut values = Vec::new();
+    reserve_encoder(&mut values, length, stage)?;
+    values.resize(length, usize::MAX);
+    Ok(values)
+}
+
+/// Create a Fossil delta using the selected reference build's signed-char hash.
+/// # Arguments
+/// * `source` - Original bytes available to copy commands.
+/// * `target` - Exact desired output bytes.
+/// # Returns
+/// Header, literal/copy commands and unsigned wrapping checksum, without a NUL.
+/// # Errors
+/// Returns input-length or causal allocation failures. Inputs are bounded by
+/// `i32::MAX`; integer digit counting above 2^30 is safe Rust policy, since the
+/// reference's signed shifts there are undefined.
+/// # Examples
+/// ```
+/// assert_eq!(gossil::delta::create(b"", b"").unwrap(), b"0\n0:0;");
+/// ```
+pub fn create(source: &[u8], target: &[u8]) -> Result<Vec<u8>, DeltaError> {
+    input_length("source", source.len())?;
+    input_length("target", target.len())?;
+    let mut output = Vec::new();
+    put_int(&mut output, target.len() as u32)?;
+    append(&mut output, b"\n")?;
+    if source.len() <= 16 {
+        literal(&mut output, target)?;
+    } else {
+        let n = source.len() / 16;
+        let mut collide = table(n, "collision table")?;
+        let mut landmark = table(n, "landmark table")?;
+        for offset in (0..source.len() - 16).step_by(16) {
+            let bucket = Rolling::new(&source[offset..]).value() as usize % n;
+            collide[offset / 16] = landmark[bucket];
+            landmark[bucket] = offset / 16;
+        }
+        let mut base = 0;
+        while base + 16 < target.len() {
+            let mut hash = Rolling::new(&target[base..]);
+            let mut i = 0;
+            loop {
+                let mut block = landmark[hash.value() as usize % n];
+                let mut best = (0, 0, 0);
+                for _ in 0..250 {
+                    if block == usize::MAX {
+                        break;
+                    }
+                    let anchor = block * 16;
+                    let mut forward = 0;
+                    while anchor + forward < source.len()
+                        && base + i + forward < target.len()
+                        && source[anchor + forward] == target[base + i + forward]
+                    {
+                        forward += 1;
+                    }
+                    let mut k = 1;
+                    while k < anchor && k <= i && source[anchor - k] == target[base + i - k] {
+                        k += 1;
+                    }
+                    let back = k - 1;
+                    let count = forward + back;
+                    let offset = anchor - back;
+                    let lits = i - back;
+                    let overhead = digit_count(lits as u32)
+                        + digit_count(count as u32)
+                        + digit_count(offset as u32)
+                        + 3;
+                    if count >= overhead && count > best.0 {
+                        best = (count, offset, lits);
+                    }
+                    block = collide[block];
+                }
+                if best.0 > 0 {
+                    if best.2 > 0 {
+                        literal(&mut output, &target[base..base + best.2])?;
+                    }
+                    base += best.2 + best.0;
+                    put_int(&mut output, best.0 as u32)?;
+                    append(&mut output, b"@")?;
+                    put_int(&mut output, best.1 as u32)?;
+                    append(&mut output, b",")?;
+                    break;
+                }
+                if base + i + 16 >= target.len() {
+                    literal(&mut output, &target[base..])?;
+                    base = target.len();
+                    break;
+                }
+                hash.next(target[base + i + 16]);
+                i += 1;
+            }
+        }
+        if base < target.len() {
+            literal(&mut output, &target[base..])?;
+        }
+    }
+    put_int(&mut output, checksum(target))?;
+    append(&mut output, b";")?;
+    Ok(output)
+}
+
+#[cfg(test)]
+mod encoder_tests {
+    use super::*;
+    use std::error::Error;
+
+    /// Source-derived arithmetic and allocation boundaries without giant inputs.
+    #[test]
+    fn arithmetic_and_resource_policy() {
+        for (value, count) in [
+            (0, 1),
+            (63, 1),
+            (64, 2),
+            (4095, 2),
+            (4096, 3),
+            (1 << 30, 6),
+            (u32::MAX, 6),
+        ] {
+            assert_eq!(digit_count(value), count);
+            let mut output = Vec::new();
+            put_int(&mut output, value).unwrap();
+            assert_eq!(uint(&output, &mut 0), value);
+            assert_eq!(output.len(), count);
+        }
+        assert_eq!(checksum(&[255; 8]), u32::MAX - 1);
+        assert_eq!(checksum(&[1, 2, 3]), 0x01020300);
+        let hash = Rolling::new(&[255; 16]);
+        assert_eq!(hash.a, (-16i16) as u16);
+        assert_eq!(hash.b, (-136i16) as u16);
+        for stage in ["output", "collision table", "landmark table"] {
+            let error = reserve_encoder(&mut Vec::<u8>::new(), usize::MAX, stage).unwrap_err();
+            assert!(
+                matches!(error,DeltaError::EncoderAllocationFailed {stage: actual,requested: usize::MAX,..} if actual==stage)
+            );
+            assert!(
+                error
+                    .source()
+                    .unwrap()
+                    .downcast_ref::<TryReserveError>()
+                    .is_some()
+            );
+        }
+    }
+
+    /// Source-derived copy acceptance equality, first window and backward-zero exclusion.
+    #[test]
+    fn source_decision_boundaries() {
+        // A first-window six-byte match equals overhead and wins immediately,
+        // even though a later target window could copy sixteen bytes.
+        let source = b"abcdef!!!!!!!!!!ABCDEFGHIJKLMNOP!";
+        let target = b"abcdef?ABCDEFGHIJKLMNOP";
+        let delta = create(source, target).unwrap();
+        assert!(delta.starts_with(b"N\n6@0,1:?G@G,"), "{:?}", delta);
+        // Hide source0 behind 250 colliders, then permit the source16 anchor
+        // to extend backward. Its preceding sixteen bytes all match, but the
+        // native k<anchor condition stops at source1.
+        let mut source: Vec<u8> = (33..81).collect();
+        let mut collision: Vec<u8> = (33..49).collect();
+        collision[0] += 1;
+        collision[1] -= 2;
+        collision[2] += 1;
+        for _ in 0..250 {
+            source.extend_from_slice(&collision);
+        }
+        source.push(b'!');
+        let delta = create(&source, &source[..33]).unwrap();
+        assert!(delta.starts_with(b"X\n1:!W@1,"), "{delta:?}");
     }
 }

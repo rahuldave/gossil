@@ -7,20 +7,25 @@ Axum is the Rust web framework for the embedded server and dashboard.
 The planned storage core uses libsql, a SQLite database implementation.
 Git owns source code.
 
-The checkout implements a bounded delta decoder and its
-`gossil vcs test-delta-apply` diagnostic, alongside the inherited-test runner.
-The [decoder guide](delta-decoder.md) gives its current scope and limits.
+The checkout implements bounded delta creation and application, their
+`gossil vcs` diagnostics, and the inherited-test runner.
+The [encoder](delta-encoder.md) and [decoder](delta-decoder.md) guides give
+the current scope and limits.
 
 The planned public command domains are `issue` and `vcs`. The planned `ui`
 command starts an embedded Gest/Axum server and opens a browser, while `serve`
-runs the server without a browser. Only the `vcs test-delta-apply` diagnostic
-is implemented. A public wiki or forum product is outside the design, but
+runs the server without a browser. The implemented diagnostics are
+`vcs test-delta-apply`, `vcs test-delta-create` and `vcs test-delta`.
+A public wiki or forum product is outside the design, but
 inherited Fossil mechanisms and tests remain internal compatibility obligations.
 
 The design and acceptance requirements are in the separate local specification
 at `~/Projects/AIProjectInfra/docs/gossil/README.md`. Its linked acceptance
 page defines the source inventory and the test families required beyond
 inherited Fossil and Gest tests.
+
+The Gest commands below require an installed Gest tool and this checkout's
+local task database; a fresh clone does not supply those task records.
 
 Development work is tracked in this project's local Gest task database.
 The product parent task is `xyzzowpv`, and iteration `usytswsv` groups its
@@ -61,19 +66,17 @@ configurations and storage encodings open. Historical generation scripts require
 
 ## Checkpoints and ownership
 
-The historical bootstrap checkpoint had no HEAD and used the primary branch
-`gest/xnuqympy-bootstrap`. The branch `main` was the intended later integration target.
-
-The initial runner work preserved the staged bootstrap, including the repository's
-workflow and tool setup. Those instructions describe the initial checkpoint,
-not the current commit or branch state.
-No empty commit or coverage exclusion may replace a genuine checkpoint.
+The current encoder topic follows the accepted decoder checkpoint. Independent
+review and the final combined gate precede local integration. The following
+bootstrap notes describe earlier setup, rather than the current branch state.
 
 Every production change starts with focused tests and checks of the callers
 and tests that depend on the changed behavior. Fresh GPT-6.1 Sol agents
 review changes independently and challenge assumptions.
 The installed guide `.agents/skills/gtw/references/gest_codex_workflow.md`
 and root `AGENTS.md` describe the full process in the checkout.
+Follow that workflow guide for packet dispatch and result validation before
+using the commands below.
 
 An agentic target is a Just command that writes a task packet for a fresh agent. The agent returns
 a result packet, which the parent validates and records. A record identifies
@@ -84,10 +87,10 @@ The following commands create and check those packets as part of the review work
 Run the Just commands in this order.
 `just update-docs`, `just prose`, `just review`, `just test-review`, then
 `just check` on the final tree.
-
-`just test-parent`, a dependency of `test-review`, runs added or changed tests
-on the parent commit. The first checkout had no parent, so that step was
-skipped. The skip does not show that the tests failed on earlier behavior.
+The first four targets emit packets for fresh
+agents. Dispatch each packet, validate the returned result, then run
+`just record TARGET RESULT_FILE` before starting the next gate.
+Replace the capitalized arguments with the target name and saved result path.
 
 After the verified initial commit, independent writers may use physical
 worktrees. Each needs an owner, absolute path, topic branch and explicit base.
@@ -104,6 +107,20 @@ Delivery stays local. No remote, push, pull request or publication is selected.
 Keep task records and review evidence local until a delivery destination is selected. Local commits
 still require complete verification and independent review.
 
+### Historical bootstrap context
+
+The historical bootstrap checkpoint had no HEAD and used the primary branch
+`gest/xnuqympy-bootstrap`. The branch `main` was the intended later integration target.
+
+The initial runner work preserved the staged bootstrap, including the repository's
+workflow and tool setup. Those instructions describe the initial checkpoint,
+not the current commit or branch state.
+No empty commit or coverage exclusion may replace a genuine checkpoint.
+
+`just test-parent`, a dependency of `test-review`, runs added or changed tests
+on the parent commit. The first checkout had no parent, so that step was
+skipped. The skip does not show that the tests failed on earlier behavior.
+
 ## Decoder checkpoint and next integration
 
 The pure decoder validates commands before it reserves output storage, then
@@ -113,30 +130,33 @@ The five original C reference cases marked `not-run` keep that status.
 The [decoder evidence section](delta-decoder.md#evidence-and-limits) describes
 those observations and the portable fixtures.
 
-Encoder work follows this decoder checkpoint. Implement the encoder and
-`test-delta` diagnostics before qualifying the unchanged full `delta1` suite.
-The Tcl runner currently passes an executable path to the inherited driver.
-Future integration must deliberately map Fossil diagnostic invocations to the
-`gossil vcs` namespace without changing the inherited assertions.
+The encoder follows this decoder checkpoint. Its [guide](delta-encoder.md)
+records the implementation and inherited `delta1` evidence. The candidate
+uses an explicit wrapper to map Fossil diagnostics into `gossil vcs`.
+The inherited assertions and original corpus remain unchanged.
 
 ## Unsettled extension contracts
 
-The specification above lists storage, Gest, sync and UI contract pages that
-have not yet been written. Exact
-issue revisions, Git-link encodings, annotation descriptors and shared/private
+The linked specification lists storage, Gest, sync and UI contract pages that
+have not yet been written. Exact issue revisions, Git-link encodings, annotation descriptors and shared/private
 replication rules need byte fixtures before durable extension writes begin.
 Task `qvqyvqlt` tracks those missing contracts. Inspect it with
 `gest task show qvqyvqlt` in the local Gest project. Do not invent storage or wire formats.
 
 The private/shared contract must settle dependency closure, transaction identity,
-authorization, declassification and identical-byte visibility. Shared history
+authorization, declassification and identical-byte visibility.
+
+Dependency closure determines which related objects must travel together.
+Transaction identity determines how a transaction is identified across replicas.
+Authorization controls access, while declassification permits private data to
+become shared. Identical-byte visibility determines access when private and
+shared objects contain the same bytes. Shared history
 must restore without private objects. Unsupported required extensions must
 fail before an operation reports complete success.
 
 ## Recommendations
 
 Keep the full Gest task hierarchy and deliver small reviewed checkpoints.
-Next, implement the encoder and `test-delta` diagnostics, then qualify the
-unchanged `delta1` suite through an explicit command mapping.
+Next, review the encoder and its unchanged `delta1` qualification evidence.
 Resolve the inventory's contract and configuration gaps while preserving
 failures and disabled-feature results as classified evidence.

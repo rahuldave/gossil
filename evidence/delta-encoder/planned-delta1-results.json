@@ -1,0 +1,97 @@
+{
+  "status": "passed finite unchanged delta1 suite with complete pinned source-derived invocation plan; independent final gates pending",
+  "source_git": "b3a1c8efb2731dffbd5cc38c58ac349746de6da6",
+  "artifact_bindings": {
+    "runner_sha256": "6757828fd07e77443daaab9a325a9cd05a0731f8ba35428d94453b39f8cdd583",
+    "source_hashes": {
+      "src/lib.rs": "ae0b3ab7beb7614d7147ab05b8f8f9c57811a3c444a15c9bd2f015bb79aad95f",
+      "src/invocation.rs": "fb38ca0ac4c45057c029705c5c069068f56d549aec35f44118d083a701daa3a2",
+      "src/main.rs": "f2a309102a7e0961d2cbf7cb6a618e95c5fad6b05364b4b2632ca84712b69924",
+      "src/delta.rs": "2d18a4cfe16c2716ed3b9d11f9436e223ec38f461003242f7644029511c02686",
+      "src/bin/gossil.rs": "6f6b659319d1dfa32bd424a3482effcc8625249e0b56b46104a63b010fa69479"
+    },
+    "plan_sha256": "fbfe7e8e862b557e6b87b41de77865519014cbf9221ad401d23acb091aa6953d",
+    "corpus_manifest_sha256": "2acc59d1a02d5c2025416999bc753f9bf89c2313676a169b64222d0a69c1ba98",
+    "encoder_sha256": "98e55a4a859ac4e4d80332c8cdd037b76b942a9dcc06513967593b8843d1ec8b"
+  },
+  "corpus_N": 76,
+  "expected_direct_assertions": 22803,
+  "expected_invocations_pin": 22804,
+  "seed": 20261117,
+  "timeout_ms": 7200000,
+  "seed_behavior": "Existing launch.tcl executes expr {srand(20261117)} before original driver/suite; upstream otherwise unseeded.",
+  "source_mapping": "plan-source-mapping.json",
+  "runs": [
+    {
+      "run": "run-plan",
+      "qualification": false,
+      "accepted": true,
+      "status": "pass",
+      "exit_code": 0,
+      "timed_out": false,
+      "summary_total": 22804,
+      "direct_assertions": 22803,
+      "framework_assertions": 1,
+      "errors": 0,
+      "skipped": [],
+      "malformed": false,
+      "expected_id_count": 22804,
+      "original_duplicate_names": 300,
+      "stdout_sha256": "2c2b323444cd7f738681f383b37498e60e2a277dd853b188f32d5929d5757252",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "approximate_wall_seconds_from_preserved_file_times": 388.565,
+      "cleanup": "no-signalable-members"
+    },
+    {
+      "run": "run-plan-final",
+      "qualification": true,
+      "accepted": true,
+      "status": "pass",
+      "exit_code": 0,
+      "timed_out": false,
+      "summary_total": 22804,
+      "direct_assertions": 22803,
+      "framework_assertions": 1,
+      "errors": 0,
+      "skipped": [],
+      "malformed": false,
+      "expected_id_count": 22804,
+      "original_duplicate_names": 300,
+      "stdout_sha256": "2c2b323444cd7f738681f383b37498e60e2a277dd853b188f32d5929d5757252",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "approximate_wall_seconds_from_preserved_file_times": 397.795,
+      "cleanup": "no-signalable-members"
+    }
+  ],
+  "historical_blocked_runs": "delta1-results.json and delta1-runs.tar.gz remain unchanged; never relabeled.",
+  "original_corpus_archive_sha256": "d4486f9723f84eaf80319695560e2ac81cceb6104b1e85844517359c23949c4f",
+  "limits": [
+    "Expected IDs are source-derived; upstream does not emit them.",
+    "Name matching cannot detect invisible whole-group substitutions/permutations with identical names.",
+    "Reviewed generator/source establish completeness; count/hash pins alone do not.",
+    "Existing immutable-input assumption does not eliminate post-verification mutation races.",
+    "Only final count-pinned frozen runner run is qualification; previous planned run intermediate.",
+    "No broader Fossil/storage/configuration/Linux qualification or final gate claim."
+  ],
+  "archives": [
+    {
+      "path": "planned-delta1-final.tar.gz",
+      "sha256": "f4748386ee11400524744d226c336c8639a7593a55a286501f63fc0a388125a1",
+      "bytes": 608512,
+      "files": 6
+    },
+    {
+      "path": "planned-delta1-intermediate.tar.gz",
+      "sha256": "075de7932867c77f12fa70156647064a094c8a0a3c94d05ea9065e3c3b1546a2",
+      "bytes": 608467,
+      "files": 6
+    },
+    {
+      "path": "planned-delta1-inputs.tar.gz",
+      "sha256": "f22d697f509ac587457b709d22a9cb277977b7cce9f0c844d6fba63f0cde04f4",
+      "bytes": 199483,
+      "files": 18
+    }
+  ],
+  "archive_index": "planned-archive-index.json"
+}

@@ -1,0 +1,152 @@
+{
+  "config-plan-before-count.json": {
+    "bytes": 9786,
+    "sha256": "b3aafd6a30ae15f33ead3600d5525cd85d5e9d1d253c150656ae239d7da4b4b8",
+    "archive": "planned-delta1-inputs.tar.gz"
+  },
+  "config-plan-final.json": {
+    "bytes": 9827,
+    "sha256": "ad0d86a508b44eec4632c872796a1425622ea12c25e3dea07707f5acee9cd98a",
+    "archive": "planned-delta1-inputs.tar.gz"
+  },
+  "generator/delta1-plan.py": {
+    "bytes": 3025,
+    "sha256": "f3a26841b92a32418e3dd57128fd89602ad7fd42fbd07a72a24ea8235e2ed049",
+    "archive": "planned-delta1-inputs.tar.gz"
+  },
+  "plan/corpus-manifest.json": {
+    "bytes": 7307,
+    "sha256": "2acc59d1a02d5c2025416999bc753f9bf89c2313676a169b64222d0a69c1ba98",
+    "archive": "planned-delta1-inputs.tar.gz"
+  },
+  "plan/generation.json": {
+    "bytes": 3003,
+    "sha256": "c0e617da10555bdcd9367086b690c5be3598d546a0af5684f3f9232c19e67178",
+    "archive": "planned-delta1-inputs.tar.gz"
+  },
+  "plan/invocation-plan.json": {
+    "bytes": 5700643,
+    "sha256": "fbfe7e8e862b557e6b87b41de77865519014cbf9221ad401d23acb091aa6953d",
+    "archive": "planned-delta1-inputs.tar.gz"
+  },
+  "run-plan-final/corpus-manifest.json": {
+    "bytes": 7307,
+    "sha256": "2acc59d1a02d5c2025416999bc753f9bf89c2313676a169b64222d0a69c1ba98",
+    "archive": "planned-delta1-final.tar.gz"
+  },
+  "run-plan-final/invocation-plan.json": {
+    "bytes": 5700643,
+    "sha256": "fbfe7e8e862b557e6b87b41de77865519014cbf9221ad401d23acb091aa6953d",
+    "archive": "planned-delta1-final.tar.gz"
+  },
+  "run-plan-final/launch.tcl": {
+    "bytes": 94,
+    "sha256": "b80ebf78a9fb115e77da2bb8764529892172d09c579498c61e2f676ccbe3937a",
+    "archive": "planned-delta1-final.tar.gz"
+  },
+  "run-plan-final/report.json": {
+    "bytes": 17293311,
+    "sha256": "90bfb0a57561f5d37ef730623f16a4506ca8eeb1453a0dda2b706fb53c6e1742",
+    "archive": "planned-delta1-final.tar.gz"
+  },
+  "run-plan-final/stderr.log": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archive": "planned-delta1-final.tar.gz"
+  },
+  "run-plan-final/stdout.log": {
+    "bytes": 2422819,
+    "sha256": "2c2b323444cd7f738681f383b37498e60e2a277dd853b188f32d5929d5757252",
+    "archive": "planned-delta1-final.tar.gz"
+  },
+  "run-plan/corpus-manifest.json": {
+    "bytes": 7307,
+    "sha256": "2acc59d1a02d5c2025416999bc753f9bf89c2313676a169b64222d0a69c1ba98",
+    "archive": "planned-delta1-intermediate.tar.gz"
+  },
+  "run-plan/invocation-plan.json": {
+    "bytes": 5700643,
+    "sha256": "fbfe7e8e862b557e6b87b41de77865519014cbf9221ad401d23acb091aa6953d",
+    "archive": "planned-delta1-intermediate.tar.gz"
+  },
+  "run-plan/launch.tcl": {
+    "bytes": 94,
+    "sha256": "b80ebf78a9fb115e77da2bb8764529892172d09c579498c61e2f676ccbe3937a",
+    "archive": "planned-delta1-intermediate.tar.gz"
+  },
+  "run-plan/report.json": {
+    "bytes": 17293226,
+    "sha256": "b8b9d430f456715e450dd43232c85a62642121f32094bf96e2368ba6b6f13aa4",
+    "archive": "planned-delta1-intermediate.tar.gz"
+  },
+  "run-plan/stderr.log": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "archive": "planned-delta1-intermediate.tar.gz"
+  },
+  "run-plan/stdout.log": {
+    "bytes": 2422819,
+    "sha256": "2c2b323444cd7f738681f383b37498e60e2a277dd853b188f32d5929d5757252",
+    "archive": "planned-delta1-intermediate.tar.gz"
+  },
+  "runner-final-artifact.json": {
+    "bytes": 831,
+    "sha256": "baa66fb758dfd53df74836812bd560961eda797e526b585034545a7b904c97f9",
+    "archive": "planned-delta1-inputs.tar.gz"
+  },
+  "runner-final-source-hashes.json": {
+    "bytes": 440,
+    "sha256": "85cf1533b890eae6f69442feecc90663ef1e270f30515f8d1ab4ab421e225daa",
+    "archive": "planned-delta1-inputs.tar.gz"
+  },
+  "runner-final-source/src/bin/gossil.rs": {
+    "bytes": 12982,
+    "sha256": "6f6b659319d1dfa32bd424a3482effcc8625249e0b56b46104a63b010fa69479",
+    "archive": "planned-delta1-inputs.tar.gz"
+  },
+  "runner-final-source/src/delta.rs": {
+    "bytes": 25396,
+    "sha256": "2d18a4cfe16c2716ed3b9d11f9436e223ec38f461003242f7644029511c02686",
+    "archive": "planned-delta1-inputs.tar.gz"
+  },
+  "runner-final-source/src/invocation.rs": {
+    "bytes": 7999,
+    "sha256": "fb38ca0ac4c45057c029705c5c069068f56d549aec35f44118d083a701daa3a2",
+    "archive": "planned-delta1-inputs.tar.gz"
+  },
+  "runner-final-source/src/lib.rs": {
+    "bytes": 29199,
+    "sha256": "ae0b3ab7beb7614d7147ab05b8f8f9c57811a3c444a15c9bd2f015bb79aad95f",
+    "archive": "planned-delta1-inputs.tar.gz"
+  },
+  "runner-final-source/src/main.rs": {
+    "bytes": 221,
+    "sha256": "f2a309102a7e0961d2cbf7cb6a618e95c5fad6b05364b4b2632ca84712b69924",
+    "archive": "planned-delta1-inputs.tar.gz"
+  },
+  "runner-plan-source-before-count/src/bin/gossil.rs": {
+    "bytes": 12982,
+    "sha256": "6f6b659319d1dfa32bd424a3482effcc8625249e0b56b46104a63b010fa69479",
+    "archive": "planned-delta1-inputs.tar.gz"
+  },
+  "runner-plan-source-before-count/src/delta.rs": {
+    "bytes": 25396,
+    "sha256": "2d18a4cfe16c2716ed3b9d11f9436e223ec38f461003242f7644029511c02686",
+    "archive": "planned-delta1-inputs.tar.gz"
+  },
+  "runner-plan-source-before-count/src/invocation.rs": {
+    "bytes": 7780,
+    "sha256": "656012f01f4815ff75e9967ff4a30a3d0f00e17573553661664a7c0b56658e50",
+    "archive": "planned-delta1-inputs.tar.gz"
+  },
+  "runner-plan-source-before-count/src/lib.rs": {
+    "bytes": 29199,
+    "sha256": "ae0b3ab7beb7614d7147ab05b8f8f9c57811a3c444a15c9bd2f015bb79aad95f",
+    "archive": "planned-delta1-inputs.tar.gz"
+  },
+  "runner-plan-source-before-count/src/main.rs": {
+    "bytes": 221,
+    "sha256": "f2a309102a7e0961d2cbf7cb6a618e95c5fad6b05364b4b2632ca84712b69924",
+    "archive": "planned-delta1-inputs.tar.gz"
+  }
+}

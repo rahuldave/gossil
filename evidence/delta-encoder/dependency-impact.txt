@@ -1,0 +1,7 @@
+tests/delta_decoder.rs:25:        let result = apply(
+tests/delta_decoder.rs:26:            &bytes(&case["source"]),
+tests/delta_decoder.rs:27:            &bytes(&case["delta"]),
+tests/delta_decoder.rs:28:            Limits::default(),
+tests/delta_decoder.rs:29:        );
+tests/delta_decoder.rs:57:    let decode = |delta: &[u8]| apply(b"ABC", delta, Limits::default());
+src/bin/gossil.rs:324:                    apply(from, delta, limits)

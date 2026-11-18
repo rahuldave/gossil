@@ -1,0 +1,1299 @@
+[
+  {
+    "id": "source-length-16",
+    "provenance": "/tmp/gossil-encoder-reference-20261117",
+    "observation": {
+      "id": "source-length-16",
+      "purpose": "Exact threshold/index endpoints; identity output alone does not reveal every indexed landmark.",
+      "argv": [
+        "jlog",
+        "run",
+        "fossil",
+        "test-delta-create",
+        "/tmp/gossil-encoder-reference-20261117/source-length-16/origin.bin",
+        "/tmp/gossil-encoder-reference-20261117/source-length-16/target.bin",
+        "/tmp/gossil-encoder-reference-20261117/source-length-16/delta.bin"
+      ],
+      "cwd": "/Users/rahul/Projects/gossil",
+      "timeout_seconds": 3,
+      "exit": 0,
+      "signed_model_match": true,
+      "unsigned_model_match": true,
+      "signed_model_hex": "470a473a2122232425262728292a2b2c2d2e2f303253644149643b",
+      "unsigned_model_hex": "470a473a2122232425262728292a2b2c2d2e2f303253644149643b",
+      "signed_model_ops": [],
+      "unsigned_model_ops": [],
+      "files": {
+        "stdout.bin": {
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "hex": ""
+        },
+        "origin.bin": {
+          "bytes": 16,
+          "sha256": "cdcb8fc0aeb65d7318d90a63c59849fbdc2291ec9f496c2132f1a2a68fea92e8",
+          "hex": "2122232425262728292a2b2c2d2e2f30"
+        },
+        "target.bin": {
+          "bytes": 16,
+          "sha256": "cdcb8fc0aeb65d7318d90a63c59849fbdc2291ec9f496c2132f1a2a68fea92e8",
+          "hex": "2122232425262728292a2b2c2d2e2f30"
+        },
+        "stderr.bin": {
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "hex": ""
+        },
+        "delta.bin": {
+          "bytes": 27,
+          "sha256": "62449f9a7b753cdf1aecb1fbb28b3b61b1ca8f10014ed0139b94c8c23a532b84",
+          "hex": "470a473a2122232425262728292a2b2c2d2e2f303253644149643b"
+        }
+      }
+    }
+  },
+  {
+    "id": "source-length-17",
+    "provenance": "/tmp/gossil-encoder-reference-20261117",
+    "observation": {
+      "id": "source-length-17",
+      "purpose": "Exact threshold/index endpoints; identity output alone does not reveal every indexed landmark.",
+      "argv": [
+        "jlog",
+        "run",
+        "fossil",
+        "test-delta-create",
+        "/tmp/gossil-encoder-reference-20261117/source-length-17/origin.bin",
+        "/tmp/gossil-encoder-reference-20261117/source-length-17/target.bin",
+        "/tmp/gossil-encoder-reference-20261117/source-length-17/delta.bin"
+      ],
+      "cwd": "/Users/rahul/Projects/gossil",
+      "timeout_seconds": 3,
+      "exit": 0,
+      "signed_model_match": true,
+      "unsigned_model_match": true,
+      "signed_model_hex": "480a4840302c3344644149643b",
+      "unsigned_model_hex": "480a4840302c3344644149643b",
+      "signed_model_ops": [
+        [
+          "copy",
+          17,
+          0
+        ]
+      ],
+      "unsigned_model_ops": [
+        [
+          "copy",
+          17,
+          0
+        ]
+      ],
+      "files": {
+        "stdout.bin": {
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "hex": ""
+        },
+        "origin.bin": {
+          "bytes": 17,
+          "sha256": "3641ab7329c660ce3a01c0e918516c765dbdfc8e7cc3f27e759cb9af4c754e82",
+          "hex": "2122232425262728292a2b2c2d2e2f3031"
+        },
+        "target.bin": {
+          "bytes": 17,
+          "sha256": "3641ab7329c660ce3a01c0e918516c765dbdfc8e7cc3f27e759cb9af4c754e82",
+          "hex": "2122232425262728292a2b2c2d2e2f3031"
+        },
+        "stderr.bin": {
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "hex": ""
+        },
+        "delta.bin": {
+          "bytes": 13,
+          "sha256": "84af7711ad878fc95e4904b63f1791e70c38c38f6c7e22042d1ed6b6ab896ad0",
+          "hex": "480a4840302c3344644149643b"
+        }
+      }
+    }
+  },
+  {
+    "id": "source-length-32",
+    "provenance": "/tmp/gossil-encoder-reference-20261117",
+    "observation": {
+      "id": "source-length-32",
+      "purpose": "Exact threshold/index endpoints; identity output alone does not reveal every indexed landmark.",
+      "argv": [
+        "jlog",
+        "run",
+        "fossil",
+        "test-delta-create",
+        "/tmp/gossil-encoder-reference-20261117/source-length-32/origin.bin",
+        "/tmp/gossil-encoder-reference-20261117/source-length-32/target.bin",
+        "/tmp/gossil-encoder-reference-20261117/source-length-32/delta.bin"
+      ],
+      "cwd": "/Users/rahul/Projects/gossil",
+      "timeout_seconds": 3,
+      "exit": 0,
+      "signed_model_match": true,
+      "unsigned_model_match": true,
+      "signed_model_hex": "570a5740302c3175574f62473b",
+      "unsigned_model_hex": "570a5740302c3175574f62473b",
+      "signed_model_ops": [
+        [
+          "copy",
+          32,
+          0
+        ]
+      ],
+      "unsigned_model_ops": [
+        [
+          "copy",
+          32,
+          0
+        ]
+      ],
+      "files": {
+        "stdout.bin": {
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "hex": ""
+        },
+        "origin.bin": {
+          "bytes": 32,
+          "sha256": "7eee5800ddcd3b3cc9fd047831cd8536e3c3f57f44d746f515da93f048ee9e91",
+          "hex": "2122232425262728292a2b2c2d2e2f303132333435363738393a3b3c3d3e3f40"
+        },
+        "target.bin": {
+          "bytes": 32,
+          "sha256": "7eee5800ddcd3b3cc9fd047831cd8536e3c3f57f44d746f515da93f048ee9e91",
+          "hex": "2122232425262728292a2b2c2d2e2f303132333435363738393a3b3c3d3e3f40"
+        },
+        "stderr.bin": {
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "hex": ""
+        },
+        "delta.bin": {
+          "bytes": 13,
+          "sha256": "e26f5f67243ca032a6eb916c85e78767ed954508c8e2a8a2736d80895ef84423",
+          "hex": "570a5740302c3175574f62473b"
+        }
+      }
+    }
+  },
+  {
+    "id": "source-length-33",
+    "provenance": "/tmp/gossil-encoder-reference-20261117",
+    "observation": {
+      "id": "source-length-33",
+      "purpose": "Exact threshold/index endpoints; identity output alone does not reveal every indexed landmark.",
+      "argv": [
+        "jlog",
+        "run",
+        "fossil",
+        "test-delta-create",
+        "/tmp/gossil-encoder-reference-20261117/source-length-33/origin.bin",
+        "/tmp/gossil-encoder-reference-20261117/source-length-33/target.bin",
+        "/tmp/gossil-encoder-reference-20261117/source-length-33/delta.bin"
+      ],
+      "cwd": "/Users/rahul/Projects/gossil",
+      "timeout_seconds": 3,
+      "exit": 0,
+      "signed_model_match": true,
+      "unsigned_model_match": true,
+      "signed_model_hex": "580a5840302c3276574f62473b",
+      "unsigned_model_hex": "580a5840302c3276574f62473b",
+      "signed_model_ops": [
+        [
+          "copy",
+          33,
+          0
+        ]
+      ],
+      "unsigned_model_ops": [
+        [
+          "copy",
+          33,
+          0
+        ]
+      ],
+      "files": {
+        "stdout.bin": {
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "hex": ""
+        },
+        "origin.bin": {
+          "bytes": 33,
+          "sha256": "c05c2a856d202c147142f3652dde4edb2ecccfe410c14ad807f06fe782fd11d9",
+          "hex": "2122232425262728292a2b2c2d2e2f303132333435363738393a3b3c3d3e3f4041"
+        },
+        "target.bin": {
+          "bytes": 33,
+          "sha256": "c05c2a856d202c147142f3652dde4edb2ecccfe410c14ad807f06fe782fd11d9",
+          "hex": "2122232425262728292a2b2c2d2e2f303132333435363738393a3b3c3d3e3f4041"
+        },
+        "stderr.bin": {
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "hex": ""
+        },
+        "delta.bin": {
+          "bytes": 13,
+          "sha256": "c253209f5f159359518388eb791e12c6a41519190ca41e055d5c29d4325f1779",
+          "hex": "580a5840302c3276574f62473b"
+        }
+      }
+    }
+  },
+  {
+    "id": "large-source-empty",
+    "provenance": "/tmp/gossil-encoder-reference-20261117",
+    "observation": {
+      "id": "large-source-empty",
+      "purpose": "Source>16 empty target has no zero literal.",
+      "argv": [
+        "jlog",
+        "run",
+        "fossil",
+        "test-delta-create",
+        "/tmp/gossil-encoder-reference-20261117/large-source-empty/origin.bin",
+        "/tmp/gossil-encoder-reference-20261117/large-source-empty/target.bin",
+        "/tmp/gossil-encoder-reference-20261117/large-source-empty/delta.bin"
+      ],
+      "cwd": "/Users/rahul/Projects/gossil",
+      "timeout_seconds": 3,
+      "exit": 0,
+      "signed_model_match": true,
+      "unsigned_model_match": true,
+      "signed_model_hex": "300a303b",
+      "unsigned_model_hex": "300a303b",
+      "signed_model_ops": [],
+      "unsigned_model_ops": [],
+      "files": {
+        "stdout.bin": {
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "hex": ""
+        },
+        "origin.bin": {
+          "bytes": 33,
+          "sha256": "c05c2a856d202c147142f3652dde4edb2ecccfe410c14ad807f06fe782fd11d9",
+          "hex": "2122232425262728292a2b2c2d2e2f303132333435363738393a3b3c3d3e3f4041"
+        },
+        "target.bin": {
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "hex": ""
+        },
+        "stderr.bin": {
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "hex": ""
+        },
+        "delta.bin": {
+          "bytes": 4,
+          "sha256": "dec27dd134f85a8093c2e257da66b0b372a84cbf6654a3c5f47904dab18639f6",
+          "hex": "300a303b"
+        }
+      }
+    }
+  },
+  {
+    "id": "small-source-empty",
+    "provenance": "/tmp/gossil-encoder-reference-20261117",
+    "observation": {
+      "id": "small-source-empty",
+      "purpose": "Source<=16 empty target emits zero literal.",
+      "argv": [
+        "jlog",
+        "run",
+        "fossil",
+        "test-delta-create",
+        "/tmp/gossil-encoder-reference-20261117/small-source-empty/origin.bin",
+        "/tmp/gossil-encoder-reference-20261117/small-source-empty/target.bin",
+        "/tmp/gossil-encoder-reference-20261117/small-source-empty/delta.bin"
+      ],
+      "cwd": "/Users/rahul/Projects/gossil",
+      "timeout_seconds": 3,
+      "exit": 0,
+      "signed_model_match": true,
+      "unsigned_model_match": true,
+      "signed_model_hex": "300a303a303b",
+      "unsigned_model_hex": "300a303a303b",
+      "signed_model_ops": [],
+      "unsigned_model_ops": [],
+      "files": {
+        "stdout.bin": {
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "hex": ""
+        },
+        "origin.bin": {
+          "bytes": 16,
+          "sha256": "cdcb8fc0aeb65d7318d90a63c59849fbdc2291ec9f496c2132f1a2a68fea92e8",
+          "hex": "2122232425262728292a2b2c2d2e2f30"
+        },
+        "target.bin": {
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "hex": ""
+        },
+        "stderr.bin": {
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "hex": ""
+        },
+        "delta.bin": {
+          "bytes": 6,
+          "sha256": "1e03944824055e9be5adbbd3055d698a6de815ae21668aba3ea5f289619b63b3",
+          "hex": "300a303a303b"
+        }
+      }
+    }
+  },
+  {
+    "id": "identity-copy",
+    "provenance": "/tmp/gossil-encoder-reference-20261117",
+    "observation": {
+      "id": "identity-copy",
+      "purpose": "Copy of full identity from indexed zero landmark.",
+      "argv": [
+        "jlog",
+        "run",
+        "fossil",
+        "test-delta-create",
+        "/tmp/gossil-encoder-reference-20261117/identity-copy/origin.bin",
+        "/tmp/gossil-encoder-reference-20261117/identity-copy/target.bin",
+        "/tmp/gossil-encoder-reference-20261117/identity-copy/delta.bin"
+      ],
+      "cwd": "/Users/rahul/Projects/gossil",
+      "timeout_seconds": 3,
+      "exit": 0,
+      "signed_model_match": true,
+      "unsigned_model_match": true,
+      "signed_model_hex": "31310a313140302c314c313147573b",
+      "unsigned_model_hex": "31310a313140302c314c313147573b",
+      "signed_model_ops": [
+        [
+          "copy",
+          65,
+          0
+        ]
+      ],
+      "unsigned_model_ops": [
+        [
+          "copy",
+          65,
+          0
+        ]
+      ],
+      "files": {
+        "stdout.bin": {
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "hex": ""
+        },
+        "origin.bin": {
+          "bytes": 65,
+          "sha256": "7acbbe6352caa6aa2434ed891d43b8f04bec5a5d36552c8c853534afd84f2dec",
+          "hex": "2122232425262728292a2b2c2d2e2f303132333435363738393a3b3c3d3e3f404142434445464748494a4b4c4d4e4f505152535455565758595a5b5c5d5e5f6061"
+        },
+        "target.bin": {
+          "bytes": 65,
+          "sha256": "7acbbe6352caa6aa2434ed891d43b8f04bec5a5d36552c8c853534afd84f2dec",
+          "hex": "2122232425262728292a2b2c2d2e2f303132333435363738393a3b3c3d3e3f404142434445464748494a4b4c4d4e4f505152535455565758595a5b5c5d5e5f6061"
+        },
+        "stderr.bin": {
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "hex": ""
+        },
+        "delta.bin": {
+          "bytes": 15,
+          "sha256": "e6dc843ead941fd52bb8f4929394230cbaf65df4f67329a8039f59d14d5d5745",
+          "hex": "31310a313140302c314c313147573b"
+        }
+      }
+    }
+  },
+  {
+    "id": "literal-copy-tail",
+    "provenance": "/tmp/gossil-encoder-reference-20261117",
+    "observation": {
+      "id": "literal-copy-tail",
+      "purpose": "Literal prefix, copy, final literal tail.",
+      "argv": [
+        "jlog",
+        "run",
+        "fossil",
+        "test-delta-create",
+        "/tmp/gossil-encoder-reference-20261117/literal-copy-tail/origin.bin",
+        "/tmp/gossil-encoder-reference-20261117/literal-copy-tail/target.bin",
+        "/tmp/gossil-encoder-reference-20261117/literal-copy-tail/delta.bin"
+      ],
+      "cwd": "/Users/rahul/Projects/gossil",
+      "timeout_seconds": 3,
+      "exit": 0,
+      "signed_model_match": true,
+      "unsigned_model_match": true,
+      "signed_model_hex": "680a373a505245464958215840472c343a7461696c47355537773b",
+      "unsigned_model_hex": "680a373a505245464958215840472c343a7461696c47355537773b",
+      "signed_model_ops": [
+        [
+          "literal",
+          7
+        ],
+        [
+          "copy",
+          33,
+          16
+        ],
+        [
+          "literal",
+          4
+        ]
+      ],
+      "unsigned_model_ops": [
+        [
+          "literal",
+          7
+        ],
+        [
+          "copy",
+          33,
+          16
+        ],
+        [
+          "literal",
+          4
+        ]
+      ],
+      "files": {
+        "stdout.bin": {
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "hex": ""
+        },
+        "origin.bin": {
+          "bytes": 65,
+          "sha256": "7acbbe6352caa6aa2434ed891d43b8f04bec5a5d36552c8c853534afd84f2dec",
+          "hex": "2122232425262728292a2b2c2d2e2f303132333435363738393a3b3c3d3e3f404142434445464748494a4b4c4d4e4f505152535455565758595a5b5c5d5e5f6061"
+        },
+        "target.bin": {
+          "bytes": 44,
+          "sha256": "8b87334d485ed0c9e8a28e19571bbe78c867877c248ede28c63a386a3a9595f9",
+          "hex": "505245464958213132333435363738393a3b3c3d3e3f404142434445464748494a4b4c4d4e4f50517461696c"
+        },
+        "stderr.bin": {
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "hex": ""
+        },
+        "delta.bin": {
+          "bytes": 27,
+          "sha256": "46e5b5999115c511d8f7a82b0c065bdb4977efd469d94002951502f24741ff50",
+          "hex": "680a373a505245464958215840472c343a7461696c47355537773b"
+        }
+      }
+    }
+  },
+  {
+    "id": "backward-stops-at-one",
+    "provenance": "/tmp/gossil-encoder-reference-20261117",
+    "observation": {
+      "id": "backward-stops-at-one",
+      "purpose": "Anchor16 extends backward to source1; cannot include source0.",
+      "argv": [
+        "jlog",
+        "run",
+        "fossil",
+        "test-delta-create",
+        "/tmp/gossil-encoder-reference-20261117/backward-stops-at-one/origin.bin",
+        "/tmp/gossil-encoder-reference-20261117/backward-stops-at-one/target.bin",
+        "/tmp/gossil-encoder-reference-20261117/backward-stops-at-one/delta.bin"
+      ],
+      "cwd": "/Users/rahul/Projects/gossil",
+      "timeout_seconds": 3,
+      "exit": 0,
+      "signed_model_match": true,
+      "unsigned_model_match": true,
+      "signed_model_hex": "580a313a3f5740312c33626b6852433b",
+      "unsigned_model_hex": "580a313a3f5740312c33626b6852433b",
+      "signed_model_ops": [
+        [
+          "literal",
+          1
+        ],
+        [
+          "copy",
+          32,
+          1
+        ]
+      ],
+      "unsigned_model_ops": [
+        [
+          "literal",
+          1
+        ],
+        [
+          "copy",
+          32,
+          1
+        ]
+      ],
+      "files": {
+        "stdout.bin": {
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "hex": ""
+        },
+        "origin.bin": {
+          "bytes": 49,
+          "sha256": "b0b9b38ede95eeb3eeb9535059ab8cc6d67626a840c511808030cc538b4dd5de",
+          "hex": "216162636465666768696a6b6c6d6e6f4142434445464748494a4b4c4d4e4f50517a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a"
+        },
+        "target.bin": {
+          "bytes": 33,
+          "sha256": "5dfb6c6f78ea1888421dd1183c62710d961c170d1a4697ffe379871981dd3f16",
+          "hex": "3f6162636465666768696a6b6c6d6e6f4142434445464748494a4b4c4d4e4f5051"
+        },
+        "stderr.bin": {
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "hex": ""
+        },
+        "delta.bin": {
+          "bytes": 16,
+          "sha256": "4d4ce36698fdfb4db7644af6091591068192aaa9343531f146c97ebb1343b258",
+          "hex": "580a313a3f5740312c33626b6852433b"
+        }
+      }
+    }
+  },
+  {
+    "id": "backward-source-zero-boundary",
+    "provenance": "/tmp/gossil-encoder-reference-20261117",
+    "observation": {
+      "id": "backward-source-zero-boundary",
+      "purpose": "Earlier zero landmark can mask backward boundary; control only.",
+      "argv": [
+        "jlog",
+        "run",
+        "fossil",
+        "test-delta-create",
+        "/tmp/gossil-encoder-reference-20261117/backward-source-zero-boundary/origin.bin",
+        "/tmp/gossil-encoder-reference-20261117/backward-source-zero-boundary/target.bin",
+        "/tmp/gossil-encoder-reference-20261117/backward-source-zero-boundary/delta.bin"
+      ],
+      "cwd": "/Users/rahul/Projects/gossil",
+      "timeout_seconds": 3,
+      "exit": 0,
+      "signed_model_match": true,
+      "unsigned_model_match": true,
+      "signed_model_hex": "580a5840302c426c6867473b",
+      "unsigned_model_hex": "580a5840302c426c6867473b",
+      "signed_model_ops": [
+        [
+          "copy",
+          33,
+          0
+        ]
+      ],
+      "unsigned_model_ops": [
+        [
+          "copy",
+          33,
+          0
+        ]
+      ],
+      "files": {
+        "stdout.bin": {
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "hex": ""
+        },
+        "origin.bin": {
+          "bytes": 49,
+          "sha256": "b0093ca1269d24a9ce1ffe517bc9acb5ce2b15e2b49e0b42cbe2196c8e72f5c3",
+          "hex": "6162636465666768696a6b6c6d6e6f704142434445464748494a4b4c4d4e4f50517a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a"
+        },
+        "target.bin": {
+          "bytes": 33,
+          "sha256": "6dfb04216c8638ff7a594082fc2fa4b8028cb4f7d6a373fdf72e41a490e9de1a",
+          "hex": "6162636465666768696a6b6c6d6e6f704142434445464748494a4b4c4d4e4f5051"
+        },
+        "stderr.bin": {
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "hex": ""
+        },
+        "delta.bin": {
+          "bytes": 12,
+          "sha256": "1f156f2a8a8251a9520aaf07709082f421d4ef22c8d91512d465ff33ca6a73f2",
+          "hex": "580a5840302c426c6867473b"
+        }
+      }
+    }
+  },
+  {
+    "id": "equal-match-high-offset",
+    "provenance": "/tmp/gossil-encoder-reference-20261117",
+    "observation": {
+      "id": "equal-match-high-offset",
+      "purpose": "Equal16-byte matches at0/32: head insertion retains higher offset.",
+      "argv": [
+        "jlog",
+        "run",
+        "fossil",
+        "test-delta-create",
+        "/tmp/gossil-encoder-reference-20261117/equal-match-high-offset/origin.bin",
+        "/tmp/gossil-encoder-reference-20261117/equal-match-high-offset/target.bin",
+        "/tmp/gossil-encoder-reference-20261117/equal-match-high-offset/delta.bin"
+      ],
+      "cwd": "/Users/rahul/Projects/gossil",
+      "timeout_seconds": 3,
+      "exit": 0,
+      "signed_model_match": true,
+      "unsigned_model_match": true,
+      "signed_model_hex": "480a4740572c313a21327a64514d643b",
+      "unsigned_model_hex": "480a4740572c313a21327a64514d643b",
+      "signed_model_ops": [
+        [
+          "copy",
+          16,
+          32
+        ],
+        [
+          "literal",
+          1
+        ]
+      ],
+      "unsigned_model_ops": [
+        [
+          "copy",
+          16,
+          32
+        ],
+        [
+          "literal",
+          1
+        ]
+      ],
+      "files": {
+        "stdout.bin": {
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "hex": ""
+        },
+        "origin.bin": {
+          "bytes": 65,
+          "sha256": "6e9da040ffd2498a04d8aaad78d9b5be34582335781149e28cac38b22aa180f8",
+          "hex": "6162636465666768696a6b6c6d6e6f70585858585858585858585858585858586162636465666768696a6b6c6d6e6f705959595959595959595959595959595959"
+        },
+        "target.bin": {
+          "bytes": 17,
+          "sha256": "01e65ff1fdc33740b2e46ac79da2254d2a30bbf15ae39716a925223d84a94b07",
+          "hex": "6162636465666768696a6b6c6d6e6f7021"
+        },
+        "stderr.bin": {
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "hex": ""
+        },
+        "delta.bin": {
+          "bytes": 16,
+          "sha256": "26bf92a492b56b4b17324e9abb5eeac22f24b2b634c6b39847e03b26b38cdd1a",
+          "hex": "480a4740572c313a21327a64514d643b"
+        }
+      }
+    }
+  },
+  {
+    "id": "excluded-final-block",
+    "provenance": "/tmp/gossil-encoder-reference-20261117",
+    "observation": {
+      "id": "excluded-final-block",
+      "purpose": "Exactly-full final source block is excluded from index.",
+      "argv": [
+        "jlog",
+        "run",
+        "fossil",
+        "test-delta-create",
+        "/tmp/gossil-encoder-reference-20261117/excluded-final-block/origin.bin",
+        "/tmp/gossil-encoder-reference-20261117/excluded-final-block/target.bin",
+        "/tmp/gossil-encoder-reference-20261117/excluded-final-block/delta.bin"
+      ],
+      "cwd": "/Users/rahul/Projects/gossil",
+      "timeout_seconds": 3,
+      "exit": 0,
+      "signed_model_match": true,
+      "unsigned_model_match": true,
+      "signed_model_hex": "480a483a6162636465666768696a6b6c6d6e6f7021327a64514d643b",
+      "unsigned_model_hex": "480a483a6162636465666768696a6b6c6d6e6f7021327a64514d643b",
+      "signed_model_ops": [
+        [
+          "literal",
+          17
+        ]
+      ],
+      "unsigned_model_ops": [
+        [
+          "literal",
+          17
+        ]
+      ],
+      "files": {
+        "stdout.bin": {
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "hex": ""
+        },
+        "origin.bin": {
+          "bytes": 32,
+          "sha256": "3e7443cda854c2044c0a220a4671da46916c49a0757789a23c58ef4e97cd1571",
+          "hex": "585858585858585858585858585858586162636465666768696a6b6c6d6e6f70"
+        },
+        "target.bin": {
+          "bytes": 17,
+          "sha256": "01e65ff1fdc33740b2e46ac79da2254d2a30bbf15ae39716a925223d84a94b07",
+          "hex": "6162636465666768696a6b6c6d6e6f7021"
+        },
+        "stderr.bin": {
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "hex": ""
+        },
+        "delta.bin": {
+          "bytes": 28,
+          "sha256": "61b17b34165f6f06fe8d02f3b89944a42f2d93e7238bd81c9bb685c5d67b5e26",
+          "hex": "480a483a6162636465666768696a6b6c6d6e6f7021327a64514d643b"
+        }
+      }
+    }
+  },
+  {
+    "id": "binary-signedness-1",
+    "provenance": "/tmp/gossil-encoder-reference-20261117",
+    "observation": {
+      "id": "binary-signedness-1",
+      "purpose": "Constructed bounded bucket/partial-match distinguisher; signed and unsigned source models predict different delta bytes.",
+      "argv": [
+        "jlog",
+        "run",
+        "fossil",
+        "test-delta-create",
+        "/tmp/gossil-encoder-reference-20261117/binary-signedness-1/origin.bin",
+        "/tmp/gossil-encoder-reference-20261117/binary-signedness-1/target.bin",
+        "/tmp/gossil-encoder-reference-20261117/binary-signedness-1/delta.bin"
+      ],
+      "cwd": "/Users/rahul/Projects/gossil",
+      "timeout_seconds": 3,
+      "exit": 0,
+      "signed_model_match": true,
+      "unsigned_model_match": false,
+      "signed_model_hex": "570a3740472c503af909f0b017551b5f1fb3c823fd3dc40e9a418f22cd25bb97263169356466363b",
+      "unsigned_model_hex": "570a573a74e996cd4049f7f909f0b017551b5f1fb3c823fd3dc40e9a418f22cd25bb97263169356466363b",
+      "signed_model_ops": [
+        [
+          "copy",
+          7,
+          16
+        ],
+        [
+          "literal",
+          25
+        ]
+      ],
+      "unsigned_model_ops": [
+        [
+          "literal",
+          32
+        ]
+      ],
+      "files": {
+        "stdout.bin": {
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "hex": ""
+        },
+        "origin.bin": {
+          "bytes": 97,
+          "sha256": "ce5e39e6daa5b9f9c5a7e3fbcfe73965a3139a5fa7df12eb1b4477f08e0c438d",
+          "hex": "82f35c35c57c576f583308141286f95274e996cd4049f775fdafc3f0c65a522b565c23f7a0882963fe1039e0b9ef18025ac4b66bd8956a0d811b1988811ebfe0606308a59df6bc4c25d649ea99eee6835c582f3285590280ee70897e484e9bc8ab"
+        },
+        "target.bin": {
+          "bytes": 32,
+          "sha256": "b264c55e0c56d1a79f45baf4ef58511cde29c46d49315f4b6afc3cff54de0ddc",
+          "hex": "74e996cd4049f7f909f0b017551b5f1fb3c823fd3dc40e9a418f22cd25bb9726"
+        },
+        "stderr.bin": {
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "hex": ""
+        },
+        "delta.bin": {
+          "bytes": 40,
+          "sha256": "9a88e6278c5338f1843dbaadc9b3c1beef141d7eb1351332de19abb75ead870f",
+          "hex": "570a3740472c503af909f0b017551b5f1fb3c823fd3dc40e9a418f22cd25bb97263169356466363b"
+        }
+      }
+    }
+  },
+  {
+    "id": "binary-signedness-2",
+    "provenance": "/tmp/gossil-encoder-reference-20261117",
+    "observation": {
+      "id": "binary-signedness-2",
+      "purpose": "Constructed bounded bucket/partial-match distinguisher; signed and unsigned source models predict different delta bytes.",
+      "argv": [
+        "jlog",
+        "run",
+        "fossil",
+        "test-delta-create",
+        "/tmp/gossil-encoder-reference-20261117/binary-signedness-2/origin.bin",
+        "/tmp/gossil-encoder-reference-20261117/binary-signedness-2/target.bin",
+        "/tmp/gossil-encoder-reference-20261117/binary-signedness-2/delta.bin"
+      ],
+      "cwd": "/Users/rahul/Projects/gossil",
+      "timeout_seconds": 3,
+      "exit": 0,
+      "signed_model_match": true,
+      "unsigned_model_match": false,
+      "signed_model_hex": "570a573a75e4e8da6ecf68c05cb3aff5f2ef86c11fd17068a2f34515eda4a26a89c92508316a59574b7e3b",
+      "unsigned_model_hex": "570a3740472c503ac05cb3aff5f2ef86c11fd17068a2f34515eda4a26a89c92508316a59574b7e3b",
+      "signed_model_ops": [
+        [
+          "literal",
+          32
+        ]
+      ],
+      "unsigned_model_ops": [
+        [
+          "copy",
+          7,
+          16
+        ],
+        [
+          "literal",
+          25
+        ]
+      ],
+      "files": {
+        "stdout.bin": {
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "hex": ""
+        },
+        "origin.bin": {
+          "bytes": 97,
+          "sha256": "1112d449c9e075a880a78851cb8ac8f7ed75fc661af088149f4738b35ff4936e",
+          "hex": "fa5500b2ad82cfbdf813c5d170ec69e075e4e8da6ecf689ef4b8f8f4db265a9a73640308e9d001f6bf336c24e09b598a9839013f9268e77e381f394b8d97564aa72173d188a95f4005e73179588c1d4c37aa4972c4170869ef6b065005d6abe186"
+        },
+        "target.bin": {
+          "bytes": 32,
+          "sha256": "b9e1e7008e297456c350499c0cd8b68256c95d69174258248e7670376b9f6894",
+          "hex": "75e4e8da6ecf68c05cb3aff5f2ef86c11fd17068a2f34515eda4a26a89c92508"
+        },
+        "stderr.bin": {
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "hex": ""
+        },
+        "delta.bin": {
+          "bytes": 43,
+          "sha256": "0b558c09f7d2ebe638a27f408a559fe4a2916322c5a0fe3b4231050cd20a3005",
+          "hex": "570a573a75e4e8da6ecf68c05cb3aff5f2ef86c11fd17068a2f34515eda4a26a89c92508316a59574b7e3b"
+        }
+      }
+    }
+  },
+  {
+    "id": "binary-signedness-3",
+    "provenance": "/tmp/gossil-encoder-reference-20261117",
+    "observation": {
+      "id": "binary-signedness-3",
+      "purpose": "Constructed bounded bucket/partial-match distinguisher; signed and unsigned source models predict different delta bytes.",
+      "argv": [
+        "jlog",
+        "run",
+        "fossil",
+        "test-delta-create",
+        "/tmp/gossil-encoder-reference-20261117/binary-signedness-3/origin.bin",
+        "/tmp/gossil-encoder-reference-20261117/binary-signedness-3/target.bin",
+        "/tmp/gossil-encoder-reference-20261117/binary-signedness-3/delta.bin"
+      ],
+      "cwd": "/Users/rahul/Projects/gossil",
+      "timeout_seconds": 3,
+      "exit": 0,
+      "signed_model_match": true,
+      "unsigned_model_match": false,
+      "signed_model_hex": "570a573ab18a3801185ec5b55b95ef4d0964d45b73323bfe03e90f177e89f44a7bf5f3023257566b457e3b",
+      "unsigned_model_hex": "570a3740472c503ab55b95ef4d0964d45b73323bfe03e90f177e89f44a7bf5f3023257566b457e3b",
+      "signed_model_ops": [
+        [
+          "literal",
+          32
+        ]
+      ],
+      "unsigned_model_ops": [
+        [
+          "copy",
+          7,
+          16
+        ],
+        [
+          "literal",
+          25
+        ]
+      ],
+      "files": {
+        "stdout.bin": {
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "hex": ""
+        },
+        "origin.bin": {
+          "bytes": 97,
+          "sha256": "58e2645c35eddfc1c983d7d8f1812d7de7f8cf29fc7ed3306150d9bc4b255954",
+          "hex": "3f157c532f30faf24517558f4a50a1c0b18a3801185ec564ef04db64a0771ededc85e343500ca6321e3088d650e14be5ec2b9652fae4910de9e7a66feb21de3e29d06b15fb741f9cec95455a1bd4fc740dd135c8aeef170f73318df27eb2c896e2"
+        },
+        "target.bin": {
+          "bytes": 32,
+          "sha256": "3c17da283035ebb31d213e51965ddd241388cab5b05b2932b028fecc25f3a80b",
+          "hex": "b18a3801185ec5b55b95ef4d0964d45b73323bfe03e90f177e89f44a7bf5f302"
+        },
+        "stderr.bin": {
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "hex": ""
+        },
+        "delta.bin": {
+          "bytes": 43,
+          "sha256": "960d13f2a3554f148bca9d31b08dd794fc61e9d81560ca6ae86e87a8185341e5",
+          "hex": "570a573ab18a3801185ec5b55b95ef4d0964d45b73323bfe03e90f177e89f44a7bf5f3023257566b457e3b"
+        }
+      }
+    }
+  },
+  {
+    "id": "binary-signedness-4",
+    "provenance": "/tmp/gossil-encoder-reference-20261117",
+    "observation": {
+      "id": "binary-signedness-4",
+      "purpose": "Constructed bounded bucket/partial-match distinguisher; signed and unsigned source models predict different delta bytes.",
+      "argv": [
+        "jlog",
+        "run",
+        "fossil",
+        "test-delta-create",
+        "/tmp/gossil-encoder-reference-20261117/binary-signedness-4/origin.bin",
+        "/tmp/gossil-encoder-reference-20261117/binary-signedness-4/target.bin",
+        "/tmp/gossil-encoder-reference-20261117/binary-signedness-4/delta.bin"
+      ],
+      "cwd": "/Users/rahul/Projects/gossil",
+      "timeout_seconds": 3,
+      "exit": 0,
+      "signed_model_match": true,
+      "unsigned_model_match": false,
+      "signed_model_hex": "570a3740472c503a239f4ade6877401cfcc14fb0c2c8711e36ea5e1d0699eddc6f33454975344c3b",
+      "unsigned_model_hex": "570a573afe0fd121aba3fc239f4ade6877401cfcc14fb0c2c8711e36ea5e1d0699eddc6f33454975344c3b",
+      "signed_model_ops": [
+        [
+          "copy",
+          7,
+          16
+        ],
+        [
+          "literal",
+          25
+        ]
+      ],
+      "unsigned_model_ops": [
+        [
+          "literal",
+          32
+        ]
+      ],
+      "files": {
+        "stdout.bin": {
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "hex": ""
+        },
+        "origin.bin": {
+          "bytes": 97,
+          "sha256": "6277a6c52fe2ebd342d48371171445755902911eebd782bae34b125fb14f03bd",
+          "hex": "dc72654fa923bab86a7dcced9c11389ffe0fd121aba3fc19fd19fbc0e365894672c0d2dfa325e4298a7fed86b736974776b4af127fa84118bf0db069ec96e1b3b520b75cb81adb4b89998c567d825200794fa707641069fa217d6bb044a2a4782c"
+        },
+        "target.bin": {
+          "bytes": 32,
+          "sha256": "07e439c585a73dbfc7ecf6c71cdf49b6ef8748da550f3d57bc8df7136eb0c32a",
+          "hex": "fe0fd121aba3fc239f4ade6877401cfcc14fb0c2c8711e36ea5e1d0699eddc6f"
+        },
+        "stderr.bin": {
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "hex": ""
+        },
+        "delta.bin": {
+          "bytes": 40,
+          "sha256": "1b8074c00595e975f39e7c800ca9cf391d646240863baf59241c326b2ff20f5c",
+          "hex": "570a3740472c503a239f4ade6877401cfcc14fb0c2c8711e36ea5e1d0699eddc6f33454975344c3b"
+        }
+      }
+    }
+  },
+  {
+    "id": "rolling-unsigned-old",
+    "provenance": "/tmp/gossil-encoder-boundaries-20261117",
+    "observation": {
+      "id": "rolling-unsigned-old",
+      "search_trial": 3,
+      "argv": [
+        "jlog",
+        "run",
+        "fossil",
+        "test-delta-create",
+        "/tmp/gossil-encoder-boundaries-20261117/rolling-unsigned-old/origin.bin",
+        "/tmp/gossil-encoder-boundaries-20261117/rolling-unsigned-old/target.bin",
+        "/tmp/gossil-encoder-boundaries-20261117/rolling-unsigned-old/delta.bin"
+      ],
+      "cwd": "/Users/rahul/Projects/gossil",
+      "timeout_seconds": 3,
+      "exit": 0,
+      "native_matches_correct_model": true,
+      "native_matches_perturbed_model": false,
+      "perturbation": "unsigned-old",
+      "correct_model_hex": "5a0a313adc5840472c313a213137795a716b3b",
+      "perturbed_model_hex": "5a0a5a3adc191cf7c35efb0cad227d9b47f838efea1088c2f5a7fd11d94bfafab47ecd1545e0213137795a716b3b",
+      "correct_model_ops": [
+        [
+          "literal",
+          1
+        ],
+        [
+          "copy",
+          33,
+          16
+        ],
+        [
+          "literal",
+          1
+        ]
+      ],
+      "perturbed_model_ops": [
+        [
+          "literal",
+          35
+        ]
+      ],
+      "files": {
+        "stdout.bin": {
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "hex": ""
+        },
+        "origin.bin": {
+          "bytes": 113,
+          "sha256": "d0cc02df810fd675f01791aaf52785e29b7b7f74b377dadbad4d90ec6600d655",
+          "hex": "a15be265dd1849589f030561460dfa06191cf7c35efb0cad227d9b47f838efea1088c2f5a7fd11d94bfafab47ecd1545e095330f0bcb792694cc44b739b83a32a2a5931ada4c074807605b1cc3e4fb2bd0b8175f11de049b53c1741639b096168ba659cd792c62f2aff28f398638917fc2"
+        },
+        "target.bin": {
+          "bytes": 35,
+          "sha256": "098c07d7f01a13c5ca6f61b5fcc8925b639cd65625ecdc31d4794cf0d25f2747",
+          "hex": "dc191cf7c35efb0cad227d9b47f838efea1088c2f5a7fd11d94bfafab47ecd1545e021"
+        },
+        "stderr.bin": {
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "hex": ""
+        },
+        "delta.bin": {
+          "bytes": 19,
+          "sha256": "280c6517138ab7089edcc58890ac98fdc37fac00d9d21e394e7dfd53821aefc9",
+          "hex": "5a0a313adc5840472c313a213137795a716b3b"
+        }
+      }
+    }
+  },
+  {
+    "id": "rolling-unsigned-incoming",
+    "provenance": "/tmp/gossil-encoder-boundaries-20261117",
+    "observation": {
+      "id": "rolling-unsigned-incoming",
+      "search_trial": 2,
+      "argv": [
+        "jlog",
+        "run",
+        "fossil",
+        "test-delta-create",
+        "/tmp/gossil-encoder-boundaries-20261117/rolling-unsigned-incoming/origin.bin",
+        "/tmp/gossil-encoder-boundaries-20261117/rolling-unsigned-incoming/target.bin",
+        "/tmp/gossil-encoder-boundaries-20261117/rolling-unsigned-incoming/delta.bin"
+      ],
+      "cwd": "/Users/rahul/Projects/gossil",
+      "timeout_seconds": 3,
+      "exit": 0,
+      "native_matches_correct_model": true,
+      "native_matches_perturbed_model": false,
+      "perturbation": "unsigned-incoming",
+      "correct_model_hex": "5a0a313aab5840472c313a213255585675323b",
+      "perturbed_model_hex": "5a0a5a3aabb565f560059b6901571aa1fa8e2dc2dfaadc7b3dab7d7f19ca52491f3de73e4087213255585675323b",
+      "correct_model_ops": [
+        [
+          "literal",
+          1
+        ],
+        [
+          "copy",
+          33,
+          16
+        ],
+        [
+          "literal",
+          1
+        ]
+      ],
+      "perturbed_model_ops": [
+        [
+          "literal",
+          35
+        ]
+      ],
+      "files": {
+        "stdout.bin": {
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "hex": ""
+        },
+        "origin.bin": {
+          "bytes": 113,
+          "sha256": "be178447f192fdd0ba2b135c9e5524cf637e8b72f3559d35f26e0e3cf47fb826",
+          "hex": "2daef22beede1c7f62b89b2a90b12253b565f560059b6901571aa1fa8e2dc2dfaadc7b3dab7d7f19ca52491f3de73e4087ce874cc9dbd06037e808bcb27c502379755a5ca59202b4c1eeae17a9503178f66d283912fdf2046529d00f8667dca2a793818a38d2eb0167ecb193f141afa033"
+        },
+        "target.bin": {
+          "bytes": 35,
+          "sha256": "6aac695802aa9d86c218fb3cfaa7f8cd83031f211b346eec4e2aab31cf1b2a6f",
+          "hex": "abb565f560059b6901571aa1fa8e2dc2dfaadc7b3dab7d7f19ca52491f3de73e408721"
+        },
+        "stderr.bin": {
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "hex": ""
+        },
+        "delta.bin": {
+          "bytes": 19,
+          "sha256": "bd774de7816225dbde5c59afd9a29fe454d191c5cac4b7a07fb9092fa076e116",
+          "hex": "5a0a313aab5840472c313a213255585675323b"
+        }
+      }
+    }
+  },
+  {
+    "id": "candidate-budget-250",
+    "provenance": "/tmp/gossil-encoder-boundaries-20261117",
+    "observation": {
+      "id": "candidate-budget-250",
+      "search_trial": 0,
+      "argv": [
+        "jlog",
+        "run",
+        "fossil",
+        "test-delta-create",
+        "/tmp/gossil-encoder-boundaries-20261117/candidate-budget-250/origin.bin",
+        "/tmp/gossil-encoder-boundaries-20261117/candidate-budget-250/target.bin",
+        "/tmp/gossil-encoder-boundaries-20261117/candidate-budget-250/delta.bin"
+      ],
+      "cwd": "/Users/rahul/Projects/gossil",
+      "timeout_seconds": 3,
+      "exit": 0,
+      "native_matches_correct_model": true,
+      "native_matches_perturbed_model": false,
+      "perturbation": "budget-251",
+      "correct_model_hex": "480a483a464646464646464646464646464646463f314f36485f4f3b",
+      "perturbed_model_hex": "480a4740302c313a3f314f36485f4f3b",
+      "correct_model_ops": [
+        [
+          "literal",
+          17
+        ]
+      ],
+      "perturbed_model_ops": [
+        [
+          "copy",
+          16,
+          0
+        ],
+        [
+          "literal",
+          1
+        ]
+      ],
+      "files": {
+        "stdout.bin": {
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "hex": ""
+        },
+        "origin.bin": {
+          "bytes": 4017,
+          "sha256": "f4fcc768435c2812b112f2dad7d578440ddb8deed4f0f92a752187b4e2b5a9db",
+          "hex": "464646464646464646464646464646464744474646464646464646464646464647444746464646464646464646464646474447464646464646464646464646464744474646464646464646464646464647444746464646464646464646464646474447464646464646464646464646464744474646464646464646464646464647444746464646464646464646464646474447464646464646464646464646464744474646464646464646464646464647444746464646464646464646464646474447464646464646464646464646464744474646464646464646464646464647444746464646464646464646464646474447464646464646464646464646464744474646464646464646464646464647444746464646464646464646464646474447464646464646464646464646464744474646464646464646464646464647444746464646464646464646464646474447464646464646464646464646464744474646464646464646464646464647444746464646464646464646464646474447464646464646464646464646464744474646464646464646464646464647444746464646464646464646464646474447464646464646464646464646464744474646464646464646464646464647444746464646464646464646464646474447464646464646464646464646464744474646464646464646464646464647444746464646464646464646464646474447464646464646464646464646464744474646464646464646464646464647444746464646464646464646464646474447464646464646464646464646464744474646464646464646464646464647444746464646464646464646464646474447464646464646464646464646464744474646464646464646464646464647444746464646464646464646464646474447464646464646464646464646464744474646464646464646464646464647444746464646464646464646464646474447464646464646464646464646464744474646464646464646464646464647444746464646464646464646464646474447464646464646464646464646464744474646464646464646464646464647444746464646464646464646464646474447464646464646464646464646464744474646464646464646464646464647444746464646464646464646464646474447464646464646464646464646464744474646464646464646464646464647444746464646464646464646464646474447464646464646464646464646464744474646464646464646464646464647444746464646464646464646464646474447464646464646464646464646464744474646464646464646464646464647444746464646464646464646464646474447464646464646464646464646464744474646464646464646464646464647444746464646464646464646464646474447464646464646464646464646464744474646464646464646464646464647444746464646464646464646464646474447464646464646464646464646464744474646464646464646464646464647444746464646464646464646464646474447464646464646464646464646464744474646464646464646464646464647444746464646464646464646464646474447464646464646464646464646464744474646464646464646464646464647444746464646464646464646464646474447464646464646464646464646464744474646464646464646464646464647444746464646464646464646464646474447464646464646464646464646464744474646464646464646464646464647444746464646464646464646464646474447464646464646464646464646464744474646464646464646464646464647444746464646464646464646464646474447464646464646464646464646464744474646464646464646464646464647444746464646464646464646464646474447464646464646464646464646464744474646464646464646464646464647444746464646464646464646464646474447464646464646464646464646464744474646464646464646464646464647444746464646464646464646464646474447464646464646464646464646464744474646464646464646464646464647444746464646464646464646464646474447464646464646464646464646464744474646464646464646464646464647444746464646464646464646464646474447464646464646464646464646464744474646464646464646464646464647444746464646464646464646464646474447464646464646464646464646464744474646464646464646464646464647444746464646464646464646464646474447464646464646464646464646464744474646464646464646464646464647444746464646464646464646464646474447464646464646464646464646464744474646464646464646464646464647444746464646464646464646464646474447464646464646464646464646464744474646464646464646464646464647444746464646464646464646464646474447464646464646464646464646464744474646464646464646464646464647444746464646464646464646464646474447464646464646464646464646464744474646464646464646464646464647444746464646464646464646464646474447464646464646464646464646464744474646464646464646464646464647444746464646464646464646464646474447464646464646464646464646464744474646464646464646464646464647444746464646464646464646464646474447464646464646464646464646464744474646464646464646464646464647444746464646464646464646464646474447464646464646464646464646464744474646464646464646464646464647444746464646464646464646464646474447464646464646464646464646464744474646464646464646464646464647444746464646464646464646464646474447464646464646464646464646464744474646464646464646464646464647444746464646464646464646464646474447464646464646464646464646464744474646464646464646464646464647444746464646464646464646464646474447464646464646464646464646464744474646464646464646464646464647444746464646464646464646464646474447464646464646464646464646464744474646464646464646464646464647444746464646464646464646464646474447464646464646464646464646464744474646464646464646464646464647444746464646464646464646464646474447464646464646464646464646464744474646464646464646464646464647444746464646464646464646464646474447464646464646464646464646464744474646464646464646464646464647444746464646464646464646464646474447464646464646464646464646464744474646464646464646464646464647444746464646464646464646464646474447464646464646464646464646464744474646464646464646464646464647444746464646464646464646464646474447464646464646464646464646464744474646464646464646464646464647444746464646464646464646464646474447464646464646464646464646464744474646464646464646464646464647444746464646464646464646464646474447464646464646464646464646464744474646464646464646464646464647444746464646464646464646464646474447464646464646464646464646464744474646464646464646464646464647444746464646464646464646464646474447464646464646464646464646464744474646464646464646464646464647444746464646464646464646464646474447464646464646464646464646464744474646464646464646464646464647444746464646464646464646464646474447464646464646464646464646464744474646464646464646464646464647444746464646464646464646464646474447464646464646464646464646464744474646464646464646464646464647444746464646464646464646464646474447464646464646464646464646464744474646464646464646464646464647444746464646464646464646464646474447464646464646464646464646464744474646464646464646464646464647444746464646464646464646464646474447464646464646464646464646464744474646464646464646464646464647444746464646464646464646464646474447464646464646464646464646464744474646464646464646464646464647444746464646464646464646464646474447464646464646464646464646464744474646464646464646464646464647444746464646464646464646464646474447464646464646464646464646464744474646464646464646464646464647444746464646464646464646464646474447464646464646464646464646464744474646464646464646464646464647444746464646464646464646464646474447464646464646464646464646464744474646464646464646464646464647444746464646464646464646464646474447464646464646464646464646464744474646464646464646464646464647444746464646464646464646464646474447464646464646464646464646464744474646464646464646464646464647444746464646464646464646464646474447464646464646464646464646464744474646464646464646464646464647444746464646464646464646464646474447464646464646464646464646464744474646464646464646464646464647444746464646464646464646464646474447464646464646464646464646464744474646464646464646464646464647444746464646464646464646464646474447464646464646464646464646464744474646464646464646464646464647444746464646464646464646464646474447464646464646464646464646464744474646464646464646464646464647444746464646464646464646464646474447464646464646464646464646464744474646464646464646464646464647444746464646464646464646464646474447464646464646464646464646464744474646464646464646464646464647444746464646464646464646464646474447464646464646464646464646464744474646464646464646464646464647444746464646464646464646464646474447464646464646464646464646464744474646464646464646464646464647444746464646464646464646464646474447464646464646464646464646464744474646464646464646464646464647444746464646464646464646464646474447464646464646464646464646464744474646464646464646464646464621"
+        },
+        "target.bin": {
+          "bytes": 17,
+          "sha256": "d892608d7965d5f7bfbcbd31ecaa3c317550f0876ec604804ea72c9a092c1ec7",
+          "hex": "464646464646464646464646464646463f"
+        },
+        "stderr.bin": {
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "hex": ""
+        },
+        "delta.bin": {
+          "bytes": 28,
+          "sha256": "0b511d59cb594fc7b523f032f311ec5ca379ead38d5f8c2700767ff50a0c35be",
+          "hex": "480a483a464646464646464646464646464646463f314f36485f4f3b"
+        }
+      }
+    }
+  },
+  {
+    "id": "native-encoder-empty-source-tail-0",
+    "provenance": "/tmp/gossil-delta-decoder-supplement-20261117/fixtures/native-encoder-empty-source-tail-0"
+  },
+  {
+    "id": "native-encoder-empty-source-tail-1",
+    "provenance": "/tmp/gossil-delta-decoder-supplement-20261117/fixtures/native-encoder-empty-source-tail-1"
+  },
+  {
+    "id": "native-encoder-empty-source-tail-2",
+    "provenance": "/tmp/gossil-delta-decoder-supplement-20261117/fixtures/native-encoder-empty-source-tail-2"
+  },
+  {
+    "id": "native-encoder-empty-source-tail-3",
+    "provenance": "/tmp/gossil-delta-decoder-supplement-20261117/fixtures/native-encoder-empty-source-tail-3"
+  },
+  {
+    "id": "native-encoder-empty-source-tail-4",
+    "provenance": "/tmp/gossil-delta-decoder-supplement-20261117/fixtures/native-encoder-empty-source-tail-4"
+  },
+  {
+    "id": "native-encoder-empty-source-tail-5",
+    "provenance": "/tmp/gossil-delta-decoder-supplement-20261117/fixtures/native-encoder-empty-source-tail-5"
+  },
+  {
+    "id": "native-encoder-empty-source-tail-6",
+    "provenance": "/tmp/gossil-delta-decoder-supplement-20261117/fixtures/native-encoder-empty-source-tail-6"
+  },
+  {
+    "id": "native-encoder-empty-source-tail-7",
+    "provenance": "/tmp/gossil-delta-decoder-supplement-20261117/fixtures/native-encoder-empty-source-tail-7"
+  },
+  {
+    "id": "native-encoder-empty-source-tail-8",
+    "provenance": "/tmp/gossil-delta-decoder-supplement-20261117/fixtures/native-encoder-empty-source-tail-8"
+  }
+]

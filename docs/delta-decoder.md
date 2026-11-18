@@ -39,7 +39,8 @@ target. The command does not replace files atomically.
 
 ## Use the library
 
-The module exposes `output_size`, `apply`, `Limits` and `DeltaError`.
+The decoder API exposes `output_size`, `apply`, `Limits` and `DeltaError`.
+The same module also exposes the encoder function [`create`](delta-encoder.md).
 `output_size(delta)` parses only the advertised output size and its LF delimiter.
 It does not validate the commands or enforce the output limit used by `apply`.
 
@@ -64,7 +65,7 @@ storage with a fallible operation and replays the checked slices in a second pas
 It stores no list of parsed operations. Invalid commands reach no output
 reservation. An empty result needs no reservation.
 
-`DeltaError` keeps failures separate for callers:
+The decoder returns these `DeltaError` variants:
 
 | Error variant | Meaning |
 | --- | --- |
@@ -88,6 +89,9 @@ attempting to exhaust system memory.
 
 ## Preserved format behavior
 
+A delta starts with the encoded output length and LF. The form `COUNT:BYTES` inserts a literal, `COUNT@OFFSET,` copies from
+the source, and `CHECKSUM;` ends the delta. All numbers use the alphabet below.
+
 The decoder uses the exact unsigned-byte digit alphabet:
 
 ```text
@@ -109,7 +113,10 @@ are not format guarantees.
 
 ## Evidence and limits
 
-The durable fixtures live under `tests/fixtures/delta/` at the repository root.
+The pinned reference is Fossil 2.29 at revision `7e8ecf0ce4`; the
+original manifest at `tests/fixtures/delta/original/manifest.json` in the
+repository root records its build
+and observations. The durable fixtures live under `tests/fixtures/delta/` at the repository root.
 The original 64 C observations retain 35 accepted, 24 rejected and five
 `not-run` cases. The separate supplement records 27 observations, comprising
 13 accepted and 14 rejected. Its observations cover eight decoder cases,
@@ -129,18 +136,23 @@ The original records retain absolute scratch paths as historical provenance.
 The replay tests use the checked-in bytes and do not require those paths or
 the native Fossil binary.
 
-`contract.json` preserves the original command proposal. The later authorized
-namespace change is recorded in `evidence/delta-decoder/scope-and-test-first.json`.
-The current invocation and usage line include `vcs`. That record also separates
-the initial behavioral failures from tests added after implementation.
-
 The inherited runner remains a separate executable with its existing
-[configuration contract](conformance.md). The encoder, `test-delta` diagnostics,
-unchanged full `delta1` suite and checksum-enabled builds remain future work.
+[configuration contract](conformance.md). The [encoder guide](delta-encoder.md) records the encoder, the `test-delta`
+diagnostics and evidence from the inherited `delta1` suite. Checksum-enabled builds remain future work.
 The decoder establishes no database, storage or replication behavior.
+
+### Historical command contract
+
+`contract.json` preserves the original command proposal. The later authorized
+namespace change is recorded in
+`evidence/delta-decoder/scope-and-test-first.json` in the repository root.
+Use that record to interpret the older proposal. The current invocation and
+usage line include `vcs`. It also distinguishes initial behavioral failures
+from tests added after implementation, so those later tests do not establish
+a test-first failure.
 
 ## Recommendations
 
 Use `apply` with an explicit output limit for bounded delta application.
-Next, implement the encoder and `test-delta` diagnostics, then qualify the
-unchanged `delta1` suite with an explicit mapping to the `gossil vcs` namespace.
+Next, review the encoder and its inherited `delta1` evidence, which use the
+`gossil vcs` namespace.

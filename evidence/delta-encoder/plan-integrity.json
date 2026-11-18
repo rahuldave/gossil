@@ -1,0 +1,8 @@
+{
+  "archive_sha256": "9c6a158fcead127b339e54fb58aaa4215223787aaccd85a14c3d120f8d9d6f91",
+  "files": {
+    "invocation-plan.json": "fbfe7e8e862b557e6b87b41de77865519014cbf9221ad401d23acb091aa6953d",
+    "corpus-manifest.json": "2acc59d1a02d5c2025416999bc753f9bf89c2313676a169b64222d0a69c1ba98",
+    "generation.json": "c0e617da10555bdcd9367086b690c5be3598d546a0af5684f3f9232c19e67178"
+  }
+}

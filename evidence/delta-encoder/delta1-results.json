@@ -1,0 +1,75 @@
+{
+  "status": "blocked; both executions completed successfully but strict original runner rejects legitimate repeated upstream names",
+  "source_git": "b3a1c8efb2731dffbd5cc38c58ac349746de6da6",
+  "native_manifest": "7e8ecf0ce4a3c05aa39de7ffe2828d23e334efe446ef2387e09f205ef00b2227",
+  "corpus_N": 76,
+  "expected_direct_assertions": 22803,
+  "seed": 20261117,
+  "seed_behavior": "existing runner launch.tcl executes expr {srand(20261117)} before source; original suite is otherwise unseeded",
+  "timeout_ms": 7200000,
+  "harness_adaptations": [
+    "remove only disabled driver puts Ok/exit",
+    "set argv0 to original tester path to retain complete original testdir corpus; enabled driver/suite kept separate",
+    "executable wrapper inserts only vcs namespace",
+    "existing runner seeding and isolation unchanged"
+  ],
+  "final_artifact": {
+    "files": {
+      "src/bin/gossil.rs": "6f6b659319d1dfa32bd424a3482effcc8625249e0b56b46104a63b010fa69479",
+      "src/delta.rs": "a2ab8483952106267a14b1745707f8ab659198fdff48e440bac4be2d9e8556ca",
+      "src/lib.rs": "f5fac2e117cade454a129f4a08b0a339fa86c123fa7e961899fed2ad83d9d091",
+      "src/main.rs": "f2a309102a7e0961d2cbf7cb6a618e95c5fad6b05364b4b2632ca84712b69924"
+    },
+    "candidate_sha256": "98e55a4a859ac4e4d80332c8cdd037b76b942a9dcc06513967593b8843d1ec8b"
+  },
+  "later_tree_changes": "API doc comments added after final build; no executable logic changes. Exact build-source snapshot archived.",
+  "runs": [
+    {
+      "run": "run",
+      "purpose": "intermediate full run",
+      "runner_status": "blocked",
+      "accepted": false,
+      "exit_code": 0,
+      "timed_out": false,
+      "direct_assertions": 22803,
+      "framework_assertions": 1,
+      "summary_total": 22804,
+      "errors": 0,
+      "skipped": [],
+      "malformed": true,
+      "duplicate_names": 300,
+      "duplicate_extra_occurrences": 600,
+      "stdout_sha256": "b304343857c211ddaa564c9732c84ad82e4181b3ecbbbf134003a274d37e2825",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "approximate_wall_seconds_from_preserved_file_times": 274.325,
+      "cleanup": "no-signalable-members"
+    },
+    {
+      "run": "run-final",
+      "purpose": "final immutable release-artifact full run",
+      "runner_status": "blocked",
+      "accepted": false,
+      "exit_code": 0,
+      "timed_out": false,
+      "direct_assertions": 22803,
+      "framework_assertions": 1,
+      "summary_total": 22804,
+      "errors": 0,
+      "skipped": [],
+      "malformed": true,
+      "duplicate_names": 300,
+      "duplicate_extra_occurrences": 600,
+      "stdout_sha256": "2c2b323444cd7f738681f383b37498e60e2a277dd853b188f32d5929d5757252",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "approximate_wall_seconds_from_preserved_file_times": 264.994,
+      "cleanup": "no-signalable-members"
+    }
+  ],
+  "archive": {
+    "path": "delta1-runs.tar.gz",
+    "sha256": "d4486f9723f84eaf80319695560e2ac81cceb6104b1e85844517359c23949c4f",
+    "files": 99,
+    "index": "archive-index.json"
+  },
+  "qualification_limit": "No inherited-suite acceptance claim until a separately reviewed invocation-identity correction; original runner unchanged."
+}

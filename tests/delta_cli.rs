@@ -160,3 +160,123 @@ fn cli_paths_and_usage() {
     );
     assert!(dir.path().is_dir());
 }
+
+/// All finite native create bytes and bidirectional round trips through the public adapter.
+#[test]
+fn cli_encoder_vectors() {
+    let root = std::path::Path::new(env!("CARGO_MANIFEST_DIR")).join("tests/fixtures/encoder");
+    let cases: Value =
+        serde_json::from_str(include_str!("fixtures/encoder/provenance.json")).unwrap();
+    let dir = tempfile::tempdir().unwrap();
+    let delta = dir.path().join("delta");
+    for case in cases.as_array().unwrap() {
+        let fixture = root.join(case["id"].as_str().unwrap());
+        let source = fixture.join("origin.bin");
+        let target = fixture.join("target.bin");
+        let result = invoke(&[
+            "vcs".as_ref(),
+            "test-delta-create".as_ref(),
+            source.as_os_str(),
+            target.as_os_str(),
+            delta.as_os_str(),
+        ]);
+        assert!(result.status.success(), "{:?}", result);
+        assert!(result.stdout.is_empty());
+        assert!(result.stderr.is_empty());
+        assert_eq!(
+            fs::read(&delta).unwrap(),
+            fs::read(fixture.join("delta.bin")).unwrap()
+        );
+        let result = invoke(&[
+            "vcs".as_ref(),
+            "test-delta".as_ref(),
+            source.as_os_str(),
+            target.as_os_str(),
+        ]);
+        assert!(result.status.success());
+        assert_eq!(result.stdout, b"ok\n");
+        assert!(result.stderr.is_empty());
+    }
+}
+
+/// Regular-file errors occur before output opening, including either aliased input.
+#[test]
+fn encoder_file_and_usage_policy() {
+    let dir = tempfile::tempdir().unwrap();
+    let source = dir.path().join("source");
+    let target = dir.path().join("target");
+    let missing = dir.path().join("missing");
+    let output = dir.path().join("output");
+    fs::write(&source, b"source").unwrap();
+    fs::write(&target, b"target").unwrap();
+    fs::write(&output, b"preserve").unwrap();
+    for (command, usage) in [
+        ("test-delta-create", "ORIGIN TARGET DELTA"),
+        ("test-delta", "FILE1 FILE2"),
+    ] {
+        for extra in [vec![], vec!["one"], vec!["one", "two", "three", "four"]] {
+            let mut args = vec!["vcs".as_ref(), command.as_ref()];
+            args.extend(extra.iter().map(std::ffi::OsStr::new));
+            let result = invoke(&args);
+            assert_eq!(result.status.code(), Some(1));
+            assert_eq!(
+                result.stderr,
+                format!("Usage: gossil vcs {command} {usage}\n").as_bytes()
+            );
+            assert!(result.stdout.is_empty());
+        }
+    }
+    for (a, b) in [(&missing, &target), (&source, &missing)] {
+        let result = invoke(&[
+            "vcs".as_ref(),
+            "test-delta-create".as_ref(),
+            a.as_os_str(),
+            b.as_os_str(),
+            output.as_os_str(),
+        ]);
+        assert_eq!(result.status.code(), Some(1));
+        assert_eq!(
+            result.stderr,
+            format!("no such file: {}\n", missing.display()).as_bytes()
+        );
+        assert_eq!(fs::read(&output).unwrap(), b"preserve");
+        let result = invoke(&[
+            "vcs".as_ref(),
+            "test-delta".as_ref(),
+            a.as_os_str(),
+            b.as_os_str(),
+        ]);
+        assert_eq!(result.status.code(), Some(1));
+    }
+    let result = invoke(&[
+        "vcs".as_ref(),
+        "test-delta-create".as_ref(),
+        source.as_os_str(),
+        target.as_os_str(),
+        dir.path().as_os_str(),
+    ]);
+    assert_eq!(result.status.code(), Some(1));
+    assert_eq!(
+        result.stderr,
+        format!(
+            "unable to open file \"{}\" for writing\n",
+            dir.path().display()
+        )
+        .as_bytes()
+    );
+    // Output aliasing either input is safe because both inputs have already been read.
+    for alias in [&source, &target] {
+        fs::write(&source, b"source").unwrap();
+        fs::write(&target, b"target").unwrap();
+        let expected = gossil::delta::create(b"source", b"target").unwrap();
+        let result = invoke(&[
+            "vcs".as_ref(),
+            "test-delta-create".as_ref(),
+            source.as_os_str(),
+            target.as_os_str(),
+            alias.as_os_str(),
+        ]);
+        assert!(result.status.success());
+        assert_eq!(fs::read(alias).unwrap(), expected);
+    }
+}

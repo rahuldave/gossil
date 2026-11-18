@@ -1,5 +1,5 @@
-//! Compatibility adapter for the bounded delta decoder; no repository is opened.
-use gossil::delta::{DeltaError, Limits, apply};
+//! Repository-free diagnostics for bounded Fossil delta creation and application.
+use gossil::delta::{DeltaError, Limits, apply, create};
 use std::collections::TryReserveError;
 use std::ffi::OsString;
 use std::fs::File;
@@ -11,6 +11,14 @@ use std::path::{Path, PathBuf};
 enum CommandError {
     /// The argument count or command does not match `vcs test-delta-apply`.
     Usage,
+    /// Invalid create arguments.
+    UsageCreate,
+    /// Invalid round-trip arguments.
+    UsageTest,
+    /// Creation or round-trip verification failed.
+    Create(DeltaError),
+    /// Decoded bytes differ from the requested target.
+    TestFailed,
     /// Input could not be read.
     Read {
         /// File whose operation failed.
@@ -37,6 +45,11 @@ impl std::fmt::Display for CommandError {
     /// Preserve the characterized diagnostic framing and program-name substitution.
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
+            Self::UsageCreate => {
+                write!(f, "Usage: gossil vcs test-delta-create ORIGIN TARGET DELTA")
+            }
+            Self::UsageTest => write!(f, "Usage: gossil vcs test-delta FILE1 FILE2"),
+            Self::Create(_) | Self::TestFailed => write!(f, "delta test failed"),
             Self::Usage => write!(f, "Usage: gossil vcs test-delta-apply ORIGIN DELTA TARGET"),
             Self::Read { path, source } if source.kind() == std::io::ErrorKind::NotFound => {
                 write!(f, "no such file: {}", path.display())
@@ -57,8 +70,8 @@ impl std::error::Error for CommandError {
         match self {
             Self::Read { source, .. } | Self::Write { source, .. } => Some(source),
             Self::ReadAllocation { source } => Some(source),
-            Self::Decode(source) => Some(source),
-            Self::Usage => None,
+            Self::Decode(source) | Self::Create(source) => Some(source),
+            Self::Usage | Self::UsageCreate | Self::UsageTest | Self::TestFailed => None,
         }
     }
 }
@@ -117,9 +130,63 @@ fn run_with(
         })
 }
 
+/// Execute both directions before reporting a successful round trip.
+fn round_trip(source: &[u8], target: &[u8]) -> Result<(), CommandError> {
+    round_trip_with(source, target, create, apply)
+}
+
+/// Keep both directions observable to failure-injection tests.
+fn round_trip_with(
+    source: &[u8],
+    target: &[u8],
+    mut encode: impl FnMut(&[u8], &[u8]) -> Result<Vec<u8>, DeltaError>,
+    mut decode: impl FnMut(&[u8], &[u8], Limits) -> Result<Vec<u8>, DeltaError>,
+) -> Result<(), CommandError> {
+    for (from, to) in [(source, target), (target, source)] {
+        let delta = encode(from, to).map_err(CommandError::Create)?;
+        let output = decode(from, &delta, Limits::default()).map_err(CommandError::Create)?;
+        if output != to {
+            return Err(CommandError::TestFailed);
+        }
+    }
+    Ok(())
+}
+
+/// Dispatch repository-free diagnostics while preserving the existing apply adapter.
+fn dispatch(args: &[OsString]) -> Result<(), CommandError> {
+    if args.first().is_some_and(|arg| arg == "vcs") {
+        if args.get(1).is_some_and(|arg| arg == "test-delta-create") {
+            if args.len() != 5 {
+                return Err(CommandError::UsageCreate);
+            }
+            let source = read_file(Path::new(&args[2]))?;
+            let target = read_file(Path::new(&args[3]))?;
+            let output = create(&source, &target).map_err(CommandError::Create)?;
+            let path = Path::new(&args[4]);
+            return File::create(path)
+                .and_then(|mut file| file.write_all(&output))
+                .map_err(|source| CommandError::Write {
+                    path: path.into(),
+                    source,
+                });
+        }
+        if args.get(1).is_some_and(|arg| arg == "test-delta") {
+            if args.len() != 4 {
+                return Err(CommandError::UsageTest);
+            }
+            let source = read_file(Path::new(&args[2]))?;
+            let target = read_file(Path::new(&args[3]))?;
+            round_trip(&source, &target)?;
+            println!("ok");
+            return Ok(());
+        }
+    }
+    run_with(args, apply)
+}
+
 /// Print the adapter error once, with the native newline and exit status.
 fn main() -> std::process::ExitCode {
-    match run_with(&std::env::args_os().skip(1).collect::<Vec<_>>(), apply) {
+    match dispatch(&std::env::args_os().skip(1).collect::<Vec<_>>()) {
         Ok(()) => std::process::ExitCode::SUCCESS,
         Err(error) => {
             eprintln!("{error}");
@@ -234,6 +301,58 @@ mod tests {
                 .source()
                 .unwrap()
                 .downcast_ref::<std::io::Error>()
+                .is_some()
+        );
+    }
+    /// Reject second-direction mismatches and preserve nested encode/decode causes.
+    #[test]
+    fn both_directions_are_verified() {
+        let mut calls = Vec::new();
+        let mut decodes = 0;
+        let error = round_trip_with(
+            b"first",
+            b"second",
+            |from, to| {
+                calls.push((from.to_vec(), to.to_vec()));
+                create(from, to)
+            },
+            |from, delta, limits| {
+                decodes += 1;
+                if decodes == 2 {
+                    Ok(b"mismatch".to_vec())
+                } else {
+                    apply(from, delta, limits)
+                }
+            },
+        )
+        .unwrap_err();
+        assert!(matches!(error, CommandError::TestFailed));
+        assert_eq!(
+            calls,
+            [
+                (b"first".to_vec(), b"second".to_vec()),
+                (b"second".to_vec(), b"first".to_vec())
+            ]
+        );
+        assert_eq!(decodes, 2);
+        assert_eq!(error.to_string(), "delta test failed");
+        assert!(error.source().is_none());
+        let error =
+            round_trip_with(b"a", b"b", |_, _| Err(DeltaError::Unterminated), apply).unwrap_err();
+        assert!(
+            error
+                .source()
+                .unwrap()
+                .downcast_ref::<DeltaError>()
+                .is_some()
+        );
+        let error = round_trip_with(b"a", b"b", create, |_, _, _| Err(DeltaError::Unterminated))
+            .unwrap_err();
+        assert!(
+            error
+                .source()
+                .unwrap()
+                .downcast_ref::<DeltaError>()
                 .is_some()
         );
     }

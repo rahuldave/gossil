@@ -26,3 +26,7 @@ conformance CONFIG:
 
 # Verify runner controls, including deliberate failures, timeouts and isolated child cleanup.
 conformance-self-test: integration
+
+# Generate a complete delta1 invocation plan using the selected Tcl file ordering.
+delta1-plan SOURCE OUTPUT:
+    jlog run uv run --no-project --quiet python scripts/delta1-plan.py "$1" "$2" --tcl "$(pwd)/.jlog/bin/tclsh" --revision b3a1c8efb2731dffbd5cc38c58ac349746de6da6

@@ -1,0 +1,70 @@
+{
+  "branch": "gest/wovmllom-delta-encoder",
+  "base": "8b974992f1ea7513aad16ff6144744c01ad06357",
+  "status": "Encoder and optional ordered-plan runner candidate; final frozen unchanged delta1 accepted,independent final gates pending",
+  "scope": [
+    "safe pure fallible delta::create",
+    "private signed-char rolling hash, unsigned checksum and numeric writer",
+    "vcs test-delta-create and bidirectional test-delta diagnostics"
+  ],
+  "preserved": [
+    "decoder algorithm and limits",
+    "strict default conformance parser/acceptance semantics; opt-in pinned ordered plan added after reviewed scope expansion",
+    "28 exact native source/target/delta triples"
+  ],
+  "test_first": {
+    "strategy": "test-first",
+    "encoder_red": {
+      "recipe": "just test-paths tests/delta_encoder.rs",
+      "stub": "pub fn create(_source: &[u8], _target: &[u8]) -> Result<Vec<u8>, DeltaError> { Ok(Vec::new()) }",
+      "result": "behavioral assertion failed at source-length-16: actual [] versus preserved native delta bytes; successful compilation",
+      "note": "just test native_encoder_vectors initially selected zero unit tests; it was not counted as red or a meaningful test run"
+    },
+    "cli_red": {
+      "recipe": "just test-paths tests/delta_cli.rs",
+      "result": "cli_encoder_vectors failed with exit1 and existing apply Usage before encoder dispatch implementation"
+    },
+    "green": [
+      "28 exact encoder outputs and apply round trips",
+      "28 subprocess create outputs and two-direction diagnostic runs",
+      "source-derived count==overhead, first winning window and backward-zero exclusion",
+      "arithmetic and genuine resource-overflow error cause/stage tests",
+      "CLI both-direction second-failure injection, usage, missing-file/output-open errors and input aliases",
+      "87 archive files plus hash-index complete enumeration"
+    ]
+  },
+  "checks": {
+    "just test": "10 unit tests passed",
+    "just integration": "19 integration functions passed in final coverage recipe, including complete encoder fixture archive integrity",
+    "just coverage-check": "Final strict run:263 changed executable lines,0 missing,100%;10 unit and19 integration functions passed. Earlier pre-documentation run reported302 executable lines,also100%.",
+    "just lint": "passed",
+    "just typecheck": "passed",
+    "just docstring-check": "passed after adding four private-field comments",
+    "just docs-check": "passed,37/37 API items documented after adding private-helper argument/return sections",
+    "just prose-check": "passed mechanical prose and API checker; independent prose revision remains parent-owned",
+    "just fmt-check": "passed",
+    "just diff-check": "passed",
+    "indexed_diff_check": "passed after explicit staging; rerun at handoff",
+    "just check": "not run; reserved until ordered fresh update-docs, prose, review and test-review",
+    "runner_correction": "Final frozen count-pinned full delta1 accepted22804/22804; strict coverage417/417 with10 unit+24 integration functions; final conformance archive control separately14/14 passing. See runner-correction.json."
+  },
+  "limits": [
+    "Selected finite native build only; no universal encoder parity",
+    "Source/target<=i32::MAX; native digit_count UB >=2^30 is replaced by unsigned Rust policy",
+    "Backward-zero boundary source-derived rather than independently native-observed",
+    "Regular-file diagnostic scope only; no stdin/stdout or parent-folder creation parity",
+    "No new dependency, database, C forwarding, remote, push, PR or commit",
+    "Final qualification binary source snapshot precedes API documentation-only additions; executable logic identical"
+  ],
+  "dependency_impact": {
+    "tool": "ast-grep",
+    "evidence": "dependency-impact.txt",
+    "contracts": [
+      "delta module public API and error enum",
+      "CLI dispatch and round-trip dependers",
+      "library and subprocess fixture replay"
+    ],
+    "tag_classification": "existing parent-owned delta/Fossil/engine leaf metadata; no new task or Gest mutation by worker"
+  },
+  "inherited_result": "Historical two strict runs remain blocked. Final count-pinned frozen runner accepts22803 direct+1 framework assertions,all OK,exit0,zero errors/skips/timeouts. See planned-delta1-results.json; no native reference suite repeated."
+}

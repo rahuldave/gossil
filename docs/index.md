@@ -7,10 +7,12 @@ project state, combining Fossil version control with Gest task management.
 Planned records include tasks, shared issues and private agent traces.
 Git remains the source-code authority in the first release.
 
-This checkout contains a bounded Fossil delta decoder, its
-`gossil vcs test-delta-apply` diagnostic command and a runner for inherited Fossil Tcl tests.
+This checkout contains a bounded Fossil delta encoder and decoder, their
+`gossil vcs` diagnostics and a runner for inherited Fossil Tcl tests.
 Gest integration, libsql storage and the remaining Fossil mechanisms are planned work.
 
+- [Delta encoder](delta-encoder.md) explains creation, round-trip diagnostics
+  and the finite compatibility evidence.
 - [Delta decoder](delta-decoder.md) explains the library, diagnostic command,
   preserved fixtures and compatibility limits.
 - [Inherited-test runner](conformance.md) explains prerequisites, configuration,
@@ -18,13 +20,13 @@ Gest integration, libsql storage and the remaining Fossil mechanisms are planned
 - [Development plan](development-plan.md) gives the delivery order, ownership
   and local checkpoint workflow.
 
-The product specification remains at
+The product specification is in a local companion checkout at
 `~/Projects/AIProjectInfra/docs/gossil/README.md`. Reference experiment files
 are described by `evidence/baselines/README.md` at the repository root.
 The complete source and test mappings are described in
-`evidence/inventories/README.md`, including the current Fossil family corrections
-and complete pinned Git identities. The parser correction and its focused
-regression evidence are recorded in `evidence/review-correction/checkpoint.json`.
+`evidence/inventories/README.md`, including corrections to groups of related Fossil mechanisms and Git
+identities for every pinned path. `evidence/review-correction/checkpoint.json`
+records tests of rejection of malformed and duplicate result summaries.
 
 These archives are outside this documentation site. Open their paths from
 the root of the local checkout. Those historical results
@@ -39,5 +41,5 @@ Automatic publication is disabled for this checkout.
 ## Recommendations
 
 Use the decoder guide for bounded delta application and the runner guide for
-inherited suites. Next, implement the encoder and `test-delta` diagnostics,
-then qualify `delta1`, the unchanged inherited Fossil delta test suite.
+inherited suites. Next, review the encoder and its recorded qualification of `delta1`,
+the unchanged inherited Fossil delta test suite.

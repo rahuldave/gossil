@@ -1,0 +1,51 @@
+{
+  "observed": {
+    "corpus_N": 76,
+    "direct_assertions": 22803,
+    "framework_assertions": 1,
+    "reported_total": 22804,
+    "exit_code": 0,
+    "timed_out": false,
+    "errors": 0,
+    "all_pass_entries": 22804,
+    "runner_accepted": false,
+    "runner_status": "blocked",
+    "malformed": true,
+    "duplicate_name_count": 300,
+    "duplicate_entry_count": 900,
+    "extra_duplicate_occurrences": 600,
+    "examples": {
+      "delta-link-tester-0-1": 3,
+      "delta-link-tester-0-2": 3,
+      "delta-link-tester-0-3": 3,
+      "delta-link-tester-1-1": 3,
+      "delta-link-tester-1-2": 3,
+      "delta-link-tester-1-3": 3
+    },
+    "duplicate_corpus_files": {
+      "/var/folders/wq/mr3zj9r14dzgjnq9rjx_vqbc0000gn/T/gossil-source-review-1sgum5ox/fossil/test/link-tester.html": "e667219655ddc9100283bbc971bf8487878680c9b7964689408c5ee829fe223f",
+      "/var/folders/wq/mr3zj9r14dzgjnq9rjx_vqbc0000gn/T/gossil-source-review-1sgum5ox/fossil/test/link-tester.js": "5ae4ed5cc2b5ee06234f32c0bb151defd36d91b2b858a3be6caf202cc69bb969",
+      "/var/folders/wq/mr3zj9r14dzgjnq9rjx_vqbc0000gn/T/gossil-source-review-1sgum5ox/fossil/test/link-tester.json": "90065fb7106430bf27331fe6e2156dc4d2544a69bc6f61476bb1b4872d86a334"
+    },
+    "corpus_order": "Tcl lsort [glob $testdir/*], skip directories only; all76 original non-directory files hashed in corpus.json",
+    "corpus_manifest_sha256": "b89b5e749273e654f0b280ac0995cb1cdee287647929fe438bf9ecb622a18a58"
+  },
+  "source": {
+    "suite": "test/delta1.test:30-46 constructs base with file root [file tail $f] and names delta-$base-$i-{1,2,3}; link-tester.html, link-tester.js, link-tester.json share base link-tester",
+    "parser": "src/lib.rs:190-216 appends every original Assertion{name,state,known_bug,framework}; 201-202 marks malformed on any repeated name. No entry is dropped. validate_report rejects malformed.",
+    "runner": "Original runner unchanged; first intermediate encoder artifact full run complete. Final immutable candidate artifact rerun is ongoing."
+  },
+  "proposal": {
+    "status": "unimplemented; requires independent review",
+    "approach": "Keep default duplicate rejection. Supply a hashed complete ordered assertion invocation plan derived from the pinned original corpus and suite: all76 upstream repository-relative test/PATH files in Tcl order, iteration0..99 and mutation slot1..3, then empties and framework. Each row retains original name plus unique portable invocation identity. Explicit opt-in compares observed ordered names and cardinality exactly with the plan, assigning expected occurrence identities while retaining names. Never deduplicate or rename original assertions.",
+    "negative_controls": [
+      "Default mode still rejects duplicate assertion names.",
+      "Opt-in rejects extra/missing occurrences, wrong original names and reordering visible through distinct names; it cannot detect swaps of otherwise identical-name groups.",
+      "Unique invocation identity required; duplicated plan identities rejected.",
+      "Failed repeated occurrence remains failure.",
+      "Malformed/duplicate final summaries and incomplete/timeouts remain rejected.",
+      "Hash and record plan plus complete source corpus; no file filtering."
+    ],
+    "limits": "Output names alone cannot independently detect permutations of whole groups whose original names are identical. Frozen source/corpus and its sorted loop establish expected group order; no actual per-invocation trace supplying portable IDs has been observed."
+  }
+}

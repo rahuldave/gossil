@@ -1,0 +1,60 @@
+{
+  "status": "Final frozen count-pinned runner completed unchanged full delta1; accepted finite suite,independent final gates pending",
+  "review_contract": "Independent pre-implementation report /tmp/gossil-runner-identity-review-20261117/report.md,accepted optional complete ordered pinned plan; original names/corpus/assertions untouched",
+  "test_first": {
+    "recipe": "just test-paths tests/conformance.rs",
+    "red": "pinned_plan_duplicate_regression successfully compiled and failed because original runner ignored opt-in plan,retained all3 entries,marked duplicate malformed",
+    "green": "13 conformance integration functions passed,including executable-interface accepted plan plus bad expected pin rejection"
+  },
+  "implementation": [
+    "Strict default parse_report and existing acceptance semantics preserved",
+    "Shared lexical parser changes only duplicate-name handling in explicit plan mode; never clears malformed state",
+    "Expected plan and corpus hashes verified before execution,then parse same byte buffers; exact JSON retained",
+    "Suite/revision/suite SHA,portable unique IDs,nonempty complete corpus coverage and expected row-count checked",
+    "Every observed original name and vector cardinality must match plan; all failure/process checks remain in force",
+    "Expected invocation IDs explicitly source-derived,not observed trace IDs"
+  ],
+  "controls": [
+    "25 setup mutation cases:empty/truncated/incomplete/bad hash/metadata/path/ID/JSON/source bytes",
+    "Missing/extra/wrong/reordered names and duplicated occurrence replacing distinct expected name",
+    "Failed repeated knownBug occurrence despite zero-error summary",
+    "Malformed/overflow/duplicate/missing summaries,count mismatch,skips,framework-only",
+    "Nonzero/signal/invalidUTF8 and complete-log deadline with owned-group cleanup",
+    "Actual executable interface validates expected pin and retains all rows and exact plan bytes",
+    "Relocated original76-file corpus regenerates byte-identical22804-row plan via actual Tcl order",
+    "Complete planned-run archive file enumeration and hashes,all22804 original names/results/expected identities retained"
+  ],
+  "qualification_rationale": "One final full execution selected after final setup changes,using frozen final runner source and original immutable encoder artifact; earlier planned run is intermediate only. No historical blocked run relabeled.",
+  "source_mapping": "plan-source-mapping.json",
+  "plan_archive": "delta1-plan.tar.gz",
+  "hashes": {
+    "runner_sha256": "6757828fd07e77443daaab9a325a9cd05a0731f8ba35428d94453b39f8cdd583",
+    "source_hashes": {
+      "src/lib.rs": "ae0b3ab7beb7614d7147ab05b8f8f9c57811a3c444a15c9bd2f015bb79aad95f",
+      "src/invocation.rs": "fb38ca0ac4c45057c029705c5c069068f56d549aec35f44118d083a701daa3a2",
+      "src/main.rs": "f2a309102a7e0961d2cbf7cb6a618e95c5fad6b05364b4b2632ca84712b69924",
+      "src/delta.rs": "2d18a4cfe16c2716ed3b9d11f9436e223ec38f461003242f7644029511c02686",
+      "src/bin/gossil.rs": "6f6b659319d1dfa32bd424a3482effcc8625249e0b56b46104a63b010fa69479"
+    },
+    "plan_sha256": "fbfe7e8e862b557e6b87b41de77865519014cbf9221ad401d23acb091aa6953d",
+    "corpus_manifest_sha256": "2acc59d1a02d5c2025416999bc753f9bf89c2313676a169b64222d0a69c1ba98",
+    "encoder_sha256": "98e55a4a859ac4e4d80332c8cdd037b76b942a9dcc06513967593b8843d1ec8b"
+  },
+  "focused_checks": {
+    "coverage": "417 changed executable lines,0 missing,100%;10unit+24integration functions before final evidence-integrity function",
+    "lint": "pass",
+    "typecheck": "pass",
+    "docstring": "pass",
+    "api": "49/49 documented",
+    "mechanical_prose": "pass;independent pass parent-owned",
+    "final_conformance_file": "14/14 pass after final archive integrity and explicit timeout cleanup assertions"
+  },
+  "limits": [
+    "Expected source correspondence established by generator/review,not arbitrary ID labels or count/hash pins alone",
+    "Output cannot detect invisible same-name whole-group substitutions/permutations",
+    "Existing immutable-input assumption remains; hashing does not eliminate later mutation races",
+    "No scheduler,filtering,assertion renaming or new trace protocol",
+    "No final check,independent gates,commit or remote actions by worker"
+  ],
+  "qualification_result": "planned-delta1-results.json"
+}

@@ -1,0 +1,44 @@
+# Independent pre-implementation review
+
+Decision: accept the optional complete ordered invocation plan, with the contract below. No implementation or test execution was performed by this reviewer. This is a bounded runner correction; the encoder, original corpus, suite assertions and upstream names remain unchanged.
+
+## Observed evidence and review surfaces
+
+Read the duplicate handoff; current `src/lib.rs` assertion parser, validator, configuration, input hashing and execution acceptance path; focused `tests/conformance.rs`; pinned `delta1.test`; patched inherited tester assertion procedure and final framework/summary emission; corpus manifest header and representative path records. This is a focused review, not a complete repository audit. Full-run counts here are handoff evidence, not independently rerun results.
+
+The handoff records 22,804 retained passing assertions, zero errors, exit zero and no timeout, rejected because 300 original names occur three times. Parser storage already retains every occurrence. `delta1.test` takes Tcl's sorted glob, skips only directories, strips each filename's final extension, then emits 100 iterations with three mutation slots. Thus the three original link-tester files legitimately produce the same 300 names. Three empties and one framework assertion follow. The inherited tester increments its assertion count for every invocation and does not promise unique names.
+
+## Accepted contract
+
+1. Keep existing public/default parsing and acceptance strict: duplicate original names still reject unless the caller explicitly supplies the complete pinned plan. Do not add a general allow-duplicates boolean, duplicate-name allowlist, multiset-only comparison, or delta1-specific exception.
+2. The opt-in plan contains every invocation in exact order, including unique-name rows, all 76 original non-directory corpus files, iterations 0 through 99, slots 1 through 3, the three empties, and the framework assertion. For this pinned corpus it has exactly 22,804 rows. Generate using the actual Tcl `lsort` order, not an assumed Rust/Python locale ordering. A general runner need not understand delta1 loop structure: generation and source-derived completeness are explicit reviewed artifacts.
+3. Every row has the unchanged expected original name and a unique portable expected invocation ID. Define IDs using an unambiguous structured tuple or documented escaping, for example `(suite="delta1", source="test/link-tester.html", iteration=0, slot=1)`; empties use `(suite="delta1", kind="empty", index=1)` and framework `(suite="delta1", kind="framework")`. Paths are upstream-relative with forward slashes, no absolute roots, empty components, `.` or `..`. Iteration/slot/kind belong to the identity; machine paths and global observed ordinal do not. Include a schema/version namespace. Bind source revision and bytes through plan metadata/configuration rather than pretending that this logical ID alone identifies source content.
+4. Reject malformed plan data before execution: missing/empty names or IDs, duplicate IDs, empty/incomplete plan, invalid path/parameter forms if structured, and mismatched suite/revision/source/corpus metadata. Do not trust an ID string as proof it was derived from the corpus. The generator/review must establish full source correspondence; hashes merely bind supplied bytes.
+5. Configuration explicitly pins the plan's expected SHA-256; verify the bytes against it, parse those same bytes once, retain the artifact or exact rows in durable run evidence, and record the plan hash alongside source, original corpus manifest and every original corpus input hash. Merely adding an unverified plan pathname to `inputs` records a hash but is not an expected-hash pin. Validate source/corpus binding before starting. If mutable inputs can change between validation and use, document the existing immutability assumption; do not claim hashes eliminate that race.
+6. Compare the complete observed assertion vector's length and original-name sequence exactly to plan rows. On mismatch reject; never drop, deduplicate, rename, repair, or reorder assertions. Attach IDs as `expected_invocation_id` or similarly explicit source-derived correspondence only on exact matching, retaining original names, states, annotations and framework flags. A global ordinal may supplement evidence but cannot replace portable IDs.
+7. Preserve every other acceptance condition: actual exit zero, valid UTF-8, no timeout, exactly one valid final summary, zero errors, total equal to retained assertion count and plan length, at least one real assertion, no skipped summary, and every occurrence passing. A repeated failing occurrence remains a failure even when upstream zero-error accounting ignores known bugs.
+8. Do not clear `Report.malformed` to waive duplicates. It currently combines duplicate names with invalid assertion syntax, malformed outcomes and malformed/duplicate summaries. Use a shared internal parser with an explicit duplicate policy, or separately track duplicate diagnostics; then apply exact plan validation. Default `parse_report` and `validate_report` retain their existing result semantics.
+
+## Evidence limitation
+
+Expected IDs are assigned from pinned source order; they are not emitted by the original upstream log. Name-sequence matching cannot detect a permutation of whole groups with identical name sequences, nor substitution of one such group for another with the same printed names. The immutable source/corpus and reviewed sorted loop establish the expected correspondence. State this limitation in evidence and documentation; do not call it independently observed per-invocation identity. Altering the tester or suite to emit IDs is outside this leaf and would change the evidence contract.
+
+## Why the addition is justified
+
+The current unique-name rule is stronger than the original tester's contract and rejects a legitimate complete unchanged run. Removing duplicate rejection globally would abandon an existing negative control. A duplicate-name allowlist or occurrence counts cannot constrain positions or bind occurrences to the three original files. A complete ordered plan is the smallest general opt-in that preserves default behavior and expresses the source-derived distinction. Avoid extending it into a new scheduling engine, testcase filtering system or general trace protocol.
+
+## Required regression controls before implementation
+
+- A small fixture with two distinct source-derived IDs and the same original name: default mode rejects; matching explicit plan accepts; both occurrences and original names remain present. Make this the focused behavioral regression before changing runner code.
+- Three source paths sharing a root retain distinct IDs; moving the checkout changes no IDs. Empties/framework IDs remain distinct. Check full generated plan cardinality, file coverage and source order against the pinned 76-file manifest.
+- Reject missing/extra occurrence, wrong original name, and swapping rows with distinct names. Reject the same length with one duplicate occurrence replacing a distinct expected name. Document rather than falsely test detection of invisible identical-name group swaps.
+- Reject duplicate/empty IDs, malformed rows, empty plan, expected plan hash mismatch, suite/revision/corpus binding mismatch and changed corpus bytes. A renamed unique ID without source correspondence must not be advertised as independently verified provenance.
+- Under plan mode reject a failed middle duplicate occurrence, including `FAILED (knownBug)!` with a zero-error summary. Preserve failure state and annotation.
+- Under plan mode exercise malformed assertion outcome, malformed/overflowing numeric summary, malformed-then-valid summary, duplicate valid summaries, missing summary, count mismatch, skipped tests, framework-only output, nonzero/signal exit, invalid UTF-8 and timeout. Existing default controls remain unchanged; these checks specifically guard against accidentally clearing malformed state or bypassing execution acceptance.
+- At least one executable-interface plan control proves the configuration pin is consumed and retained evidence contains all rows/identities. A timeout control with an otherwise complete matching log must still reject, showing the plan cannot override process status.
+
+These are expected controls, not claimed executions. The parent/implementer owns final check selection and full rerun evidence.
+
+## Recommendations
+
+Prefer the explicit complete ordered plan and a shared parser that preserves independent syntax validity. First add the duplicate-name regression and malformed-summary plan controls, then implement only the optional configuration, hash verification, exact match and expected-ID evidence path in the owning Gossil runner.

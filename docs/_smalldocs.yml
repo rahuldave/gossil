@@ -11,6 +11,8 @@ website:
         text: Home
       - href: conformance.md
         text: Inherited-test runner
+      - href: delta-encoder.md
+        text: Delta encoder
       - href: delta-decoder.md
         text: Delta decoder
       - href: development-plan.md

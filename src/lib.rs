@@ -1,4 +1,6 @@
-//! Run inherited Fossil conformance tests and decode bounded deltas.
+//! Run inherited Fossil conformance tests and create or apply bounded deltas.
+mod invocation;
+pub use invocation::{InvocationId, InvocationPlan, PlanPin, PlanRow, Position};
 use serde::{Deserialize, Serialize};
 use sha2::{Digest, Sha256};
 use std::collections::BTreeMap;
@@ -149,6 +151,9 @@ pub struct Assertion {
     pub known_bug: bool,
     /// Synthetic framework assertion, separate from real suite assertions.
     pub framework: bool,
+    /// Expected source-derived identity assigned only after exact plan matching.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub expected_invocation_id: Option<InvocationId>,
 }
 /// Individual results and independently reported upstream totals.
 #[derive(Debug, Default, Serialize, Deserialize)]
@@ -182,6 +187,15 @@ pub struct Report {
 /// assert!(gossil::validate_report(&report, Some(0)).is_ok());
 /// ```
 pub fn parse_report(text: &str) -> Report {
+    parse_internal(text, true)
+}
+/// Shared lexical parser; plan mode changes only duplicate-name handling.
+/// # Arguments
+/// * `text` - Captured stdout without any repairs.
+/// * `reject_duplicates` - Preserve strict default identity rejection.
+/// # Returns
+/// Every retained assertion and independent malformed-syntax state.
+fn parse_internal(text: &str, reject_duplicates: bool) -> Report {
     let mut report = Report::default();
     for line in text.lines() {
         if let Some(record) = line.strip_prefix("test ") {
@@ -193,8 +207,8 @@ pub fn parse_report(text: &str) -> Report {
             if let Some(index) = split {
                 let name = &record[..index];
                 let outcome = &record[index + 1..];
-                report.malformed |=
-                    name.is_empty() || report.assertions.iter().any(|a| a.name == name);
+                report.malformed |= name.is_empty()
+                    || (reject_duplicates && report.assertions.iter().any(|a| a.name == name));
                 let state = if outcome == "OK" || outcome == "OK (knownBug)?" {
                     "pass"
                 } else if outcome == "FAILED"
@@ -211,6 +225,7 @@ pub fn parse_report(text: &str) -> Report {
                     state: state.into(),
                     known_bug: outcome.contains("knownBug"),
                     framework: name.starts_with("test-framework-"),
+                    expected_invocation_id: None,
                 });
             } else {
                 report.malformed = true;
@@ -230,6 +245,29 @@ pub fn parse_report(text: &str) -> Report {
             } else {
                 report.malformed = true;
             }
+        }
+    }
+    report
+}
+/// Match every retained original name against the complete pinned sequence.
+/// # Arguments
+/// * `text` - Captured stdout without repairs.
+/// * `plan` - Verified complete source-derived expected sequence.
+/// # Returns
+/// Retained assertions with expected IDs only after exact sequence matching.
+fn parse_planned(text: &str, plan: &InvocationPlan) -> Report {
+    let mut report = parse_internal(text, false);
+    if report.assertions.len() != plan.rows.len()
+        || report
+            .assertions
+            .iter()
+            .zip(&plan.rows)
+            .any(|(actual, expected)| actual.name != expected.name)
+    {
+        report.malformed = true;
+    } else {
+        for (actual, expected) in report.assertions.iter_mut().zip(&plan.rows) {
+            actual.expected_invocation_id = Some(expected.id.clone());
         }
     }
     report
@@ -288,6 +326,9 @@ pub struct Config {
     pub inputs: Vec<PathBuf>,
     /// Explicit build capabilities.
     pub capabilities: BTreeMap<String, String>,
+    /// Optional expected-hash pin for a complete ordered invocation plan.
+    #[serde(default)]
+    pub invocation_plan: Option<PlanPin>,
 }
 /// Durable run evidence with exact command and isolated environment additions.
 #[derive(Debug, Serialize, Deserialize)]
@@ -316,6 +357,9 @@ pub struct Run {
     pub stderr_sha256: String,
     /// Individual assertion results.
     pub report: Report,
+    /// Complete verified plan retained with every original row and identity.
+    #[serde(default)]
+    pub invocation_plan: Option<InvocationPlan>,
     /// Strict acceptance of this suite alone.
     pub accepted: bool,
     /// pass, fail, blocked, or not-run for this invocation.
@@ -424,8 +468,13 @@ fn execute_with_ops(config: Config, ops: &ProcessOps<'_>) -> Result<Run, RunnerE
     {
         hashes.insert(path.display().to_string(), hash(path)?);
     }
+    let verified_plan = invocation::verify(&config, &suite, &mut hashes)?;
     fs::create_dir(&config.run_dir)?;
     let root = fs::canonicalize(&config.run_dir)?;
+    if let Some(verified) = &verified_plan {
+        fs::write(root.join("invocation-plan.json"), &verified.bytes)?;
+        fs::write(root.join("corpus-manifest.json"), &verified.corpus)?;
+    }
     let environment: BTreeMap<_, _> = [
         "HOME",
         "FOSSIL_HOME",
@@ -536,7 +585,10 @@ fn execute_with_ops(config: Config, ops: &ProcessOps<'_>) -> Result<Run, RunnerE
     let stderr_sha256 = format!("{:x}", Sha256::digest(&stderr_raw));
     let stdout = String::from_utf8_lossy(&stdout_raw).into_owned();
     let stderr = String::from_utf8_lossy(&stderr_raw).into_owned();
-    let report = parse_report(&stdout);
+    let report = match &verified_plan {
+        Some(verified) => parse_planned(&stdout, &verified.plan),
+        None => parse_report(&stdout),
+    };
     let accepted =
         output_utf8 && !timed_out && validate_report(&report, process_status.code()).is_ok();
     let status = if accepted {
@@ -562,6 +614,7 @@ fn execute_with_ops(config: Config, ops: &ProcessOps<'_>) -> Result<Run, RunnerE
         stdout_sha256,
         stderr_sha256,
         report,
+        invocation_plan: verified_plan.map(|verified| verified.plan),
         accepted,
         status,
         cleanup: cleanup.into(),
@@ -624,6 +677,7 @@ mod tests {
             seed: 20261117,
             inputs: vec![],
             capabilities: BTreeMap::new(),
+            invocation_plan: None,
         }
     }
 

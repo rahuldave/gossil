@@ -1,0 +1,4 @@
+tests/conformance.rs:37:    let report = parse_report(log);
+tests/conformance.rs:56:            let report = parse_report(&log);
+tests/conformance.rs:121:    let report = parse_report("test real OK\n***** Final results: 0 errors out of 1 tests\n");
+src/lib.rs:539:    let report = parse_report(&stdout);

@@ -12,8 +12,8 @@ Read and follow @.agents/instructions/prose.md
 ## Project context
 
 - Project name: Gossil.
-- Source directories: `src/` contains the inherited-test runner and bounded delta decoder; `tests/` contains their controls and portable fixtures.
-- Local guides: `docs/conformance.md`, `docs/delta-decoder.md` and `docs/development-plan.md`.
+- Source directories: `src/` contains the inherited-test runner and bounded delta encoder/decoder; `tests/` contains their controls and portable fixtures.
+- Local guides: `docs/conformance.md`, `docs/delta-encoder.md`, `docs/delta-decoder.md` and `docs/development-plan.md`.
 - Product specification: `~/Projects/AIProjectInfra/docs/gossil/README.md` and its linked pages.
 - Workflow playbook: `.agents/skills/gtw/references/gest_codex_workflow.md`.
 
@@ -21,8 +21,9 @@ The executable `gossil-conformance` is development infrastructure. It runs
 explicit reference or candidate configurations, preserves evidence and rejects
 failed or incomplete suites. It implements no Gossil engine behavior.
 The library also implements bounded delta application, exposed by
-`gossil vcs test-delta-apply ORIGIN DELTA TARGET`. The encoder, remaining source
-port, Gest integration and libsql core remain planned work.
+`gossil vcs test-delta-apply ORIGIN DELTA TARGET`. The library also creates deltas through `gossil vcs test-delta-create` and checks
+both directions through `gossil vcs test-delta`. The remaining source port,
+Gest integration and libsql core remain planned work.
 
 ## Commands and evidence
 
@@ -47,8 +48,8 @@ Worktrees may share them through `.worktreelink`.
 ## Ownership and delivery
 
 The initial bootstrap had no HEAD and used `gest/xnuqympy-bootstrap`.
-The decoder topic is `gest/mpxpvmkq-delta-decoder`, based on
-`e603376aac1977ca6ba40973d1ae6eca75e8fdf3`. The coordinator
+The encoder topic is `gest/wovmllom-delta-encoder`, based on accepted decoder
+`8b974992f1ea7513aad16ff6144744c01ad06357`. The coordinator
 `delta_implementation` owns implementation writes. Documentation and review
 agents work only within their assigned scopes and preserve other writers' files.
 Follow the documented order of fresh agent checks before committing.
@@ -65,5 +66,4 @@ Publishing and GitHub issue promotion remain deferred for that reason.
 ## Recommendations
 
 Use the decoder guide for bounded application and the runner guide for explicit
-suite configurations. Next, implement the encoder and `test-delta` diagnostics,
-then qualify the unchanged `delta1` suite.
+suite configurations. Next, review the encoder, its diagnostics and the unchanged `delta1` evidence.

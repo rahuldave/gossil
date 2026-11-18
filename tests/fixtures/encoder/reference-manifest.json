@@ -1,0 +1,119 @@
+{
+  "status": "bounded next-leaf preparation; no implementation or acceptance claim",
+  "source_git": "b3a1c8efb2731dffbd5cc38c58ac349746de6da6",
+  "native_manifest": "7e8ecf0ce4a3c05aa39de7ffe2828d23e334efe446ef2387e09f205ef00b2227",
+  "provenance": [
+    {
+      "path": "/tmp/gossil-fossil-baseline-20261117/pristine/src/delta.c",
+      "resolved": "/private/tmp/gossil-fossil-baseline-20261117/pristine/src/delta.c",
+      "sha256": "85d1a68aef7796240a65265276308b4201bcb5de1bda168eea573495304177d2",
+      "bytes": 22550
+    },
+    {
+      "path": "/tmp/gossil-fossil-baseline-20261117/pristine/src/deltacmd.c",
+      "resolved": "/private/tmp/gossil-fossil-baseline-20261117/pristine/src/deltacmd.c",
+      "sha256": "c154db86edfc1677713c5164c9e9660553aca1cf4322386d7f848a89ae0acfb1",
+      "bytes": 5825
+    },
+    {
+      "path": "/var/folders/wq/mr3zj9r14dzgjnq9rjx_vqbc0000gn/T/gossil-source-review-1sgum5ox/fossil/Makefile",
+      "resolved": "/private/var/folders/wq/mr3zj9r14dzgjnq9rjx_vqbc0000gn/T/gossil-source-review-1sgum5ox/fossil/Makefile",
+      "sha256": "4a0929991db2c71117e74ebc6cfc8dbedc9b0be876cc7881f712f14030d52137",
+      "bytes": 6178
+    },
+    {
+      "path": "/var/folders/wq/mr3zj9r14dzgjnq9rjx_vqbc0000gn/T/gossil-source-review-1sgum5ox/fossil/autoconfig.h",
+      "resolved": "/private/var/folders/wq/mr3zj9r14dzgjnq9rjx_vqbc0000gn/T/gossil-source-review-1sgum5ox/fossil/autoconfig.h",
+      "sha256": "3d6205d86eccad102f58b83e88484062b6eaaf897b3e873b119df03a74fae352",
+      "bytes": 1191
+    },
+    {
+      "path": "/var/folders/wq/mr3zj9r14dzgjnq9rjx_vqbc0000gn/T/gossil-source-review-1sgum5ox/fossil/config.log",
+      "resolved": "/private/var/folders/wq/mr3zj9r14dzgjnq9rjx_vqbc0000gn/T/gossil-source-review-1sgum5ox/fossil/config.log",
+      "sha256": "76c56b5a36ea03d52f15bedd54521519cdca3bbaf9fc00abca482810b7b24d13",
+      "bytes": 7677
+    },
+    {
+      "path": "/Users/rahul/Projects/gossil/.jlog/bin/fossil",
+      "resolved": "/Users/rahul/Projects/gossil/.jlog/tools/fossil/7e8ecf0ce4/macos-arm64/fossil",
+      "sha256": "75550c754e94a4b7fa0269f40ce8e4918daf67e05ba12b236ed735d424c8e16c",
+      "bytes": 5552216
+    }
+  ],
+  "version": {
+    "exit": 0,
+    "stdout_hex": "5468697320697320666f7373696c2076657273696f6e20322e3239205b376538656366306365345d20323032362d31312d31362031313a34313a3534205554430a436f6d70696c6564206f6e204e6f7620313620323032362031353a30373a3435207573696e6720636c616e672d31372e302e302028636c616e672d313730302e302e31332e3329202836342d626974290a53514c69746520332e35352e3020323032362d31312d31352030303a35353a303420616434656532303530390a7a6c696220312e322e31322c206c6f6164656420312e322e31320a",
+    "stderr_hex": ""
+  },
+  "results": "results.json",
+  "case_count": 16,
+  "observed": "All16 native exit0, empty stdout/stderr, exact signed model bytes. Four binary cases differ from unsigned model.",
+  "signedness_inference": "Selected native build exhibits signed plain-char hash behavior on four finite distinguishing binary inputs. Models are source-derived Python predictions, not instrumented internal traces.",
+  "rolling_limit": "Binary distinguishers exercise binary hash bucket/partial-match outcomes, but do not isolate hash_next arithmetic from hash_init/hash_once. Explicit rolling-update distinguisher remains future work; source guidance requires signed bytes for both.",
+  "existing_nine_vectors": [
+    {
+      "path": "/tmp/gossil-delta-decoder-supplement-20261117/fixtures/native-encoder-empty-source-tail-0",
+      "reuse": "reference only; untouched"
+    },
+    {
+      "path": "/tmp/gossil-delta-decoder-supplement-20261117/fixtures/native-encoder-empty-source-tail-1",
+      "reuse": "reference only; untouched"
+    },
+    {
+      "path": "/tmp/gossil-delta-decoder-supplement-20261117/fixtures/native-encoder-empty-source-tail-2",
+      "reuse": "reference only; untouched"
+    },
+    {
+      "path": "/tmp/gossil-delta-decoder-supplement-20261117/fixtures/native-encoder-empty-source-tail-3",
+      "reuse": "reference only; untouched"
+    },
+    {
+      "path": "/tmp/gossil-delta-decoder-supplement-20261117/fixtures/native-encoder-empty-source-tail-4",
+      "reuse": "reference only; untouched"
+    },
+    {
+      "path": "/tmp/gossil-delta-decoder-supplement-20261117/fixtures/native-encoder-empty-source-tail-5",
+      "reuse": "reference only; untouched"
+    },
+    {
+      "path": "/tmp/gossil-delta-decoder-supplement-20261117/fixtures/native-encoder-empty-source-tail-6",
+      "reuse": "reference only; untouched"
+    },
+    {
+      "path": "/tmp/gossil-delta-decoder-supplement-20261117/fixtures/native-encoder-empty-source-tail-7",
+      "reuse": "reference only; untouched"
+    },
+    {
+      "path": "/tmp/gossil-delta-decoder-supplement-20261117/fixtures/native-encoder-empty-source-tail-8",
+      "reuse": "reference only; untouched"
+    }
+  ],
+  "scope_limits": [
+    "No broad encoder parity",
+    "No250-candidate budget observation",
+    "No large allocations or undefined-C inputs",
+    "No filesystem diagnostic campaign",
+    "No native compiler rebuild; compiler identity from selected binary version and preserved configuration",
+    "Backward case shows copy from1; it cannot independently prove prohibited extension through0 because earlier zero landmark can mask that internal choice."
+  ],
+  "scratch_integrity": [
+    {
+      "path": "/tmp/gossil-encoder-reference-20261117/probe.py",
+      "resolved": "/private/tmp/gossil-encoder-reference-20261117/probe.py",
+      "sha256": "c6a92fc0e4d501105e89097ada263f08a14e57be519e19df324dd54c9c18bb9e",
+      "bytes": 4421
+    },
+    {
+      "path": "/tmp/gossil-encoder-reference-20261117/Justfile",
+      "resolved": "/private/tmp/gossil-encoder-reference-20261117/Justfile",
+      "sha256": "99b95889c2bfcf0a1f770f3325b6e354f2e11e2ff89ea53694b1d0fd3662d6a3",
+      "bytes": 67
+    },
+    {
+      "path": "/tmp/gossil-encoder-reference-20261117/results.json",
+      "resolved": "/private/tmp/gossil-encoder-reference-20261117/results.json",
+      "sha256": "4c4ca238fc7bd401495232da9a575f6d032569782155d925e1c82ee7f21958fe",
+      "bytes": 31232
+    }
+  ]
+}

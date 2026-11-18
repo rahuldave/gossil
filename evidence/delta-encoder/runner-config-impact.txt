@@ -1,0 +1,13 @@
+src/lib.rs:615:        Config {
+src/lib.rs:616:            role: "reference".into(),
+src/lib.rs:617:            revision: "b3a1c8efb2731dffbd5cc38c58ac349746de6da6".into(),
+src/lib.rs:618:            tcl: project.join(".jlog/bin/tclsh"),
+src/lib.rs:619:            driver: project.join("tests/fixtures/controls/tester.tcl"),
+src/lib.rs:620:            executable: project.join(".jlog/bin/fossil"),
+src/lib.rs:621:            suite: "pass".into(),
+src/lib.rs:622:            run_dir: root.join(name),
+src/lib.rs:623:            timeout_ms: 3000,
+src/lib.rs:624:            seed: 20261117,
+src/lib.rs:625:            inputs: vec![],
+src/lib.rs:626:            capabilities: BTreeMap::new(),
+src/lib.rs:627:        }
