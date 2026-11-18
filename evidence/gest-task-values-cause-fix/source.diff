@@ -1,0 +1,86 @@
+--- source.before.txt
++++ src/gest_task_values.rs
+@@ -87,6 +87,21 @@
+     field: &'static str,
+     /// Stable explanation of the rejected value.
+     reason: &'static str,
++    /// Actual chrono failure when timestamp parsing failed.
++    parse_cause: Option<chrono::ParseError>,
++}
++
++impl TaskValueError {
++    /// Inspect the typed chrono cause without exposing the supplied timestamp.
++    ///
++    /// # Returns
++    /// The actual parser error for input or canonical UTC output parsing, or
++    /// `None` for validation failures that did not come from the parser.
++    /// Chrono's alloc-only build does not implement `std::error::Error` for
++    /// `ParseError`, so this accessor supplies the cause instead of `source()`.
++    pub fn parse_cause(&self) -> Option<&chrono::ParseError> {
++        self.parse_cause.as_ref()
++    }
+ }
+ 
+ impl fmt::Display for TaskValueError {
+@@ -163,6 +178,7 @@
+                 .ok_or(TaskValueError {
+                     field: "priority",
+                     reason: "expected null or an integer from 0 through 255",
++                    parse_cause: None,
+                 })?,
+         )
+     };
+@@ -176,6 +192,7 @@
+             return Err(TaskValueError {
+                 field: "status",
+                 reason: "invalid task status",
++                parse_cause: None,
+             });
+         }
+     };
+@@ -194,6 +211,7 @@
+         return Err(TaskValueError {
+             field: "resolved_at",
+             reason: "terminal status requires a timestamp; nonterminal status requires null",
++            parse_cause: None,
+         });
+     }
+     Ok(TaskValues {
+@@ -255,6 +273,7 @@
+         _ => Err(TaskValueError {
+             field,
+             reason: "expected a string",
++            parse_cause: None,
+         }),
+     }
+ }
+@@ -270,6 +289,7 @@
+         return Err(TaskValueError {
+             field,
+             reason: "expected exactly 32 letters from k through z",
++            parse_cause: None,
+         });
+     }
+     Ok(s)
+@@ -284,17 +304,19 @@
+     let s = string(value, field)?;
+     let utc = DateTime::parse_from_rfc3339(&s)
+         .map(|dt| dt.with_timezone(&Utc))
+-        .map_err(|_| TaskValueError {
++        .map_err(|cause| TaskValueError {
+             field,
+             reason: "expected a chrono-compatible RFC3339 timestamp",
++            parse_cause: Some(cause),
+         })?;
+     // The adopted Gossil output contract is narrower than source parsing when
+     // offset normalization crosses into a signed extended UTC year. This is
+     // a canonical-representation refusal, not the artifact D-card grammar.
+-    if DateTime::parse_from_rfc3339(&utc.to_rfc3339()).is_err() {
++    if let Err(cause) = DateTime::parse_from_rfc3339(&utc.to_rfc3339()) {
+         return Err(TaskValueError {
+             field,
+             reason: "normalized UTC timestamp is outside the canonical RFC3339 output domain",
++            parse_cause: Some(cause),
+         });
+     }
+     Ok(utc)

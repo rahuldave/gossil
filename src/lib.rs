@@ -1,4 +1,4 @@
-//! Run inherited Fossil tests with bounded byte primitives and owned local storage.
+//! Supply inherited-test tools, bounded byte primitives, local storage and decoded task values.
 mod invocation;
 pub use invocation::{InvocationId, InvocationPlan, PlanPin, PlanRow, Position};
 use serde::{Deserialize, Serialize};
@@ -779,3 +779,6 @@ pub mod token_codec;
 pub mod artifact;
 /// Compute legacy Fossil artifact checksums over bytes.
 pub mod artifact_checksum;
+
+/// Convert independently admitted Gest task fields into validated owned values.
+pub mod gest_task_values;

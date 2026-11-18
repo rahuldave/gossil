@@ -1,0 +1,511 @@
+//! Focused decoded-field controls; these are not raw JSON or migration tests.
+use gossil::gest_task_values::{TaskValueInputs, task_from_values, task_to_values};
+use serde_json::{Value, json};
+
+/// Assemble every field explicitly; fixture decoding belongs to this test caller.
+fn inputs(v: &Value) -> TaskValueInputs {
+    assert_eq!(v.as_object().unwrap().len(), 11);
+    TaskValueInputs {
+        gest_id: v["gest_id"].clone(),
+        project_id: v["project_id"].clone(),
+        title: v["title"].clone(),
+        priority: v["priority"].clone(),
+        status: v["status"].clone(),
+        description: v["description"].clone(),
+        assigned_to: v["assigned_to"].clone(),
+        metadata: v["metadata"].clone(),
+        resolved_at: v["resolved_at"].clone(),
+        created_at: v["created_at"].clone(),
+        updated_at: v["updated_at"].clone(),
+    }
+}
+
+/// A complete open task with explicit nullable fields.
+fn base() -> TaskValueInputs {
+    inputs(
+        &serde_json::from_str::<Value>(include_str!("fixtures/gest_task_values/records.json"))
+            .unwrap()["base"],
+    )
+}
+
+/// Validate a task and observe all output fields through the public conversion.
+fn output(fields: TaskValueInputs) -> TaskValueInputs {
+    task_to_values(&task_from_values(fields).unwrap())
+}
+
+/// Assert the rejected field without depending on timestamp parser error wording.
+fn rejects(fields: TaskValueInputs, field: &str) {
+    assert!(
+        task_from_values(fields)
+            .unwrap_err()
+            .to_string()
+            .starts_with(&format!("{field}:"))
+    );
+}
+
+/// Preserve all eleven fixture fields and revalidate each complete output.
+#[test]
+fn complete_record_preserves_all_fields_and_round_trips() {
+    let fixture: Value =
+        serde_json::from_str(include_str!("fixtures/gest_task_values/records.json")).unwrap();
+    for record in fixture["complete_records"].as_array().unwrap() {
+        let fields = inputs(record);
+        let task = task_from_values(fields.clone()).unwrap();
+        assert_eq!(task_to_values(&task), fields);
+        assert_eq!(task_from_values(task_to_values(&task)).unwrap(), task);
+    }
+}
+
+// Four source display checks are inherited directly. Four terminal predicate checks
+// are replaced by adopted status/resolution checks at the owned record boundary.
+/// Inherit the canonical cancelled spelling through a valid terminal record.
+#[test]
+fn inherited_status_display_formats_cancelled() {
+    let mut f = base();
+    f.status = json!("cancelled");
+    f.resolved_at = json!("2026-11-18T12:00:00+00:00");
+    assert_eq!(output(f).status, json!("cancelled"));
+}
+/// Inherit the canonical done spelling through a valid terminal record.
+#[test]
+fn inherited_status_display_formats_done() {
+    let mut f = base();
+    f.status = json!("done");
+    f.resolved_at = json!("2026-11-18T12:00:00+00:00");
+    assert_eq!(output(f).status, json!("done"));
+}
+/// Inherit the canonical in-progress spelling through a valid nonterminal record.
+#[test]
+fn inherited_status_display_formats_in_progress() {
+    let mut f = base();
+    f.status = json!("in-progress");
+    assert_eq!(output(f).status, json!("in-progress"));
+}
+/// Inherit the canonical open spelling through the complete record boundary.
+#[test]
+fn inherited_status_display_formats_open() {
+    assert_eq!(output(base()).status, json!("open"));
+}
+/// Replace the source terminal predicate with the adopted in-progress/null rule.
+#[test]
+fn adopted_status_pairing_false_for_in_progress() {
+    let mut f = base();
+    f.status = json!("in-progress");
+    assert_eq!(output(f.clone()).resolved_at, Value::Null);
+    f.resolved_at = json!("2026-11-18T12:00:00Z");
+    rejects(f, "resolved_at");
+}
+/// Replace the source terminal predicate with the adopted open/null rule.
+#[test]
+fn adopted_status_pairing_false_for_open() {
+    let mut f = base();
+    assert_eq!(output(f.clone()).resolved_at, Value::Null);
+    f.resolved_at = json!("2026-11-18T12:00:00Z");
+    rejects(f, "resolved_at");
+}
+/// Replace the source terminal predicate with the adopted cancelled/time rule.
+#[test]
+fn adopted_status_pairing_true_for_cancelled() {
+    let mut f = base();
+    f.status = json!("cancelled");
+    rejects(f.clone(), "resolved_at");
+    f.resolved_at = json!("2026-11-18T12:00:00Z");
+    assert_eq!(output(f).resolved_at, json!("2026-11-18T12:00:00+00:00"));
+}
+/// Replace the source terminal predicate with the adopted done/time rule.
+#[test]
+fn adopted_status_pairing_true_for_done() {
+    let mut f = base();
+    f.status = json!("done");
+    rejects(f.clone(), "resolved_at");
+    f.resolved_at = json!("2026-11-18T12:00:00Z");
+    assert_eq!(output(f).resolved_at, json!("2026-11-18T12:00:00+00:00"));
+}
+
+/// Preserve source status aliases and case handling, and reject unknown strings.
+#[test]
+fn source_status_aliases_case_and_canonical_output() {
+    for (aliases, canonical) in [
+        (vec!["open", "OPEN", "Open"], "open"),
+        (
+            vec![
+                "in-progress",
+                "IN-PROGRESS",
+                "in_progress",
+                "IN_PROGRESS",
+                "inprogress",
+                "InProgress",
+            ],
+            "in-progress",
+        ),
+        (vec!["done", "DONE", "Done"], "done"),
+        (vec!["cancelled", "CANCELLED", "Cancelled"], "cancelled"),
+    ] {
+        for alias in aliases {
+            let mut f = base();
+            f.status = json!(alias);
+            if matches!(canonical, "done" | "cancelled") {
+                f.resolved_at = json!("2026-11-18T12:00:00Z");
+            }
+            assert_eq!(output(f).status, json!(canonical));
+        }
+    }
+    for status in ["", "active", "in progress", " open", "open ", "canceled"] {
+        let mut f = base();
+        f.status = json!(status);
+        rejects(f, "status");
+    }
+}
+
+/// Inherit acceptance of zero through four without exposing the named priority API.
+#[test]
+fn inherited_priority_numeric_values_in_named_range() {
+    for p in 0..=4 {
+        let mut f = base();
+        f.priority = json!(p);
+        assert_eq!(output(f).priority, json!(p));
+    }
+}
+/// Accept every numeric priority in the source task model and preserve null.
+#[test]
+fn gossil_checked_priority_accepts_source_model_full_u8_range() {
+    for p in 0..=255 {
+        let mut f = base();
+        f.priority = json!(p);
+        assert_eq!(output(f).priority, json!(p));
+    }
+    assert_eq!(output(base()).priority, Value::Null);
+}
+/// Reject invalid priority types and values instead of wrapping a SQL integer.
+#[test]
+fn gossil_checked_priority_rejects_values_instead_of_wrapping() {
+    for p in [
+        json!(-1),
+        json!(256),
+        json!(i64::MIN),
+        json!(u64::MAX),
+        json!(1.0),
+        json!(1.5),
+        json!("1"),
+        json!(true),
+        json!([]),
+        json!({}),
+    ] {
+        let mut f = base();
+        f.priority = p;
+        rejects(f, "priority");
+    }
+}
+
+/// Check the full identifier domain for task, project and assignee fields.
+#[test]
+fn full_id_domains_for_all_three_identifier_fields() {
+    for field in ["gest_id", "project_id", "assigned_to"] {
+        for id in [
+            "k".repeat(32),
+            "z".repeat(32),
+            "zyxwvutsrqponmlkzyxwvutsrqponmlk".into(),
+        ] {
+            let mut f = base();
+            match field {
+                "gest_id" => f.gest_id = json!(id),
+                "project_id" => f.project_id = json!(id),
+                _ => f.assigned_to = json!(id),
+            };
+            let out = output(f);
+            let actual = match field {
+                "gest_id" => out.gest_id,
+                "project_id" => out.project_id,
+                _ => out.assigned_to,
+            };
+            assert_eq!(actual, json!(id));
+        }
+        for id in [
+            "".into(),
+            "k".repeat(31),
+            "k".repeat(33),
+            "K".repeat(32),
+            format!("{}j", "k".repeat(31)),
+            format!("{}1", "k".repeat(31)),
+            "é".repeat(16),
+        ] {
+            let mut f = base();
+            match field {
+                "gest_id" => f.gest_id = json!(id),
+                "project_id" => f.project_id = json!(id),
+                _ => f.assigned_to = json!(id),
+            };
+            rejects(f, field);
+        }
+    }
+}
+/// Preserve every JSON metadata variant and nested content through conversion.
+#[test]
+fn metadata_preserves_every_value_variant_and_nested_content() {
+    for m in [
+        Value::Null,
+        json!(false),
+        json!(true),
+        json!(i64::MIN),
+        json!(u64::MAX),
+        json!(1.25),
+        json!("null"),
+        json!([]),
+        json!([null,{"x":[1,"é"]}]),
+        json!({}),
+        json!({"null":null,"text":"\u{0000}é\n","array":[false,1]}),
+    ] {
+        let mut f = base();
+        f.metadata = m.clone();
+        assert_eq!(output(f).metadata, m);
+    }
+}
+/// Preserve title and description strings without added content restrictions.
+#[test]
+fn text_is_exact_without_invented_content_restrictions() {
+    for text in ["", " \t\r\n", "é🦀\u{0000}\n", "x"] {
+        let mut f = base();
+        f.title = json!(text);
+        f.description = json!(text);
+        let out = output(f);
+        assert_eq!(out.title, json!(text));
+        assert_eq!(out.description, json!(text));
+    }
+}
+/// Reject non-string values and forbidden nulls in the corresponding fields.
+#[test]
+fn required_types_and_nullable_field_types_are_checked() {
+    for field in [
+        "gest_id",
+        "project_id",
+        "title",
+        "status",
+        "description",
+        "created_at",
+        "updated_at",
+        "assigned_to",
+        "resolved_at",
+    ] {
+        for bad in [json!(42), json!(false), json!([]), json!({})] {
+            let mut f = base();
+            match field {
+                "gest_id" => f.gest_id = bad,
+                "project_id" => f.project_id = bad,
+                "title" => f.title = bad,
+                "status" => f.status = bad,
+                "description" => f.description = bad,
+                "created_at" => f.created_at = bad,
+                "updated_at" => f.updated_at = bad,
+                "assigned_to" => f.assigned_to = bad,
+                _ => f.resolved_at = bad,
+            };
+            rejects(f, field);
+        }
+    }
+    for field in [
+        "gest_id",
+        "project_id",
+        "title",
+        "status",
+        "description",
+        "created_at",
+        "updated_at",
+    ] {
+        let mut f = base();
+        match field {
+            "gest_id" => f.gest_id = Value::Null,
+            "project_id" => f.project_id = Value::Null,
+            "title" => f.title = Value::Null,
+            "status" => f.status = Value::Null,
+            "description" => f.description = Value::Null,
+            "created_at" => f.created_at = Value::Null,
+            _ => f.updated_at = Value::Null,
+        };
+        rejects(f, field);
+    }
+}
+/// Apply source timestamp controls and repeated conversion to all three time fields.
+#[test]
+fn source_chrono_timestamp_controls_apply_to_every_time_field() {
+    let fixture: Value =
+        serde_json::from_str(include_str!("fixtures/gest_task_values/records.json")).unwrap();
+    for field in ["created_at", "updated_at", "resolved_at"] {
+        for row in fixture["timestamps"].as_array().unwrap() {
+            let mut f = base();
+            let value = row["input"].clone();
+            match field {
+                "created_at" => f.created_at = value,
+                "updated_at" => f.updated_at = value,
+                _ => {
+                    f.status = json!("done");
+                    f.resolved_at = value
+                }
+            };
+            let out = output(f);
+            assert_eq!(output(out.clone()), out);
+            let actual = match field {
+                "created_at" => out.created_at,
+                "updated_at" => out.updated_at,
+                _ => out.resolved_at,
+            };
+            assert_eq!(actual, row["output"], "{field}: {}", row["input"]);
+        }
+        for bad in fixture["invalid_timestamps"].as_array().unwrap() {
+            let mut f = base();
+            match field {
+                "created_at" => f.created_at = bad.clone(),
+                "updated_at" => f.updated_at = bad.clone(),
+                _ => {
+                    f.status = json!("done");
+                    f.resolved_at = bad.clone()
+                }
+            };
+            rejects(f, field);
+        }
+    }
+}
+/// Accept modification before creation because this converter adds no ordering rule.
+#[test]
+fn timestamp_order_is_not_an_invented_record_restriction() {
+    let mut f = base();
+    f.created_at = json!("2026-11-18T12:00:00Z");
+    f.updated_at = json!("2000-01-01T00:00:00Z");
+    assert_eq!(output(f).updated_at, json!("2000-01-01T00:00:00+00:00"));
+}
+/// Check the complete source-test accounting without claiming every test was ported.
+#[test]
+fn fixture_source_map_covers_all_23_upstream_tests_without_claiming_all_are_ported() {
+    let map: Value =
+        serde_json::from_str(include_str!("fixtures/gest_task_values/source-map.json")).unwrap();
+    let rows = map["upstream_primitive_tests"].as_array().unwrap();
+    assert_eq!(rows.len(), 23);
+    assert_eq!(
+        rows.iter()
+            .filter(|r| r["disposition"] == "directly inherited")
+            .count(),
+        5
+    );
+    assert_eq!(
+        rows.iter()
+            .filter(|r| r["disposition"] == "semantic replacement")
+            .count(),
+        6
+    );
+    assert_eq!(
+        rows.iter()
+            .filter(|r| r["disposition"] == "outside owned numeric-task seam")
+            .count(),
+        12
+    );
+    for row in rows {
+        assert!(!row["reason"].as_str().unwrap().is_empty());
+    }
+}
+
+/// Reject the preserved signed-year UTC output cases for all three time fields.
+#[test]
+fn gossil_canonical_time_refuses_only_unrepresentable_utc_output() {
+    let fixture: Value =
+        serde_json::from_str(include_str!("fixtures/gest_task_values/records.json")).unwrap();
+    for field in ["created_at", "updated_at", "resolved_at"] {
+        for input in fixture["canonical_refusals"].as_array().unwrap() {
+            let mut f = base();
+            match field {
+                "created_at" => f.created_at = input.clone(),
+                "updated_at" => f.updated_at = input.clone(),
+                _ => {
+                    f.status = json!("done");
+                    f.resolved_at = input.clone();
+                }
+            }
+            rejects(f, field);
+        }
+    }
+}
+
+/// Preserve distinct upstream parse failures even when safe display text is equal.
+#[test]
+fn timestamp_errors_retain_distinct_upstream_causes() {
+    let mut short = base();
+    short.created_at = json!("");
+    let short = task_from_values(short).unwrap_err();
+    let mut range = base();
+    range.created_at = json!("2026-02-30T12:00:00Z");
+    let range = task_from_values(range).unwrap_err();
+    assert_eq!(short.to_string(), range.to_string());
+    assert_ne!(short, range);
+    for (error, input, kind) in [
+        (&short, "", chrono::format::ParseErrorKind::TooShort),
+        (
+            &range,
+            "2026-02-30T12:00:00Z",
+            chrono::format::ParseErrorKind::OutOfRange,
+        ),
+    ] {
+        let upstream = chrono::DateTime::parse_from_rfc3339(input).unwrap_err();
+        assert_eq!(error.parse_cause(), Some(&upstream));
+        assert_eq!(error.parse_cause().unwrap().kind(), kind);
+        assert_eq!(
+            error.to_string(),
+            "created_at: expected a chrono-compatible RFC3339 timestamp"
+        );
+        assert_eq!(error.clone().parse_cause(), Some(&upstream));
+    }
+}
+
+/// Keep ordinary validation failures distinct from actual chrono parser failures.
+#[test]
+fn non_parser_validation_errors_have_no_parse_cause() {
+    for field in [
+        "title",
+        "gest_id",
+        "priority",
+        "status",
+        "resolved_at",
+        "created_at",
+    ] {
+        let mut fields = base();
+        match field {
+            "title" => fields.title = json!(42),
+            "gest_id" => fields.gest_id = json!("bad"),
+            "priority" => fields.priority = json!(256),
+            "status" => fields.status = json!("unknown"),
+            "resolved_at" => fields.resolved_at = json!("2026-11-18T12:00:00Z"),
+            _ => fields.created_at = json!(42),
+        }
+        let error = task_from_values(fields).unwrap_err();
+        assert!(error.to_string().starts_with(&format!("{field}:")));
+        assert_eq!(error.parse_cause(), None);
+    }
+}
+
+/// Retain canonical UTC reparsing errors for each timestamp field.
+#[test]
+fn canonical_output_parser_errors_retain_the_upstream_cause() {
+    let fixture: Value =
+        serde_json::from_str(include_str!("fixtures/gest_task_values/records.json")).unwrap();
+    for field in ["created_at", "updated_at", "resolved_at"] {
+        for input in fixture["canonical_refusals"].as_array().unwrap() {
+            let parsed = chrono::DateTime::parse_from_rfc3339(input.as_str().unwrap()).unwrap();
+            let canonical = parsed.with_timezone(&chrono::Utc).to_rfc3339();
+            let upstream = chrono::DateTime::parse_from_rfc3339(&canonical).unwrap_err();
+            let mut fields = base();
+            match field {
+                "created_at" => fields.created_at = input.clone(),
+                "updated_at" => fields.updated_at = input.clone(),
+                _ => {
+                    fields.status = json!("done");
+                    fields.resolved_at = input.clone();
+                }
+            }
+            let error = task_from_values(fields).unwrap_err();
+            assert_eq!(error.parse_cause(), Some(&upstream));
+            assert_eq!(
+                error.to_string(),
+                format!(
+                    "{field}: normalized UTC timestamp is outside the canonical RFC3339 output domain"
+                )
+            );
+        }
+    }
+}

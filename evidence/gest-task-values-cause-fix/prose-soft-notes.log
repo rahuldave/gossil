@@ -1,0 +1,25 @@
+WARN `--no-project` was provided, but no project was found
+docs/gest-task-values.md: checked by check.py of the skill, 0 hard, 23 soft
+  soft 15: an -ing form: admitting
+  soft 42: an -ing form: echoing
+  soft 47: an -ing form: parsing
+  soft 47: an -ing form: parsing
+  soft 74: an -ing form: including
+  soft 79: an -ing form: floating
+  soft 84: an -ing form: parsing
+  soft 84: an -ing form: Parsing
+  soft 84: an -ing form: pairing
+  soft 84: an -ing form: generating
+  soft 91: an -ing form: including
+  soft 91: an -ing form: promising
+  soft 101: an -ing form: ordering
+  soft 106: an -ing form: parsing
+  soft 121: an -ing form: existing
+  soft 121: maybe passive: are disabled
+  soft 130: an -ing form: constructing
+  soft 130: an -ing form: enclosing
+  soft 137: an -ing form: existing
+  soft 144: an -ing form: accounting
+  soft 176: an -ing form: including
+  soft 181: an -ing form: enclosing
+  soft 181: maybe passive: are implemented

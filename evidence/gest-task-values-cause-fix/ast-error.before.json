@@ -1,0 +1,702 @@
+[
+{
+  "text": "TaskValueError {\n                    field: \"priority\",\n                    reason: \"expected null or an integer from 0 through 255\",\n                }",
+  "range": {
+    "byteOffset": {
+      "start": 6952,
+      "end": 7103
+    },
+    "start": {
+      "line": 162,
+      "column": 23
+    },
+    "end": {
+      "line": 165,
+      "column": 17
+    }
+  },
+  "file": "src/gest_task_values.rs",
+  "lines": "                .ok_or(TaskValueError {\n                    field: \"priority\",\n                    reason: \"expected null or an integer from 0 through 255\",\n                })?,",
+  "charCount": {
+    "leading": 23,
+    "trailing": 3
+  },
+  "language": "Rust",
+  "metaVariables": {
+    "single": {},
+    "multi": {
+      "FIELDS": [
+        {
+          "text": "field: \"priority\"",
+          "range": {
+            "byteOffset": {
+              "start": 6989,
+              "end": 7006
+            },
+            "start": {
+              "line": 163,
+              "column": 20
+            },
+            "end": {
+              "line": 163,
+              "column": 37
+            }
+          }
+        },
+        {
+          "text": ",",
+          "range": {
+            "byteOffset": {
+              "start": 7006,
+              "end": 7007
+            },
+            "start": {
+              "line": 163,
+              "column": 37
+            },
+            "end": {
+              "line": 163,
+              "column": 38
+            }
+          }
+        },
+        {
+          "text": "reason: \"expected null or an integer from 0 through 255\"",
+          "range": {
+            "byteOffset": {
+              "start": 7028,
+              "end": 7084
+            },
+            "start": {
+              "line": 164,
+              "column": 20
+            },
+            "end": {
+              "line": 164,
+              "column": 76
+            }
+          }
+        },
+        {
+          "text": ",",
+          "range": {
+            "byteOffset": {
+              "start": 7084,
+              "end": 7085
+            },
+            "start": {
+              "line": 164,
+              "column": 76
+            },
+            "end": {
+              "line": 164,
+              "column": 77
+            }
+          }
+        }
+      ]
+    },
+    "transformed": {}
+  }
+},
+{
+  "text": "TaskValueError {\n                field: \"status\",\n                reason: \"invalid task status\",\n            }",
+  "range": {
+    "byteOffset": {
+      "start": 7438,
+      "end": 7548
+    },
+    "start": {
+      "line": 175,
+      "column": 23
+    },
+    "end": {
+      "line": 178,
+      "column": 13
+    }
+  },
+  "file": "src/gest_task_values.rs",
+  "lines": "            return Err(TaskValueError {\n                field: \"status\",\n                reason: \"invalid task status\",\n            });",
+  "charCount": {
+    "leading": 23,
+    "trailing": 2
+  },
+  "language": "Rust",
+  "metaVariables": {
+    "single": {},
+    "multi": {
+      "FIELDS": [
+        {
+          "text": "field: \"status\"",
+          "range": {
+            "byteOffset": {
+              "start": 7471,
+              "end": 7486
+            },
+            "start": {
+              "line": 176,
+              "column": 16
+            },
+            "end": {
+              "line": 176,
+              "column": 31
+            }
+          }
+        },
+        {
+          "text": ",",
+          "range": {
+            "byteOffset": {
+              "start": 7486,
+              "end": 7487
+            },
+            "start": {
+              "line": 176,
+              "column": 31
+            },
+            "end": {
+              "line": 176,
+              "column": 32
+            }
+          }
+        },
+        {
+          "text": "reason: \"invalid task status\"",
+          "range": {
+            "byteOffset": {
+              "start": 7504,
+              "end": 7533
+            },
+            "start": {
+              "line": 177,
+              "column": 16
+            },
+            "end": {
+              "line": 177,
+              "column": 45
+            }
+          }
+        },
+        {
+          "text": ",",
+          "range": {
+            "byteOffset": {
+              "start": 7533,
+              "end": 7534
+            },
+            "start": {
+              "line": 177,
+              "column": 45
+            },
+            "end": {
+              "line": 177,
+              "column": 46
+            }
+          }
+        }
+      ]
+    },
+    "transformed": {}
+  }
+},
+{
+  "text": "TaskValueError {\n            field: \"resolved_at\",\n            reason: \"terminal status requires a timestamp; nonterminal status requires null\",\n        }",
+  "range": {
+    "byteOffset": {
+      "start": 8025,
+      "end": 8179
+    },
+    "start": {
+      "line": 193,
+      "column": 19
+    },
+    "end": {
+      "line": 196,
+      "column": 9
+    }
+  },
+  "file": "src/gest_task_values.rs",
+  "lines": "        return Err(TaskValueError {\n            field: \"resolved_at\",\n            reason: \"terminal status requires a timestamp; nonterminal status requires null\",\n        });",
+  "charCount": {
+    "leading": 19,
+    "trailing": 2
+  },
+  "language": "Rust",
+  "metaVariables": {
+    "single": {},
+    "multi": {
+      "FIELDS": [
+        {
+          "text": "field: \"resolved_at\"",
+          "range": {
+            "byteOffset": {
+              "start": 8054,
+              "end": 8074
+            },
+            "start": {
+              "line": 194,
+              "column": 12
+            },
+            "end": {
+              "line": 194,
+              "column": 32
+            }
+          }
+        },
+        {
+          "text": ",",
+          "range": {
+            "byteOffset": {
+              "start": 8074,
+              "end": 8075
+            },
+            "start": {
+              "line": 194,
+              "column": 32
+            },
+            "end": {
+              "line": 194,
+              "column": 33
+            }
+          }
+        },
+        {
+          "text": "reason: \"terminal status requires a timestamp; nonterminal status requires null\"",
+          "range": {
+            "byteOffset": {
+              "start": 8088,
+              "end": 8168
+            },
+            "start": {
+              "line": 195,
+              "column": 12
+            },
+            "end": {
+              "line": 195,
+              "column": 92
+            }
+          }
+        },
+        {
+          "text": ",",
+          "range": {
+            "byteOffset": {
+              "start": 8168,
+              "end": 8169
+            },
+            "start": {
+              "line": 195,
+              "column": 92
+            },
+            "end": {
+              "line": 195,
+              "column": 93
+            }
+          }
+        }
+      ]
+    },
+    "transformed": {}
+  }
+},
+{
+  "text": "TaskValueError {\n            field,\n            reason: \"expected a string\",\n        }",
+  "range": {
+    "byteOffset": {
+      "start": 10263,
+      "end": 10349
+    },
+    "start": {
+      "line": 254,
+      "column": 17
+    },
+    "end": {
+      "line": 257,
+      "column": 9
+    }
+  },
+  "file": "src/gest_task_values.rs",
+  "lines": "        _ => Err(TaskValueError {\n            field,\n            reason: \"expected a string\",\n        }),",
+  "charCount": {
+    "leading": 17,
+    "trailing": 2
+  },
+  "language": "Rust",
+  "metaVariables": {
+    "single": {},
+    "multi": {
+      "FIELDS": [
+        {
+          "text": "field",
+          "range": {
+            "byteOffset": {
+              "start": 10292,
+              "end": 10297
+            },
+            "start": {
+              "line": 255,
+              "column": 12
+            },
+            "end": {
+              "line": 255,
+              "column": 17
+            }
+          }
+        },
+        {
+          "text": ",",
+          "range": {
+            "byteOffset": {
+              "start": 10297,
+              "end": 10298
+            },
+            "start": {
+              "line": 255,
+              "column": 17
+            },
+            "end": {
+              "line": 255,
+              "column": 18
+            }
+          }
+        },
+        {
+          "text": "reason: \"expected a string\"",
+          "range": {
+            "byteOffset": {
+              "start": 10311,
+              "end": 10338
+            },
+            "start": {
+              "line": 256,
+              "column": 12
+            },
+            "end": {
+              "line": 256,
+              "column": 39
+            }
+          }
+        },
+        {
+          "text": ",",
+          "range": {
+            "byteOffset": {
+              "start": 10338,
+              "end": 10339
+            },
+            "start": {
+              "line": 256,
+              "column": 39
+            },
+            "end": {
+              "line": 256,
+              "column": 40
+            }
+          }
+        }
+      ]
+    },
+    "transformed": {}
+  }
+},
+{
+  "text": "TaskValueError {\n            field,\n            reason: \"expected exactly 32 letters from k through z\",\n        }",
+  "range": {
+    "byteOffset": {
+      "start": 10799,
+      "end": 10912
+    },
+    "start": {
+      "line": 269,
+      "column": 19
+    },
+    "end": {
+      "line": 272,
+      "column": 9
+    }
+  },
+  "file": "src/gest_task_values.rs",
+  "lines": "        return Err(TaskValueError {\n            field,\n            reason: \"expected exactly 32 letters from k through z\",\n        });",
+  "charCount": {
+    "leading": 19,
+    "trailing": 2
+  },
+  "language": "Rust",
+  "metaVariables": {
+    "single": {},
+    "multi": {
+      "FIELDS": [
+        {
+          "text": "field",
+          "range": {
+            "byteOffset": {
+              "start": 10828,
+              "end": 10833
+            },
+            "start": {
+              "line": 270,
+              "column": 12
+            },
+            "end": {
+              "line": 270,
+              "column": 17
+            }
+          }
+        },
+        {
+          "text": ",",
+          "range": {
+            "byteOffset": {
+              "start": 10833,
+              "end": 10834
+            },
+            "start": {
+              "line": 270,
+              "column": 17
+            },
+            "end": {
+              "line": 270,
+              "column": 18
+            }
+          }
+        },
+        {
+          "text": "reason: \"expected exactly 32 letters from k through z\"",
+          "range": {
+            "byteOffset": {
+              "start": 10847,
+              "end": 10901
+            },
+            "start": {
+              "line": 271,
+              "column": 12
+            },
+            "end": {
+              "line": 271,
+              "column": 66
+            }
+          }
+        },
+        {
+          "text": ",",
+          "range": {
+            "byteOffset": {
+              "start": 10901,
+              "end": 10902
+            },
+            "start": {
+              "line": 271,
+              "column": 66
+            },
+            "end": {
+              "line": 271,
+              "column": 67
+            }
+          }
+        }
+      ]
+    },
+    "transformed": {}
+  }
+},
+{
+  "text": "TaskValueError {\n            field,\n            reason: \"expected a chrono-compatible RFC3339 timestamp\",\n        }",
+  "range": {
+    "byteOffset": {
+      "start": 11420,
+      "end": 11535
+    },
+    "start": {
+      "line": 286,
+      "column": 21
+    },
+    "end": {
+      "line": 289,
+      "column": 9
+    }
+  },
+  "file": "src/gest_task_values.rs",
+  "lines": "        .map_err(|_| TaskValueError {\n            field,\n            reason: \"expected a chrono-compatible RFC3339 timestamp\",\n        })?;",
+  "charCount": {
+    "leading": 21,
+    "trailing": 3
+  },
+  "language": "Rust",
+  "metaVariables": {
+    "single": {},
+    "multi": {
+      "FIELDS": [
+        {
+          "text": "field",
+          "range": {
+            "byteOffset": {
+              "start": 11449,
+              "end": 11454
+            },
+            "start": {
+              "line": 287,
+              "column": 12
+            },
+            "end": {
+              "line": 287,
+              "column": 17
+            }
+          }
+        },
+        {
+          "text": ",",
+          "range": {
+            "byteOffset": {
+              "start": 11454,
+              "end": 11455
+            },
+            "start": {
+              "line": 287,
+              "column": 17
+            },
+            "end": {
+              "line": 287,
+              "column": 18
+            }
+          }
+        },
+        {
+          "text": "reason: \"expected a chrono-compatible RFC3339 timestamp\"",
+          "range": {
+            "byteOffset": {
+              "start": 11468,
+              "end": 11524
+            },
+            "start": {
+              "line": 288,
+              "column": 12
+            },
+            "end": {
+              "line": 288,
+              "column": 68
+            }
+          }
+        },
+        {
+          "text": ",",
+          "range": {
+            "byteOffset": {
+              "start": 11524,
+              "end": 11525
+            },
+            "start": {
+              "line": 288,
+              "column": 68
+            },
+            "end": {
+              "line": 288,
+              "column": 69
+            }
+          }
+        }
+      ]
+    },
+    "transformed": {}
+  }
+},
+{
+  "text": "TaskValueError {\n            field,\n            reason: \"normalized UTC timestamp is outside the canonical RFC3339 output domain\",\n        }",
+  "range": {
+    "byteOffset": {
+      "start": 11856,
+      "end": 11996
+    },
+    "start": {
+      "line": 294,
+      "column": 19
+    },
+    "end": {
+      "line": 297,
+      "column": 9
+    }
+  },
+  "file": "src/gest_task_values.rs",
+  "lines": "        return Err(TaskValueError {\n            field,\n            reason: \"normalized UTC timestamp is outside the canonical RFC3339 output domain\",\n        });",
+  "charCount": {
+    "leading": 19,
+    "trailing": 2
+  },
+  "language": "Rust",
+  "metaVariables": {
+    "single": {},
+    "multi": {
+      "FIELDS": [
+        {
+          "text": "field",
+          "range": {
+            "byteOffset": {
+              "start": 11885,
+              "end": 11890
+            },
+            "start": {
+              "line": 295,
+              "column": 12
+            },
+            "end": {
+              "line": 295,
+              "column": 17
+            }
+          }
+        },
+        {
+          "text": ",",
+          "range": {
+            "byteOffset": {
+              "start": 11890,
+              "end": 11891
+            },
+            "start": {
+              "line": 295,
+              "column": 17
+            },
+            "end": {
+              "line": 295,
+              "column": 18
+            }
+          }
+        },
+        {
+          "text": "reason: \"normalized UTC timestamp is outside the canonical RFC3339 output domain\"",
+          "range": {
+            "byteOffset": {
+              "start": 11904,
+              "end": 11985
+            },
+            "start": {
+              "line": 296,
+              "column": 12
+            },
+            "end": {
+              "line": 296,
+              "column": 93
+            }
+          }
+        },
+        {
+          "text": ",",
+          "range": {
+            "byteOffset": {
+              "start": 11985,
+              "end": 11986
+            },
+            "start": {
+              "line": 296,
+              "column": 93
+            },
+            "end": {
+              "line": 296,
+              "column": 94
+            }
+          }
+        }
+      ]
+    },
+    "transformed": {}
+  }
+}
+]

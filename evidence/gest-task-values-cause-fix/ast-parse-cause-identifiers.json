@@ -1,0 +1,146 @@
+[
+{
+  "text": "parse_cause",
+  "range": {
+    "byteOffset": {
+      "start": 15432,
+      "end": 15443
+    },
+    "start": {
+      "line": 445,
+      "column": 25
+    },
+    "end": {
+      "line": 445,
+      "column": 36
+    }
+  },
+  "file": "tests/gest_task_values.rs",
+  "lines": "        assert_eq!(error.parse_cause(), Some(&upstream));",
+  "charCount": {
+    "leading": 25,
+    "trailing": 21
+  },
+  "language": "Rust"
+},
+{
+  "text": "parse_cause",
+  "range": {
+    "byteOffset": {
+      "start": 15490,
+      "end": 15501
+    },
+    "start": {
+      "line": 446,
+      "column": 25
+    },
+    "end": {
+      "line": 446,
+      "column": 36
+    }
+  },
+  "file": "tests/gest_task_values.rs",
+  "lines": "        assert_eq!(error.parse_cause().unwrap().kind(), kind);",
+  "charCount": {
+    "leading": 25,
+    "trailing": 26
+  },
+  "language": "Rust"
+},
+{
+  "text": "parse_cause",
+  "range": {
+    "byteOffset": {
+      "start": 15696,
+      "end": 15707
+    },
+    "start": {
+      "line": 451,
+      "column": 33
+    },
+    "end": {
+      "line": 451,
+      "column": 44
+    }
+  },
+  "file": "tests/gest_task_values.rs",
+  "lines": "        assert_eq!(error.clone().parse_cause(), Some(&upstream));",
+  "charCount": {
+    "leading": 33,
+    "trailing": 21
+  },
+  "language": "Rust"
+},
+{
+  "text": "parse_cause",
+  "range": {
+    "byteOffset": {
+      "start": 16598,
+      "end": 16609
+    },
+    "start": {
+      "line": 477,
+      "column": 25
+    },
+    "end": {
+      "line": 477,
+      "column": 36
+    }
+  },
+  "file": "tests/gest_task_values.rs",
+  "lines": "        assert_eq!(error.parse_cause(), None);",
+  "charCount": {
+    "leading": 25,
+    "trailing": 10
+  },
+  "language": "Rust"
+},
+{
+  "text": "parse_cause",
+  "range": {
+    "byteOffset": {
+      "start": 17740,
+      "end": 17751
+    },
+    "start": {
+      "line": 501,
+      "column": 29
+    },
+    "end": {
+      "line": 501,
+      "column": 40
+    }
+  },
+  "file": "tests/gest_task_values.rs",
+  "lines": "            assert_eq!(error.parse_cause(), Some(&upstream));",
+  "charCount": {
+    "leading": 29,
+    "trailing": 21
+  },
+  "language": "Rust"
+},
+{
+  "text": "parse_cause",
+  "range": {
+    "byteOffset": {
+      "start": 4443,
+      "end": 4454
+    },
+    "start": {
+      "line": 101,
+      "column": 11
+    },
+    "end": {
+      "line": 101,
+      "column": 22
+    }
+  },
+  "file": "src/gest_task_values.rs",
+  "lines": "    pub fn parse_cause(&self) -> Option<&chrono::ParseError> {",
+  "charCount": {
+    "leading": 11,
+    "trailing": 40
+  },
+  "language": "Rust"
+}
+]

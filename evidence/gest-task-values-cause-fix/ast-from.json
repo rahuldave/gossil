@@ -1,0 +1,296 @@
+[
+{
+  "text": "task_from_values(fields)",
+  "range": {
+    "byteOffset": {
+      "start": 1260,
+      "end": 1284
+    },
+    "start": {
+      "line": 32,
+      "column": 20
+    },
+    "end": {
+      "line": 32,
+      "column": 44
+    }
+  },
+  "file": "tests/gest_task_values.rs",
+  "lines": "    task_to_values(&task_from_values(fields).unwrap())",
+  "charCount": {
+    "leading": 20,
+    "trailing": 10
+  },
+  "language": "Rust",
+  "metaVariables": {
+    "single": {},
+    "multi": {
+      "ARGS": [
+        {
+          "text": "fields",
+          "range": {
+            "byteOffset": {
+              "start": 1277,
+              "end": 1283
+            },
+            "start": {
+              "line": 32,
+              "column": 37
+            },
+            "end": {
+              "line": 32,
+              "column": 43
+            }
+          }
+        }
+      ]
+    },
+    "transformed": {}
+  }
+},
+{
+  "text": "task_from_values(fields.clone())",
+  "range": {
+    "byteOffset": {
+      "start": 1974,
+      "end": 2006
+    },
+    "start": {
+      "line": 52,
+      "column": 19
+    },
+    "end": {
+      "line": 52,
+      "column": 51
+    }
+  },
+  "file": "tests/gest_task_values.rs",
+  "lines": "        let task = task_from_values(fields.clone()).unwrap();",
+  "charCount": {
+    "leading": 19,
+    "trailing": 10
+  },
+  "language": "Rust",
+  "metaVariables": {
+    "single": {},
+    "multi": {
+      "ARGS": [
+        {
+          "text": "fields.clone()",
+          "range": {
+            "byteOffset": {
+              "start": 1991,
+              "end": 2005
+            },
+            "start": {
+              "line": 52,
+              "column": 36
+            },
+            "end": {
+              "line": 52,
+              "column": 50
+            }
+          }
+        }
+      ]
+    },
+    "transformed": {}
+  }
+},
+{
+  "text": "task_from_values(short)",
+  "range": {
+    "byteOffset": {
+      "start": 14829,
+      "end": 14852
+    },
+    "start": {
+      "line": 430,
+      "column": 16
+    },
+    "end": {
+      "line": 430,
+      "column": 39
+    }
+  },
+  "file": "tests/gest_task_values.rs",
+  "lines": "    let short = task_from_values(short).unwrap_err();",
+  "charCount": {
+    "leading": 16,
+    "trailing": 14
+  },
+  "language": "Rust",
+  "metaVariables": {
+    "single": {},
+    "multi": {
+      "ARGS": [
+        {
+          "text": "short",
+          "range": {
+            "byteOffset": {
+              "start": 14846,
+              "end": 14851
+            },
+            "start": {
+              "line": 430,
+              "column": 33
+            },
+            "end": {
+              "line": 430,
+              "column": 38
+            }
+          }
+        }
+      ]
+    },
+    "transformed": {}
+  }
+},
+{
+  "text": "task_from_values(range)",
+  "range": {
+    "byteOffset": {
+      "start": 14965,
+      "end": 14988
+    },
+    "start": {
+      "line": 433,
+      "column": 16
+    },
+    "end": {
+      "line": 433,
+      "column": 39
+    }
+  },
+  "file": "tests/gest_task_values.rs",
+  "lines": "    let range = task_from_values(range).unwrap_err();",
+  "charCount": {
+    "leading": 16,
+    "trailing": 14
+  },
+  "language": "Rust",
+  "metaVariables": {
+    "single": {},
+    "multi": {
+      "ARGS": [
+        {
+          "text": "range",
+          "range": {
+            "byteOffset": {
+              "start": 14982,
+              "end": 14987
+            },
+            "start": {
+              "line": 433,
+              "column": 33
+            },
+            "end": {
+              "line": 433,
+              "column": 38
+            }
+          }
+        }
+      ]
+    },
+    "transformed": {}
+  }
+},
+{
+  "text": "task_from_values(fields)",
+  "range": {
+    "byteOffset": {
+      "start": 16464,
+      "end": 16488
+    },
+    "start": {
+      "line": 475,
+      "column": 20
+    },
+    "end": {
+      "line": 475,
+      "column": 44
+    }
+  },
+  "file": "tests/gest_task_values.rs",
+  "lines": "        let error = task_from_values(fields).unwrap_err();",
+  "charCount": {
+    "leading": 20,
+    "trailing": 14
+  },
+  "language": "Rust",
+  "metaVariables": {
+    "single": {},
+    "multi": {
+      "ARGS": [
+        {
+          "text": "fields",
+          "range": {
+            "byteOffset": {
+              "start": 16481,
+              "end": 16487
+            },
+            "start": {
+              "line": 475,
+              "column": 37
+            },
+            "end": {
+              "line": 475,
+              "column": 43
+            }
+          }
+        }
+      ]
+    },
+    "transformed": {}
+  }
+},
+{
+  "text": "task_from_values(fields)",
+  "range": {
+    "byteOffset": {
+      "start": 17672,
+      "end": 17696
+    },
+    "start": {
+      "line": 500,
+      "column": 24
+    },
+    "end": {
+      "line": 500,
+      "column": 48
+    }
+  },
+  "file": "tests/gest_task_values.rs",
+  "lines": "            let error = task_from_values(fields).unwrap_err();",
+  "charCount": {
+    "leading": 24,
+    "trailing": 14
+  },
+  "language": "Rust",
+  "metaVariables": {
+    "single": {},
+    "multi": {
+      "ARGS": [
+        {
+          "text": "fields",
+          "range": {
+            "byteOffset": {
+              "start": 17689,
+              "end": 17695
+            },
+            "start": {
+              "line": 500,
+              "column": 41
+            },
+            "end": {
+              "line": 500,
+              "column": 47
+            }
+          }
+        }
+      ]
+    },
+    "transformed": {}
+  }
+}
+]

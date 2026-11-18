@@ -29,6 +29,10 @@ bytes and owned incremental computations. The [artifact parser](docs/artifact-pa
 uses them to validate Z cards and parses all eight structural artifact types
 with explicit limits and a selected date provider.
 
+The [Gest task values guide](docs/gest-task-values.md) describes the standalone
+conversion of eleven decoded fields into validated, owned task values.
+It covers numeric priority, complete metadata and canonical UTC timestamps.
+
 File-containing check-ins, traversal and persistent selection commands, Gest
 integration, UI, sync, publication, general crosslinks, migration, rebuild and
 filesystem recovery remain planned work.
@@ -156,9 +160,9 @@ Subsequent changes use reviewed pull requests to `main`. No release is requested
 
 The saved answer `docs-publish=yes` enables `just docs-publish` with smalldocs
 0.5.12. The main-only workflow also deploys the built site through the GitHub
-Pages artifact API. Set the Pages source to GitHub Actions. The expected site
-is [Gossil development](https://rahuldave.com/gossil/). Confirm the deployed
-site before treating publication as complete.
+Pages artifact API. The Pages source is GitHub Actions.
+[Gossil development](https://rahuldave.com/gossil/) is live; the initial
+publication check verified all 13 deployed pages.
 
 GitHub documents that a branch push using `GITHUB_TOKEN` does not trigger a
 Pages build. The workflow retains the Just publication command and

@@ -13,6 +13,7 @@ This checkout contains a bounded Fossil delta encoder and decoder, their
 It also composes byte primitives, legacy artifact checksums, token byte escaping
 and owned local libSQL transactions. It includes bounded structural artifact
 parsing, complete empty-root initialization and bounded private content storage.
+The library also validates eleven decoded Gest task fields as owned values.
 File-containing check-ins, Gest integration and the remaining Fossil mechanisms
 remain planned work.
 
@@ -38,6 +39,8 @@ remain planned work.
   classifications and the controls required before importing the provider.
 - [Native date provider](libsql-provider.md) describes the pinned source,
   integrity checks and limits of the private date regression.
+- [Gest task values](gest-task-values.md) describes decoded-field conversion,
+  numeric priority, metadata and canonical UTC timestamps.
 - [Development plan](development-plan.md) gives the delivery order, ownership
   and local checkpoint workflow.
 
@@ -60,10 +63,10 @@ Use `just docs-check` to check site links and API documentation, and
 
 The saved answer `docs-publish=yes` enables publication through
 `just docs-publish` with smalldocs 0.5.12. The main-only GitHub workflow
-uploads the built site and deploys it through GitHub Pages. Set the Pages
-source to GitHub Actions. The expected public site is
-[Gossil development](https://rahuldave.com/gossil/). A passing local build
-does not establish that deployment succeeded.
+uploads the built site and deploys it through GitHub Pages. The Pages
+source is GitHub Actions. [Gossil development](https://rahuldave.com/gossil/)
+is live; the initial publication check verified all 13 deployed pages.
+The task-value guide belongs to this later candidate.
 
 ## Recommendations
 

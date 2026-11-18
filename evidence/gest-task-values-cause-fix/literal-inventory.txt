@@ -1,0 +1,65 @@
+tests/gest_task_values.rs:2:use gossil::gest_task_values::{TaskValueInputs, task_from_values, task_to_values};
+tests/gest_task_values.rs:6:fn inputs(v: &Value) -> TaskValueInputs {
+tests/gest_task_values.rs:8:    TaskValueInputs {
+tests/gest_task_values.rs:24:fn base() -> TaskValueInputs {
+tests/gest_task_values.rs:32:fn output(fields: TaskValueInputs) -> TaskValueInputs {
+tests/gest_task_values.rs:33:    task_to_values(&task_from_values(fields).unwrap())
+tests/gest_task_values.rs:37:fn rejects(fields: TaskValueInputs, field: &str) {
+tests/gest_task_values.rs:39:        task_from_values(fields)
+tests/gest_task_values.rs:53:        let task = task_from_values(fields.clone()).unwrap();
+tests/gest_task_values.rs:54:        assert_eq!(task_to_values(&task), fields);
+tests/gest_task_values.rs:55:        assert_eq!(task_from_values(task_to_values(&task)).unwrap(), task);
+tests/gest_task_values.rs:431:    let short = task_from_values(short).unwrap_err();
+tests/gest_task_values.rs:434:    let range = task_from_values(range).unwrap_err();
+tests/gest_task_values.rs:446:        assert_eq!(error.parse_cause(), Some(&upstream));
+tests/gest_task_values.rs:447:        assert_eq!(error.parse_cause().unwrap().kind(), kind);
+tests/gest_task_values.rs:452:        assert_eq!(error.clone().parse_cause(), Some(&upstream));
+tests/gest_task_values.rs:458:fn non_parser_validation_errors_have_no_parse_cause() {
+tests/gest_task_values.rs:476:        let error = task_from_values(fields).unwrap_err();
+tests/gest_task_values.rs:478:        assert_eq!(error.parse_cause(), None);
+tests/gest_task_values.rs:501:            let error = task_from_values(fields).unwrap_err();
+tests/gest_task_values.rs:502:            assert_eq!(error.parse_cause(), Some(&upstream));
+src/gest_task_values.rs:7://! [`task_from_values`](crate::gest_task_values::task_from_values) validates the eleven
+src/gest_task_values.rs:8://! explicit [`TaskValueInputs`](crate::gest_task_values::TaskValueInputs) fields.
+src/gest_task_values.rs:9://! [`task_to_values`](crate::gest_task_values::task_to_values) recovers them from the
+src/gest_task_values.rs:23:/// Validate this input with [`task_from_values`] before using it as a task record.
+src/gest_task_values.rs:25:pub struct TaskValueInputs {
+src/gest_task_values.rs:52:/// Use [`task_from_values`] to construct a record and [`task_to_values`] to read
+src/gest_task_values.rs:85:pub struct TaskValueError {
+src/gest_task_values.rs:91:    parse_cause: Option<chrono::ParseError>,
+src/gest_task_values.rs:94:impl TaskValueError {
+src/gest_task_values.rs:102:    pub fn parse_cause(&self) -> Option<&chrono::ParseError> {
+src/gest_task_values.rs:103:        self.parse_cause.as_ref()
+src/gest_task_values.rs:107:impl fmt::Display for TaskValueError {
+src/gest_task_values.rs:117:impl std::error::Error for TaskValueError {}
+src/gest_task_values.rs:134:/// Returns [`TaskValueError`] for a non-string value in a string field, an invalid full
+src/gest_task_values.rs:144:/// use gossil::gest_task_values::{TaskValueInputs, task_from_values, task_to_values};
+src/gest_task_values.rs:147:/// let fields = TaskValueInputs {
+src/gest_task_values.rs:160:/// let task = task_from_values(fields).unwrap();
+src/gest_task_values.rs:161:/// let values = task_to_values(&task);
+src/gest_task_values.rs:164:/// assert_eq!(task_from_values(values).unwrap(), task);
+src/gest_task_values.rs:166:pub fn task_from_values(fields: TaskValueInputs) -> Result<TaskValues, TaskValueError> {
+src/gest_task_values.rs:178:                .ok_or(TaskValueError {
+src/gest_task_values.rs:181:                    parse_cause: None,
+src/gest_task_values.rs:192:            return Err(TaskValueError {
+src/gest_task_values.rs:195:                parse_cause: None,
+src/gest_task_values.rs:211:        return Err(TaskValueError {
+src/gest_task_values.rs:214:            parse_cause: None,
+src/gest_task_values.rs:235:/// * `task` - A record validated by [`task_from_values`].
+src/gest_task_values.rs:240:/// The UTC offset is `+00:00`. Output can be passed to [`task_from_values`] again;
+src/gest_task_values.rs:243:pub fn task_to_values(task: &TaskValues) -> TaskValueInputs {
+src/gest_task_values.rs:244:    TaskValueInputs {
+src/gest_task_values.rs:269:/// Returns [`TaskValueError`] for any non-string [`Value`].
+src/gest_task_values.rs:270:fn string(value: Value, field: &'static str) -> Result<String, TaskValueError> {
+src/gest_task_values.rs:273:        _ => Err(TaskValueError {
+src/gest_task_values.rs:276:            parse_cause: None,
+src/gest_task_values.rs:284:/// Returns [`TaskValueError`] for a non-string value, a length other than 32 bytes,
+src/gest_task_values.rs:286:fn identifier(value: Value, field: &'static str) -> Result<String, TaskValueError> {
+src/gest_task_values.rs:289:        return Err(TaskValueError {
+src/gest_task_values.rs:292:            parse_cause: None,
+src/gest_task_values.rs:301:/// Returns [`TaskValueError`] for a non-string value, a chrono RFC3339 parse failure,
+src/gest_task_values.rs:303:fn timestamp(value: Value, field: &'static str) -> Result<DateTime<Utc>, TaskValueError> {
+src/gest_task_values.rs:307:        .map_err(|cause| TaskValueError {
+src/gest_task_values.rs:310:            parse_cause: Some(cause),
+src/gest_task_values.rs:316:        return Err(TaskValueError {
+src/gest_task_values.rs:319:            parse_cause: Some(cause),

@@ -29,6 +29,8 @@ website:
         text: Native local storage
       - href: libsql-provider.md
         text: Native date provider
+      - href: gest-task-values.md
+        text: Gest task values
       - href: development-plan.md
         text: Development plan
 

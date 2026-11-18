@@ -1,0 +1,18 @@
+WARN `--no-project` was provided, but no project was found
+docs/gest-task-values.md: 0 hard, 16 soft
+  soft 14: an -ing form: including
+  soft 19: an -ing form: floating
+  soft 24: an -ing form: parsing
+  soft 24: an -ing form: pairing
+  soft 24: an -ing form: generating
+  soft 30: an -ing form: including
+  soft 30: an -ing form: promising
+  soft 35: an -ing form: ordering
+  soft 42: an -ing form: parsing
+  soft 52: an -ing form: constructing
+  soft 52: an -ing form: enclosing
+  soft 59: an -ing form: existing
+  soft 66: maybe passive: were ported
+  soft 87: an -ing form: Existing
+  soft 96: an -ing form: enclosing
+  soft 96: maybe passive: are implemented

@@ -1,0 +1,25 @@
+7 candidates in 3 categories
+
+
+[participle]  (3)
+     L69  , including null.
+          participle tail at sentence end — cut it, or make the claim its own sentence
+     L80  , floating point values and other JSON types.
+          participle tail at sentence end — cut it, or make the claim its own sentence
+     L91  , including null.
+          participle tail at sentence end — cut it, or make the claim its own sentence
+
+[reuse]  (1)
+       —  , including null.
+          [participle] used 2 times (L69, L91) — reuse is the evidence that a construction is a habit, not a choice
+
+[density]  (3)
+       —  opening repetition
+          repeated sentence openings: 'the converter' x4 — anaphora spread across a document is the diffuse form of the forced triad
+       —  phrase repetition
+          repeated phrases: 'gest task values' x6 — check each is the deliberate repetition entry 27 protects and not a cadence
+       —  sentence monotony
+          sentence-length sd 4.1 — uniform length is its own tell; vary by content
+
+Candidates, not verdicts. Check each against references/register.md,
+and note that no regex reaches staged paragraph shape or a staged closer.

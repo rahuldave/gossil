@@ -188,6 +188,11 @@ class LiteralWhitespacePolicy(DisposableGitTest):
                 "evidence/libsql-provider/adapted.patch",
                 "evidence/libsql-provider/fossil-configure.stdout",
                 "evidence/libsql-provider/product-red.stdout",
+                "evidence/gest-task-values-cause-fix/green.log",
+                "evidence/gest-task-values-cause-fix/guide.diff",
+                "evidence/gest-task-values-cause-fix/source.diff",
+                "evidence/gest-task-values/focused-test.log",
+                "evidence/gest-task-values/source-edge-observation.log",
             ]
             for name in literals:
                 path = root / name
@@ -200,6 +205,13 @@ class LiteralWhitespacePolicy(DisposableGitTest):
                 "ordinary.rs", "docs/ordinary.md", "scripts/ordinary.py", "config.toml",
                 "vendor/libsql-ffi-extra/file.c",
                 "evidence/libsql-provider/product-red.stdout.more",
+                "evidence/gest-task-values-cause-fix/green.log.more",
+                "evidence/gest-task-values-cause-fix/guide.diff.more",
+                "evidence/gest-task-values-cause-fix/source.diff.more",
+                "evidence/gest-task-values/focused-test.log.more",
+                "evidence/gest-task-values/source-edge-observation.log.more",
+                "evidence/gest-task-values-cause-fix/neighbor.log",
+                "evidence/gest-task-values/neighbor.log",
             ]
             for name in ordinary:
                 path = root / name

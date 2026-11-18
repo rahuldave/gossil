@@ -1,0 +1,127 @@
+{
+  "base": {
+    "gest_id": "zyxwvutsrqponmlkzyxwvutsrqponmlk",
+    "project_id": "kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk",
+    "title": "",
+    "priority": null,
+    "status": "open",
+    "description": "",
+    "assigned_to": null,
+    "metadata": null,
+    "resolved_at": null,
+    "created_at": "2026-11-18T12:00:00+00:00",
+    "updated_at": "2026-11-18T12:00:00+00:00"
+  },
+  "complete_records": [
+    {
+      "gest_id": "zyxwvutsrqponmlkzyxwvutsrqponmlk",
+      "project_id": "kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk",
+      "title": "",
+      "priority": null,
+      "status": "open",
+      "description": "",
+      "assigned_to": null,
+      "metadata": null,
+      "resolved_at": null,
+      "created_at": "2026-11-18T12:00:00+00:00",
+      "updated_at": "2026-11-18T12:00:00+00:00"
+    },
+    {
+      "gest_id": "zyxwvutsrqponmlkzyxwvutsrqponmlk",
+      "project_id": "kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk",
+      "title": "A task é",
+      "priority": 255,
+      "status": "done",
+      "description": "line1\nline2\u0000",
+      "assigned_to": "zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz",
+      "metadata": [
+        1,
+        null,
+        {
+          "x": true
+        }
+      ],
+      "resolved_at": "2026-11-18T12:00:00+00:00",
+      "created_at": "2026-11-18T12:00:00+00:00",
+      "updated_at": "2026-11-18T12:00:00+00:00"
+    },
+    {
+      "gest_id": "zyxwvutsrqponmlkzyxwvutsrqponmlk",
+      "project_id": "kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk",
+      "title": "",
+      "priority": 0,
+      "status": "in-progress",
+      "description": "",
+      "assigned_to": null,
+      "metadata": {},
+      "resolved_at": null,
+      "created_at": "2026-11-18T12:00:00+00:00",
+      "updated_at": "2026-11-18T12:00:00+00:00"
+    }
+  ],
+  "timestamps": [
+    {
+      "input": "2026-11-18T07:00:00-05:00",
+      "output": "2026-11-18T12:00:00+00:00"
+    },
+    {
+      "input": "2026-11-19T01:30:00+13:30",
+      "output": "2026-11-18T12:00:00+00:00"
+    },
+    {
+      "input": "2026-11-18T12:00:00.1Z",
+      "output": "2026-11-18T12:00:00.100+00:00"
+    },
+    {
+      "input": "2026-11-18T12:00:00.123456Z",
+      "output": "2026-11-18T12:00:00.123456+00:00"
+    },
+    {
+      "input": "2026-11-18T12:00:00.123456789123Z",
+      "output": "2026-11-18T12:00:00.123456789+00:00"
+    },
+    {
+      "input": "2016-12-31T23:59:60.5Z",
+      "output": "2016-12-31T23:59:60.500+00:00"
+    },
+    {
+      "input": "0000-01-01T00:00:00Z",
+      "output": "0000-01-01T00:00:00+00:00"
+    },
+    {
+      "input": "2026-11-18t12:00:00z",
+      "output": "2026-11-18T12:00:00+00:00"
+    },
+    {
+      "input": "2026-11-18 12:00:00Z",
+      "output": "2026-11-18T12:00:00+00:00"
+    },
+    {
+      "input": "2026-11-18T12:00:00-00:00",
+      "output": "2026-11-18T12:00:00+00:00"
+    },
+    {
+      "input": "0000-01-01T01:00:00+01:00",
+      "output": "0000-01-01T00:00:00+00:00"
+    },
+    {
+      "input": "9999-12-31T22:00:00-01:00",
+      "output": "9999-12-31T23:00:00+00:00"
+    }
+  ],
+  "invalid_timestamps": [
+    "",
+    "2026-02-30T12:00:00Z",
+    "2026-11-18T24:00:00Z",
+    "2026-11-18T12:60:00Z",
+    "2026-11-18T12:00:61Z",
+    "2026-11-18T12:00:00",
+    " 2026-11-18T12:00:00Z",
+    "2026-11-18T12:00:00Z ",
+    "2026-11-18T12:00:00+24:00"
+  ],
+  "canonical_refusals": [
+    "0000-01-01T00:00:00+01:00",
+    "9999-12-31T23:00:00-01:00"
+  ]
+}

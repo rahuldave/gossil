@@ -1,0 +1,321 @@
+{
+  "format_version": 1,
+  "scope": "Complete decoded eleven-field task conversion only",
+  "gest_revision": "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8",
+  "gossil_base": "18063efd8ba770efd728e30d1b522abc01e23f37",
+  "corrected_plan": {
+    "path": "/tmp/gossil-gest-codec-leaf-plan-20261118/addendum.json",
+    "sha256": "9206f47295ea635e5b8baa6ccb223b68f452e634100ee4966203f809ed951d78"
+  },
+  "source": [
+    {
+      "path": "/Users/rahul/Projects/gest/src/store/model/task.rs",
+      "sha256": "dd011be45e961b46f5963e8c20429b9afc68395afa9cb9f2e5332e219ec3a0d7",
+      "git_blob": "7e44cd79f62e657833c174683d1c34ca4b1130a2"
+    },
+    {
+      "path": "/Users/rahul/Projects/gest/src/store/model/primitives/priority.rs",
+      "sha256": "fc80070c99ee14fc58575dd7c87fd64ce252d0ee8db9a6791d565db436d87537",
+      "git_blob": "dd9c1fdc700ef1947a1f65acb886495ddde9db17"
+    },
+    {
+      "path": "/Users/rahul/Projects/gest/src/store/model/primitives/task_status.rs",
+      "sha256": "4a924e4390ea0dcf3e1fe3e814966274844cc801a2d8f054c70d388ba8d15649",
+      "git_blob": "c26288b0e763a57e1aa13d8a18b78b275b5b0fba"
+    },
+    {
+      "path": "/Users/rahul/Projects/gest/src/store/model/primitives/id.rs",
+      "sha256": "1e257f775bdbdff3922f68af9a64a374ee48c12b2b587ab8c315218e19577bbc",
+      "git_blob": "70df3ad7a4549f159867c31f956716d9e81ddd41"
+    },
+    {
+      "path": "/Users/rahul/Projects/gest/src/store/repo/task.rs",
+      "sha256": "631f99d0078aa81729170b0f0ddd94be4a0252a83835c2c8de51f5f0b103af5c",
+      "git_blob": "f113aedf9c7f265e63f7ed99fbbad65dba9d5b56"
+    },
+    {
+      "path": "/Users/rahul/Projects/gest/Cargo.toml",
+      "sha256": "85ccfef08a35c79841faf53c6a0c081d228e4f1f019ac3713588be09cbe92537",
+      "git_blob": "008d0330afde0095c6b28c344f8470cbca7fffcd"
+    },
+    {
+      "path": "/Users/rahul/Projects/gest/Cargo.lock",
+      "sha256": "adfcf503c7a519aa8597d873bb2773ff6d823d1bf2fdd0370b69c83141f35e59",
+      "git_blob": "defad04036910b106f1bf974c399db095479121e"
+    }
+  ],
+  "schema_contract": {
+    "path": "/Users/rahul/Projects/AIProjectInfra/docs/gossil/evidence/storage-contract-20261118/reviewed/gest-schema-contract.json",
+    "sha256": "137f3db40e397ea9f1e1f69445b7e2c2b473364353168a3811d03b4cd01dc2f5",
+    "selector": "tasks.fields"
+  },
+  "upstream_primitive_tests": [
+    {
+      "source": "src/store/model/primitives/priority.rs",
+      "line": 96,
+      "test": "all::it_contains_every_variant_in_rank_order",
+      "disposition": "outside owned numeric-task seam",
+      "gossil_test": null,
+      "reason": "Named priority enum API remains an obligation of the future Gest API compatibility owner; the task model owns Option<u8>, not this named enum."
+    },
+    {
+      "source": "src/store/model/primitives/priority.rs",
+      "line": 116,
+      "test": "display::it_formats_critical",
+      "disposition": "outside owned numeric-task seam",
+      "gossil_test": null,
+      "reason": "Named priority enum API remains an obligation of the future Gest API compatibility owner; the task model owns Option<u8>, not this named enum."
+    },
+    {
+      "source": "src/store/model/primitives/priority.rs",
+      "line": 121,
+      "test": "display::it_formats_high",
+      "disposition": "outside owned numeric-task seam",
+      "gossil_test": null,
+      "reason": "Named priority enum API remains an obligation of the future Gest API compatibility owner; the task model owns Option<u8>, not this named enum."
+    },
+    {
+      "source": "src/store/model/primitives/priority.rs",
+      "line": 126,
+      "test": "display::it_formats_low",
+      "disposition": "outside owned numeric-task seam",
+      "gossil_test": null,
+      "reason": "Named priority enum API remains an obligation of the future Gest API compatibility owner; the task model owns Option<u8>, not this named enum."
+    },
+    {
+      "source": "src/store/model/primitives/priority.rs",
+      "line": 131,
+      "test": "display::it_formats_lowest",
+      "disposition": "outside owned numeric-task seam",
+      "gossil_test": null,
+      "reason": "Named priority enum API remains an obligation of the future Gest API compatibility owner; the task model owns Option<u8>, not this named enum."
+    },
+    {
+      "source": "src/store/model/primitives/priority.rs",
+      "line": 136,
+      "test": "display::it_formats_medium",
+      "disposition": "outside owned numeric-task seam",
+      "gossil_test": null,
+      "reason": "Named priority enum API remains an obligation of the future Gest API compatibility owner; the task model owns Option<u8>, not this named enum."
+    },
+    {
+      "source": "src/store/model/primitives/priority.rs",
+      "line": 147,
+      "test": "from_str::it_parses_each_label",
+      "disposition": "outside owned numeric-task seam",
+      "gossil_test": null,
+      "reason": "Named priority enum API remains an obligation of the future Gest API compatibility owner; the task model owns Option<u8>, not this named enum."
+    },
+    {
+      "source": "src/store/model/primitives/priority.rs",
+      "line": 156,
+      "test": "from_str::it_parses_case_insensitively",
+      "disposition": "outside owned numeric-task seam",
+      "gossil_test": null,
+      "reason": "Named priority enum API remains an obligation of the future Gest API compatibility owner; the task model owns Option<u8>, not this named enum."
+    },
+    {
+      "source": "src/store/model/primitives/priority.rs",
+      "line": 163,
+      "test": "from_str::it_rejects_an_empty_string",
+      "disposition": "outside owned numeric-task seam",
+      "gossil_test": null,
+      "reason": "Named priority enum API remains an obligation of the future Gest API compatibility owner; the task model owns Option<u8>, not this named enum."
+    },
+    {
+      "source": "src/store/model/primitives/priority.rs",
+      "line": 168,
+      "test": "from_str::it_rejects_unknown_labels",
+      "disposition": "outside owned numeric-task seam",
+      "gossil_test": null,
+      "reason": "Named priority enum API remains an obligation of the future Gest API compatibility owner; the task model owns Option<u8>, not this named enum."
+    },
+    {
+      "source": "src/store/model/primitives/priority.rs",
+      "line": 174,
+      "test": "from_str::it_round_trips_through_string",
+      "disposition": "outside owned numeric-task seam",
+      "gossil_test": null,
+      "reason": "Named priority enum API remains an obligation of the future Gest API compatibility owner; the task model owns Option<u8>, not this named enum."
+    },
+    {
+      "source": "src/store/model/primitives/priority.rs",
+      "line": 188,
+      "test": "try_from_u8::it_accepts_values_in_range",
+      "disposition": "directly inherited",
+      "gossil_test": "inherited_priority_numeric_values_in_named_range",
+      "reason": "The same numeric 0 through 4 values are accepted and preserved at the task boundary; no named priority API is added."
+    },
+    {
+      "source": "src/store/model/primitives/priority.rs",
+      "line": 197,
+      "test": "try_from_u8::it_rejects_the_max_u8",
+      "disposition": "semantic replacement",
+      "gossil_test": "gossil_checked_priority_accepts_source_model_full_u8_range",
+      "reason": "Task model Option<u8> and adopted GEST-02 accept 255 and 5. Named enum rejection is outside this seam; numeric task acceptance replaces it here."
+    },
+    {
+      "source": "src/store/model/primitives/priority.rs",
+      "line": 202,
+      "test": "try_from_u8::it_rejects_values_just_out_of_range",
+      "disposition": "semantic replacement",
+      "gossil_test": "gossil_checked_priority_accepts_source_model_full_u8_range",
+      "reason": "Task model Option<u8> and adopted GEST-02 accept 255 and 5. Named enum rejection is outside this seam; numeric task acceptance replaces it here."
+    },
+    {
+      "source": "src/store/model/primitives/priority.rs",
+      "line": 207,
+      "test": "try_from_u8::it_round_trips_through_u8",
+      "disposition": "outside owned numeric-task seam",
+      "gossil_test": null,
+      "reason": "Named priority enum API remains an obligation of the future Gest API compatibility owner; the task model owns Option<u8>, not this named enum."
+    },
+    {
+      "source": "src/store/model/primitives/task_status.rs",
+      "line": 71,
+      "test": "display::it_formats_cancelled",
+      "disposition": "directly inherited",
+      "gossil_test": "inherited_status_display_formats_cancelled",
+      "reason": "Same canonical status spelling observed through the decoded task boundary."
+    },
+    {
+      "source": "src/store/model/primitives/task_status.rs",
+      "line": 76,
+      "test": "display::it_formats_done",
+      "disposition": "directly inherited",
+      "gossil_test": "inherited_status_display_formats_done",
+      "reason": "Same canonical status spelling observed through the decoded task boundary."
+    },
+    {
+      "source": "src/store/model/primitives/task_status.rs",
+      "line": 81,
+      "test": "display::it_formats_in_progress",
+      "disposition": "directly inherited",
+      "gossil_test": "inherited_status_display_formats_in_progress",
+      "reason": "Same canonical status spelling observed through the decoded task boundary."
+    },
+    {
+      "source": "src/store/model/primitives/task_status.rs",
+      "line": 86,
+      "test": "display::it_formats_open",
+      "disposition": "directly inherited",
+      "gossil_test": "inherited_status_display_formats_open",
+      "reason": "Same canonical status spelling observed through the decoded task boundary."
+    },
+    {
+      "source": "src/store/model/primitives/task_status.rs",
+      "line": 95,
+      "test": "is_terminal::it_returns_false_for_in_progress",
+      "disposition": "semantic replacement",
+      "gossil_test": "adopted_status_pairing_false_for_in_progress",
+      "reason": "Source terminal predicate is observed through adopted Gossil terminal/resolved_at consistency; this is not a copied predicate API test."
+    },
+    {
+      "source": "src/store/model/primitives/task_status.rs",
+      "line": 100,
+      "test": "is_terminal::it_returns_false_for_open",
+      "disposition": "semantic replacement",
+      "gossil_test": "adopted_status_pairing_false_for_open",
+      "reason": "Source terminal predicate is observed through adopted Gossil terminal/resolved_at consistency; this is not a copied predicate API test."
+    },
+    {
+      "source": "src/store/model/primitives/task_status.rs",
+      "line": 105,
+      "test": "is_terminal::it_returns_true_for_cancelled",
+      "disposition": "semantic replacement",
+      "gossil_test": "adopted_status_pairing_true_for_cancelled",
+      "reason": "Source terminal predicate is observed through adopted Gossil terminal/resolved_at consistency; this is not a copied predicate API test."
+    },
+    {
+      "source": "src/store/model/primitives/task_status.rs",
+      "line": 110,
+      "test": "is_terminal::it_returns_true_for_done",
+      "disposition": "semantic replacement",
+      "gossil_test": "adopted_status_pairing_true_for_done",
+      "reason": "Source terminal predicate is observed through adopted Gossil terminal/resolved_at consistency; this is not a copied predicate API test."
+    }
+  ],
+  "source_field_mapping": [
+    {
+      "upstream": "id",
+      "canonical": "gest_id",
+      "behavior": "full 32 [k-z] ID"
+    },
+    {
+      "upstream": "project_id",
+      "canonical": "project_id",
+      "behavior": "full 32 [k-z] ID"
+    },
+    {
+      "upstream": "title",
+      "canonical": "title",
+      "behavior": "exact String"
+    },
+    {
+      "upstream": "priority",
+      "canonical": "priority",
+      "behavior": "Option<u8>; checked numeric conversion replaces wrapping SQL cast"
+    },
+    {
+      "upstream": "status",
+      "canonical": "status",
+      "behavior": "FromStr aliases/case and Display canonical spelling"
+    },
+    {
+      "upstream": "description",
+      "canonical": "description",
+      "behavior": "exact String"
+    },
+    {
+      "upstream": "assigned_to",
+      "canonical": "assigned_to",
+      "behavior": "null or full ID"
+    },
+    {
+      "upstream": "metadata",
+      "canonical": "metadata",
+      "behavior": "unmodified serde_json::Value"
+    },
+    {
+      "upstream": "resolved_at",
+      "canonical": "resolved_at",
+      "behavior": "optional pinned chrono time plus adopted terminal/null pairing"
+    },
+    {
+      "upstream": "created_at",
+      "canonical": "created_at",
+      "behavior": "pinned chrono parse_from_rfc3339 then UTC"
+    },
+    {
+      "upstream": "updated_at",
+      "canonical": "updated_at",
+      "behavior": "pinned chrono parse_from_rfc3339 then UTC"
+    }
+  ],
+  "additional_tests": {
+    "ids": "full_id_domains_for_all_three_identifier_fields",
+    "metadata": "metadata_preserves_every_value_variant_and_nested_content",
+    "timestamps": "source_chrono_timestamp_controls_apply_to_every_time_field",
+    "types": "required_types_and_nullable_field_types_are_checked",
+    "text": "text_is_exact_without_invented_content_restrictions",
+    "checked_priority": "gossil_checked_priority_rejects_values_instead_of_wrapping",
+    "statuses": "source_status_aliases_case_and_canonical_output"
+  },
+  "limitations": [
+    "No raw JSON decoder, duplicate lexeme detection, resource policy, unknown-J classifier or whole-history validator.",
+    "No storage, artifact, CLI, UI, SQL, clocks, generated IDs, recipe, inverse, reference lookup or migration admission.",
+    "Private source-model representation is exercised through output fields; no independent named enum API is implemented."
+  ],
+  "compatibility_qualifications": [
+    {
+      "surface": "business timestamp canonical output",
+      "upstream": "chrono parses year0000/9999 with offsets even when UTC normalization yields signed extended years",
+      "adopted": "Require RFC3339 UTC output accepted by the same parser; refuse only unrepresentable canonical UTC output",
+      "tests": [
+        "gossil_canonical_time_refuses_only_unrepresentable_utc_output",
+        "source_chrono_timestamp_controls_apply_to_every_time_field"
+      ],
+      "scope": "Not a D-card year/date constraint. Source-compatible year0000, offsets, leap seconds and precision remain admitted when output is representable."
+    }
+  ]
+}

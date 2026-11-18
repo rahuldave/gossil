@@ -1,0 +1,14 @@
+{
+  "evidence/gest-task-values/ast-from.json": "e1bb46de95f6297da085adc70b0e2b3aa98c2e29ff362744f54accf2d2749688",
+  "evidence/gest-task-values/ast-inputs.json": "02f98d3085136f1ca38c2d296d05232e7dbbe4afa7fc50d23991be31849a84f6",
+  "evidence/gest-task-values/ast-to.json": "63f69b65816b6bed31a2fe90b57368098def20e632a92b1cfffb0cce3360afb3",
+  "evidence/gest-task-values/candidate.json": "4210120ce6de8605b4e4e4c554147f430a5c44c40a8341a94c9cfe78883d239b",
+  "evidence/gest-task-values/canonical-time-red.log": "98844c62ea529410d4deef4cf72b59874d05e9a68e566d9e8a97514084d5152f",
+  "evidence/gest-task-values/chrono-features.txt": "ab8b510ad72041039b3dd825f829aea2aa96deb5e5ccade12bee0add5924d88e",
+  "evidence/gest-task-values/first-party-rust-files.txt": "eb5c616b02b7f8943423972ace9b866020413c3a9d8eeb9990451c21b1bc6dc5",
+  "evidence/gest-task-values/focused-test.log": "8e929768ed4c9ea13f58947007211044042e21f93db81d6e5ad16f9c13905b89",
+  "evidence/gest-task-values/literal-macro-inventory.txt": "a8f5bf98686f26bf00d37a2d879ad381094187af29f7efed634dc6410c38b44a",
+  "evidence/gest-task-values/prose-check.log": "47531cd2af59abcd8c71d2178267f4ff06554402b6bd785ba89151a496886905",
+  "evidence/gest-task-values/prose-soft-notes.log": "d23fe27cbc5c8b301b1bda50d88a91b329758be33d96f1b8387d8909b6daec18",
+  "evidence/gest-task-values/source-edge-observation.log": "ec6c9ca764220fb039ee967632a4da308c5c2eb32cb6e74ed82d0844c7750c5f"
+}

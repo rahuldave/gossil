@@ -16,6 +16,10 @@ adds complete empty-root initialization and bounded private content operations.
 There is no public SQL interface.
 The [artifact parser](artifact-parser.md) adds bounded structural parsing of all
 eight artifact types with an asynchronous selected-engine date provider.
+
+The standalone [Gest task values converter](gest-task-values.md) validates
+eleven decoded fields. Storage integration, raw field admission and the full
+Gest API remain future work.
 The [encoder](delta-encoder.md) and [decoder](delta-decoder.md) guides give
 the current scope and limits.
 
@@ -127,16 +131,17 @@ For dependent branches, finish the prerequisite checkpoint before starting work
 that requires it.
 
 The public delivery destination is [rahuldave/gossil](https://github.com/rahuldave/gossil).
-After the initial accepted checkpoint reaches `main`, deliver subsequent changes
+The initial accepted checkpoint reached `main` at
+`30ec1b5b8b5b6a9e6b495864a02ff791000dc5a3`. Deliver subsequent changes
 through reviewed pull requests to `main`. The coordinator owns pushes and
 GitHub changes. Commits require complete verification and independent review.
 
 The saved answer `docs-publish=yes` selects `just docs-publish` with smalldocs
 0.5.12. The workflow runs on `main` in the public repository, publishes through
-Just, then builds and deploys the GitHub Pages artifact. Use GitHub Actions
-as the Pages source. Confirm the deployed site at
-[Gossil development](https://rahuldave.com/gossil/) before recording publication
-as complete. No release is requested.
+Just, then builds and deploys the GitHub Pages artifact. The Pages source
+is GitHub Actions. [Gossil development](https://rahuldave.com/gossil/) is live;
+the initial publication check verified all 13 deployed pages from tree
+`dbf7b200713b1c32b065fe7ee77be89a7197464a`. No release is requested.
 
 ### Historical bootstrap context
 
