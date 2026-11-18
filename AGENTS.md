@@ -26,7 +26,7 @@ explicit reference or candidate configurations, preserves evidence and rejects
 failed or incomplete suites. It implements no Gossil engine behavior.
 
 The library also implements bounded delta application, exposed by
-`gossil vcs test-delta-apply ORIGIN DELTA TARGET`. The library also creates deltas through `gossil vcs test-delta-create` and checks
+`gossil vcs test-delta-apply ORIGIN DELTA TARGET`. It creates deltas through `gossil vcs test-delta-create` and checks
 both directions through `gossil vcs test-delta`. The local libSQL boundary owns database lifecycle and exclusive transactions.
 Native local storage initializes the complete schema and empty public root, with
 bounded private content operations. File-containing check-ins, broader crosslinks,
@@ -37,8 +37,8 @@ the remaining source port and Gest integration remain planned work.
 Use `just conformance CONFIG` for one suite and `just conformance-self-test`
 for runner controls. Use the installed Rust checks through Just, including
 `lint`, `typecheck`, `test`, `integration`, `coverage-check`, `docstring-check`
-and `api-check`. `just docs-check` checks the site and API docs;
-`just docs-build` renders the site. Do not weaken checks to obtain a pass.
+and `api-check`. `just docs-check` checks the site and API docs.
+`just docs-build` renders the site. Do not weaken checks to get a pass.
 
 The runner checkpoint is `evidence/runner-checkpoint-2026-11-17.json`.
 It records executed macOS checks, not a final gate pass or Linux qualification.
@@ -67,8 +67,14 @@ SQL stays private.
 installed skills, hook files and actual executions when reporting results.
 Keep reusable workflow changes in their owning packages.
 
-No remote or release workflow has been selected. Keep delivery local.
-Publishing and GitHub issue promotion remain deferred for that reason.
+The public remote is `https://github.com/rahuldave/gossil`. Create reviewed
+pull requests to `main` for subsequent delivery. The coordinator owns pushes,
+GitHub changes and the first publication check. No release is requested.
+
+The saved answer `docs-publish=yes` enables `just docs-publish` through
+smalldocs 0.5.12. The main-only workflow also uploads the built site and deploys
+it through GitHub Pages. Configure Pages to use GitHub Actions. A workflow
+file and a successful build do not prove that the public site is live.
 
 ## Recommendations
 

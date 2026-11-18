@@ -47,7 +47,7 @@ are described by `evidence/baselines/README.md` at the repository root.
 The complete source and test mappings are described in
 `evidence/inventories/README.md`, including corrections to groups of related Fossil mechanisms and Git
 identities for every pinned path. `evidence/review-correction/checkpoint.json`
-records tests of rejection of malformed and duplicate result summaries.
+records tests that reject malformed and duplicate result summaries.
 
 These archives are outside this documentation site. Open their paths from
 the root of the local checkout. Those historical results
@@ -57,7 +57,13 @@ The local commands require Rust with Cargo, Git, Just and uv on `PATH`.
 See the runner guide for Tcl, Fossil and fresh-clone setup limits.
 Use `just docs-check` to check site links and API documentation, and
 `just docs-build` to render the site. `just docs` serves a local preview.
-Automatic publication is disabled for this checkout.
+
+The saved answer `docs-publish=yes` enables publication through
+`just docs-publish` with smalldocs 0.5.12. The main-only GitHub workflow
+uploads the built site and deploys it through GitHub Pages. Set the Pages
+source to GitHub Actions. The expected public site is
+[Gossil development](https://rahuldave.com/gossil/). A passing local build
+does not establish that deployment succeeded.
 
 ## Recommendations
 

@@ -70,12 +70,6 @@ test *args:
 test-paths *args:
     just --justfile {{quote(justfile())}} rust test-paths "$@"
 
-# just typecheck for each language that has it: rust
-[positional-arguments]
-typecheck *args:
-    just --justfile {{quote(justfile())}} rust typecheck "$@"
-    jlog step typecheck
-
 # just version for each language that has it: rust
 version:
     just --justfile {{quote(justfile())}} rust version
@@ -98,6 +92,3 @@ diff-check:
 # Everything a commit must pass: each step, then the pass of jlog for the worktree
 check: tools-check release-check fmt-check lint typecheck test integration coverage-check docstring-check docs-check prose-check diff-check
     jlog pass
-
-# What CI checks: the trailers of the commit gate, then the steps of the list ci of .agents/stack.json
-ci: ci-gate

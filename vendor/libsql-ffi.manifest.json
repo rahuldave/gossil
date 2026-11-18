@@ -1689,8 +1689,8 @@
       "sha256": "8a08bf79bec17ab6a9fa41d8a21c3bb83d0012ac6566257f99d79b968d090b67"
     },
     "tests/test_libsql_vendor.py": {
-      "length": 13104,
-      "sha256": "677c37512a1ddbbde6f3443a45d1cbf72dd575cebabfc45f01f82b783368c034"
+      "length": 16638,
+      "sha256": "bc07e9744fe6c1af4f6e141113229173263ff05f6f1296f7e8c73fae2613ac79"
     },
     "evidence/libsql-provider/reader-policy-green.txt": {
       "length": 2578,
