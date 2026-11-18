@@ -38,8 +38,9 @@ required work. Known baseline failures and timeouts remain unchanged.
 
 Read the archived Fossil inventory together with
 [family corrections](fossil/family-corrections.json). Apply its fourteen family
-corrections over the archived fields; retain all other fields.
-The validator combines them in memory for checks and does not write a merged inventory.
+corrections over the archived fields, retaining all other fields.
+The validator applies these corrections in memory for checks. It does not
+write a merged inventory, so no manual edit of the archive is needed.
 
 The effective family dispositions use the same three values as file rows.
 The validator rejects extra fields in each family correction, so the overlay
@@ -101,8 +102,10 @@ The new inventory distinguishes pinned link text, Git modes and blob hashes
 from resolved-content hashes. Its crosswalk preserves both meanings. Earlier
 receipts were not rewritten to make the two hash conventions appear equal.
 
-No delta corpus or engine implementation is included in this capture. Related
-scratch references in the original inventories remain historical references.
+This historical inventory capture includes no delta corpus or engine implementation.
+The later bounded decoder and portable fixtures are documented in the
+[decoder guide](../../docs/delta-decoder.md). Related scratch references in the
+original inventories remain historical references.
 
 ## Recommendations
 

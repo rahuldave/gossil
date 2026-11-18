@@ -1,0 +1,23 @@
+just --justfile '/Users/rahul/Projects/gossil/Justfile' rust integration "$@"
+uv run --no-project --quiet --python '>=3.11' python '/Users/rahul/Projects/gossil/.agents/just/rust/steps.py' run integration "$@"
+WARN `--no-project` was provided, but no project was found
+cargo llvm-cov test --all-features --locked --include-build-script --workspace --test conformance --test delta_decoder --lcov --output-path target/llvm-cov/integration.part0.lcov delta_decoder
+info: cargo-llvm-cov currently setting cfg(coverage); you can opt-out it by passing --no-cfg-coverage
+   Compiling gossil v0.1.0 (/Users/rahul/Projects/gossil)
+error: couldn't read `src/bin/gossil.rs`: No such file or directory (os error 2)
+
+error: process didn't exit successfully: `/Users/rahul/.rustup/toolchains/stable-aarch64-apple-darwin/bin/rustc --crate-name gossil --edition=2024 src/bin/gossil.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --crate-type bin --emit=dep-info,link -C embed-bitcode=no -C debuginfo=2 -C split-debuginfo=unpacked --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values())' -C metadata=4dc2a161bcb99c1f -C extra-filename=-d15a9c46fabd46f1 --out-dir /Users/rahul/Projects/gossil/target/llvm-cov-target/debug/deps -C incremental=/Users/rahul/Projects/gossil/target/llvm-cov-target/debug/incremental -L dependency=/Users/rahul/Projects/gossil/target/llvm-cov-target/debug/deps --extern gossil=/Users/rahul/Projects/gossil/target/llvm-cov-target/debug/deps/libgossil-f0eaf00a56ea4a52.rlib --extern libc=/Users/rahul/Projects/gossil/target/llvm-cov-target/debug/deps/liblibc-10adcd5f3a3900f0.rlib --extern serde=/Users/rahul/Projects/gossil/target/llvm-cov-target/debug/deps/libserde-7f20a42563823958.rlib --extern serde_json=/Users/rahul/Projects/gossil/target/llvm-cov-target/debug/deps/libserde_json-d8fbf51ec90dcd4d.rlib --extern sha2=/Users/rahul/Projects/gossil/target/llvm-cov-target/debug/deps/libsha2-76641ac7c9f77818.rlib -C instrument-coverage --cfg=coverage` (exit status: 1)
+error: could not compile `gossil` (bin "gossil") due to 1 previous error
+warning: build failed, waiting for other jobs to finish...
+error[E0432]: unresolved import `gossil::delta`
+ --> tests/delta_decoder.rs:2:13
+  |
+2 | use gossil::delta::{Limits, apply, output_size};
+  |             ^^^^^ could not find `delta` in `gossil`
+
+For more information about this error, try `rustc --explain E0432`.
+error: process didn't exit successfully: `/Users/rahul/.rustup/toolchains/stable-aarch64-apple-darwin/bin/rustc --crate-name delta_decoder --edition=2024 tests/delta_decoder.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --emit=dep-info,link -C embed-bitcode=no -C debuginfo=2 -C split-debuginfo=unpacked --test --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values())' -C metadata=1338ff2635f7c5a5 -C extra-filename=-472eb706ae1a9615 --out-dir /Users/rahul/Projects/gossil/target/llvm-cov-target/debug/deps -C incremental=/Users/rahul/Projects/gossil/target/llvm-cov-target/debug/incremental -L dependency=/Users/rahul/Projects/gossil/target/llvm-cov-target/debug/deps --extern gossil=/Users/rahul/Projects/gossil/target/llvm-cov-target/debug/deps/libgossil-f0eaf00a56ea4a52.rlib --extern libc=/Users/rahul/Projects/gossil/target/llvm-cov-target/debug/deps/liblibc-10adcd5f3a3900f0.rlib --extern serde=/Users/rahul/Projects/gossil/target/llvm-cov-target/debug/deps/libserde-7f20a42563823958.rlib --extern serde_json=/Users/rahul/Projects/gossil/target/llvm-cov-target/debug/deps/libserde_json-d8fbf51ec90dcd4d.rlib --extern sha2=/Users/rahul/Projects/gossil/target/llvm-cov-target/debug/deps/libsha2-76641ac7c9f77818.rlib --extern tempfile=/Users/rahul/Projects/gossil/target/llvm-cov-target/debug/deps/libtempfile-4ece93a2ca9c8c90.rlib -C instrument-coverage --cfg=coverage` (exit status: 1)
+error: could not compile `gossil` (test "delta_decoder") due to 1 previous error
+error: process didn't exit successfully: `/Users/rahul/.rustup/toolchains/stable-aarch64-apple-darwin/bin/cargo test --manifest-path /Users/rahul/Projects/gossil/Cargo.toml --target-dir /Users/rahul/Projects/gossil/target/llvm-cov-target --all-features --locked --workspace --test conformance --test delta_decoder delta_decoder` (exit status: 101)
+error: Recipe `integration` failed on line 6 with exit code 101
+error: Recipe `integration` failed on line 49 with exit code 101

@@ -2,9 +2,10 @@
   "schema_version": 1,
   "package": "jnterfaces",
   "source_repository": "git@github.com:rahuldave/jnterfaces.git",
-  "source_revision": "338ca39105397177d51fdc1bbb555b80f2bc22de",
+  "source_revision": "389cdf8d26205ef00d0651ff8550be0684d99875",
+  "source_version": "v0.2.0-2-g389cdf8",
   "source_worktree_dirty": false,
-  "source_requested_commit": null,
+  "source_requested_commit": "389cdf8d26205ef00d0651ff8550be0684d99875",
   "skills": [
     "docs",
     "just"
@@ -14,7 +15,8 @@
     "just"
   ],
   "extras": [
-    ".agents/install.just"
+    ".agents/install.just",
+    ".agents/tools_check.py"
   ],
   "merged_hooks": {},
   "created_settings": [],
@@ -24,11 +26,11 @@
     ".agents/skills/docs/SKILL.md": "6d3c14e04c3d21c1878ca7dd4027f4bfc439616d1cf902be19b082feb9474cf3",
     ".agents/skills/docs/agents/openai.yaml": "eca180f1864565b70ec21ca724d33f302ef362f4a9324d49a5b649f4eca70568",
     ".agents/skills/docs/assets/_smalldocs.yml": "0f34f9fd7725485be342639ec5330b4c2c0430cf857d035babf3837c375d3c72",
-    ".agents/skills/docs/assets/docs-publish.yml": "e4de9535ff480d931d7be0b85076466b03f5f4e99e7850fcce4ab2e2575e773d",
+    ".agents/skills/docs/assets/docs-publish.yml": "321897599b6567d62e84d2f92ff06a781cdf0a844196e0769092357cb31d41c4",
     ".agents/skills/docs/assets/index.md": "85903a9ba6ed20903835d013630b90f17345b8732ab2c25d20e8a1f3b955a5b7",
     ".agents/skills/docs/docs.just": "ecacf4f0d60b0639bc9b15a648e842b7f64c3fa1f85481bfc08d67c53834ec36",
     ".agents/skills/docs/docs_publish.py": "a6db1dce128acd1fc6dd6fbc0ea5ac69ec37798acd8cfff6b004de436211183c",
-    ".agents/skills/just/SKILL.md": "ee77a2a68bbe366662f2f803579ade5d7173ca81d493de98c2582a93dd8f3035",
+    ".agents/skills/just/SKILL.md": "7c79d144db79152b00a876be2b11198d3579eec27196ef9a9b06f9cdbde91ddb",
     ".agents/skills/just/agents/openai.yaml": "c7ce3f44bded5f34dd32feb8fb1ce2d05b032cb31c7e8ceb74849e31bf4ab0fa",
     ".agents/skills/just/assets/templates/agent-contract.just": "0d7bc8e190e4da64a1c3d59f06e9d7c990ba265272c97c051844b6df88a77f85",
     ".agents/skills/just/assets/templates/browser-agent.just": "edfa2c9c7790ed0325dd573677ce0aba347a5b21af827911c5564f8a5157720a",
@@ -38,7 +40,8 @@
     ".agents/skills/just/assets/templates/python-uv.just": "8d16f54021042bcdca4d7ba5b7532165f5525e9fd264cfc8fa564134ec7dd402",
     ".agents/skills/just/assets/templates/rust-cargo.just": "c34885624e63e42d5699dcbbf730d6ecb77639a4aabaef4a76e4238bd5324120",
     ".agents/skills/just/assets/templates/typescript-npm.just": "bea190d495b633430a21f59fa9859769154d37b9c0254ab3c4aa32d76c14a3cd",
-    ".agents/skills/just/references/command_contract.md": "65747447c3b5e4ab4fe9f76a4848b10c1baf7566e876c86a6a8991dd8cdf60a9"
+    ".agents/skills/just/references/command_contract.md": "990e482968d7e22a22db402debecf4f417c928a50963e1563356809f0fd7c596",
+    ".agents/tools_check.py": "540065d3c007b343f99ad338bfb3c79015c96f70c5ab23ff5f514358e793861d"
   },
   "claude_links": [
     "docs",

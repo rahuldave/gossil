@@ -1,0 +1,1970 @@
+[
+  {
+    "id": "high-bit-numeric-alias",
+    "kind": "missing-small-reference-fixture",
+    "command": [
+      "jlog",
+      "run",
+      "fossil",
+      "test-delta-apply",
+      "/tmp/gossil-delta-decoder-supplement-20261117/fixtures/high-bit-numeric-alias/origin.bin",
+      "/tmp/gossil-delta-decoder-supplement-20261117/fixtures/high-bit-numeric-alias/delta.bin",
+      "/tmp/gossil-delta-decoder-supplement-20261117/fixtures/high-bit-numeric-alias/target.bin"
+    ],
+    "cwd": "/Users/rahul/Projects/gossil",
+    "environment": {
+      "HOME": "/tmp/gossil-delta-decoder-supplement-20261117/fixtures/high-bit-numeric-alias/home",
+      "FOSSIL_HOME": "/tmp/gossil-delta-decoder-supplement-20261117/fixtures/high-bit-numeric-alias/home",
+      "TMPDIR": "/tmp/gossil-delta-decoder-supplement-20261117/fixtures/high-bit-numeric-alias/home"
+    },
+    "timeout_seconds": 3,
+    "seconds": 0.025399,
+    "exit_code": 1,
+    "status": "rejected",
+    "stdout_hex": "",
+    "stderr_hex": "44656c7461206170706c69636174696f6e206661696c65642e0a",
+    "stdout_utf8": "",
+    "stderr_utf8": "Delta application failed.\n",
+    "before": {
+      "origin": {
+        "kind": "file",
+        "bytes": 3,
+        "sha256": "b5d4045c3f466fa91fe2cc6abe79232a1a57cdf104f7a26e716e0a1e2789df78",
+        "hex": "414243"
+      },
+      "delta": {
+        "kind": "file",
+        "bytes": 4,
+        "sha256": "4bd049f18c907b3e420213d74890adbc8191eaa76e3da4463acda622060a3457",
+        "hex": "b00a303b"
+      },
+      "target": {
+        "kind": "file",
+        "bytes": 17,
+        "sha256": "75bd38e7b17618a8eca95f4eaefe6449191b0bb210a6ad78a1fb6fd29a8c820e",
+        "hex": "505245534552564500544152474554ff0a"
+      }
+    },
+    "after": {
+      "origin": {
+        "kind": "file",
+        "bytes": 3,
+        "sha256": "b5d4045c3f466fa91fe2cc6abe79232a1a57cdf104f7a26e716e0a1e2789df78",
+        "hex": "414243"
+      },
+      "delta": {
+        "kind": "file",
+        "bytes": 4,
+        "sha256": "4bd049f18c907b3e420213d74890adbc8191eaa76e3da4463acda622060a3457",
+        "hex": "b00a303b"
+      },
+      "target": {
+        "kind": "file",
+        "bytes": 17,
+        "sha256": "75bd38e7b17618a8eca95f4eaefe6449191b0bb210a6ad78a1fb6fd29a8c820e",
+        "hex": "505245534552564500544152474554ff0a"
+      }
+    },
+    "target_preserved": true,
+    "notes": [
+      "High-bit0xb0 equals ASCII0 with bit7 set: full lookup must not mask. Source predicts header failure; bounded C probe to record."
+    ],
+    "fixture_directory": "/tmp/gossil-delta-decoder-supplement-20261117/fixtures/high-bit-numeric-alias"
+  },
+  {
+    "id": "high-bit-terminal-operator",
+    "kind": "missing-small-reference-fixture",
+    "command": [
+      "jlog",
+      "run",
+      "fossil",
+      "test-delta-apply",
+      "/tmp/gossil-delta-decoder-supplement-20261117/fixtures/high-bit-terminal-operator/origin.bin",
+      "/tmp/gossil-delta-decoder-supplement-20261117/fixtures/high-bit-terminal-operator/delta.bin",
+      "/tmp/gossil-delta-decoder-supplement-20261117/fixtures/high-bit-terminal-operator/target.bin"
+    ],
+    "cwd": "/Users/rahul/Projects/gossil",
+    "environment": {
+      "HOME": "/tmp/gossil-delta-decoder-supplement-20261117/fixtures/high-bit-terminal-operator/home",
+      "FOSSIL_HOME": "/tmp/gossil-delta-decoder-supplement-20261117/fixtures/high-bit-terminal-operator/home",
+      "TMPDIR": "/tmp/gossil-delta-decoder-supplement-20261117/fixtures/high-bit-terminal-operator/home"
+    },
+    "timeout_seconds": 3,
+    "seconds": 0.020404,
+    "exit_code": 1,
+    "status": "rejected",
+    "stdout_hex": "",
+    "stderr_hex": "44656c7461206170706c69636174696f6e206661696c65642e0a",
+    "stdout_utf8": "",
+    "stderr_utf8": "Delta application failed.\n",
+    "before": {
+      "origin": {
+        "kind": "file",
+        "bytes": 3,
+        "sha256": "b5d4045c3f466fa91fe2cc6abe79232a1a57cdf104f7a26e716e0a1e2789df78",
+        "hex": "414243"
+      },
+      "delta": {
+        "kind": "file",
+        "bytes": 4,
+        "sha256": "73362a1b8aaceb94f985ce0a6ab0a4f60d1b206e235649715dd39a190c1d6242",
+        "hex": "300a30bb"
+      },
+      "target": {
+        "kind": "file",
+        "bytes": 17,
+        "sha256": "75bd38e7b17618a8eca95f4eaefe6449191b0bb210a6ad78a1fb6fd29a8c820e",
+        "hex": "505245534552564500544152474554ff0a"
+      }
+    },
+    "after": {
+      "origin": {
+        "kind": "file",
+        "bytes": 3,
+        "sha256": "b5d4045c3f466fa91fe2cc6abe79232a1a57cdf104f7a26e716e0a1e2789df78",
+        "hex": "414243"
+      },
+      "delta": {
+        "kind": "file",
+        "bytes": 4,
+        "sha256": "73362a1b8aaceb94f985ce0a6ab0a4f60d1b206e235649715dd39a190c1d6242",
+        "hex": "300a30bb"
+      },
+      "target": {
+        "kind": "file",
+        "bytes": 17,
+        "sha256": "75bd38e7b17618a8eca95f4eaefe6449191b0bb210a6ad78a1fb6fd29a8c820e",
+        "hex": "505245534552564500544152474554ff0a"
+      }
+    },
+    "target_preserved": true,
+    "notes": [
+      "0xbb aliases semicolon only under forbidden masking; source predicts unknown operator rejection."
+    ],
+    "fixture_directory": "/tmp/gossil-delta-decoder-supplement-20261117/fixtures/high-bit-terminal-operator"
+  },
+  {
+    "id": "high-bit-copy-delimiter",
+    "kind": "missing-small-reference-fixture",
+    "command": [
+      "jlog",
+      "run",
+      "fossil",
+      "test-delta-apply",
+      "/tmp/gossil-delta-decoder-supplement-20261117/fixtures/high-bit-copy-delimiter/origin.bin",
+      "/tmp/gossil-delta-decoder-supplement-20261117/fixtures/high-bit-copy-delimiter/delta.bin",
+      "/tmp/gossil-delta-decoder-supplement-20261117/fixtures/high-bit-copy-delimiter/target.bin"
+    ],
+    "cwd": "/Users/rahul/Projects/gossil",
+    "environment": {
+      "HOME": "/tmp/gossil-delta-decoder-supplement-20261117/fixtures/high-bit-copy-delimiter/home",
+      "FOSSIL_HOME": "/tmp/gossil-delta-decoder-supplement-20261117/fixtures/high-bit-copy-delimiter/home",
+      "TMPDIR": "/tmp/gossil-delta-decoder-supplement-20261117/fixtures/high-bit-copy-delimiter/home"
+    },
+    "timeout_seconds": 3,
+    "seconds": 0.023588,
+    "exit_code": 1,
+    "status": "rejected",
+    "stdout_hex": "",
+    "stderr_hex": "44656c7461206170706c69636174696f6e206661696c65642e0a",
+    "stdout_utf8": "",
+    "stderr_utf8": "Delta application failed.\n",
+    "before": {
+      "origin": {
+        "kind": "file",
+        "bytes": 3,
+        "sha256": "b5d4045c3f466fa91fe2cc6abe79232a1a57cdf104f7a26e716e0a1e2789df78",
+        "hex": "414243"
+      },
+      "delta": {
+        "kind": "file",
+        "bytes": 8,
+        "sha256": "3f46a02d6c438d5493e26410de31c0e4f07f9f260d25be0d6ad25457ea891ff5",
+        "hex": "300a304030ac303b"
+      },
+      "target": {
+        "kind": "file",
+        "bytes": 17,
+        "sha256": "75bd38e7b17618a8eca95f4eaefe6449191b0bb210a6ad78a1fb6fd29a8c820e",
+        "hex": "505245534552564500544152474554ff0a"
+      }
+    },
+    "after": {
+      "origin": {
+        "kind": "file",
+        "bytes": 3,
+        "sha256": "b5d4045c3f466fa91fe2cc6abe79232a1a57cdf104f7a26e716e0a1e2789df78",
+        "hex": "414243"
+      },
+      "delta": {
+        "kind": "file",
+        "bytes": 8,
+        "sha256": "3f46a02d6c438d5493e26410de31c0e4f07f9f260d25be0d6ad25457ea891ff5",
+        "hex": "300a304030ac303b"
+      },
+      "target": {
+        "kind": "file",
+        "bytes": 17,
+        "sha256": "75bd38e7b17618a8eca95f4eaefe6449191b0bb210a6ad78a1fb6fd29a8c820e",
+        "hex": "505245534552564500544152474554ff0a"
+      }
+    },
+    "target_preserved": true,
+    "notes": [
+      "0xac is comma|0x80; exact comma check should reject, even count0."
+    ],
+    "fixture_directory": "/tmp/gossil-delta-decoder-supplement-20261117/fixtures/high-bit-copy-delimiter"
+  },
+  {
+    "id": "high-bit-checksum-digit",
+    "kind": "missing-small-reference-fixture",
+    "command": [
+      "jlog",
+      "run",
+      "fossil",
+      "test-delta-apply",
+      "/tmp/gossil-delta-decoder-supplement-20261117/fixtures/high-bit-checksum-digit/origin.bin",
+      "/tmp/gossil-delta-decoder-supplement-20261117/fixtures/high-bit-checksum-digit/delta.bin",
+      "/tmp/gossil-delta-decoder-supplement-20261117/fixtures/high-bit-checksum-digit/target.bin"
+    ],
+    "cwd": "/Users/rahul/Projects/gossil",
+    "environment": {
+      "HOME": "/tmp/gossil-delta-decoder-supplement-20261117/fixtures/high-bit-checksum-digit/home",
+      "FOSSIL_HOME": "/tmp/gossil-delta-decoder-supplement-20261117/fixtures/high-bit-checksum-digit/home",
+      "TMPDIR": "/tmp/gossil-delta-decoder-supplement-20261117/fixtures/high-bit-checksum-digit/home"
+    },
+    "timeout_seconds": 3,
+    "seconds": 0.025177,
+    "exit_code": 1,
+    "status": "rejected",
+    "stdout_hex": "",
+    "stderr_hex": "44656c7461206170706c69636174696f6e206661696c65642e0a",
+    "stdout_utf8": "",
+    "stderr_utf8": "Delta application failed.\n",
+    "before": {
+      "origin": {
+        "kind": "file",
+        "bytes": 3,
+        "sha256": "b5d4045c3f466fa91fe2cc6abe79232a1a57cdf104f7a26e716e0a1e2789df78",
+        "hex": "414243"
+      },
+      "delta": {
+        "kind": "file",
+        "bytes": 4,
+        "sha256": "df715cc8598048e19680b3fd539d45d3d7d62b6b66da9026bde2fb537eea2ac5",
+        "hex": "300ab03b"
+      },
+      "target": {
+        "kind": "file",
+        "bytes": 17,
+        "sha256": "75bd38e7b17618a8eca95f4eaefe6449191b0bb210a6ad78a1fb6fd29a8c820e",
+        "hex": "505245534552564500544152474554ff0a"
+      }
+    },
+    "after": {
+      "origin": {
+        "kind": "file",
+        "bytes": 3,
+        "sha256": "b5d4045c3f466fa91fe2cc6abe79232a1a57cdf104f7a26e716e0a1e2789df78",
+        "hex": "414243"
+      },
+      "delta": {
+        "kind": "file",
+        "bytes": 4,
+        "sha256": "df715cc8598048e19680b3fd539d45d3d7d62b6b66da9026bde2fb537eea2ac5",
+        "hex": "300ab03b"
+      },
+      "target": {
+        "kind": "file",
+        "bytes": 17,
+        "sha256": "75bd38e7b17618a8eca95f4eaefe6449191b0bb210a6ad78a1fb6fd29a8c820e",
+        "hex": "505245534552564500544152474554ff0a"
+      }
+    },
+    "target_preserved": true,
+    "notes": [
+      "Invalid high-bit byte is not consumed as numeric; source predicts unknown operator rejection."
+    ],
+    "fixture_directory": "/tmp/gossil-delta-decoder-supplement-20261117/fixtures/high-bit-checksum-digit"
+  },
+  {
+    "id": "copy-offset-consumes-final-digit",
+    "kind": "missing-small-reference-fixture",
+    "command": [
+      "jlog",
+      "run",
+      "fossil",
+      "test-delta-apply",
+      "/tmp/gossil-delta-decoder-supplement-20261117/fixtures/copy-offset-consumes-final-digit/origin.bin",
+      "/tmp/gossil-delta-decoder-supplement-20261117/fixtures/copy-offset-consumes-final-digit/delta.bin",
+      "/tmp/gossil-delta-decoder-supplement-20261117/fixtures/copy-offset-consumes-final-digit/target.bin"
+    ],
+    "cwd": "/Users/rahul/Projects/gossil",
+    "environment": {
+      "HOME": "/tmp/gossil-delta-decoder-supplement-20261117/fixtures/copy-offset-consumes-final-digit/home",
+      "FOSSIL_HOME": "/tmp/gossil-delta-decoder-supplement-20261117/fixtures/copy-offset-consumes-final-digit/home",
+      "TMPDIR": "/tmp/gossil-delta-decoder-supplement-20261117/fixtures/copy-offset-consumes-final-digit/home"
+    },
+    "timeout_seconds": 3,
+    "seconds": 0.014602,
+    "exit_code": 1,
+    "status": "rejected",
+    "stdout_hex": "",
+    "stderr_hex": "44656c7461206170706c69636174696f6e206661696c65642e0a",
+    "stdout_utf8": "",
+    "stderr_utf8": "Delta application failed.\n",
+    "before": {
+      "origin": {
+        "kind": "file",
+        "bytes": 3,
+        "sha256": "b5d4045c3f466fa91fe2cc6abe79232a1a57cdf104f7a26e716e0a1e2789df78",
+        "hex": "414243"
+      },
+      "delta": {
+        "kind": "file",
+        "bytes": 5,
+        "sha256": "3f1baa2eec117c64d17489fe2d1920f6d3a838c0679f715e53c1a80253e497bb",
+        "hex": "300a304030"
+      },
+      "target": {
+        "kind": "file",
+        "bytes": 17,
+        "sha256": "75bd38e7b17618a8eca95f4eaefe6449191b0bb210a6ad78a1fb6fd29a8c820e",
+        "hex": "505245534552564500544152474554ff0a"
+      }
+    },
+    "after": {
+      "origin": {
+        "kind": "file",
+        "bytes": 3,
+        "sha256": "b5d4045c3f466fa91fe2cc6abe79232a1a57cdf104f7a26e716e0a1e2789df78",
+        "hex": "414243"
+      },
+      "delta": {
+        "kind": "file",
+        "bytes": 5,
+        "sha256": "3f1baa2eec117c64d17489fe2d1920f6d3a838c0679f715e53c1a80253e497bb",
+        "hex": "300a304030"
+      },
+      "target": {
+        "kind": "file",
+        "bytes": 17,
+        "sha256": "75bd38e7b17618a8eca95f4eaefe6449191b0bb210a6ad78a1fb6fd29a8c820e",
+        "hex": "505245534552564500544152474554ff0a"
+      }
+    },
+    "target_preserved": true,
+    "notes": [
+      "Missing comma at exact logical end; capture bounded observed rejection without treating internal pointer behavior as format guarantee."
+    ],
+    "fixture_directory": "/tmp/gossil-delta-decoder-supplement-20261117/fixtures/copy-offset-consumes-final-digit"
+  },
+  {
+    "id": "copy-ends-immediately-after-at",
+    "kind": "missing-small-reference-fixture",
+    "command": [
+      "jlog",
+      "run",
+      "fossil",
+      "test-delta-apply",
+      "/tmp/gossil-delta-decoder-supplement-20261117/fixtures/copy-ends-immediately-after-at/origin.bin",
+      "/tmp/gossil-delta-decoder-supplement-20261117/fixtures/copy-ends-immediately-after-at/delta.bin",
+      "/tmp/gossil-delta-decoder-supplement-20261117/fixtures/copy-ends-immediately-after-at/target.bin"
+    ],
+    "cwd": "/Users/rahul/Projects/gossil",
+    "environment": {
+      "HOME": "/tmp/gossil-delta-decoder-supplement-20261117/fixtures/copy-ends-immediately-after-at/home",
+      "FOSSIL_HOME": "/tmp/gossil-delta-decoder-supplement-20261117/fixtures/copy-ends-immediately-after-at/home",
+      "TMPDIR": "/tmp/gossil-delta-decoder-supplement-20261117/fixtures/copy-ends-immediately-after-at/home"
+    },
+    "timeout_seconds": 3,
+    "seconds": 0.012668,
+    "exit_code": 1,
+    "status": "rejected",
+    "stdout_hex": "",
+    "stderr_hex": "44656c7461206170706c69636174696f6e206661696c65642e0a",
+    "stdout_utf8": "",
+    "stderr_utf8": "Delta application failed.\n",
+    "before": {
+      "origin": {
+        "kind": "file",
+        "bytes": 3,
+        "sha256": "b5d4045c3f466fa91fe2cc6abe79232a1a57cdf104f7a26e716e0a1e2789df78",
+        "hex": "414243"
+      },
+      "delta": {
+        "kind": "file",
+        "bytes": 4,
+        "sha256": "39024cc7c82f1383234bc1aec0a7f159b64d87099b4e2512c543d9b9151033e7",
+        "hex": "300a3040"
+      },
+      "target": {
+        "kind": "file",
+        "bytes": 17,
+        "sha256": "75bd38e7b17618a8eca95f4eaefe6449191b0bb210a6ad78a1fb6fd29a8c820e",
+        "hex": "505245534552564500544152474554ff0a"
+      }
+    },
+    "after": {
+      "origin": {
+        "kind": "file",
+        "bytes": 3,
+        "sha256": "b5d4045c3f466fa91fe2cc6abe79232a1a57cdf104f7a26e716e0a1e2789df78",
+        "hex": "414243"
+      },
+      "delta": {
+        "kind": "file",
+        "bytes": 4,
+        "sha256": "39024cc7c82f1383234bc1aec0a7f159b64d87099b4e2512c543d9b9151033e7",
+        "hex": "300a3040"
+      },
+      "target": {
+        "kind": "file",
+        "bytes": 17,
+        "sha256": "75bd38e7b17618a8eca95f4eaefe6449191b0bb210a6ad78a1fb6fd29a8c820e",
+        "hex": "505245534552564500544152474554ff0a"
+      }
+    },
+    "target_preserved": true,
+    "notes": [
+      "Existing copy-truncated-offset covers this; retain observed result, distinguish from final-digit case."
+    ],
+    "fixture_directory": "/tmp/gossil-delta-decoder-supplement-20261117/fixtures/copy-ends-immediately-after-at"
+  },
+  {
+    "id": "header-wrap32-zero",
+    "kind": "separate-previously-unexecuted-wrapped-header-supplement",
+    "command": [
+      "jlog",
+      "run",
+      "fossil",
+      "test-delta-apply",
+      "/tmp/gossil-delta-decoder-supplement-20261117/fixtures/header-wrap32-zero/origin.bin",
+      "/tmp/gossil-delta-decoder-supplement-20261117/fixtures/header-wrap32-zero/delta.bin",
+      "/tmp/gossil-delta-decoder-supplement-20261117/fixtures/header-wrap32-zero/target.bin"
+    ],
+    "cwd": "/Users/rahul/Projects/gossil",
+    "environment": {
+      "HOME": "/tmp/gossil-delta-decoder-supplement-20261117/fixtures/header-wrap32-zero/home",
+      "FOSSIL_HOME": "/tmp/gossil-delta-decoder-supplement-20261117/fixtures/header-wrap32-zero/home",
+      "TMPDIR": "/tmp/gossil-delta-decoder-supplement-20261117/fixtures/header-wrap32-zero/home"
+    },
+    "timeout_seconds": 3,
+    "seconds": 0.013154,
+    "exit_code": 0,
+    "status": "accepted",
+    "stdout_hex": "",
+    "stderr_hex": "",
+    "stdout_utf8": "",
+    "stderr_utf8": "",
+    "before": {
+      "origin": {
+        "kind": "file",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "hex": ""
+      },
+      "delta": {
+        "kind": "file",
+        "bytes": 9,
+        "sha256": "5765c5ee53221ab832259a743c25f455d5c57e3f50966cbdf2e14ecadc7e750a",
+        "hex": "3430303030300a303b"
+      },
+      "target": {
+        "kind": "file",
+        "bytes": 17,
+        "sha256": "75bd38e7b17618a8eca95f4eaefe6449191b0bb210a6ad78a1fb6fd29a8c820e",
+        "hex": "505245534552564500544152474554ff0a"
+      }
+    },
+    "after": {
+      "origin": {
+        "kind": "file",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "hex": ""
+      },
+      "delta": {
+        "kind": "file",
+        "bytes": 9,
+        "sha256": "5765c5ee53221ab832259a743c25f455d5c57e3f50966cbdf2e14ecadc7e750a",
+        "hex": "3430303030300a303b"
+      },
+      "target": {
+        "kind": "file",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "hex": ""
+      }
+    },
+    "target_preserved": false,
+    "notes": [
+      "Original corpus not-run classification remains unchanged. This separate execution only advertises wrapped0/1 to C."
+    ],
+    "source_derived_expected_hex": "",
+    "observed_bytes_equal_source_derived_expectation": true,
+    "fixture_directory": "/tmp/gossil-delta-decoder-supplement-20261117/fixtures/header-wrap32-zero"
+  },
+  {
+    "id": "header-wrap32-one",
+    "kind": "separate-previously-unexecuted-wrapped-header-supplement",
+    "command": [
+      "jlog",
+      "run",
+      "fossil",
+      "test-delta-apply",
+      "/tmp/gossil-delta-decoder-supplement-20261117/fixtures/header-wrap32-one/origin.bin",
+      "/tmp/gossil-delta-decoder-supplement-20261117/fixtures/header-wrap32-one/delta.bin",
+      "/tmp/gossil-delta-decoder-supplement-20261117/fixtures/header-wrap32-one/target.bin"
+    ],
+    "cwd": "/Users/rahul/Projects/gossil",
+    "environment": {
+      "HOME": "/tmp/gossil-delta-decoder-supplement-20261117/fixtures/header-wrap32-one/home",
+      "FOSSIL_HOME": "/tmp/gossil-delta-decoder-supplement-20261117/fixtures/header-wrap32-one/home",
+      "TMPDIR": "/tmp/gossil-delta-decoder-supplement-20261117/fixtures/header-wrap32-one/home"
+    },
+    "timeout_seconds": 3,
+    "seconds": 0.016157,
+    "exit_code": 1,
+    "status": "rejected",
+    "stdout_hex": "",
+    "stderr_hex": "44656c7461206170706c69636174696f6e206661696c65642e0a",
+    "stdout_utf8": "",
+    "stderr_utf8": "Delta application failed.\n",
+    "before": {
+      "origin": {
+        "kind": "file",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "hex": ""
+      },
+      "delta": {
+        "kind": "file",
+        "bytes": 9,
+        "sha256": "b9b7c4cc2dc83d3a3119351094549f5da96df22154cf33050c7751c3d4b2bcb2",
+        "hex": "3430303030310a303b"
+      },
+      "target": {
+        "kind": "file",
+        "bytes": 17,
+        "sha256": "75bd38e7b17618a8eca95f4eaefe6449191b0bb210a6ad78a1fb6fd29a8c820e",
+        "hex": "505245534552564500544152474554ff0a"
+      }
+    },
+    "after": {
+      "origin": {
+        "kind": "file",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "hex": ""
+      },
+      "delta": {
+        "kind": "file",
+        "bytes": 9,
+        "sha256": "b9b7c4cc2dc83d3a3119351094549f5da96df22154cf33050c7751c3d4b2bcb2",
+        "hex": "3430303030310a303b"
+      },
+      "target": {
+        "kind": "file",
+        "bytes": 17,
+        "sha256": "75bd38e7b17618a8eca95f4eaefe6449191b0bb210a6ad78a1fb6fd29a8c820e",
+        "hex": "505245534552564500544152474554ff0a"
+      }
+    },
+    "target_preserved": true,
+    "notes": [
+      "Original corpus not-run classification remains unchanged. This separate execution only advertises wrapped0/1 to C."
+    ],
+    "fixture_directory": "/tmp/gossil-delta-decoder-supplement-20261117/fixtures/header-wrap32-one"
+  },
+  {
+    "id": "arity-zero",
+    "kind": "CLI-framing-path-alias",
+    "command": [
+      "jlog",
+      "run",
+      "fossil",
+      "test-delta-apply"
+    ],
+    "cwd": "/Users/rahul/Projects/gossil",
+    "environment": {
+      "HOME": "/tmp/gossil-delta-decoder-supplement-20261117/fixtures/arity-zero/home",
+      "FOSSIL_HOME": "/tmp/gossil-delta-decoder-supplement-20261117/fixtures/arity-zero/home",
+      "TMPDIR": "/tmp/gossil-delta-decoder-supplement-20261117/fixtures/arity-zero/home"
+    },
+    "timeout_seconds": 3,
+    "seconds": 0.021689,
+    "exit_code": 1,
+    "status": "rejected",
+    "stdout_hex": "",
+    "stderr_hex": "55736167653a20666f7373696c20746573742d64656c74612d6170706c79204f524947494e2044454c5441205441524745540a",
+    "stdout_utf8": "",
+    "stderr_utf8": "Usage: fossil test-delta-apply ORIGIN DELTA TARGET\n",
+    "before": {
+      "origin": {
+        "kind": "file",
+        "bytes": 3,
+        "sha256": "b5d4045c3f466fa91fe2cc6abe79232a1a57cdf104f7a26e716e0a1e2789df78",
+        "hex": "414243"
+      },
+      "delta": {
+        "kind": "file",
+        "bytes": 14,
+        "sha256": "0723cf3cd196ce562f46539d7daab1998ccecac654c54d9b7d7e702e041b3f7b",
+        "hex": "330a333a5800ff314f304678303b"
+      },
+      "target": {
+        "kind": "file",
+        "bytes": 17,
+        "sha256": "75bd38e7b17618a8eca95f4eaefe6449191b0bb210a6ad78a1fb6fd29a8c820e",
+        "hex": "505245534552564500544152474554ff0a"
+      }
+    },
+    "after": {
+      "origin": {
+        "kind": "file",
+        "bytes": 3,
+        "sha256": "b5d4045c3f466fa91fe2cc6abe79232a1a57cdf104f7a26e716e0a1e2789df78",
+        "hex": "414243"
+      },
+      "delta": {
+        "kind": "file",
+        "bytes": 14,
+        "sha256": "0723cf3cd196ce562f46539d7daab1998ccecac654c54d9b7d7e702e041b3f7b",
+        "hex": "330a333a5800ff314f304678303b"
+      },
+      "target": {
+        "kind": "file",
+        "bytes": 17,
+        "sha256": "75bd38e7b17618a8eca95f4eaefe6449191b0bb210a6ad78a1fb6fd29a8c820e",
+        "hex": "505245534552564500544152474554ff0a"
+      }
+    },
+    "target_preserved": true,
+    "notes": [
+      "Watch snapshots use exact paths and bytes; no error normalization."
+    ],
+    "fixture_directory": "/tmp/gossil-delta-decoder-supplement-20261117/fixtures/arity-zero"
+  },
+  {
+    "id": "arity-one",
+    "kind": "CLI-framing-path-alias",
+    "command": [
+      "jlog",
+      "run",
+      "fossil",
+      "test-delta-apply",
+      "/tmp/gossil-delta-decoder-supplement-20261117/fixtures/arity-one/origin with spaces.bin"
+    ],
+    "cwd": "/Users/rahul/Projects/gossil",
+    "environment": {
+      "HOME": "/tmp/gossil-delta-decoder-supplement-20261117/fixtures/arity-one/home",
+      "FOSSIL_HOME": "/tmp/gossil-delta-decoder-supplement-20261117/fixtures/arity-one/home",
+      "TMPDIR": "/tmp/gossil-delta-decoder-supplement-20261117/fixtures/arity-one/home"
+    },
+    "timeout_seconds": 3,
+    "seconds": 0.018847,
+    "exit_code": 1,
+    "status": "rejected",
+    "stdout_hex": "",
+    "stderr_hex": "55736167653a20666f7373696c20746573742d64656c74612d6170706c79204f524947494e2044454c5441205441524745540a",
+    "stdout_utf8": "",
+    "stderr_utf8": "Usage: fossil test-delta-apply ORIGIN DELTA TARGET\n",
+    "before": {
+      "origin": {
+        "kind": "file",
+        "bytes": 3,
+        "sha256": "b5d4045c3f466fa91fe2cc6abe79232a1a57cdf104f7a26e716e0a1e2789df78",
+        "hex": "414243"
+      },
+      "delta": {
+        "kind": "file",
+        "bytes": 14,
+        "sha256": "0723cf3cd196ce562f46539d7daab1998ccecac654c54d9b7d7e702e041b3f7b",
+        "hex": "330a333a5800ff314f304678303b"
+      },
+      "target": {
+        "kind": "file",
+        "bytes": 17,
+        "sha256": "75bd38e7b17618a8eca95f4eaefe6449191b0bb210a6ad78a1fb6fd29a8c820e",
+        "hex": "505245534552564500544152474554ff0a"
+      }
+    },
+    "after": {
+      "origin": {
+        "kind": "file",
+        "bytes": 3,
+        "sha256": "b5d4045c3f466fa91fe2cc6abe79232a1a57cdf104f7a26e716e0a1e2789df78",
+        "hex": "414243"
+      },
+      "delta": {
+        "kind": "file",
+        "bytes": 14,
+        "sha256": "0723cf3cd196ce562f46539d7daab1998ccecac654c54d9b7d7e702e041b3f7b",
+        "hex": "330a333a5800ff314f304678303b"
+      },
+      "target": {
+        "kind": "file",
+        "bytes": 17,
+        "sha256": "75bd38e7b17618a8eca95f4eaefe6449191b0bb210a6ad78a1fb6fd29a8c820e",
+        "hex": "505245534552564500544152474554ff0a"
+      }
+    },
+    "target_preserved": true,
+    "notes": [
+      "Watch snapshots use exact paths and bytes; no error normalization."
+    ],
+    "fixture_directory": "/tmp/gossil-delta-decoder-supplement-20261117/fixtures/arity-one"
+  },
+  {
+    "id": "arity-two",
+    "kind": "CLI-framing-path-alias",
+    "command": [
+      "jlog",
+      "run",
+      "fossil",
+      "test-delta-apply",
+      "/tmp/gossil-delta-decoder-supplement-20261117/fixtures/arity-two/origin with spaces.bin",
+      "/tmp/gossil-delta-decoder-supplement-20261117/fixtures/arity-two/delta with spaces.bin"
+    ],
+    "cwd": "/Users/rahul/Projects/gossil",
+    "environment": {
+      "HOME": "/tmp/gossil-delta-decoder-supplement-20261117/fixtures/arity-two/home",
+      "FOSSIL_HOME": "/tmp/gossil-delta-decoder-supplement-20261117/fixtures/arity-two/home",
+      "TMPDIR": "/tmp/gossil-delta-decoder-supplement-20261117/fixtures/arity-two/home"
+    },
+    "timeout_seconds": 3,
+    "seconds": 0.020392,
+    "exit_code": 1,
+    "status": "rejected",
+    "stdout_hex": "",
+    "stderr_hex": "55736167653a20666f7373696c20746573742d64656c74612d6170706c79204f524947494e2044454c5441205441524745540a",
+    "stdout_utf8": "",
+    "stderr_utf8": "Usage: fossil test-delta-apply ORIGIN DELTA TARGET\n",
+    "before": {
+      "origin": {
+        "kind": "file",
+        "bytes": 3,
+        "sha256": "b5d4045c3f466fa91fe2cc6abe79232a1a57cdf104f7a26e716e0a1e2789df78",
+        "hex": "414243"
+      },
+      "delta": {
+        "kind": "file",
+        "bytes": 14,
+        "sha256": "0723cf3cd196ce562f46539d7daab1998ccecac654c54d9b7d7e702e041b3f7b",
+        "hex": "330a333a5800ff314f304678303b"
+      },
+      "target": {
+        "kind": "file",
+        "bytes": 17,
+        "sha256": "75bd38e7b17618a8eca95f4eaefe6449191b0bb210a6ad78a1fb6fd29a8c820e",
+        "hex": "505245534552564500544152474554ff0a"
+      }
+    },
+    "after": {
+      "origin": {
+        "kind": "file",
+        "bytes": 3,
+        "sha256": "b5d4045c3f466fa91fe2cc6abe79232a1a57cdf104f7a26e716e0a1e2789df78",
+        "hex": "414243"
+      },
+      "delta": {
+        "kind": "file",
+        "bytes": 14,
+        "sha256": "0723cf3cd196ce562f46539d7daab1998ccecac654c54d9b7d7e702e041b3f7b",
+        "hex": "330a333a5800ff314f304678303b"
+      },
+      "target": {
+        "kind": "file",
+        "bytes": 17,
+        "sha256": "75bd38e7b17618a8eca95f4eaefe6449191b0bb210a6ad78a1fb6fd29a8c820e",
+        "hex": "505245534552564500544152474554ff0a"
+      }
+    },
+    "target_preserved": true,
+    "notes": [
+      "Watch snapshots use exact paths and bytes; no error normalization."
+    ],
+    "fixture_directory": "/tmp/gossil-delta-decoder-supplement-20261117/fixtures/arity-two"
+  },
+  {
+    "id": "arity-extra",
+    "kind": "CLI-framing-path-alias",
+    "command": [
+      "jlog",
+      "run",
+      "fossil",
+      "test-delta-apply",
+      "/tmp/gossil-delta-decoder-supplement-20261117/fixtures/arity-extra/origin with spaces.bin",
+      "/tmp/gossil-delta-decoder-supplement-20261117/fixtures/arity-extra/delta with spaces.bin",
+      "/tmp/gossil-delta-decoder-supplement-20261117/fixtures/arity-extra/target with spaces.bin",
+      "/tmp/gossil-delta-decoder-supplement-20261117/fixtures/arity-extra/extra.bin"
+    ],
+    "cwd": "/Users/rahul/Projects/gossil",
+    "environment": {
+      "HOME": "/tmp/gossil-delta-decoder-supplement-20261117/fixtures/arity-extra/home",
+      "FOSSIL_HOME": "/tmp/gossil-delta-decoder-supplement-20261117/fixtures/arity-extra/home",
+      "TMPDIR": "/tmp/gossil-delta-decoder-supplement-20261117/fixtures/arity-extra/home"
+    },
+    "timeout_seconds": 3,
+    "seconds": 0.025932,
+    "exit_code": 1,
+    "status": "rejected",
+    "stdout_hex": "",
+    "stderr_hex": "55736167653a20666f7373696c20746573742d64656c74612d6170706c79204f524947494e2044454c5441205441524745540a",
+    "stdout_utf8": "",
+    "stderr_utf8": "Usage: fossil test-delta-apply ORIGIN DELTA TARGET\n",
+    "before": {
+      "origin": {
+        "kind": "file",
+        "bytes": 3,
+        "sha256": "b5d4045c3f466fa91fe2cc6abe79232a1a57cdf104f7a26e716e0a1e2789df78",
+        "hex": "414243"
+      },
+      "delta": {
+        "kind": "file",
+        "bytes": 14,
+        "sha256": "0723cf3cd196ce562f46539d7daab1998ccecac654c54d9b7d7e702e041b3f7b",
+        "hex": "330a333a5800ff314f304678303b"
+      },
+      "target": {
+        "kind": "file",
+        "bytes": 17,
+        "sha256": "75bd38e7b17618a8eca95f4eaefe6449191b0bb210a6ad78a1fb6fd29a8c820e",
+        "hex": "505245534552564500544152474554ff0a"
+      }
+    },
+    "after": {
+      "origin": {
+        "kind": "file",
+        "bytes": 3,
+        "sha256": "b5d4045c3f466fa91fe2cc6abe79232a1a57cdf104f7a26e716e0a1e2789df78",
+        "hex": "414243"
+      },
+      "delta": {
+        "kind": "file",
+        "bytes": 14,
+        "sha256": "0723cf3cd196ce562f46539d7daab1998ccecac654c54d9b7d7e702e041b3f7b",
+        "hex": "330a333a5800ff314f304678303b"
+      },
+      "target": {
+        "kind": "file",
+        "bytes": 17,
+        "sha256": "75bd38e7b17618a8eca95f4eaefe6449191b0bb210a6ad78a1fb6fd29a8c820e",
+        "hex": "505245534552564500544152474554ff0a"
+      }
+    },
+    "target_preserved": true,
+    "notes": [
+      "Watch snapshots use exact paths and bytes; no error normalization."
+    ],
+    "fixture_directory": "/tmp/gossil-delta-decoder-supplement-20261117/fixtures/arity-extra"
+  },
+  {
+    "id": "missing-origin",
+    "kind": "CLI-framing-path-alias",
+    "command": [
+      "jlog",
+      "run",
+      "fossil",
+      "test-delta-apply",
+      "/tmp/gossil-delta-decoder-supplement-20261117/fixtures/missing-origin/origin with spaces.bin",
+      "/tmp/gossil-delta-decoder-supplement-20261117/fixtures/missing-origin/delta with spaces.bin",
+      "/tmp/gossil-delta-decoder-supplement-20261117/fixtures/missing-origin/target with spaces.bin"
+    ],
+    "cwd": "/Users/rahul/Projects/gossil",
+    "environment": {
+      "HOME": "/tmp/gossil-delta-decoder-supplement-20261117/fixtures/missing-origin/home",
+      "FOSSIL_HOME": "/tmp/gossil-delta-decoder-supplement-20261117/fixtures/missing-origin/home",
+      "TMPDIR": "/tmp/gossil-delta-decoder-supplement-20261117/fixtures/missing-origin/home"
+    },
+    "timeout_seconds": 3,
+    "seconds": 0.018933,
+    "exit_code": 1,
+    "status": "rejected",
+    "stdout_hex": "",
+    "stderr_hex": "6e6f20737563682066696c653a202f746d702f676f7373696c2d64656c74612d6465636f6465722d737570706c656d656e742d32303236313131372f66697874757265732f6d697373696e672d6f726967696e2f6f726967696e2077697468207370616365732e62696e0a",
+    "stdout_utf8": "",
+    "stderr_utf8": "no such file: /tmp/gossil-delta-decoder-supplement-20261117/fixtures/missing-origin/origin with spaces.bin\n",
+    "before": {
+      "origin": {
+        "kind": "missing"
+      },
+      "delta": {
+        "kind": "file",
+        "bytes": 14,
+        "sha256": "0723cf3cd196ce562f46539d7daab1998ccecac654c54d9b7d7e702e041b3f7b",
+        "hex": "330a333a5800ff314f304678303b"
+      },
+      "target": {
+        "kind": "file",
+        "bytes": 17,
+        "sha256": "75bd38e7b17618a8eca95f4eaefe6449191b0bb210a6ad78a1fb6fd29a8c820e",
+        "hex": "505245534552564500544152474554ff0a"
+      }
+    },
+    "after": {
+      "origin": {
+        "kind": "missing"
+      },
+      "delta": {
+        "kind": "file",
+        "bytes": 14,
+        "sha256": "0723cf3cd196ce562f46539d7daab1998ccecac654c54d9b7d7e702e041b3f7b",
+        "hex": "330a333a5800ff314f304678303b"
+      },
+      "target": {
+        "kind": "file",
+        "bytes": 17,
+        "sha256": "75bd38e7b17618a8eca95f4eaefe6449191b0bb210a6ad78a1fb6fd29a8c820e",
+        "hex": "505245534552564500544152474554ff0a"
+      }
+    },
+    "target_preserved": true,
+    "notes": [
+      "Watch snapshots use exact paths and bytes; no error normalization."
+    ],
+    "fixture_directory": "/tmp/gossil-delta-decoder-supplement-20261117/fixtures/missing-origin"
+  },
+  {
+    "id": "missing-delta",
+    "kind": "CLI-framing-path-alias",
+    "command": [
+      "jlog",
+      "run",
+      "fossil",
+      "test-delta-apply",
+      "/tmp/gossil-delta-decoder-supplement-20261117/fixtures/missing-delta/origin with spaces.bin",
+      "/tmp/gossil-delta-decoder-supplement-20261117/fixtures/missing-delta/delta with spaces.bin",
+      "/tmp/gossil-delta-decoder-supplement-20261117/fixtures/missing-delta/target with spaces.bin"
+    ],
+    "cwd": "/Users/rahul/Projects/gossil",
+    "environment": {
+      "HOME": "/tmp/gossil-delta-decoder-supplement-20261117/fixtures/missing-delta/home",
+      "FOSSIL_HOME": "/tmp/gossil-delta-decoder-supplement-20261117/fixtures/missing-delta/home",
+      "TMPDIR": "/tmp/gossil-delta-decoder-supplement-20261117/fixtures/missing-delta/home"
+    },
+    "timeout_seconds": 3,
+    "seconds": 0.04288,
+    "exit_code": 1,
+    "status": "rejected",
+    "stdout_hex": "",
+    "stderr_hex": "6e6f20737563682066696c653a202f746d702f676f7373696c2d64656c74612d6465636f6465722d737570706c656d656e742d32303236313131372f66697874757265732f6d697373696e672d64656c74612f64656c74612077697468207370616365732e62696e0a",
+    "stdout_utf8": "",
+    "stderr_utf8": "no such file: /tmp/gossil-delta-decoder-supplement-20261117/fixtures/missing-delta/delta with spaces.bin\n",
+    "before": {
+      "origin": {
+        "kind": "file",
+        "bytes": 3,
+        "sha256": "b5d4045c3f466fa91fe2cc6abe79232a1a57cdf104f7a26e716e0a1e2789df78",
+        "hex": "414243"
+      },
+      "delta": {
+        "kind": "missing"
+      },
+      "target": {
+        "kind": "file",
+        "bytes": 17,
+        "sha256": "75bd38e7b17618a8eca95f4eaefe6449191b0bb210a6ad78a1fb6fd29a8c820e",
+        "hex": "505245534552564500544152474554ff0a"
+      }
+    },
+    "after": {
+      "origin": {
+        "kind": "file",
+        "bytes": 3,
+        "sha256": "b5d4045c3f466fa91fe2cc6abe79232a1a57cdf104f7a26e716e0a1e2789df78",
+        "hex": "414243"
+      },
+      "delta": {
+        "kind": "missing"
+      },
+      "target": {
+        "kind": "file",
+        "bytes": 17,
+        "sha256": "75bd38e7b17618a8eca95f4eaefe6449191b0bb210a6ad78a1fb6fd29a8c820e",
+        "hex": "505245534552564500544152474554ff0a"
+      }
+    },
+    "target_preserved": true,
+    "notes": [
+      "Watch snapshots use exact paths and bytes; no error normalization."
+    ],
+    "fixture_directory": "/tmp/gossil-delta-decoder-supplement-20261117/fixtures/missing-delta"
+  },
+  {
+    "id": "target-directory",
+    "kind": "CLI-framing-path-alias",
+    "command": [
+      "jlog",
+      "run",
+      "fossil",
+      "test-delta-apply",
+      "/tmp/gossil-delta-decoder-supplement-20261117/fixtures/target-directory/origin with spaces.bin",
+      "/tmp/gossil-delta-decoder-supplement-20261117/fixtures/target-directory/delta with spaces.bin",
+      "/tmp/gossil-delta-decoder-supplement-20261117/fixtures/target-directory/target with spaces.bin"
+    ],
+    "cwd": "/Users/rahul/Projects/gossil",
+    "environment": {
+      "HOME": "/tmp/gossil-delta-decoder-supplement-20261117/fixtures/target-directory/home",
+      "FOSSIL_HOME": "/tmp/gossil-delta-decoder-supplement-20261117/fixtures/target-directory/home",
+      "TMPDIR": "/tmp/gossil-delta-decoder-supplement-20261117/fixtures/target-directory/home"
+    },
+    "timeout_seconds": 3,
+    "seconds": 0.032387,
+    "exit_code": 1,
+    "status": "rejected",
+    "stdout_hex": "",
+    "stderr_hex": "756e61626c6520746f206f70656e2066696c6520222f746d702f676f7373696c2d64656c74612d6465636f6465722d737570706c656d656e742d32303236313131372f66697874757265732f7461726765742d6469726563746f72792f7461726765742077697468207370616365732e62696e2220666f722077726974696e670a",
+    "stdout_utf8": "",
+    "stderr_utf8": "unable to open file \"/tmp/gossil-delta-decoder-supplement-20261117/fixtures/target-directory/target with spaces.bin\" for writing\n",
+    "before": {
+      "origin": {
+        "kind": "file",
+        "bytes": 3,
+        "sha256": "b5d4045c3f466fa91fe2cc6abe79232a1a57cdf104f7a26e716e0a1e2789df78",
+        "hex": "414243"
+      },
+      "delta": {
+        "kind": "file",
+        "bytes": 14,
+        "sha256": "0723cf3cd196ce562f46539d7daab1998ccecac654c54d9b7d7e702e041b3f7b",
+        "hex": "330a333a5800ff314f304678303b"
+      },
+      "target": {
+        "kind": "directory",
+        "children": {
+          "marker.bin": {
+            "sha256": "75bd38e7b17618a8eca95f4eaefe6449191b0bb210a6ad78a1fb6fd29a8c820e",
+            "hex": "505245534552564500544152474554ff0a"
+          }
+        }
+      }
+    },
+    "after": {
+      "origin": {
+        "kind": "file",
+        "bytes": 3,
+        "sha256": "b5d4045c3f466fa91fe2cc6abe79232a1a57cdf104f7a26e716e0a1e2789df78",
+        "hex": "414243"
+      },
+      "delta": {
+        "kind": "file",
+        "bytes": 14,
+        "sha256": "0723cf3cd196ce562f46539d7daab1998ccecac654c54d9b7d7e702e041b3f7b",
+        "hex": "330a333a5800ff314f304678303b"
+      },
+      "target": {
+        "kind": "directory",
+        "children": {
+          "marker.bin": {
+            "sha256": "75bd38e7b17618a8eca95f4eaefe6449191b0bb210a6ad78a1fb6fd29a8c820e",
+            "hex": "505245534552564500544152474554ff0a"
+          }
+        }
+      }
+    },
+    "target_preserved": true,
+    "notes": [
+      "Watch snapshots use exact paths and bytes; no error normalization."
+    ],
+    "fixture_directory": "/tmp/gossil-delta-decoder-supplement-20261117/fixtures/target-directory"
+  },
+  {
+    "id": "alias-origin",
+    "kind": "CLI-framing-path-alias",
+    "command": [
+      "jlog",
+      "run",
+      "fossil",
+      "test-delta-apply",
+      "/tmp/gossil-delta-decoder-supplement-20261117/fixtures/alias-origin/origin with spaces.bin",
+      "/tmp/gossil-delta-decoder-supplement-20261117/fixtures/alias-origin/delta with spaces.bin",
+      "/tmp/gossil-delta-decoder-supplement-20261117/fixtures/alias-origin/origin with spaces.bin"
+    ],
+    "cwd": "/Users/rahul/Projects/gossil",
+    "environment": {
+      "HOME": "/tmp/gossil-delta-decoder-supplement-20261117/fixtures/alias-origin/home",
+      "FOSSIL_HOME": "/tmp/gossil-delta-decoder-supplement-20261117/fixtures/alias-origin/home",
+      "TMPDIR": "/tmp/gossil-delta-decoder-supplement-20261117/fixtures/alias-origin/home"
+    },
+    "timeout_seconds": 3,
+    "seconds": 0.019454,
+    "exit_code": 0,
+    "status": "accepted",
+    "stdout_hex": "",
+    "stderr_hex": "",
+    "stdout_utf8": "",
+    "stderr_utf8": "",
+    "before": {
+      "origin": {
+        "kind": "file",
+        "bytes": 3,
+        "sha256": "b5d4045c3f466fa91fe2cc6abe79232a1a57cdf104f7a26e716e0a1e2789df78",
+        "hex": "414243"
+      },
+      "delta": {
+        "kind": "file",
+        "bytes": 14,
+        "sha256": "0723cf3cd196ce562f46539d7daab1998ccecac654c54d9b7d7e702e041b3f7b",
+        "hex": "330a333a5800ff314f304678303b"
+      },
+      "target": {
+        "kind": "file",
+        "bytes": 3,
+        "sha256": "b5d4045c3f466fa91fe2cc6abe79232a1a57cdf104f7a26e716e0a1e2789df78",
+        "hex": "414243"
+      }
+    },
+    "after": {
+      "origin": {
+        "kind": "file",
+        "bytes": 3,
+        "sha256": "6cdb1aa4479125c2746ffa3b9df3e956ff479d5bd1882b1437c06c1a8c7a3c1a",
+        "hex": "5800ff"
+      },
+      "delta": {
+        "kind": "file",
+        "bytes": 14,
+        "sha256": "0723cf3cd196ce562f46539d7daab1998ccecac654c54d9b7d7e702e041b3f7b",
+        "hex": "330a333a5800ff314f304678303b"
+      },
+      "target": {
+        "kind": "file",
+        "bytes": 3,
+        "sha256": "6cdb1aa4479125c2746ffa3b9df3e956ff479d5bd1882b1437c06c1a8c7a3c1a",
+        "hex": "5800ff"
+      }
+    },
+    "target_preserved": false,
+    "notes": [
+      "Watch snapshots use exact paths and bytes; no error normalization."
+    ],
+    "source_derived_expected_hex": "5800ff",
+    "observed_bytes_equal_source_derived_expectation": true,
+    "fixture_directory": "/tmp/gossil-delta-decoder-supplement-20261117/fixtures/alias-origin"
+  },
+  {
+    "id": "alias-delta",
+    "kind": "CLI-framing-path-alias",
+    "command": [
+      "jlog",
+      "run",
+      "fossil",
+      "test-delta-apply",
+      "/tmp/gossil-delta-decoder-supplement-20261117/fixtures/alias-delta/origin with spaces.bin",
+      "/tmp/gossil-delta-decoder-supplement-20261117/fixtures/alias-delta/delta with spaces.bin",
+      "/tmp/gossil-delta-decoder-supplement-20261117/fixtures/alias-delta/delta with spaces.bin"
+    ],
+    "cwd": "/Users/rahul/Projects/gossil",
+    "environment": {
+      "HOME": "/tmp/gossil-delta-decoder-supplement-20261117/fixtures/alias-delta/home",
+      "FOSSIL_HOME": "/tmp/gossil-delta-decoder-supplement-20261117/fixtures/alias-delta/home",
+      "TMPDIR": "/tmp/gossil-delta-decoder-supplement-20261117/fixtures/alias-delta/home"
+    },
+    "timeout_seconds": 3,
+    "seconds": 0.02915,
+    "exit_code": 0,
+    "status": "accepted",
+    "stdout_hex": "",
+    "stderr_hex": "",
+    "stdout_utf8": "",
+    "stderr_utf8": "",
+    "before": {
+      "origin": {
+        "kind": "file",
+        "bytes": 3,
+        "sha256": "b5d4045c3f466fa91fe2cc6abe79232a1a57cdf104f7a26e716e0a1e2789df78",
+        "hex": "414243"
+      },
+      "delta": {
+        "kind": "file",
+        "bytes": 14,
+        "sha256": "0723cf3cd196ce562f46539d7daab1998ccecac654c54d9b7d7e702e041b3f7b",
+        "hex": "330a333a5800ff314f304678303b"
+      },
+      "target": {
+        "kind": "file",
+        "bytes": 14,
+        "sha256": "0723cf3cd196ce562f46539d7daab1998ccecac654c54d9b7d7e702e041b3f7b",
+        "hex": "330a333a5800ff314f304678303b"
+      }
+    },
+    "after": {
+      "origin": {
+        "kind": "file",
+        "bytes": 3,
+        "sha256": "b5d4045c3f466fa91fe2cc6abe79232a1a57cdf104f7a26e716e0a1e2789df78",
+        "hex": "414243"
+      },
+      "delta": {
+        "kind": "file",
+        "bytes": 3,
+        "sha256": "6cdb1aa4479125c2746ffa3b9df3e956ff479d5bd1882b1437c06c1a8c7a3c1a",
+        "hex": "5800ff"
+      },
+      "target": {
+        "kind": "file",
+        "bytes": 3,
+        "sha256": "6cdb1aa4479125c2746ffa3b9df3e956ff479d5bd1882b1437c06c1a8c7a3c1a",
+        "hex": "5800ff"
+      }
+    },
+    "target_preserved": false,
+    "notes": [
+      "Watch snapshots use exact paths and bytes; no error normalization."
+    ],
+    "source_derived_expected_hex": "5800ff",
+    "observed_bytes_equal_source_derived_expectation": true,
+    "fixture_directory": "/tmp/gossil-delta-decoder-supplement-20261117/fixtures/alias-delta"
+  },
+  {
+    "id": "paths with spaces",
+    "kind": "CLI-framing-path-alias",
+    "command": [
+      "jlog",
+      "run",
+      "fossil",
+      "test-delta-apply",
+      "/tmp/gossil-delta-decoder-supplement-20261117/fixtures/paths with spaces/origin with spaces.bin",
+      "/tmp/gossil-delta-decoder-supplement-20261117/fixtures/paths with spaces/delta with spaces.bin",
+      "/tmp/gossil-delta-decoder-supplement-20261117/fixtures/paths with spaces/target with spaces.bin"
+    ],
+    "cwd": "/Users/rahul/Projects/gossil",
+    "environment": {
+      "HOME": "/tmp/gossil-delta-decoder-supplement-20261117/fixtures/paths with spaces/home",
+      "FOSSIL_HOME": "/tmp/gossil-delta-decoder-supplement-20261117/fixtures/paths with spaces/home",
+      "TMPDIR": "/tmp/gossil-delta-decoder-supplement-20261117/fixtures/paths with spaces/home"
+    },
+    "timeout_seconds": 3,
+    "seconds": 0.03347,
+    "exit_code": 0,
+    "status": "accepted",
+    "stdout_hex": "",
+    "stderr_hex": "",
+    "stdout_utf8": "",
+    "stderr_utf8": "",
+    "before": {
+      "origin": {
+        "kind": "file",
+        "bytes": 3,
+        "sha256": "b5d4045c3f466fa91fe2cc6abe79232a1a57cdf104f7a26e716e0a1e2789df78",
+        "hex": "414243"
+      },
+      "delta": {
+        "kind": "file",
+        "bytes": 14,
+        "sha256": "0723cf3cd196ce562f46539d7daab1998ccecac654c54d9b7d7e702e041b3f7b",
+        "hex": "330a333a5800ff314f304678303b"
+      },
+      "target": {
+        "kind": "file",
+        "bytes": 17,
+        "sha256": "75bd38e7b17618a8eca95f4eaefe6449191b0bb210a6ad78a1fb6fd29a8c820e",
+        "hex": "505245534552564500544152474554ff0a"
+      }
+    },
+    "after": {
+      "origin": {
+        "kind": "file",
+        "bytes": 3,
+        "sha256": "b5d4045c3f466fa91fe2cc6abe79232a1a57cdf104f7a26e716e0a1e2789df78",
+        "hex": "414243"
+      },
+      "delta": {
+        "kind": "file",
+        "bytes": 14,
+        "sha256": "0723cf3cd196ce562f46539d7daab1998ccecac654c54d9b7d7e702e041b3f7b",
+        "hex": "330a333a5800ff314f304678303b"
+      },
+      "target": {
+        "kind": "file",
+        "bytes": 3,
+        "sha256": "6cdb1aa4479125c2746ffa3b9df3e956ff479d5bd1882b1437c06c1a8c7a3c1a",
+        "hex": "5800ff"
+      }
+    },
+    "target_preserved": false,
+    "notes": [
+      "Watch snapshots use exact paths and bytes; no error normalization."
+    ],
+    "source_derived_expected_hex": "5800ff",
+    "observed_bytes_equal_source_derived_expectation": true,
+    "fixture_directory": "/tmp/gossil-delta-decoder-supplement-20261117/fixtures/paths with spaces"
+  },
+  {
+    "id": "native-encoder-empty-source-tail-0",
+    "kind": "native-encoder-golden-checksum",
+    "command": [
+      "jlog",
+      "run",
+      "fossil",
+      "test-delta-create",
+      "/tmp/gossil-delta-decoder-supplement-20261117/fixtures/native-encoder-empty-source-tail-0/origin.bin",
+      "/tmp/gossil-delta-decoder-supplement-20261117/fixtures/native-encoder-empty-source-tail-0/target-input.bin",
+      "/tmp/gossil-delta-decoder-supplement-20261117/fixtures/native-encoder-empty-source-tail-0/delta-output.bin"
+    ],
+    "cwd": "/Users/rahul/Projects/gossil",
+    "environment": {
+      "HOME": "/tmp/gossil-delta-decoder-supplement-20261117/fixtures/native-encoder-empty-source-tail-0/home",
+      "FOSSIL_HOME": "/tmp/gossil-delta-decoder-supplement-20261117/fixtures/native-encoder-empty-source-tail-0/home",
+      "TMPDIR": "/tmp/gossil-delta-decoder-supplement-20261117/fixtures/native-encoder-empty-source-tail-0/home"
+    },
+    "timeout_seconds": 3,
+    "seconds": 0.018627,
+    "exit_code": 0,
+    "status": "accepted",
+    "stdout_hex": "",
+    "stderr_hex": "",
+    "stdout_utf8": "",
+    "stderr_utf8": "",
+    "before": {
+      "origin": {
+        "kind": "file",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "hex": ""
+      },
+      "target_input": {
+        "kind": "file",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "hex": ""
+      },
+      "target": {
+        "kind": "file",
+        "bytes": 17,
+        "sha256": "75bd38e7b17618a8eca95f4eaefe6449191b0bb210a6ad78a1fb6fd29a8c820e",
+        "hex": "505245534552564500544152474554ff0a"
+      }
+    },
+    "after": {
+      "origin": {
+        "kind": "file",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "hex": ""
+      },
+      "target_input": {
+        "kind": "file",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "hex": ""
+      },
+      "target": {
+        "kind": "file",
+        "bytes": 6,
+        "sha256": "1e03944824055e9be5adbbd3055d698a6de815ae21668aba3ea5f289619b63b3",
+        "hex": "300a303a303b"
+      }
+    },
+    "target_preserved": false,
+    "notes": [
+      "Exact native C encoded delta compared to independent source-derived Python literal/header/checksum helper; validates these9vectors, not full encoder implementation."
+    ],
+    "source_derived_expected_hex": "300a303a303b",
+    "observed_bytes_equal_source_derived_expectation": true,
+    "fixture_directory": "/tmp/gossil-delta-decoder-supplement-20261117/fixtures/native-encoder-empty-source-tail-0",
+    "source_derived_checksum_u32": 0
+  },
+  {
+    "id": "native-encoder-empty-source-tail-1",
+    "kind": "native-encoder-golden-checksum",
+    "command": [
+      "jlog",
+      "run",
+      "fossil",
+      "test-delta-create",
+      "/tmp/gossil-delta-decoder-supplement-20261117/fixtures/native-encoder-empty-source-tail-1/origin.bin",
+      "/tmp/gossil-delta-decoder-supplement-20261117/fixtures/native-encoder-empty-source-tail-1/target-input.bin",
+      "/tmp/gossil-delta-decoder-supplement-20261117/fixtures/native-encoder-empty-source-tail-1/delta-output.bin"
+    ],
+    "cwd": "/Users/rahul/Projects/gossil",
+    "environment": {
+      "HOME": "/tmp/gossil-delta-decoder-supplement-20261117/fixtures/native-encoder-empty-source-tail-1/home",
+      "FOSSIL_HOME": "/tmp/gossil-delta-decoder-supplement-20261117/fixtures/native-encoder-empty-source-tail-1/home",
+      "TMPDIR": "/tmp/gossil-delta-decoder-supplement-20261117/fixtures/native-encoder-empty-source-tail-1/home"
+    },
+    "timeout_seconds": 3,
+    "seconds": 0.039383,
+    "exit_code": 0,
+    "status": "accepted",
+    "stdout_hex": "",
+    "stderr_hex": "",
+    "stdout_utf8": "",
+    "stderr_utf8": "",
+    "before": {
+      "origin": {
+        "kind": "file",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "hex": ""
+      },
+      "target_input": {
+        "kind": "file",
+        "bytes": 1,
+        "sha256": "a8100ae6aa1940d0b663bb31cd466142ebbdbd5187131b92d93818987832eb89",
+        "hex": "ff"
+      },
+      "target": {
+        "kind": "file",
+        "bytes": 17,
+        "sha256": "75bd38e7b17618a8eca95f4eaefe6449191b0bb210a6ad78a1fb6fd29a8c820e",
+        "hex": "505245534552564500544152474554ff0a"
+      }
+    },
+    "after": {
+      "origin": {
+        "kind": "file",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "hex": ""
+      },
+      "target_input": {
+        "kind": "file",
+        "bytes": 1,
+        "sha256": "a8100ae6aa1940d0b663bb31cd466142ebbdbd5187131b92d93818987832eb89",
+        "hex": "ff"
+      },
+      "target": {
+        "kind": "file",
+        "bytes": 12,
+        "sha256": "22c5ce3090d41b066f2df0e4cd5a17d52e600f06231b2274384bb39c13a4bab7",
+        "hex": "310a313aff337e303030303b"
+      }
+    },
+    "target_preserved": false,
+    "notes": [
+      "Exact native C encoded delta compared to independent source-derived Python literal/header/checksum helper; validates these9vectors, not full encoder implementation."
+    ],
+    "source_derived_expected_hex": "310a313aff337e303030303b",
+    "observed_bytes_equal_source_derived_expectation": true,
+    "fixture_directory": "/tmp/gossil-delta-decoder-supplement-20261117/fixtures/native-encoder-empty-source-tail-1",
+    "source_derived_checksum_u32": 4278190080
+  },
+  {
+    "id": "native-encoder-empty-source-tail-2",
+    "kind": "native-encoder-golden-checksum",
+    "command": [
+      "jlog",
+      "run",
+      "fossil",
+      "test-delta-create",
+      "/tmp/gossil-delta-decoder-supplement-20261117/fixtures/native-encoder-empty-source-tail-2/origin.bin",
+      "/tmp/gossil-delta-decoder-supplement-20261117/fixtures/native-encoder-empty-source-tail-2/target-input.bin",
+      "/tmp/gossil-delta-decoder-supplement-20261117/fixtures/native-encoder-empty-source-tail-2/delta-output.bin"
+    ],
+    "cwd": "/Users/rahul/Projects/gossil",
+    "environment": {
+      "HOME": "/tmp/gossil-delta-decoder-supplement-20261117/fixtures/native-encoder-empty-source-tail-2/home",
+      "FOSSIL_HOME": "/tmp/gossil-delta-decoder-supplement-20261117/fixtures/native-encoder-empty-source-tail-2/home",
+      "TMPDIR": "/tmp/gossil-delta-decoder-supplement-20261117/fixtures/native-encoder-empty-source-tail-2/home"
+    },
+    "timeout_seconds": 3,
+    "seconds": 0.021869,
+    "exit_code": 0,
+    "status": "accepted",
+    "stdout_hex": "",
+    "stderr_hex": "",
+    "stdout_utf8": "",
+    "stderr_utf8": "",
+    "before": {
+      "origin": {
+        "kind": "file",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "hex": ""
+      },
+      "target_input": {
+        "kind": "file",
+        "bytes": 2,
+        "sha256": "ea5dbf9596d187e9500f23e9a680109475341cf4e81f7e043f7d97152c10772f",
+        "hex": "ff00"
+      },
+      "target": {
+        "kind": "file",
+        "bytes": 17,
+        "sha256": "75bd38e7b17618a8eca95f4eaefe6449191b0bb210a6ad78a1fb6fd29a8c820e",
+        "hex": "505245534552564500544152474554ff0a"
+      }
+    },
+    "after": {
+      "origin": {
+        "kind": "file",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "hex": ""
+      },
+      "target_input": {
+        "kind": "file",
+        "bytes": 2,
+        "sha256": "ea5dbf9596d187e9500f23e9a680109475341cf4e81f7e043f7d97152c10772f",
+        "hex": "ff00"
+      },
+      "target": {
+        "kind": "file",
+        "bytes": 13,
+        "sha256": "66898e9d04125f3435be740d104314a48a3b0dc3b558dbc4e4e0503af82c440b",
+        "hex": "320a323aff00337e303030303b"
+      }
+    },
+    "target_preserved": false,
+    "notes": [
+      "Exact native C encoded delta compared to independent source-derived Python literal/header/checksum helper; validates these9vectors, not full encoder implementation."
+    ],
+    "source_derived_expected_hex": "320a323aff00337e303030303b",
+    "observed_bytes_equal_source_derived_expectation": true,
+    "fixture_directory": "/tmp/gossil-delta-decoder-supplement-20261117/fixtures/native-encoder-empty-source-tail-2",
+    "source_derived_checksum_u32": 4278190080
+  },
+  {
+    "id": "native-encoder-empty-source-tail-3",
+    "kind": "native-encoder-golden-checksum",
+    "command": [
+      "jlog",
+      "run",
+      "fossil",
+      "test-delta-create",
+      "/tmp/gossil-delta-decoder-supplement-20261117/fixtures/native-encoder-empty-source-tail-3/origin.bin",
+      "/tmp/gossil-delta-decoder-supplement-20261117/fixtures/native-encoder-empty-source-tail-3/target-input.bin",
+      "/tmp/gossil-delta-decoder-supplement-20261117/fixtures/native-encoder-empty-source-tail-3/delta-output.bin"
+    ],
+    "cwd": "/Users/rahul/Projects/gossil",
+    "environment": {
+      "HOME": "/tmp/gossil-delta-decoder-supplement-20261117/fixtures/native-encoder-empty-source-tail-3/home",
+      "FOSSIL_HOME": "/tmp/gossil-delta-decoder-supplement-20261117/fixtures/native-encoder-empty-source-tail-3/home",
+      "TMPDIR": "/tmp/gossil-delta-decoder-supplement-20261117/fixtures/native-encoder-empty-source-tail-3/home"
+    },
+    "timeout_seconds": 3,
+    "seconds": 0.048548,
+    "exit_code": 0,
+    "status": "accepted",
+    "stdout_hex": "",
+    "stderr_hex": "",
+    "stdout_utf8": "",
+    "stderr_utf8": "",
+    "before": {
+      "origin": {
+        "kind": "file",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "hex": ""
+      },
+      "target_input": {
+        "kind": "file",
+        "bytes": 3,
+        "sha256": "3d717443decdcd5a14f4827204c34cde42c540fd3fa3cd555bebc9a0f2b83bd6",
+        "hex": "ff003b"
+      },
+      "target": {
+        "kind": "file",
+        "bytes": 17,
+        "sha256": "75bd38e7b17618a8eca95f4eaefe6449191b0bb210a6ad78a1fb6fd29a8c820e",
+        "hex": "505245534552564500544152474554ff0a"
+      }
+    },
+    "after": {
+      "origin": {
+        "kind": "file",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "hex": ""
+      },
+      "target_input": {
+        "kind": "file",
+        "bytes": 3,
+        "sha256": "3d717443decdcd5a14f4827204c34cde42c540fd3fa3cd555bebc9a0f2b83bd6",
+        "hex": "ff003b"
+      },
+      "target": {
+        "kind": "file",
+        "bytes": 14,
+        "sha256": "899ac9b48239e46aa3be5761524dd1a3d401d9dc6141369b52f036ded5e19a03",
+        "hex": "330a333aff003b337e303368303b"
+      }
+    },
+    "target_preserved": false,
+    "notes": [
+      "Exact native C encoded delta compared to independent source-derived Python literal/header/checksum helper; validates these9vectors, not full encoder implementation."
+    ],
+    "source_derived_expected_hex": "330a333aff003b337e303368303b",
+    "observed_bytes_equal_source_derived_expectation": true,
+    "fixture_directory": "/tmp/gossil-delta-decoder-supplement-20261117/fixtures/native-encoder-empty-source-tail-3",
+    "source_derived_checksum_u32": 4278205184
+  },
+  {
+    "id": "native-encoder-empty-source-tail-4",
+    "kind": "native-encoder-golden-checksum",
+    "command": [
+      "jlog",
+      "run",
+      "fossil",
+      "test-delta-create",
+      "/tmp/gossil-delta-decoder-supplement-20261117/fixtures/native-encoder-empty-source-tail-4/origin.bin",
+      "/tmp/gossil-delta-decoder-supplement-20261117/fixtures/native-encoder-empty-source-tail-4/target-input.bin",
+      "/tmp/gossil-delta-decoder-supplement-20261117/fixtures/native-encoder-empty-source-tail-4/delta-output.bin"
+    ],
+    "cwd": "/Users/rahul/Projects/gossil",
+    "environment": {
+      "HOME": "/tmp/gossil-delta-decoder-supplement-20261117/fixtures/native-encoder-empty-source-tail-4/home",
+      "FOSSIL_HOME": "/tmp/gossil-delta-decoder-supplement-20261117/fixtures/native-encoder-empty-source-tail-4/home",
+      "TMPDIR": "/tmp/gossil-delta-decoder-supplement-20261117/fixtures/native-encoder-empty-source-tail-4/home"
+    },
+    "timeout_seconds": 3,
+    "seconds": 0.025328,
+    "exit_code": 0,
+    "status": "accepted",
+    "stdout_hex": "",
+    "stderr_hex": "",
+    "stdout_utf8": "",
+    "stderr_utf8": "",
+    "before": {
+      "origin": {
+        "kind": "file",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "hex": ""
+      },
+      "target_input": {
+        "kind": "file",
+        "bytes": 4,
+        "sha256": "c9f7ff1f287fcf1136933f76a3920273b9a21090499eaee652b17f048bebfc00",
+        "hex": "ff003b0a"
+      },
+      "target": {
+        "kind": "file",
+        "bytes": 17,
+        "sha256": "75bd38e7b17618a8eca95f4eaefe6449191b0bb210a6ad78a1fb6fd29a8c820e",
+        "hex": "505245534552564500544152474554ff0a"
+      }
+    },
+    "after": {
+      "origin": {
+        "kind": "file",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "hex": ""
+      },
+      "target_input": {
+        "kind": "file",
+        "bytes": 4,
+        "sha256": "c9f7ff1f287fcf1136933f76a3920273b9a21090499eaee652b17f048bebfc00",
+        "hex": "ff003b0a"
+      },
+      "target": {
+        "kind": "file",
+        "bytes": 15,
+        "sha256": "3add13d4130d01ce15e0220128d354802abe91d587bf9ea830edd3d4b6cf4645",
+        "hex": "340a343aff003b0a337e303368413b"
+      }
+    },
+    "target_preserved": false,
+    "notes": [
+      "Exact native C encoded delta compared to independent source-derived Python literal/header/checksum helper; validates these9vectors, not full encoder implementation."
+    ],
+    "source_derived_expected_hex": "340a343aff003b0a337e303368413b",
+    "observed_bytes_equal_source_derived_expectation": true,
+    "fixture_directory": "/tmp/gossil-delta-decoder-supplement-20261117/fixtures/native-encoder-empty-source-tail-4",
+    "source_derived_checksum_u32": 4278205194
+  },
+  {
+    "id": "native-encoder-empty-source-tail-5",
+    "kind": "native-encoder-golden-checksum",
+    "command": [
+      "jlog",
+      "run",
+      "fossil",
+      "test-delta-create",
+      "/tmp/gossil-delta-decoder-supplement-20261117/fixtures/native-encoder-empty-source-tail-5/origin.bin",
+      "/tmp/gossil-delta-decoder-supplement-20261117/fixtures/native-encoder-empty-source-tail-5/target-input.bin",
+      "/tmp/gossil-delta-decoder-supplement-20261117/fixtures/native-encoder-empty-source-tail-5/delta-output.bin"
+    ],
+    "cwd": "/Users/rahul/Projects/gossil",
+    "environment": {
+      "HOME": "/tmp/gossil-delta-decoder-supplement-20261117/fixtures/native-encoder-empty-source-tail-5/home",
+      "FOSSIL_HOME": "/tmp/gossil-delta-decoder-supplement-20261117/fixtures/native-encoder-empty-source-tail-5/home",
+      "TMPDIR": "/tmp/gossil-delta-decoder-supplement-20261117/fixtures/native-encoder-empty-source-tail-5/home"
+    },
+    "timeout_seconds": 3,
+    "seconds": 0.020479,
+    "exit_code": 0,
+    "status": "accepted",
+    "stdout_hex": "",
+    "stderr_hex": "",
+    "stdout_utf8": "",
+    "stderr_utf8": "",
+    "before": {
+      "origin": {
+        "kind": "file",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "hex": ""
+      },
+      "target_input": {
+        "kind": "file",
+        "bytes": 5,
+        "sha256": "540a8f410892edcfeb10a66377fe16f21cfe56d4f882cd32bcd72c69e0c46123",
+        "hex": "ff003b0a80"
+      },
+      "target": {
+        "kind": "file",
+        "bytes": 17,
+        "sha256": "75bd38e7b17618a8eca95f4eaefe6449191b0bb210a6ad78a1fb6fd29a8c820e",
+        "hex": "505245534552564500544152474554ff0a"
+      }
+    },
+    "after": {
+      "origin": {
+        "kind": "file",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "hex": ""
+      },
+      "target_input": {
+        "kind": "file",
+        "bytes": 5,
+        "sha256": "540a8f410892edcfeb10a66377fe16f21cfe56d4f882cd32bcd72c69e0c46123",
+        "hex": "ff003b0a80"
+      },
+      "target": {
+        "kind": "file",
+        "bytes": 16,
+        "sha256": "5e6f6dbbcb521fd925497653ef49f5e91a3fd8428b48a4948a5e22aef8f3b5e9",
+        "hex": "350a353aff003b0a80317e303368413b"
+      }
+    },
+    "target_preserved": false,
+    "notes": [
+      "Exact native C encoded delta compared to independent source-derived Python literal/header/checksum helper; validates these9vectors, not full encoder implementation."
+    ],
+    "source_derived_expected_hex": "350a353aff003b0a80317e303368413b",
+    "observed_bytes_equal_source_derived_expectation": true,
+    "fixture_directory": "/tmp/gossil-delta-decoder-supplement-20261117/fixtures/native-encoder-empty-source-tail-5",
+    "source_derived_checksum_u32": 2130721546
+  },
+  {
+    "id": "native-encoder-empty-source-tail-6",
+    "kind": "native-encoder-golden-checksum",
+    "command": [
+      "jlog",
+      "run",
+      "fossil",
+      "test-delta-create",
+      "/tmp/gossil-delta-decoder-supplement-20261117/fixtures/native-encoder-empty-source-tail-6/origin.bin",
+      "/tmp/gossil-delta-decoder-supplement-20261117/fixtures/native-encoder-empty-source-tail-6/target-input.bin",
+      "/tmp/gossil-delta-decoder-supplement-20261117/fixtures/native-encoder-empty-source-tail-6/delta-output.bin"
+    ],
+    "cwd": "/Users/rahul/Projects/gossil",
+    "environment": {
+      "HOME": "/tmp/gossil-delta-decoder-supplement-20261117/fixtures/native-encoder-empty-source-tail-6/home",
+      "FOSSIL_HOME": "/tmp/gossil-delta-decoder-supplement-20261117/fixtures/native-encoder-empty-source-tail-6/home",
+      "TMPDIR": "/tmp/gossil-delta-decoder-supplement-20261117/fixtures/native-encoder-empty-source-tail-6/home"
+    },
+    "timeout_seconds": 3,
+    "seconds": 0.022692,
+    "exit_code": 0,
+    "status": "accepted",
+    "stdout_hex": "",
+    "stderr_hex": "",
+    "stdout_utf8": "",
+    "stderr_utf8": "",
+    "before": {
+      "origin": {
+        "kind": "file",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "hex": ""
+      },
+      "target_input": {
+        "kind": "file",
+        "bytes": 6,
+        "sha256": "4d9e9352ef742da15e8840f69ef92051a5acf9c93d81cebca94796cd6e990f94",
+        "hex": "ff003b0a8040"
+      },
+      "target": {
+        "kind": "file",
+        "bytes": 17,
+        "sha256": "75bd38e7b17618a8eca95f4eaefe6449191b0bb210a6ad78a1fb6fd29a8c820e",
+        "hex": "505245534552564500544152474554ff0a"
+      }
+    },
+    "after": {
+      "origin": {
+        "kind": "file",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "hex": ""
+      },
+      "target_input": {
+        "kind": "file",
+        "bytes": 6,
+        "sha256": "4d9e9352ef742da15e8840f69ef92051a5acf9c93d81cebca94796cd6e990f94",
+        "hex": "ff003b0a8040"
+      },
+      "target": {
+        "kind": "file",
+        "bytes": 17,
+        "sha256": "770c66fda900d65c708bdc1a20eb53a7a70d11e69ba0f0a514d486db58125fab",
+        "hex": "360a363aff003b0a8040317e473368413b"
+      }
+    },
+    "target_preserved": false,
+    "notes": [
+      "Exact native C encoded delta compared to independent source-derived Python literal/header/checksum helper; validates these9vectors, not full encoder implementation."
+    ],
+    "source_derived_expected_hex": "360a363aff003b0a8040317e473368413b",
+    "observed_bytes_equal_source_derived_expectation": true,
+    "fixture_directory": "/tmp/gossil-delta-decoder-supplement-20261117/fixtures/native-encoder-empty-source-tail-6",
+    "source_derived_checksum_u32": 2134915850
+  },
+  {
+    "id": "native-encoder-empty-source-tail-7",
+    "kind": "native-encoder-golden-checksum",
+    "command": [
+      "jlog",
+      "run",
+      "fossil",
+      "test-delta-create",
+      "/tmp/gossil-delta-decoder-supplement-20261117/fixtures/native-encoder-empty-source-tail-7/origin.bin",
+      "/tmp/gossil-delta-decoder-supplement-20261117/fixtures/native-encoder-empty-source-tail-7/target-input.bin",
+      "/tmp/gossil-delta-decoder-supplement-20261117/fixtures/native-encoder-empty-source-tail-7/delta-output.bin"
+    ],
+    "cwd": "/Users/rahul/Projects/gossil",
+    "environment": {
+      "HOME": "/tmp/gossil-delta-decoder-supplement-20261117/fixtures/native-encoder-empty-source-tail-7/home",
+      "FOSSIL_HOME": "/tmp/gossil-delta-decoder-supplement-20261117/fixtures/native-encoder-empty-source-tail-7/home",
+      "TMPDIR": "/tmp/gossil-delta-decoder-supplement-20261117/fixtures/native-encoder-empty-source-tail-7/home"
+    },
+    "timeout_seconds": 3,
+    "seconds": 0.020167,
+    "exit_code": 0,
+    "status": "accepted",
+    "stdout_hex": "",
+    "stderr_hex": "",
+    "stdout_utf8": "",
+    "stderr_utf8": "",
+    "before": {
+      "origin": {
+        "kind": "file",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "hex": ""
+      },
+      "target_input": {
+        "kind": "file",
+        "bytes": 7,
+        "sha256": "ae89670c91d38808ff9eebcce722ac8aa770f4c694ab8e5621fc5f942e8a6b21",
+        "hex": "ff003b0a80402c"
+      },
+      "target": {
+        "kind": "file",
+        "bytes": 17,
+        "sha256": "75bd38e7b17618a8eca95f4eaefe6449191b0bb210a6ad78a1fb6fd29a8c820e",
+        "hex": "505245534552564500544152474554ff0a"
+      }
+    },
+    "after": {
+      "origin": {
+        "kind": "file",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "hex": ""
+      },
+      "target_input": {
+        "kind": "file",
+        "bytes": 7,
+        "sha256": "ae89670c91d38808ff9eebcce722ac8aa770f4c694ab8e5621fc5f942e8a6b21",
+        "hex": "ff003b0a80402c"
+      },
+      "target": {
+        "kind": "file",
+        "bytes": 18,
+        "sha256": "e5981c46652b8cbd78e7da12b412a8b78536dca63762af52019209a6841dbb8f",
+        "hex": "370a373aff003b0a80402c317e473653413b"
+      }
+    },
+    "target_preserved": false,
+    "notes": [
+      "Exact native C encoded delta compared to independent source-derived Python literal/header/checksum helper; validates these9vectors, not full encoder implementation."
+    ],
+    "source_derived_expected_hex": "370a373aff003b0a80402c317e473653413b",
+    "observed_bytes_equal_source_derived_expectation": true,
+    "fixture_directory": "/tmp/gossil-delta-decoder-supplement-20261117/fixtures/native-encoder-empty-source-tail-7",
+    "source_derived_checksum_u32": 2134927114
+  },
+  {
+    "id": "native-encoder-empty-source-tail-8",
+    "kind": "native-encoder-golden-checksum",
+    "command": [
+      "jlog",
+      "run",
+      "fossil",
+      "test-delta-create",
+      "/tmp/gossil-delta-decoder-supplement-20261117/fixtures/native-encoder-empty-source-tail-8/origin.bin",
+      "/tmp/gossil-delta-decoder-supplement-20261117/fixtures/native-encoder-empty-source-tail-8/target-input.bin",
+      "/tmp/gossil-delta-decoder-supplement-20261117/fixtures/native-encoder-empty-source-tail-8/delta-output.bin"
+    ],
+    "cwd": "/Users/rahul/Projects/gossil",
+    "environment": {
+      "HOME": "/tmp/gossil-delta-decoder-supplement-20261117/fixtures/native-encoder-empty-source-tail-8/home",
+      "FOSSIL_HOME": "/tmp/gossil-delta-decoder-supplement-20261117/fixtures/native-encoder-empty-source-tail-8/home",
+      "TMPDIR": "/tmp/gossil-delta-decoder-supplement-20261117/fixtures/native-encoder-empty-source-tail-8/home"
+    },
+    "timeout_seconds": 3,
+    "seconds": 0.018579,
+    "exit_code": 0,
+    "status": "accepted",
+    "stdout_hex": "",
+    "stderr_hex": "",
+    "stdout_utf8": "",
+    "stderr_utf8": "",
+    "before": {
+      "origin": {
+        "kind": "file",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "hex": ""
+      },
+      "target_input": {
+        "kind": "file",
+        "bytes": 8,
+        "sha256": "0e93e4ac4d8aef627d6916f7322c2b4c4af460173e2f72b87805cadce51ed57f",
+        "hex": "ff003b0a80402cff"
+      },
+      "target": {
+        "kind": "file",
+        "bytes": 17,
+        "sha256": "75bd38e7b17618a8eca95f4eaefe6449191b0bb210a6ad78a1fb6fd29a8c820e",
+        "hex": "505245534552564500544152474554ff0a"
+      }
+    },
+    "after": {
+      "origin": {
+        "kind": "file",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "hex": ""
+      },
+      "target_input": {
+        "kind": "file",
+        "bytes": 8,
+        "sha256": "0e93e4ac4d8aef627d6916f7322c2b4c4af460173e2f72b87805cadce51ed57f",
+        "hex": "ff003b0a80402cff"
+      },
+      "target": {
+        "kind": "file",
+        "bytes": 19,
+        "sha256": "1433e219fc4324365f6879d2a8ed3d3f13d1a1ec94b4a1a6d058dc460f54791d",
+        "hex": "380a383aff003b0a80402cff317e473657393b"
+      }
+    },
+    "target_preserved": false,
+    "notes": [
+      "Exact native C encoded delta compared to independent source-derived Python literal/header/checksum helper; validates these9vectors, not full encoder implementation."
+    ],
+    "source_derived_expected_hex": "380a383aff003b0a80402cff317e473657393b",
+    "observed_bytes_equal_source_derived_expectation": true,
+    "fixture_directory": "/tmp/gossil-delta-decoder-supplement-20261117/fixtures/native-encoder-empty-source-tail-8",
+    "source_derived_checksum_u32": 2134927369
+  }
+]

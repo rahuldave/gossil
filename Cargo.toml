@@ -15,3 +15,15 @@ path = "src/main.rs"
 
 [dev-dependencies]
 tempfile = "3"
+
+[[bin]]
+name = "gossil"
+path = "src/bin/gossil.rs"
+
+[[test]]
+name = "delta_decoder"
+path = "tests/delta_decoder.rs"
+
+[[test]]
+name = "delta_cli"
+path = "tests/delta_cli.rs"

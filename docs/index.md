@@ -7,9 +7,12 @@ project state, combining Fossil version control with Gest task management.
 Planned records include tasks, shared issues and private agent traces.
 Git remains the source-code authority in the first release.
 
-This checkout currently contains a Rust runner for inherited Fossil Tcl tests.
-The engine port, Gest integration and libsql storage remain planned work.
+This checkout contains a bounded Fossil delta decoder, its
+`gossil vcs test-delta-apply` diagnostic command and a runner for inherited Fossil Tcl tests.
+Gest integration, libsql storage and the remaining Fossil mechanisms are planned work.
 
+- [Delta decoder](delta-decoder.md) explains the library, diagnostic command,
+  preserved fixtures and compatibility limits.
 - [Inherited-test runner](conformance.md) explains prerequisites, configuration,
   evidence and acceptance limits.
 - [Development plan](development-plan.md) gives the delivery order, ownership
@@ -35,6 +38,6 @@ Automatic publication is disabled for this checkout.
 
 ## Recommendations
 
-To run tests, start with the runner guide and keep executed controls separate
-from inherited compatibility. To continue development, complete the independent
-reviews and final combined check described in the development plan.
+Use the decoder guide for bounded delta application and the runner guide for
+inherited suites. Next, implement the encoder and `test-delta` diagnostics,
+then qualify `delta1`, the unchanged inherited Fossil delta test suite.

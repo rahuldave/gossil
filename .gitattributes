@@ -5,3 +5,8 @@
 
 # Preserve upstream patch context: a context-only blank line starts with a space.
 /tests/fixtures/fossil/enable.patch -whitespace
+
+# Preserve the immutable CRLF delta fixture and upstream provenance bytes.
+/tests/fixtures/delta/bytes/original/header-crlf/delta.bin -whitespace
+/tests/fixtures/delta/original/provenance/Makefile -whitespace
+/tests/fixtures/delta/supplement/provenance/Makefile -whitespace

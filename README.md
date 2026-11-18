@@ -5,16 +5,19 @@ project state, combining Fossil version control with Gest task management.
 Planned records include tasks, shared issues and private agent traces.
 Git remains the source-code authority in the first release.
 
-This checkout currently includes `gossil-conformance`, a Rust runner for inherited
-Fossil Tcl tests against an explicit reference or candidate program.
-The runner records assertions, process outcomes and input hashes. The Fossil
-engine port, Gest integration and libsql storage remain planned work.
+This checkout includes a bounded Fossil delta decoder in `gossil::delta` and
+the diagnostic command `gossil vcs test-delta-apply ORIGIN DELTA TARGET`.
+It also includes `gossil-conformance`, a Rust runner for inherited Fossil Tcl
+tests against an explicit reference or candidate program. Gest integration,
+libsql storage and the remaining Fossil mechanisms are planned work.
 
 ## Start here
 
-Read [the runner guide](docs/conformance.md) for prerequisites, configuration,
-exit statuses and evidence limits. Read [the development plan](docs/development-plan.md)
-for the delivery order and local review workflow. The product specification
+Read [the delta decoder guide](docs/delta-decoder.md) for the library,
+diagnostic command and tested compatibility limits.
+The [runner guide](docs/conformance.md) covers prerequisites, configuration,
+exit statuses and evidence limits. The [development plan](docs/development-plan.md)
+gives the delivery order and local review workflow. The product specification
 remains at `~/Projects/AIProjectInfra/docs/gossil/README.md`.
 
 The commands below require Rust with Cargo, Git, Just and uv on `PATH`.
@@ -23,11 +26,15 @@ Tcl and Fossil are also required for suite execution. The
 [runner prerequisites](docs/conformance.md#local-prerequisites) explain what
 this checkout supplies and what a fresh clone still needs.
 
-From the repository root, run:
+From the repository root, run the commands that match your task. Replace
+`ORIGIN`, `DELTA` and `TARGET` with file paths before trying the decoder.
+The first two commands prepare and check the installed tools. The remaining
+commands run the decoder, runner checks, a configured suite or documentation checks.
 
 ```sh
 just setup
 just install --check
+cargo run --locked --bin gossil -- vcs test-delta-apply ORIGIN DELTA TARGET
 just conformance-self-test
 just conformance /absolute/path/to/CONFIG.json
 just docs-check
@@ -41,9 +48,15 @@ The [runner guide](docs/conformance.md) includes a complete configuration exampl
 
 ## Verification status
 
-The [runner checkpoint](evidence/runner-checkpoint-2026-11-17.json) records
+The decoder tests replay the preserved bounded native apply observations and
+command output. Its [guide](docs/delta-decoder.md#evidence-and-limits) separates
+the original 64 reference cases, the 27 supplemental observations and
+the portable fixture checks. Those tests do not qualify an encoder or the
+unchanged full `delta1` suite.
+
+The historical [runner checkpoint](evidence/runner-checkpoint-2026-11-17.json) records
 three unit and six integration test functions, lint, docstring and API checks.
-Coverage checked every executable source line because there is no parent
+Coverage checked every executable source line because there was no parent
 commit from which to select changed lines. No coverage exemptions were used.
 The checkpoint predates final independent documentation, prose and review
 records. It does not claim a final `just check` pass.
@@ -60,7 +73,8 @@ An overlay corrects the inventory metadata for fourteen Fossil contract
 families, each a group of related mechanisms. Companion records give Git modes,
 kinds and blob identities for all 984 Fossil paths.
 Identity and mapping checks do not establish semantic coverage or accepted
-compatibility. Configuration and storage contract gaps remain open.
+compatibility. Configuration and storage contract gaps remain open; the
+[inventory guide](evidence/inventories/README.md) describes the pending work.
 
 The executed controls ran on macOS. Linux qualification and clean-clone CI
 remain pending. The checkpoint preserves failed cleanup experiments and the later runner
@@ -87,8 +101,10 @@ Hook files connect those checks to supported agent and Git events.
 
 Their package sources are `jnterfaces`, `jnprofile-rust`,
 `agent_gest_git_skills` and `nossaifd` under `~/Projects`. `SKILL_PACKAGES_DIR` can select
-another location. The checked-in `.agents/stack.json` holds the initial
-profile and tool selection. `just install` refreshes that saved selection.
+another location. The checked-in `.agents/stack.json` holds the saved
+profile and tool selection. `just install` refreshes that selection from the
+package sources. The installed checks include `tools-check` for tool versions
+and `release-check` for the configured release policy.
 
 `just setup` fetches Cargo dependencies. Neither command
 acquires the pinned Fossil source or the local Tcl and Fossil binaries.
@@ -100,8 +116,7 @@ has been selected. Automatic docs publication is disabled.
 
 ## Recommendations
 
-To run a suite, use the explicit configuration in the runner guide and retain
-failed evidence. For the next development checkpoint, complete the independent
-checks and final gate in the development plan. Then make native acquisition
-reproducible and qualify the remaining reference configurations before porting
-engine mechanisms under inherited tests.
+Use the bounded decoder for characterized delta application, and retain the
+explicit runner configurations for inherited suites. Next, implement the
+encoder and `test-delta` diagnostics, then qualify the unchanged `delta1` suite.
+Keep native acquisition and the remaining reference configurations as open work.

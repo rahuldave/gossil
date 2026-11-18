@@ -1,4 +1,4 @@
-//! Run inherited Fossil tests with no Gossil engine behavior.
+//! Run inherited Fossil conformance tests and decode bounded deltas.
 use serde::{Deserialize, Serialize};
 use sha2::{Digest, Sha256};
 use std::collections::BTreeMap;
@@ -709,3 +709,5 @@ mod tests {
         }
     }
 }
+
+pub mod delta;

@@ -1,5 +1,5 @@
 repos:
-  # repos[repo=local] is a part of tasker, the tasker role, from agent_gest_git_skills at 8f1ed0f. The record is parts.".pre-commit-config.yaml" in .agents/stack.json.
+  # repos[repo=local] is a part of tasker, the tasker role, from agent_gest_git_skills at 9225e7b. The record is parts.".pre-commit-config.yaml" in .agents/stack.json.
   - repo: local
     hooks:
       - id: commit-gate
@@ -25,7 +25,7 @@ repos:
         always_run: true
         stages: [pre-push]
 
-  # repos[repo=https://github.com/pre-commit/pre-commit-hooks] is a part of tasker, the tasker role, from agent_gest_git_skills at 8f1ed0f. The record is parts.".pre-commit-config.yaml" in .agents/stack.json.
+  # repos[repo=https://github.com/pre-commit/pre-commit-hooks] is a part of tasker, the tasker role, from agent_gest_git_skills at 9225e7b. The record is parts.".pre-commit-config.yaml" in .agents/stack.json.
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v6.0.0
     hooks:

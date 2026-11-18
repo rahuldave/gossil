@@ -5,7 +5,17 @@ project state. It combines Fossil version-control mechanisms with Gest task
 management, commands and an application programming interface (API).
 Axum is the Rust web framework for the embedded server and dashboard.
 The planned storage core uses libsql, a SQLite database implementation.
-Git owns source code, and the current executable is only inherited-test infrastructure.
+Git owns source code.
+
+The checkout implements a bounded delta decoder and its
+`gossil vcs test-delta-apply` diagnostic, alongside the inherited-test runner.
+The [decoder guide](delta-decoder.md) gives its current scope and limits.
+
+The planned public command domains are `issue` and `vcs`. The planned `ui`
+command starts an embedded Gest/Axum server and opens a browser, while `serve`
+runs the server without a browser. Only the `vcs test-delta-apply` diagnostic
+is implemented. A public wiki or forum product is outside the design, but
+inherited Fossil mechanisms and tests remain internal compatibility obligations.
 
 The design and acceptance requirements are in the separate local specification
 at `~/Projects/AIProjectInfra/docs/gossil/README.md`. Its linked acceptance
@@ -51,13 +61,12 @@ configurations and storage encodings open. Historical generation scripts require
 
 ## Checkpoints and ownership
 
-At this bootstrap checkpoint, the checkout has no HEAD. Its primary branch is
-`gest/xnuqympy-bootstrap`. The branch `main` is the intended later integration target.
+The historical bootstrap checkpoint had no HEAD and used the primary branch
+`gest/xnuqympy-bootstrap`. The branch `main` was the intended later integration target.
 
-The coordinating agent assigns one writer to the initial runner. That writer
-preserves the staged bootstrap.
-Those staged files contain the repository's initial workflow and tool setup,
-which must not be overwritten or silently dropped by runner work.
+The initial runner work preserved the staged bootstrap, including the repository's
+workflow and tool setup. Those instructions describe the initial checkpoint,
+not the current commit or branch state.
 No empty commit or coverage exclusion may replace a genuine checkpoint.
 
 Every production change starts with focused tests and checks of the callers
@@ -66,15 +75,18 @@ review changes independently and challenge assumptions.
 The installed guide `.agents/skills/gtw/references/gest_codex_workflow.md`
 and root `AGENTS.md` describe the full process in the checkout.
 
-An agentic target writes a task packet for a fresh agent. The agent returns
+An agentic target is a Just command that writes a task packet for a fresh agent. The agent returns
 a result packet, which the parent validates and records. A record identifies
 the reviewed file tree and the packet's nonce, a unique identifier.
-It applies to that content, so edits can require a new check. Run the Just commands in this order.
+It applies to that content, so edits can require a new check.
+
+The following commands create and check those packets as part of the review workflow.
+Run the Just commands in this order.
 `just update-docs`, `just prose`, `just review`, `just test-review`, then
 `just check` on the final tree.
 
 `just test-parent`, a dependency of `test-review`, runs added or changed tests
-on the parent commit. The first checkout has no parent, so that step is
+on the parent commit. The first checkout had no parent, so that step was
 skipped. The skip does not show that the tests failed on earlier behavior.
 
 After the verified initial commit, independent writers may use physical
@@ -91,6 +103,21 @@ Dependent branches remain sequential until their lower checkpoint exists.
 Delivery stays local. No remote, push, pull request or publication is selected.
 Keep task records and review evidence local until a delivery destination is selected. Local commits
 still require complete verification and independent review.
+
+## Decoder checkpoint and next integration
+
+The pure decoder validates commands before it reserves output storage, then
+replays checked slices. Its command reads both inputs and decodes before opening
+the target. The preserved fixtures cover bounded application and command framing.
+The five original C reference cases marked `not-run` keep that status.
+The [decoder evidence section](delta-decoder.md#evidence-and-limits) describes
+those observations and the portable fixtures.
+
+Encoder work follows this decoder checkpoint. Implement the encoder and
+`test-delta` diagnostics before qualifying the unchanged full `delta1` suite.
+The Tcl runner currently passes an executable path to the inherited driver.
+Future integration must deliberately map Fossil diagnostic invocations to the
+`gossil vcs` namespace without changing the inherited assertions.
 
 ## Unsettled extension contracts
 
@@ -109,7 +136,7 @@ fail before an operation reports complete success.
 ## Recommendations
 
 Keep the full Gest task hierarchy and deliver small reviewed checkpoints.
-Next, verify and review the runner controls, resolve the inventory's named
-acceptance gaps and characterize the required reference baselines for phase 1.
-Preserve failures and disabled-feature results as classified evidence.
-Begin phase 2 primitives against preserved reference tests after that checkpoint.
+Next, implement the encoder and `test-delta` diagnostics, then qualify the
+unchanged `delta1` suite through an explicit command mapping.
+Resolve the inventory's contract and configuration gaps while preserving
+failures and disabled-feature results as classified evidence.

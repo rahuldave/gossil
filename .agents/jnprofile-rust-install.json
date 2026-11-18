@@ -2,9 +2,10 @@
   "schema_version": 1,
   "package": "jnprofile-rust",
   "source_repository": "https://github.com/rahuldave/jnprofile-rust.git",
-  "source_revision": "95b91eebc79be468f710820ad1d2e30888a45d8c",
+  "source_revision": "266241e4cffe4a89045f1717199e749b8dd75a03",
+  "source_version": "v0.2.0",
   "source_worktree_dirty": false,
-  "source_requested_commit": null,
+  "source_requested_commit": "266241e4cffe4a89045f1717199e749b8dd75a03",
   "skills": [
     "rust-profile"
   ],

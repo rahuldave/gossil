@@ -1,0 +1,36 @@
+just --justfile '/Users/rahul/Projects/gossil/Justfile' rust integration "$@"
+uv run --no-project --quiet --python '>=3.11' python '/Users/rahul/Projects/gossil/.agents/just/rust/steps.py' run integration "$@"
+WARN `--no-project` was provided, but no project was found
+cargo llvm-cov test --all-features --locked --include-build-script --workspace --test conformance --test delta_decoder --lcov --output-path target/llvm-cov/integration.part0.lcov pinned_observations
+info: cargo-llvm-cov currently setting cfg(coverage); you can opt-out it by passing --no-cfg-coverage
+   Compiling gossil v0.1.0 (/Users/rahul/Projects/gossil)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 2.04s
+     Running tests/conformance.rs (target/llvm-cov-target/debug/deps/conformance-aa08447536bba70e)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 8 filtered out; finished in 0.00s
+
+     Running tests/delta_decoder.rs (target/llvm-cov-target/debug/deps/delta_decoder-472eb706ae1a9615)
+
+running 1 test
+test pinned_observations ... FAILED
+
+failures:
+
+---- pinned_observations stdout ----
+
+thread 'pinned_observations' (310265654) panicked at tests/delta_decoder.rs:20:31:
+called `Result::unwrap()` on an `Err` value: Unterminated
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+
+failures:
+    pinned_observations
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 1 filtered out; finished in 0.00s
+
+error: test failed, to rerun pass `--test delta_decoder`
+error: process didn't exit successfully: `/Users/rahul/.rustup/toolchains/stable-aarch64-apple-darwin/bin/cargo test --manifest-path /Users/rahul/Projects/gossil/Cargo.toml --target-dir /Users/rahul/Projects/gossil/target/llvm-cov-target --all-features --locked --workspace --test conformance --test delta_decoder pinned_observations` (exit status: 101)
+error: Recipe `integration` failed on line 6 with exit code 101
+error: Recipe `integration` failed on line 49 with exit code 101

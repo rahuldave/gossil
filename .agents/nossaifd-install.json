@@ -3,8 +3,9 @@
   "package": "nossaifd",
   "source_repository": "git@github.com:rahuldave/nossaifd.git",
   "source_revision": "7ab9e940bfdfad994008c1b00234572547ceaf9a",
+  "source_version": "v0.1.0",
   "source_worktree_dirty": false,
-  "source_requested_commit": null,
+  "source_requested_commit": "7ab9e940bfdfad994008c1b00234572547ceaf9a",
   "skills": [
     "declaude",
     "nossaifd"

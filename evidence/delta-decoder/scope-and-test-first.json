@@ -1,0 +1,22 @@
+{
+  "base_commit": "e603376aac1977ca6ba40973d1ae6eca75e8fdf3",
+  "branch": "gest/mpxpvmkq-delta-decoder",
+  "owner": "delta_implementation",
+  "original_contract_sha256": "b3d339ce2619abdb69b87b063c9d7dd684d3d44b1ddde833d3dee69d2037e3f1",
+  "user_authorized_adjustment": {
+    "canonical_argv": "gossil vcs test-delta-apply ORIGIN DELTA TARGET",
+    "usage": "Usage: gossil vcs test-delta-apply ORIGIN DELTA TARGET\n",
+    "root_alias": false,
+    "mapping": "explicit fossil -> gossil vcs substitution only; other characterized assertions unchanged",
+    "future": "issue/vcs domains; ui starts embedded server and browser; serve headless; no future command stubs implemented",
+    "conformance": "existing Tcl driver receives executable path only; future encoder/full-delta1 qualification must deliberately map native diagnostic command invocation, outside this leaf"
+  },
+  "test_first": {
+    "api_absence": "Compilation red honestly recorded separately; initial unit-only filter did not execute integration tests and is not red evidence.",
+    "behavioral_red": "Minimal callable output_size/apply stubs returned Err(DeltaError::Unterminated); pinned_observations executed and failed accepted empty-literal before decoder implementation.",
+    "namespace_red": "Updated vcs invocation test executed against previous root-only dispatcher and failed expected success for empty-literal before dispatcher shift.",
+    "later_tests": "Typed errors, allocation/source seams, fixture integrity and fuller CLI controls were added after initial decoder implementation; no claim every assertion was authored first."
+  },
+  "resource_scope": "No giant allocations or native resource experiments; genuine TryReserveError injection uses usize::MAX capacity overflow on empty Vec, tiny requested decoder output, not OS OOM simulation.",
+  "historical_reference": "Original 35accepted/24rejected/5not-run retained; supplement27=13accepted14rejected including9native CREATE golden vectors used only as APPLY inputs; no full encoder/checksum-enabled/delta1 parity."
+}

@@ -85,13 +85,18 @@ verify:
     just --justfile {{quote(justfile())}} rust verify
     git diff --check
 
+# Check each program that .agents/stack.json records: it is there, and at its version floor
+tools-check:
+    uv run --no-project --quiet --no-python-downloads --python '>=3.9' python .agents/tools_check.py
+    jlog step tools-check
+
 # Find whitespace errors in the changes against the last commit
 diff-check:
     git diff --check "$(git rev-parse -q --verify HEAD || git hash-object -t tree /dev/null)"
     jlog step diff-check
 
 # Everything a commit must pass: each step, then the pass of jlog for the worktree
-check: fmt-check lint typecheck test integration coverage-check docstring-check docs-check prose-check diff-check
+check: tools-check release-check fmt-check lint typecheck test integration coverage-check docstring-check docs-check prose-check diff-check
     jlog pass
 
 # What CI checks: the trailers of the commit gate, then the steps of the list ci of .agents/stack.json

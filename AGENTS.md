@@ -1,5 +1,5 @@
-<!-- begin lines of tasker, the tasker role, from agent_gest_git_skills at 8f1ed0f. -->
-<!-- Last written to AGENTS.md by `install_stack.py --target /Users/rahul/Projects/gossil --profile rust --defaults --clean`. The record is parts."AGENTS.md" in .agents/stack.json. -->
+<!-- begin lines of tasker, the tasker role, from agent_gest_git_skills at 9225e7b. -->
+<!-- Last written to AGENTS.md by `just install --defaults tasker=git --clone agent_gest_git_skills=/Users/rahul/Projects/agent_gest_git_skills.worktrees/codex-release-bootstrap-fix --clean`. The record is parts."AGENTS.md" in .agents/stack.json. -->
 Read and follow @.agents/instructions/tasker.md
 <!-- end lines of tasker. `just uninstall tasker` removes them. -->
 <!-- begin lines of prose, the prose role, from nossaifd at 7ab9e94. -->
@@ -12,15 +12,17 @@ Read and follow @.agents/instructions/prose.md
 ## Project context
 
 - Project name: Gossil.
-- Source directories: `src/` contains the inherited-test runner; `tests/` contains its controls.
-- Local guides: `docs/conformance.md` and `docs/development-plan.md`.
+- Source directories: `src/` contains the inherited-test runner and bounded delta decoder; `tests/` contains their controls and portable fixtures.
+- Local guides: `docs/conformance.md`, `docs/delta-decoder.md` and `docs/development-plan.md`.
 - Product specification: `~/Projects/AIProjectInfra/docs/gossil/README.md` and its linked pages.
 - Workflow playbook: `.agents/skills/gtw/references/gest_codex_workflow.md`.
 
 The executable `gossil-conformance` is development infrastructure. It runs
 explicit reference or candidate configurations, preserves evidence and rejects
 failed or incomplete suites. It implements no Gossil engine behavior.
-The full source port, Gest integration and libsql core remain planned work.
+The library also implements bounded delta application, exposed by
+`gossil vcs test-delta-apply ORIGIN DELTA TARGET`. The encoder, remaining source
+port, Gest integration and libsql core remain planned work.
 
 ## Commands and evidence
 
@@ -44,10 +46,13 @@ Worktrees may share them through `.worktreelink`.
 
 ## Ownership and delivery
 
-The initial checkout has no HEAD. Preserve the staged bootstrap and other
-writers' files. The primary branch is `gest/xnuqympy-bootstrap`; `main` is
-the intended later integration target. Follow the documented order of fresh
-agent checks before the initial commit. No empty commit replaces verification.
+The initial bootstrap had no HEAD and used `gest/xnuqympy-bootstrap`.
+The decoder topic is `gest/mpxpvmkq-delta-decoder`, based on
+`e603376aac1977ca6ba40973d1ae6eca75e8fdf3`. The coordinator
+`delta_implementation` owns implementation writes. Documentation and review
+agents work only within their assigned scopes and preserve other writers' files.
+Follow the documented order of fresh agent checks before committing.
+No empty commit replaces verification.
 
 `just install` uses package clones in `~/Projects`, including from worktrees.
 `SKILL_PACKAGES_DIR` can override that location. Distinguish package sources,
@@ -59,6 +64,6 @@ Publishing and GitHub issue promotion remain deferred for that reason.
 
 ## Recommendations
 
-Use the runner guide for explicit configurations and the development plan for
-sequencing. Next, finish independent checks and the final gate, then port
-inherited primitives while completing the full source and test inventory.
+Use the decoder guide for bounded application and the runner guide for explicit
+suite configurations. Next, implement the encoder and `test-delta` diagnostics,
+then qualify the unchanged `delta1` suite.

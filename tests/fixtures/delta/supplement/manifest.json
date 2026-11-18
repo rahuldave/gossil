@@ -1,0 +1,82 @@
+{
+  "kind": "bounded reference-only supplement; original corpus unchanged; no Rust implementation/full-suite/portable-acquisition claims",
+  "source_git_pin": "b3a1c8efb2731dffbd5cc38c58ac349746de6da6",
+  "native_pin": "7e8ecf0ce4a3c05aa39de7ffe2828d23e334efe446ef2387e09f205ef00b2227",
+  "tool": {
+    "path": "/Users/rahul/Projects/gossil/.jlog/bin/fossil",
+    "resolved": "/Users/rahul/Projects/gossil/.jlog/tools/fossil/7e8ecf0ce4/macos-arm64/fossil",
+    "sha256": "75550c754e94a4b7fa0269f40ce8e4918daf67e05ba12b236ed735d424c8e16c",
+    "version_exit_code": 0,
+    "version_stdout_hex": "5468697320697320666f7373696c2076657273696f6e20322e3239205b376538656366306365345d20323032362d31312d31362031313a34313a3534205554430a436f6d70696c6564206f6e204e6f7620313620323032362031353a30373a3435207573696e6720636c616e672d31372e302e302028636c616e672d313730302e302e31332e3329202836342d626974290a53514c69746520332e35352e3020323032362d31312d31352030303a35353a303420616434656532303530390a7a6c696220312e322e31322c206c6f6164656420312e322e31320a"
+  },
+  "source_build_provenance": {
+    "src/delta.c": {
+      "sha256": "85d1a68aef7796240a65265276308b4201bcb5de1bda168eea573495304177d2",
+      "source_path": "/tmp/gossil-fossil-baseline-20261117/pristine/src/delta.c"
+    },
+    "src/deltacmd.c": {
+      "sha256": "c154db86edfc1677713c5164c9e9660553aca1cf4322386d7f848a89ae0acfb1",
+      "source_path": "/tmp/gossil-fossil-baseline-20261117/pristine/src/deltacmd.c"
+    },
+    "COPYRIGHT-BSD2.txt": {
+      "sha256": "f65c4693891811303213aad3cc737d85114fc0ede82ec65bc0b923069b646c55",
+      "source_path": "/tmp/gossil-fossil-baseline-20261117/pristine/COPYRIGHT-BSD2.txt"
+    },
+    "manifest.uuid": {
+      "sha256": "6601399b7c93e52d176c3c447cd8a54632c761464609634c645420b5040a05c8",
+      "source_path": "/tmp/gossil-fossil-baseline-20261117/pristine/manifest.uuid"
+    },
+    "Makefile": {
+      "sha256": "4a0929991db2c71117e74ebc6cfc8dbedc9b0be876cc7881f712f14030d52137",
+      "source_path": "/var/folders/wq/mr3zj9r14dzgjnq9rjx_vqbc0000gn/T/gossil-source-review-1sgum5ox/fossil/Makefile"
+    },
+    "autoconfig.h": {
+      "sha256": "3d6205d86eccad102f58b83e88484062b6eaaf897b3e873b119df03a74fae352",
+      "source_path": "/var/folders/wq/mr3zj9r14dzgjnq9rjx_vqbc0000gn/T/gossil-source-review-1sgum5ox/fossil/autoconfig.h"
+    },
+    "config.log": {
+      "sha256": "76c56b5a36ea03d52f15bedd54521519cdca3bbaf9fc00abca482810b7b24d13",
+      "source_path": "/var/folders/wq/mr3zj9r14dzgjnq9rjx_vqbc0000gn/T/gossil-source-review-1sgum5ox/fossil/config.log"
+    }
+  },
+  "corrected_contract": {
+    "path": "/tmp/gossil-delta-leaf-contract-20261117.json",
+    "sha256": "50ecaa2900f937fc3199e90c458ef09e8e45047d1bec70a096aae33dadeec54f",
+    "actual_LF_correction_acknowledged": true
+  },
+  "original_corpus": {
+    "manifest": "/tmp/gossil-delta-decoder-corpus-20261117/manifest.json",
+    "indexed_files_checked": 504,
+    "hash_mismatches": [],
+    "unchanged_not_run_ids": [
+      "limit-i32-max",
+      "limit-above-i32-max",
+      "header-wrap32-zero",
+      "header-wrap32-one",
+      "header-u32-max"
+    ]
+  },
+  "case_count": 27,
+  "status_counts": {
+    "rejected": 14,
+    "accepted": 13
+  },
+  "timeout_seconds_all_commands": 3,
+  "results": "/tmp/gossil-delta-decoder-supplement-20261117/results.json",
+  "source_derived_byte_comparisons": {
+    "count": 13,
+    "all_equal": true
+  },
+  "native_encoder_checksum_vectors": {
+    "count": 9,
+    "all_exact_equal": true,
+    "scope": "empty-source literal branch, binary prefixes length0..8, all checksum tails and modulo32 wrap at length8; only these exact vectors independently validated against native C"
+  },
+  "limitations": [
+    "i32max and larger allocation cases never executed.",
+    "No checksum-enabled decoder build tested.",
+    "Exact path-bearing diagnostics preserved; any path/argv0 substitution for Rust CLI must be explicit adapter mapping, not unmarked error normalization.",
+    "No source/Git/Gest/installed-skill mutations, no process-group experiments, no full suites."
+  ],
+  "recommendation": "Use exact supplemental raw framing and bytes before freezing the Rust CLI adapter; preserve original not-run evidence and keep any safe-Rust undefined-behavior boundary explicit."
+}

@@ -351,6 +351,7 @@ the exact state in the Gest note.
 ```text
 Done: PR <url> merged with <method>. Merge commit: <sha>.
 Verification: <checks reviewed or run>.
+Release: <vX.Y.Z> | none: <reason>.
 Follow-up: <real residual issue only>.
 ```
 
@@ -367,6 +368,49 @@ gest task meta set <task-id> github.merged_commit <sha>
    experimental integration does not imply release completion. Gest maintains
    its own graphs automatically.
 
+6. Tag the release with `just release`. Nobody tags by hand. A merge to the
+   integration branch that the project releases from, usually the mainline,
+   gets an annotated tag `vX.Y.Z`, pushed to the remote, when it changes what
+   the project installs or runs. A merge to an experimental branch gets no
+   release tag. The merge authorization covers the tag, unless the push of the
+   tag starts a job that publishes a package. The rules are in "Release tags"
+   of `references/integration_delivery_workflow.md`:
+
+   - The number follows semver, from the conventional commits since the last
+     tag. Breaking raises MAJOR, or MINOR below `1.0.0`. `feat` raises MINOR,
+     and a fix raises PATCH. A merge of only `docs`, `test`, `ci`, `chore` or
+     `style` commits gives no release.
+   - When a language profile gives the version of its manifest, the tag is that
+     version. `just release` fails when the version is lower than the bump that
+     the commits ask for. The step `release-check` of `just check` finds this
+     before the merge, so a PR that needs a bump also raises the version.
+   - Tag only after the merge and after the post-merge CI passes.
+   - Never move or delete a pushed tag. Release a new version instead.
+
+   The CI starter `.github/workflows/release.yml` runs `just release` on each
+   push to `main`, after `just check` passes. When the CI release job ran,
+   check that it passed. When the project has no release job, wait for the
+   post-merge CI, then run the release in a clean checkout of the integration
+   branch:
+
+   ```bash
+   just release --dry-run
+   just release
+   ```
+
+   If the push fails after the local tag was made, run the same commands again
+   from the same commit. The retry checks the annotation and version plan, then
+   pushes the same tag object. It stops if the remote has a different tag.
+
+   A run on a commit that already has its published tag prints `no release`. Write the
+   tag, or `none` and the reason, on the `Release:` line of the Gest note of
+   step 3.
+
 ## Tag And Dependency Review
 
 PR review should inspect tag/dependency context from `references/tag_dependency_workflow.md`, especially selected semantic tags, `ast-grep` dependers, and follow-up tasks for coupled surfaces. Missing tag classification or missing dependency-impact coverage for changed code contracts is a review finding.
+
+## Recommendations
+
+Use `just release --dry-run` before `just release`. After a failed push, retry
+from the same commit so the command can check and publish the existing tag.

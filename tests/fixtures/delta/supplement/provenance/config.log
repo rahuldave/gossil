@@ -1,0 +1,259 @@
+Invoked as: ./configure --with-openssl=none --disable-fusefs
+Tclsh: /usr/bin/tclsh
+Failed: cc -g0 -g -Os conftest__.c -o conftest__
+Undefined symbols for architecture arm64:
+  "_iconv", referenced from:
+      _main in conftest__-45d4d2.o
+ld: symbol(s) not found for architecture arm64
+clang: error: linker command failed with exit code 1 (use -v to see invocation)
+child process exited abnormally
+============
+The failed code was:
+extern void iconv(void);
+int main(void) {
+iconv();
+return 0;
+}
+============
+Failed: cc -g0 -g -Os conftest__.c -o conftest__ -liconv
+Undefined symbols for architecture arm64:
+  "_inflateEnd", referenced from:
+      _main in conftest__-6012cc.o
+ld: symbol(s) not found for architecture arm64
+clang: error: linker command failed with exit code 1 (use -v to see invocation)
+child process exited abnormally
+============
+The failed code was:
+extern void inflateEnd(void);
+int main(void) {
+inflateEnd();
+return 0;
+}
+============
+Failed: cc -g0 -g -Os conftest__.c -o conftest__ -liconv
+Undefined symbols for architecture arm64:
+  "_compressBound", referenced from:
+      _main in conftest__-bbf9d4.o
+ld: symbol(s) not found for architecture arm64
+clang: error: linker command failed with exit code 1 (use -v to see invocation)
+child process exited abnormally
+============
+The failed code was:
+extern void compressBound(void);
+int main(void) {
+compressBound();
+return 0;
+}
+============
+Failed: cc -c -g0 -g -Os conftest__.c -o conftest__.o
+conftest__.c:2:10: fatal error: 'bind/resolv.h' file not found
+    2 | #include <bind/resolv.h>
+      |          ^~~~~~~~~~~~~~~
+1 error generated.
+child process exited abnormally
+============
+The failed code was:
+#include <netinet/in.h>
+#include <bind/resolv.h>
+int main(void) {
+
+return 0;
+}
+============
+Failed: cc -g0 -g -Os conftest__.c -o conftest__ -liconv
+Undefined symbols for architecture arm64:
+  "_ns_parserr", referenced from:
+      _main in conftest__-97d87a.o
+ld: symbol(s) not found for architecture arm64
+clang: error: linker command failed with exit code 1 (use -v to see invocation)
+child process exited abnormally
+============
+The failed code was:
+extern void ns_parserr(void);
+int main(void) {
+ns_parserr();
+return 0;
+}
+============
+Failed: cc -g0 -g -Os conftest__.c -o conftest__ -lbind -liconv
+ld: library 'bind' not found
+clang: error: linker command failed with exit code 1 (use -v to see invocation)
+child process exited abnormally
+============
+The failed code was:
+extern void ns_parserr(void);
+int main(void) {
+ns_parserr();
+return 0;
+}
+============
+Failed: cc -g0 -g -Os conftest__.c -o conftest__ -lresolv -liconv
+Undefined symbols for architecture arm64:
+  "_ns_parserr", referenced from:
+      _main in conftest__-01550e.o
+ld: symbol(s) not found for architecture arm64
+clang: error: linker command failed with exit code 1 (use -v to see invocation)
+child process exited abnormally
+============
+The failed code was:
+extern void ns_parserr(void);
+int main(void) {
+ns_parserr();
+return 0;
+}
+============
+Failed: cc -g0 -g -Os conftest__.c -o conftest__ -liconv
+Undefined symbols for architecture arm64:
+  "___ns_parserr", referenced from:
+      _main in conftest__-537020.o
+ld: symbol(s) not found for architecture arm64
+clang: error: linker command failed with exit code 1 (use -v to see invocation)
+child process exited abnormally
+============
+The failed code was:
+extern void __ns_parserr(void);
+int main(void) {
+__ns_parserr();
+return 0;
+}
+============
+Failed: cc -g0 -g -Os conftest__.c -o conftest__ -lbind -liconv
+ld: library 'bind' not found
+clang: error: linker command failed with exit code 1 (use -v to see invocation)
+child process exited abnormally
+============
+The failed code was:
+extern void __ns_parserr(void);
+int main(void) {
+__ns_parserr();
+return 0;
+}
+============
+Failed: cc -g0 -g -Os conftest__.c -o conftest__ -lresolv -liconv
+Undefined symbols for architecture arm64:
+  "___ns_parserr", referenced from:
+      _main in conftest__-6b13a4.o
+ld: symbol(s) not found for architecture arm64
+clang: error: linker command failed with exit code 1 (use -v to see invocation)
+child process exited abnormally
+============
+The failed code was:
+extern void __ns_parserr(void);
+int main(void) {
+__ns_parserr();
+return 0;
+}
+============
+Failed: cc -g0 -g -Os conftest__.c -o conftest__ -liconv
+Undefined symbols for architecture arm64:
+  "_res_9_ns_initparse", referenced from:
+      _main in conftest__-f5fdfa.o
+ld: symbol(s) not found for architecture arm64
+clang: error: linker command failed with exit code 1 (use -v to see invocation)
+child process exited abnormally
+============
+The failed code was:
+extern void res_9_ns_initparse(void);
+int main(void) {
+res_9_ns_initparse();
+return 0;
+}
+============
+Failed: cc -g0 -g -Os conftest__.c -o conftest__ -lresolv -liconv
+Undefined symbols for architecture arm64:
+  "_strchrnul", referenced from:
+      _main in conftest__-57e496.o
+ld: symbol(s) not found for architecture arm64
+clang: error: linker command failed with exit code 1 (use -v to see invocation)
+child process exited abnormally
+============
+The failed code was:
+extern void strchrnul(void);
+int main(void) {
+strchrnul();
+return 0;
+}
+============
+Failed: cc -g0 -g -Os conftest__.c -o conftest__ -lresolv -liconv
+Undefined symbols for architecture arm64:
+  "_pledge", referenced from:
+      _main in conftest__-7b0ce6.o
+ld: symbol(s) not found for architecture arm64
+clang: error: linker command failed with exit code 1 (use -v to see invocation)
+child process exited abnormally
+============
+The failed code was:
+extern void pledge(void);
+int main(void) {
+pledge();
+return 0;
+}
+============
+Failed: cc -g0 -g -Os conftest__.c -o conftest__ -lresolv -liconv
+conftest__.c:3:14: error: call to undeclared function 'getloadavg'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
+    3 | double a[3]; getloadavg(a,3);
+      |              ^
+1 error generated.
+child process exited abnormally
+============
+The failed code was:
+#include <unistd.h>
+int main(void) {
+double a[3]; getloadavg(a,3);
+return 0;
+}
+============
+Failed: cc -g0 -g -Os conftest__.c -o conftest__ -lresolv -liconv
+Undefined symbols for architecture arm64:
+  "_getpassphrase", referenced from:
+      _main in conftest__-5c228f.o
+ld: symbol(s) not found for architecture arm64
+clang: error: linker command failed with exit code 1 (use -v to see invocation)
+child process exited abnormally
+============
+The failed code was:
+extern void getpassphrase(void);
+int main(void) {
+getpassphrase();
+return 0;
+}
+============
+Failed: cc -g0 -g -Os conftest__.c -o conftest__ -ldl -lresolv -liconv -lz
+conftest__.c:2:29: error: function definition is not allowed here
+    2 | void libActuallyExists(void){}
+      |                             ^
+1 error generated.
+child process exited abnormally
+============
+The failed code was:
+int main(void) {
+void libActuallyExists(void){}
+return 0;
+}
+============
+Failed: cc -g0 -g -Os conftest__.c -o conftest__ -lpthread -lresolv -liconv -lz
+conftest__.c:2:29: error: function definition is not allowed here
+    2 | void libActuallyExists(void){}
+      |                             ^
+1 error generated.
+child process exited abnormally
+============
+The failed code was:
+int main(void) {
+void libActuallyExists(void){}
+return 0;
+}
+============
+Failed: cc -g0 -g -Os conftest__.c -o conftest__ -lm -lresolv -liconv -lz
+conftest__.c:2:29: error: function definition is not allowed here
+    2 | void libActuallyExists(void){}
+      |                             ^
+1 error generated.
+child process exited abnormally
+============
+The failed code was:
+int main(void) {
+void libActuallyExists(void){}
+return 0;
+}
+============

@@ -1,0 +1,1486 @@
+{
+  "wrapped-header-source-proof.json": {
+    "sha256": "9be98753993fdc0d8e530cc6a53b22828cbab3fd8756b4d5777a64967ea0e0c5",
+    "bytes": 897
+  },
+  "consistency.json": {
+    "sha256": "bcca056dc99bb9c4b88df13128ae1404b1ac5087160fc1476c0095b24b9538b3",
+    "bytes": 280
+  },
+  "short-report.json": {
+    "sha256": "019ddb26442b9adba514cafbddb7c609ee7e2a6ecc94810b57e8bf47991e89dc",
+    "bytes": 12194
+  },
+  "version-stderr.bin": {
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "bytes": 0
+  },
+  "results.json": {
+    "sha256": "9a6133da247d28633296bd85e69161c847c481ca1efa5576969a868c840f83fe",
+    "bytes": 71880
+  },
+  "experiment.py": {
+    "sha256": "46f6baff2917a0ebc601486c3fa872ec050448b70452741d4f41d67533edaa19",
+    "bytes": 11732
+  },
+  "manifest.json": {
+    "sha256": "e4fa6099ded8d3576336fd9454f278ebd9f2949f60bb642dbbb59f1d5ed75a68",
+    "bytes": 4257
+  },
+  "version-stdout.bin": {
+    "sha256": "5ead9815bafbe29f4c06b8188926daa4ba7901ab2a0e6eafffe9e44dbc36a9a9",
+    "bytes": 218
+  },
+  "provenance/autoconfig.h": {
+    "sha256": "3d6205d86eccad102f58b83e88484062b6eaaf897b3e873b119df03a74fae352",
+    "bytes": 1191
+  },
+  "provenance/Makefile": {
+    "sha256": "4a0929991db2c71117e74ebc6cfc8dbedc9b0be876cc7881f712f14030d52137",
+    "bytes": 6178
+  },
+  "provenance/config.log": {
+    "sha256": "76c56b5a36ea03d52f15bedd54521519cdca3bbaf9fc00abca482810b7b24d13",
+    "bytes": 7677
+  },
+  "provenance/manifest.uuid": {
+    "sha256": "6601399b7c93e52d176c3c447cd8a54632c761464609634c645420b5040a05c8",
+    "bytes": 65
+  },
+  "provenance/COPYRIGHT-BSD2.txt": {
+    "sha256": "f65c4693891811303213aad3cc737d85114fc0ede82ec65bc0b923069b646c55",
+    "bytes": 1516
+  },
+  "fixtures/native-encoder-empty-source-tail-0/before.json": {
+    "sha256": "24f376ea96576a679e213eef686cba1adcdd909d6fe9f93ae73480702165d972",
+    "bytes": 496
+  },
+  "fixtures/native-encoder-empty-source-tail-0/target_input-before.bin": {
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "bytes": 0
+  },
+  "fixtures/native-encoder-empty-source-tail-0/origin-after.bin": {
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "bytes": 0
+  },
+  "fixtures/native-encoder-empty-source-tail-0/stdout.bin": {
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "bytes": 0
+  },
+  "fixtures/native-encoder-empty-source-tail-0/target-input.bin": {
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "bytes": 0
+  },
+  "fixtures/native-encoder-empty-source-tail-0/source-derived-expected.bin": {
+    "sha256": "1e03944824055e9be5adbbd3055d698a6de815ae21668aba3ea5f289619b63b3",
+    "bytes": 6
+  },
+  "fixtures/native-encoder-empty-source-tail-0/target-before.bin": {
+    "sha256": "75bd38e7b17618a8eca95f4eaefe6449191b0bb210a6ad78a1fb6fd29a8c820e",
+    "bytes": 17
+  },
+  "fixtures/native-encoder-empty-source-tail-0/origin.bin": {
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "bytes": 0
+  },
+  "fixtures/native-encoder-empty-source-tail-0/delta-output.bin": {
+    "sha256": "1e03944824055e9be5adbbd3055d698a6de815ae21668aba3ea5f289619b63b3",
+    "bytes": 6
+  },
+  "fixtures/native-encoder-empty-source-tail-0/origin-before.bin": {
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "bytes": 0
+  },
+  "fixtures/native-encoder-empty-source-tail-0/after.json": {
+    "sha256": "584e667effaa17c8309b93da03cf3b307f927d5b9752095b6d1078d25670cc1c",
+    "bytes": 473
+  },
+  "fixtures/native-encoder-empty-source-tail-0/target_input-after.bin": {
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "bytes": 0
+  },
+  "fixtures/native-encoder-empty-source-tail-0/stderr.bin": {
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "bytes": 0
+  },
+  "fixtures/native-encoder-empty-source-tail-0/target-after.bin": {
+    "sha256": "1e03944824055e9be5adbbd3055d698a6de815ae21668aba3ea5f289619b63b3",
+    "bytes": 6
+  },
+  "fixtures/native-encoder-empty-source-tail-7/before.json": {
+    "sha256": "2004cf28438190834ae82b208cadb1e78127ac2a28fabaad4bf6df0a2c36384b",
+    "bytes": 510
+  },
+  "fixtures/native-encoder-empty-source-tail-7/target_input-before.bin": {
+    "sha256": "ae89670c91d38808ff9eebcce722ac8aa770f4c694ab8e5621fc5f942e8a6b21",
+    "bytes": 7
+  },
+  "fixtures/native-encoder-empty-source-tail-7/origin-after.bin": {
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "bytes": 0
+  },
+  "fixtures/native-encoder-empty-source-tail-7/stdout.bin": {
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "bytes": 0
+  },
+  "fixtures/native-encoder-empty-source-tail-7/target-input.bin": {
+    "sha256": "ae89670c91d38808ff9eebcce722ac8aa770f4c694ab8e5621fc5f942e8a6b21",
+    "bytes": 7
+  },
+  "fixtures/native-encoder-empty-source-tail-7/source-derived-expected.bin": {
+    "sha256": "e5981c46652b8cbd78e7da12b412a8b78536dca63762af52019209a6841dbb8f",
+    "bytes": 18
+  },
+  "fixtures/native-encoder-empty-source-tail-7/target-before.bin": {
+    "sha256": "75bd38e7b17618a8eca95f4eaefe6449191b0bb210a6ad78a1fb6fd29a8c820e",
+    "bytes": 17
+  },
+  "fixtures/native-encoder-empty-source-tail-7/origin.bin": {
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "bytes": 0
+  },
+  "fixtures/native-encoder-empty-source-tail-7/delta-output.bin": {
+    "sha256": "e5981c46652b8cbd78e7da12b412a8b78536dca63762af52019209a6841dbb8f",
+    "bytes": 18
+  },
+  "fixtures/native-encoder-empty-source-tail-7/origin-before.bin": {
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "bytes": 0
+  },
+  "fixtures/native-encoder-empty-source-tail-7/after.json": {
+    "sha256": "2640ae0a4057197157160c5e0ff2aa5c3bb6b4ff84b4a359d569c3768ad3c645",
+    "bytes": 512
+  },
+  "fixtures/native-encoder-empty-source-tail-7/target_input-after.bin": {
+    "sha256": "ae89670c91d38808ff9eebcce722ac8aa770f4c694ab8e5621fc5f942e8a6b21",
+    "bytes": 7
+  },
+  "fixtures/native-encoder-empty-source-tail-7/stderr.bin": {
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "bytes": 0
+  },
+  "fixtures/native-encoder-empty-source-tail-7/target-after.bin": {
+    "sha256": "e5981c46652b8cbd78e7da12b412a8b78536dca63762af52019209a6841dbb8f",
+    "bytes": 18
+  },
+  "fixtures/high-bit-terminal-operator/before.json": {
+    "sha256": "81f433e6cf516a1b3d06ca9e31c476cc1852157961d15850316d4abd49aae05f",
+    "bytes": 503
+  },
+  "fixtures/high-bit-terminal-operator/origin-after.bin": {
+    "sha256": "b5d4045c3f466fa91fe2cc6abe79232a1a57cdf104f7a26e716e0a1e2789df78",
+    "bytes": 3
+  },
+  "fixtures/high-bit-terminal-operator/stdout.bin": {
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "bytes": 0
+  },
+  "fixtures/high-bit-terminal-operator/target-before.bin": {
+    "sha256": "75bd38e7b17618a8eca95f4eaefe6449191b0bb210a6ad78a1fb6fd29a8c820e",
+    "bytes": 17
+  },
+  "fixtures/high-bit-terminal-operator/origin.bin": {
+    "sha256": "b5d4045c3f466fa91fe2cc6abe79232a1a57cdf104f7a26e716e0a1e2789df78",
+    "bytes": 3
+  },
+  "fixtures/high-bit-terminal-operator/target.bin": {
+    "sha256": "75bd38e7b17618a8eca95f4eaefe6449191b0bb210a6ad78a1fb6fd29a8c820e",
+    "bytes": 17
+  },
+  "fixtures/high-bit-terminal-operator/origin-before.bin": {
+    "sha256": "b5d4045c3f466fa91fe2cc6abe79232a1a57cdf104f7a26e716e0a1e2789df78",
+    "bytes": 3
+  },
+  "fixtures/high-bit-terminal-operator/after.json": {
+    "sha256": "81f433e6cf516a1b3d06ca9e31c476cc1852157961d15850316d4abd49aae05f",
+    "bytes": 503
+  },
+  "fixtures/high-bit-terminal-operator/delta-after.bin": {
+    "sha256": "73362a1b8aaceb94f985ce0a6ab0a4f60d1b206e235649715dd39a190c1d6242",
+    "bytes": 4
+  },
+  "fixtures/high-bit-terminal-operator/stderr.bin": {
+    "sha256": "306ea6ad6bbd1668d10eb6cb5106149a3b585886faee61d84bc5d91c095953f7",
+    "bytes": 26
+  },
+  "fixtures/high-bit-terminal-operator/delta.bin": {
+    "sha256": "73362a1b8aaceb94f985ce0a6ab0a4f60d1b206e235649715dd39a190c1d6242",
+    "bytes": 4
+  },
+  "fixtures/high-bit-terminal-operator/target-after.bin": {
+    "sha256": "75bd38e7b17618a8eca95f4eaefe6449191b0bb210a6ad78a1fb6fd29a8c820e",
+    "bytes": 17
+  },
+  "fixtures/high-bit-terminal-operator/delta-before.bin": {
+    "sha256": "73362a1b8aaceb94f985ce0a6ab0a4f60d1b206e235649715dd39a190c1d6242",
+    "bytes": 4
+  },
+  "fixtures/arity-zero/before.json": {
+    "sha256": "c18d7d9e3affa6b016432055c13556e82754f9731eec8eaafc52fdd8a933951d",
+    "bytes": 524
+  },
+  "fixtures/arity-zero/origin-after.bin": {
+    "sha256": "b5d4045c3f466fa91fe2cc6abe79232a1a57cdf104f7a26e716e0a1e2789df78",
+    "bytes": 3
+  },
+  "fixtures/arity-zero/stdout.bin": {
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "bytes": 0
+  },
+  "fixtures/arity-zero/target-before.bin": {
+    "sha256": "75bd38e7b17618a8eca95f4eaefe6449191b0bb210a6ad78a1fb6fd29a8c820e",
+    "bytes": 17
+  },
+  "fixtures/arity-zero/delta with spaces.bin": {
+    "sha256": "0723cf3cd196ce562f46539d7daab1998ccecac654c54d9b7d7e702e041b3f7b",
+    "bytes": 14
+  },
+  "fixtures/arity-zero/origin-before.bin": {
+    "sha256": "b5d4045c3f466fa91fe2cc6abe79232a1a57cdf104f7a26e716e0a1e2789df78",
+    "bytes": 3
+  },
+  "fixtures/arity-zero/after.json": {
+    "sha256": "c18d7d9e3affa6b016432055c13556e82754f9731eec8eaafc52fdd8a933951d",
+    "bytes": 524
+  },
+  "fixtures/arity-zero/target with spaces.bin": {
+    "sha256": "75bd38e7b17618a8eca95f4eaefe6449191b0bb210a6ad78a1fb6fd29a8c820e",
+    "bytes": 17
+  },
+  "fixtures/arity-zero/delta-after.bin": {
+    "sha256": "0723cf3cd196ce562f46539d7daab1998ccecac654c54d9b7d7e702e041b3f7b",
+    "bytes": 14
+  },
+  "fixtures/arity-zero/stderr.bin": {
+    "sha256": "58e0190319827f85e32f1709d7a4212d4b6071d3493bf09e6ab70f72c7432f92",
+    "bytes": 51
+  },
+  "fixtures/arity-zero/origin with spaces.bin": {
+    "sha256": "b5d4045c3f466fa91fe2cc6abe79232a1a57cdf104f7a26e716e0a1e2789df78",
+    "bytes": 3
+  },
+  "fixtures/arity-zero/target-after.bin": {
+    "sha256": "75bd38e7b17618a8eca95f4eaefe6449191b0bb210a6ad78a1fb6fd29a8c820e",
+    "bytes": 17
+  },
+  "fixtures/arity-zero/delta-before.bin": {
+    "sha256": "0723cf3cd196ce562f46539d7daab1998ccecac654c54d9b7d7e702e041b3f7b",
+    "bytes": 14
+  },
+  "fixtures/native-encoder-empty-source-tail-8/before.json": {
+    "sha256": "248bb17cf4ade60a6a03fae7cc3f5924db3278ffd3581623b5fbe183b1496edc",
+    "bytes": 512
+  },
+  "fixtures/native-encoder-empty-source-tail-8/target_input-before.bin": {
+    "sha256": "0e93e4ac4d8aef627d6916f7322c2b4c4af460173e2f72b87805cadce51ed57f",
+    "bytes": 8
+  },
+  "fixtures/native-encoder-empty-source-tail-8/origin-after.bin": {
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "bytes": 0
+  },
+  "fixtures/native-encoder-empty-source-tail-8/stdout.bin": {
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "bytes": 0
+  },
+  "fixtures/native-encoder-empty-source-tail-8/target-input.bin": {
+    "sha256": "0e93e4ac4d8aef627d6916f7322c2b4c4af460173e2f72b87805cadce51ed57f",
+    "bytes": 8
+  },
+  "fixtures/native-encoder-empty-source-tail-8/source-derived-expected.bin": {
+    "sha256": "1433e219fc4324365f6879d2a8ed3d3f13d1a1ec94b4a1a6d058dc460f54791d",
+    "bytes": 19
+  },
+  "fixtures/native-encoder-empty-source-tail-8/target-before.bin": {
+    "sha256": "75bd38e7b17618a8eca95f4eaefe6449191b0bb210a6ad78a1fb6fd29a8c820e",
+    "bytes": 17
+  },
+  "fixtures/native-encoder-empty-source-tail-8/origin.bin": {
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "bytes": 0
+  },
+  "fixtures/native-encoder-empty-source-tail-8/delta-output.bin": {
+    "sha256": "1433e219fc4324365f6879d2a8ed3d3f13d1a1ec94b4a1a6d058dc460f54791d",
+    "bytes": 19
+  },
+  "fixtures/native-encoder-empty-source-tail-8/origin-before.bin": {
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "bytes": 0
+  },
+  "fixtures/native-encoder-empty-source-tail-8/after.json": {
+    "sha256": "91bc3340e01685b6067d41bcd0a11399d7c01daa6a2d9066c80772f548975608",
+    "bytes": 516
+  },
+  "fixtures/native-encoder-empty-source-tail-8/target_input-after.bin": {
+    "sha256": "0e93e4ac4d8aef627d6916f7322c2b4c4af460173e2f72b87805cadce51ed57f",
+    "bytes": 8
+  },
+  "fixtures/native-encoder-empty-source-tail-8/stderr.bin": {
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "bytes": 0
+  },
+  "fixtures/native-encoder-empty-source-tail-8/target-after.bin": {
+    "sha256": "1433e219fc4324365f6879d2a8ed3d3f13d1a1ec94b4a1a6d058dc460f54791d",
+    "bytes": 19
+  },
+  "fixtures/native-encoder-empty-source-tail-6/before.json": {
+    "sha256": "5b07e211f08418f48e771d809893255d3f37c9c8bc3530530586baf308b8824a",
+    "bytes": 508
+  },
+  "fixtures/native-encoder-empty-source-tail-6/target_input-before.bin": {
+    "sha256": "4d9e9352ef742da15e8840f69ef92051a5acf9c93d81cebca94796cd6e990f94",
+    "bytes": 6
+  },
+  "fixtures/native-encoder-empty-source-tail-6/origin-after.bin": {
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "bytes": 0
+  },
+  "fixtures/native-encoder-empty-source-tail-6/stdout.bin": {
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "bytes": 0
+  },
+  "fixtures/native-encoder-empty-source-tail-6/target-input.bin": {
+    "sha256": "4d9e9352ef742da15e8840f69ef92051a5acf9c93d81cebca94796cd6e990f94",
+    "bytes": 6
+  },
+  "fixtures/native-encoder-empty-source-tail-6/source-derived-expected.bin": {
+    "sha256": "770c66fda900d65c708bdc1a20eb53a7a70d11e69ba0f0a514d486db58125fab",
+    "bytes": 17
+  },
+  "fixtures/native-encoder-empty-source-tail-6/target-before.bin": {
+    "sha256": "75bd38e7b17618a8eca95f4eaefe6449191b0bb210a6ad78a1fb6fd29a8c820e",
+    "bytes": 17
+  },
+  "fixtures/native-encoder-empty-source-tail-6/origin.bin": {
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "bytes": 0
+  },
+  "fixtures/native-encoder-empty-source-tail-6/delta-output.bin": {
+    "sha256": "770c66fda900d65c708bdc1a20eb53a7a70d11e69ba0f0a514d486db58125fab",
+    "bytes": 17
+  },
+  "fixtures/native-encoder-empty-source-tail-6/origin-before.bin": {
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "bytes": 0
+  },
+  "fixtures/native-encoder-empty-source-tail-6/after.json": {
+    "sha256": "0fcaed8261fef4ed6559b1621c14f2b83756c93e56c5bbd3209b3742a26fbf55",
+    "bytes": 508
+  },
+  "fixtures/native-encoder-empty-source-tail-6/target_input-after.bin": {
+    "sha256": "4d9e9352ef742da15e8840f69ef92051a5acf9c93d81cebca94796cd6e990f94",
+    "bytes": 6
+  },
+  "fixtures/native-encoder-empty-source-tail-6/stderr.bin": {
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "bytes": 0
+  },
+  "fixtures/native-encoder-empty-source-tail-6/target-after.bin": {
+    "sha256": "770c66fda900d65c708bdc1a20eb53a7a70d11e69ba0f0a514d486db58125fab",
+    "bytes": 17
+  },
+  "fixtures/native-encoder-empty-source-tail-1/before.json": {
+    "sha256": "9d31d177a43ce33c89fcff841914364e9ad3b670acc94dedbb7cb2ac8d0d9c21",
+    "bytes": 498
+  },
+  "fixtures/native-encoder-empty-source-tail-1/target_input-before.bin": {
+    "sha256": "a8100ae6aa1940d0b663bb31cd466142ebbdbd5187131b92d93818987832eb89",
+    "bytes": 1
+  },
+  "fixtures/native-encoder-empty-source-tail-1/origin-after.bin": {
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "bytes": 0
+  },
+  "fixtures/native-encoder-empty-source-tail-1/stdout.bin": {
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "bytes": 0
+  },
+  "fixtures/native-encoder-empty-source-tail-1/target-input.bin": {
+    "sha256": "a8100ae6aa1940d0b663bb31cd466142ebbdbd5187131b92d93818987832eb89",
+    "bytes": 1
+  },
+  "fixtures/native-encoder-empty-source-tail-1/source-derived-expected.bin": {
+    "sha256": "22c5ce3090d41b066f2df0e4cd5a17d52e600f06231b2274384bb39c13a4bab7",
+    "bytes": 12
+  },
+  "fixtures/native-encoder-empty-source-tail-1/target-before.bin": {
+    "sha256": "75bd38e7b17618a8eca95f4eaefe6449191b0bb210a6ad78a1fb6fd29a8c820e",
+    "bytes": 17
+  },
+  "fixtures/native-encoder-empty-source-tail-1/origin.bin": {
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "bytes": 0
+  },
+  "fixtures/native-encoder-empty-source-tail-1/delta-output.bin": {
+    "sha256": "22c5ce3090d41b066f2df0e4cd5a17d52e600f06231b2274384bb39c13a4bab7",
+    "bytes": 12
+  },
+  "fixtures/native-encoder-empty-source-tail-1/origin-before.bin": {
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "bytes": 0
+  },
+  "fixtures/native-encoder-empty-source-tail-1/after.json": {
+    "sha256": "ae5fb20d623edac087c6b3a724ccaf8c862d66f46a9a1fec3c4f86d08f374a43",
+    "bytes": 488
+  },
+  "fixtures/native-encoder-empty-source-tail-1/target_input-after.bin": {
+    "sha256": "a8100ae6aa1940d0b663bb31cd466142ebbdbd5187131b92d93818987832eb89",
+    "bytes": 1
+  },
+  "fixtures/native-encoder-empty-source-tail-1/stderr.bin": {
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "bytes": 0
+  },
+  "fixtures/native-encoder-empty-source-tail-1/target-after.bin": {
+    "sha256": "22c5ce3090d41b066f2df0e4cd5a17d52e600f06231b2274384bb39c13a4bab7",
+    "bytes": 12
+  },
+  "fixtures/alias-delta/before.json": {
+    "sha256": "46bbb17a8942adcfe6ca38b653e7bcbf89bf35246587c7171d9a83f9f3989b22",
+    "bytes": 518
+  },
+  "fixtures/alias-delta/origin-after.bin": {
+    "sha256": "b5d4045c3f466fa91fe2cc6abe79232a1a57cdf104f7a26e716e0a1e2789df78",
+    "bytes": 3
+  },
+  "fixtures/alias-delta/stdout.bin": {
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "bytes": 0
+  },
+  "fixtures/alias-delta/source-derived-expected.bin": {
+    "sha256": "6cdb1aa4479125c2746ffa3b9df3e956ff479d5bd1882b1437c06c1a8c7a3c1a",
+    "bytes": 3
+  },
+  "fixtures/alias-delta/target-before.bin": {
+    "sha256": "0723cf3cd196ce562f46539d7daab1998ccecac654c54d9b7d7e702e041b3f7b",
+    "bytes": 14
+  },
+  "fixtures/alias-delta/delta with spaces.bin": {
+    "sha256": "6cdb1aa4479125c2746ffa3b9df3e956ff479d5bd1882b1437c06c1a8c7a3c1a",
+    "bytes": 3
+  },
+  "fixtures/alias-delta/origin-before.bin": {
+    "sha256": "b5d4045c3f466fa91fe2cc6abe79232a1a57cdf104f7a26e716e0a1e2789df78",
+    "bytes": 3
+  },
+  "fixtures/alias-delta/after.json": {
+    "sha256": "47f310e3e4b0421e19eb3fe297ec71782572b90a2b3fc62d52e95e81d6f45e2a",
+    "bytes": 472
+  },
+  "fixtures/alias-delta/target with spaces.bin": {
+    "sha256": "75bd38e7b17618a8eca95f4eaefe6449191b0bb210a6ad78a1fb6fd29a8c820e",
+    "bytes": 17
+  },
+  "fixtures/alias-delta/delta-after.bin": {
+    "sha256": "6cdb1aa4479125c2746ffa3b9df3e956ff479d5bd1882b1437c06c1a8c7a3c1a",
+    "bytes": 3
+  },
+  "fixtures/alias-delta/stderr.bin": {
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "bytes": 0
+  },
+  "fixtures/alias-delta/origin with spaces.bin": {
+    "sha256": "b5d4045c3f466fa91fe2cc6abe79232a1a57cdf104f7a26e716e0a1e2789df78",
+    "bytes": 3
+  },
+  "fixtures/alias-delta/target-after.bin": {
+    "sha256": "6cdb1aa4479125c2746ffa3b9df3e956ff479d5bd1882b1437c06c1a8c7a3c1a",
+    "bytes": 3
+  },
+  "fixtures/alias-delta/delta-before.bin": {
+    "sha256": "0723cf3cd196ce562f46539d7daab1998ccecac654c54d9b7d7e702e041b3f7b",
+    "bytes": 14
+  },
+  "fixtures/missing-origin/before.json": {
+    "sha256": "1abf18c0bf3e4bc247a6e50c52f2503fdda0dc80eb4123a2f335d96295b6f099",
+    "bytes": 408
+  },
+  "fixtures/missing-origin/stdout.bin": {
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "bytes": 0
+  },
+  "fixtures/missing-origin/target-before.bin": {
+    "sha256": "75bd38e7b17618a8eca95f4eaefe6449191b0bb210a6ad78a1fb6fd29a8c820e",
+    "bytes": 17
+  },
+  "fixtures/missing-origin/delta with spaces.bin": {
+    "sha256": "0723cf3cd196ce562f46539d7daab1998ccecac654c54d9b7d7e702e041b3f7b",
+    "bytes": 14
+  },
+  "fixtures/missing-origin/after.json": {
+    "sha256": "1abf18c0bf3e4bc247a6e50c52f2503fdda0dc80eb4123a2f335d96295b6f099",
+    "bytes": 408
+  },
+  "fixtures/missing-origin/target with spaces.bin": {
+    "sha256": "75bd38e7b17618a8eca95f4eaefe6449191b0bb210a6ad78a1fb6fd29a8c820e",
+    "bytes": 17
+  },
+  "fixtures/missing-origin/delta-after.bin": {
+    "sha256": "0723cf3cd196ce562f46539d7daab1998ccecac654c54d9b7d7e702e041b3f7b",
+    "bytes": 14
+  },
+  "fixtures/missing-origin/stderr.bin": {
+    "sha256": "09f2476db0cc7a9ab313127ed9dec1c1287c0ea7f6833df30ecfc1c2cf6081af",
+    "bytes": 107
+  },
+  "fixtures/missing-origin/target-after.bin": {
+    "sha256": "75bd38e7b17618a8eca95f4eaefe6449191b0bb210a6ad78a1fb6fd29a8c820e",
+    "bytes": 17
+  },
+  "fixtures/missing-origin/delta-before.bin": {
+    "sha256": "0723cf3cd196ce562f46539d7daab1998ccecac654c54d9b7d7e702e041b3f7b",
+    "bytes": 14
+  },
+  "fixtures/arity-one/before.json": {
+    "sha256": "c18d7d9e3affa6b016432055c13556e82754f9731eec8eaafc52fdd8a933951d",
+    "bytes": 524
+  },
+  "fixtures/arity-one/origin-after.bin": {
+    "sha256": "b5d4045c3f466fa91fe2cc6abe79232a1a57cdf104f7a26e716e0a1e2789df78",
+    "bytes": 3
+  },
+  "fixtures/arity-one/stdout.bin": {
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "bytes": 0
+  },
+  "fixtures/arity-one/target-before.bin": {
+    "sha256": "75bd38e7b17618a8eca95f4eaefe6449191b0bb210a6ad78a1fb6fd29a8c820e",
+    "bytes": 17
+  },
+  "fixtures/arity-one/delta with spaces.bin": {
+    "sha256": "0723cf3cd196ce562f46539d7daab1998ccecac654c54d9b7d7e702e041b3f7b",
+    "bytes": 14
+  },
+  "fixtures/arity-one/origin-before.bin": {
+    "sha256": "b5d4045c3f466fa91fe2cc6abe79232a1a57cdf104f7a26e716e0a1e2789df78",
+    "bytes": 3
+  },
+  "fixtures/arity-one/after.json": {
+    "sha256": "c18d7d9e3affa6b016432055c13556e82754f9731eec8eaafc52fdd8a933951d",
+    "bytes": 524
+  },
+  "fixtures/arity-one/target with spaces.bin": {
+    "sha256": "75bd38e7b17618a8eca95f4eaefe6449191b0bb210a6ad78a1fb6fd29a8c820e",
+    "bytes": 17
+  },
+  "fixtures/arity-one/delta-after.bin": {
+    "sha256": "0723cf3cd196ce562f46539d7daab1998ccecac654c54d9b7d7e702e041b3f7b",
+    "bytes": 14
+  },
+  "fixtures/arity-one/stderr.bin": {
+    "sha256": "58e0190319827f85e32f1709d7a4212d4b6071d3493bf09e6ab70f72c7432f92",
+    "bytes": 51
+  },
+  "fixtures/arity-one/origin with spaces.bin": {
+    "sha256": "b5d4045c3f466fa91fe2cc6abe79232a1a57cdf104f7a26e716e0a1e2789df78",
+    "bytes": 3
+  },
+  "fixtures/arity-one/target-after.bin": {
+    "sha256": "75bd38e7b17618a8eca95f4eaefe6449191b0bb210a6ad78a1fb6fd29a8c820e",
+    "bytes": 17
+  },
+  "fixtures/arity-one/delta-before.bin": {
+    "sha256": "0723cf3cd196ce562f46539d7daab1998ccecac654c54d9b7d7e702e041b3f7b",
+    "bytes": 14
+  },
+  "fixtures/alias-origin/before.json": {
+    "sha256": "b49e71eebf63fb883066679aaa025b607998debe0f4f8fddf273c39b1f24054c",
+    "bytes": 495
+  },
+  "fixtures/alias-origin/origin-after.bin": {
+    "sha256": "6cdb1aa4479125c2746ffa3b9df3e956ff479d5bd1882b1437c06c1a8c7a3c1a",
+    "bytes": 3
+  },
+  "fixtures/alias-origin/stdout.bin": {
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "bytes": 0
+  },
+  "fixtures/alias-origin/source-derived-expected.bin": {
+    "sha256": "6cdb1aa4479125c2746ffa3b9df3e956ff479d5bd1882b1437c06c1a8c7a3c1a",
+    "bytes": 3
+  },
+  "fixtures/alias-origin/target-before.bin": {
+    "sha256": "b5d4045c3f466fa91fe2cc6abe79232a1a57cdf104f7a26e716e0a1e2789df78",
+    "bytes": 3
+  },
+  "fixtures/alias-origin/delta with spaces.bin": {
+    "sha256": "0723cf3cd196ce562f46539d7daab1998ccecac654c54d9b7d7e702e041b3f7b",
+    "bytes": 14
+  },
+  "fixtures/alias-origin/origin-before.bin": {
+    "sha256": "b5d4045c3f466fa91fe2cc6abe79232a1a57cdf104f7a26e716e0a1e2789df78",
+    "bytes": 3
+  },
+  "fixtures/alias-origin/after.json": {
+    "sha256": "c70fc742bd52e6bd8d487d254aac23429e82ca30733a06882e2440925c312a4d",
+    "bytes": 495
+  },
+  "fixtures/alias-origin/target with spaces.bin": {
+    "sha256": "75bd38e7b17618a8eca95f4eaefe6449191b0bb210a6ad78a1fb6fd29a8c820e",
+    "bytes": 17
+  },
+  "fixtures/alias-origin/delta-after.bin": {
+    "sha256": "0723cf3cd196ce562f46539d7daab1998ccecac654c54d9b7d7e702e041b3f7b",
+    "bytes": 14
+  },
+  "fixtures/alias-origin/stderr.bin": {
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "bytes": 0
+  },
+  "fixtures/alias-origin/origin with spaces.bin": {
+    "sha256": "6cdb1aa4479125c2746ffa3b9df3e956ff479d5bd1882b1437c06c1a8c7a3c1a",
+    "bytes": 3
+  },
+  "fixtures/alias-origin/target-after.bin": {
+    "sha256": "6cdb1aa4479125c2746ffa3b9df3e956ff479d5bd1882b1437c06c1a8c7a3c1a",
+    "bytes": 3
+  },
+  "fixtures/alias-origin/delta-before.bin": {
+    "sha256": "0723cf3cd196ce562f46539d7daab1998ccecac654c54d9b7d7e702e041b3f7b",
+    "bytes": 14
+  },
+  "fixtures/arity-two/before.json": {
+    "sha256": "c18d7d9e3affa6b016432055c13556e82754f9731eec8eaafc52fdd8a933951d",
+    "bytes": 524
+  },
+  "fixtures/arity-two/origin-after.bin": {
+    "sha256": "b5d4045c3f466fa91fe2cc6abe79232a1a57cdf104f7a26e716e0a1e2789df78",
+    "bytes": 3
+  },
+  "fixtures/arity-two/stdout.bin": {
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "bytes": 0
+  },
+  "fixtures/arity-two/target-before.bin": {
+    "sha256": "75bd38e7b17618a8eca95f4eaefe6449191b0bb210a6ad78a1fb6fd29a8c820e",
+    "bytes": 17
+  },
+  "fixtures/arity-two/delta with spaces.bin": {
+    "sha256": "0723cf3cd196ce562f46539d7daab1998ccecac654c54d9b7d7e702e041b3f7b",
+    "bytes": 14
+  },
+  "fixtures/arity-two/origin-before.bin": {
+    "sha256": "b5d4045c3f466fa91fe2cc6abe79232a1a57cdf104f7a26e716e0a1e2789df78",
+    "bytes": 3
+  },
+  "fixtures/arity-two/after.json": {
+    "sha256": "c18d7d9e3affa6b016432055c13556e82754f9731eec8eaafc52fdd8a933951d",
+    "bytes": 524
+  },
+  "fixtures/arity-two/target with spaces.bin": {
+    "sha256": "75bd38e7b17618a8eca95f4eaefe6449191b0bb210a6ad78a1fb6fd29a8c820e",
+    "bytes": 17
+  },
+  "fixtures/arity-two/delta-after.bin": {
+    "sha256": "0723cf3cd196ce562f46539d7daab1998ccecac654c54d9b7d7e702e041b3f7b",
+    "bytes": 14
+  },
+  "fixtures/arity-two/stderr.bin": {
+    "sha256": "58e0190319827f85e32f1709d7a4212d4b6071d3493bf09e6ab70f72c7432f92",
+    "bytes": 51
+  },
+  "fixtures/arity-two/origin with spaces.bin": {
+    "sha256": "b5d4045c3f466fa91fe2cc6abe79232a1a57cdf104f7a26e716e0a1e2789df78",
+    "bytes": 3
+  },
+  "fixtures/arity-two/target-after.bin": {
+    "sha256": "75bd38e7b17618a8eca95f4eaefe6449191b0bb210a6ad78a1fb6fd29a8c820e",
+    "bytes": 17
+  },
+  "fixtures/arity-two/delta-before.bin": {
+    "sha256": "0723cf3cd196ce562f46539d7daab1998ccecac654c54d9b7d7e702e041b3f7b",
+    "bytes": 14
+  },
+  "fixtures/header-wrap32-zero/before.json": {
+    "sha256": "15cece8adfc8b7df9fd62e5047af5250f5e95bd2bcb25b17c56587abb62dfce6",
+    "bytes": 507
+  },
+  "fixtures/header-wrap32-zero/origin-after.bin": {
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "bytes": 0
+  },
+  "fixtures/header-wrap32-zero/stdout.bin": {
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "bytes": 0
+  },
+  "fixtures/header-wrap32-zero/source-derived-expected.bin": {
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "bytes": 0
+  },
+  "fixtures/header-wrap32-zero/target-before.bin": {
+    "sha256": "75bd38e7b17618a8eca95f4eaefe6449191b0bb210a6ad78a1fb6fd29a8c820e",
+    "bytes": 17
+  },
+  "fixtures/header-wrap32-zero/origin.bin": {
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "bytes": 0
+  },
+  "fixtures/header-wrap32-zero/target.bin": {
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "bytes": 0
+  },
+  "fixtures/header-wrap32-zero/origin-before.bin": {
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "bytes": 0
+  },
+  "fixtures/header-wrap32-zero/after.json": {
+    "sha256": "2528d4427b4a9a6482679c46de02ed52e021878153d99b5c29075311cf915a96",
+    "bytes": 472
+  },
+  "fixtures/header-wrap32-zero/delta-after.bin": {
+    "sha256": "5765c5ee53221ab832259a743c25f455d5c57e3f50966cbdf2e14ecadc7e750a",
+    "bytes": 9
+  },
+  "fixtures/header-wrap32-zero/stderr.bin": {
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "bytes": 0
+  },
+  "fixtures/header-wrap32-zero/delta.bin": {
+    "sha256": "5765c5ee53221ab832259a743c25f455d5c57e3f50966cbdf2e14ecadc7e750a",
+    "bytes": 9
+  },
+  "fixtures/header-wrap32-zero/target-after.bin": {
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "bytes": 0
+  },
+  "fixtures/header-wrap32-zero/delta-before.bin": {
+    "sha256": "5765c5ee53221ab832259a743c25f455d5c57e3f50966cbdf2e14ecadc7e750a",
+    "bytes": 9
+  },
+  "fixtures/missing-delta/before.json": {
+    "sha256": "d7bfe7cc1012787534c048fda1fc8c516e99f5e62d0be1644918e0ff061e25b5",
+    "bytes": 385
+  },
+  "fixtures/missing-delta/origin-after.bin": {
+    "sha256": "b5d4045c3f466fa91fe2cc6abe79232a1a57cdf104f7a26e716e0a1e2789df78",
+    "bytes": 3
+  },
+  "fixtures/missing-delta/stdout.bin": {
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "bytes": 0
+  },
+  "fixtures/missing-delta/target-before.bin": {
+    "sha256": "75bd38e7b17618a8eca95f4eaefe6449191b0bb210a6ad78a1fb6fd29a8c820e",
+    "bytes": 17
+  },
+  "fixtures/missing-delta/origin-before.bin": {
+    "sha256": "b5d4045c3f466fa91fe2cc6abe79232a1a57cdf104f7a26e716e0a1e2789df78",
+    "bytes": 3
+  },
+  "fixtures/missing-delta/after.json": {
+    "sha256": "d7bfe7cc1012787534c048fda1fc8c516e99f5e62d0be1644918e0ff061e25b5",
+    "bytes": 385
+  },
+  "fixtures/missing-delta/target with spaces.bin": {
+    "sha256": "75bd38e7b17618a8eca95f4eaefe6449191b0bb210a6ad78a1fb6fd29a8c820e",
+    "bytes": 17
+  },
+  "fixtures/missing-delta/stderr.bin": {
+    "sha256": "ccf707bb84c1e64ba13666b5da0763c719477fe18c2c9233f29969217638f131",
+    "bytes": 105
+  },
+  "fixtures/missing-delta/origin with spaces.bin": {
+    "sha256": "b5d4045c3f466fa91fe2cc6abe79232a1a57cdf104f7a26e716e0a1e2789df78",
+    "bytes": 3
+  },
+  "fixtures/missing-delta/target-after.bin": {
+    "sha256": "75bd38e7b17618a8eca95f4eaefe6449191b0bb210a6ad78a1fb6fd29a8c820e",
+    "bytes": 17
+  },
+  "fixtures/native-encoder-empty-source-tail-4/before.json": {
+    "sha256": "92dd8aef622f7204227865cb271e7b2a5b48dede9fae2715696bdd7211663ce4",
+    "bytes": 504
+  },
+  "fixtures/native-encoder-empty-source-tail-4/target_input-before.bin": {
+    "sha256": "c9f7ff1f287fcf1136933f76a3920273b9a21090499eaee652b17f048bebfc00",
+    "bytes": 4
+  },
+  "fixtures/native-encoder-empty-source-tail-4/origin-after.bin": {
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "bytes": 0
+  },
+  "fixtures/native-encoder-empty-source-tail-4/stdout.bin": {
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "bytes": 0
+  },
+  "fixtures/native-encoder-empty-source-tail-4/target-input.bin": {
+    "sha256": "c9f7ff1f287fcf1136933f76a3920273b9a21090499eaee652b17f048bebfc00",
+    "bytes": 4
+  },
+  "fixtures/native-encoder-empty-source-tail-4/source-derived-expected.bin": {
+    "sha256": "3add13d4130d01ce15e0220128d354802abe91d587bf9ea830edd3d4b6cf4645",
+    "bytes": 15
+  },
+  "fixtures/native-encoder-empty-source-tail-4/target-before.bin": {
+    "sha256": "75bd38e7b17618a8eca95f4eaefe6449191b0bb210a6ad78a1fb6fd29a8c820e",
+    "bytes": 17
+  },
+  "fixtures/native-encoder-empty-source-tail-4/origin.bin": {
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "bytes": 0
+  },
+  "fixtures/native-encoder-empty-source-tail-4/delta-output.bin": {
+    "sha256": "3add13d4130d01ce15e0220128d354802abe91d587bf9ea830edd3d4b6cf4645",
+    "bytes": 15
+  },
+  "fixtures/native-encoder-empty-source-tail-4/origin-before.bin": {
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "bytes": 0
+  },
+  "fixtures/native-encoder-empty-source-tail-4/after.json": {
+    "sha256": "dcea14049feba079425d3b9db6636c197438f86eb71c354cf2eeb8a638203f00",
+    "bytes": 500
+  },
+  "fixtures/native-encoder-empty-source-tail-4/target_input-after.bin": {
+    "sha256": "c9f7ff1f287fcf1136933f76a3920273b9a21090499eaee652b17f048bebfc00",
+    "bytes": 4
+  },
+  "fixtures/native-encoder-empty-source-tail-4/stderr.bin": {
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "bytes": 0
+  },
+  "fixtures/native-encoder-empty-source-tail-4/target-after.bin": {
+    "sha256": "3add13d4130d01ce15e0220128d354802abe91d587bf9ea830edd3d4b6cf4645",
+    "bytes": 15
+  },
+  "fixtures/copy-ends-immediately-after-at/before.json": {
+    "sha256": "f37a524b4089e080fdce18275d2c306269ce689091a92a033e661f99f38517fa",
+    "bytes": 503
+  },
+  "fixtures/copy-ends-immediately-after-at/origin-after.bin": {
+    "sha256": "b5d4045c3f466fa91fe2cc6abe79232a1a57cdf104f7a26e716e0a1e2789df78",
+    "bytes": 3
+  },
+  "fixtures/copy-ends-immediately-after-at/stdout.bin": {
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "bytes": 0
+  },
+  "fixtures/copy-ends-immediately-after-at/target-before.bin": {
+    "sha256": "75bd38e7b17618a8eca95f4eaefe6449191b0bb210a6ad78a1fb6fd29a8c820e",
+    "bytes": 17
+  },
+  "fixtures/copy-ends-immediately-after-at/origin.bin": {
+    "sha256": "b5d4045c3f466fa91fe2cc6abe79232a1a57cdf104f7a26e716e0a1e2789df78",
+    "bytes": 3
+  },
+  "fixtures/copy-ends-immediately-after-at/target.bin": {
+    "sha256": "75bd38e7b17618a8eca95f4eaefe6449191b0bb210a6ad78a1fb6fd29a8c820e",
+    "bytes": 17
+  },
+  "fixtures/copy-ends-immediately-after-at/origin-before.bin": {
+    "sha256": "b5d4045c3f466fa91fe2cc6abe79232a1a57cdf104f7a26e716e0a1e2789df78",
+    "bytes": 3
+  },
+  "fixtures/copy-ends-immediately-after-at/after.json": {
+    "sha256": "f37a524b4089e080fdce18275d2c306269ce689091a92a033e661f99f38517fa",
+    "bytes": 503
+  },
+  "fixtures/copy-ends-immediately-after-at/delta-after.bin": {
+    "sha256": "39024cc7c82f1383234bc1aec0a7f159b64d87099b4e2512c543d9b9151033e7",
+    "bytes": 4
+  },
+  "fixtures/copy-ends-immediately-after-at/stderr.bin": {
+    "sha256": "306ea6ad6bbd1668d10eb6cb5106149a3b585886faee61d84bc5d91c095953f7",
+    "bytes": 26
+  },
+  "fixtures/copy-ends-immediately-after-at/delta.bin": {
+    "sha256": "39024cc7c82f1383234bc1aec0a7f159b64d87099b4e2512c543d9b9151033e7",
+    "bytes": 4
+  },
+  "fixtures/copy-ends-immediately-after-at/target-after.bin": {
+    "sha256": "75bd38e7b17618a8eca95f4eaefe6449191b0bb210a6ad78a1fb6fd29a8c820e",
+    "bytes": 17
+  },
+  "fixtures/copy-ends-immediately-after-at/delta-before.bin": {
+    "sha256": "39024cc7c82f1383234bc1aec0a7f159b64d87099b4e2512c543d9b9151033e7",
+    "bytes": 4
+  },
+  "fixtures/native-encoder-empty-source-tail-3/before.json": {
+    "sha256": "6989e8da8ecc3a18d6449bc80da1cc0cb4536367d8480c510acdff73bcd61577",
+    "bytes": 502
+  },
+  "fixtures/native-encoder-empty-source-tail-3/target_input-before.bin": {
+    "sha256": "3d717443decdcd5a14f4827204c34cde42c540fd3fa3cd555bebc9a0f2b83bd6",
+    "bytes": 3
+  },
+  "fixtures/native-encoder-empty-source-tail-3/origin-after.bin": {
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "bytes": 0
+  },
+  "fixtures/native-encoder-empty-source-tail-3/stdout.bin": {
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "bytes": 0
+  },
+  "fixtures/native-encoder-empty-source-tail-3/target-input.bin": {
+    "sha256": "3d717443decdcd5a14f4827204c34cde42c540fd3fa3cd555bebc9a0f2b83bd6",
+    "bytes": 3
+  },
+  "fixtures/native-encoder-empty-source-tail-3/source-derived-expected.bin": {
+    "sha256": "899ac9b48239e46aa3be5761524dd1a3d401d9dc6141369b52f036ded5e19a03",
+    "bytes": 14
+  },
+  "fixtures/native-encoder-empty-source-tail-3/target-before.bin": {
+    "sha256": "75bd38e7b17618a8eca95f4eaefe6449191b0bb210a6ad78a1fb6fd29a8c820e",
+    "bytes": 17
+  },
+  "fixtures/native-encoder-empty-source-tail-3/origin.bin": {
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "bytes": 0
+  },
+  "fixtures/native-encoder-empty-source-tail-3/delta-output.bin": {
+    "sha256": "899ac9b48239e46aa3be5761524dd1a3d401d9dc6141369b52f036ded5e19a03",
+    "bytes": 14
+  },
+  "fixtures/native-encoder-empty-source-tail-3/origin-before.bin": {
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "bytes": 0
+  },
+  "fixtures/native-encoder-empty-source-tail-3/after.json": {
+    "sha256": "0114d38e4bb4afe08f52a4802cff9cbcc85a79254a43cb47297e09632b499e37",
+    "bytes": 496
+  },
+  "fixtures/native-encoder-empty-source-tail-3/target_input-after.bin": {
+    "sha256": "3d717443decdcd5a14f4827204c34cde42c540fd3fa3cd555bebc9a0f2b83bd6",
+    "bytes": 3
+  },
+  "fixtures/native-encoder-empty-source-tail-3/stderr.bin": {
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "bytes": 0
+  },
+  "fixtures/native-encoder-empty-source-tail-3/target-after.bin": {
+    "sha256": "899ac9b48239e46aa3be5761524dd1a3d401d9dc6141369b52f036ded5e19a03",
+    "bytes": 14
+  },
+  "fixtures/native-encoder-empty-source-tail-2/before.json": {
+    "sha256": "af1ceedefdabc2f4ed513040870eb64d6e68c9a88a848d8c18282316a68faa51",
+    "bytes": 500
+  },
+  "fixtures/native-encoder-empty-source-tail-2/target_input-before.bin": {
+    "sha256": "ea5dbf9596d187e9500f23e9a680109475341cf4e81f7e043f7d97152c10772f",
+    "bytes": 2
+  },
+  "fixtures/native-encoder-empty-source-tail-2/origin-after.bin": {
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "bytes": 0
+  },
+  "fixtures/native-encoder-empty-source-tail-2/stdout.bin": {
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "bytes": 0
+  },
+  "fixtures/native-encoder-empty-source-tail-2/target-input.bin": {
+    "sha256": "ea5dbf9596d187e9500f23e9a680109475341cf4e81f7e043f7d97152c10772f",
+    "bytes": 2
+  },
+  "fixtures/native-encoder-empty-source-tail-2/source-derived-expected.bin": {
+    "sha256": "66898e9d04125f3435be740d104314a48a3b0dc3b558dbc4e4e0503af82c440b",
+    "bytes": 13
+  },
+  "fixtures/native-encoder-empty-source-tail-2/target-before.bin": {
+    "sha256": "75bd38e7b17618a8eca95f4eaefe6449191b0bb210a6ad78a1fb6fd29a8c820e",
+    "bytes": 17
+  },
+  "fixtures/native-encoder-empty-source-tail-2/origin.bin": {
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "bytes": 0
+  },
+  "fixtures/native-encoder-empty-source-tail-2/delta-output.bin": {
+    "sha256": "66898e9d04125f3435be740d104314a48a3b0dc3b558dbc4e4e0503af82c440b",
+    "bytes": 13
+  },
+  "fixtures/native-encoder-empty-source-tail-2/origin-before.bin": {
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "bytes": 0
+  },
+  "fixtures/native-encoder-empty-source-tail-2/after.json": {
+    "sha256": "18a1ad1e99fbab9188f5e58eaffa8d3359ee7da81ae7519adcf57544cfb16a41",
+    "bytes": 492
+  },
+  "fixtures/native-encoder-empty-source-tail-2/target_input-after.bin": {
+    "sha256": "ea5dbf9596d187e9500f23e9a680109475341cf4e81f7e043f7d97152c10772f",
+    "bytes": 2
+  },
+  "fixtures/native-encoder-empty-source-tail-2/stderr.bin": {
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "bytes": 0
+  },
+  "fixtures/native-encoder-empty-source-tail-2/target-after.bin": {
+    "sha256": "66898e9d04125f3435be740d104314a48a3b0dc3b558dbc4e4e0503af82c440b",
+    "bytes": 13
+  },
+  "fixtures/native-encoder-empty-source-tail-5/before.json": {
+    "sha256": "9d448ff7495a1febd64f7f3b50953d03f3b52ce88b7e727af6a48ab43b418152",
+    "bytes": 506
+  },
+  "fixtures/native-encoder-empty-source-tail-5/target_input-before.bin": {
+    "sha256": "540a8f410892edcfeb10a66377fe16f21cfe56d4f882cd32bcd72c69e0c46123",
+    "bytes": 5
+  },
+  "fixtures/native-encoder-empty-source-tail-5/origin-after.bin": {
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "bytes": 0
+  },
+  "fixtures/native-encoder-empty-source-tail-5/stdout.bin": {
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "bytes": 0
+  },
+  "fixtures/native-encoder-empty-source-tail-5/target-input.bin": {
+    "sha256": "540a8f410892edcfeb10a66377fe16f21cfe56d4f882cd32bcd72c69e0c46123",
+    "bytes": 5
+  },
+  "fixtures/native-encoder-empty-source-tail-5/source-derived-expected.bin": {
+    "sha256": "5e6f6dbbcb521fd925497653ef49f5e91a3fd8428b48a4948a5e22aef8f3b5e9",
+    "bytes": 16
+  },
+  "fixtures/native-encoder-empty-source-tail-5/target-before.bin": {
+    "sha256": "75bd38e7b17618a8eca95f4eaefe6449191b0bb210a6ad78a1fb6fd29a8c820e",
+    "bytes": 17
+  },
+  "fixtures/native-encoder-empty-source-tail-5/origin.bin": {
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "bytes": 0
+  },
+  "fixtures/native-encoder-empty-source-tail-5/delta-output.bin": {
+    "sha256": "5e6f6dbbcb521fd925497653ef49f5e91a3fd8428b48a4948a5e22aef8f3b5e9",
+    "bytes": 16
+  },
+  "fixtures/native-encoder-empty-source-tail-5/origin-before.bin": {
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "bytes": 0
+  },
+  "fixtures/native-encoder-empty-source-tail-5/after.json": {
+    "sha256": "7798063725fde502cca2faada3c7744a85d20574507df68ba780a09628de536a",
+    "bytes": 504
+  },
+  "fixtures/native-encoder-empty-source-tail-5/target_input-after.bin": {
+    "sha256": "540a8f410892edcfeb10a66377fe16f21cfe56d4f882cd32bcd72c69e0c46123",
+    "bytes": 5
+  },
+  "fixtures/native-encoder-empty-source-tail-5/stderr.bin": {
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "bytes": 0
+  },
+  "fixtures/native-encoder-empty-source-tail-5/target-after.bin": {
+    "sha256": "5e6f6dbbcb521fd925497653ef49f5e91a3fd8428b48a4948a5e22aef8f3b5e9",
+    "bytes": 16
+  },
+  "fixtures/high-bit-checksum-digit/before.json": {
+    "sha256": "957890485f9e2e4ff8e40c101bd1beef77edafde5340d0e620a678040e5ea2c7",
+    "bytes": 503
+  },
+  "fixtures/high-bit-checksum-digit/origin-after.bin": {
+    "sha256": "b5d4045c3f466fa91fe2cc6abe79232a1a57cdf104f7a26e716e0a1e2789df78",
+    "bytes": 3
+  },
+  "fixtures/high-bit-checksum-digit/stdout.bin": {
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "bytes": 0
+  },
+  "fixtures/high-bit-checksum-digit/target-before.bin": {
+    "sha256": "75bd38e7b17618a8eca95f4eaefe6449191b0bb210a6ad78a1fb6fd29a8c820e",
+    "bytes": 17
+  },
+  "fixtures/high-bit-checksum-digit/origin.bin": {
+    "sha256": "b5d4045c3f466fa91fe2cc6abe79232a1a57cdf104f7a26e716e0a1e2789df78",
+    "bytes": 3
+  },
+  "fixtures/high-bit-checksum-digit/target.bin": {
+    "sha256": "75bd38e7b17618a8eca95f4eaefe6449191b0bb210a6ad78a1fb6fd29a8c820e",
+    "bytes": 17
+  },
+  "fixtures/high-bit-checksum-digit/origin-before.bin": {
+    "sha256": "b5d4045c3f466fa91fe2cc6abe79232a1a57cdf104f7a26e716e0a1e2789df78",
+    "bytes": 3
+  },
+  "fixtures/high-bit-checksum-digit/after.json": {
+    "sha256": "957890485f9e2e4ff8e40c101bd1beef77edafde5340d0e620a678040e5ea2c7",
+    "bytes": 503
+  },
+  "fixtures/high-bit-checksum-digit/delta-after.bin": {
+    "sha256": "df715cc8598048e19680b3fd539d45d3d7d62b6b66da9026bde2fb537eea2ac5",
+    "bytes": 4
+  },
+  "fixtures/high-bit-checksum-digit/stderr.bin": {
+    "sha256": "306ea6ad6bbd1668d10eb6cb5106149a3b585886faee61d84bc5d91c095953f7",
+    "bytes": 26
+  },
+  "fixtures/high-bit-checksum-digit/delta.bin": {
+    "sha256": "df715cc8598048e19680b3fd539d45d3d7d62b6b66da9026bde2fb537eea2ac5",
+    "bytes": 4
+  },
+  "fixtures/high-bit-checksum-digit/target-after.bin": {
+    "sha256": "75bd38e7b17618a8eca95f4eaefe6449191b0bb210a6ad78a1fb6fd29a8c820e",
+    "bytes": 17
+  },
+  "fixtures/high-bit-checksum-digit/delta-before.bin": {
+    "sha256": "df715cc8598048e19680b3fd539d45d3d7d62b6b66da9026bde2fb537eea2ac5",
+    "bytes": 4
+  },
+  "fixtures/paths with spaces/before.json": {
+    "sha256": "c18d7d9e3affa6b016432055c13556e82754f9731eec8eaafc52fdd8a933951d",
+    "bytes": 524
+  },
+  "fixtures/paths with spaces/origin-after.bin": {
+    "sha256": "b5d4045c3f466fa91fe2cc6abe79232a1a57cdf104f7a26e716e0a1e2789df78",
+    "bytes": 3
+  },
+  "fixtures/paths with spaces/stdout.bin": {
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "bytes": 0
+  },
+  "fixtures/paths with spaces/source-derived-expected.bin": {
+    "sha256": "6cdb1aa4479125c2746ffa3b9df3e956ff479d5bd1882b1437c06c1a8c7a3c1a",
+    "bytes": 3
+  },
+  "fixtures/paths with spaces/target-before.bin": {
+    "sha256": "75bd38e7b17618a8eca95f4eaefe6449191b0bb210a6ad78a1fb6fd29a8c820e",
+    "bytes": 17
+  },
+  "fixtures/paths with spaces/delta with spaces.bin": {
+    "sha256": "0723cf3cd196ce562f46539d7daab1998ccecac654c54d9b7d7e702e041b3f7b",
+    "bytes": 14
+  },
+  "fixtures/paths with spaces/origin-before.bin": {
+    "sha256": "b5d4045c3f466fa91fe2cc6abe79232a1a57cdf104f7a26e716e0a1e2789df78",
+    "bytes": 3
+  },
+  "fixtures/paths with spaces/after.json": {
+    "sha256": "f5c78525b13714fae056afddc163aed233bd7efd690ac36887843f577268a9ae",
+    "bytes": 495
+  },
+  "fixtures/paths with spaces/target with spaces.bin": {
+    "sha256": "6cdb1aa4479125c2746ffa3b9df3e956ff479d5bd1882b1437c06c1a8c7a3c1a",
+    "bytes": 3
+  },
+  "fixtures/paths with spaces/delta-after.bin": {
+    "sha256": "0723cf3cd196ce562f46539d7daab1998ccecac654c54d9b7d7e702e041b3f7b",
+    "bytes": 14
+  },
+  "fixtures/paths with spaces/stderr.bin": {
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "bytes": 0
+  },
+  "fixtures/paths with spaces/origin with spaces.bin": {
+    "sha256": "b5d4045c3f466fa91fe2cc6abe79232a1a57cdf104f7a26e716e0a1e2789df78",
+    "bytes": 3
+  },
+  "fixtures/paths with spaces/target-after.bin": {
+    "sha256": "6cdb1aa4479125c2746ffa3b9df3e956ff479d5bd1882b1437c06c1a8c7a3c1a",
+    "bytes": 3
+  },
+  "fixtures/paths with spaces/delta-before.bin": {
+    "sha256": "0723cf3cd196ce562f46539d7daab1998ccecac654c54d9b7d7e702e041b3f7b",
+    "bytes": 14
+  },
+  "fixtures/target-directory/before.json": {
+    "sha256": "b68d0b5fe9fecc17507c9bb35656920381972be3e55e1293646ed42923d258db",
+    "bytes": 574
+  },
+  "fixtures/target-directory/origin-after.bin": {
+    "sha256": "b5d4045c3f466fa91fe2cc6abe79232a1a57cdf104f7a26e716e0a1e2789df78",
+    "bytes": 3
+  },
+  "fixtures/target-directory/stdout.bin": {
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "bytes": 0
+  },
+  "fixtures/target-directory/delta with spaces.bin": {
+    "sha256": "0723cf3cd196ce562f46539d7daab1998ccecac654c54d9b7d7e702e041b3f7b",
+    "bytes": 14
+  },
+  "fixtures/target-directory/origin-before.bin": {
+    "sha256": "b5d4045c3f466fa91fe2cc6abe79232a1a57cdf104f7a26e716e0a1e2789df78",
+    "bytes": 3
+  },
+  "fixtures/target-directory/after.json": {
+    "sha256": "b68d0b5fe9fecc17507c9bb35656920381972be3e55e1293646ed42923d258db",
+    "bytes": 574
+  },
+  "fixtures/target-directory/delta-after.bin": {
+    "sha256": "0723cf3cd196ce562f46539d7daab1998ccecac654c54d9b7d7e702e041b3f7b",
+    "bytes": 14
+  },
+  "fixtures/target-directory/stderr.bin": {
+    "sha256": "45a77c51c7a39f6b2a6e8559f71292469caa8b4c4e375ad7a85d49dd4f288119",
+    "bytes": 129
+  },
+  "fixtures/target-directory/origin with spaces.bin": {
+    "sha256": "b5d4045c3f466fa91fe2cc6abe79232a1a57cdf104f7a26e716e0a1e2789df78",
+    "bytes": 3
+  },
+  "fixtures/target-directory/delta-before.bin": {
+    "sha256": "0723cf3cd196ce562f46539d7daab1998ccecac654c54d9b7d7e702e041b3f7b",
+    "bytes": 14
+  },
+  "fixtures/high-bit-numeric-alias/before.json": {
+    "sha256": "959c3afbd14b7a8b983316ca43036789e7cc07659b16c3502d4fd136d6c31b39",
+    "bytes": 503
+  },
+  "fixtures/high-bit-numeric-alias/origin-after.bin": {
+    "sha256": "b5d4045c3f466fa91fe2cc6abe79232a1a57cdf104f7a26e716e0a1e2789df78",
+    "bytes": 3
+  },
+  "fixtures/high-bit-numeric-alias/stdout.bin": {
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "bytes": 0
+  },
+  "fixtures/high-bit-numeric-alias/target-before.bin": {
+    "sha256": "75bd38e7b17618a8eca95f4eaefe6449191b0bb210a6ad78a1fb6fd29a8c820e",
+    "bytes": 17
+  },
+  "fixtures/high-bit-numeric-alias/origin.bin": {
+    "sha256": "b5d4045c3f466fa91fe2cc6abe79232a1a57cdf104f7a26e716e0a1e2789df78",
+    "bytes": 3
+  },
+  "fixtures/high-bit-numeric-alias/target.bin": {
+    "sha256": "75bd38e7b17618a8eca95f4eaefe6449191b0bb210a6ad78a1fb6fd29a8c820e",
+    "bytes": 17
+  },
+  "fixtures/high-bit-numeric-alias/origin-before.bin": {
+    "sha256": "b5d4045c3f466fa91fe2cc6abe79232a1a57cdf104f7a26e716e0a1e2789df78",
+    "bytes": 3
+  },
+  "fixtures/high-bit-numeric-alias/after.json": {
+    "sha256": "959c3afbd14b7a8b983316ca43036789e7cc07659b16c3502d4fd136d6c31b39",
+    "bytes": 503
+  },
+  "fixtures/high-bit-numeric-alias/delta-after.bin": {
+    "sha256": "4bd049f18c907b3e420213d74890adbc8191eaa76e3da4463acda622060a3457",
+    "bytes": 4
+  },
+  "fixtures/high-bit-numeric-alias/stderr.bin": {
+    "sha256": "306ea6ad6bbd1668d10eb6cb5106149a3b585886faee61d84bc5d91c095953f7",
+    "bytes": 26
+  },
+  "fixtures/high-bit-numeric-alias/delta.bin": {
+    "sha256": "4bd049f18c907b3e420213d74890adbc8191eaa76e3da4463acda622060a3457",
+    "bytes": 4
+  },
+  "fixtures/high-bit-numeric-alias/target-after.bin": {
+    "sha256": "75bd38e7b17618a8eca95f4eaefe6449191b0bb210a6ad78a1fb6fd29a8c820e",
+    "bytes": 17
+  },
+  "fixtures/high-bit-numeric-alias/delta-before.bin": {
+    "sha256": "4bd049f18c907b3e420213d74890adbc8191eaa76e3da4463acda622060a3457",
+    "bytes": 4
+  },
+  "fixtures/copy-offset-consumes-final-digit/before.json": {
+    "sha256": "e47d9c6415a658b775a03c7eca35deb75059bf868518119ce323be3097bc0789",
+    "bytes": 505
+  },
+  "fixtures/copy-offset-consumes-final-digit/origin-after.bin": {
+    "sha256": "b5d4045c3f466fa91fe2cc6abe79232a1a57cdf104f7a26e716e0a1e2789df78",
+    "bytes": 3
+  },
+  "fixtures/copy-offset-consumes-final-digit/stdout.bin": {
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "bytes": 0
+  },
+  "fixtures/copy-offset-consumes-final-digit/target-before.bin": {
+    "sha256": "75bd38e7b17618a8eca95f4eaefe6449191b0bb210a6ad78a1fb6fd29a8c820e",
+    "bytes": 17
+  },
+  "fixtures/copy-offset-consumes-final-digit/origin.bin": {
+    "sha256": "b5d4045c3f466fa91fe2cc6abe79232a1a57cdf104f7a26e716e0a1e2789df78",
+    "bytes": 3
+  },
+  "fixtures/copy-offset-consumes-final-digit/target.bin": {
+    "sha256": "75bd38e7b17618a8eca95f4eaefe6449191b0bb210a6ad78a1fb6fd29a8c820e",
+    "bytes": 17
+  },
+  "fixtures/copy-offset-consumes-final-digit/origin-before.bin": {
+    "sha256": "b5d4045c3f466fa91fe2cc6abe79232a1a57cdf104f7a26e716e0a1e2789df78",
+    "bytes": 3
+  },
+  "fixtures/copy-offset-consumes-final-digit/after.json": {
+    "sha256": "e47d9c6415a658b775a03c7eca35deb75059bf868518119ce323be3097bc0789",
+    "bytes": 505
+  },
+  "fixtures/copy-offset-consumes-final-digit/delta-after.bin": {
+    "sha256": "3f1baa2eec117c64d17489fe2d1920f6d3a838c0679f715e53c1a80253e497bb",
+    "bytes": 5
+  },
+  "fixtures/copy-offset-consumes-final-digit/stderr.bin": {
+    "sha256": "306ea6ad6bbd1668d10eb6cb5106149a3b585886faee61d84bc5d91c095953f7",
+    "bytes": 26
+  },
+  "fixtures/copy-offset-consumes-final-digit/delta.bin": {
+    "sha256": "3f1baa2eec117c64d17489fe2d1920f6d3a838c0679f715e53c1a80253e497bb",
+    "bytes": 5
+  },
+  "fixtures/copy-offset-consumes-final-digit/target-after.bin": {
+    "sha256": "75bd38e7b17618a8eca95f4eaefe6449191b0bb210a6ad78a1fb6fd29a8c820e",
+    "bytes": 17
+  },
+  "fixtures/copy-offset-consumes-final-digit/delta-before.bin": {
+    "sha256": "3f1baa2eec117c64d17489fe2d1920f6d3a838c0679f715e53c1a80253e497bb",
+    "bytes": 5
+  },
+  "fixtures/arity-extra/before.json": {
+    "sha256": "c18d7d9e3affa6b016432055c13556e82754f9731eec8eaafc52fdd8a933951d",
+    "bytes": 524
+  },
+  "fixtures/arity-extra/origin-after.bin": {
+    "sha256": "b5d4045c3f466fa91fe2cc6abe79232a1a57cdf104f7a26e716e0a1e2789df78",
+    "bytes": 3
+  },
+  "fixtures/arity-extra/stdout.bin": {
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "bytes": 0
+  },
+  "fixtures/arity-extra/target-before.bin": {
+    "sha256": "75bd38e7b17618a8eca95f4eaefe6449191b0bb210a6ad78a1fb6fd29a8c820e",
+    "bytes": 17
+  },
+  "fixtures/arity-extra/delta with spaces.bin": {
+    "sha256": "0723cf3cd196ce562f46539d7daab1998ccecac654c54d9b7d7e702e041b3f7b",
+    "bytes": 14
+  },
+  "fixtures/arity-extra/origin-before.bin": {
+    "sha256": "b5d4045c3f466fa91fe2cc6abe79232a1a57cdf104f7a26e716e0a1e2789df78",
+    "bytes": 3
+  },
+  "fixtures/arity-extra/after.json": {
+    "sha256": "c18d7d9e3affa6b016432055c13556e82754f9731eec8eaafc52fdd8a933951d",
+    "bytes": 524
+  },
+  "fixtures/arity-extra/target with spaces.bin": {
+    "sha256": "75bd38e7b17618a8eca95f4eaefe6449191b0bb210a6ad78a1fb6fd29a8c820e",
+    "bytes": 17
+  },
+  "fixtures/arity-extra/delta-after.bin": {
+    "sha256": "0723cf3cd196ce562f46539d7daab1998ccecac654c54d9b7d7e702e041b3f7b",
+    "bytes": 14
+  },
+  "fixtures/arity-extra/stderr.bin": {
+    "sha256": "58e0190319827f85e32f1709d7a4212d4b6071d3493bf09e6ab70f72c7432f92",
+    "bytes": 51
+  },
+  "fixtures/arity-extra/origin with spaces.bin": {
+    "sha256": "b5d4045c3f466fa91fe2cc6abe79232a1a57cdf104f7a26e716e0a1e2789df78",
+    "bytes": 3
+  },
+  "fixtures/arity-extra/target-after.bin": {
+    "sha256": "75bd38e7b17618a8eca95f4eaefe6449191b0bb210a6ad78a1fb6fd29a8c820e",
+    "bytes": 17
+  },
+  "fixtures/arity-extra/delta-before.bin": {
+    "sha256": "0723cf3cd196ce562f46539d7daab1998ccecac654c54d9b7d7e702e041b3f7b",
+    "bytes": 14
+  },
+  "fixtures/high-bit-copy-delimiter/before.json": {
+    "sha256": "87aaa9415a6e5b3d51734430aa677ab8cd3e3cac036ef7b303e6d73c40b5b86e",
+    "bytes": 511
+  },
+  "fixtures/high-bit-copy-delimiter/origin-after.bin": {
+    "sha256": "b5d4045c3f466fa91fe2cc6abe79232a1a57cdf104f7a26e716e0a1e2789df78",
+    "bytes": 3
+  },
+  "fixtures/high-bit-copy-delimiter/stdout.bin": {
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "bytes": 0
+  },
+  "fixtures/high-bit-copy-delimiter/target-before.bin": {
+    "sha256": "75bd38e7b17618a8eca95f4eaefe6449191b0bb210a6ad78a1fb6fd29a8c820e",
+    "bytes": 17
+  },
+  "fixtures/high-bit-copy-delimiter/origin.bin": {
+    "sha256": "b5d4045c3f466fa91fe2cc6abe79232a1a57cdf104f7a26e716e0a1e2789df78",
+    "bytes": 3
+  },
+  "fixtures/high-bit-copy-delimiter/target.bin": {
+    "sha256": "75bd38e7b17618a8eca95f4eaefe6449191b0bb210a6ad78a1fb6fd29a8c820e",
+    "bytes": 17
+  },
+  "fixtures/high-bit-copy-delimiter/origin-before.bin": {
+    "sha256": "b5d4045c3f466fa91fe2cc6abe79232a1a57cdf104f7a26e716e0a1e2789df78",
+    "bytes": 3
+  },
+  "fixtures/high-bit-copy-delimiter/after.json": {
+    "sha256": "87aaa9415a6e5b3d51734430aa677ab8cd3e3cac036ef7b303e6d73c40b5b86e",
+    "bytes": 511
+  },
+  "fixtures/high-bit-copy-delimiter/delta-after.bin": {
+    "sha256": "3f46a02d6c438d5493e26410de31c0e4f07f9f260d25be0d6ad25457ea891ff5",
+    "bytes": 8
+  },
+  "fixtures/high-bit-copy-delimiter/stderr.bin": {
+    "sha256": "306ea6ad6bbd1668d10eb6cb5106149a3b585886faee61d84bc5d91c095953f7",
+    "bytes": 26
+  },
+  "fixtures/high-bit-copy-delimiter/delta.bin": {
+    "sha256": "3f46a02d6c438d5493e26410de31c0e4f07f9f260d25be0d6ad25457ea891ff5",
+    "bytes": 8
+  },
+  "fixtures/high-bit-copy-delimiter/target-after.bin": {
+    "sha256": "75bd38e7b17618a8eca95f4eaefe6449191b0bb210a6ad78a1fb6fd29a8c820e",
+    "bytes": 17
+  },
+  "fixtures/high-bit-copy-delimiter/delta-before.bin": {
+    "sha256": "3f46a02d6c438d5493e26410de31c0e4f07f9f260d25be0d6ad25457ea891ff5",
+    "bytes": 8
+  },
+  "fixtures/header-wrap32-one/before.json": {
+    "sha256": "1fe83be32f8d2f9d865fa2956c1220089ad6ff56bf86b7fbcded40630b83a219",
+    "bytes": 507
+  },
+  "fixtures/header-wrap32-one/origin-after.bin": {
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "bytes": 0
+  },
+  "fixtures/header-wrap32-one/stdout.bin": {
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "bytes": 0
+  },
+  "fixtures/header-wrap32-one/target-before.bin": {
+    "sha256": "75bd38e7b17618a8eca95f4eaefe6449191b0bb210a6ad78a1fb6fd29a8c820e",
+    "bytes": 17
+  },
+  "fixtures/header-wrap32-one/origin.bin": {
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "bytes": 0
+  },
+  "fixtures/header-wrap32-one/target.bin": {
+    "sha256": "75bd38e7b17618a8eca95f4eaefe6449191b0bb210a6ad78a1fb6fd29a8c820e",
+    "bytes": 17
+  },
+  "fixtures/header-wrap32-one/origin-before.bin": {
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "bytes": 0
+  },
+  "fixtures/header-wrap32-one/after.json": {
+    "sha256": "1fe83be32f8d2f9d865fa2956c1220089ad6ff56bf86b7fbcded40630b83a219",
+    "bytes": 507
+  },
+  "fixtures/header-wrap32-one/delta-after.bin": {
+    "sha256": "b9b7c4cc2dc83d3a3119351094549f5da96df22154cf33050c7751c3d4b2bcb2",
+    "bytes": 9
+  },
+  "fixtures/header-wrap32-one/stderr.bin": {
+    "sha256": "306ea6ad6bbd1668d10eb6cb5106149a3b585886faee61d84bc5d91c095953f7",
+    "bytes": 26
+  },
+  "fixtures/header-wrap32-one/delta.bin": {
+    "sha256": "b9b7c4cc2dc83d3a3119351094549f5da96df22154cf33050c7751c3d4b2bcb2",
+    "bytes": 9
+  },
+  "fixtures/header-wrap32-one/target-after.bin": {
+    "sha256": "75bd38e7b17618a8eca95f4eaefe6449191b0bb210a6ad78a1fb6fd29a8c820e",
+    "bytes": 17
+  },
+  "fixtures/header-wrap32-one/delta-before.bin": {
+    "sha256": "b9b7c4cc2dc83d3a3119351094549f5da96df22154cf33050c7751c3d4b2bcb2",
+    "bytes": 9
+  },
+  "fixtures/target-directory/target with spaces.bin/marker.bin": {
+    "sha256": "75bd38e7b17618a8eca95f4eaefe6449191b0bb210a6ad78a1fb6fd29a8c820e",
+    "bytes": 17
+  },
+  "provenance/src/delta.c": {
+    "sha256": "85d1a68aef7796240a65265276308b4201bcb5de1bda168eea573495304177d2",
+    "bytes": 22550
+  },
+  "provenance/src/deltacmd.c": {
+    "sha256": "c154db86edfc1677713c5164c9e9660553aca1cf4322386d7f848a89ae0acfb1",
+    "bytes": 5825
+  }
+}

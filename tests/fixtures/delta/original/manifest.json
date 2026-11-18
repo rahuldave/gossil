@@ -1,0 +1,506 @@
+{
+  "kind": "executed pinned C delta decoder reference characterization; no Rust implementation or compatibility claim",
+  "source_git_pin": "b3a1c8efb2731dffbd5cc38c58ac349746de6da6",
+  "native_pin": "7e8ecf0ce4a3c05aa39de7ffe2828d23e334efe446ef2387e09f205ef00b2227",
+  "tool": {
+    "path": "/Users/rahul/Projects/gossil/.jlog/bin/fossil",
+    "resolved_path": "/Users/rahul/Projects/gossil/.jlog/tools/fossil/7e8ecf0ce4/macos-arm64/fossil",
+    "sha256": "75550c754e94a4b7fa0269f40ce8e4918daf67e05ba12b236ed735d424c8e16c",
+    "version_stdout_hex": "5468697320697320666f7373696c2076657273696f6e20322e3239205b376538656366306365345d20323032362d31312d31362031313a34313a3534205554430a436f6d70696c6564206f6e204e6f7620313620323032362031353a30373a3435207573696e6720636c616e672d31372e302e302028636c616e672d313730302e302e31332e3329202836342d626974290a53514c69746520332e35352e3020323032362d31312d31352030303a35353a303420616434656532303530390a7a6c696220312e322e31322c206c6f6164656420312e322e31320a",
+    "version_stdout_utf8": "This is fossil version 2.29 [7e8ecf0ce4] 2026-11-16 11:41:54 UTC\nCompiled on Nov 16 2026 15:07:45 using clang-17.0.0 (clang-1700.0.13.3) (64-bit)\nSQLite 3.55.0 2026-11-15 00:55:04 ad4ee20509\nzlib 1.2.12, loaded 1.2.12\n",
+    "version_exit_code": 0
+  },
+  "source_build_files": {
+    "src/delta.c": {
+      "path": "/var/folders/wq/mr3zj9r14dzgjnq9rjx_vqbc0000gn/T/gossil-source-review-1sgum5ox/fossil/src/delta.c",
+      "sha256": "85d1a68aef7796240a65265276308b4201bcb5de1bda168eea573495304177d2"
+    },
+    "src/deltacmd.c": {
+      "path": "/var/folders/wq/mr3zj9r14dzgjnq9rjx_vqbc0000gn/T/gossil-source-review-1sgum5ox/fossil/src/deltacmd.c",
+      "sha256": "c154db86edfc1677713c5164c9e9660553aca1cf4322386d7f848a89ae0acfb1"
+    },
+    "manifest.uuid": {
+      "path": "/var/folders/wq/mr3zj9r14dzgjnq9rjx_vqbc0000gn/T/gossil-source-review-1sgum5ox/fossil/manifest.uuid",
+      "sha256": "6601399b7c93e52d176c3c447cd8a54632c761464609634c645420b5040a05c8"
+    },
+    "Makefile": {
+      "path": "/var/folders/wq/mr3zj9r14dzgjnq9rjx_vqbc0000gn/T/gossil-source-review-1sgum5ox/fossil/Makefile",
+      "sha256": "4a0929991db2c71117e74ebc6cfc8dbedc9b0be876cc7881f712f14030d52137"
+    },
+    "autoconfig.h": {
+      "path": "/var/folders/wq/mr3zj9r14dzgjnq9rjx_vqbc0000gn/T/gossil-source-review-1sgum5ox/fossil/autoconfig.h",
+      "sha256": "3d6205d86eccad102f58b83e88484062b6eaaf897b3e873b119df03a74fae352"
+    },
+    "config.log": {
+      "path": "/var/folders/wq/mr3zj9r14dzgjnq9rjx_vqbc0000gn/T/gossil-source-review-1sgum5ox/fossil/config.log",
+      "sha256": "76c56b5a36ea03d52f15bedd54521519cdca3bbaf9fc00abca482810b7b24d13"
+    }
+  },
+  "host": "macOS-15.2-arm64-arm-64bit-Mach-O",
+  "case_count": 64,
+  "status_counts": {
+    "accepted": 35,
+    "rejected": 24,
+    "not-run": 5
+  },
+  "all_executed_anticipated_results_match": true,
+  "all_rejections_preserve_preexisting_target": true,
+  "process_timeout_seconds": 3,
+  "max_executed_output_header": 4097,
+  "checksum_helper": "Python source-derived big-endian zero-padded sum32, not independently validated by this apply-only corpus when checksum verification disabled",
+  "results_file": "/tmp/gossil-delta-decoder-corpus-20261117/results.json",
+  "cases": [
+    {
+      "id": "empty-literal",
+      "status": "accepted",
+      "decision": "source-derived candidate",
+      "execute": true
+    },
+    {
+      "id": "empty-no-operations",
+      "status": "accepted",
+      "decision": "source-derived candidate",
+      "execute": true
+    },
+    {
+      "id": "literal-41",
+      "status": "accepted",
+      "decision": "source-derived candidate",
+      "execute": true
+    },
+    {
+      "id": "literal-4142",
+      "status": "accepted",
+      "decision": "source-derived candidate",
+      "execute": true
+    },
+    {
+      "id": "literal-414243",
+      "status": "accepted",
+      "decision": "source-derived candidate",
+      "execute": true
+    },
+    {
+      "id": "literal-41424344",
+      "status": "accepted",
+      "decision": "source-derived candidate",
+      "execute": true
+    },
+    {
+      "id": "literal-4142434445",
+      "status": "accepted",
+      "decision": "source-derived candidate",
+      "execute": true
+    },
+    {
+      "id": "literal-41424344454647",
+      "status": "accepted",
+      "decision": "source-derived candidate",
+      "execute": true
+    },
+    {
+      "id": "literal-4142434445464748",
+      "status": "accepted",
+      "decision": "source-derived candidate",
+      "execute": true
+    },
+    {
+      "id": "literal-ffffffffffffffff",
+      "status": "accepted",
+      "decision": "source-derived candidate",
+      "execute": true
+    },
+    {
+      "id": "binary-literal",
+      "status": "accepted",
+      "decision": "source-derived candidate",
+      "execute": true
+    },
+    {
+      "id": "copy-all",
+      "status": "accepted",
+      "decision": "source-derived candidate",
+      "execute": true
+    },
+    {
+      "id": "copy-offset",
+      "status": "accepted",
+      "decision": "source-derived candidate",
+      "execute": true
+    },
+    {
+      "id": "copy-binary",
+      "status": "accepted",
+      "decision": "source-derived candidate",
+      "execute": true
+    },
+    {
+      "id": "mixed-copy-literal",
+      "status": "accepted",
+      "decision": "source-derived candidate",
+      "execute": true
+    },
+    {
+      "id": "repeat-copy",
+      "status": "accepted",
+      "decision": "source-derived candidate",
+      "execute": true
+    },
+    {
+      "id": "checksum-wrong-zero",
+      "status": "accepted",
+      "decision": "checksum behavior conditional on reference build",
+      "execute": true
+    },
+    {
+      "id": "checksum-wrong-max",
+      "status": "accepted",
+      "decision": "checksum behavior conditional on reference build",
+      "execute": true
+    },
+    {
+      "id": "checksum-empty-field",
+      "status": "accepted",
+      "decision": "empty numeric checksum accepted if verification disabled",
+      "execute": true
+    },
+    {
+      "id": "checksum-wrapped",
+      "status": "accepted",
+      "decision": "getInt wraps unsigned32",
+      "execute": true
+    },
+    {
+      "id": "zero-copy-no-output",
+      "status": "accepted",
+      "decision": "implementation copies zero; does not copy rest despite comment",
+      "execute": true
+    },
+    {
+      "id": "zero-copy-at-end",
+      "status": "accepted",
+      "decision": "source-derived candidate",
+      "execute": true
+    },
+    {
+      "id": "zero-copy-before-literal",
+      "status": "accepted",
+      "decision": "source-derived candidate",
+      "execute": true
+    },
+    {
+      "id": "zero-copy-does-not-fill-header",
+      "status": "rejected",
+      "decision": "source-derived candidate",
+      "execute": true
+    },
+    {
+      "id": "zero-copy-offset-outside",
+      "status": "rejected",
+      "decision": "source-derived candidate",
+      "execute": true
+    },
+    {
+      "id": "empty-header-field",
+      "status": "accepted",
+      "decision": "getInt permits no digits",
+      "execute": true
+    },
+    {
+      "id": "empty-copy-count",
+      "status": "accepted",
+      "decision": "getInt permits no digits",
+      "execute": true
+    },
+    {
+      "id": "empty-copy-offset",
+      "status": "accepted",
+      "decision": "getInt permits no digits",
+      "execute": true
+    },
+    {
+      "id": "empty-literal-count",
+      "status": "accepted",
+      "decision": "getInt permits no digits",
+      "execute": true
+    },
+    {
+      "id": "long-copy-count-wrap-one",
+      "status": "accepted",
+      "decision": "long numeric count wraps to1; output header bounded1",
+      "execute": true
+    },
+    {
+      "id": "long-copy-count-wrap-zero",
+      "status": "accepted",
+      "decision": "long numeric count wraps to0; output header bounded0",
+      "execute": true
+    },
+    {
+      "id": "long-literal-count-wrap-one",
+      "status": "accepted",
+      "decision": "long numeric count wraps to1; output header bounded1",
+      "execute": true
+    },
+    {
+      "id": "long-offset-wrap-zero",
+      "status": "accepted",
+      "decision": "long numeric offset wraps to0",
+      "execute": true
+    },
+    {
+      "id": "very-long-checksum-wrap",
+      "status": "accepted",
+      "decision": "80digit value wraps; header bounded0",
+      "execute": true
+    },
+    {
+      "id": "trailing-ascii-after-semicolon",
+      "status": "accepted",
+      "decision": "semicolon returns before trailing bytes",
+      "execute": true
+    },
+    {
+      "id": "trailing-binary-after-semicolon",
+      "status": "accepted",
+      "decision": "semicolon returns before trailing bytes",
+      "execute": true
+    },
+    {
+      "id": "empty-delta",
+      "status": "rejected",
+      "decision": "source-derived candidate",
+      "execute": true
+    },
+    {
+      "id": "header-no-newline",
+      "status": "rejected",
+      "decision": "source-derived candidate",
+      "execute": true
+    },
+    {
+      "id": "header-wrong-delimiter",
+      "status": "rejected",
+      "decision": "source-derived candidate",
+      "execute": true
+    },
+    {
+      "id": "header-leading-space",
+      "status": "rejected",
+      "decision": "source-derived candidate",
+      "execute": true
+    },
+    {
+      "id": "header-negative",
+      "status": "rejected",
+      "decision": "source-derived candidate",
+      "execute": true
+    },
+    {
+      "id": "header-crlf",
+      "status": "rejected",
+      "decision": "source-derived candidate",
+      "execute": true
+    },
+    {
+      "id": "header-only",
+      "status": "rejected",
+      "decision": "source-derived candidate",
+      "execute": true
+    },
+    {
+      "id": "truncated-count",
+      "status": "rejected",
+      "decision": "source-derived candidate",
+      "execute": true
+    },
+    {
+      "id": "unknown-operator",
+      "status": "rejected",
+      "decision": "source-derived candidate",
+      "execute": true
+    },
+    {
+      "id": "missing-semicolon",
+      "status": "rejected",
+      "decision": "source-derived candidate",
+      "execute": true
+    },
+    {
+      "id": "nul-before-terminator",
+      "status": "rejected",
+      "decision": "source-derived candidate",
+      "execute": true
+    },
+    {
+      "id": "missing-copy-comma",
+      "status": "rejected",
+      "decision": "source-derived candidate",
+      "execute": true
+    },
+    {
+      "id": "copy-truncated-offset",
+      "status": "rejected",
+      "decision": "source-derived candidate",
+      "execute": true
+    },
+    {
+      "id": "copy-beyond-source",
+      "status": "rejected",
+      "decision": "source-derived candidate",
+      "execute": true
+    },
+    {
+      "id": "copy-beyond-output",
+      "status": "rejected",
+      "decision": "source-derived candidate",
+      "execute": true
+    },
+    {
+      "id": "copy-overflow-sum",
+      "status": "rejected",
+      "decision": "source-derived candidate",
+      "execute": true
+    },
+    {
+      "id": "literal-truncated",
+      "status": "rejected",
+      "decision": "source-derived candidate",
+      "execute": true
+    },
+    {
+      "id": "literal-beyond-output",
+      "status": "rejected",
+      "decision": "source-derived candidate",
+      "execute": true
+    },
+    {
+      "id": "cumulative-over-output",
+      "status": "rejected",
+      "decision": "source-derived candidate",
+      "execute": true
+    },
+    {
+      "id": "final-size-mismatch",
+      "status": "rejected",
+      "decision": "source-derived candidate",
+      "execute": true
+    },
+    {
+      "id": "literal-missing-count-with-bytes",
+      "status": "rejected",
+      "decision": "source-derived candidate",
+      "execute": true
+    },
+    {
+      "id": "finite-size-65",
+      "status": "accepted",
+      "decision": "C accepts65; any lower configured Rust cap would be a deliberate policy decision",
+      "execute": true
+    },
+    {
+      "id": "bounded-size4097-final-mismatch",
+      "status": "rejected",
+      "decision": "source-derived candidate",
+      "execute": true
+    },
+    {
+      "id": "limit-i32-max",
+      "status": "not-run",
+      "decision": "source-derived candidate",
+      "execute": false
+    },
+    {
+      "id": "limit-above-i32-max",
+      "status": "not-run",
+      "decision": "source-derived candidate",
+      "execute": false
+    },
+    {
+      "id": "header-wrap32-zero",
+      "status": "not-run",
+      "decision": "source-derived candidate",
+      "execute": false
+    },
+    {
+      "id": "header-wrap32-one",
+      "status": "not-run",
+      "decision": "source-derived candidate",
+      "execute": false
+    },
+    {
+      "id": "header-u32-max",
+      "status": "not-run",
+      "decision": "source-derived candidate",
+      "execute": false
+    }
+  ],
+  "limits": [
+    "All five advertised multiGB headers deliberately unexecuted.",
+    "No reference source or build changes; checksum-enabled build not tested.",
+    "Observed acceptance of noncanonical inputs is not an imposed Rust requirement. Choose and record hardening departures separately.",
+    "No process-group manipulation; each bounded test-delta-apply subprocess is expected not to spawn descendants."
+  ],
+  "recommendation": "Use exact binary fixtures and observed statuses for decoder/CLI tests; explicitly decide optional checksum validation, canonical integers/trailing bytes and configured output limits before asserting hardened compatibility.",
+  "source_build_copies": {
+    "provenance/autoconfig.h": {
+      "sha256": "3d6205d86eccad102f58b83e88484062b6eaaf897b3e873b119df03a74fae352",
+      "bytes": 1191
+    },
+    "provenance/Makefile": {
+      "sha256": "4a0929991db2c71117e74ebc6cfc8dbedc9b0be876cc7881f712f14030d52137",
+      "bytes": 6178
+    },
+    "provenance/VERSION": {
+      "sha256": "ec82d4ced9fa1fb7a81d67e6559af505df8c885efe8ecac580602e41933ac835",
+      "bytes": 5
+    },
+    "provenance/config.log": {
+      "sha256": "76c56b5a36ea03d52f15bedd54521519cdca3bbaf9fc00abca482810b7b24d13",
+      "bytes": 7677
+    },
+    "provenance/manifest.uuid": {
+      "sha256": "6601399b7c93e52d176c3c447cd8a54632c761464609634c645420b5040a05c8",
+      "bytes": 65
+    },
+    "provenance/COPYRIGHT-BSD2.txt": {
+      "sha256": "f65c4693891811303213aad3cc737d85114fc0ede82ec65bc0b923069b646c55",
+      "bytes": 1516
+    },
+    "provenance/src/delta.c": {
+      "sha256": "85d1a68aef7796240a65265276308b4201bcb5de1bda168eea573495304177d2",
+      "bytes": 22550
+    },
+    "provenance/src/deltacmd.c": {
+      "sha256": "c154db86edfc1677713c5164c9e9660553aca1cf4322386d7f848a89ae0acfb1",
+      "bytes": 5825
+    }
+  },
+  "observations": {
+    "accepted": 35,
+    "rejected": 24,
+    "crashes": 0,
+    "timeouts": 0,
+    "unexecuted_multiGB_headers": 5,
+    "rejection_exit_codes": [
+      1
+    ],
+    "rejection_stderr_hex": [
+      "44656c7461206170706c69636174696f6e206661696c65642e0a"
+    ],
+    "success_stdout_stderr_empty": true,
+    "checksum": "Wrong0 and wrongFFFFFFFF checksums for ABC both accepted; selected executable does not enforce checksum. Checksum-enabled build remains untested.",
+    "zero_copy": "Zero count emits zero bytes, not remaining source; out-of-source offset still rejected for zero count.",
+    "missing_digits": "Empty header, copy count, copy offset, literal count and checksum fields accepted in finite matching-size cases.",
+    "integer_wrap": "Count 2^32+1 wraps to1; count2^32 wraps to0; offset2^32 wraps to0; 80digit checksum accepted. Header wrap cases deliberately unexecuted.",
+    "trailing_bytes": "ASCII and binary garbage after first terminating semicolon accepted.",
+    "bounds": "Malformed header/operator/copy/literal, source range, cumulative output and final-size mismatch cases rejected; pre-existing target unchanged for every rejection.",
+    "binary": "Literal and copy preserve NUL,FF,80,operators,newline bytes exactly."
+  },
+  "decisions_not_imposed": [
+    "Whether Rust always validates checksums or exposes compatibility/build modes.",
+    "Whether Rust rejects empty fields, noncanonical integers, u32 wrap and trailing bytes accepted by C.",
+    "Configured output allocation cap and error taxonomy; advertised multiGB cases require allocation-free Rust tests.",
+    "Whether CLI diagnostics and exit1 exactly match C; raw stderr preserved for review."
+  ]
+}

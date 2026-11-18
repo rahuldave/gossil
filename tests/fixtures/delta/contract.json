@@ -1,0 +1,951 @@
+{
+  "status": "Director-approved design scope finalized against finite supplement; ready for implementation only after phase1 checkpoint passes. Not implementation or full parity proof.",
+  "source_mapping": {
+    "git": "b3a1c8efb2731dffbd5cc38c58ac349746de6da6",
+    "native": "7e8ecf0ce4a3c05aa39de7ffe2828d23e334efe446ef2387e09f205ef00b2227",
+    "root": "/var/folders/wq/mr3zj9r14dzgjnq9rjx_vqbc0000gn/T/gossil-source-review-1sgum5ox/fossil",
+    "citation_rule": "All src/ and test/ citations below are relative to this exact pinned root."
+  },
+  "corpus": {
+    "manifest": "/tmp/gossil-delta-decoder-corpus-20261117/manifest.json",
+    "results": "/tmp/gossil-delta-decoder-corpus-20261117/results.json",
+    "provenance": "/tmp/gossil-delta-decoder-corpus-20261117/provenance",
+    "observed_counts": {
+      "accepted": 35,
+      "rejected": 24,
+      "not-run": 5
+    },
+    "warning": "Five resource/header cases were not executed in C; all contain actual LF byte0a. No malformed-fixture defect exists."
+  },
+  "layout": {
+    "src/lib.rs": "pub mod delta; package library gossil",
+    "src/delta.rs": "Pure engine decoder, errors, limits and private parser; no process launch",
+    "src/bin/gossil.rs": "New gossil compatibility CLI dispatch to library",
+    "src/main.rs": "Leave existing gossil-conformance binary and interface unchanged",
+    "Cargo.toml": "Retain existing [[bin]] gossil-conformance path; add explicit gossil binary. No package rename/new dependencies needed.",
+    "tests": "tests/delta_decoder.rs exact byte fixtures; regression_tests/delta_cli.rs subprocess contracts subject to repo conventions"
+  },
+  "api": {
+    "signatures": [
+      "pub fn output_size(delta: &[u8]) -> Result<u32, DeltaError>",
+      "pub struct Limits { pub max_output_bytes: u32 }",
+      "impl Default for Limits: max_output_bytes = i32::MAX as u32",
+      "pub fn apply(source: &[u8], delta: &[u8], limits: Limits) -> Result<Vec<u8>, DeltaError>"
+    ],
+    "limit_rule": "Apply effective ceiling min(i32::MAX, caller max_output_bytes). Caller limit is explicit; CLI uses i32::MAX with no smaller hidden cap. output_size only parses header; can return full u32 to let caller inspect. Apply rejects source/delta input lengths above i32::MAX to remain within C signed-length envelope; explicit InputTooLarge, not cast/wrap.",
+    "errors": [
+      "MissingHeaderNewline",
+      "InputTooLarge { input, length }",
+      "OutputTooLarge { advertised, limit }",
+      "TruncatedCommand { at }",
+      "MissingCopyComma { at }",
+      "UnknownOperator { at, byte }",
+      "SourceRange { offset, count, source_len }",
+      "OutputRange { produced, count, advertised }",
+      "TruncatedLiteral { at, count, remaining }",
+      "Unterminated",
+      "SizeMismatch { advertised, produced }",
+      "AllocationFailed { requested: usize, source: std::collections::TryReserveError }"
+    ],
+    "error_contract": "Typed library variants stable for focused tests; offsets are byte indices. No checksum mismatch variant needed in disabled-checksum leaf. No syntax error for empty numeric fields, numeric wrap or trailing bytes. AllocationFailed retains actual TryReserveError and std::error::Error::source returns it; typed I/O adapter errors retain std::io::Error likewise. Display is presentation only, never the storage of causes. Do not require Clone/Eq on complete DeltaError because allocation cause may not support them; tests match variant/fields and inspect source chain."
+  },
+  "parsing": [
+    "parse_uint consumes only custom alphabet digits; initial value0; wrapping_shl(6)/wrapping_add digit on u32. Empty digit sequence yields0 and consumes nothing. No sign/whitespace handling.",
+    "Header must be followed by actual LF. Parse wrapped u32 first, then apply ceiling; do not limit digit count or reject overflow.",
+    "At command start NUL or end before semicolon is Unterminated. Literal payload can contain NUL and arbitrary bytes. Semicolon terminates immediately, ignores checksum value and every trailing byte.",
+    "Copy consumes count, @, offset, comma. Count0 copies zero; require offset<=source length even when count0. Require comma byte present, not merely accessible sentinel.",
+    "Widen u32 values to u64 for cumulative length/source-range comparisons, then checked usize conversion/addition and safe slice get. Never wrap addresses or output totals. No unsafe pointer emulation."
+  ],
+  "allocation_algorithm": [
+    "First allocation-free validate pass over immutable slices: header/input/explicit limits, every source and literal range, cumulative output size, terminator and exact final size. Do not collect operation vector. Return malformed error before reserving advertised output.",
+    "Only after complete validation create Vec and try_reserve_exact(advertised as usize). Map error retaining original TryReserveError in AllocationFailed { requested, source }; implement Error::source. Replay immutable bytes through checked safe slices into reserved Vec. Zero output can skip reservation.",
+    "Two passes intentionally avoid C wrapper eager giant allocations for invalid short deltas while preserving defined decode results. Error ordering is library contract above, not claimed C internal equivalence. No NUL output terminator is needed in Vec."
+  ],
+  "cli": {
+    "argv": "gossil test-delta-apply ORIGIN DELTA TARGET; no repository opening",
+    "success": "exit0, empty stdout/stderr, exact decoded bytes in TARGET",
+    "decode_failure": "Observed corpus malformed-decode behavior: exit1, empty stdout, stderr bytes Delta application failed. followed by LF; target preserved. Applying this same diagnostic to allocation/input-limit failures is proposed Rust adapter policy, not observed C resource-failure behavior.",
+    "read_failure": "Observed missing-origin and missing-delta: exit1, stdout empty, stderr no such file: PATH followed by LF (unquoted path including spaces); preserve target. Match these observed cases; other I/O failures remain separately typed and need later reference coverage before exact parity claims.",
+    "write_failure": "Observed target-directory: exit1, stdout empty, stderr unable to open file \"PATH\" for writing followed by LF; target directory preserved. Preserve exact quoting/spaces/newline; other write failures not characterized and no atomic write guarantee.",
+    "usage": "Observed native stderr: Usage: fossil test-delta-apply ORIGIN DELTA TARGET followed by LF; exit1/stdout empty for0,1,2,extra args. Deliberate sole program-name substitution: Rust emits Usage: gossil test-delta-apply ORIGIN DELTA TARGET followed by LF, preserving capitalization, spacing, arguments and newline.",
+    "resource": "fallible file-buffer allocation must map to explicit read/resource failure rather than unwrap; OS OOM kill remains outside recoverable error guarantees. No C invocation in engine/adapter.",
+    "alias_and_spaces": "Supplement observes successful target==origin, target==delta, and path names containing spaces, with exact expected bytes and empty stdout/stderr. Read both input files fully and decode before opening target; use argv paths directly without shell tokenization."
+  },
+  "smallest_tests": [
+    "All59 original executed cases replay exact binary output/status; preserve35 accepted quirks and24 rejections. Maintain all5 original resource-not-run history; separately assert supplement wrap0/1 outcomes.",
+    "Supplement high-bit numeric/operator/checksum/comma and both final-offset truncation cases reject with exit1, exact Delta application failed. LF and preserved target. Source bounds checked without unsafe reads.",
+    "Supplement arities0/1/2/extra: exact usage except declared fossil-to-gossil program name mapping. Missing origin/delta and target-directory exact observed diagnostic framing using test paths; aliases and spaces exact successful bytes.",
+    "Pure library i32max advertised + short0; =>SizeMismatch, reserve never called; above-i32/u32max=>OutputTooLarge before reserve. Cap64 rejects valid65; cap65/default accepts. No huge allocations or C resource execution.",
+    "Private reservation-function seam injects genuine TryReserveError into valid tiny nonempty fixture: generate safely via Vec::<u8>::new().try_reserve_exact(usize::MAX) capacity-overflow, no huge allocation. Assert AllocationFailed.requested actual fixture size and Error::source downcasts to TryReserveError; production delegates to try_reserve_exact. Tests do not claim this simulates OS allocator behavior.",
+    "Same injected reservation hook records zero calls for invalid/oversize/explicit-cap failures. Adapter-level injected allocation failure preserves target, prints adopted decode-failure framing; this resource diagnostic is Rust policy, not observed native OOM behavior.",
+    "Keep nine encoder golden fixtures as exact independently observed vectors usable for apply output tests/future checksum tests. No test-delta or encoder-completeness claim."
+  ],
+  "ub_boundary": [
+    "C copy delimiter check only rejects noncomma when lenDelta>0; end-of-buffer offset can advance pointer beyond logical end (delta.c:607-611). It may rely on Blob sentinel/pointer representation. Rust requires present comma and returns safe truncation; observed copy-truncated-offset already rejected. Do not emulate pointer arithmetic UB or claim arbitrary C UB inputs define a format.",
+    "C wrapper signed-length narrowing/allocation overflow is outside supported input envelope. Rust explicit i32 length/output ceilings and checked address math define safe failure. u32 numeric wrapping itself is defined and preserved.",
+    "C output pointer terminator write and allocator failures do not require Rust unsafe buffers or crash matching. Finite observed no-crash corpus is evidence for those bytes only."
+  ],
+  "checksum": "Disabled-checksum decoder ignores checksum as reference. Nine native encoder vectors independently match exact empty-source literal-branch binary prefixes length0..8, including tail and wrap examples; validate only those exact encoded bytes/checksum values. They do not qualify complete checksum input space, checksum-enabled decoder, encoder algorithm, or delta1 acceptance. No checksum helper is required by this decoder leaf.",
+  "citations": {
+    "numeric": "src/delta.c:157-211",
+    "apply": "src/delta.c:579-666",
+    "wrapper": "src/deltacmd.c:121-173",
+    "next_encoder": "src/delta.c:295-538; src/deltacmd.c:28-71,178-200; test/delta1.test:30-56"
+  },
+  "next_leaf": "Add delta::create behind same library boundary, gossil test-delta-create and test-delta dispatcher arms; reuse apply. Then run unchanged delta1 against Rust executable. Current decoder leaf cannot claim delta1 or full Fossil parity.",
+  "recommendations": "Hand this approved decoder-only contract to implementation once phase1 checkpoint passes. Preserve source/evidence provenance, then review actual Rust results before the separate encoder/test-delta leaf.",
+  "corpus_case_mapping": [
+    {
+      "id": "empty-literal",
+      "reference_status": "accepted",
+      "disposition": "preserve",
+      "reason": "source-derived candidate"
+    },
+    {
+      "id": "empty-no-operations",
+      "reference_status": "accepted",
+      "disposition": "preserve",
+      "reason": "source-derived candidate"
+    },
+    {
+      "id": "literal-41",
+      "reference_status": "accepted",
+      "disposition": "preserve",
+      "reason": "source-derived candidate"
+    },
+    {
+      "id": "literal-4142",
+      "reference_status": "accepted",
+      "disposition": "preserve",
+      "reason": "source-derived candidate"
+    },
+    {
+      "id": "literal-414243",
+      "reference_status": "accepted",
+      "disposition": "preserve",
+      "reason": "source-derived candidate"
+    },
+    {
+      "id": "literal-41424344",
+      "reference_status": "accepted",
+      "disposition": "preserve",
+      "reason": "source-derived candidate"
+    },
+    {
+      "id": "literal-4142434445",
+      "reference_status": "accepted",
+      "disposition": "preserve",
+      "reason": "source-derived candidate"
+    },
+    {
+      "id": "literal-41424344454647",
+      "reference_status": "accepted",
+      "disposition": "preserve",
+      "reason": "source-derived candidate"
+    },
+    {
+      "id": "literal-4142434445464748",
+      "reference_status": "accepted",
+      "disposition": "preserve",
+      "reason": "source-derived candidate"
+    },
+    {
+      "id": "literal-ffffffffffffffff",
+      "reference_status": "accepted",
+      "disposition": "preserve",
+      "reason": "source-derived candidate"
+    },
+    {
+      "id": "binary-literal",
+      "reference_status": "accepted",
+      "disposition": "preserve",
+      "reason": "source-derived candidate"
+    },
+    {
+      "id": "copy-all",
+      "reference_status": "accepted",
+      "disposition": "preserve",
+      "reason": "source-derived candidate"
+    },
+    {
+      "id": "copy-offset",
+      "reference_status": "accepted",
+      "disposition": "preserve",
+      "reason": "source-derived candidate"
+    },
+    {
+      "id": "copy-binary",
+      "reference_status": "accepted",
+      "disposition": "preserve",
+      "reason": "source-derived candidate"
+    },
+    {
+      "id": "mixed-copy-literal",
+      "reference_status": "accepted",
+      "disposition": "preserve",
+      "reason": "source-derived candidate"
+    },
+    {
+      "id": "repeat-copy",
+      "reference_status": "accepted",
+      "disposition": "preserve",
+      "reason": "source-derived candidate"
+    },
+    {
+      "id": "checksum-wrong-zero",
+      "reference_status": "accepted",
+      "disposition": "preserve",
+      "reason": "checksum behavior conditional on reference build"
+    },
+    {
+      "id": "checksum-wrong-max",
+      "reference_status": "accepted",
+      "disposition": "preserve",
+      "reason": "checksum behavior conditional on reference build"
+    },
+    {
+      "id": "checksum-empty-field",
+      "reference_status": "accepted",
+      "disposition": "preserve",
+      "reason": "empty numeric checksum accepted if verification disabled"
+    },
+    {
+      "id": "checksum-wrapped",
+      "reference_status": "accepted",
+      "disposition": "preserve",
+      "reason": "getInt wraps unsigned32"
+    },
+    {
+      "id": "zero-copy-no-output",
+      "reference_status": "accepted",
+      "disposition": "preserve",
+      "reason": "implementation copies zero; does not copy rest despite comment"
+    },
+    {
+      "id": "zero-copy-at-end",
+      "reference_status": "accepted",
+      "disposition": "preserve",
+      "reason": "source-derived candidate"
+    },
+    {
+      "id": "zero-copy-before-literal",
+      "reference_status": "accepted",
+      "disposition": "preserve",
+      "reason": "source-derived candidate"
+    },
+    {
+      "id": "zero-copy-does-not-fill-header",
+      "reference_status": "rejected",
+      "disposition": "reject",
+      "reason": "source-derived candidate"
+    },
+    {
+      "id": "zero-copy-offset-outside",
+      "reference_status": "rejected",
+      "disposition": "reject",
+      "reason": "source-derived candidate"
+    },
+    {
+      "id": "empty-header-field",
+      "reference_status": "accepted",
+      "disposition": "preserve",
+      "reason": "getInt permits no digits"
+    },
+    {
+      "id": "empty-copy-count",
+      "reference_status": "accepted",
+      "disposition": "preserve",
+      "reason": "getInt permits no digits"
+    },
+    {
+      "id": "empty-copy-offset",
+      "reference_status": "accepted",
+      "disposition": "preserve",
+      "reason": "getInt permits no digits"
+    },
+    {
+      "id": "empty-literal-count",
+      "reference_status": "accepted",
+      "disposition": "preserve",
+      "reason": "getInt permits no digits"
+    },
+    {
+      "id": "long-copy-count-wrap-one",
+      "reference_status": "accepted",
+      "disposition": "preserve",
+      "reason": "long numeric count wraps to1; output header bounded1"
+    },
+    {
+      "id": "long-copy-count-wrap-zero",
+      "reference_status": "accepted",
+      "disposition": "preserve",
+      "reason": "long numeric count wraps to0; output header bounded0"
+    },
+    {
+      "id": "long-literal-count-wrap-one",
+      "reference_status": "accepted",
+      "disposition": "preserve",
+      "reason": "long numeric count wraps to1; output header bounded1"
+    },
+    {
+      "id": "long-offset-wrap-zero",
+      "reference_status": "accepted",
+      "disposition": "preserve",
+      "reason": "long numeric offset wraps to0"
+    },
+    {
+      "id": "very-long-checksum-wrap",
+      "reference_status": "accepted",
+      "disposition": "preserve",
+      "reason": "80digit value wraps; header bounded0"
+    },
+    {
+      "id": "trailing-ascii-after-semicolon",
+      "reference_status": "accepted",
+      "disposition": "preserve",
+      "reason": "semicolon returns before trailing bytes"
+    },
+    {
+      "id": "trailing-binary-after-semicolon",
+      "reference_status": "accepted",
+      "disposition": "preserve",
+      "reason": "semicolon returns before trailing bytes"
+    },
+    {
+      "id": "empty-delta",
+      "reference_status": "rejected",
+      "disposition": "reject",
+      "reason": "source-derived candidate"
+    },
+    {
+      "id": "header-no-newline",
+      "reference_status": "rejected",
+      "disposition": "reject",
+      "reason": "source-derived candidate"
+    },
+    {
+      "id": "header-wrong-delimiter",
+      "reference_status": "rejected",
+      "disposition": "reject",
+      "reason": "source-derived candidate"
+    },
+    {
+      "id": "header-leading-space",
+      "reference_status": "rejected",
+      "disposition": "reject",
+      "reason": "source-derived candidate"
+    },
+    {
+      "id": "header-negative",
+      "reference_status": "rejected",
+      "disposition": "reject",
+      "reason": "source-derived candidate"
+    },
+    {
+      "id": "header-crlf",
+      "reference_status": "rejected",
+      "disposition": "reject",
+      "reason": "source-derived candidate"
+    },
+    {
+      "id": "header-only",
+      "reference_status": "rejected",
+      "disposition": "reject",
+      "reason": "source-derived candidate"
+    },
+    {
+      "id": "truncated-count",
+      "reference_status": "rejected",
+      "disposition": "reject",
+      "reason": "source-derived candidate"
+    },
+    {
+      "id": "unknown-operator",
+      "reference_status": "rejected",
+      "disposition": "reject",
+      "reason": "source-derived candidate"
+    },
+    {
+      "id": "missing-semicolon",
+      "reference_status": "rejected",
+      "disposition": "reject",
+      "reason": "source-derived candidate"
+    },
+    {
+      "id": "nul-before-terminator",
+      "reference_status": "rejected",
+      "disposition": "reject",
+      "reason": "source-derived candidate"
+    },
+    {
+      "id": "missing-copy-comma",
+      "reference_status": "rejected",
+      "disposition": "reject",
+      "reason": "source-derived candidate"
+    },
+    {
+      "id": "copy-truncated-offset",
+      "reference_status": "rejected",
+      "disposition": "reject",
+      "reason": "source-derived candidate"
+    },
+    {
+      "id": "copy-beyond-source",
+      "reference_status": "rejected",
+      "disposition": "reject",
+      "reason": "source-derived candidate"
+    },
+    {
+      "id": "copy-beyond-output",
+      "reference_status": "rejected",
+      "disposition": "reject",
+      "reason": "source-derived candidate"
+    },
+    {
+      "id": "copy-overflow-sum",
+      "reference_status": "rejected",
+      "disposition": "reject",
+      "reason": "source-derived candidate"
+    },
+    {
+      "id": "literal-truncated",
+      "reference_status": "rejected",
+      "disposition": "reject",
+      "reason": "source-derived candidate"
+    },
+    {
+      "id": "literal-beyond-output",
+      "reference_status": "rejected",
+      "disposition": "reject",
+      "reason": "source-derived candidate"
+    },
+    {
+      "id": "cumulative-over-output",
+      "reference_status": "rejected",
+      "disposition": "reject",
+      "reason": "source-derived candidate"
+    },
+    {
+      "id": "final-size-mismatch",
+      "reference_status": "rejected",
+      "disposition": "reject",
+      "reason": "source-derived candidate"
+    },
+    {
+      "id": "literal-missing-count-with-bytes",
+      "reference_status": "rejected",
+      "disposition": "reject",
+      "reason": "source-derived candidate"
+    },
+    {
+      "id": "finite-size-65",
+      "reference_status": "accepted",
+      "disposition": "preserve",
+      "reason": "C accepts65; any lower configured Rust cap would be a deliberate policy decision"
+    },
+    {
+      "id": "bounded-size4097-final-mismatch",
+      "reference_status": "rejected",
+      "disposition": "reject",
+      "reason": "source-derived candidate"
+    },
+    {
+      "id": "limit-i32-max",
+      "reference_status": "not-run",
+      "disposition": "resource-not-run",
+      "reason": "source-derived candidate",
+      "actual_delta_hex": "317e7e7e7e7e0a303b",
+      "contains_actual_lf": true,
+      "contains_literal_backslash_n": false,
+      "rust_source_derived_expected": "SizeMismatch(advertised2147483647, produced0); zero reservation calls",
+      "evidence_limit": "C unexecuted: source-derived Rust expectation, not observed C result; no new reference execution requested."
+    },
+    {
+      "id": "limit-above-i32-max",
+      "reference_status": "not-run",
+      "disposition": "resource-not-run",
+      "reason": "source-derived candidate",
+      "actual_delta_hex": "3230303030300a303b",
+      "contains_actual_lf": true,
+      "contains_literal_backslash_n": false,
+      "rust_source_derived_expected": "OutputTooLarge(advertised2147483648, limit2147483647); zero reservation calls",
+      "evidence_limit": "C unexecuted: source-derived Rust expectation, not observed C result; no new reference execution requested."
+    },
+    {
+      "id": "header-wrap32-zero",
+      "reference_status": "not-run",
+      "disposition": "resource-not-run",
+      "reason": "source-derived candidate",
+      "actual_delta_hex": "3430303030300a303b",
+      "contains_actual_lf": true,
+      "contains_literal_backslash_n": false,
+      "rust_source_derived_expected": "Success empty output after u32 wrap to0",
+      "evidence_limit": "C unexecuted: source-derived Rust expectation, not observed C result; no new reference execution requested."
+    },
+    {
+      "id": "header-wrap32-one",
+      "reference_status": "not-run",
+      "disposition": "resource-not-run",
+      "reason": "source-derived candidate",
+      "actual_delta_hex": "3430303030310a303b",
+      "contains_actual_lf": true,
+      "contains_literal_backslash_n": false,
+      "rust_source_derived_expected": "SizeMismatch(advertised1, produced0); zero reservation calls",
+      "evidence_limit": "C unexecuted: source-derived Rust expectation, not observed C result; no new reference execution requested."
+    },
+    {
+      "id": "header-u32-max",
+      "reference_status": "not-run",
+      "disposition": "resource-not-run",
+      "reason": "source-derived candidate",
+      "actual_delta_hex": "337e7e7e7e7e0a303b",
+      "contains_actual_lf": true,
+      "contains_literal_backslash_n": false,
+      "rust_source_derived_expected": "OutputTooLarge(advertised4294967295, limit2147483647); zero reservation calls",
+      "evidence_limit": "C unexecuted: source-derived Rust expectation, not observed C result; no new reference execution requested."
+    }
+  ],
+  "correction_record": {
+    "error": "I misread escaped repr/tool-output presentation as literal backslash+n and asserted a defect without checking byte hex. This was an analysis error; actual_delta_hex already contradicted it. Direct read_bytes hex and explicit byte predicates show actual LF0a in all5 and no5c6e.",
+    "corpus_mutated": false,
+    "huge_c_execution": false
+  },
+  "final_corpus_hash_validation": [
+    {
+      "source": "/tmp/gossil-delta-decoder-corpus-20261117/hash-index.json",
+      "index_sha256": "ee0e64fb2e608bcc38a1b582babe817c86eee07b154a39488ddcaac7304cf1f2",
+      "files_checked": 504,
+      "mismatches": [],
+      "all_match": true,
+      "artifact_sha256": {
+        "manifest.json": "c06649fe77359d10c353afefb8d7a5fb298a75925dcd3276e5f3ebf68b002b02",
+        "results.json": "2318367aaa494e9cbadc3a8f02dbfdc3c4389d9c54c07860948c30e44d046b23"
+      }
+    },
+    {
+      "source": "/tmp/gossil-delta-decoder-supplement-20261117/hash-index.json",
+      "index_sha256": "dbcd77a59ec09b678eff91cb08fa3bd849faf72d0c73cc4b8d817fc0e7d6bedf",
+      "files_checked": 371,
+      "mismatches": [],
+      "all_match": true,
+      "artifact_sha256": {
+        "manifest.json": "e4fa6099ded8d3576336fd9454f278ebd9f2949f60bb642dbbb59f1d5ed75a68",
+        "results.json": "9a6133da247d28633296bd85e69161c847c481ca1efa5576969a868c840f83fe"
+      }
+    }
+  ],
+  "numeric_lookup_exact": {
+    "expression": "while( z<zEnd && (c = zValue[*z])>=0 )",
+    "index_type": "unsigned char *z; full byte0..255 indexes a256-entry signed-char table; NO &0x7f mask. Entries128..255 all -1.",
+    "source": "Pinned provenance/src/delta.c:181-211; byte-identical indexed copy SHA25685d1a68aef7796240a65265276308b4201bcb5de1bda168eea573495304177d2",
+    "semantics": "Consumes ASCII custom alphabet only. Invalid/high-bit byte stays unconsumed. Empty numeric field0 is allowed only if following caller delimiter/operator then permits it. Header LF, copy comma, and operator characters are exact raw ASCII, not masked. High-bit payload literal/copied bytes remain ordinary bytes.",
+    "sentinel": "getInt checks z<zEnd before lookup; no sentinel read needed. Apply command loop tests length>0 before current byte, and command dispatch checks remaining>0. Copy delimiter branch is anomalous when offset ends exactly at end: C skips noncomma rejection then increments beyond logical end. Blob NUL sentinel exists for C strings; it is not a supplied delimiter and cannot justify Rust accepting missing comma or unsafe beyond-end pointers. Rust returns safe truncation/rejection, no speculative read."
+  },
+  "missing_small_reference_fixtures": [
+    {
+      "case": "high-bit numeric alias",
+      "bytes_hex": "b00a303b",
+      "purpose": "High-bit0xb0 equals ASCII0 with bit7 set: full lookup must not mask. Source predicts header failure; bounded C probe to record."
+    },
+    {
+      "case": "high-bit terminal operator",
+      "bytes_hex": "300a30bb",
+      "purpose": "0xbb aliases semicolon only under forbidden masking; source predicts unknown operator rejection."
+    },
+    {
+      "case": "high-bit copy delimiter",
+      "bytes_hex": "300a304030ac303b",
+      "purpose": "0xac is comma|0x80; exact comma check should reject, even count0."
+    },
+    {
+      "case": "high-bit checksum digit",
+      "bytes_hex": "300ab03b",
+      "purpose": "Invalid high-bit byte is not consumed as numeric; source predicts unknown operator rejection."
+    },
+    {
+      "case": "copy offset consumes final digit",
+      "bytes_hex": "300a304030",
+      "purpose": "Missing comma at exact logical end; capture bounded observed rejection without treating internal pointer behavior as format guarantee."
+    },
+    {
+      "case": "copy ends immediately after @",
+      "bytes_hex": "300a3040",
+      "purpose": "Existing copy-truncated-offset covers this; retain observed result, distinguish from final-digit case."
+    }
+  ],
+  "approved_scope": [
+    "Existing package library src/lib.rs + pure src/delta.rs engine; new explicit gossil CLI src/bin/gossil.rs; existing gossil-conformance interface/source untouched.",
+    "Allocation-free validate, then fallible reserve and safe replay; no arbitrary smaller CLI ceiling than i32::MAX; explicit caller output limit.",
+    "Preserve C-defined u32 wrapping, empty fields, zero-copy count, disabled checksum behavior, ignored trailing bytes. Checked address/range math and safe rejection at C UB boundaries.",
+    "Only decoder and test-delta-apply; no C forwarding, storage schema, hashes, compression, encoder or test-delta implementation in this leaf."
+  ],
+  "supplement": {
+    "root": "/tmp/gossil-delta-decoder-supplement-20261117",
+    "manifest": "/tmp/gossil-delta-decoder-supplement-20261117/manifest.json",
+    "results": "/tmp/gossil-delta-decoder-supplement-20261117/results.json",
+    "short_report": "/tmp/gossil-delta-decoder-supplement-20261117/short-report.json",
+    "consistency": {
+      "all27records": true,
+      "all3secondbounds": true,
+      "no_crash_timeout": true,
+      "all_rejections_preserve_target": true,
+      "all_stdout_empty": true,
+      "all_success_stderr_empty": true,
+      "all9native_encoder_vectors_match": true,
+      "all_input_before_raw_snapshots_exact": true
+    },
+    "source_build_provenance": {
+      "src/delta.c": {
+        "sha256": "85d1a68aef7796240a65265276308b4201bcb5de1bda168eea573495304177d2",
+        "source_path": "/tmp/gossil-fossil-baseline-20261117/pristine/src/delta.c"
+      },
+      "src/deltacmd.c": {
+        "sha256": "c154db86edfc1677713c5164c9e9660553aca1cf4322386d7f848a89ae0acfb1",
+        "source_path": "/tmp/gossil-fossil-baseline-20261117/pristine/src/deltacmd.c"
+      },
+      "COPYRIGHT-BSD2.txt": {
+        "sha256": "f65c4693891811303213aad3cc737d85114fc0ede82ec65bc0b923069b646c55",
+        "source_path": "/tmp/gossil-fossil-baseline-20261117/pristine/COPYRIGHT-BSD2.txt"
+      },
+      "manifest.uuid": {
+        "sha256": "6601399b7c93e52d176c3c447cd8a54632c761464609634c645420b5040a05c8",
+        "source_path": "/tmp/gossil-fossil-baseline-20261117/pristine/manifest.uuid"
+      },
+      "Makefile": {
+        "sha256": "4a0929991db2c71117e74ebc6cfc8dbedc9b0be876cc7881f712f14030d52137",
+        "source_path": "/var/folders/wq/mr3zj9r14dzgjnq9rjx_vqbc0000gn/T/gossil-source-review-1sgum5ox/fossil/Makefile"
+      },
+      "autoconfig.h": {
+        "sha256": "3d6205d86eccad102f58b83e88484062b6eaaf897b3e873b119df03a74fae352",
+        "source_path": "/var/folders/wq/mr3zj9r14dzgjnq9rjx_vqbc0000gn/T/gossil-source-review-1sgum5ox/fossil/autoconfig.h"
+      },
+      "config.log": {
+        "sha256": "76c56b5a36ea03d52f15bedd54521519cdca3bbaf9fc00abca482810b7b24d13",
+        "source_path": "/var/folders/wq/mr3zj9r14dzgjnq9rjx_vqbc0000gn/T/gossil-source-review-1sgum5ox/fossil/config.log"
+      }
+    },
+    "tool": {
+      "path": "/Users/rahul/Projects/gossil/.jlog/bin/fossil",
+      "resolved": "/Users/rahul/Projects/gossil/.jlog/tools/fossil/7e8ecf0ce4/macos-arm64/fossil",
+      "sha256": "75550c754e94a4b7fa0269f40ce8e4918daf67e05ba12b236ed735d424c8e16c",
+      "version_exit_code": 0,
+      "version_stdout_hex": "5468697320697320666f7373696c2076657273696f6e20322e3239205b376538656366306365345d20323032362d31312d31362031313a34313a3534205554430a436f6d70696c6564206f6e204e6f7620313620323032362031353a30373a3435207573696e6720636c616e672d31372e302e302028636c616e672d313730302e302e31332e3329202836342d626974290a53514c69746520332e35352e3020323032362d31312d31352030303a35353a303420616434656532303530390a7a6c696220312e322e31322c206c6f6164656420312e322e31320a"
+    },
+    "counts": {
+      "rejected": 14,
+      "accepted": 13
+    },
+    "history": "Original corpus5 not-run statuses remain unchanged. Supplement separately observes wrap32-zero success and wrap32-one rejection; i32max and larger allocations remain unexecuted.",
+    "cases": [
+      {
+        "id": "high-bit-numeric-alias",
+        "kind": "missing-small-reference-fixture",
+        "exit_code": 1,
+        "disposition": "reject",
+        "evidence": "/tmp/gossil-delta-decoder-supplement-20261117/results.json#high-bit-numeric-alias"
+      },
+      {
+        "id": "high-bit-terminal-operator",
+        "kind": "missing-small-reference-fixture",
+        "exit_code": 1,
+        "disposition": "reject",
+        "evidence": "/tmp/gossil-delta-decoder-supplement-20261117/results.json#high-bit-terminal-operator"
+      },
+      {
+        "id": "high-bit-copy-delimiter",
+        "kind": "missing-small-reference-fixture",
+        "exit_code": 1,
+        "disposition": "reject",
+        "evidence": "/tmp/gossil-delta-decoder-supplement-20261117/results.json#high-bit-copy-delimiter"
+      },
+      {
+        "id": "high-bit-checksum-digit",
+        "kind": "missing-small-reference-fixture",
+        "exit_code": 1,
+        "disposition": "reject",
+        "evidence": "/tmp/gossil-delta-decoder-supplement-20261117/results.json#high-bit-checksum-digit"
+      },
+      {
+        "id": "copy-offset-consumes-final-digit",
+        "kind": "missing-small-reference-fixture",
+        "exit_code": 1,
+        "disposition": "reject",
+        "evidence": "/tmp/gossil-delta-decoder-supplement-20261117/results.json#copy-offset-consumes-final-digit"
+      },
+      {
+        "id": "copy-ends-immediately-after-at",
+        "kind": "missing-small-reference-fixture",
+        "exit_code": 1,
+        "disposition": "reject",
+        "evidence": "/tmp/gossil-delta-decoder-supplement-20261117/results.json#copy-ends-immediately-after-at"
+      },
+      {
+        "id": "header-wrap32-zero",
+        "kind": "separate-previously-unexecuted-wrapped-header-supplement",
+        "exit_code": 0,
+        "disposition": "preserve",
+        "evidence": "/tmp/gossil-delta-decoder-supplement-20261117/results.json#header-wrap32-zero"
+      },
+      {
+        "id": "header-wrap32-one",
+        "kind": "separate-previously-unexecuted-wrapped-header-supplement",
+        "exit_code": 1,
+        "disposition": "reject",
+        "evidence": "/tmp/gossil-delta-decoder-supplement-20261117/results.json#header-wrap32-one"
+      },
+      {
+        "id": "arity-zero",
+        "kind": "CLI-framing-path-alias",
+        "exit_code": 1,
+        "disposition": "reject",
+        "evidence": "/tmp/gossil-delta-decoder-supplement-20261117/results.json#arity-zero"
+      },
+      {
+        "id": "arity-one",
+        "kind": "CLI-framing-path-alias",
+        "exit_code": 1,
+        "disposition": "reject",
+        "evidence": "/tmp/gossil-delta-decoder-supplement-20261117/results.json#arity-one"
+      },
+      {
+        "id": "arity-two",
+        "kind": "CLI-framing-path-alias",
+        "exit_code": 1,
+        "disposition": "reject",
+        "evidence": "/tmp/gossil-delta-decoder-supplement-20261117/results.json#arity-two"
+      },
+      {
+        "id": "arity-extra",
+        "kind": "CLI-framing-path-alias",
+        "exit_code": 1,
+        "disposition": "reject",
+        "evidence": "/tmp/gossil-delta-decoder-supplement-20261117/results.json#arity-extra"
+      },
+      {
+        "id": "missing-origin",
+        "kind": "CLI-framing-path-alias",
+        "exit_code": 1,
+        "disposition": "reject",
+        "evidence": "/tmp/gossil-delta-decoder-supplement-20261117/results.json#missing-origin"
+      },
+      {
+        "id": "missing-delta",
+        "kind": "CLI-framing-path-alias",
+        "exit_code": 1,
+        "disposition": "reject",
+        "evidence": "/tmp/gossil-delta-decoder-supplement-20261117/results.json#missing-delta"
+      },
+      {
+        "id": "target-directory",
+        "kind": "CLI-framing-path-alias",
+        "exit_code": 1,
+        "disposition": "reject",
+        "evidence": "/tmp/gossil-delta-decoder-supplement-20261117/results.json#target-directory"
+      },
+      {
+        "id": "alias-origin",
+        "kind": "CLI-framing-path-alias",
+        "exit_code": 0,
+        "disposition": "preserve",
+        "evidence": "/tmp/gossil-delta-decoder-supplement-20261117/results.json#alias-origin"
+      },
+      {
+        "id": "alias-delta",
+        "kind": "CLI-framing-path-alias",
+        "exit_code": 0,
+        "disposition": "preserve",
+        "evidence": "/tmp/gossil-delta-decoder-supplement-20261117/results.json#alias-delta"
+      },
+      {
+        "id": "paths with spaces",
+        "kind": "CLI-framing-path-alias",
+        "exit_code": 0,
+        "disposition": "preserve",
+        "evidence": "/tmp/gossil-delta-decoder-supplement-20261117/results.json#paths with spaces"
+      },
+      {
+        "id": "native-encoder-empty-source-tail-0",
+        "kind": "native-encoder-golden-checksum",
+        "exit_code": 0,
+        "disposition": "preserve exact golden vector only",
+        "evidence": "/tmp/gossil-delta-decoder-supplement-20261117/results.json#native-encoder-empty-source-tail-0"
+      },
+      {
+        "id": "native-encoder-empty-source-tail-1",
+        "kind": "native-encoder-golden-checksum",
+        "exit_code": 0,
+        "disposition": "preserve exact golden vector only",
+        "evidence": "/tmp/gossil-delta-decoder-supplement-20261117/results.json#native-encoder-empty-source-tail-1"
+      },
+      {
+        "id": "native-encoder-empty-source-tail-2",
+        "kind": "native-encoder-golden-checksum",
+        "exit_code": 0,
+        "disposition": "preserve exact golden vector only",
+        "evidence": "/tmp/gossil-delta-decoder-supplement-20261117/results.json#native-encoder-empty-source-tail-2"
+      },
+      {
+        "id": "native-encoder-empty-source-tail-3",
+        "kind": "native-encoder-golden-checksum",
+        "exit_code": 0,
+        "disposition": "preserve exact golden vector only",
+        "evidence": "/tmp/gossil-delta-decoder-supplement-20261117/results.json#native-encoder-empty-source-tail-3"
+      },
+      {
+        "id": "native-encoder-empty-source-tail-4",
+        "kind": "native-encoder-golden-checksum",
+        "exit_code": 0,
+        "disposition": "preserve exact golden vector only",
+        "evidence": "/tmp/gossil-delta-decoder-supplement-20261117/results.json#native-encoder-empty-source-tail-4"
+      },
+      {
+        "id": "native-encoder-empty-source-tail-5",
+        "kind": "native-encoder-golden-checksum",
+        "exit_code": 0,
+        "disposition": "preserve exact golden vector only",
+        "evidence": "/tmp/gossil-delta-decoder-supplement-20261117/results.json#native-encoder-empty-source-tail-5"
+      },
+      {
+        "id": "native-encoder-empty-source-tail-6",
+        "kind": "native-encoder-golden-checksum",
+        "exit_code": 0,
+        "disposition": "preserve exact golden vector only",
+        "evidence": "/tmp/gossil-delta-decoder-supplement-20261117/results.json#native-encoder-empty-source-tail-6"
+      },
+      {
+        "id": "native-encoder-empty-source-tail-7",
+        "kind": "native-encoder-golden-checksum",
+        "exit_code": 0,
+        "disposition": "preserve exact golden vector only",
+        "evidence": "/tmp/gossil-delta-decoder-supplement-20261117/results.json#native-encoder-empty-source-tail-7"
+      },
+      {
+        "id": "native-encoder-empty-source-tail-8",
+        "kind": "native-encoder-golden-checksum",
+        "exit_code": 0,
+        "disposition": "preserve exact golden vector only",
+        "evidence": "/tmp/gossil-delta-decoder-supplement-20261117/results.json#native-encoder-empty-source-tail-8"
+      }
+    ],
+    "wrapped_headers": [
+      {
+        "id": "header-wrap32-zero",
+        "exit_code": 0,
+        "stdout_hex": "",
+        "stderr_hex": "",
+        "after": {
+          "origin": {
+            "kind": "file",
+            "bytes": 0,
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "hex": ""
+          },
+          "delta": {
+            "kind": "file",
+            "bytes": 9,
+            "sha256": "5765c5ee53221ab832259a743c25f455d5c57e3f50966cbdf2e14ecadc7e750a",
+            "hex": "3430303030300a303b"
+          },
+          "target": {
+            "kind": "file",
+            "bytes": 0,
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "hex": ""
+          }
+        }
+      },
+      {
+        "id": "header-wrap32-one",
+        "exit_code": 1,
+        "stdout_hex": "",
+        "stderr_hex": "44656c7461206170706c69636174696f6e206661696c65642e0a",
+        "after": {
+          "origin": {
+            "kind": "file",
+            "bytes": 0,
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "hex": ""
+          },
+          "delta": {
+            "kind": "file",
+            "bytes": 9,
+            "sha256": "b9b7c4cc2dc83d3a3119351094549f5da96df22154cf33050c7751c3d4b2bcb2",
+            "hex": "3430303030310a303b"
+          },
+          "target": {
+            "kind": "file",
+            "bytes": 17,
+            "sha256": "75bd38e7b17618a8eca95f4eaefe6449191b0bb210a6ad78a1fb6fd29a8c820e",
+            "hex": "505245534552564500544152474554ff0a"
+          }
+        }
+      }
+    ],
+    "encoder_vectors": [
+      {
+        "id": "native-encoder-empty-source-tail-0",
+        "source_derived_checksum_u32": 0,
+        "source_derived_expected_hex": "300a303a303b",
+        "observed_bytes_equal_source_derived_expectation": true
+      },
+      {
+        "id": "native-encoder-empty-source-tail-1",
+        "source_derived_checksum_u32": 4278190080,
+        "source_derived_expected_hex": "310a313aff337e303030303b",
+        "observed_bytes_equal_source_derived_expectation": true
+      },
+      {
+        "id": "native-encoder-empty-source-tail-2",
+        "source_derived_checksum_u32": 4278190080,
+        "source_derived_expected_hex": "320a323aff00337e303030303b",
+        "observed_bytes_equal_source_derived_expectation": true
+      },
+      {
+        "id": "native-encoder-empty-source-tail-3",
+        "source_derived_checksum_u32": 4278205184,
+        "source_derived_expected_hex": "330a333aff003b337e303368303b",
+        "observed_bytes_equal_source_derived_expectation": true
+      },
+      {
+        "id": "native-encoder-empty-source-tail-4",
+        "source_derived_checksum_u32": 4278205194,
+        "source_derived_expected_hex": "340a343aff003b0a337e303368413b",
+        "observed_bytes_equal_source_derived_expectation": true
+      },
+      {
+        "id": "native-encoder-empty-source-tail-5",
+        "source_derived_checksum_u32": 2130721546,
+        "source_derived_expected_hex": "350a353aff003b0a80317e303368413b",
+        "observed_bytes_equal_source_derived_expectation": true
+      },
+      {
+        "id": "native-encoder-empty-source-tail-6",
+        "source_derived_checksum_u32": 2134915850,
+        "source_derived_expected_hex": "360a363aff003b0a8040317e473368413b",
+        "observed_bytes_equal_source_derived_expectation": true
+      },
+      {
+        "id": "native-encoder-empty-source-tail-7",
+        "source_derived_checksum_u32": 2134927114,
+        "source_derived_expected_hex": "370a373aff003b0a80402c317e473653413b",
+        "observed_bytes_equal_source_derived_expectation": true
+      },
+      {
+        "id": "native-encoder-empty-source-tail-8",
+        "source_derived_checksum_u32": 2134927369,
+        "source_derived_expected_hex": "380a383aff003b0a80402cff317e473657393b",
+        "observed_bytes_equal_source_derived_expectation": true
+      }
+    ]
+  },
+  "missing_small_reference_fixtures_status": "Six proposed high-bit/truncation cases now observed rejected in supplement; no longer outstanding reference acquisition. Exact numeric lookup remains unmasked256-entry unsigned-byte indexing.",
+  "outstanding_beyond_leaf": [
+    "Actual Rust implementation, focused tests and independent review after phase1 checkpoint; nothing here proves those pass.",
+    "Real allocator/OS OOM behavior is not intentionally exercised; Rust fallible reserve cannot promise recovery from OS kill or overcommit failure after successful reserve.",
+    "Encoder algorithm and test-delta-create/test-delta, cross-language interoperability and unchanged full delta1 suite follow in next leaf.",
+    "Checksum-enabled build/decoder, full checksum-space behavior, general encoder match selection remain unqualified by9 goldens.",
+    "Unprobed filesystem/I/O variants, arbitrary path-byte diagnostics and broader CLI parity; only observed exact framing is frozen.",
+    "Compression/hash policy/storage/privacy/replication remain separate future work."
+  ],
+  "provenance_limit": "Indexes verified by reading/hash comparisons only; no test/build execution. Supplement manifest records an earlier snapshot hash of this scratch contract; final contract revision is intentional and not a mutation to supplemental evidence. Artifact hashes establish integrity relative to provided indexes, not independent authentication."
+}
