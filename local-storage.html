@@ -1,0 +1,137 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="generator" content="smalldocs-0.5.12"><meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes"><title>Local database ownership – Gossil development</title><link rel="stylesheet" href="site_libs/themes/cosmo.min.css" data-mode="light" class="quarto-color-scheme" id="quarto-bootstrap-light"><link rel="stylesheet" href="site_libs/bootstrap-icons/bootstrap-icons.min.css"><link rel="stylesheet" href="site_libs/smalldocs.css"><meta name="smalldocs:offset" content="./"><script src="site_libs/bootstrap/bootstrap.bundle.min.js"></script><script src="site_libs/fuse/fuse.min.js"></script><script src="site_libs/smalldocs.js" defer></script></head><body class="nav-fixed"><header id="quarto-header" class="headroom sticky-top"><nav class="navbar navbar-expand-lg sd-navbar-default"><div class="navbar-container container-fluid"><div class="navbar-brand-container mx-auto"><a class="navbar-brand" href="index.html"><span class="navbar-title">Gossil development</span></a></div><button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button><div class="collapse navbar-collapse" id="navbarCollapse"><ul class="navbar-nav navbar-nav-scroll me-auto"><li class="nav-item"><a class="nav-link" href="index.html"><span class="menu-text">Home</span></a></li><li class="nav-item"><a class="nav-link" href="conformance.html"><span class="menu-text">Inherited-test runner</span></a></li><li class="nav-item"><a class="nav-link" href="delta-encoder.html"><span class="menu-text">Delta encoder</span></a></li><li class="nav-item"><a class="nav-link" href="delta-decoder.html"><span class="menu-text">Delta decoder</span></a></li><li class="nav-item"><a class="nav-link" href="blob-primitives.html"><span class="menu-text">Byte primitives</span></a></li><li class="nav-item"><a class="nav-link" href="artifact-checksum.html"><span class="menu-text">Artifact checksums</span></a></li><li class="nav-item"><a class="nav-link" href="token-codec.html"><span class="menu-text">Token byte escaping</span></a></li><li class="nav-item"><a class="nav-link" href="artifact-parser.html"><span class="menu-text">Artifact parser</span></a></li><li class="nav-item"><a class="nav-link active" href="local-storage.html" aria-current="page"><span class="menu-text">Local storage</span></a></li><li class="nav-item"><a class="nav-link" href="native-storage.html"><span class="menu-text">Native local storage</span></a></li><li class="nav-item"><a class="nav-link" href="libsql-provider.html"><span class="menu-text">Native date provider</span></a></li><li class="nav-item"><a class="nav-link" href="development-plan.html"><span class="menu-text">Development plan</span></a></li></ul><ul class="navbar-nav navbar-nav-scroll ms-auto"></ul><div class="quarto-navbar-tools"><div class="smalldocs-search" id="quarto-search"><i class="bi bi-search" aria-hidden="true"></i><input type="search" class="form-control form-control-sm" placeholder="Search" aria-label="Search" autocomplete="off"><div class="smalldocs-search-results dropdown-menu"></div></div></div></div></div></nav></header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article has-margin"><div id="quarto-margin-sidebar" class="sidebar margin-sidebar"><nav id="TOC" role="doc-toc" class="toc-active"><h2 id="toc-title">On this page</h2><ul><li><a href="#open-and-terminate-a-write" id="toc-open-and-terminate-a-write" class="nav-link" data-scroll-target="#open-and-terminate-a-write">Open and terminate a write</a></li><li><a href="#drop-and-cancellation" id="toc-drop-and-cancellation" class="nav-link" data-scroll-target="#drop-and-cancellation">Drop and cancellation</a></li><li><a href="#fixture-scope-and-source-basis" id="toc-fixture-scope-and-source-basis" class="nav-link" data-scroll-target="#fixture-scope-and-source-basis">Fixture scope and source basis</a><ul><li><a href="#composition-fixture" id="toc-composition-fixture" class="nav-link" data-scroll-target="#composition-fixture">Composition fixture</a></li><li><a href="#historical-test-first-evidence" id="toc-historical-test-first-evidence" class="nav-link" data-scroll-target="#historical-test-first-evidence">Historical test-first evidence</a></li></ul></li><li><a href="#native-date-provider" id="toc-native-date-provider" class="nav-link" data-scroll-target="#native-date-provider">Native date provider</a></li><li><a href="#recommendations" id="toc-recommendations" class="nav-link" data-scroll-target="#recommendations">Recommendations</a></li></ul></nav></div><main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block default"><div class="quarto-title"><h1 class="title">Local database ownership</h1></div><div class="quarto-title-meta"></div></header><p>The <code>storage</code> module opens local libSQL files and owns one write transaction
+at a time. Its low-level lifecycle API also supports the validated
+<a href="native-storage.html">native storage boundary</a>, which installs the complete schema
+and implements empty-root initialization and bounded private content operations.
+Opening that higher-level repository validates its stored root and authority metadata.
+Migration and broader adapters remain unimplemented.</p>
+<section id="open-and-terminate-a-write" class="level2">
+<h2 class="anchored" data-anchor-id="open-and-terminate-a-write">Open and terminate a write</h2>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span class="kw">use</span> gossil::storage::{LocalStore, StorageError};
+
+<span class="kw">async</span> <span class="kw">fn</span> <span class="fu">lifecycle</span>(path: <span class="kw">&amp;</span>std::path::Path) -&gt; <span class="bu">Result</span><span class="op">&lt;</span>(), StorageError<span class="op">&gt;</span> {
+    <span class="kw">let</span> <span class="kw">mut</span> store <span class="op">=</span> LocalStore::open(path).<span class="cf">await</span><span class="op">?</span>;
+    store.begin_write().<span class="cf">await</span><span class="op">?</span>.commit().<span class="cf">await</span><span class="op">?</span>;
+    store.begin_write().<span class="cf">await</span><span class="op">?</span>.rollback().<span class="cf">await</span><span class="op">?</span>;
+    <span class="bu">Ok</span>(())
+}</code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>The example opens the database and terminates empty transactions.
+Use <code>LocalOwnerRepository</code> for admitted native content operations. The example
+above uses only the low-level lifecycle API.</p>
+<p><code>LocalStore::open(path)</code> builds a local database and retains one connection.
+Every file open sets and reads back WAL, foreign keys ON, <code>synchronous=FULL</code>
+and a 5000 ms busy timeout. WAL is SQLite’s write-ahead journal mode.
+An open fails if configuration differs from these requirements.</p>
+<p><code>begin_write(&amp;mut self)</code> takes the connection before it issues <code>BEGIN IMMEDIATE</code>.
+The returned <code>WriteTransaction</code>, the transaction owner, exclusively borrows the store.
+A second owner cannot borrow it at the same time.
+There is no public SQL, connection, statement or lazy query interface.</p>
+<p>An internal execution error marks the owner rollback-only, which means later
+internal operations cannot issue SQL and commit must reject the operation.
+Queries materialize results by collecting rows into owned values before returning.
+They consume their statements and rows inside the owner.
+Preparation, stepping and value-decoding errors follow the same failure path.
+The native content operations also latch non-SQL failures through the owner. Fixture SQL uses the same private execution and row-collection code as the
+storage boundary.</p>
+<p>Explicit commit and rollback return the connection only after SQLite reports
+that no transaction remains active. A commit error triggers checked rollback
+when the transaction remains active. Errors retain the original engine cause
+and report a separate cleanup failure when one occurs.
+If commit fails but checked rollback restores an idle connection, the store
+can begin another write. The commit still returns its original error.</p>
+<p>A failed BEGIN or cleanup discards the connection and poisons the store.
+A poisoned store requires an explicit new open.</p>
+</section>
+<section id="drop-and-cancellation" class="level2">
+<h2 class="anchored" data-anchor-id="drop-and-cancellation">Drop and cancellation</h2>
+<p>Dropping a <code>WriteTransaction</code> without explicit termination poisons the store
+and drops its sole connection.
+The destructor executes no SQL and polls no future.
+The pinned local libSQL connection uses SQLite’s <code>close_v2</code> API.
+SQLite rolls back an active transaction when the connection is destroyed.
+This depends on the module keeping statements and other connection aliases
+inside the owner.</p>
+<p>Local SQL calls block their current asynchronous poll, including busy waits.
+The cancellation fixture aborts at a controlled await between SQL calls and
+awaits task destruction before checking writer progress.
+Cancellation after a successful COMMIT leaves committed rows in the database.
+It cannot undo a commit whose result the outer caller has not received.
+A later server adapter must define its blocking scheduling and result-delivery
+boundaries.</p>
+</section>
+<section id="fixture-scope-and-source-basis" class="level2">
+<h2 class="anchored" data-anchor-id="fixture-scope-and-source-basis">Fixture scope and source basis</h2>
+<p>The dependency is pinned to <code>libsql = 0.9.30</code> with only its <code>core</code> feature.
+The lockfile resolves <code>libsql-sys</code> and <code>libsql-ffi</code> to 0.9.30.
+The executed macOS fixture reports SQLite 3.45.1 and this source identity:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode text code-with-copy"><code class="sourceCode text">2024-01-30 16:01:20 e876e51a0ed5c5b3126f52e532044363a014bc594cfefa87ffb5b82257ccalt1</code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>The implementation follows the registry sources for libSQL’s local connection,
+statement finalization and synchronous local calls.
+It avoids <code>libsql::Transaction</code>, whose local destructor calls rollback with
+<code>unwrap()</code> in this pinned version.
+<a href="https://www.sqlite.org/c3ref/close.html">SQLite’s close contract</a> describes
+connection destruction and rollback.</p>
+<p>The private memory fixture checks transaction behavior in memory. It retains one connection and verifies memory journal
+mode instead of WAL. An unpolled terminal future is a commit or rollback future
+that the caller creates but never polls. The terminal method consumes the
+transaction owner into that future. Dropping the future therefore drops its
+owner, releases the writer and poisons the store. Open a new store before reuse.</p>
+<p>Run the focused fixtures with:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode sh code-with-copy"><code class="sourceCode sh">just <span class="bu">test</span> --lib storage::tests -- --nocapture
+just core-composition
+just doctests</code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>The fixtures cover settings on each open, JSON, owned BLOBs, unique and foreign
+key constraints, integrity checks, persistence, explicit rollback and caught
+operation errors. They also cover deferred foreign key failure at commit,
+SQLite’s automatic rollback, competing writers on OS threads and a WAL reader.
+Drop, unpolled terminal futures and controlled cancellation must release the
+writer so an independent connection can proceed.
+The controlled await also has a non-cancelled control that resumes and terminates
+the transaction explicitly.</p>
+<p>A private test hook injects failures in transaction-control results to check
+cleanup policy only.
+These fixtures do not simulate failing disks or establish durability after
+power loss. The close result is unavailable through this libSQL API.</p>
+<section id="composition-fixture" class="level3">
+<h3 class="anchored" data-anchor-id="composition-fixture">Composition fixture</h3>
+<p>The private test in <code>tests/support/storage_composition.rs</code> creates a delta,
+packs the source and delta, and stores both with the target’s SHA3 digest.
+It reopens the file, unpacks the stored BLOBs, applies the delta and checks
+both target bytes and digest. A later transaction changes one BLOB and inserts
+a second row before a duplicate key fails. Reopening confirms that both writes
+rolled back and the original stored bytes remain intact.</p>
+<p>This fixture uses the existing private executor. Its table is a test fixture,
+not a proposed domain schema. It establishes composition on local storage;
+it does not rerun or extend the historical Fossil reference evidence.</p>
+</section>
+<section id="historical-test-first-evidence" class="level3">
+<h3 class="anchored" data-anchor-id="historical-test-first-evidence">Historical test-first evidence</h3>
+<p>The test-first stub opened a real file with engine defaults and used deferred
+BEGIN. It failed the WAL assertion with <code>delete</code> and allowed a competing writer
+before DML. Foreign keys were already ON in this build.
+A separate run without the failure latch let a helper execute after a caught
+unique error. The retained assertions pass with configuration, immediate BEGIN
+and the failure latch present.</p>
+</section>
+</section>
+<section id="native-date-provider" class="level2">
+<h2 class="anchored" data-anchor-id="native-date-provider">Native date provider</h2>
+<p>The relative Cargo patch selects a complete, reviewed <code>libsql-ffi</code> source
+copy with bounded date corrections for the intended Fossil artifact date fields.
+The <a href="artifact-parser.html">artifact parser</a> exercises actual D and E cards
+against this provider through a test adapter. Native repository creation and
+admission also parse the empty root on the same owned connection. Root
+crosslinks connect that artifact to its native event and branch records.
+General artifact crosslinks remain unimplemented.</p>
+<p>The base version and source-ID strings
+above still apply. The patched source hash identifies the provider.
+<a href="libsql-provider.html">Local native date provider</a> records its provenance,
+integrity checks, hook ownership and qualification limits.</p>
+</section>
+<section id="recommendations" class="level2">
+<h2 class="anchored" data-anchor-id="recommendations">Recommendations</h2>
+<p>Use one owned transaction for each complete mutation and terminate it explicitly.
+Next, implement the first private file child with real parent and file links
+through the admitted native boundary. Keep recovery and server cancellation
+claims separate from these local fixtures.</p>
+</section>
+</main></div></body></html>

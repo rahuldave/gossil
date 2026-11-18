@@ -1,0 +1,130 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="generator" content="smalldocs-0.5.12"><meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes"><title>Bounded delta encoder – Gossil development</title><link rel="stylesheet" href="site_libs/themes/cosmo.min.css" data-mode="light" class="quarto-color-scheme" id="quarto-bootstrap-light"><link rel="stylesheet" href="site_libs/bootstrap-icons/bootstrap-icons.min.css"><link rel="stylesheet" href="site_libs/smalldocs.css"><meta name="smalldocs:offset" content="./"><script src="site_libs/bootstrap/bootstrap.bundle.min.js"></script><script src="site_libs/fuse/fuse.min.js"></script><script src="site_libs/smalldocs.js" defer></script></head><body class="nav-fixed"><header id="quarto-header" class="headroom sticky-top"><nav class="navbar navbar-expand-lg sd-navbar-default"><div class="navbar-container container-fluid"><div class="navbar-brand-container mx-auto"><a class="navbar-brand" href="index.html"><span class="navbar-title">Gossil development</span></a></div><button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button><div class="collapse navbar-collapse" id="navbarCollapse"><ul class="navbar-nav navbar-nav-scroll me-auto"><li class="nav-item"><a class="nav-link" href="index.html"><span class="menu-text">Home</span></a></li><li class="nav-item"><a class="nav-link" href="conformance.html"><span class="menu-text">Inherited-test runner</span></a></li><li class="nav-item"><a class="nav-link active" href="delta-encoder.html" aria-current="page"><span class="menu-text">Delta encoder</span></a></li><li class="nav-item"><a class="nav-link" href="delta-decoder.html"><span class="menu-text">Delta decoder</span></a></li><li class="nav-item"><a class="nav-link" href="blob-primitives.html"><span class="menu-text">Byte primitives</span></a></li><li class="nav-item"><a class="nav-link" href="artifact-checksum.html"><span class="menu-text">Artifact checksums</span></a></li><li class="nav-item"><a class="nav-link" href="token-codec.html"><span class="menu-text">Token byte escaping</span></a></li><li class="nav-item"><a class="nav-link" href="artifact-parser.html"><span class="menu-text">Artifact parser</span></a></li><li class="nav-item"><a class="nav-link" href="local-storage.html"><span class="menu-text">Local storage</span></a></li><li class="nav-item"><a class="nav-link" href="native-storage.html"><span class="menu-text">Native local storage</span></a></li><li class="nav-item"><a class="nav-link" href="libsql-provider.html"><span class="menu-text">Native date provider</span></a></li><li class="nav-item"><a class="nav-link" href="development-plan.html"><span class="menu-text">Development plan</span></a></li></ul><ul class="navbar-nav navbar-nav-scroll ms-auto"></ul><div class="quarto-navbar-tools"><div class="smalldocs-search" id="quarto-search"><i class="bi bi-search" aria-hidden="true"></i><input type="search" class="form-control form-control-sm" placeholder="Search" aria-label="Search" autocomplete="off"><div class="smalldocs-search-results dropdown-menu"></div></div></div></div></div></nav></header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article has-margin"><div id="quarto-margin-sidebar" class="sidebar margin-sidebar"><nav id="TOC" role="doc-toc" class="toc-active"><h2 id="toc-title">On this page</h2><ul><li><a href="#use-the-library" id="toc-use-the-library" class="nav-link" data-scroll-target="#use-the-library">Use the library</a></li><li><a href="#use-the-diagnostics" id="toc-use-the-diagnostics" class="nav-link" data-scroll-target="#use-the-diagnostics">Use the diagnostics</a></li><li><a href="#preserved-encoder-choices" id="toc-preserved-encoder-choices" class="nav-link" data-scroll-target="#preserved-encoder-choices">Preserved encoder choices</a></li><li><a href="#evidence-and-limits" id="toc-evidence-and-limits" class="nav-link" data-scroll-target="#evidence-and-limits">Evidence and limits</a><ul><li><a href="#preserved-earlier-runs" id="toc-preserved-earlier-runs" class="nav-link" data-scroll-target="#preserved-earlier-runs">Preserved earlier runs</a></li></ul></li><li><a href="#recommendations" id="toc-recommendations" class="nav-link" data-scroll-target="#recommendations">Recommendations</a></li></ul></nav></div><main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block default"><div class="quarto-title"><h1 class="title">Bounded delta encoder</h1></div><div class="quarto-title-meta"></div></header><p><code>gossil::delta::create(source, target)</code> returns a Fossil delta that describes
+<code>target</code> with literal bytes and copies from <code>source</code>. It returns
+<code>Result&lt;Vec&lt;u8&gt;, DeltaError&gt;</code>. It opens no database and calls no C implementation.
+The <a href="delta-decoder.html">decoder guide</a> describes application of the result.</p>
+<section id="use-the-library" class="level2">
+<h2 class="anchored" data-anchor-id="use-the-library">Use the library</h2>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span class="kw">use</span> gossil::delta::{Limits, apply, create};
+
+<span class="kw">let</span> delta <span class="op">=</span> create(<span class="st">b&quot;</span><span class="st">before</span><span class="st">&quot;</span>, <span class="st">b&quot;</span><span class="st">after</span><span class="st">&quot;</span>).unwrap();
+<span class="kw">let</span> restored <span class="op">=</span> apply(<span class="st">b&quot;</span><span class="st">before</span><span class="st">&quot;</span>, <span class="op">&amp;</span>delta, Limits { max_output_bytes: <span class="dv">1024</span> }).unwrap();
+<span class="fu">assert_eq!</span>(restored, <span class="st">b&quot;</span><span class="st">after</span><span class="st">&quot;</span>);</code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="use-the-diagnostics" class="level2">
+<h2 class="anchored" data-anchor-id="use-the-diagnostics">Use the diagnostics</h2>
+<p>From the repository root, replace the capitalized arguments with file paths:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode sh code-with-copy"><code class="sourceCode sh">cargo run --locked --bin gossil -- vcs test-delta-create ORIGIN TARGET DELTA
+cargo run --locked --bin gossil -- vcs test-delta FILE1 FILE2</code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><code>test-delta-create</code> reads both inputs before opening <code>DELTA</code> for writing.
+The output can share either input path. Success returns status 0 with empty
+stdout and stderr. <code>test-delta</code> creates and applies deltas in both directions,
+compares both results with the original bytes, and prints <code>ok</code> followed by LF.
+A failed comparison, creation or round-trip application returns status 1
+with <code>delta test failed</code> on stderr.
+File-buffer reservation failures return <code>Delta application failed.</code>.</p>
+<p>The commands require exactly three and two paths, respectively.</p>
+<p>Usage errors return status 1 and the matching usage line. Missing inputs produce
+<code>no such file: PATH</code>. Output failures produce
+<code>unable to open file &quot;PATH&quot; for writing</code>. Each diagnostic ends with LF.</p>
+<p>The regular-file tests cover missing inputs, output-open failure and paths
+where the output aliases an input.
+Other read errors retain the path and underlying I/O error.
+Usage and input-read failures preserve an existing output. Writing can truncate
+an existing output before a later write fails.</p>
+<p>These diagnostics have no root command aliases. They read and write file data
+through paths; <code>test-delta</code> uses stdout only for its <code>ok</code> diagnostic. Reading
+file data from stdin, writing file data to stdout, automatic parent-folder
+creation and complete native I/O diagnostic parity are outside this qualification.</p>
+</section>
+<section id="preserved-encoder-choices" class="level2">
+<h2 class="anchored" data-anchor-id="preserved-encoder-choices">Preserved encoder choices</h2>
+<p>The encoder follows the pinned Fossil <code>src/delta.c</code> algorithm. It indexes source
+landmarks, scans target windows for matching source bytes, and emits copies
+when they cover their encoding overhead. Other bytes become literals. Its rolling hash
+uses sixteen signed bytes, matching the selected native build. Checksums sum
+unsigned big-endian four-byte words with wrapping arithmetic and right-zero
+padding for the last short word.</p>
+<p>Sources of at most sixteen bytes produce one literal, including a zero-length
+literal for an empty target. Longer sources omit that zero literal. The hash
+tables omit the last complete source block and visit newer landmarks first.
+Each target window examines at most 250 candidates.</p>
+<p>Backward extension stops before source offset zero. A match equal to its encoding overhead is accepted.
+Equal-length candidates retain the first visited match, and the first target
+window with a winning match emits it immediately.</p>
+<p>Both inputs must fit within <code>i32::MAX</code> bytes. The encoder counts integer digits
+with unsigned arithmetic. The native signed shift above <code>2^30</code> is undefined. Unsigned counting there
+is a safe Rust policy and does not promise giant-input native parity. Slice lengths and addresses remain bounded by existing inputs.</p>
+<p>Every output append reserves storage before extending the vector. Both hash
+tables also reserve before initialization. <code>EncoderAllocationFailed</code> records
+the buffer stage, requested element count and original <code>TryReserveError</code> cause.
+The source and target size checks reuse <code>InputTooLarge</code>. Tests exercise genuine
+capacity-overflow errors without asking the allocator for giant storage.
+Fallible reservation does not promise recovery from an operating-system kill.</p>
+</section>
+<section id="evidence-and-limits" class="level2">
+<h2 class="anchored" data-anchor-id="evidence-and-limits">Evidence and limits</h2>
+<p><code>tests/fixtures/encoder/</code> preserves 28 exact native source, target and delta
+triples. They include sixteen regular cases, three boundary cases and nine
+earlier empty-source checksum cases. Tests compare every created delta byte for byte
+and then apply it. The subprocess tests replay all 28 create outputs and check
+two-way round trips. Provenance records preserve the native observations and
+source/build identities; tests need only the checked-in bytes.</p>
+<p>The finite observations distinguish signed incoming and outgoing rolling bytes,
+the 250-candidate limit, landmark endpoints, equal-match retention, literals,
+copies and checksum tails. The backward-zero exclusion and acceptance equality
+have separate source-derived tests. These tests establish finite compatibility,
+not universal encoder parity or checksum-enabled decoder behavior.</p>
+<p>The pinned native reference is Fossil 2.29 at revision <code>7e8ecf0ce4</code>. Its
+provenance records at <code>tests/fixtures/encoder/provenance.json</code> in the
+repository root identify the
+observations and build.</p>
+<p>The candidate runs the unchanged inherited <code>delta1</code> suite through the
+<a href="conformance.html">existing runner</a>. The evidence under <code>evidence/delta-encoder/</code>
+records the exact artifact, corpus, seed, deadline, results and harness changes.
+The original corpus includes every non-directory entry in <code>testdir</code>, with no
+file-type filtering. The runner’s launch script seeds Tcl randomness; this is
+an explicit harness adaptation to the otherwise unseeded upstream suite.
+A namespace wrapper inserts <code>vcs</code> before each diagnostic command.
+The enabled driver is separate from the corpus, so enabling execution does
+not alter any original corpus bytes.</p>
+<p>The runner supports an optional <a href="conformance.html#optional-complete-invocation-plan">complete pinned invocation plan</a>.
+Here, frozen means the exact runner, candidate, source and input hashes recorded
+together in the qualification evidence.</p>
+<p>The final run of the frozen runner used the complete plan with its expected
+count pinned at 22,804 rows. It accepted all 22,804 assertions with zero errors or skips.
+It retained all original names and assigned each occurrence a unique expected
+source-derived ID. The plan binds the suite, source revision, all 76 original
+corpus files, exact source order and expected count. The runner verifies expected
+hashes before parsing the same bytes and preserves all other rejection rules.</p>
+<p><code>evidence/delta-encoder/planned-delta1-results.json</code> records the final runner,
+encoder, plan, source and corpus hashes together.
+<code>evidence/delta-encoder/plan-source-mapping.json</code> maps the generator rules
+to the original source and enumerates all 76 corpus files.</p>
+<section id="preserved-earlier-runs" class="level3">
+<h3 class="anchored" data-anchor-id="preserved-earlier-runs">Preserved earlier runs</h3>
+<p>The two original strict-mode runs reported all 22,804 assertions as passing,
+including 22,803 direct assertions and one framework assertion. Each exited 0
+with no errors, ignored assertions or timeout. Their reports remain blocked because the default parser rejects repeated
+assertion names.
+Three original corpus files share the root <code>link-tester</code>, so the upstream suite
+repeats 300 original assertion names three times each.</p>
+<p>The portable archives preserve complete reports,
+logs, source snapshots, all original corpus bytes and generation evidence.
+Only <code>run-plan-final</code> qualifies the frozen runner with the expected count pin.
+An earlier planned run remains intermediate evidence. No original blocked run
+has been relabeled. Strict default parsing still rejects repeated names.</p>
+<p>Expected IDs describe correspondence from the reviewed source and sorted corpus.
+The original log does not emit them. Name matching cannot detect whole-group
+permutations or substitutions with identical printed names. Count and hash pins
+bind supplied bytes; the generator and source review establish completeness.
+The tests relocate the original corpus and regenerate a plan with the same bytes.</p>
+</section>
+</section>
+<section id="recommendations" class="level2">
+<h2 class="anchored" data-anchor-id="recommendations">Recommendations</h2>
+<p>Use <code>create</code> for bounded in-memory encoding and an explicit decoder output
+limit when applying the result. Next, complete the independent documentation, correctness and test reviews
+of the encoder, runner correction and recorded <code>delta1</code> qualification
+before accepting the encoder task.</p>
+</section>
+</main></div></body></html>

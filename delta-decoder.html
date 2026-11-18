@@ -1,0 +1,201 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="generator" content="smalldocs-0.5.12"><meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes"><title>Bounded delta decoder – Gossil development</title><link rel="stylesheet" href="site_libs/themes/cosmo.min.css" data-mode="light" class="quarto-color-scheme" id="quarto-bootstrap-light"><link rel="stylesheet" href="site_libs/bootstrap-icons/bootstrap-icons.min.css"><link rel="stylesheet" href="site_libs/smalldocs.css"><meta name="smalldocs:offset" content="./"><script src="site_libs/bootstrap/bootstrap.bundle.min.js"></script><script src="site_libs/fuse/fuse.min.js"></script><script src="site_libs/smalldocs.js" defer></script></head><body class="nav-fixed"><header id="quarto-header" class="headroom sticky-top"><nav class="navbar navbar-expand-lg sd-navbar-default"><div class="navbar-container container-fluid"><div class="navbar-brand-container mx-auto"><a class="navbar-brand" href="index.html"><span class="navbar-title">Gossil development</span></a></div><button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button><div class="collapse navbar-collapse" id="navbarCollapse"><ul class="navbar-nav navbar-nav-scroll me-auto"><li class="nav-item"><a class="nav-link" href="index.html"><span class="menu-text">Home</span></a></li><li class="nav-item"><a class="nav-link" href="conformance.html"><span class="menu-text">Inherited-test runner</span></a></li><li class="nav-item"><a class="nav-link" href="delta-encoder.html"><span class="menu-text">Delta encoder</span></a></li><li class="nav-item"><a class="nav-link active" href="delta-decoder.html" aria-current="page"><span class="menu-text">Delta decoder</span></a></li><li class="nav-item"><a class="nav-link" href="blob-primitives.html"><span class="menu-text">Byte primitives</span></a></li><li class="nav-item"><a class="nav-link" href="artifact-checksum.html"><span class="menu-text">Artifact checksums</span></a></li><li class="nav-item"><a class="nav-link" href="token-codec.html"><span class="menu-text">Token byte escaping</span></a></li><li class="nav-item"><a class="nav-link" href="artifact-parser.html"><span class="menu-text">Artifact parser</span></a></li><li class="nav-item"><a class="nav-link" href="local-storage.html"><span class="menu-text">Local storage</span></a></li><li class="nav-item"><a class="nav-link" href="native-storage.html"><span class="menu-text">Native local storage</span></a></li><li class="nav-item"><a class="nav-link" href="libsql-provider.html"><span class="menu-text">Native date provider</span></a></li><li class="nav-item"><a class="nav-link" href="development-plan.html"><span class="menu-text">Development plan</span></a></li></ul><ul class="navbar-nav navbar-nav-scroll ms-auto"></ul><div class="quarto-navbar-tools"><div class="smalldocs-search" id="quarto-search"><i class="bi bi-search" aria-hidden="true"></i><input type="search" class="form-control form-control-sm" placeholder="Search" aria-label="Search" autocomplete="off"><div class="smalldocs-search-results dropdown-menu"></div></div></div></div></div></nav></header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article has-margin"><div id="quarto-margin-sidebar" class="sidebar margin-sidebar"><nav id="TOC" role="doc-toc" class="toc-active"><h2 id="toc-title">On this page</h2><ul><li><a href="#apply-a-delta-from-files" id="toc-apply-a-delta-from-files" class="nav-link" data-scroll-target="#apply-a-delta-from-files">Apply a delta from files</a></li><li><a href="#use-the-library" id="toc-use-the-library" class="nav-link" data-scroll-target="#use-the-library">Use the library</a></li><li><a href="#preserved-format-behavior" id="toc-preserved-format-behavior" class="nav-link" data-scroll-target="#preserved-format-behavior">Preserved format behavior</a></li><li><a href="#evidence-and-limits" id="toc-evidence-and-limits" class="nav-link" data-scroll-target="#evidence-and-limits">Evidence and limits</a><ul><li><a href="#historical-command-contract" id="toc-historical-command-contract" class="nav-link" data-scroll-target="#historical-command-contract">Historical command contract</a></li></ul></li><li><a href="#recommendations" id="toc-recommendations" class="nav-link" data-scroll-target="#recommendations">Recommendations</a></li></ul></nav></div><main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block default"><div class="quarto-title"><h1 class="title">Bounded delta decoder</h1></div><div class="quarto-title-meta"></div></header><p><code>gossil::delta</code> applies Fossil deltas to byte slices. A delta describes output
+with literal bytes and copies from an original byte slice. The library validates
+the commands before allocating output, then returns the decoded bytes.
+The <code>gossil vcs test-delta-apply</code> diagnostic exposes that decoder through files.
+It opens no repository or database and does not forward work to C Fossil.</p>
+<section id="apply-a-delta-from-files" class="level2">
+<h2 class="anchored" data-anchor-id="apply-a-delta-from-files">Apply a delta from files</h2>
+<p>From the repository root, run:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode sh code-with-copy"><code class="sourceCode sh">cargo run --locked --bin gossil -- vcs test-delta-apply ORIGIN DELTA TARGET</code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Replace <code>ORIGIN</code>, <code>DELTA</code> and <code>TARGET</code> with file paths. Quote paths that contain
+spaces. The command reads both inputs and finishes decoding before it opens
+<code>TARGET</code>. The target can be the same path as either input.
+On success, it writes exactly the decoded bytes, returns status 0 and leaves
+stdout and stderr empty.</p>
+<p>The command returns status 1 for usage, read, decode, allocation or write errors.
+The characterized diagnostics are:</p>
+<div class="sd-table">
+<table class="caption-top table">
+<thead>
+<tr>
+<th>Failure</th>
+<th>Stderr line</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Unsupported command or argument count</td>
+<td><code>Usage: gossil vcs test-delta-apply ORIGIN DELTA TARGET</code></td>
+</tr>
+<tr>
+<td>Missing input</td>
+<td><code>no such file: PATH</code></td>
+</tr>
+<tr>
+<td>Delta rejection or buffer reservation failure</td>
+<td><code>Delta application failed.</code></td>
+</tr>
+<tr>
+<td>Target open or write failure</td>
+<td><code>unable to open file &quot;PATH&quot; for writing</code></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Each diagnostic ends with one LF byte, and stdout remains empty. Other input
+read errors include the path and the underlying I/O error. The command has no
+root-level <code>test-delta-apply</code> alias.
+Usage, input-read and decode failures preserve an existing target because it
+has not been opened. A write failure can leave a truncated or partially written
+target. The command does not replace files atomically.</p>
+</section>
+<section id="use-the-library" class="level2">
+<h2 class="anchored" data-anchor-id="use-the-library">Use the library</h2>
+<p>The decoder API exposes <code>output_size</code>, <code>apply</code>, <code>Limits</code> and <code>DeltaError</code>.
+The same module also exposes the encoder function <a href="delta-encoder.html"><code>create</code></a>.
+<code>output_size(delta)</code> parses only the advertised output size and its LF delimiter.
+It does not validate the commands or enforce the output limit used by <code>apply</code>.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span class="kw">use</span> gossil::delta::{Limits, apply, output_size};
+
+<span class="kw">let</span> delta <span class="op">=</span> <span class="st">b&quot;</span><span class="st">3</span><span class="sc">\n</span><span class="st">3:ABC0;</span><span class="st">&quot;</span>;
+<span class="fu">assert_eq!</span>(output_size(delta).unwrap(), <span class="dv">3</span>);
+<span class="kw">let</span> output <span class="op">=</span> apply(<span class="st">b&quot;</span><span class="st">&quot;</span>, delta, Limits { max_output_bytes: <span class="dv">1024</span> }).unwrap();
+<span class="fu">assert_eq!</span>(output, <span class="st">b&quot;</span><span class="st">ABC</span><span class="st">&quot;</span>);</code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><code>apply(source, delta, limits)</code> returns <code>Result&lt;Vec&lt;u8&gt;, DeltaError&gt;</code>.
+The result has exactly the advertised size, with no trailing NUL byte.
+Both input slices must fit within <code>i32::MAX</code> bytes. The output ceiling is the
+smaller of <code>limits.max_output_bytes</code> and <code>i32::MAX</code>.
+<code>Limits::default()</code> uses <code>i32::MAX</code>, as does the file diagnostic.</p>
+<p>The first pass checks command syntax, source ranges, literal lengths, cumulative
+output length and the final size. After validation, the decoder reserves output
+storage with a fallible operation and replays the checked slices in a second pass.
+It stores no list of parsed operations. Invalid commands reach no output
+reservation. An empty result needs no reservation.</p>
+<p>The decoder returns these <code>DeltaError</code> variants:</p>
+<div class="sd-table">
+<table class="caption-top table">
+<thead>
+<tr>
+<th>Error variant</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>MissingHeaderNewline</code></td>
+<td>Header digits are not followed by LF.</td>
+</tr>
+<tr>
+<td><code>InputTooLarge</code></td>
+<td>A source or delta input exceeds the signed-length envelope.</td>
+</tr>
+<tr>
+<td><code>OutputTooLarge</code></td>
+<td>The advertised output exceeds the effective ceiling.</td>
+</tr>
+<tr>
+<td><code>TruncatedCommand</code></td>
+<td>A numeric command has no following operator.</td>
+</tr>
+<tr>
+<td><code>MissingCopyComma</code></td>
+<td>A copy offset has no present comma delimiter.</td>
+</tr>
+<tr>
+<td><code>UnknownOperator</code></td>
+<td>An operator byte is not defined.</td>
+</tr>
+<tr>
+<td><code>SourceRange</code></td>
+<td>A copy exceeds the source, including a zero copy beyond its end.</td>
+</tr>
+<tr>
+<td><code>OutputRange</code></td>
+<td>A command would exceed the advertised output.</td>
+</tr>
+<tr>
+<td><code>TruncatedLiteral</code></td>
+<td>A literal has fewer bytes than its count.</td>
+</tr>
+<tr>
+<td><code>Unterminated</code></td>
+<td>The input ends or reaches a command-start NUL before a semicolon.</td>
+</tr>
+<tr>
+<td><code>SizeMismatch</code></td>
+<td>A semicolon arrives before the advertised output is complete.</td>
+</tr>
+<tr>
+<td><code>AllocationFailed</code></td>
+<td>Output reservation failed, with the original <code>TryReserveError</code> retained as its cause.</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Fallible reservation reports recoverable allocation failures. It does not
+guarantee recovery from an operating-system kill or memory exhaustion after a
+successful reservation. The tests use bounded injected failures rather than
+attempting to exhaust system memory.</p>
+</section>
+<section id="preserved-format-behavior" class="level2">
+<h2 class="anchored" data-anchor-id="preserved-format-behavior">Preserved format behavior</h2>
+<p>A delta starts with the encoded output length and LF. The form <code>COUNT:BYTES</code> inserts a literal, <code>COUNT@OFFSET,</code> copies from
+the source, and <code>CHECKSUM;</code> ends the delta. All numbers use the alphabet below.</p>
+<p>The decoder uses the exact unsigned-byte digit alphabet:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode text code-with-copy"><code class="sourceCode text">0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ_abcdefghijklmnopqrstuvwxyz~</code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Numbers wrap modulo 2^32, and empty numeric fields mean zero. High-bit bytes
+are not aliases for ASCII digits or delimiters. Zero-count copies still require
+a valid source offset and a comma. Literal payloads can contain arbitrary bytes.
+The decoder requires a semicolon and an exact final output size, then ignores
+trailing bytes.</p>
+<p>Checksum verification is disabled, as it is in the pinned reference build.
+The numeric field before the semicolon is parsed but not checked against the
+output. Accepted wrong-checksum fixtures remain accepted.
+Checked ranges and slice access reject truncation at boundaries where the C
+implementation can read beyond its logical input. Those C pointer behaviors
+are not format guarantees.</p>
+</section>
+<section id="evidence-and-limits" class="level2">
+<h2 class="anchored" data-anchor-id="evidence-and-limits">Evidence and limits</h2>
+<p>The pinned reference is Fossil 2.29 at revision <code>7e8ecf0ce4</code>; the
+original manifest at <code>tests/fixtures/delta/original/manifest.json</code> in the
+repository root records its build
+and observations. The durable fixtures live under <code>tests/fixtures/delta/</code> at the repository root.
+The original 64 C observations retain 35 accepted, 24 rejected and five
+<code>not-run</code> cases. The separate supplement records 27 observations, comprising
+13 accepted and 14 rejected. Its observations cover eight decoder cases,
+ten cases of command framing and paths, and nine native encoder golden vectors.
+The nine golden vectors are used as decoder inputs, not as proof of a Rust encoder.</p>
+<p><code>cases.json</code> has 81 rows drawn from the original cases, eight supplemental
+decoder cases and nine golden vectors. Library and subprocess tests replay
+every bounded apply observation, including exact command output and target
+preservation on rejection. The original five C <code>not-run</code> statuses remain
+unchanged, even where later bounded tests characterize related behavior.</p>
+<p>The integrity check enumerates all 428 files in <code>portable-index.json</code> and checks
+their byte lengths and SHA-256 hashes. It also checks all 81 case rows against
+the original or supplemental records and the captured binary files.
+The original records retain absolute scratch paths as historical provenance.
+The replay tests use the checked-in bytes and do not require those paths or
+the native Fossil binary.</p>
+<p>The inherited runner remains a separate executable with its existing
+<a href="conformance.html">configuration contract</a>. The <a href="delta-encoder.html">encoder guide</a> records the encoder, the <code>test-delta</code>
+diagnostics and evidence from the inherited <code>delta1</code> suite. Checksum-enabled builds remain future work.
+The decoder establishes no database, storage or replication behavior.</p>
+<section id="historical-command-contract" class="level3">
+<h3 class="anchored" data-anchor-id="historical-command-contract">Historical command contract</h3>
+<p><code>contract.json</code> preserves the original command proposal. The later authorized
+namespace change is recorded in
+<code>evidence/delta-decoder/scope-and-test-first.json</code> in the repository root.
+Use that record to interpret the older proposal. The current invocation and
+usage line include <code>vcs</code>. It also distinguishes initial behavioral failures
+from tests added after implementation, so those later tests do not establish
+a test-first failure.</p>
+</section>
+</section>
+<section id="recommendations" class="level2">
+<h2 class="anchored" data-anchor-id="recommendations">Recommendations</h2>
+<p>Use <code>apply</code> with an explicit output limit for bounded delta application.
+Next, review the encoder and its inherited <code>delta1</code> evidence, which use the
+<code>gossil vcs</code> namespace.</p>
+</section>
+</main></div></body></html>

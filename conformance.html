@@ -1,0 +1,284 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="generator" content="smalldocs-0.5.12"><meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes"><title>Inherited-test runner – Gossil development</title><link rel="stylesheet" href="site_libs/themes/cosmo.min.css" data-mode="light" class="quarto-color-scheme" id="quarto-bootstrap-light"><link rel="stylesheet" href="site_libs/bootstrap-icons/bootstrap-icons.min.css"><link rel="stylesheet" href="site_libs/smalldocs.css"><meta name="smalldocs:offset" content="./"><script src="site_libs/bootstrap/bootstrap.bundle.min.js"></script><script src="site_libs/fuse/fuse.min.js"></script><script src="site_libs/smalldocs.js" defer></script></head><body class="nav-fixed"><header id="quarto-header" class="headroom sticky-top"><nav class="navbar navbar-expand-lg sd-navbar-default"><div class="navbar-container container-fluid"><div class="navbar-brand-container mx-auto"><a class="navbar-brand" href="index.html"><span class="navbar-title">Gossil development</span></a></div><button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button><div class="collapse navbar-collapse" id="navbarCollapse"><ul class="navbar-nav navbar-nav-scroll me-auto"><li class="nav-item"><a class="nav-link" href="index.html"><span class="menu-text">Home</span></a></li><li class="nav-item"><a class="nav-link active" href="conformance.html" aria-current="page"><span class="menu-text">Inherited-test runner</span></a></li><li class="nav-item"><a class="nav-link" href="delta-encoder.html"><span class="menu-text">Delta encoder</span></a></li><li class="nav-item"><a class="nav-link" href="delta-decoder.html"><span class="menu-text">Delta decoder</span></a></li><li class="nav-item"><a class="nav-link" href="blob-primitives.html"><span class="menu-text">Byte primitives</span></a></li><li class="nav-item"><a class="nav-link" href="artifact-checksum.html"><span class="menu-text">Artifact checksums</span></a></li><li class="nav-item"><a class="nav-link" href="token-codec.html"><span class="menu-text">Token byte escaping</span></a></li><li class="nav-item"><a class="nav-link" href="artifact-parser.html"><span class="menu-text">Artifact parser</span></a></li><li class="nav-item"><a class="nav-link" href="local-storage.html"><span class="menu-text">Local storage</span></a></li><li class="nav-item"><a class="nav-link" href="native-storage.html"><span class="menu-text">Native local storage</span></a></li><li class="nav-item"><a class="nav-link" href="libsql-provider.html"><span class="menu-text">Native date provider</span></a></li><li class="nav-item"><a class="nav-link" href="development-plan.html"><span class="menu-text">Development plan</span></a></li></ul><ul class="navbar-nav navbar-nav-scroll ms-auto"></ul><div class="quarto-navbar-tools"><div class="smalldocs-search" id="quarto-search"><i class="bi bi-search" aria-hidden="true"></i><input type="search" class="form-control form-control-sm" placeholder="Search" aria-label="Search" autocomplete="off"><div class="smalldocs-search-results dropdown-menu"></div></div></div></div></div></nav></header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article has-margin"><div id="quarto-margin-sidebar" class="sidebar margin-sidebar"><nav id="TOC" role="doc-toc" class="toc-active"><h2 id="toc-title">On this page</h2><ul><li><a href="#local-prerequisites" id="toc-local-prerequisites" class="nav-link" data-scroll-target="#local-prerequisites">Local prerequisites</a></li><li><a href="#run-a-suite" id="toc-run-a-suite" class="nav-link" data-scroll-target="#run-a-suite">Run a suite</a><ul><li><a href="#configuration-fields" id="toc-configuration-fields" class="nav-link" data-scroll-target="#configuration-fields">Configuration fields</a></li></ul></li><li><a href="#optional-complete-invocation-plan" id="toc-optional-complete-invocation-plan" class="nav-link" data-scroll-target="#optional-complete-invocation-plan">Optional complete invocation plan</a></li><li><a href="#process-isolation-and-limits" id="toc-process-isolation-and-limits" class="nav-link" data-scroll-target="#process-isolation-and-limits">Process isolation and limits</a></li><li><a href="#sources-of-the-fixtures" id="toc-sources-of-the-fixtures" class="nav-link" data-scroll-target="#sources-of-the-fixtures">Sources of the fixtures</a></li><li><a href="#recommendations" id="toc-recommendations" class="nav-link" data-scroll-target="#recommendations">Recommendations</a></li></ul></nav></div><main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block default"><div class="quarto-title"><h1 class="title">Inherited-test runner</h1></div><div class="quarto-title-meta"></div></header><p><code>gossil-conformance</code> executes one Fossil Tcl suite against an explicit program.
+It is development infrastructure and implements no Gossil engine behavior.
+A reference run tests the pinned upstream Fossil program. A candidate run tests
+the replacement program whose compatibility is under development.
+The runs have separate configurations and output directories.
+A missing candidate never falls back to C Fossil.</p>
+<p>Run <code>just conformance-self-test</code> to check the runner controls. These tests pass
+when the runner correctly rejects deliberate failures and incomplete runs.
+That result does not mean the inherited Fossil suites pass.</p>
+<section id="local-prerequisites" class="level2">
+<h2 class="anchored" data-anchor-id="local-prerequisites">Local prerequisites</h2>
+<p>Install Rust with Cargo, Git, Just and uv on <code>PATH</code> before using the recipes.
+Rust builds the runner, Just runs <code>Justfile</code> recipes, and uv runs the installed
+workflow tools. <code>just setup</code> fetches Cargo dependencies. <code>just install --check</code>
+checks the saved workflow installation rather than supplying native test tools.</p>
+<p>This checkout exposes Tcl 8.6.18 and Fossil 2.29 through <code>.jlog/bin</code>.
+The Fossil binary is revision <code>7e8ecf0ce4</code>, with TLS and FUSE disabled.
+These ignored tools are local prerequisites. A fresh clone does not acquire
+them, so continuous integration from a fresh clone remains unproved.</p>
+<p>Supply the pinned Fossil source and native tools yourself before running
+reference suites. The repository has no automated acquisition procedure.
+The user temporarily permitted the local Tcl installation to use shared
+Homebrew storage rather than keeping all native dependencies inside the checkout.</p>
+</section>
+<section id="run-a-suite" class="level2">
+<h2 class="anchored" data-anchor-id="run-a-suite">Run a suite</h2>
+<p>Write a JSON configuration with absolute paths. The following example uses the
+checked-in positive control. Replace <code>/path/to/gossil</code> with the checkout path.
+The output directory must not exist. Save this example as <code>CONFIG.json</code>.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode json code-with-copy"><code class="sourceCode json">{
+  <span class="kw">&quot;role&quot;</span>: <span class="st">&quot;reference&quot;</span>,
+  <span class="kw">&quot;revision&quot;</span>: <span class="st">&quot;b3a1c8efb2731dffbd5cc38c58ac349746de6da6&quot;</span>,
+  <span class="kw">&quot;tcl&quot;</span>: <span class="st">&quot;/path/to/gossil/.jlog/bin/tclsh&quot;</span>,
+  <span class="kw">&quot;driver&quot;</span>: <span class="st">&quot;/path/to/gossil/tests/fixtures/controls/tester.tcl&quot;</span>,
+  <span class="kw">&quot;executable&quot;</span>: <span class="st">&quot;/path/to/gossil/.jlog/bin/fossil&quot;</span>,
+  <span class="kw">&quot;suite&quot;</span>: <span class="st">&quot;pass&quot;</span>,
+  <span class="kw">&quot;run_dir&quot;</span>: <span class="st">&quot;/path/to/gossil/target/conformance/example&quot;</span>,
+  <span class="kw">&quot;timeout_ms&quot;</span>: <span class="dv">3000</span>,
+  <span class="kw">&quot;seed&quot;</span>: <span class="dv">20261117</span>,
+  <span class="kw">&quot;inputs&quot;</span>: [
+    <span class="st">&quot;/path/to/gossil/tests/fixtures/fossil/tester.tcl&quot;</span>,
+    <span class="st">&quot;/path/to/gossil/tests/fixtures/fossil/enable.patch&quot;</span>
+  ],
+  <span class="kw">&quot;capabilities&quot;</span>: {<span class="kw">&quot;tls&quot;</span>: <span class="st">&quot;disabled&quot;</span>, <span class="kw">&quot;fuse&quot;</span>: <span class="st">&quot;disabled&quot;</span>}
+}</code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<section id="configuration-fields" class="level3">
+<h3 class="anchored" data-anchor-id="configuration-fields">Configuration fields</h3>
+<div class="sd-table">
+<table class="caption-top table">
+<thead>
+<tr>
+<th>Field</th>
+<th>Meaning and effect</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>role</code></td>
+<td>Required label <code>reference</code> or <code>candidate</code>. It does not select a binary.</td>
+</tr>
+<tr>
+<td><code>revision</code></td>
+<td>Nonempty source identifier retained in evidence. The runner does not verify a source checkout against it.</td>
+</tr>
+<tr>
+<td><code>tcl</code></td>
+<td>Absolute path to an executable Tcl interpreter.</td>
+</tr>
+<tr>
+<td><code>driver</code></td>
+<td>Absolute path to the enabled <code>tester.tcl</code> driver.</td>
+</tr>
+<tr>
+<td><code>executable</code></td>
+<td>Absolute path to the program under test, used without fallback.</td>
+</tr>
+<tr>
+<td><code>suite</code></td>
+<td>Suite basename without a slash, for example <code>pass</code> for <code>pass.test</code>.</td>
+</tr>
+<tr>
+<td><code>run_dir</code></td>
+<td>Absolute path to a new output directory whose parent already exists.</td>
+</tr>
+<tr>
+<td><code>timeout_ms</code></td>
+<td>Positive deadline in milliseconds. A timeout rejects the run.</td>
+</tr>
+<tr>
+<td><code>seed</code></td>
+<td>Unsigned 32-bit value passed to Tcl <code>srand</code> before the driver runs. It controls Tcl randomness, not every source of randomness in the tested program.</td>
+</tr>
+<tr>
+<td><code>inputs</code></td>
+<td>Absolute paths to extra source, fixture or patch files whose bytes need hashing.</td>
+</tr>
+<tr>
+<td><code>capabilities</code></td>
+<td>Caller-supplied string map retained as evidence. It neither enables features nor verifies their availability.</td>
+</tr>
+<tr>
+<td><code>invocation_plan</code></td>
+<td>Optional complete plan and corpus pins; omitted or <code>null</code> uses strict duplicate-name rejection. See the plan contract below.</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>The runner locates <code>&lt;suite&gt;.test</code> beside <code>driver</code>. The example runs
+<code>tests/fixtures/controls/pass.test</code>. For an upstream suite, keep the original
+source tree and corpus unchanged. Put a copy of <code>tester.tcl</code> and the selected
+suite beside each other in a separate harness directory. Apply
+<code>tests/fixtures/fossil/enable.patch</code> only to the copied driver.</p>
+<p>Prepend
+<code>set argv0 /absolute/path/to/original/test/tester.tcl</code> to that enabled copy,
+using the original driver path in the pinned source tree. This restores the
+original corpus location when the driver derives <code>testdir</code> from <code>argv0</code>.</p>
+<p>Set <code>driver</code> to the enabled copy. The executed <code>delta1</code> harness uses this layout;
+its original driver, suite and corpus bytes remain unchanged.
+The runner hashes the driver, suite, interpreter and tested executable
+automatically, in addition to every path in <code>inputs</code>.</p>
+<p>The example’s <code>revision</code> is the Git mirror commit for the inherited source.
+Fossil identifies the same source snapshot with its native revision, starting
+<code>7e8ecf0ce4</code>. The full pair and driver hashes are in the
+repository file <code>evidence/baselines/fossil/provenance.json</code>.
+The label alone does not prove that an executable was built from that source.</p>
+<p>Create the parent output folder, then run <code>just conformance CONFIG.json</code>.
+Exit status 0 means this suite passed, status 1 means it failed acceptance,
+and status 2 means setup failed. The runner prints the <code>report.json</code> path.</p>
+<p>The report retains decoded stdout and stderr, commands, environment, hashes, source pin,
+suite, original assertion names, seed, capabilities and process status.
+The log files retain exact bytes and their hashes. Invalid UTF-8 blocks
+acceptance. Only stdout supplies assertion records, while stderr remains evidence.</p>
+<p>Without a plan, assertion identity combines the source pin, suite path and
+original name. The runner does not infer parameterized cases or unreported seeds.
+Callers must supply all fixture and source inputs that need hashing.</p>
+<p>Framework checks remain separate from real assertions. Known-bug annotations
+remain visible, but an assertion reported as failing never becomes a pass. Skipped summaries
+produce <code>not-run</code> with the original reason.</p>
+<p>The runner has no automatic <code>feature-disabled</code> mapping. A separate analysis
+must link the skipped reason to a capability observation, as the
+reference archive described in <code>evidence/baselines/README.md</code> does. The configuration
+map alone does not establish that classification. Timeouts and incomplete output produce <code>blocked</code>.</p>
+<p>Only <code>pass</code> contributes to acceptance. A skip or blocked result prevents
+acceptance of the entire suite, even if other assertions pass.
+A framework-only run fails acceptance.
+The runner also rejects missing summaries, inconsistent counts and crashes.
+For example, the final summary for one passing assertion is
+<code>***** Final results: 0 errors out of 1 tests</code>.</p>
+<p>A final summary invalidates the run if a count is nonnumeric or exceeds
+the range of <code>usize</code>, Rust’s unsigned pointer-sized integer type. Every final-summary occurrence counts, including
+malformed ones. A duplicate summary or a later valid summary cannot clear
+that rejection.</p>
+</section>
+</section>
+<section id="optional-complete-invocation-plan" class="level2">
+<h2 class="anchored" data-anchor-id="optional-complete-invocation-plan">Optional complete invocation plan</h2>
+<p>The default parser rejects repeated original assertion names. Some inherited
+suites reuse names for different source files. Such a run can opt into a
+complete, ordered plan of expected source-derived invocation identities.
+The plan preserves every original name, result, annotation and framework flag.</p>
+<p>Add an <code>invocation_plan</code> object to the configuration:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode json code-with-copy"><code class="sourceCode json">{
+  <span class="kw">&quot;invocation_plan&quot;</span>: {
+    <span class="kw">&quot;path&quot;</span>: <span class="st">&quot;/absolute/path/invocation-plan.json&quot;</span>,
+    <span class="kw">&quot;sha256&quot;</span>: <span class="st">&quot;EXPECTED_PLAN_SHA256&quot;</span>,
+    <span class="kw">&quot;expected_invocations&quot;</span>: <span class="dv">22804</span>,
+    <span class="kw">&quot;corpus_manifest&quot;</span>: <span class="st">&quot;/absolute/path/corpus-manifest.json&quot;</span>,
+    <span class="kw">&quot;corpus_manifest_sha256&quot;</span>: <span class="st">&quot;EXPECTED_MANIFEST_SHA256&quot;</span>,
+    <span class="kw">&quot;corpus_root&quot;</span>: <span class="st">&quot;/absolute/path/upstream&quot;</span>
+  }
+}</code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><code>expected_invocations</code> pins the complete row count and must be positive.
+A count pin catches truncated plans during setup; it does not prove source correspondence.</p>
+<p>Both expected hashes must be lowercase SHA-256 values. The runner checks them
+before execution and parses those same verified bytes. The plan binds the
+configured suite, upstream revision, exact suite bytes and corpus manifest.
+The manifest binds every original corpus input. All physical paths are absolute.</p>
+<p>The runner assumes that no process changes input files during a run. This
+immutable-input assumption also applies to the existing input-hashing contract. Hash verification does not remove the race if another writer changes
+an input after verification.</p>
+<p>A plan uses schema <code>gossil.invocation-plan.v1</code>. Each row contains <code>name</code> and
+<code>id</code>. An ID contains <code>suite</code> and a structured <code>position</code>. Corpus positions use
+<code>kind: &quot;corpus&quot;</code>, an upstream-relative <code>source</code>, a zero-based <code>iteration</code> and
+a positive <code>slot</code>. Empty controls use <code>kind: &quot;empty&quot;</code> with a positive <code>index</code>.
+The final framework position uses <code>kind: &quot;framework&quot;</code>.</p>
+<p>For <code>delta1</code>, <code>slot</code>
+identifies one of the three assertions in each mutation iteration, numbered
+1 through 3. The empty-control <code>index</code> identifies one of three final empty-input
+assertions, also numbered 1 through 3.</p>
+<p>The complete object shapes are shown below. These illustrative objects have one
+corpus row; they are not a complete plan for the real <code>delta1</code> suite. Replace
+all hash placeholders with hashes of the exact bytes and include every real row.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode json code-with-copy"><code class="sourceCode json">{
+  <span class="kw">&quot;schema&quot;</span>: <span class="st">&quot;gossil.invocation-plan.v1&quot;</span>,
+  <span class="kw">&quot;suite&quot;</span>: <span class="st">&quot;delta1&quot;</span>,
+  <span class="kw">&quot;revision&quot;</span>: <span class="st">&quot;PINNED_REVISION&quot;</span>,
+  <span class="kw">&quot;suite_sha256&quot;</span>: <span class="st">&quot;SUITE_SHA256&quot;</span>,
+  <span class="kw">&quot;corpus_manifest_sha256&quot;</span>: <span class="st">&quot;MANIFEST_SHA256&quot;</span>,
+  <span class="kw">&quot;rows&quot;</span>: [
+    {<span class="kw">&quot;name&quot;</span>: <span class="st">&quot;delta-example-0-1&quot;</span>, <span class="kw">&quot;id&quot;</span>: {<span class="kw">&quot;suite&quot;</span>: <span class="st">&quot;delta1&quot;</span>, <span class="kw">&quot;position&quot;</span>: {
+      <span class="kw">&quot;kind&quot;</span>: <span class="st">&quot;corpus&quot;</span>, <span class="kw">&quot;source&quot;</span>: <span class="st">&quot;test/example.txt&quot;</span>, <span class="kw">&quot;iteration&quot;</span>: <span class="dv">0</span>, <span class="kw">&quot;slot&quot;</span>: <span class="dv">1</span>
+    }}}
+  ]
+}</code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>The corresponding manifest has this shape:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode json code-with-copy"><code class="sourceCode json">{
+  <span class="kw">&quot;suite&quot;</span>: <span class="st">&quot;delta1&quot;</span>,
+  <span class="kw">&quot;revision&quot;</span>: <span class="st">&quot;PINNED_REVISION&quot;</span>,
+  <span class="kw">&quot;files&quot;</span>: {<span class="kw">&quot;test/example.txt&quot;</span>: <span class="st">&quot;FILE_SHA256&quot;</span>}
+}</code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Source paths use forward slashes and contain no empty, dot or parent components.
+IDs must be unique, and plan rows must cover every manifest source.</p>
+<p>Review of the generator and source establishes correspondence for every invocation.
+Hashes bind supplied bytes; arbitrary identity labels alone do not prove provenance.</p>
+<p>The runner compares the entire observed vector with the complete expected
+original-name sequence and cardinality. It attaches <code>expected_invocation_id</code>
+only after an exact match. Invalid syntax remains malformed in either mode.
+No assertion is dropped, repaired, renamed or reordered.</p>
+<p>Failures, skipped summaries, bad totals, invalid UTF-8, nonzero exits and timeouts still reject.
+The report retains every plan row. The run directory also keeps exact verified
+<code>invocation-plan.json</code> and <code>corpus-manifest.json</code> bytes.</p>
+<p>Expected IDs describe correspondence derived from pinned source order.
+The original upstream log does not emit these IDs. Matching names cannot detect
+permutations or substitutions of whole groups with identical printed names.
+The frozen suite and original corpus establish their expected order.</p>
+<p>For the pinned <code>delta1</code> corpus, generate the plan from the original source tree:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode sh code-with-copy"><code class="sourceCode sh">just delta1-plan /absolute/path/fossil /absolute/path/new-plan-directory</code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>The generator uses the selected Tcl interpreter’s actual <code>lsort</code> order and
+<code>file root</code> behavior. <code>lsort</code> determines the order of corpus paths;
+<code>file root</code> removes the final filename extension to form the printed name stem. It preserves all non-directory corpus inputs and emits
+all 22,804 rows for 76 files, three empty controls and the framework assertion.</p>
+<p>The output directory must not exist. The source root must contain the original
+<code>test/delta1.test</code> and adjacent corpus. The recipe uses <code>.jlog/bin/tclsh</code> and
+labels the plan with revision <code>b3a1c8efb2731dffbd5cc38c58ac349746de6da6</code>.
+It does not verify the source checkout against that revision. Supply the pinned
+source and review its correspondence before using the plan.</p>
+<p>The generator writes <code>invocation-plan.json</code>, <code>corpus-manifest.json</code> and
+<code>generation.json</code>. Use the plan and manifest hashes from <code>generation.json</code>
+for the configuration pins. Set <code>corpus_root</code> to the source root.
+Generation metadata records the Tcl and generator hashes and complete source order.
+The <a href="delta-encoder.html">encoder guide</a> links the executed qualification evidence.</p>
+</section>
+<section id="process-isolation-and-limits" class="level2">
+<h2 class="anchored" data-anchor-id="process-isolation-and-limits">Process isolation and limits</h2>
+<p>The runner implements Unix process groups. The current checks ran on macOS, while Linux execution remains unqualified.
+Each invocation uses a fresh directory, a cleared environment, isolated HOME
+and temporary paths, and a fixed system utility PATH of <code>/usr/bin:/bin</code>.
+The runner observes completion without reaping the process-group leader.
+It checks the group identity before terminating owned descendants, then reaps
+the direct child. A timeout always rejects the run.</p>
+<p>Execution assumes trusted local programs with the same user credentials.
+The runner rejects setuid and setgid targets. Descendants that change their
+credentials, process group or session are unsupported. The runner is not a
+sandbox and does not promise a deadline for uninterruptible kernel work.
+It reaps its direct child and terminates descendants in the same process group.</p>
+<p>On macOS, XNU returns EPERM for a group containing only zombies. After the
+leader exits, the runner records that outcome as <code>no-signalable-members</code>
+under the trusted-program assumptions above. Other permission failures block
+the run. The <a href="https://raw.githubusercontent.com/apple-oss-distributions/xnu/main/bsd/kern/kern_sig.c">XNU signal implementation</a>
+defines that behavior.</p>
+</section>
+<section id="sources-of-the-fixtures" class="level2">
+<h2 class="anchored" data-anchor-id="sources-of-the-fixtures">Sources of the fixtures</h2>
+<p><code>tests/fixtures/fossil/tester.tcl</code> preserves the pristine upstream driver.
+<code>tests/fixtures/controls/tester.tcl</code> removes only its initial <code>puts Ok</code> and
+<code>exit</code> lines. Upstream disables this Tcl driver because it is unmaintained and difficult
+to debug, as its opening comment states. An unmodified invocation exits
+before it executes assertions.
+The patch <code>tests/fixtures/fossil/enable.patch</code> records only that change.
+Both copies retain upstream notices, and the adjacent BSD license covers the inherited file.</p>
+<p>The fixture provenance record in <code>tests/fixtures/provenance.json</code> identifies
+the source and both driver hashes. The control suites are new runner tests,
+separate from the upstream corpus.
+They exercise the inherited driver without changing its assertion procedure.</p>
+<p>The full reference baseline remains separate. See the checked-in evidence
+under <code>evidence/baselines</code> for classified results and limits.</p>
+</section>
+<section id="recommendations" class="level2">
+<h2 class="anchored" data-anchor-id="recommendations">Recommendations</h2>
+<p>To run a suite, use an explicit configuration and retain failed results.
+For development, finish the native-tool acquisition contract and run every
+required reference build configuration before claiming inherited compatibility.</p>
+</section>
+</main></div></body></html>
