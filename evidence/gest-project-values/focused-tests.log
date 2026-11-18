@@ -1,0 +1,43 @@
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.31s
+     Running tests/gest_project_values.rs (/tmp/gossil-project-values-integration-target/debug/deps/gest_project_values-ae0418e814d5b391)
+
+running 7 tests
+test archive_null_and_present_are_distinct ... ok
+test required_fields_reject_null ... ok
+test complete_output_round_trips_and_is_independent ... ok
+test full_identifier_domain_and_boundaries ... ok
+test every_timestamp_retains_initial_and_canonical_parse_causes ... ok
+test every_field_rejects_wrong_types_without_parser_causes ... ok
+test each_timestamp_normalizes_and_round_trips ... ok
+
+test result: ok. 7 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/gest_task_values.rs (/tmp/gossil-project-values-integration-target/debug/deps/gest_task_values-b886a4e3a19d537f)
+
+running 24 tests
+test adopted_status_pairing_false_for_in_progress ... ok
+test adopted_status_pairing_true_for_done ... ok
+test adopted_status_pairing_true_for_cancelled ... ok
+test adopted_status_pairing_false_for_open ... ok
+test complete_record_preserves_all_fields_and_round_trips ... ok
+test fixture_source_map_covers_all_23_upstream_tests_without_claiming_all_are_ported ... ok
+test inherited_status_display_formats_cancelled ... ok
+test canonical_output_parser_errors_retain_the_upstream_cause ... ok
+test inherited_status_display_formats_done ... ok
+test gossil_canonical_time_refuses_only_unrepresentable_utc_output ... ok
+test inherited_status_display_formats_in_progress ... ok
+test inherited_status_display_formats_open ... ok
+test inherited_priority_numeric_values_in_named_range ... ok
+test gossil_checked_priority_rejects_values_instead_of_wrapping ... ok
+test text_is_exact_without_invented_content_restrictions ... ok
+test metadata_preserves_every_value_variant_and_nested_content ... ok
+test non_parser_validation_errors_have_no_parse_cause ... ok
+test timestamp_errors_retain_distinct_upstream_causes ... ok
+test timestamp_order_is_not_an_invented_record_restriction ... ok
+test source_status_aliases_case_and_canonical_output ... ok
+test full_id_domains_for_all_three_identifier_fields ... ok
+test required_types_and_nullable_field_types_are_checked ... ok
+test source_chrono_timestamp_controls_apply_to_every_time_field ... ok
+test gossil_checked_priority_accepts_source_model_full_u8_range ... ok
+
+test result: ok. 24 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.04s

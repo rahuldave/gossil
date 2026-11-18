@@ -5,7 +5,8 @@ storage. The `gossil` executable implements three delta diagnostics.
 The generated [Rust API](api/index.qmd) describes the public library surface.
 
 The standalone [Gest task values converter](gest-task-values.md) validates eleven decoded fields.
-Storage integration, raw field admission and the full Gest API remain future work.
+The [Gest project values converter](gest-project-values.md) validates four canonical project fields.
+Both converters operate in memory. Storage integration, raw field admission and the full Gest API remain future work.
 
 ## Current scope
 

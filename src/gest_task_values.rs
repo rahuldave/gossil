@@ -16,6 +16,8 @@ use chrono::{DateTime, Utc};
 use serde_json::Value;
 use std::fmt;
 
+use crate::gest_value_validation::{ValidationError, identifier, string, timestamp};
+
 /// All eleven owned model fields, with explicit nulls for nullable fields.
 ///
 /// Callers assemble every field after raw input admission. No fields default.
@@ -91,6 +93,17 @@ pub struct TaskValueError {
     reason: &'static str,
     /// Actual chrono failure when timestamp parsing failed.
     parse_cause: Option<chrono::ParseError>,
+}
+
+impl From<ValidationError> for TaskValueError {
+    /// Preserve all shared failure fields, including the typed parser cause.
+    fn from(error: ValidationError) -> Self {
+        Self {
+            field: error.field,
+            reason: error.reason,
+            parse_cause: error.parse_cause,
+        }
+    }
 }
 
 impl TaskValueError {
@@ -264,84 +277,4 @@ pub fn task_to_values(task: &TaskValues) -> TaskValueInputs {
         created_at: Value::from(task.created_at.to_rfc3339()),
         updated_at: Value::from(task.updated_at.to_rfc3339()),
     }
-}
-
-/// Extract a required string without imposing content restrictions.
-///
-/// # Arguments
-/// - `value`: The decoded JSON field value to validate.
-/// - `field`: The field name to include in validation errors.
-///
-/// # Returns
-/// The owned input string.
-///
-/// # Errors
-/// Returns [`TaskValueError`] for any non-string [`Value`].
-fn string(value: Value, field: &'static str) -> Result<String, TaskValueError> {
-    match value {
-        Value::String(s) => Ok(s),
-        _ => Err(TaskValueError {
-            field,
-            reason: "expected a string",
-            parse_cause: None,
-        }),
-    }
-}
-
-/// Require the full upstream 32-byte lowercase `k` through `z` ID domain.
-///
-/// # Arguments
-/// - `value`: The decoded JSON field value to validate.
-/// - `field`: The field name to include in validation errors.
-///
-/// # Returns
-/// The owned identifier string after validating its length and alphabet.
-///
-/// # Errors
-/// Returns [`TaskValueError`] for a non-string value, a length other than 32 bytes,
-/// or any byte outside the identifier alphabet.
-fn identifier(value: Value, field: &'static str) -> Result<String, TaskValueError> {
-    let s = string(value, field)?;
-    if s.len() != 32 || !s.bytes().all(|b| (b'k'..=b'z').contains(&b)) {
-        return Err(TaskValueError {
-            field,
-            reason: "expected exactly 32 letters from k through z",
-            parse_cause: None,
-        });
-    }
-    Ok(s)
-}
-
-/// Parse a business timestamp and require UTC output that can be parsed again.
-///
-/// # Arguments
-/// - `value`: The decoded JSON field value to validate.
-/// - `field`: The field name to include in validation errors.
-///
-/// # Returns
-/// The parsed instant in UTC, whose RFC3339 output can be parsed again.
-///
-/// # Errors
-/// Returns [`TaskValueError`] for a non-string value, a chrono RFC3339 parse failure,
-/// or normalized UTC output outside the parser's RFC3339 domain.
-fn timestamp(value: Value, field: &'static str) -> Result<DateTime<Utc>, TaskValueError> {
-    let s = string(value, field)?;
-    let utc = DateTime::parse_from_rfc3339(&s)
-        .map(|dt| dt.with_timezone(&Utc))
-        .map_err(|cause| TaskValueError {
-            field,
-            reason: "expected a chrono-compatible RFC3339 timestamp",
-            parse_cause: Some(cause),
-        })?;
-    // The adopted Gossil output contract is narrower than source parsing when
-    // offset normalization crosses into a signed extended UTC year. This is
-    // a canonical-representation refusal, not the artifact D-card grammar.
-    if let Err(cause) = DateTime::parse_from_rfc3339(&utc.to_rfc3339()) {
-        return Err(TaskValueError {
-            field,
-            reason: "normalized UTC timestamp is outside the canonical RFC3339 output domain",
-            parse_cause: Some(cause),
-        });
-    }
-    Ok(utc)
 }

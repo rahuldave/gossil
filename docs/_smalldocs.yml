@@ -54,6 +54,7 @@ website:
           - development-plan.md
           - conformance.md
           - gest-task-values.md
+          - gest-project-values.md
 
 # Installed from the canonical repository; exact revision and licenses ship in the extension.
 theme: atelier

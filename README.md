@@ -35,8 +35,11 @@ assert_eq!(restored, b"after");
 
 See [application setup and examples](docs/examples.md) for the required Cargo
 provider patch, and [library concepts](docs/concepts.md) for module choices.
+Gest is a task and artifact tracker. These converters use its task and project record model.
 The [Gest task values converter](docs/gest-task-values.md) validates complete decoded
-task snapshots in memory. It does not store tasks or add task commands.
+task snapshots in memory. The [Gest project values converter](docs/gest-project-values.md)
+validates all four canonical project fields. Neither converter stores records or adds commands.
+
 Native storage supports complete empty-root initialization
 and bounded private content operations. File-containing check-ins, general
 version-control commands, Gest task management, a server and a user interface
