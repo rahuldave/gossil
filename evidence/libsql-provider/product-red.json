@@ -1,0 +1,13 @@
+{
+  "argv": [
+    "just",
+    "test",
+    "--lib",
+    "storage::date_tests",
+    "--",
+    "--nocapture"
+  ],
+  "exit": 101,
+  "stdout": "cargo llvm-cov test --all-features --locked --include-build-script --workspace --lcov --output-path target/llvm-cov/test.part0.lcov --lib storage::date_tests -- --nocapture\n\nrunning 1 test\ntest storage::date_tests::pinned_date_and_legacy_numeric_corpora ... FAILED\n\nfailures:\n\nfailures:\n    storage::date_tests::pinned_date_and_legacy_numeric_corpora\n\ntest result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 27 filtered out; finished in 0.01s\n\n",
+  "stderr": "just --justfile '/Users/rahul/Projects/gossil.worktrees/gest-yzyssxsr-local-store/Justfile' rust test \"$@\"\nuv run --no-project --quiet --python '>=3.11' python '/Users/rahul/Projects/gossil.worktrees/gest-yzyssxsr-local-store/.agents/just/rust/steps.py' run test \"$@\"\nWARN `--no-project` was provided, but no project was found\ninfo: cargo-llvm-cov currently setting cfg(coverage); you can opt-out it by passing --no-cfg-coverage\n   Compiling gossil v0.1.0 (/Users/rahul/Projects/gossil.worktrees/gest-yzyssxsr-local-store)\n    Finished `test` profile [unoptimized + debuginfo] target(s) in 3.97s\n     Running unittests src/lib.rs (target/llvm-cov-target/debug/deps/gossil-5e73f0efaaa5a158)\n\nthread 'storage::date_tests::pinned_date_and_legacy_numeric_corpora' (312292531) panicked at src/../tests/support/storage_dates.rs:30:17:\nassertion `left == right` failed: binary64: SELECT julianday('2024-01-01T00:00:00.9999')\n  left: \"4142c54b40006117\"\n right: \"4142c54b400060fe\"\nnote: run with `RUST_BACKTRACE=1` environment variable to display a backtrace\nerror: test failed, to rerun pass `--lib`\nerror: process didn't exit successfully: `/Users/rahul/.rustup/toolchains/stable-aarch64-apple-darwin/bin/cargo test --manifest-path /Users/rahul/Projects/gossil.worktrees/gest-yzyssxsr-local-store/Cargo.toml --target-dir /Users/rahul/Projects/gossil.worktrees/gest-yzyssxsr-local-store/target/llvm-cov-target --all-features --locked --workspace --lib 'storage::date_tests' -- --nocapture` (exit status: 101)\nerror: Recipe `test` failed on line 6 with exit code 101\nerror: Recipe `test` failed on line 65 with exit code 101\n"
+}

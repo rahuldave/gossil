@@ -1,0 +1,274 @@
+{
+  "juliandayFunc": {
+    "original_lines": [
+      25899
+    ],
+    "patched_lines": [
+      26307
+    ],
+    "old_body_unchanged": true
+  },
+  "isDate": {
+    "original_lines": [
+      25849,
+      25905,
+      25923,
+      25944,
+      26004,
+      26046,
+      26105,
+      26288,
+      26289
+    ],
+    "patched_lines": [
+      26257,
+      26313,
+      26331,
+      26352,
+      26412,
+      26454,
+      26513,
+      26696,
+      26697
+    ],
+    "old_body_unchanged": true
+  },
+  "parseDateOrTime": {
+    "original_lines": [
+      25213,
+      25868
+    ],
+    "patched_lines": [
+      25621,
+      26276
+    ],
+    "old_body_unchanged": false
+  },
+  "parseYyyyMmDd": {
+    "original_lines": [
+      25135,
+      25219
+    ],
+    "patched_lines": [
+      25530,
+      25627
+    ],
+    "old_body_unchanged": false
+  },
+  "parseHhMmSs": {
+    "original_lines": [
+      25034,
+      25149,
+      25221,
+      25774
+    ],
+    "patched_lines": [
+      25414,
+      25545,
+      25629,
+      26182
+    ],
+    "old_body_unchanged": false
+  },
+  "parseTimezone": {
+    "original_lines": [
+      24998,
+      25066
+    ],
+    "patched_lines": [
+      25378,
+      25448
+    ],
+    "old_body_unchanged": true
+  },
+  "getDigits": {
+    "original_lines": [
+      24944,
+      25016,
+      25037,
+      25043,
+      25144,
+      25710,
+      25711,
+      25725,
+      25728,
+      25755
+    ],
+    "patched_lines": [
+      25324,
+      25396,
+      25417,
+      25423,
+      25539,
+      26118,
+      26119,
+      26133,
+      26136,
+      26163
+    ],
+    "old_body_unchanged": true
+  },
+  "computeJD": {
+    "original_lines": [
+      25085,
+      25162,
+      25290,
+      25412,
+      25426,
+      25598,
+      25609,
+      25637,
+      25746,
+      25775,
+      25780,
+      25794,
+      25824,
+      25877,
+      25906,
+      25924,
+      26109,
+      26154,
+      26298,
+      26308,
+      26322,
+      26332,
+      26342,
+      26356
+    ],
+    "patched_lines": [
+      25467,
+      25570,
+      25698,
+      25820,
+      25834,
+      26006,
+      26017,
+      26045,
+      26154,
+      26183,
+      26188,
+      26202,
+      26232,
+      26285,
+      26314,
+      26332,
+      26517,
+      26562,
+      26706,
+      26716,
+      26730,
+      26740,
+      26750,
+      26764
+    ],
+    "old_body_unchanged": false
+  },
+  "validJulianDay": {
+    "original_lines": [
+      25251,
+      25265,
+      25878
+    ],
+    "patched_lines": [
+      25659,
+      25673,
+      26286
+    ],
+    "old_body_unchanged": true
+  },
+  "setRawDateNumber": {
+    "original_lines": [
+      25188,
+      25226,
+      25865
+    ],
+    "patched_lines": [
+      25596,
+      25634,
+      26273
+    ],
+    "old_body_unchanged": true
+  },
+  "setDateTimeToCurrent": {
+    "original_lines": [
+      25172,
+      25224,
+      25232,
+      25861
+    ],
+    "patched_lines": [
+      25580,
+      25632,
+      25640,
+      26269
+    ],
+    "old_body_unchanged": true
+  },
+  "datetimeError": {
+    "original_lines": [
+      25074,
+      25099,
+      25266
+    ],
+    "patched_lines": [
+      25456,
+      25482,
+      25674
+    ],
+    "old_body_unchanged": true
+  },
+  "sqlite3AtoF": {
+    "original_lines": [
+      21772,
+      25225,
+      25631,
+      25714,
+      35780,
+      84094,
+      84231,
+      94571,
+      94686,
+      108905,
+      114147,
+      130745,
+      131383,
+      161843,
+      161849,
+      209184,
+      211745,
+      216042,
+      221481,
+      221484
+    ],
+    "patched_lines": [
+      21772,
+      26039,
+      26122,
+      36188,
+      84502,
+      84639,
+      94979,
+      95094,
+      109313,
+      114555,
+      131153,
+      131791,
+      162251,
+      162257,
+      209592,
+      212153,
+      216450,
+      221889,
+      221892
+    ],
+    "old_body_unchanged": true
+  },
+  "daysOfMonth": {
+    "original_lines": [],
+    "patched_lines": [
+      25518,
+      25547
+    ],
+    "old_body_unchanged": false
+  }
+}

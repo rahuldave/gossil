@@ -82,6 +82,7 @@ commits. Independent review and a final combined gate preceded the accepted
 integration checkpoint `de790aeab99012034f4b0bc9f9074181c935cd49`.
 The bootstrap notes below describe earlier setup.
 
+
 Every production change starts with focused tests and checks of the callers
 and tests that depend on the changed behavior. Fresh GPT-6.1 Sol agents
 review changes independently and challenge assumptions.
@@ -139,6 +140,26 @@ No empty commit or coverage exclusion may replace a genuine checkpoint.
 on the parent commit. The first checkout had no parent, so that step was
 skipped. The skip does not show that the tests failed on earlier behavior.
 
+## Native provider composition
+
+The accepted prerequisite `880538cd99d7640297f872a766415d129fb45503`
+includes artifact MD5 and the exact upstream coverage/import classifications.
+The [import boundary](libsql-import-boundary.md) records four exact Rust paths,
+with no folder or wildcard exemption. Its historical failed product gate remains
+a failure; committing the prerequisite does not accept the composed provider.
+The imported source guards must run at the new product gates.
+
+The [native provider guide](libsql-provider.md) describes the adopted core-only
+libSQL source and the project-owned hook policy. The private date regression
+passes 489 fixed tokens and 30 numeric threshold inputs with the adopted source.
+The retained run against the original provider fails the fractional-second case.
+The existing fifteen storage tests and private composition fixture also pass.
+
+Those retained candidate checks precede this composition with accepted MD5.
+Independent documentation, prose, product and test reviews and a fresh final
+check remain pending for this composed tree. These checks leave artifact parsing,
+runtime clocks, optional engine features and the platform matrix open.
+
 ## Decoder checkpoint and next integration
 
 The pure decoder validates commands before it reserves output storage, then
@@ -165,6 +186,7 @@ Do not invent storage or wire formats.
 The private/shared implementation must follow the companion sync contract for
 dependency closure, transaction identity, authorization, declassification and
 identical-byte visibility.
+
 
 Dependency closure includes every object that a record requires and determines
 which related objects must travel together.

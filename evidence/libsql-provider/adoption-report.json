@@ -1,0 +1,55 @@
+{
+  "status": "prepared product adoption; parent-owned ordered gates/stage/commit outstanding",
+  "worktree": "/Users/rahul/Projects/gossil.worktrees/gest-yzyssxsr-local-store",
+  "branch": "gest/uqytyztr-libsql-date",
+  "base": "de790aeab99012034f4b0bc9f9074181c935cd49",
+  "ownership": "Parent owns Gest, staging, update-docs/prose/review/test-review/check LAST and local commit; worker made no product Git mutation.",
+  "dependency_impact": {
+    "AST_before_edits": {
+      "Rust_Builder_new_local": "one production construction in LocalStore::open_inner",
+      "Rust_query": "private storage query/materialize and fixture consumers; see ast-0/1.json",
+      "C_call_query": "ast-grep no-match exit1 on complete amalgamation; not evidence of no dependencies"
+    },
+    "C_complete_accounting": "Independent source proof maps complete old/new native callsites; original oldAtoF function and17 unrelated call expressions preserved. See complete-callsite-map and old-api-preservation.",
+    "coupled_surfaces": [
+      "Cargo resolution/native provider",
+      "private storage date fixture",
+      "complete vendor inventory/provenance/regeneration",
+      "size policy/index-aware always-run hooks",
+      "typecheck/CI required verification",
+      "storage/native provider guides"
+    ]
+  },
+  "test_strategy": "test-first durable private storage regression; base fails known .9999 binary64; same test passes adopted dependency",
+  "executed": {
+    "original_red": "product-red exit101: .9999 old4142c54b40006117 vs required4142c54b400060fe",
+    "adopted_date": "pass:489 main +30 threshold tokens, each date +CAST+arithmetic values/storage classes",
+    "storage": "15 existing lifecycle/capability tests pass including settings/WAL/FULL/FK/busy/JSON/BLOB/uniqueness/integrity/rollback",
+    "composition": "one packed delta/storage rollback fixture passes",
+    "tamper_controls": "8 controls pass: absent/corrupt/duplicate-key/escaping manifest; wrong provenance; missing/extra/changed/symlinked source; index-path and staged/working disagreement; wrong regeneration input/hunk counts",
+    "required_typecheck": "pass including always-run complete inventory and tamper controls",
+    "ordinary_build": "pass unchanged upstream build.rs",
+    "lint": "pass",
+    "prose_checker": "0 hard problems on both changed guide pages; independent prose pass parent-owned",
+    "maintenance_regeneration": "both pinned inputs +patch+8hunks verified; exact reviewed output hash",
+    "installer_refresh": "disposable full copy: just install --defaults exit0; hook YAML byte-identical, both units explicitly project-owned",
+    "size_control": "actual configured v6.0.0 hook exit1 for ordinary1001KB file; no directory-wide exemption",
+    "size_distinction": "four exact reviewed exception paths; three actual0.9.30 files currently exceed1000KB; complete inventory covers all272 archive files",
+    "docs_check": "pass:86/86 API items documented; changed guide/module prose0hard"
+  },
+  "packaging": "Archive file set exact; only bundled/src/sqlite3.c changed; .cargo-ok absent from published archive/omitted. Original licenses/notices/optional sources preserved.",
+  "policy": "Both local/upstream-hooks repo units project-owned; original gate/trailer/pre-push entries byte-identical. Deliberate reconciliation required for future upstream hook changes.",
+  "limitations": [
+    "No inherited/Gossil D/E artifact parser implemented/executed",
+    "No runtime shared-clock tests",
+    "No modifier/strftime, optional-feature, MultipleCiphers, alternate flags or cross-platform qualification",
+    "Modern Fossil shell build failure retained as compile incompatibility only",
+    "Finite corpus + reviewed source argument is not unrestricted engine parity",
+    "No full delta1 rerun; historical evidence unchanged",
+    "No final ordered agent gates, staging or commit by worker"
+  ],
+  "Recommendations": {
+    "preferred": "Review the bounded core-only provider adoption and explicit project-owned source-integrity policy.",
+    "next_action": "Parent stages explicit paths, runs update-docs/prose/review/test-review then just check LAST, and commits locally after findings resolve."
+  }
+}

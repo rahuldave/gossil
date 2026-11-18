@@ -1,0 +1,16 @@
+{
+  "argv": [
+    "uv",
+    "run",
+    "--no-project",
+    "--quiet",
+    "python",
+    ".agents/skills/nossaifd/scripts/prose_gate.py",
+    "check",
+    "docs/libsql-provider.md"
+  ],
+  "cwd": "/Users/rahul/Projects/gossil.worktrees/gest-yzyssxsr-local-store",
+  "exit": 1,
+  "stdout": "docs/libsql-provider.md: checked by check.py of the skill, 1 hard, 17 soft\n  HARD 60: a colon between clauses: CODE preserves inherited whitespace in the complete hash-verified vendor tree an\n",
+  "stderr": "WARN `--no-project` was provided, but no project was found\n"
+}

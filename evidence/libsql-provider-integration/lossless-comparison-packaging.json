@@ -1,0 +1,63 @@
+{
+  "reason": "Lossless packaging of unified-diff evidence whose literal context blank lines trigger Git trailing-whitespace checks. No source or guide bytes changed.",
+  "original_reviewed_tree": "b639ce57622ee74a00f657fdf758fa7f7a57700a",
+  "comparisons": [
+    {
+      "original_path": "evidence/libsql-provider-integration/Cargo.lock.diff",
+      "stored_path": "evidence/libsql-provider-integration/Cargo.lock.diff.gz",
+      "original_sha256": "146c4db9db19137310157e4f0e6002fbc78b15294c7d8e076e686c8deb38779f",
+      "stored_sha256": "30ccf174177c19e7e056070bcaacd2f19e7ca0ef595ce45e89b2b8dcf2721b6e",
+      "original_bytes": 841,
+      "stored_bytes": 462
+    },
+    {
+      "original_path": "evidence/libsql-provider-integration/Cargo.toml.diff",
+      "stored_path": "evidence/libsql-provider-integration/Cargo.toml.diff.gz",
+      "original_sha256": "1d487dce39fd18a617ad27c86a477e48b4897a2c1a1430c0c19b621d529f80da",
+      "stored_sha256": "89dafdbab6f913989cda76ce6a3a0acfd0e550e75786b2b259918e9b57e6f830",
+      "original_bytes": 462,
+      "stored_bytes": 273
+    },
+    {
+      "original_path": "evidence/libsql-provider-integration/README.md.diff",
+      "stored_path": "evidence/libsql-provider-integration/README.md.diff.gz",
+      "original_sha256": "6534c9eef6fe875ef659af3088d888493713501f40fbbdcd758069633d82e960",
+      "stored_sha256": "f6e712a12623bfd7614793ba59f6db9f9c9c8e46ed5f0f6c511a040ab0d4fc65",
+      "original_bytes": 1417,
+      "stored_bytes": 737
+    },
+    {
+      "original_path": "evidence/libsql-provider-integration/docs___smalldocs.yml.diff",
+      "stored_path": "evidence/libsql-provider-integration/docs___smalldocs.yml.diff.gz",
+      "original_sha256": "1c5c7125a7606da752d53e368075daa4a3eed008696f7f4a4b461f9164335756",
+      "stored_sha256": "9aa1f915366c7f4a7b0b5ef5e5931362a5ed130d3b8d50cbfcb0fb239202ea83",
+      "original_bytes": 553,
+      "stored_bytes": 272
+    },
+    {
+      "original_path": "evidence/libsql-provider-integration/docs__development-plan.md.diff",
+      "stored_path": "evidence/libsql-provider-integration/docs__development-plan.md.diff.gz",
+      "original_sha256": "64f47d7b3d996e43e697311b80281e9332397b7eda4ee97e6cb668c92a0ea92c",
+      "stored_sha256": "a4f2189ab5449ea5a0d40e18073d1679b8ee1fae5bb069c86e26c89414faee2a",
+      "original_bytes": 5796,
+      "stored_bytes": 2386
+    },
+    {
+      "original_path": "evidence/libsql-provider-integration/docs__index.md.diff",
+      "stored_path": "evidence/libsql-provider-integration/docs__index.md.diff.gz",
+      "original_sha256": "397d467772831bc99495b4ec35575077f4248e4c3f67b03604baf5e83afab8ae",
+      "stored_sha256": "2a15cc09c3ab07093e44c190df278b65d8e1dbcaef40b54e35377ec936c39fff",
+      "original_bytes": 1978,
+      "stored_bytes": 905
+    }
+  ],
+  "retained_failed_gate": {
+    "run": "578942e0-4079-43dc-b785-03207edcb79c",
+    "exit_code": 2,
+    "failure": "diff-check only; source/code/tests/docs/prose preceding steps passed",
+    "stored_path": "evidence/libsql-provider-integration/historical-final-check-whitespace-failure.log.gz",
+    "original_sha256": "a2756f3df671eefbcfeedaa08ae84d14baf0c16d0bd555588ae52c5db4dd1b18",
+    "stored_sha256": "82bceec3fb6a22916efc65344ca2173fa269a88e526123a5176a5aa731dc026c"
+  },
+  "acceptance": "Fresh ordered gates and final check pending for repackaged evidence."
+}

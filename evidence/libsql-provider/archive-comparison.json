@@ -1,0 +1,10 @@
+{
+  "archive_file_count": 272,
+  "adopted_file_count": 272,
+  "missing": [],
+  "extra": [],
+  "changed": [
+    "bundled/src/sqlite3.c"
+  ],
+  "build_rs_identical": true
+}

@@ -1,0 +1,17 @@
+Linked .claude/skills to docs, just, so that Claude Code reads them
+Installed jnterfaces in /private/tmp/gossil-libsql-date-selection-20261117/adoption/refresh-copy from 389cdf8d26205ef00d0651ff8550be0684d99875 (dirty source: False)
+Installed agent_gest_git_skills in /private/tmp/gossil-libsql-date-selection-20261117/adoption/refresh-copy from d9523bda488e5dad7bae6549d0eeecd1dd84d0e4 (dirty source: False)
+Installed nossaifd in /private/tmp/gossil-libsql-date-selection-20261117/adoption/refresh-copy from 7ab9e940bfdfad994008c1b00234572547ceaf9a (dirty source: False)
+Installed jnprofile-rust in /private/tmp/gossil-libsql-date-selection-20261117/adoption/refresh-copy from 266241e4cffe4a89045f1717199e749b8dd75a03 (dirty source: False)
+pre-commit installed at .git/hooks/pre-commit
+pre-commit installed at .git/hooks/pre-merge-commit
+pre-commit installed at .git/hooks/commit-msg
+pre-commit installed at .git/hooks/pre-push
+Installed in /private/tmp/gossil-libsql-date-selection-20261117/adoption/refresh-copy:
+  jnterfaces at 389cdf8d26205ef00d0651ff8550be0684d99875
+  agent_gest_git_skills at d9523bda488e5dad7bae6549d0eeecd1dd84d0e4
+  nossaifd at 7ab9e940bfdfad994008c1b00234572547ceaf9a
+  jnprofile-rust at 266241e4cffe4a89045f1717199e749b8dd75a03
+  tools: rust:lint, rust:typecheck, rust:integration, rust:test, rust:docstring, rust:api
+  tasker: git (work on a branch in the main checkout)
+Saved in .agents/stack.json. Run just install again without names to install the same set.

@@ -1,5 +1,6 @@
 repos:
-  # repos[repo=local] is a part of tasker, the tasker role, from agent_gest_git_skills at 9225e7b. The record is parts.".pre-commit-config.yaml" in .agents/stack.json.
+  # Project-owned extension of the tasker local unit (agent_gest_git_skills 9225e7b).
+  # Original commit/trailer/pre-push hooks are retained unchanged.
   - repo: local
     hooks:
       - id: commit-gate
@@ -25,7 +26,16 @@ repos:
         always_run: true
         stages: [pre-push]
 
-  # repos[repo=https://github.com/pre-commit/pre-commit-hooks] is a part of tasker, the tasker role, from agent_gest_git_skills at 9225e7b. The record is parts.".pre-commit-config.yaml" in .agents/stack.json.
+      - id: verify-libsql-vendor
+        name: verify complete libsql source and staged identity
+        entry: python3 scripts/verify-libsql-vendor.py --index
+        language: system
+        always_run: true
+        pass_filenames: false
+        stages: [pre-commit, pre-merge-commit]
+
+  # Project-owned replacement of the tasker upstream-hooks unit (agent_gest_git_skills 9225e7b).
+  # The exact size exceptions are replaced by complete byte verification below.
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v6.0.0
     hooks:
@@ -35,6 +45,7 @@ repos:
         stages: [pre-commit, pre-merge-commit]
       - id: check-added-large-files
         args: ["--maxkb=1000"]
+        exclude: '^vendor/libsql-ffi/(?:bundled/src/sqlite3\.c|bundled/SQLite3MultipleCiphers/src/(?:sqlite3\.c|shell\.c|sqlite3patched\.c))$'
         stages: [pre-commit, pre-merge-commit]
       - id: check-merge-conflict
         stages: [pre-commit, pre-merge-commit]

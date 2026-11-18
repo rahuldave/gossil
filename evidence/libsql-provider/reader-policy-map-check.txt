@@ -1,0 +1,10 @@
+WARN `--no-project` was provided, but no project was found
+vendor/libsql-ffi/bundled/SQLite3MultipleCiphers/readme.md: checked by scripts/check-preserved-libsql-prose.py, 0 hard problem(s)
+  vendor/libsql-ffi/bundled/SQLite3MultipleCiphers/readme.md: preserved upstream prose; verified 272 source files and frozen provenance
+  Source preservation policy; original style findings remain recorded, not corrected.
+vendor/libsql-ffi/bundled/SQLite3MultipleCiphers/src/filelist.md: checked by scripts/check-preserved-libsql-prose.py, 0 hard problem(s)
+  vendor/libsql-ffi/bundled/SQLite3MultipleCiphers/src/filelist.md: preserved upstream prose; verified 272 source files and frozen provenance
+  Source preservation policy; original style findings remain recorded, not corrected.
+vendor/libsql-ffi/bundled/sqlean/regexp/pcre2/README.md: checked by scripts/check-preserved-libsql-prose.py, 0 hard problem(s)
+  vendor/libsql-ffi/bundled/sqlean/regexp/pcre2/README.md: preserved upstream prose; verified 272 source files and frozen provenance
+  Source preservation policy; original style findings remain recorded, not corrected.

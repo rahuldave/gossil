@@ -1,0 +1,22 @@
+{
+  "source": "pinned native SQLite3.55.0 for julianday; original libsql0.9.30 for unchanged CAST/arithmetic",
+  "native_source_sha256": "fa1ca7a8ac45af89632ab480a3133556a48120fc76bffdd2d5cbb54cfb2e7ab0",
+  "original_source_sha256": "d9791dc493f043172d75c4fe6ef48307db6534c98f2106c843551ca5cbfa2912",
+  "inputs_sha256": {
+    "corpus.json": "e807eab37ea02bed222e36e1560ed48bde22c457adca01e1bdfd69483c953aa3",
+    "threshold-corpus.json": "bc615a84ac1b4ff8f5ff82465010d9d7d4680ba5b328815928f9e35dd4fa5276"
+  },
+  "main_count": 489,
+  "threshold_count": 30,
+  "generator_seed": 20261117,
+  "SQL_order": [
+    "SELECT julianday(token)",
+    "SELECT CAST(token AS REAL)",
+    "SELECT token+0.0"
+  ],
+  "limits": [
+    "no inherited D/E parser execution",
+    "no clock-sensitive runtime comparison",
+    "no modifier/strftime/optional-feature/platform parity claim"
+  ]
+}

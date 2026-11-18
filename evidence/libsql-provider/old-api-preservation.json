@@ -1,0 +1,49 @@
+{
+  "function_unchanged": true,
+  "original_call_expressions": [
+    "sqlite3AtoF(const char *z, double*, int, u8);",
+    "sqlite3AtoF(zDate, &r, sqlite3Strlen30(zDate), SQLITE_UTF8)>0 ){\n    setRawDateNumber(p, r);",
+    "sqlite3AtoF(&z[8], &r, sqlite3Strlen30(&z[8]), SQLITE_UTF8)>0\n               && r>=0.0 && r<7.0 && (n=(int)r)==r ){\n        sqlite3_int64 Z;",
+    "sqlite3AtoF(z, &r, n, SQLITE_UTF8)<=0 ){\n        assert( rc==1 );",
+    "sqlite3AtoF(const char *z, double *pResult, int length, u8 enc){\n#ifndef SQLITE_OMIT_FLOATING_POINT\n  int incr;",
+    "sqlite3AtoF(pMem->z, &val, pMem->n, pMem->enc);",
+    "sqlite3AtoF(pMem->z, &pMem->u.r, pMem->n, pMem->enc);",
+    "sqlite3AtoF(pRec->z, &rValue, pRec->n, enc);",
+    "sqlite3AtoF(pMem->z, &pMem->u.r, pMem->n, pMem->enc);",
+    "sqlite3AtoF(p->u.zToken, &r, sqlite3Strlen30(p->u.zToken), SQLITE_UTF8);",
+    "sqlite3AtoF(z, &value, sqlite3Strlen30(z), SQLITE_UTF8);",
+    "sqlite3AtoF(zBuf, &r, sqlite3Strlen30(zBuf), SQLITE_UTF8);",
+    "sqlite3AtoF(zVal, &r2, pStr->nChar, SQLITE_UTF8);",
+    "sqlite3AtoF(zNew, &rDummy, iTo, SQLITE_UTF8);",
+    "sqlite3AtoF(zNew, &rDummy, iTo, SQLITE_UTF8);",
+    "sqlite3AtoF(z, &r, sqlite3Strlen30(z), SQLITE_UTF8);",
+    "sqlite3AtoF(valueBuf, &elem, iBuf, SQLITE_UTF8) <= 0 ){\n      *pzErrMsg = sqlite3_mprintf(\"vector: invalid float at position %d: '%s'\", iElem, valueBuf);",
+    "sqlite3AtoF(zValue, &value, nValueLen, SQLITE_UTF8) <= 0 ){\n        *pErrMsg = \"invalid representation of floating point vector index parameter\";",
+    "sqlite3AtoF() routine is much much faster than atof(), if it\n     ** is available */\n     double r;",
+    "sqlite3AtoF((const char*)p->z, &r, j, SQLITE_UTF8);"
+  ],
+  "patched_call_expressions": [
+    "sqlite3AtoF(const char *z, double*, int, u8);",
+    "sqlite3AtoF(&z[8], &r, sqlite3Strlen30(&z[8]), SQLITE_UTF8)>0\n               && r>=0.0 && r<7.0 && (n=(int)r)==r ){\n        sqlite3_int64 Z;",
+    "sqlite3AtoF(z, &r, n, SQLITE_UTF8)<=0 ){\n        assert( rc==1 );",
+    "sqlite3AtoF(const char *z, double *pResult, int length, u8 enc){\n#ifndef SQLITE_OMIT_FLOATING_POINT\n  int incr;",
+    "sqlite3AtoF(pMem->z, &val, pMem->n, pMem->enc);",
+    "sqlite3AtoF(pMem->z, &pMem->u.r, pMem->n, pMem->enc);",
+    "sqlite3AtoF(pRec->z, &rValue, pRec->n, enc);",
+    "sqlite3AtoF(pMem->z, &pMem->u.r, pMem->n, pMem->enc);",
+    "sqlite3AtoF(p->u.zToken, &r, sqlite3Strlen30(p->u.zToken), SQLITE_UTF8);",
+    "sqlite3AtoF(z, &value, sqlite3Strlen30(z), SQLITE_UTF8);",
+    "sqlite3AtoF(zBuf, &r, sqlite3Strlen30(zBuf), SQLITE_UTF8);",
+    "sqlite3AtoF(zVal, &r2, pStr->nChar, SQLITE_UTF8);",
+    "sqlite3AtoF(zNew, &rDummy, iTo, SQLITE_UTF8);",
+    "sqlite3AtoF(zNew, &rDummy, iTo, SQLITE_UTF8);",
+    "sqlite3AtoF(z, &r, sqlite3Strlen30(z), SQLITE_UTF8);",
+    "sqlite3AtoF(valueBuf, &elem, iBuf, SQLITE_UTF8) <= 0 ){\n      *pzErrMsg = sqlite3_mprintf(\"vector: invalid float at position %d: '%s'\", iElem, valueBuf);",
+    "sqlite3AtoF(zValue, &value, nValueLen, SQLITE_UTF8) <= 0 ){\n        *pErrMsg = \"invalid representation of floating point vector index parameter\";",
+    "sqlite3AtoF() routine is much much faster than atof(), if it\n     ** is available */\n     double r;",
+    "sqlite3AtoF((const char*)p->z, &r, j, SQLITE_UTF8);"
+  ],
+  "removed_only_date_call": [
+    "sqlite3AtoF(zDate, &r, sqlite3Strlen30(zDate), SQLITE_UTF8)>0 ){\n    setRawDateNumber(p, r);"
+  ]
+}

@@ -43,6 +43,9 @@ Explicit commit and rollback return the connection only after SQLite reports
 that no transaction remains active. A commit error triggers checked rollback
 when the transaction remains active. Errors retain the original engine cause
 and report a separate cleanup failure when one occurs.
+If commit fails but checked rollback restores an idle connection, the store
+can begin another write. The commit still returns its original error.
+
 A failed BEGIN or cleanup discards the connection and poisons the store.
 A poisoned store requires an explicit new open.
 
@@ -83,7 +86,9 @@ connection destruction and rollback.
 
 The private memory fixture checks transaction behavior in memory. It retains one connection and verifies memory journal
 mode instead of WAL. An unpolled terminal future is a commit or rollback future
-that the caller creates but never polls. Dropping it must release the writer.
+that the caller creates but never polls. The terminal method consumes the
+transaction owner into that future. Dropping the future therefore drops its
+owner, releases the writer and poisons the store. Open a new store before reuse.
 
 Run the focused fixtures with:
 
@@ -128,6 +133,15 @@ before DML. Foreign keys were already ON in this build.
 A separate run without the failure latch let a helper execute after a caught
 unique error. The retained assertions pass with configuration, immediate BEGIN
 and the failure latch present.
+
+## Native date provider
+
+The relative Cargo patch selects a complete, reviewed `libsql-ffi` source
+copy with bounded date corrections for the intended Fossil artifact date fields.
+The artifact parser is still planned; the current date test issues private SQL. The base version and source-ID strings
+above still apply; the patched source hash identifies the provider.
+[Local native date provider](libsql-provider.md) records its provenance,
+integrity checks, hook ownership and qualification limits.
 
 ## Recommendations
 

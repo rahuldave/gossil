@@ -1,0 +1,1 @@
+{"kind":"step","run":"80f002a8-462c-4c2f-b87f-07b170569940","harness":"codex","session":"01a1eceb-862d-7c80-a816-c9aca1ace4e2","child":null,"time":"2026-11-18T05:04:08Z","argv":["just","diff-check"],"step":"diff-check"}

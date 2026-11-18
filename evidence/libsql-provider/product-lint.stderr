@@ -1,0 +1,8 @@
+just --justfile '/Users/rahul/Projects/gossil.worktrees/gest-yzyssxsr-local-store/Justfile' rust lint "$@"
+cargo clippy --workspace --all-targets --all-features --locked "$@" -- -D warnings
+   Compiling libsql-ffi v0.9.30 (/Users/rahul/Projects/gossil.worktrees/gest-yzyssxsr-local-store/vendor/libsql-ffi)
+    Checking libsql-sys v0.9.30
+    Checking libsql v0.9.30
+    Checking gossil v0.1.0 (/Users/rahul/Projects/gossil.worktrees/gest-yzyssxsr-local-store)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 10.39s
+jlog step lint

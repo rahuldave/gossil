@@ -1,0 +1,1 @@
+jlog run python3 scripts/verify-libsql-vendor.py

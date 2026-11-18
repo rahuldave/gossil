@@ -33,3 +33,6 @@ path = "tests/delta_decoder.rs"
 [[test]]
 name = "delta_cli"
 path = "tests/delta_cli.rs"
+
+[patch.crates-io]
+libsql-ffi = { path = "vendor/libsql-ffi" }

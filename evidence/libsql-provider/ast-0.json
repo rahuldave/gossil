@@ -1,0 +1,16 @@
+{
+  "argv": [
+    "ast-grep",
+    "run",
+    "--lang",
+    "rust",
+    "--pattern",
+    "Builder::new_local($$$)",
+    "--json=compact",
+    "src",
+    "tests"
+  ],
+  "exit": 0,
+  "stdout": "[{\"text\":\"Builder::new_local(path)\",\"range\":{\"byteOffset\":{\"start\":4634,\"end\":4658},\"start\":{\"line\":111,\"column\":23},\"end\":{\"line\":111,\"column\":47}},\"file\":\"src/storage.rs\",\"lines\":\"        let database = Builder::new_local(path).build().await?;\",\"charCount\":{\"leading\":23,\"trailing\":16},\"language\":\"Rust\"}]\n",
+  "stderr": ""
+}

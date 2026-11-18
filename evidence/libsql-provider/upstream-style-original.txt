@@ -1,0 +1,25 @@
+vendor/libsql-ffi/bundled/SQLite3MultipleCiphers/readme.md: checked by check.py of the skill, 4 hard, 19 soft
+  HARD 5: a curly quote
+  HARD 5: a curly quote
+  HARD 5: a colon between clauses: However, maybe that wasn't that bad after all, because there were changes to the
+  HARD 5: a contraction: wasn't
+  soft 3: 'provides': try gives
+  soft 3: maybe passive: was bundled
+  soft 5: 33 words (usually at most 25): However, maybe that wasn't that bad after all, because there were changes to the
+  soft 5: 'matters': try (a fact)
+  soft 5: 'However': try but
+  soft 5: an -ing form: removing
+  soft 5: maybe passive: was planned
+  soft 5: maybe passive: be postponed
+  soft 7: 26 words (usually at most 25): On the one hand, the code is less closely coupled with SQLite itself; on the oth
+  soft 7: maybe an action in a noun, try a verb: implementation of
+  soft 7: maybe passive: is based
+  soft 7: a semicolon
+  soft 9: maybe passive: was tested
+  soft 9: maybe passive: are known
+  soft 22: an -ing form: testing
+  soft 22: an -ing form: discussing
+  soft 26: maybe an action in a noun, try a verb: Documentation of
+  soft 26: maybe passive: is provided
+  soft 28: maybe passive: be found
+WARN `--no-project` was provided, but no project was found

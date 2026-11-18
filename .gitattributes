@@ -10,3 +10,10 @@
 /tests/fixtures/delta/bytes/original/header-crlf/delta.bin -whitespace
 /tests/fixtures/delta/original/provenance/Makefile -whitespace
 /tests/fixtures/delta/supplement/provenance/Makefile -whitespace
+
+# Preserve complete hash-verified upstream source, including inherited whitespace.
+/vendor/libsql-ffi/** -whitespace
+# Preserve literal reviewed patch context and captured command-output bytes.
+/evidence/libsql-provider/adapted.patch -whitespace
+/evidence/libsql-provider/fossil-configure.stdout -whitespace
+/evidence/libsql-provider/product-red.stdout -whitespace

@@ -1,0 +1,107 @@
+{
+  "status": "implemented and self-checked; independent gates outstanding",
+  "ownership": "project-specific map, adapter, verifier additions, tests, docs and new evidence; no installed skill, engine source, hook, Git index or Gest mutation",
+  "red_distinctions": {
+    "behavioral_conflict": "Intact upstream MultipleCiphers README fails original normal style checker with four hard findings; upstream-style-original.txt is copied verbatim from independent prose evidence.",
+    "new_control_initial_red": "Three new test methods initially failed due to absent map/adapter; this is integration setup red, not behavioral red for an existing checker."
+  },
+  "green": {
+    "control_methods": 12,
+    "controls": [
+      {
+        "name": "VendorIntegrity.test_complete_copy_passes",
+        "proves": "The exact complete tree is accepted before any tampering."
+      },
+      {
+        "name": "VendorIntegrity.test_missing_extra_changed_and_symlink_are_rejected",
+        "proves": "Detect each independent inventory and byte mutation."
+      },
+      {
+        "name": "VendorIntegrity.test_symlinked_directory_is_rejected",
+        "proves": "Reject an external subtree even if its byte inventory matches."
+      },
+      {
+        "name": "VendorIntegrity.test_manifest_missing_corrupt_and_escaping_paths_are_rejected",
+        "proves": "Fail closed on missing metadata and path traversal."
+      },
+      {
+        "name": "VendorIntegrity.test_wrong_provenance_and_artifact_are_rejected",
+        "proves": "A complete source set cannot excuse changed source attribution."
+      },
+      {
+        "name": "VendorIntegrity.test_index_and_working_bytes_must_agree",
+        "proves": "Reject unstaged edits, stale staged manifest/source and indexed symlinks."
+      },
+      {
+        "name": "VendorIntegrity.test_staged_extra_or_missing_source_is_rejected",
+        "proves": "Validate the staged path set independently of the current tree."
+      },
+      {
+        "name": "VendorIntegrity.test_wrong_regeneration_input_and_patch_counts_fail",
+        "proves": "Maintenance refuses wrong inputs and incomplete substitutions."
+      },
+      {
+        "name": "LiteralWhitespacePolicy.test_literal_paths_pass_and_ordinary_paths_fail",
+        "proves": "Run the real staged diff checker under the tracked attribute policy."
+      },
+      {
+        "name": "PreservedReaderPolicy.test_exact_pages_use_source_checks_and_ordinary_prose_keeps_style",
+        "proves": "All three exact pages pass through the map, including verbose mode."
+      },
+      {
+        "name": "PreservedReaderPolicy.test_source_and_map_mutations_fail_closed",
+        "proves": "Missing, changed and linked pages or broadened policy cannot pass."
+      },
+      {
+        "name": "PreservedReaderPolicy.test_adapter_rejects_unlisted_page_and_changed_archive_hash",
+        "proves": "Direct use cannot authorize a new path or a rewritten archive pin."
+      }
+    ],
+    "mapped_pages": 3,
+    "complete_archive_files": 272,
+    "docs": "9 pages;86/86 API items",
+    "authored_prose": "4 edited pages normal checker zero hard; verbose soft notes judged; independent prose not claimed"
+  },
+  "install": {
+    "command": [
+      "just",
+      "install",
+      "--defaults"
+    ],
+    "disposable_root": "/tmp/gossil-reader-policy-install-20261118",
+    "exit": 0,
+    "before": {
+      ".agents/nossaifd-checkers.json": "c5468b062c0bf817ddd4f0503105909ff2e29fc211a47469d45b3d9ea55c6ad0",
+      "scripts/check-preserved-libsql-prose.py": "8a08bf79bec17ab6a9fa41d8a21c3bb83d0012ac6566257f99d79b968d090b67",
+      ".pre-commit-config.yaml": "3fd47a7db677cecab8ab32ff30bc2b902f709aaab3829e45d690867cbbe96684"
+    },
+    "after": {
+      ".agents/nossaifd-checkers.json": "c5468b062c0bf817ddd4f0503105909ff2e29fc211a47469d45b3d9ea55c6ad0",
+      "scripts/check-preserved-libsql-prose.py": "8a08bf79bec17ab6a9fa41d8a21c3bb83d0012ac6566257f99d79b968d090b67",
+      ".pre-commit-config.yaml": "3fd47a7db677cecab8ab32ff30bc2b902f709aaab3829e45d690867cbbe96684"
+    },
+    "identical": true,
+    "source_ownership": "nossaifd skill-package.json install_extras does not own the project checker map or project scripts"
+  },
+  "integrity": {
+    "source_inventory_unchanged": true,
+    "existing_artifact_digest_changes": [
+      "scripts/verify-libsql-vendor.py"
+    ],
+    "trust": "Expected map structure and exact original three reader SHA256 values are constants in the verifier, independent of editable manifest digest rows. Always-run verifier rejects broadened policy; authored and unknown pages retain normal checker."
+  },
+  "newcomer_disposition": {
+    "corrected": [
+      "accepted Gest/sync/UI specifications versus unfinished storage/schema, registry/descriptors/auth details",
+      "store reusable after failed commit with confirmed idle cleanup; future owns transaction and drop poisons store",
+      "private SQL date purpose, D/E card meanings and shared-clock bounds",
+      "jlog/companion installer prerequisites and exact hook unit ownership"
+    ],
+    "deferred": "Optional broad glossary/history rewrites and historical acceptance-branch expansion remain outside narrow correction scope."
+  },
+  "limits": [
+    "No artifact parser/shared-clock/optional-feature/platform qualification",
+    "No independent prose/review/test-review/final check acceptance",
+    "Parent must stage all new policy/evidence artifacts before index verifier"
+  ]
+}

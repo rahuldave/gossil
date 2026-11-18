@@ -1,0 +1,51 @@
+[
+  {
+    "native_symbol": "sqlite3Multiply128",
+    "backported_symbol": "gossilDatesqlite3Multiply128",
+    "native_body_sha256": "a98a05785bf374ba9639bfbe42e68864c0e231d7cd6657bf54fa7198ffa2e4e4",
+    "adaptation": "identifier prefix only; static linkage for AtoF",
+    "reverse_rename_body_exact": true
+  },
+  {
+    "native_symbol": "sqlite3Multiply160",
+    "backported_symbol": "gossilDatesqlite3Multiply160",
+    "native_body_sha256": "12006da635a1ddae65b89b93b17f6a3fd26fbf31517336e7865596a39920aabf",
+    "adaptation": "identifier prefix only; static linkage for AtoF",
+    "reverse_rename_body_exact": true
+  },
+  {
+    "native_symbol": "powerOfTen",
+    "backported_symbol": "gossilDatepowerOfTen",
+    "native_body_sha256": "dcf8544a70b683bddac0d37ec134918ade6650994dad834943cb9f34ff4cba11",
+    "adaptation": "identifier prefix only; static linkage for AtoF",
+    "reverse_rename_body_exact": true
+  },
+  {
+    "native_symbol": "pwr10to2",
+    "backported_symbol": "gossilDatepwr10to2",
+    "native_body_sha256": "c5020ed3c52205bd1c749e41baaf07d268d057e45082a74b4c8420d7b13a0b94",
+    "adaptation": "identifier prefix only; static linkage for AtoF",
+    "reverse_rename_body_exact": true
+  },
+  {
+    "native_symbol": "countLeadingZeros",
+    "backported_symbol": "gossilDatecountLeadingZeros",
+    "native_body_sha256": "95de4eae2a1786743ecdf2d226f4250b4904b7b7ef14798d14a0b86dbf2af432",
+    "adaptation": "identifier prefix only; static linkage for AtoF",
+    "reverse_rename_body_exact": true
+  },
+  {
+    "native_symbol": "sqlite3Fp10Convert2",
+    "backported_symbol": "gossilDatesqlite3Fp10Convert2",
+    "native_body_sha256": "d42494f54bbaf90ef2bc5359ed6a15d94f39f16019e945c1f601508ae113cd39",
+    "adaptation": "identifier prefix only; static linkage for AtoF",
+    "reverse_rename_body_exact": true
+  },
+  {
+    "native_symbol": "sqlite3AtoF",
+    "backported_symbol": "gossilDatesqlite3AtoF",
+    "native_body_sha256": "a7fbee408700bf4b67c97b367bb6efeb249f211f7dbe7608c2fea8d2bf6d6c67",
+    "adaptation": "identifier prefix only; static linkage for AtoF",
+    "reverse_rename_body_exact": true
+  }
+]

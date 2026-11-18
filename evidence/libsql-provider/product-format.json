@@ -1,0 +1,10 @@
+{
+  "argv": [
+    "just",
+    "fmt"
+  ],
+  "cwd": "/Users/rahul/Projects/gossil.worktrees/gest-yzyssxsr-local-store",
+  "exit": 0,
+  "stdout": "",
+  "stderr": "just --justfile '/Users/rahul/Projects/gossil.worktrees/gest-yzyssxsr-local-store/Justfile' rust fmt \"$@\"\ncargo fmt --all \"$@\"\n"
+}

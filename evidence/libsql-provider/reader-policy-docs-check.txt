@@ -1,0 +1,33 @@
+uvx --quiet smalldocs@0.5.12 check docs
+9 page(s); 0 thing(s) to look at
+recipes="$(just --justfile '/Users/rahul/Projects/gossil.worktrees/gest-yzyssxsr-local-store/Justfile' --summary)" && if printf '%s\n' $recipes | grep -qx api-check; then just --justfile '/Users/rahul/Projects/gossil.worktrees/gest-yzyssxsr-local-store/Justfile' api-check; fi
+just --justfile '/Users/rahul/Projects/gossil.worktrees/gest-yzyssxsr-local-store/Justfile' rust api-check
+uv run --no-project --quiet --python '>=3.11' python '/Users/rahul/Projects/gossil.worktrees/gest-yzyssxsr-local-store/.agents/just/rust/steps.py' api check
+WARN `--no-project` was provided, but no project was found
+api-check: smalldocs api check, with the crate gossil
+WARN `--no-project` was provided, but no project was found
+gossil                19 of  19
+gossil::invocation    10 of  10
+gossil::compression    8 of   8
+gossil::content_hash   3 of   3
+gossil::delta         20 of  20
+gossil::storage       17 of  17
+gossil::token_codec    9 of   9
+
+86 of 86 items are documented
+just --justfile '/Users/rahul/Projects/gossil.worktrees/gest-yzyssxsr-local-store/.agents/just/rust.just' api-prose-check
+uv run --no-project --quiet --python '>=3.11' python '/Users/rahul/Projects/gossil.worktrees/gest-yzyssxsr-local-store/.agents/just/rust/steps.py' ran prose "$@" || just --justfile '/Users/rahul/Projects/gossil.worktrees/gest-yzyssxsr-local-store/.agents/just/rust.just' _api-prose-check "$@"
+WARN `--no-project` was provided, but no project was found
+uv run --no-project --quiet --python '>=3.11' python '/Users/rahul/Projects/gossil.worktrees/gest-yzyssxsr-local-store/.agents/just/rust/steps.py' begin prose "$@"
+WARN `--no-project` was provided, but no project was found
+uv run --no-project --quiet --python '>=3.11' python '/Users/rahul/Projects/gossil.worktrees/gest-yzyssxsr-local-store/.agents/just/rust/steps.py' api prose "$@"
+WARN `--no-project` was provided, but no project was found
+WARN `--no-project` was provided, but no project was found
+api-prose-check: the API pages storage, the module comment of src/storage.rs, of the files changed since HEAD
+WARN `--no-project` was provided, but no project was found
+/var/folders/wq/mr3zj9r14dzgjnq9rjx_vqbc0000gn/T/tmp7ny63whr/pages/pages/storage.md: 0 hard, 9 soft
+/var/folders/wq/mr3zj9r14dzgjnq9rjx_vqbc0000gn/T/tmp7ny63whr/pages/modules/src/storage.rs.md: 0 hard, 4 soft
+uv run --no-project --quiet --python '>=3.11' python '/Users/rahul/Projects/gossil.worktrees/gest-yzyssxsr-local-store/.agents/just/rust/steps.py' stamp prose
+WARN `--no-project` was provided, but no project was found
+jlog step docs-check
+{"kind":"step","run":"a7b73063-1b97-4cc6-bed3-f31d42adea5b","harness":"codex","session":"01a1ed0f-633c-7433-9822-d6767224c46a","child":null,"time":"2026-11-18T05:26:08Z","argv":["just","docs-check"],"step":"docs-check"}

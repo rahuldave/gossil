@@ -1,0 +1,29 @@
+test_literal_paths_pass_and_ordinary_paths_fail (test_libsql_vendor.LiteralWhitespacePolicy.test_literal_paths_pass_and_ordinary_paths_fail)
+Run the real staged diff checker under the tracked attribute policy. ... ok
+test_adapter_rejects_unlisted_page_and_changed_archive_hash (test_libsql_vendor.PreservedReaderPolicy.test_adapter_rejects_unlisted_page_and_changed_archive_hash)
+Direct use cannot authorize a new path or a rewritten archive pin. ... ok
+test_exact_pages_use_source_checks_and_ordinary_prose_keeps_style (test_libsql_vendor.PreservedReaderPolicy.test_exact_pages_use_source_checks_and_ordinary_prose_keeps_style)
+All three exact pages pass through the map, including verbose mode. ... ok
+test_source_and_map_mutations_fail_closed (test_libsql_vendor.PreservedReaderPolicy.test_source_and_map_mutations_fail_closed)
+Missing, changed and linked pages or broadened policy cannot pass. ... ok
+test_complete_copy_passes (test_libsql_vendor.VendorIntegrity.test_complete_copy_passes)
+The exact complete tree is accepted before any tampering. ... ok
+test_index_and_working_bytes_must_agree (test_libsql_vendor.VendorIntegrity.test_index_and_working_bytes_must_agree)
+Reject unstaged edits, stale staged manifest/source and indexed symlinks. ... ok
+test_manifest_missing_corrupt_and_escaping_paths_are_rejected (test_libsql_vendor.VendorIntegrity.test_manifest_missing_corrupt_and_escaping_paths_are_rejected)
+Fail closed on missing metadata and path traversal. ... ok
+test_missing_extra_changed_and_symlink_are_rejected (test_libsql_vendor.VendorIntegrity.test_missing_extra_changed_and_symlink_are_rejected)
+Detect each independent inventory and byte mutation. ... ok
+test_staged_extra_or_missing_source_is_rejected (test_libsql_vendor.VendorIntegrity.test_staged_extra_or_missing_source_is_rejected)
+Validate the staged path set independently of the current tree. ... ok
+test_symlinked_directory_is_rejected (test_libsql_vendor.VendorIntegrity.test_symlinked_directory_is_rejected)
+Reject an external subtree even if its byte inventory matches. ... ok
+test_wrong_provenance_and_artifact_are_rejected (test_libsql_vendor.VendorIntegrity.test_wrong_provenance_and_artifact_are_rejected)
+A complete source set cannot excuse changed source attribution. ... ok
+test_wrong_regeneration_input_and_patch_counts_fail (test_libsql_vendor.VendorIntegrity.test_wrong_regeneration_input_and_patch_counts_fail)
+Maintenance refuses wrong inputs and incomplete substitutions. ... ok
+
+----------------------------------------------------------------------
+Ran 12 tests in 10.165s
+
+OK

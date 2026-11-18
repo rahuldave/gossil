@@ -1,0 +1,10 @@
+just --justfile '/Users/rahul/Projects/gossil.worktrees/gest-yzyssxsr-local-store/Justfile' rust test "$@"
+uv run --no-project --quiet --python '>=3.11' python '/Users/rahul/Projects/gossil.worktrees/gest-yzyssxsr-local-store/.agents/just/rust/steps.py' run test "$@"
+WARN `--no-project` was provided, but no project was found
+info: cargo-llvm-cov currently setting cfg(coverage); you can opt-out it by passing --no-cfg-coverage
+   Compiling gossil v0.1.0 (/Users/rahul/Projects/gossil.worktrees/gest-yzyssxsr-local-store)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 4.07s
+     Running unittests src/lib.rs (target/llvm-cov-target/debug/deps/gossil-63b04dc9a3fc2aa0)
+
+    Finished report saved to target/llvm-cov/test.part0.lcov
+jlog step test

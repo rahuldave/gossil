@@ -1,0 +1,19 @@
+uvx --quiet smalldocs@0.5.12 check docs
+9 page(s); 0 thing(s) to look at
+recipes="$(just --justfile '/Users/rahul/Projects/gossil.worktrees/gest-yzyssxsr-local-store/Justfile' --summary)" && if printf '%s\n' $recipes | grep -qx api-check; then just --justfile '/Users/rahul/Projects/gossil.worktrees/gest-yzyssxsr-local-store/Justfile' api-check; fi
+just --justfile '/Users/rahul/Projects/gossil.worktrees/gest-yzyssxsr-local-store/Justfile' rust api-check
+uv run --no-project --quiet --python '>=3.11' python '/Users/rahul/Projects/gossil.worktrees/gest-yzyssxsr-local-store/.agents/just/rust/steps.py' api check
+WARN `--no-project` was provided, but no project was found
+WARN `--no-project` was provided, but no project was found
+just --justfile '/Users/rahul/Projects/gossil.worktrees/gest-yzyssxsr-local-store/.agents/just/rust.just' api-prose-check
+uv run --no-project --quiet --python '>=3.11' python '/Users/rahul/Projects/gossil.worktrees/gest-yzyssxsr-local-store/.agents/just/rust/steps.py' ran prose "$@" || just --justfile '/Users/rahul/Projects/gossil.worktrees/gest-yzyssxsr-local-store/.agents/just/rust.just' _api-prose-check "$@"
+WARN `--no-project` was provided, but no project was found
+uv run --no-project --quiet --python '>=3.11' python '/Users/rahul/Projects/gossil.worktrees/gest-yzyssxsr-local-store/.agents/just/rust/steps.py' begin prose "$@"
+WARN `--no-project` was provided, but no project was found
+uv run --no-project --quiet --python '>=3.11' python '/Users/rahul/Projects/gossil.worktrees/gest-yzyssxsr-local-store/.agents/just/rust/steps.py' api prose "$@"
+WARN `--no-project` was provided, but no project was found
+WARN `--no-project` was provided, but no project was found
+WARN `--no-project` was provided, but no project was found
+uv run --no-project --quiet --python '>=3.11' python '/Users/rahul/Projects/gossil.worktrees/gest-yzyssxsr-local-store/.agents/just/rust/steps.py' stamp prose
+WARN `--no-project` was provided, but no project was found
+jlog step docs-check

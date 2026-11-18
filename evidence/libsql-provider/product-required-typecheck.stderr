@@ -1,0 +1,28 @@
+jlog run python3 scripts/verify-libsql-vendor.py
+jlog run python3 -m unittest discover -s tests -p 'test_libsql_vendor.py' -v
+test_complete_copy_passes (test_libsql_vendor.VendorIntegrity.test_complete_copy_passes)
+The exact complete tree is accepted before any tampering. ... ok
+test_index_and_working_bytes_must_agree (test_libsql_vendor.VendorIntegrity.test_index_and_working_bytes_must_agree)
+Reject unstaged edits, stale staged manifest/source and indexed symlinks. ... ok
+test_manifest_missing_corrupt_and_escaping_paths_are_rejected (test_libsql_vendor.VendorIntegrity.test_manifest_missing_corrupt_and_escaping_paths_are_rejected)
+Fail closed on missing metadata and path traversal. ... ok
+test_missing_extra_changed_and_symlink_are_rejected (test_libsql_vendor.VendorIntegrity.test_missing_extra_changed_and_symlink_are_rejected)
+Detect each independent inventory and byte mutation. ... ok
+test_staged_extra_or_missing_source_is_rejected (test_libsql_vendor.VendorIntegrity.test_staged_extra_or_missing_source_is_rejected)
+Validate the staged path set independently of the current tree. ... ok
+test_symlinked_directory_is_rejected (test_libsql_vendor.VendorIntegrity.test_symlinked_directory_is_rejected)
+Reject an external subtree even if its byte inventory matches. ... ok
+test_wrong_provenance_and_artifact_are_rejected (test_libsql_vendor.VendorIntegrity.test_wrong_provenance_and_artifact_are_rejected)
+A complete source set cannot excuse changed source attribution. ... ok
+test_wrong_regeneration_input_and_patch_counts_fail (test_libsql_vendor.VendorIntegrity.test_wrong_regeneration_input_and_patch_counts_fail)
+Maintenance refuses wrong inputs and incomplete substitutions. ... ok
+
+----------------------------------------------------------------------
+Ran 8 tests in 9.813s
+
+OK
+just --justfile '/Users/rahul/Projects/gossil.worktrees/gest-yzyssxsr-local-store/Justfile' rust typecheck "$@"
+cargo check --workspace --all-targets --all-features --locked "$@"
+    Checking gossil v0.1.0 (/Users/rahul/Projects/gossil.worktrees/gest-yzyssxsr-local-store)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 3.17s
+jlog step typecheck

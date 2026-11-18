@@ -1,0 +1,14 @@
+{
+  "argv": [
+    "cargo",
+    "build",
+    "--offline",
+    "--manifest-path",
+    "/tmp/gossil-libsql-date-selection-20261117/proof/rust/Cargo.toml"
+  ],
+  "exit": 0,
+  "environment_delta": {
+    "CARGO_HOME": "/tmp/gossil-libsql-date-selection-20261117/proof/cargo-home",
+    "CARGO_TARGET_DIR": "/tmp/gossil-libsql-date-selection-20261117/proof/cargo-target"
+  }
+}

@@ -1,0 +1,77 @@
+{
+  "decision": "Accept frozen provider source for bounded product adoption; no blocking source findings in reviewed scope. Product integration acceptance remains outstanding.",
+  "reviewed_provider_sha256": "1c99ebdc5a6fccdecb30c7702f7f6b07fa8258eea7d4216d878863cb3b7deefd",
+  "previous_blockers_resolved": [
+    "Actual0.9.30 computeJD negative-year formula included at patched.c:25489, upstream calendar commit aa2258e35b3df3dcd49220f2fed53725b150ac2b receipt retained.",
+    "Native numeric dependency closure copied locally with static prefixed symbols; unchanged global length/encoding API and callers preserved. Internal upstream numerical source backport is not an alternate runtime engine or external date shim.",
+    "Actual-base DateTime projection preserves old validTZ/tzSet fields while copying fraction/hour24/signed rollover arithmetic and daysOfMonth. No nFloor/UTC modifier state is needed to compute the one-argument Julian result."
+  ],
+  "source_findings": [
+    {
+      "severity": "info",
+      "source": "patched.c:24834-25212",
+      "finding": "Independent reverse-renaming confirms Multiply128, Multiply160, powerOfTen including three tables, countLeadingZeros, Fp10Convert2 and AtoF exact upstream bodies. One-line pwr10to2 independently matches native formula. Constants/math.h fallback present; helpers have internal linkage. Portable multiply branch remains selected at insertion under ordinary flags; platforms/alternate flags remain unqualified."
+    },
+    {
+      "severity": "info",
+      "source": "patched.c:25414-25574,25621-25643,26257-26317",
+      "finding": "One-argument route matches native projection: validTZ iff nonzero offset; UTC/local marker differences are downstream-only; native floor field never read on this route; old isDate argc1 normalization already applies; numeric result range and output division unchanged. Signed-year rollover precedes storing year. now/subsec routes have zero-initialized state; source argument plausible but runtime clock comparisons remain unexecuted."
+    },
+    {
+      "severity": "info",
+      "source": "complete-callsite-map.json; original.c:35780 / patched.c:36188",
+      "finding": "Legacy AtoF implementation independently identical. Only date text call removed from old API; all17 unrelated call expressions remain. Calendar/time helpers also serve other date functions and modifiers, so provider adoption does not imply those broader contracts were qualified.",
+      "removed_call_expression": [
+        "sqlite3AtoF(zDate, &r, sqlite3Strlen30(zDate), SQLITE_UTF8)>0 ){\n    setRawDateNumber(p, r);"
+      ]
+    },
+    {
+      "severity": "low",
+      "source": "patch.py:1-5,31-47",
+      "finding": "Recipe relies on caller to validate original/native hashes; no input-hash assertions and str.replace calls lack match-count assertions. Frozen inputs reproduce exactly in independent scratch, so no current source blocker. Production regeneration must validate frozen input/output manifest and fail if substitution counts or hashes differ."
+    },
+    {
+      "severity": "info",
+      "source": "vendor-manifest.json; registry libsql-ffi0.9.30 archive",
+      "finding": "Complete archive comparison independently found zero missing source files, only bundled/src/sqlite3.c changed. Extra .cargo-ok is an incidental Cargo extraction marker, not upstream archive source. Manifest matches full tree exactly; build.rs byte-identical. Include marker in frozen manifest if retained; do not describe it as upstream archive content."
+    }
+  ],
+  "independent_verification": {
+    "frozen_hashes": "all14 match",
+    "fresh_C_build": "pass with baseline warnings; fresh binary matches replay on both corpora",
+    "replays": "489 tokens: original78 date mismatches, patched0; 978 CAST/arithmetic results unchanged; 30 threshold tokens patched0 native date mismatches",
+    "regeneration": "patch.py copied with exact pinned original/native inputs to reviewer-owned scratch; resulting patched.c byte-identical",
+    "source_preservation": "seven-function reverse-rename and legacy function/call-expression preservation independently checked",
+    "Cargo": "reviewed successful offline normal core-only Cargo build receipts, path patch, Rust harness and Rust/C byte-equality receipts; reviewer did not repeat Cargo build or mutate cache"
+  },
+  "policy_decision": {
+    "acceptable": "Exact four huge-file exclusions from size-only hook plus always-run complete inventory/length/hash check are a defensible explicit Gossil project policy replacement. No policy edit is authorized or made by this review.",
+    "required_boundary": [
+      "Anchor each exclusion to exact chosen vendor root + filename: bundled/src/sqlite3.c; bundled/SQLite3MultipleCiphers/src/sqlite3.c; bundled/SQLite3MultipleCiphers/src/shell.c; bundled/SQLite3MultipleCiphers/src/sqlite3patched.c. No directory-wide vendor exclusion or global size increase.",
+      "Validator compares full regular-file path set and every byte length/SHA256; reject extra/missing/mismatched files, symlinks and path escapes. Include all provenance/patch identity in reviewed frozen manifest. Validate staged/index bytes at pre-commit or ensure all compared files exactly match staged snapshot; working-tree-only validation must not bless different staged source.",
+      "Always run with pass_filenames=false in pre-commit/pre-merge and required CI, regardless filename selection; fail closed on missing/unreadable manifests. Manifest and validator changes themselves need ordinary review/evidence gates.",
+      "Preserve check-yaml/json/conflict/private-key, ordinary-file1000KB gate, commit gate/trailer and pre-push. Modified managed YAML repo unit becomes project-owned per jnterfaces shared_files.py:1091-1143; document/test install refresh retention. Reusable exception policy belongs in agent_gest_git_skills, project exception/manifest in Gossil."
+    ]
+  },
+  "limits": [
+    "Actual Gossil D/E parser is unimplemented/unexecuted; SQL harness does not establish tokenization, duplicate diagnostics, checksums or parsed artifact fields. Must test real parser on integration.",
+    "now/subsec/subsecond runtime remains untested; shared injected clock or documented bounds needed.",
+    "WAL/FULL/FK/busy timeout/BEGIN IMMEDIATE/rollback/JSON/BLOB/constraints/integrity DB-02/03 acceptance outstanding.",
+    "Only observed macOS local build; Linux/macOS architecture matrix and optional features/encryption/replication/modifier/strftime contracts unqualified.",
+    "Preserved MultipleCiphers sources are unpatched; optional feature activation cannot claim this date compatibility. Keep default-features=false/core-only.",
+    "Modern native Fossil shell compilation failure is an API-age mismatch, not a provider behavioral failure or requirement to alter shell/parser. No altered shell was needed or tested.",
+    "sqlite_version/sourceid report base identifiers; identify patched provider by provenance+SHA256. Finite489+30 corpus plus source argument is bounded evidence, not unrestricted parser/runtime parity.",
+    "No Gest/stage/commit/install/product/policy/cache writes; local-only assignment expressly excludes those actions."
+  ],
+  "Recommendations": {
+    "preferred": "Adopt this exact source candidate through complete vendored0.9.30 ffi and unchanged standard Cargo build, subject to explicit narrow project policy replacement and normal review.",
+    "next_action": "Parent implements reviewed vendor/provenance/validator boundary and actual D/E parser; run focused parser acceptance and DB/platform checks before expanding support or declaring conformance."
+  },
+  "packaging_contract": {
+    "cargo_ok": "Omit .cargo-ok from adopted vendor tree: Cargo cache extraction marker, absent from published archive and unnecessary for path dependency. Generate adoption inventory from complete published archive file set with only bundled/src/sqlite3.c replaced. Do not mutate frozen scratch candidate or its original manifest; record removal as packaging-only difference in adoption provenance.",
+    "size_exclusion_regex": "^vendor/libsql-ffi/(?:bundled/src/sqlite3\\.c|bundled/SQLite3MultipleCiphers/src/(?:sqlite3\\.c|shell\\.c|sqlite3patched\\.c))$",
+    "size_hook": "Keep --maxkb=1000 and existing stages; add above exclude to check-added-large-files only. Adapt prefix literally if selected product vendor root differs.",
+    "replacement_hook": "Add project-local always_run=true, pass_filenames=false vendor-source verifier at pre-commit and pre-merge-commit; include same verification in required CI/just contract. Require exact complete archive-derived inventory, lengths/hashes and staged snapshot consistency; no symlinks, extra/missing files, unreadable manifest or digest mismatch tolerated.",
+    "ownership": "Gossil .pre-commit-config.yaml upstream-hooks unit becomes explicitly project-owned; preserve all other hooks/gates and document refresh ownership. No shared package policy change required solely for this project-specific replacement."
+  }
+}

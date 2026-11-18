@@ -1,0 +1,10 @@
+{
+  "base_sha": "de790aeab99012034f4b0bc9f9074181c935cd49",
+  "existing_local_entries_byte_identical": true,
+  "existing_entries_sha256": "9fcca62dbda5b5cfd931882fee712ad09561d48dccf8f86e28975c8d6c9afbf4",
+  "modified_units": [
+    "repos[repo=local]",
+    "repos[repo=https://github.com/pre-commit/pre-commit-hooks]"
+  ],
+  "refresh_copy_hook_yaml_byte_identical": true
+}

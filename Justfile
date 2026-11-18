@@ -59,3 +59,19 @@ doctests:
 # Exercise real delta, packed bytes and hashes through private local transactions.
 core-composition:
     just test --lib storage::composition_tests
+
+# Verify the complete reviewed source tree and provenance before every required type check.
+libsql-vendor-check:
+    jlog run python3 scripts/verify-libsql-vendor.py
+
+# Exercise vendor tampering, index consistency and maintenance regeneration controls.
+libsql-vendor-test:
+    jlog run python3 -m unittest discover -s tests -p 'test_libsql_vendor.py' -v
+
+# Retain the Rust profile type check after the mandatory vendor identity check.
+typecheck *args: libsql-vendor-check libsql-vendor-test
+    just --justfile {{quote(justfile())}} rust typecheck "$@"
+    jlog step typecheck
+
+# Required CI verifies vendor bytes as well as the existing commit evidence gate.
+ci: libsql-vendor-check libsql-vendor-test ci-gate

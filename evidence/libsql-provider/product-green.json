@@ -1,0 +1,14 @@
+{
+  "argv": [
+    "just",
+    "test",
+    "--lib",
+    "storage::date_tests",
+    "--",
+    "--nocapture"
+  ],
+  "cwd": "/Users/rahul/Projects/gossil.worktrees/gest-yzyssxsr-local-store",
+  "exit": 0,
+  "stdout": "cargo llvm-cov test --all-features --locked --include-build-script --workspace --lcov --output-path target/llvm-cov/test.part0.lcov --lib storage::date_tests -- --nocapture\n\nrunning 1 test\ntest storage::date_tests::pinned_date_and_legacy_numeric_corpora ... ok\n\ntest result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 27 filtered out; finished in 0.03s\n\n{\"kind\":\"step\",\"run\":\"d8ab45f9-7fd6-4b70-a8e0-f3d0e8243ae5\",\"harness\":\"codex\",\"session\":\"01a1eceb-862d-7c80-a816-c9aca1ace4e2\",\"child\":null,\"time\":\"2026-11-18T05:00:09Z\",\"argv\":[\"just\",\"test\",\"--lib\",\"storage::date_tests\",\"--\",\"--nocapture\"],\"step\":\"test\"}\n",
+  "stderr": "just --justfile '/Users/rahul/Projects/gossil.worktrees/gest-yzyssxsr-local-store/Justfile' rust test \"$@\"\nuv run --no-project --quiet --python '>=3.11' python '/Users/rahul/Projects/gossil.worktrees/gest-yzyssxsr-local-store/.agents/just/rust/steps.py' run test \"$@\"\nWARN `--no-project` was provided, but no project was found\ninfo: cargo-llvm-cov currently setting cfg(coverage); you can opt-out it by passing --no-cfg-coverage\n   Compiling libsql-ffi v0.9.30 (/Users/rahul/Projects/gossil.worktrees/gest-yzyssxsr-local-store/vendor/libsql-ffi)\n   Compiling libsql-sys v0.9.30\n   Compiling libsql v0.9.30\n   Compiling gossil v0.1.0 (/Users/rahul/Projects/gossil.worktrees/gest-yzyssxsr-local-store)\n    Finished `test` profile [unoptimized + debuginfo] target(s) in 17.36s\n     Running unittests src/lib.rs (target/llvm-cov-target/debug/deps/gossil-63b04dc9a3fc2aa0)\n\n    Finished report saved to target/llvm-cov/test.part0.lcov\njlog step test\n"
+}

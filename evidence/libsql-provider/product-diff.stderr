@@ -1,0 +1,2 @@
+git diff --check "$(git rev-parse -q --verify HEAD || git hash-object -t tree /dev/null)"
+jlog step diff-check

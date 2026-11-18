@@ -1,0 +1,49 @@
+test_adapter_rejects_unlisted_page_and_changed_archive_hash (test_libsql_vendor.PreservedReaderPolicy.test_adapter_rejects_unlisted_page_and_changed_archive_hash)
+Direct use cannot authorize a new path or a rewritten archive pin. ... FAIL
+test_exact_pages_use_source_checks_and_ordinary_prose_keeps_style (test_libsql_vendor.PreservedReaderPolicy.test_exact_pages_use_source_checks_and_ordinary_prose_keeps_style)
+All three exact pages pass through the map, including verbose mode. ... FAIL
+test_source_and_map_mutations_fail_closed (test_libsql_vendor.PreservedReaderPolicy.test_source_and_map_mutations_fail_closed)
+Missing, changed and linked pages or broadened policy cannot pass. ... ERROR
+
+======================================================================
+ERROR: test_source_and_map_mutations_fail_closed (test_libsql_vendor.PreservedReaderPolicy.test_source_and_map_mutations_fail_closed)
+Missing, changed and linked pages or broadened policy cannot pass.
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/rahul/Projects/gossil.worktrees/gest-yzyssxsr-local-store/tests/test_libsql_vendor.py", line 242, in test_source_and_map_mutations_fail_closed
+    original_map = mapping.read_bytes()
+  File "/opt/homebrew/Cellar/python@3.15/3.15.0/Frameworks/Python.framework/Versions/3.15/lib/python3.15/pathlib/__init__.py", line 976, in read_bytes
+    with self.open(mode='rb', buffering=0) as f:
+         ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.15/3.15.0/Frameworks/Python.framework/Versions/3.15/lib/python3.15/pathlib/__init__.py", line 970, in open
+    return io.open(self, mode, buffering, encoding, errors, newline)
+           ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: '/var/folders/wq/mr3zj9r14dzgjnq9rjx_vqbc0000gn/T/tmpazyq3t8x/.agents/nossaifd-checkers.json'
+
+======================================================================
+FAIL: test_adapter_rejects_unlisted_page_and_changed_archive_hash (test_libsql_vendor.PreservedReaderPolicy.test_adapter_rejects_unlisted_page_and_changed_archive_hash)
+Direct use cannot authorize a new path or a rewritten archive pin.
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/rahul/Projects/gossil.worktrees/gest-yzyssxsr-local-store/tests/test_libsql_vendor.py", line 257, in test_adapter_rejects_unlisted_page_and_changed_archive_hash
+    self.assertEqual(result.returncode, 1)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 2 != 1
+
+======================================================================
+FAIL: test_exact_pages_use_source_checks_and_ordinary_prose_keeps_style (test_libsql_vendor.PreservedReaderPolicy.test_exact_pages_use_source_checks_and_ordinary_prose_keeps_style)
+All three exact pages pass through the map, including verbose mode.
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/rahul/Projects/gossil.worktrees/gest-yzyssxsr-local-store/tests/test_libsql_vendor.py", line 218, in test_exact_pages_use_source_checks_and_ordinary_prose_keeps_style
+    self.assertEqual(gate.name(page), "scripts/check-preserved-libsql-prose.py")
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'check.py of the skill' != 'scripts/check-preserved-libsql-prose.py'
+- check.py of the skill
++ scripts/check-preserved-libsql-prose.py
+
+
+----------------------------------------------------------------------
+Ran 3 tests in 0.693s
+
+FAILED (failures=2, errors=1)

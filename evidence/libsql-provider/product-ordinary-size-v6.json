@@ -1,0 +1,15 @@
+{
+  "argv": [
+    "/opt/homebrew/opt/python@3.15/bin/python3.15",
+    "-B",
+    "-m",
+    "pre_commit_hooks.check_added_large_files",
+    "--maxkb=1000",
+    "ordinary.bin"
+  ],
+  "exit": 1,
+  "stdout": "ordinary.bin (1001 KB) exceeds 1000 KB.\n",
+  "stderr": "",
+  "installed_cache_reference": "v6.0.0 from read-only pre-commit cache db",
+  "source_revision": "3e8a8703264a2f4a69428a0aa4dcb512790b2c8c"
+}

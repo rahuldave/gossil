@@ -37,6 +37,10 @@ jobs:
       - name: Install jlog
         if: steps.jlog.outputs.cache-hit != 'true'
         run: cargo install --locked --git https://github.com/rahuldave/jlog --tag v0.1.1
+      - name: Verify complete vendored provider
+        run: |
+          python3 scripts/verify-libsql-vendor.py
+          python3 -m unittest discover -s tests -p 'test_libsql_vendor.py' -v
       - name: CI
         env:
           JN_CI_BASE: ${{ github.event.pull_request.base.sha }}

@@ -1,0 +1,17 @@
+{
+  "argv": [
+    "just",
+    "install",
+    "--defaults"
+  ],
+  "cwd": "/tmp/gossil-libsql-date-selection-20261117/adoption/refresh-copy",
+  "exit": 0,
+  "hook_yaml_byte_identical": true,
+  "before_sha256": "3fd47a7db677cecab8ab32ff30bc2b902f709aaab3829e45d690867cbbe96684",
+  "after_sha256": "3fd47a7db677cecab8ab32ff30bc2b902f709aaab3829e45d690867cbbe96684",
+  "environment_delta": {
+    "SKILL_PACKAGES_DIR": "/Users/rahul/Projects"
+  },
+  "stdout": "Linked .claude/skills to docs, just, so that Claude Code reads them\nInstalled jnterfaces in /private/tmp/gossil-libsql-date-selection-20261117/adoption/refresh-copy from 389cdf8d26205ef00d0651ff8550be0684d99875 (dirty source: False)\nInstalled agent_gest_git_skills in /private/tmp/gossil-libsql-date-selection-20261117/adoption/refresh-copy from d9523bda488e5dad7bae6549d0eeecd1dd84d0e4 (dirty source: False)\nInstalled nossaifd in /private/tmp/gossil-libsql-date-selection-20261117/adoption/refresh-copy from 7ab9e940bfdfad994008c1b00234572547ceaf9a (dirty source: False)\nInstalled jnprofile-rust in /private/tmp/gossil-libsql-date-selection-20261117/adoption/refresh-copy from 266241e4cffe4a89045f1717199e749b8dd75a03 (dirty source: False)\npre-commit installed at .git/hooks/pre-commit\npre-commit installed at .git/hooks/pre-merge-commit\npre-commit installed at .git/hooks/commit-msg\npre-commit installed at .git/hooks/pre-push\nInstalled in /private/tmp/gossil-libsql-date-selection-20261117/adoption/refresh-copy:\n  jnterfaces at 389cdf8d26205ef00d0651ff8550be0684d99875\n  agent_gest_git_skills at d9523bda488e5dad7bae6549d0eeecd1dd84d0e4\n  nossaifd at 7ab9e940bfdfad994008c1b00234572547ceaf9a\n  jnprofile-rust at 266241e4cffe4a89045f1717199e749b8dd75a03\n  tools: rust:lint, rust:typecheck, rust:integration, rust:test, rust:docstring, rust:api\n  tasker: git (work on a branch in the main checkout)\nSaved in .agents/stack.json. Run just install again without names to install the same set.\n",
+  "stderr": "The package clones are in /Users/rahul/Projects; set SKILL_PACKAGES_DIR to use another folder.\n.pre-commit-config.yaml: you changed repos[repo=local], so it is yours now and stays as you set it.\n.pre-commit-config.yaml: you changed repos[repo=https://github.com/pre-commit/pre-commit-hooks], so it is yours now and stays as you set it.\nuv run --no-project --quiet --no-python-downloads --python '>=3.9' python .agents/skills/gcm/scripts/commit_gate.py --check-hooks failed, so the installer runs for the tasker role, in the project folder: uv tool run pre-commit install --hook-type pre-commit --hook-type pre-merge-commit --hook-type commit-msg --hook-type pre-push\ngit does not track .agents/just/index.just, .agents/just/rust.just. Commit them: a clone without them does not have the recipes of the profiles and roles, and just gives no error.\n"
+}

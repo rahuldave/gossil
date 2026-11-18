@@ -1,0 +1,13 @@
+{
+  "version": 1,
+  "checkers": [
+    {
+      "pages": [
+        "vendor/libsql-ffi/bundled/SQLite3MultipleCiphers/readme.md",
+        "vendor/libsql-ffi/bundled/SQLite3MultipleCiphers/src/filelist.md",
+        "vendor/libsql-ffi/bundled/sqlean/regexp/pcre2/README.md"
+      ],
+      "checker": "scripts/check-preserved-libsql-prose.py"
+    }
+  ]
+}

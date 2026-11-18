@@ -1,0 +1,10 @@
+{
+  "argv": [
+    "just",
+    "libsql-vendor-check"
+  ],
+  "cwd": "/Users/rahul/Projects/gossil.worktrees/gest-yzyssxsr-local-store",
+  "exit": 0,
+  "stdout": "Verified 272 libsql archive files and frozen provenance (worktree).\n",
+  "stderr": "jlog run python3 scripts/verify-libsql-vendor.py\n"
+}

@@ -1,0 +1,16 @@
+{
+  "argv": [
+    "uv",
+    "run",
+    "--no-project",
+    "--quiet",
+    "python",
+    ".agents/skills/nossaifd/scripts/prose_gate.py",
+    "check",
+    "docs/libsql-provider.md"
+  ],
+  "cwd": "/Users/rahul/Projects/gossil.worktrees/gest-yzyssxsr-local-store",
+  "exit": 0,
+  "stdout": "docs/libsql-provider.md: checked by check.py of the skill, 0 hard, 17 soft\n",
+  "stderr": "WARN `--no-project` was provided, but no project was found\n"
+}

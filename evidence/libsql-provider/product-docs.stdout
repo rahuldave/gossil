@@ -1,0 +1,14 @@
+api-check: smalldocs api check, with the crate gossil
+gossil                19 of  19
+gossil::invocation    10 of  10
+gossil::compression    8 of   8
+gossil::content_hash   3 of   3
+gossil::delta         20 of  20
+gossil::storage       17 of  17
+gossil::token_codec    9 of   9
+
+86 of 86 items are documented
+api-prose-check: the API pages storage, the module comment of src/storage.rs, of the files changed since HEAD
+/var/folders/wq/mr3zj9r14dzgjnq9rjx_vqbc0000gn/T/tmpogzq2lus/pages/pages/storage.md: 0 hard, 7 soft
+/var/folders/wq/mr3zj9r14dzgjnq9rjx_vqbc0000gn/T/tmpogzq2lus/pages/modules/src/storage.rs.md: 0 hard, 4 soft
+{"kind":"step","run":"a4d4c844-7a8f-4280-b4ff-3f2d8620a5f4","harness":"codex","session":"01a1eceb-862d-7c80-a816-c9aca1ace4e2","child":null,"time":"2026-11-18T05:03:28Z","argv":["just","docs-check"],"step":"docs-check"}

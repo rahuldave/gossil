@@ -1,0 +1,8 @@
+cargo llvm-cov test --all-features --locked --include-build-script --workspace --lcov --output-path target/llvm-cov/test.part0.lcov --lib storage::date_tests -- --nocapture
+
+running 1 test
+test storage::date_tests::pinned_date_and_legacy_numeric_corpora ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 27 filtered out; finished in 0.03s
+
+{"kind":"step","run":"24213e8a-bfbc-410d-8fc4-042be84ab143","harness":"codex","session":"01a1eceb-862d-7c80-a816-c9aca1ace4e2","child":null,"time":"2026-11-18T05:03:17Z","argv":["just","test","--lib","storage::date_tests","--","--nocapture"],"step":"test"}

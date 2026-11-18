@@ -2,6 +2,10 @@
 //! Unexpected owner destruction poisons the store and closes its connection.
 //! Local SQL blocks its current poll; cancellation after COMMIT cannot undo it.
 //!
+//! The core-only native provider has a reviewed date backport. Its source identity
+//! is recorded in `evidence/libsql-provider/provenance.json`. Artifact parsing,
+//! runtime clocks and broader date-function compatibility remain unqualified.
+//!
 //! ## Recommendations
 //! Use one owner for a complete mutation and explicitly commit or roll back.
 //! Add fixed domain operations here when the domain schema is defined.
@@ -935,3 +939,7 @@ mod tests {
 #[cfg(test)]
 #[path = "../tests/support/storage_composition.rs"]
 mod composition_tests;
+
+#[cfg(test)]
+#[path = "../tests/support/storage_dates.rs"]
+mod date_tests;

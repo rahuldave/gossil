@@ -1,0 +1,5 @@
+The package clones are in /Users/rahul/Projects; set SKILL_PACKAGES_DIR to use another folder.
+.pre-commit-config.yaml: you changed repos[repo=local], so it is yours now and stays as you set it.
+.pre-commit-config.yaml: you changed repos[repo=https://github.com/pre-commit/pre-commit-hooks], so it is yours now and stays as you set it.
+uv run --no-project --quiet --no-python-downloads --python '>=3.9' python .agents/skills/gcm/scripts/commit_gate.py --check-hooks failed, so the installer runs for the tasker role, in the project folder: uv tool run pre-commit install --hook-type pre-commit --hook-type pre-merge-commit --hook-type commit-msg --hook-type pre-push
+git does not track .agents/just/index.just, .agents/just/rust.just. Commit them: a clone without them does not have the recipes of the profiles and roles, and just gives no error.

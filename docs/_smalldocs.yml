@@ -23,6 +23,8 @@ website:
         text: Token byte escaping
       - href: local-storage.md
         text: Local storage
+      - href: libsql-provider.md
+        text: Native date provider
       - href: development-plan.md
         text: Development plan
 

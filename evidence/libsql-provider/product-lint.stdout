@@ -1,0 +1,1 @@
+{"kind":"step","run":"f5df7b6a-9968-4922-a968-30d9b2118a32","harness":"codex","session":"01a1eceb-862d-7c80-a816-c9aca1ace4e2","child":null,"time":"2026-11-18T05:02:05Z","argv":["just","lint"],"step":"lint"}

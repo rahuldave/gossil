@@ -1,7 +1,7 @@
 # Gossil development
 
 Gossil is planned as a Rust library and application for versioned agentic
-project state, combining Fossil version control with Gest task management.
+project state. It combines Fossil version control with Gest task management.
 Fossil is a distributed version-control system. Gest tracks issues and tasks.
 Planned records include tasks, shared issues and private agent traces.
 Git remains the source-code authority in the first release.
@@ -15,6 +15,8 @@ against an explicit reference or candidate program.
 
 The [local storage guide](docs/local-storage.md) describes database lifecycle
 and exclusive transactions. No domain schema or public SQL interface is present.
+The [native provider guide](docs/libsql-provider.md) describes the vendored date
+corrections, source checks and bounded private regression evidence.
 The [byte primitives](docs/blob-primitives.md) and [token codec](docs/token-codec.md)
 guides describe the byte contracts and their finite reference checks.
 The [artifact checksum guide](docs/artifact-checksum.md) covers bounded MD5
@@ -36,6 +38,8 @@ supplied by this repository.
 
 The commands below require Rust with Cargo, Git, Just and uv on `PATH`.
 Just runs the recipes in `Justfile`, and uv runs the installed Python tools.
+The recipes also require `jlog`, the command and check recorder supplied by
+the companion `jnterfaces` tool stack.
 Tcl and Fossil are also required for suite execution. The
 [runner prerequisites](docs/conformance.md#local-prerequisites) explain what
 this checkout supplies and what a fresh clone still needs.
@@ -43,7 +47,9 @@ this checkout supplies and what a fresh clone still needs.
 From the repository root, run the commands that match your task. Replace
 `ORIGIN`, `DELTA` and `TARGET` with file paths before trying the decoder.
 `just setup` fetches Cargo dependencies. Run `just install` to refresh the saved
-workflow-tool selection from the package sources described below.
+workflow-tool selection. That command requires the companion package checkouts
+described under Native tools and installed workflow.
+
 `just install --check` checks that installation. The remaining
 commands run the decoder, runner checks, a configured suite or documentation checks.
 

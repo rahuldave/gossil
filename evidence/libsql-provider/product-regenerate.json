@@ -1,0 +1,13 @@
+{
+  "argv": [
+    "python3",
+    "scripts/regenerate-libsql.py",
+    "/tmp/gossil-libsql-date-selection-20261117/proof/original.c",
+    "/tmp/gossil-libsql-date-selection-20261117/proof/native.c",
+    "/tmp/gossil-libsql-date-selection-20261117/adoption/regenerated.c"
+  ],
+  "cwd": "/Users/rahul/Projects/gossil.worktrees/gest-yzyssxsr-local-store",
+  "exit": 0,
+  "stdout": "Reproduced 1c99ebdc5a6fccdecb30c7702f7f6b07fa8258eea7d4216d878863cb3b7deefd\n",
+  "stderr": ""
+}

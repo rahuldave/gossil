@@ -1,0 +1,14 @@
+{
+  "argv": [
+    "just",
+    "test",
+    "--lib",
+    "storage::tests",
+    "--",
+    "--nocapture"
+  ],
+  "cwd": "/Users/rahul/Projects/gossil.worktrees/gest-yzyssxsr-local-store",
+  "exit": 0,
+  "stdout": "cargo llvm-cov test --all-features --locked --include-build-script --workspace --lcov --output-path target/llvm-cov/test.part0.lcov --lib storage::tests -- --nocapture\n\nrunning 15 tests\ntest storage::tests::embedded_nul_path_returns_error_with_original_cause ... ok\ntest storage::tests::caught_error_rejects_commit_and_later_helper ... ok\nnative version/source: [[Text(\"3.45.1\"), Text(\"2024-01-30 16:01:20 e876e51a0ed5c5b3126f52e532044363a014bc594cfefa87ffb5b82257ccalt1\")]]\ntest storage::tests::configuration_mismatch_and_inconsistent_state_are_errors ... ok\ntest storage::tests::commit_failure_rolls_back_and_reuses_idle_connection ... ok\ntest storage::tests::explicit_rollback_cleanup_failure_retains_first_error ... ok\ntest storage::tests::dropped_owner_releases_aliases_and_poisoned_store ... ok\ntest storage::tests::memory_retains_one_connection_and_excludes_wal_only ... ok\ntest storage::tests::failed_cleanup_preserves_original_and_poison_policy ... ok\ntest storage::tests::path_validation_preserves_empty_invalid_utf8_and_valid_file_behavior ... ok\ntest storage::tests::immediate_before_dml ... ok\ntest storage::tests::capabilities_commit_reopen_and_explicit_rollback ... ok\ntest storage::tests::settings_every_open ... ok\ntest storage::tests::preparation_and_step_failures_latch_and_explicit_rollback_keeps_cause ... ok\ntest storage::tests::writers_on_os_threads_and_wal_reader ... ok\ntest storage::tests::cancellation_at_controlled_await_rolls_back_but_after_commit_preserves ... ok\n\ntest result: ok. 15 passed; 0 failed; 0 ignored; 0 measured; 13 filtered out; finished in 0.03s\n\n{\"kind\":\"step\",\"run\":\"7a0abf65-77a5-4c83-ae85-57ed7c5721ca\",\"harness\":\"codex\",\"session\":\"01a1eceb-862d-7c80-a816-c9aca1ace4e2\",\"child\":null,\"time\":\"2026-11-18T05:00:44Z\",\"argv\":[\"just\",\"test\",\"--lib\",\"storage::tests\",\"--\",\"--nocapture\"],\"step\":\"test\"}\n",
+  "stderr": "just --justfile '/Users/rahul/Projects/gossil.worktrees/gest-yzyssxsr-local-store/Justfile' rust test \"$@\"\nuv run --no-project --quiet --python '>=3.11' python '/Users/rahul/Projects/gossil.worktrees/gest-yzyssxsr-local-store/.agents/just/rust/steps.py' run test \"$@\"\nWARN `--no-project` was provided, but no project was found\ninfo: cargo-llvm-cov currently setting cfg(coverage); you can opt-out it by passing --no-cfg-coverage\n   Compiling gossil v0.1.0 (/Users/rahul/Projects/gossil.worktrees/gest-yzyssxsr-local-store)\n    Finished `test` profile [unoptimized + debuginfo] target(s) in 4.07s\n     Running unittests src/lib.rs (target/llvm-cov-target/debug/deps/gossil-63b04dc9a3fc2aa0)\n\n    Finished report saved to target/llvm-cov/test.part0.lcov\njlog step test\n"
+}

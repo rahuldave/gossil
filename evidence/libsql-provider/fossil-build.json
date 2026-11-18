@@ -1,0 +1,8 @@
+{
+  "argv": [
+    "make",
+    "-j4"
+  ],
+  "cwd": "/tmp/gossil-libsql-date-selection-20261117/proof/fossil-patched",
+  "exit": 2
+}

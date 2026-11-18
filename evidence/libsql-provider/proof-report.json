@@ -1,0 +1,61 @@
+{
+  "status": "scratch provider source candidate ready for independent review; no adoption or unrestricted parity approval",
+  "base": {
+    "crate": "libsql-ffi0.9.30",
+    "vcs": "0653c5788d77ef16a97c56ff3e9fdc11717a72d9",
+    "archive_sha256": "0be1da6f123ceb2cd23f469883415cab9ee963286a85d61e22afb8b12e15e681",
+    "native_fossil": "7e8ecf0ce4a3c05aa39de7ffe2828d23e334efe446ef2387e09f205ef00b2227",
+    "native_sqlite_source_id": "2026-11-15 00:55:04 ad4ee20509dc4e2803f35093b03df55cb3e39c8083b0d4ad231e1432516c7841"
+  },
+  "executed": {
+    "corpus_tokens": 489,
+    "original_date_mismatches": 78,
+    "patched_date_mismatches": 0,
+    "unchanged_legacy_CAST_and_arithmetic_differences": 0,
+    "cargo_core_build_pass": true,
+    "rust_matches_C_patched_all_bytes": true,
+    "threshold_tokens": 30,
+    "threshold_patched_native_date_mismatches": 0,
+    "regeneration_byte_exact": true,
+    "upstream_build_rs_byte_identical": true
+  },
+  "source_equivalence": {
+    "numeric": "All seven copied upstream numeric bodies reverse-rename exactly. powerOfTen includes aBase/aScale/aScaleLo verbatim; Multiply160 included. Old global AtoF body and all 17 unrelated call expressions preserved, only one date call redirected. countLeadingZeros compiler intrinsic branch unchanged. Multiply helpers use unchanged portable upstream branch since SQLITE_USE_UINT128 is not enabled at insertion site.",
+    "constants": [
+      "U64_BIT, POWERSOF10_FIRST=-348, POWERSOF10_LAST=347 copied; undefined after helper block",
+      "LARGEST_UINT64 and u64/i64/u32 old definitions have same numeric/type meaning as native",
+      "math.h and INFINITY/HUGE_VAL fallback are native util.c dependencies explicitly included"
+    ],
+    "calendar_commit": "aa2258e35b3df3dcd49220f2fed53725b150ac2b / Fossil00cae11fffaf50e2133915e851d41098d00b6b1458e1438bcb6664e1411d8498",
+    "date_projection": {
+      "getDigits": "unchanged; same accepted fields/ranges",
+      "parseTimezone": "retain old validTZ/tzSet; native isUtc/isLocal differ only downstream modifier use; for one arg, tz offset and parse validity identical",
+      "parseHhMmSs": "native fraction clamp and hour24 guard; bAllowTZ always1 on D/E so old signature preserved; retain validTZ=(tz!=0)",
+      "computeJD": "native negative-year formula and time-only24 rollover; old validTZ iff tz!=0 established by parser, same arithmetic and clearing observably relevant JD flags",
+      "parseYyyyMmDd": "native signed year before rollover and daysOfMonth helper; omit nFloor/computeFloor because one-argument route never reads nFloor; old validTZ branch equivalent to native tz branch",
+      "parseDateOrTime": "only numeric helper call changes; same calendar/time/now/subsecond dispatch",
+      "setRawDateNumber,validJulianDay,datetimeError,juliandayFunc": "unchanged algorithm; JD output computation/range matches native",
+      "setDateTimeToCurrent": "old/new same iJD from statement clock; native clears stale YMD/HMS and sets UTC. For now/subsec input zero-initialized struct and failed text parses cannot set these flags; no output difference on one-arg path",
+      "isDate": "native normalizes validYMD more broadly, but one arg old already applies normalization; modifier loop absent for D/E. New UTC/floor flags never affect returned iJD."
+    },
+    "non_date_scope": "Calendar/time parser helper corrections also affect other existing date SQL callers intentionally; this proof does not qualify all modifier or strftime contracts. Existing global length/encoding numeric API untouched. No public SQL registration added."
+  },
+  "reproduction": {
+    "recipe": "python3 patch.py with original.c/native.c hashes; writes adapted.patch and bundled sqlite3.c; consumer Cargo builds use unchanged build.rs",
+    "patch": "adapted.patch",
+    "vendor": "complete untrimmed registry libsql-ffi copy, one modified bundled/src/sqlite3.c; no Cargo cache writes",
+    "source_id_warning": "sqlite_version/sourceid remain base identifiers; patched SHA256 plus provenance manifest must identify candidate accurately"
+  },
+  "limitations": {
+    "actual_D_E_candidate_parser": "unexecuted; no Rust/Gossil parser implementation",
+    "test_only_Fossil_harness": "failed compile: pinned modern Fossil shell/native build needs SQLite APIs unavailable in older libsql; not a behavioral failure. See fossil-build.stderr. No shell/parser alteration attempted.",
+    "clock_sensitive": "source accounting only; now/subsec/subsecond runtime comparison not executed",
+    "DB_acceptance": "WAL/JSON/BLOB/constraints/transactions/integrity and platform matrix not executed here",
+    "claim": "finite corpus evidence and source projection argument, not unrestricted numeric/parser parity approval",
+    "compile_diagnostics": "initial helper insertion omitted math.h/INFINITY, corrected explicitly. Final C builds retain baseline macro/return warnings. Earlier temporary compile-failure files overwritten during correction; final build receipts and incompatible Fossil failure retained."
+  },
+  "Recommendations": {
+    "preferred": "Independently review adapted patch and reachable closure before provider adoption; keep libsql0.9.30 Rust API and complete vendored ffi with unchanged normal build.",
+    "next_action": "Review source-equivalence map, callsites, hashes and red/green receipts; parent separately resolves vendor policy and implements actual D/E parser acceptance."
+  }
+}

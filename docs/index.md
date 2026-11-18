@@ -3,7 +3,7 @@ title: Gossil development
 ---
 
 Gossil is planned as a Rust library and application for versioned agentic
-project state, combining Fossil version control with Gest task management.
+project state. It combines Fossil version control with Gest task management.
 Fossil is a distributed version-control system. Gest tracks issues and tasks.
 Planned records include tasks, shared issues and private agent traces.
 Git remains the source-code authority in the first release.
@@ -30,6 +30,8 @@ remain planned work.
   transactions and the private fixture that composes storage with byte primitives.
 - [libSQL source import boundary](libsql-import-boundary.md) records exact upstream
   classifications and the controls required before importing the provider.
+- [Native date provider](libsql-provider.md) describes the pinned source,
+  integrity checks and limits of the private date regression.
 - [Development plan](development-plan.md) gives the delivery order, ownership
   and local checkpoint workflow.
 

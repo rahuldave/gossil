@@ -1,0 +1,3 @@
+WARN `--no-project` was provided, but no project was found
+docs/development-plan.md: checked by check.py of the skill, 0 hard, 36 soft
+docs/index.md: checked by check.py of the skill, 0 hard, 13 soft

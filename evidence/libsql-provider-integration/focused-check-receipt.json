@@ -1,0 +1,38 @@
+{
+  "scope": "Focused author checks only; no final acceptance or new native Fossil runtime probe.",
+  "commands": [
+    {
+      "command": "just docs-check",
+      "exit_code": 0,
+      "observed": "11 site pages; 0 things to look at; 91/91 API items documented; API prose 0 hard"
+    },
+    {
+      "command": "just libsql-vendor-check",
+      "exit_code": 0,
+      "observed": "Verified 272 archive files and frozen provenance (worktree)"
+    },
+    {
+      "command": "just libsql-vendor-test",
+      "exit_code": 0,
+      "observed": "12 tests, 31.626 seconds, OK"
+    },
+    {
+      "command": "uv run --no-project --quiet python .agents/skills/nossaifd/scripts/prose_gate.py check docs/development-plan.md docs/index.md",
+      "exit_code": 0,
+      "output": "focused-prose-check.txt",
+      "observed": "Initial development-plan check found 7-sentence paragraph; paragraph split; rerun passed."
+    }
+  ],
+  "pending": [
+    "Parent staging and index source verifier",
+    "Fresh ordered update-docs/prose/review/test-review/final-check gates"
+  ],
+  "compositions": {
+    "Cargo.toml": "Accepted exact md-5 0.10.6 dependency plus unchanged provider patch",
+    "Cargo.lock": "MD5 package and direct dependency retained; libSQL provider resolution retained",
+    "README.md": "Accepted MD5 implementation scope and guide coexist with provider guide; product work remains planned",
+    "docs/_smalldocs.yml": "MD5 and provider navigation coexist",
+    "docs/development-plan.md": "Accepted core/history and normative specification facts retained; prerequisite and pending composed acceptance explicit",
+    "docs/index.md": "Both import prerequisite and provider guide retained"
+  }
+}

@@ -1,0 +1,2 @@
+Verified 272 libsql archive files and frozen provenance (worktree).
+{"kind":"step","run":"a6bfcfa4-3a35-4d5e-b2a0-75b6d5d6753a","harness":"codex","session":"01a1eceb-862d-7c80-a816-c9aca1ace4e2","child":null,"time":"2026-11-18T05:03:10Z","argv":["just","typecheck"],"step":"typecheck"}

@@ -1,0 +1,202 @@
+ld: warning: reducing alignment of section __DATA,__common from 0x8000 to 0x4000 because it exceeds segment maximum alignment
+./extsrc/sqlite3.c:44160:9: warning: unused variable 'lockMask' [-Wunused-variable]
+ 44160 |     u16 lockMask = (p->exclMask|p->sharedMask);
+       |         ^~~~~~~~
+./extsrc/sqlite3.c:60124:7: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+ 60124 |   int should_unlock = !pPager->exclusiveMode;
+       |       ^
+./extsrc/sqlite3.c:65794:9: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+ 65794 |     int conflict = 0;
+       |         ^
+./extsrc/sqlite3.c:65776:16: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+ 65776 |   unsigned int mxFrame;
+       |                ^
+./extsrc/sqlite3.c:65845:18: error: no member named 'pWalMethods' in 'struct Pager'
+ 65845 |     rc = pPager->pWalMethods->xWriteLock(pPager->pWal, bLock);
+       |          ~~~~~~  ^
+./extsrc/sqlite3.c:65845:50: error: no member named 'pWal' in 'struct Pager'; did you mean 'zWal'?
+ 65845 |     rc = pPager->pWalMethods->xWriteLock(pPager->pWal, bLock);
+       |                                                  ^~~~
+       |                                                  zWal
+./extsrc/sqlite3.c:58635:9: note: 'zWal' declared here
+ 58635 |   char *zWal;                 /* Name of the WAL file:
+       |         ^
+./extsrc/sqlite3.c:65856:13: error: no member named 'pWalMethods' in 'struct Pager'
+ 65856 |     pPager->pWalMethods->xDb(pPager->pWal, db);
+       |     ~~~~~~  ^
+./extsrc/sqlite3.c:65856:38: error: no member named 'pWal' in 'struct Pager'; did you mean 'zWal'?
+ 65856 |     pPager->pWalMethods->xDb(pPager->pWal, db);
+       |                                      ^~~~
+       |                                      zWal
+./extsrc/sqlite3.c:58635:9: note: 'zWal' declared here
+ 58635 |   char *zWal;                 /* Name of the WAL file:
+       |         ^
+./extsrc/sqlite3.c:67028:17: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+ 67028 |   volatile u32 *page;
+       |                 ^
+./extsrc/sqlite3.c:70549:5: error: use of undeclared identifier 'outWal'
+ 70549 |     outWal->methods.xWriteLock = sqlite3WalWriteLock;
+       |     ^
+./extsrc/sqlite3.c:70478:15: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+ 70478 |   const char *zWalName = sqlite3_filename_wal(main_db_file_name);
+       |               ^
+./extsrc/sqlite3.c:85962:9: warning: 'ALIGN' macro redefined [-Wmacro-redefined]
+ 85962 | #define ALIGN(n, size) (((n + size - 1) / size) * size)
+       |         ^
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/arm/param.h:61:9: note: previous definition is here
+   61 | #define ALIGN(p)        __DARWIN_ALIGN(p)
+      |         ^
+./extsrc/sqlite3.c:98362:9: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+ 98362 |     i64 nPages = 0;
+       |         ^
+./extsrc/sqlite3.c:98866:15: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+ 98866 |   VdbeCursor *pCur = allocateCursor(p, pOp->p1, nField, CURTYPE_VECTOR_IDX);
+       |               ^
+./extsrc/sqlite3.c:119465:13: warning: unused variable 'pFKey' [-Wunused-variable]
+ 119465 |       FKey *pFKey;
+        |             ^~~~~
+./extsrc/sqlite3.c:119419:12: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+ 119419 |   sqlite3 *db = sqlite3_context_db_handle(context);
+        |            ^
+./extsrc/sqlite3.c:119434:10: warning: unused variable 'pIdx' [-Wunused-variable]
+ 119434 |   Index *pIdx;
+        |          ^~~~
+./extsrc/sqlite3.c:119435:7: warning: unused variable 'i' [-Wunused-variable]
+ 119435 |   int i;
+        |       ^
+./extsrc/shell.c:3792:7: error: call to undeclared function 'sqlite3_str_free'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
+ 3792 |       sqlite3_str_free(pVal);
+      |       ^
+./extsrc/shell.c:4080:7: error: call to undeclared function 'sqlite3_str_free'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
+ 4080 |       sqlite3_str_free(p->pOut);
+      |       ^
+./extsrc/shell.c:4085:5: error: call to undeclared function 'sqlite3_str_free'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
+ 4085 |     sqlite3_str_free(p->pOut);
+      |     ^
+./extsrc/shell.c:10359:12: warning: unused variable 'db' [-Wunused-variable]
+ 10359 |   sqlite3 *db = sqlite3_context_db_handle(context);
+       |            ^~
+./extsrc/shell.c:10360:7: warning: unused variable 'iDb' [-Wunused-variable]
+ 10360 |   int iDb = argc>=2 ? sqlite3_value_int(argv[1]) : -1;
+       |       ^~~
+./extsrc/shell.c:20371:3: error: call to undeclared function 'sqlite3_str_free'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
+ 20371 |   sqlite3_str_free(p->pOut);
+       |   ^
+./extsrc/shell.c:21281:27: error: use of undeclared identifier 'SQLITE_UTF8_ZT'
+ 21281 |                           SQLITE_UTF8_ZT);
+       |                           ^
+./extsrc/sqlite3.c:183799:7: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+ 183799 |   int isOpen = 0;
+        |       ^
+./extsrc/shell.c:26524:29: error: call to undeclared function 'sqlite3_incomplete'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
+ 26524 |   sqlite3_int64 R = zBase ? sqlite3_incomplete(zBase) : 0;
+       |                             ^
+./extsrc/shell.c:26524:29: note: did you mean 'sqlite3_complete'?
+./extsrc/sqlite3.h:2804:16: note: 'sqlite3_complete' declared here
+ 2804 | SQLITE_API int sqlite3_complete(const char *sql);
+      |                ^
+./extsrc/shell.c:26592:3: error: call to undeclared function 'sqlite3_result_str'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
+ 26592 |   sqlite3_result_str(pCtx, pOut, SQLITE_FINISH);
+       |   ^
+./extsrc/shell.c:26592:3: note: did you mean 'sqlite3_result_int'?
+./extsrc/sqlite3.h:6265:17: note: 'sqlite3_result_int' declared here
+ 6265 | SQLITE_API void sqlite3_result_int(sqlite3_context*, int);
+      |                 ^
+./extsrc/shell.c:26592:34: error: use of undeclared identifier 'SQLITE_FINISH'
+ 26592 |   sqlite3_result_str(pCtx, pOut, SQLITE_FINISH);
+       |                                  ^
+./extsrc/shell.c:26802:11: error: call to undeclared function 'sqlite3_str_truncate'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
+ 26802 |           sqlite3_str_truncate(pOut, iDate);
+       |           ^
+./extsrc/shell.c:26802:11: note: did you mean 'sqlite3_str_errcode'?
+./extsrc/sqlite3.h:8599:16: note: 'sqlite3_str_errcode' declared here
+ 8599 | SQLITE_API int sqlite3_str_errcode(sqlite3_str*);
+      |                ^
+./extsrc/shell.c:27371:9: error: call to undeclared function 'sqlite3_result_str'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
+ 27371 |         sqlite3_result_str(pCtx, pOut, SQLITE_FINISH);
+       |         ^
+./extsrc/shell.c:27371:40: error: use of undeclared identifier 'SQLITE_FINISH'
+ 27371 |         sqlite3_result_str(pCtx, pOut, SQLITE_FINISH);
+       |                                        ^
+./extsrc/shell.c:28524:5: error: call to undeclared function 'sqlite3_str_free'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
+ 28524 |     sqlite3_str_free(pOut);
+       |     ^
+./extsrc/shell.c:29017:7: error: call to undeclared function 'sqlite3_db_status64'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
+ 29017 |       sqlite3_db_status64(db, SQLITE_DBSTATUS_TEMPBUF_SPILL, &iCur64, &iHiwtr64,
+       |       ^
+./extsrc/shell.c:29017:7: note: did you mean 'sqlite3_db_status'?
+./extsrc/sqlite3.h:8739:16: note: 'sqlite3_db_status' declared here
+ 8739 | SQLITE_API int sqlite3_db_status(sqlite3*, int op, int *pCur, int *pHiwtr, int resetFlg);
+      |                ^
+./extsrc/shell.c:29017:31: error: use of undeclared identifier 'SQLITE_DBSTATUS_TEMPBUF_SPILL'
+ 29017 |       sqlite3_db_status64(db, SQLITE_DBSTATUS_TEMPBUF_SPILL, &iCur64, &iHiwtr64,
+       |                               ^
+./extsrc/sqlite3.c:213046:12: warning: unused variable 'i' [-Wunused-variable]
+ 213046 |   unsigned i;
+        |            ^
+./extsrc/sqlite3.c:213601:7: warning: unused variable 'nMaxEdges' [-Wunused-variable]
+ 213601 |   int nMaxEdges = nodeEdgesMaxCount(pIndex);
+        |       ^~~~~~~~~
+./extsrc/sqlite3.c:213603:41: warning: unused variable 'itemsToMove' [-Wunused-variable]
+ 213603 |   int edgeVectorOffset, edgeMetaOffset, itemsToMove;
+        |                                         ^~~~~~~~~~~
+./extsrc/sqlite3.c:214323:7: warning: unused variable 'i' [-Wunused-variable]
+ 214323 |   int i;
+        |       ^
+./extsrc/sqlite3.c:214430:10: warning: unused variable 's' [-Wunused-variable]
+ 214430 |   int i, s, nEdges;
+        |          ^
+./extsrc/sqlite3.c:214485:16: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+ 214485 |   DiskAnnNode *start = NULL;
+        |                ^
+./extsrc/sqlite3.c:214491:14: warning: variable 'nVisited' set but not used [-Wunused-but-set-variable]
+ 214491 |   int rc, i, nVisited = 0;
+        |              ^
+./extsrc/sqlite3.c:215202:10: warning: unused variable 'len' [-Wunused-variable]
+ 215202 |   size_t len = 0;
+        |          ^~~
+./extsrc/sqlite3.c:215843:11: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+ 215843 |     float d = (value1 - value2);
+        |           ^
+./extsrc/sqlite3.c:215973:11: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+ 215973 |     float d = (value1 - value2);
+        |           ^
+./extsrc/shell.c:29029:31: error: use of undeclared identifier 'SQLITE_DBSTATUS_TEMPBUF_SPILL'
+ 29029 |       sqlite3_db_status64(db, SQLITE_DBSTATUS_TEMPBUF_SPILL, &iCur64, &iHiwtr64,
+       |                               ^
+./extsrc/sqlite3.c:216532:7: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+ 216532 |   int dimensions = 0;
+        |       ^
+./extsrc/sqlite3.c:216674:7: warning: unused variable 'nBinSize' [-Wunused-variable]
+ 216674 |   int nBinSize;
+        |       ^~~~~~~~
+./extsrc/sqlite3.c:216752:22: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+ 216752 |   static const char *zSelectSqlTemplate = "SELECT metadata FROM \"%w\"." VECTOR_INDEX_GLOBAL_META_TABLE " WHERE name = ?";
+        |                      ^
+./extsrc/sqlite3.c:216818:12: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+ 216818 |   sqlite3 *db = pParse->db;
+        |            ^
+./extsrc/sqlite3.c:217269:15: warning: unused variable 'pVTab' [-Wunused-variable]
+ 217269 |   vectorVtab *pVTab = (vectorVtab*)pVtab;
+        |               ^~~~~
+./extsrc/sqlite3.c:217275:15: warning: unused variable 'pVTab' [-Wunused-variable]
+ 217275 |   vectorVtab *pVTab = (vectorVtab*)p;
+        |               ^~~~~
+./extsrc/shell.c:29144:31: error: use of undeclared identifier 'SQLITE_DBCONFIG_VDBE_TRACE'
+ 29144 |   sqlite3_db_config(pArg->db, SQLITE_DBCONFIG_VDBE_TRACE, -1, &inTrace);
+       |                               ^
+./extsrc/shell.c:29145:31: error: use of undeclared identifier 'SQLITE_DBCONFIG_VDBE_TRACE'
+ 29145 |   sqlite3_db_config(pArg->db, SQLITE_DBCONFIG_VDBE_TRACE, 0, (int*)0);
+       |                               ^
+./extsrc/shell.c:29221:31: error: use of undeclared identifier 'SQLITE_DBCONFIG_VDBE_TRACE'
+ 29221 |   sqlite3_db_config(pArg->db, SQLITE_DBCONFIG_VDBE_TRACE, inTrace, (int*)0);
+       |                               ^
+./extsrc/shell.c:31876:5: error: call to undeclared function 'sqlite3_str_free'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
+ 31876 |     sqlite3_str_free(cli_output_capture);
+       |     ^
+fatal error: too many errors emitted, stopping now [-ferror-limit=]
+30 warnings and 5 errors generated.
+make: *** [bld/sqlite3.o] Error 1
+make: *** Waiting for unfinished jobs....
+2 warnings and 20 errors generated.
+make: *** [bld/shell.o] Error 1

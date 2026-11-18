@@ -1,0 +1,109 @@
+WARN `--no-project` was provided, but no project was found
+README.md: checked by check.py of the skill, 0 hard, 26 soft
+  soft 3: maybe passive: is planned
+  soft 9: an -ing form: escaping
+  soft 15: an -ing form: remaining
+  soft 25: 25 words (usually at most 20): Read the delta encoder guide for creation and two-way round trips, and the delta
+  soft 36: 'Just': try (remove)
+  soft 36: 'Just': try (remove)
+  soft 44: an -ing form: trying
+  soft 50: an -ing form: remaining
+  soft 63: an -ing form: including
+  soft 70: maybe an action in a noun, try a verb: qualification of
+  soft 70: maybe passive: are recorded
+  soft 76: maybe an action in a noun, try a verb: acceptance of
+  soft 80: an -ing form: mapping
+  soft 80: a semicolon
+  soft 94: an -ing form: including
+  soft 94: an -ing form: Passing
+  soft 102: maybe three clauses: Coverage checked every executable source line because there was no parent commit
+  soft 102: an -ing form: docstring
+  soft 102: maybe passive: were used
+  soft 109: maybe an action in a noun, try a verb: rejection of
+  soft 117: an -ing form: keeping
+  soft 124: an -ing form: tracking
+  soft 124: maybe an action in a noun, try a verb: selection of
+  soft 142: maybe passive: been selected
+  soft 142: maybe passive: is disabled
+  soft 147: an -ing form: remaining
+docs/development-plan.md: checked by check.py of the skill, 0 hard, 36 soft
+  soft 3: an -ing form: programming
+  soft 3: maybe passive: is planned
+  soft 10: an -ing form: escaping
+  soft 29: maybe passive: is tracked
+  soft 60: an -ing form: awaiting
+  soft 60: an -ing form: corresponding
+  soft 60: 'unless': try if ... not
+  soft 60: an -ing form: mapping
+  soft 60: maybe passive: is ported
+  soft 66: an -ing form: mapping
+  soft 75: an -ing form: following
+  soft 82: an -ing form: using
+  soft 90: 22 words (usually at most 20): Use the installed workflow guide above for packet dispatch, result validation an
+  soft 90: 'Just': try (remove)
+  soft 90: an -ing form: printing
+  soft 90: a semicolon
+  soft 97: an -ing form: following
+  soft 97: 'Just': try (remove)
+  soft 97: an -ing form: starting
+  soft 106: maybe passive: was created
+  soft 109: an -ing form: using
+  soft 109: an -ing form: existing
+  soft 109: an -ing form: existing
+  soft 109: an -ing form: existing
+  soft 118: an -ing form: starting
+  soft 121: maybe passive: is selected
+  soft 121: maybe passive: is selected
+  soft 130: an -ing form: including
+  soft 135: maybe passive: was skipped
+  soft 141: an -ing form: existing
+  soft 141: an -ing form: parsing
+  soft 151: an -ing form: framing
+  soft 158: maybe passive: was implemented
+  soft 165: an -ing form: remaining
+  soft 182: maybe passive: is identified
+  soft 193: an -ing form: preserving
+docs/local-storage.md: checked by check.py of the skill, 0 hard, 22 soft
+  soft 33: an -ing form: collecting
+  soft 33: an -ing form: returning
+  soft 33: an -ing form: stepping
+  soft 33: an -ing form: decoding
+  soft 33: maybe an action in a noun, try a verb: orchestration of
+  soft 54: an -ing form: Dropping
+  soft 54: an -ing form: keeping
+  soft 54: maybe passive: is destroyed
+  soft 62: an -ing form: including
+  soft 62: an -ing form: checking
+  soft 62: an -ing form: blocking
+  soft 62: an -ing form: scheduling
+  soft 72: maybe passive: is pinned
+  soft 87: an -ing form: Dropping
+  soft 87: 'therefore': try so
+  soft 101: an -ing form: competing
+  soft 110: an -ing form: failing
+  soft 117: an -ing form: Reopening
+  soft 124: an -ing form: existing
+  soft 124: a semicolon
+  soft 130: an -ing form: competing
+  soft 139: a semicolon
+docs/libsql-provider.md: checked by check.py of the skill, 0 hard, 20 soft
+  soft 3: an -ing form: existing
+  soft 16: an -ing form: existing
+  soft 16: an -ing form: encoding
+  soft 23: an -ing form: enabling
+  soft 23: maybe passive: is omitted
+  soft 23: a semicolon
+  soft 30: an -ing form: tampering
+  soft 39: maybe passive: are required
+  soft 39: a semicolon
+  soft 68: an -ing form: including
+  soft 68: an -ing form: working
+  soft 82: an -ing form: choosing
+  soft 82: an -ing form: neighboring
+  soft 98: an -ing form: rewriting
+  soft 98: maybe passive: is retained
+  soft 109: a semicolon
+  soft 114: an -ing form: claiming
+  soft 114: an -ing form: formatting
+  soft 125: an -ing form: claiming
+  soft 125: an -ing form: expanding

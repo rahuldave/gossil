@@ -1,0 +1,12 @@
+cargo llvm-cov test --all-features --locked --include-build-script --workspace --lcov --output-path target/llvm-cov/test.part0.lcov --lib storage::date_tests -- --nocapture
+
+running 1 test
+test storage::date_tests::pinned_date_and_legacy_numeric_corpora ... FAILED
+
+failures:
+
+failures:
+    storage::date_tests::pinned_date_and_legacy_numeric_corpora
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 27 filtered out; finished in 0.01s
+

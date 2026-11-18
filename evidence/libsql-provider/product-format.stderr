@@ -1,0 +1,2 @@
+just --justfile '/Users/rahul/Projects/gossil.worktrees/gest-yzyssxsr-local-store/Justfile' rust fmt "$@"
+cargo fmt --all "$@"

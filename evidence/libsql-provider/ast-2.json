@@ -1,0 +1,15 @@
+{
+  "argv": [
+    "ast-grep",
+    "run",
+    "--lang",
+    "c",
+    "--pattern",
+    "sqlite3AtoF($$$)",
+    "--json=compact",
+    "/tmp/gossil-libsql-date-selection-20261117/proof/original.c"
+  ],
+  "exit": 1,
+  "stdout": "[]\n",
+  "stderr": ""
+}

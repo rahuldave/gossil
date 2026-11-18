@@ -1,0 +1,10 @@
+{
+  "argv": [
+    "just",
+    "build"
+  ],
+  "cwd": "/Users/rahul/Projects/gossil.worktrees/gest-yzyssxsr-local-store",
+  "exit": 0,
+  "stdout": "",
+  "stderr": "just --justfile '/Users/rahul/Projects/gossil.worktrees/gest-yzyssxsr-local-store/Justfile' rust build \"$@\"\ncargo build --workspace \"$@\"\n   Compiling bindgen v0.66.1\n   Compiling bitflags v2.13.2\n   Compiling libsql-ffi v0.9.30 (/Users/rahul/Projects/gossil.worktrees/gest-yzyssxsr-local-store/vendor/libsql-ffi)\n   Compiling libsql-sys v0.9.30\n   Compiling libsql v0.9.30\n   Compiling gossil v0.1.0 (/Users/rahul/Projects/gossil.worktrees/gest-yzyssxsr-local-store)\n    Finished `dev` profile [unoptimized + debuginfo] target(s) in 15.16s\n"
+}

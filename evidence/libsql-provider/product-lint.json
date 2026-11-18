@@ -1,0 +1,10 @@
+{
+  "argv": [
+    "just",
+    "lint"
+  ],
+  "cwd": "/Users/rahul/Projects/gossil.worktrees/gest-yzyssxsr-local-store",
+  "exit": 0,
+  "stdout": "{\"kind\":\"step\",\"run\":\"f5df7b6a-9968-4922-a968-30d9b2118a32\",\"harness\":\"codex\",\"session\":\"01a1eceb-862d-7c80-a816-c9aca1ace4e2\",\"child\":null,\"time\":\"2026-11-18T05:02:05Z\",\"argv\":[\"just\",\"lint\"],\"step\":\"lint\"}\n",
+  "stderr": "just --justfile '/Users/rahul/Projects/gossil.worktrees/gest-yzyssxsr-local-store/Justfile' rust lint \"$@\"\ncargo clippy --workspace --all-targets --all-features --locked \"$@\" -- -D warnings\n   Compiling libsql-ffi v0.9.30 (/Users/rahul/Projects/gossil.worktrees/gest-yzyssxsr-local-store/vendor/libsql-ffi)\n    Checking libsql-sys v0.9.30\n    Checking libsql v0.9.30\n    Checking gossil v0.1.0 (/Users/rahul/Projects/gossil.worktrees/gest-yzyssxsr-local-store)\n    Finished `dev` profile [unoptimized + debuginfo] target(s) in 10.39s\njlog step lint\n"
+}
