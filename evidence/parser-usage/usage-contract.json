@@ -1,0 +1,39 @@
+{
+  "kind": "parser-usage-composition-contract",
+  "base_commit": "668f835c479ccc94f427541014169594ca70ce37",
+  "accepted_parser_base_sha256": "d607cd77a3adb97ce6df92caf5817c3d577dad51966a3757a38cae23b4e2f860",
+  "reference": {
+    "fossil_uuid": "7e8ecf0ce4a3c05aa39de7ffe2828d23e334efe446ef2387e09f205ef00b2227",
+    "source": "manifest.c:467-1153; card masks:129-138",
+    "attribution": "Fossil source copyright D. Richard Hipp, Simplified BSD License"
+  },
+  "accounting": {
+    "input_bytes": "complete input length including recognized signature envelope",
+    "cards": "nonzero structural markers consumed, including Z and repeated empty P cards; excludes zero sentinel",
+    "owned_bytes": "existing logical Budget byte charges, including retained input, encoded token charges, copies and list-entry sizes; not every physical Rust allocator byte",
+    "entries": "existing list-insertion charges"
+  },
+  "compatibility": {
+    "existing_api": "parse_artifact delegates to parse_artifact_with_usage and discards usage",
+    "failure": "no usage returned; aggregate subtraction and operation failure latching belong to caller",
+    "grammar_provider_checksum_errors": "unchanged"
+  },
+  "tests": {
+    "existing_parser_tests": 27,
+    "new_usage_tests": 4,
+    "fixture_decisions": 93,
+    "classification": "new Rust API controls; not inherited Fossil Tcl tests or a delivered PF-1 acceptance row",
+    "fixture_provenance": "evidence/parser/fixture-provenance.json"
+  },
+  "commands": [
+    "cargo test --locked --all-features --test artifact_parser --test artifact_usage",
+    "cargo test --locked --all-features --lib artifact::"
+  ],
+  "identity": {
+    "src/artifact.rs": "b3274e43c074e0b680a6b6e347e7cc46450043666d566d3c146a870231840a16",
+    "tests/artifact_usage.rs": "546202096eff9c5ae9f57781175dcecb426e317ebf0af763537d4f37432a0d59",
+    "docs/artifact-parser.md": "31b0c46b65ac43427b4f3c5958dcdcd089ff467bebe44c344e3f4014cfcd3f67",
+    "tests/artifact_parser.rs": "bfe716c190e147720f1744d08b62114b283eb9f74e75aac79afec9298ae90a9e",
+    "evidence/parser/fixture-provenance.json": "36b5b87fa1aa9b16c73451fd014dc622c6e12788c8deecaa3752df4f2c01b9e9"
+  }
+}
