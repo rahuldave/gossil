@@ -26,8 +26,8 @@ Its byte and C-string forms have different zero-byte behavior.
 The [token guide](token-codec.md) defines those contracts.
 
 The `artifact` module parses eight structural artifact types with explicit
-limits and checks their structure and checksums. A caller supplies the date
-provider, which converts date fields. Repository graph validation requires
+limits and checks their structure and checksums. A caller implements `DateProvider`, whose `julianday` method converts date fields
+to Julian day numbers. Repository graph validation requires
 more storage rules. See the [parser guide](artifact-parser.md).
 
 ## Local storage and authority
@@ -46,8 +46,8 @@ validation. Read and write access to the database file through the operating
 system establishes local owner authority.
 
 The [native storage guide](native-storage.md) defines admission, content bounds
-and access rules. General links between artifacts in the repository graph, sync and team
-authentication remain planned.
+and access rules. General links between artifacts in the repository graph remain planned, so parsing
+does not establish parent relationships or resolve references. Sync and team authentication also remain planned.
 
 ## Task and project values
 
@@ -62,8 +62,12 @@ canonical Gest project record,
 It returns an owned record with an identifier, nullable archive time and UTC timestamps.
 The [project values guide](gest-project-values.md) defines the complete field contract.
 A local checkout root is outside the canonical project record.
-Checks of raw input, storage integration and task or project commands remain
-separate work.
+
+The [task ticket emitter](task-ticket.md) produces bounded creation artifact bytes
+from a validated task, a separate native ticket identity, actor bytes and a typed UTC date.
+For task and project conversion, callers must check raw field presence, duplicates
+and byte limits before passing
+decoded values to a converter. Storage integration and task or project commands remain separate work.
 
 ## Recommendations
 

@@ -44,6 +44,7 @@ website:
           - artifact-checksum.md
           - token-codec.md
           - artifact-parser.md
+          - task-ticket.md
           - local-storage.md
           - native-storage.md
           - gest-task-values.md
