@@ -17,7 +17,7 @@ of file history, exact issue state and versioned links to code.
 The [examples](examples.md) show library calls for deltas, compressed bytes,
 hashes and token escaping.
 
-Gest is a task and artifact tracker. The converters below use its task and project record model.
+Gest is a task and artifact tracker. The task and project converters in the module table use its task and project record model.
 
 ## Choose a library module
 
@@ -29,6 +29,7 @@ Gest is a task and artifact tracker. The converters below use its task and proje
 | Compute a legacy artifact checksum | [Artifact checksums](artifact-checksum.md) |
 | Escape bytes in Fossil tokens | [Token codec](token-codec.md) |
 | Parse structural artifact records | [Artifact parser](artifact-parser.md) |
+| Compare normalized byte lines | [Line diff](diff.md) |
 | Own a local database transaction | [Local storage](local-storage.md) |
 | Initialize an empty root or store private bytes | [Native storage](native-storage.md) |
 | Validate decoded task snapshots in memory | [Gest task values](gest-task-values.md) |
