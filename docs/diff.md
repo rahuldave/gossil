@@ -93,7 +93,7 @@ the later candidate run.
 
 The raw fixtures do not establish full `diff.test` inheritance or show that the
 normalization, token, rendering and filtering wrappers are complete. Normal coverage
-and full project gates remain pending. Internal hashes for line matching follow
+and full project gates are required in addition to these historical receipts. Internal hashes for line matching follow
 the inspected native signed-char and byte-order behavior. High-byte inputs on
 other architectures, including Linux arm64, still need platform qualification. No cross-platform
 native parity is claimed by the macOS run.
@@ -101,5 +101,5 @@ native parity is claimed by the macOS run.
 ## Recommendations
 
 Normalize bytes in the caller, choose finite limits and read the terminating
-zero triple explicitly. Next, complete normal coverage and full project gates
-for this module, then qualify platform-sensitive hashing before broader use.
+zero triple explicitly. Run normal coverage and project gates for changes to this module,
+then qualify platform-sensitive hashing before broader use.
