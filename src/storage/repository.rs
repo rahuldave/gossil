@@ -540,12 +540,19 @@ impl super::WriteTransaction<'_> {
             let user = parsed.user().unwrap();
             let user = std::str::from_utf8(&user.bytes[..user.c_string_len]).map_err(|e| StorageError::caused("root user UTF-8",e))?;
             let date = parsed.date().unwrap();
-            if row != &vec![Value::Integer(*rid),Value::Text("ci".into()),Value::Real(date),Value::Text(user.into()),Value::Text("initial empty check-in".into()),Value::Real(date),Value::Null,Value::Null,Value::Null,Value::Null,Value::Null,Value::Null] { return Err(StorageError::state("root event differs from canonical bytes")); }
+            // Native julianday is bounded to 0..5373484.5. NUMERIC affinity stores
+            // an integral day exactly as INTEGER in event and tagxref columns.
+            let stored_date = if date.fract() == 0.0 {
+                Value::Integer(date as i64)
+            } else {
+                Value::Real(date)
+            };
+            if row != &vec![Value::Integer(*rid),Value::Text("ci".into()),stored_date.clone(),Value::Text(user.into()),Value::Text("initial empty check-in".into()),stored_date.clone(),Value::Null,Value::Null,Value::Null,Value::Null,Value::Null,Value::Null] { return Err(StorageError::state("root event differs from canonical bytes")); }
             if self.query_bound(ROOT_PROJECTION_CONFLICTS,vec![Value::Integer(*rid),Value::Text(root.clone())]).await? != vec![vec![Value::Integer(0);ROOT_PROJECTION_FLAGS]] {
                 return Err(StorageError::state("root projection contradicts canonical bytes"));
             }
             let tags = self.query_bound("SELECT t.tagname,x.tagtype,x.srcid,x.origid,x.value,x.mtime FROM tagxref x LEFT JOIN tag t ON t.tagid=x.tagid WHERE x.rid=?1 ORDER BY t.tagname LIMIT 3",vec![Value::Integer(*rid)]).await?;
-            let expected = vec![vec![Value::Text("branch".into()),Value::Integer(2),Value::Integer(*rid),Value::Integer(*rid),Value::Text("trunk".into()),Value::Real(date)],vec![Value::Text("sym-trunk".into()),Value::Integer(2),Value::Integer(*rid),Value::Integer(*rid),Value::Null,Value::Real(date)]];
+            let expected = vec![vec![Value::Text("branch".into()),Value::Integer(2),Value::Integer(*rid),Value::Integer(*rid),Value::Text("trunk".into()),stored_date.clone()],vec![Value::Text("sym-trunk".into()),Value::Integer(2),Value::Integer(*rid),Value::Integer(*rid),Value::Null,stored_date]];
             if tags != expected { return Err(StorageError::state("root branch crosslinks differ from canonical bytes")); }
             let checkouts = self.query_bound("SELECT c.shared_head,c.combined_head,c.generation,c.pending_version,c.availability,o.owner_id FROM g_checkout c LEFT JOIN g_checkout_owner o ON o.checkout_id=c.checkout_id",vec![]).await?;
             if checkouts.is_empty() || checkouts.iter().any(|row| row != &vec![Value::Text(root.clone()),Value::Null,Value::Integer(0),Value::Integer(0),Value::Text("ready".into()),Value::Text(principal.owner.clone())]) { return Err(StorageError::state("unsupported or unavailable checkout root closure")); }
@@ -841,6 +848,96 @@ mod tests {
             let result = operation();
             CAPTURE.with(|capture| capture.set(false));
             (result, LARGEST.with(Cell::get))
+        }
+    }
+    #[tokio::test]
+    async fn root_numeric_dates_preserve_affinity_and_reject_tampering() {
+        for (date, expected) in [
+            (b"2026-11-18T00:00:00".as_slice(), Value::Real(2461362.5)),
+            (b"2026-11-18T12:00:00".as_slice(), Value::Integer(2461363)),
+            (
+                b"2026-11-18T12:00:00.001".as_slice(),
+                Value::Real(2461363.0 + 1.0 / 86400000.0),
+            ),
+        ] {
+            let temp = tempfile::tempdir().unwrap();
+            let path = temp.path().join("numeric-date");
+            let owner = LocalOwnerRepository::create(
+                &path,
+                CreateOptions {
+                    repository_id: "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+                    owner_id: "owner",
+                    checkout_id: "checkout",
+                    checkout_root: temp.path(),
+                    date,
+                    user: b"actor",
+                    content_limits: root_content_limits(),
+                    parse_limits: root_parse_limits(),
+                },
+            )
+            .await
+            .unwrap();
+            drop(owner);
+            let mut store = LocalStore::open(&path).await.unwrap();
+            let mut tx = store.begin_write().await.unwrap();
+            let rows = tx
+                .query("SELECT mtime,omtime FROM event UNION ALL SELECT mtime,mtime FROM tagxref")
+                .await
+                .unwrap();
+            assert_eq!(rows, vec![vec![expected.clone(), expected.clone()]; 3]);
+            tx.rollback().await.unwrap();
+            drop(store);
+            drop(
+                LocalOwnerRepository::open(&path, admission_limits())
+                    .await
+                    .unwrap(),
+            );
+            for (table, column) in [
+                ("event", "mtime"),
+                ("event", "omtime"),
+                ("tagxref", "mtime"),
+            ] {
+                for invalid in [
+                    "NULL",
+                    "'invalid'",
+                    "X'32343631333633'",
+                    "1e999",
+                    "2461364",
+                    "2461363.25",
+                    "9223372036854775807",
+                ] {
+                    let mut store = LocalStore::open(&path).await.unwrap();
+                    let mut tx = store.begin_write().await.unwrap();
+                    tx.execute(&format!("UPDATE {table} SET {column}={invalid}"))
+                        .await
+                        .unwrap();
+                    tx.commit().await.unwrap();
+                    drop(store);
+                    assert!(
+                        LocalOwnerRepository::open(&path, admission_limits())
+                            .await
+                            .is_err(),
+                        "{date:?}: {table}.{column}={invalid}"
+                    );
+                    let mut store = LocalStore::open(&path).await.unwrap();
+                    let mut tx = store.begin_write().await.unwrap();
+                    let restore = match (table, column) {
+                        ("event", "mtime") => "UPDATE event SET mtime=?1",
+                        ("event", "omtime") => "UPDATE event SET omtime=?1",
+                        _ => "UPDATE tagxref SET mtime=?1",
+                    };
+                    tx.execute_bound(restore, vec![expected.clone()])
+                        .await
+                        .unwrap();
+                    tx.commit().await.unwrap();
+                    drop(store);
+                    drop(
+                        LocalOwnerRepository::open(&path, admission_limits())
+                            .await
+                            .unwrap(),
+                    );
+                }
+            }
         }
     }
     #[tokio::test]
