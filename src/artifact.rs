@@ -63,9 +63,26 @@ pub struct ParseLimits {
     pub input_bytes: usize,
     /// Maximum number of structural cards.
     pub cards: usize,
-    /// Maximum owned byte output, including the retained input.
+    /// Maximum logical owned-byte charges, including retained input and encoded tokens.
     pub owned_bytes: usize,
     /// Maximum total list entries across all cards.
+    pub entries: usize,
+}
+/// Report the exact resource charges of one successful parse.
+///
+/// These counters use the same accounting as [`ParseLimits`], including conservative
+/// encoded token charges rather than decoded lengths. Subtract them from an
+/// operation's remaining limits before parsing another artifact. The counters report
+/// logical charges against [`ParseLimits`], not every physical Rust allocator byte.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub struct ParseUsage {
+    /// Complete raw input size, including any recognized signature envelope.
+    pub input_bytes: usize,
+    /// Nonzero structural card markers consumed, including Z but excluding a zero sentinel.
+    pub cards: usize,
+    /// Total charged owned bytes, including copies, token charges and list entry sizes.
+    pub owned_bytes: usize,
+    /// Total charged list insertions.
     pub entries: usize,
 }
 /// Retain a date adapter failure separately from invalid date syntax.
@@ -565,7 +582,7 @@ impl<'a> Cursor<'a> {
 struct Budget {
     /// Caller-selected resource policy.
     limits: ParseLimits,
-    /// Borrowed complete unsigned artifact.
+    /// Total logical owned-byte charges so far.
     bytes: usize,
     /// Total charged list entries.
     entries: usize,
@@ -765,6 +782,7 @@ fn matrix(kind: ArtifactType) -> (&'static [u8], &'static [u8]) {
 /// * `dates` - Asynchronous provider, which may borrow an existing transaction.
 /// # Returns
 /// An owned result exposing read-only parsed fields and the exact original bytes.
+/// Use [`parse_artifact_with_usage`] when the caller also needs resource charges.
 /// # Examples
 /// ```
 /// use gossil::artifact::{
@@ -791,6 +809,66 @@ pub async fn parse_artifact(
     limits: ParseLimits,
     dates: &impl DateProvider,
 ) -> Result<ParsedArtifact, ArtifactError> {
+    parse_artifact_with_usage(input, limits, dates)
+        .await
+        .map(|(parsed, _)| parsed)
+}
+/// Parse an artifact and report its existing resource counters on success.
+///
+/// Uses the same grammar and allocation checks as [`parse_artifact`]. No usage is
+/// returned on failure; an aggregate caller must stop its operation on an error.
+/// # Arguments
+/// * `input` - Complete raw bytes, including any supported signature envelope.
+/// * `limits` - Remaining input, card, owned-byte and entry bounds for the operation.
+/// * `dates` - Selected date provider, possibly borrowing the caller's transaction.
+/// # Returns
+/// The validated artifact and the exact logical charges against the supplied limits.
+/// These charges do not measure every physical Rust allocator byte.
+/// # Examples
+/// Parse a cluster, which has no date card, and debit a caller-owned budget.
+/// ```
+/// use gossil::artifact::{
+///     ArtifactError, DateProvider, DateProviderError, ParseLimits, parse_artifact_with_usage,
+/// };
+/// struct NoDates;
+/// impl DateProvider for NoDates {
+///     async fn julianday(&self, _: Option<&[u8]>) -> Result<Option<f64>, DateProviderError> {
+///         Ok(None)
+///     }
+/// }
+/// # #[tokio::main]
+/// # async fn main() -> Result<(), ArtifactError> {
+/// let mut input = b"M aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\n".to_vec();
+/// let checksum = gossil::artifact_checksum::md5(&input);
+/// input.extend_from_slice(b"Z ");
+/// for byte in checksum {
+///     input.extend_from_slice(format!("{byte:02x}").as_bytes());
+/// }
+/// input.push(b'\n');
+/// let mut remaining = ParseLimits {
+///     input_bytes: 4096, cards: 100, owned_bytes: 8192, entries: 100,
+/// };
+/// let (_, usage) = parse_artifact_with_usage(&input, remaining, &NoDates).await?;
+/// assert_eq!(usage.input_bytes, input.len());
+/// assert_eq!(usage.cards, 2);
+/// assert_eq!(usage.entries, 1);
+/// remaining.input_bytes -= usage.input_bytes;
+/// remaining.cards -= usage.cards;
+/// remaining.owned_bytes -= usage.owned_bytes;
+/// remaining.entries -= usage.entries;
+/// assert_eq!(remaining.cards, 98);
+/// # Ok(())
+/// # }
+/// ```
+/// The successful charges fit the supplied limits, so these subtractions cannot
+/// underflow. On an error, stop and discard the enclosing operation state.
+/// # Errors
+/// Returns syntax, checksum, resource-limit or provider failure separately.
+pub async fn parse_artifact_with_usage(
+    input: &[u8],
+    limits: ParseLimits,
+    dates: &impl DateProvider,
+) -> Result<(ParsedArtifact, ParseUsage), ArtifactError> {
     if input.len() > limits.input_bytes || input.len() > isize::MAX as usize {
         return Err(ArtifactError::ResourceLimit);
     }
@@ -1177,7 +1255,13 @@ pub async fn parse_artifact(
         }
         _ => {}
     }
-    Ok(p)
+    let usage = ParseUsage {
+        input_bytes: input.len(),
+        cards: x.line,
+        owned_bytes: budget.bytes,
+        entries: budget.entries,
+    };
+    Ok((p, usage))
 }
 
 #[cfg(test)]

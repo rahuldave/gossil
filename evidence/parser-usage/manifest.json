@@ -1,0 +1,6 @@
+{
+  "src/artifact.rs": "b3274e43c074e0b680a6b6e347e7cc46450043666d566d3c146a870231840a16",
+  "tests/artifact_usage.rs": "546202096eff9c5ae9f57781175dcecb426e317ebf0af763537d4f37432a0d59",
+  "docs/artifact-parser.md": "31b0c46b65ac43427b4f3c5958dcdcd089ff467bebe44c344e3f4014cfcd3f67",
+  "evidence/parser-usage/usage-contract.json": "0440fe2291db5eae221ecb1abb18cfd0e63e02d0b8eeb2c3ced108f7b6f37908"
+}

@@ -1,6 +1,7 @@
 # Artifact parser
 
-[API: `parse_artifact`](api/artifact.qmd#parse_artifact) gives the exact contract.
+[API: `parse_artifact`](api/artifact.qmd#parse_artifact) and
+[`parse_artifact_with_usage`](api/artifact.qmd#parse_artifact_with_usage) give the exact contracts.
 
 The `artifact` module parses all eight Fossil structural artifact types with
 explicit resource limits. The types are manifest, cluster, control, wiki, ticket,
@@ -17,11 +18,44 @@ chosen for the calling operation. Set each field explicitly, including
 `usize`. The byte fields count bytes, and the other fields count cards and list
 entries. There is no default policy.
 
-The owned-byte limit counts retained
-input, token allocations and list entries. Allocations use fallible reservation.
+The owned-byte limit counts logical charges for retained input, encoded tokens,
+copies and list entries. Allocations use fallible reservation.
 
 A resource failure is separate from malformed input, checksum mismatch and
 a date-provider failure.
+
+## Track usage across calls
+
+For several artifacts in one operation, call
+`parse_artifact_with_usage(input, limits, dates).await`. It returns the same
+parsed result with a `ParseUsage` value on success. The original
+`parse_artifact` function delegates to this implementation and returns only the
+parsed result.
+
+`ParseUsage` reports the existing limit counters. `input_bytes` counts the full
+raw input, including a recognized signature envelope. `cards` counts nonzero
+card markers consumed by the structural loop, including Z and repeated empty
+P cards. A trailing zero marker consumes its delimiter without adding a card.
+Body newlines and envelope lines do not add cards.
+
+`owned_bytes` reports all charged bytes, including retained raw input, copies,
+encoded token lengths charged before decoding, and the size of inserted list
+entries. The counters report logical charges against `ParseLimits`; they do not measure every
+physical Rust allocator byte. This charge can exceed the decoded output length. It also includes
+allocations for tokens later discarded, such as reserved file paths.
+`entries` counts list insertions; empty P cards add none.
+
+Subtract successful usage from the operation's remaining limits before the
+next call. Each call checks those remaining limits before its charged
+allocations. Usage is returned only on success. A caller that needs an atomic
+operation must stop on any error and discard its operation state.
+
+The parser does not maintain the aggregate budget or remember earlier failures. The
+[API example](api/artifact.qmd#parse_artifact_with_usage) parses a cluster and
+subtracts all four successful charges from a caller-owned budget. Aggregate
+caller integration remains separate work.
+
+## Supply dates and read results
 
 Implement `DateProvider` on the operation's selected SQLite/libSQL owner.
 Its asynchronous `julianday` method can borrow a transaction. It receives an
