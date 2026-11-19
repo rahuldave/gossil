@@ -14,6 +14,45 @@ That storage foundation does not yet provide ordinary file check-ins or issue
 management. The Fossil references teach the inherited workflow; their commands
 are not Gossil aliases.
 
+## Review files and issues together
+
+In the planned workflow, an agent revises a tracked plan, updates its task and
+retains a private trace. Review the file diff and task changes together before
+requesting the integrated operation. The operation checks expected revisions
+and commits artifacts, derived records, scope, local command history and Gossil
+checkout heads together. Record-only work creates no file check-in.
+
+The shared head selects shared files. An optional private combined head contains
+those files with the same bytes and attributes, plus selected private files.
+Each checkout stores its own head pair. Historical review chooses a permitted
+file head and the exact contributing artifact sets for issues and discussions.
+
+Two task-only edits can share one file head, so a check-in hash does not select
+an issue revision. Complete references also retain required notes, link targets
+and discussion dependencies. Later arrivals do not rewrite that historical set.
+
+Typed issue-to-code links support navigation in both directions across registered
+Git repositories. They pin commits, blobs and any selected ranges or changes;
+current filenames and moving branch names cannot supply that guarantee.
+Required captures preserve permitted target bytes when external code is absent.
+A descriptor is a structured record naming the versioned target and any
+selected range. Its transferable encoding remains unfinished; there is no
+exchange format for applications to implement from this guide yet.
+
+Fossil already has immutable ticket history and file check-ins. Gossil's added
+contract coordinates exact record boundaries, shared/private file heads and
+scoped links. Gest contributes the task workflow; one owned transaction
+strengthens its multi-statement storage helpers. This coordinated operation is
+planned and is not provided by the current delta diagnostics.
+
+The transaction governs the Gossil database. Git commits remain separate source
+operations, and checkout files are materialized after commit with recovery
+bookkeeping. A failure then can require checkout recovery while the database
+history remains committed. Ordinary commands do not automatically combine
+unrelated file and issue work. See [library concepts](concepts.md#files-and-issues-in-one-operation)
+for the shared model and [compare Gossil with Git](compare-with-git.md) for the
+plan/task example and current availability.
+
 ## Separate stored history from the files you edit
 
 A repository holds recorded history. A checkout is the folder of files you
@@ -198,4 +237,5 @@ output path. Compare the restored bytes before replacing a file.
 
 Keep Git as the source authority and plan a small explicit selection of agent
 files for Gossil. Next, try the current delta tutorial. Use this workflow guide
-to choose roots, scope and exact version references before repository commands arrive.
+to choose roots and scope before repository commands arrive. For integrated
+review, retain the file head and complete issue boundaries together.
