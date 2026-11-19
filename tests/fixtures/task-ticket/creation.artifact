@@ -1,0 +1,18 @@
+D 2024-02-29T12:34:56.000000001
+J assigned_to null
+J created_at "2024-01-01T00:00:00+00:00"
+J description ""
+J gest_id "kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk"
+J gossil_deleted false
+J gossil_kind task
+J gossil_schema 1
+J metadata null
+J priority null
+J project_id "zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz"
+J resolved_at null
+J status "in-progress"
+J title "hello"
+J updated_at "2024-01-01T00:00:00+00:00"
+K 0123456789abcdef0123456789abcdef01234567
+U native\sactor
+Z 300e41282d0ec532bffd47614dbb8e19

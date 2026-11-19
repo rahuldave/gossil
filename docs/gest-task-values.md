@@ -2,8 +2,12 @@
 
 The `gossil::gest_task_values` module converts eleven already decoded task fields
 into an owned, validated record. Callers can use the record for complete task
-snapshots before storage integration. The module does not complete the Gest API
-or permit nonempty migration.
+snapshots before storage integration. Pass validated snapshots to the
+[task ticket emitter](task-ticket.md) for bounded creation artifact bytes.
+The module does not implement the full Gest API or migrate stored repositories.
+
+Gest is a task and artifact tracker. This converter uses its task record model.
+Here, canonical values use the status and UTC timestamp forms defined below.
 
 `TaskValueInputs` requires an explicit `serde_json::Value` for each field.
 `task_from_values` validates these values and returns `TaskValues`, whose fields
@@ -12,7 +16,7 @@ The functions do not read a clock, generate identifiers or execute SQL.
 
 ## Use the library
 
-Assemble every field after admitting the raw input. No field has a default.
+Check raw input field presence, duplicates and byte limits before assembling decoded values. No field has a default.
 The public input and output use the same `TaskValueInputs` type.
 
 ```rust
@@ -61,11 +65,11 @@ The input requires all eleven fields, even when a value is null.
 
 | Field | Admitted value |
 | --- | --- |
-| `gest_id` | Full task ID string, called `id` in upstream `Model`. |
+| `gest_id` | Full task ID string, called `id` in Gest's task `Model`. |
 | `project_id` | Full project ID string. |
 | `title` | Any string. |
 | `priority` | Null or a JSON integer from 0 through 255. |
-| `status` | A status string accepted by upstream `FromStr`. |
+| `status` | A status string accepted by Gest's task status `FromStr` implementation. |
 | `description` | Any string. |
 | `assigned_to` | Null or a full author ID string. |
 | `metadata` | Any `serde_json::Value`, including null. |
@@ -122,74 +126,42 @@ Metadata has no further type restriction.
 
 `Cargo.toml` pins chrono to 0.4.44 with default features disabled and `alloc`
 as its only enabled feature. Clock access and chrono's serde support are disabled.
-The lockfile adds chrono 0.4.44, num-traits 0.2.19 and autocfg 1.5.1.
-The change updates no existing dependency package versions.
+The lockfile includes chrono 0.4.44, num-traits 0.2.19 and autocfg 1.5.1.
 These additions support timestamp conversion in Rust and do not add a native
 Fossil process or a SQL date conversion to this module.
 
 ## Caller responsibilities
 
-The caller must decode and admit raw contributors before constructing the
-input. It must check complete field presence, classify every raw J field,
-reject duplicate lexemes where required and enforce operation byte budgets.
+The caller must validate and decode raw fields before constructing the input.
+For ticket artifacts, it must classify each J card, which assigns a named field.
+It must check complete field presence, reject duplicate field spellings where
+required and enforce byte limits for the operation.
 The explicit input struct is not an object decoder and cannot identify fields
-that the caller discarded. Whole-history validation, reference closure and
-unsupported-contributor policy also remain with the enclosing implementation.
+that the caller discarded. The enclosing implementation must validate history, resolve references to other
+records and decide which unsupported fields or records to reject.
 
-The existing nonempty migration guard remains in place. This module supplies
-complete task values for later before and after snapshots. Artifact creation,
-replay, recipes, provenance, inverse operations, references and storage writes
-remain separate work.
+This module supplies complete task values for before and after snapshots.
+The separate task ticket emitter supplies creation bytes. Applying history, recording operation recipes and the source of changes,
+undoing operations and writing storage remain
+separate work. The converter does not enable migration of stored repositories.
 
 ## Source and verification evidence
 
-The source pin is Gest `eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8`.
-The corrected plan is `addendum.json` with SHA-256
-`9206f47295ea635e5b8baa6ccb223b68f452e634100ee4966203f809ed951d78`.
-Open the following source and evidence paths from the repository root.
-They are outside this documentation site.
+The converter follows Gest source commit
+`eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8` with the Gossil validation rules
+specified above. Source mappings, test counts and historical run qualifications
+are preserved in the [task value evidence archive](https://github.com/rahuldave/gossil/blob/main/docs/_history/task-value-evidence.md).
+Those runs qualify their recorded trees and do not establish full Gest or Fossil compatibility.
 
-The fixture source map, `tests/fixtures/gest_task_values/source-map.json`,
-records exact source identities, all fields and all 23 priority/status tests.
-It maps five directly inherited checks and six semantic replacements.
-The other twelve tests concern the named priority API outside the numeric task
-model. This accounting does not claim 23 ports or full Gest compatibility.
-
-The focused tests, `tests/gest_task_values.rs`, exercise the public conversion
-functions. The records in `tests/fixtures/gest_task_values/records.json` include
-complete snapshots and source-compatible timestamp controls.
-Checked priority conversion and terminal/null rejection are Gossil contract
-checks, rather than copied upstream SQL behavior.
-
-The candidate evidence in `evidence/gest-task-values/candidate.json` records the
-author's focused run, dependency delta and complete impact inventory.
-It preserves the author tree's hashes. Later documentation and comment edits
-do not change that evidence or make those hashes describe the later tree.
-The preserved focused run passed 21 test functions with none failed or ignored.
-
-The separate parse-cause correction in `evidence/gest-task-values-cause-fix/report.json`
-records a failing regression before the fix and a passing run of 24 tests after it.
-That run includes the unchanged original 21 tests and three new cause controls.
-The controls check distinct parser causes, validation failures without a parser
-cause and canonical UTC reparsing failures. This later evidence preserves the
-original run and does not qualify the final composed tree.
-
-Ordinary focused tests run in the worker's own target directory through
-`jlog run just test-paths tests/gest_task_values.rs`. Parent-owned review and
-formal gates qualify the later composed tree. No live Fossil probe ran for
-this module.
-
-The README, site navigation and development plan link to this guide.
-The API comments document the input fields, private record, conversion functions
-and error type. Storage, artifacts, commands and schemas do not call this module.
-Their contracts remain separate. Independent prose revision and the final
-composed gates remain part of the parent-owned acceptance workflow.
+The task ticket emitter borrows canonical values from this module.
+Storage and commands do not call this module. Database schemas do not
+integrate its task record format.
 
 This page follows the nossaifd writing guide, including principles credited to
 Rosalind Reid, Shreya Shankar and Oskar Austegard.
 
 ## Recommendations
 
-Use the explicit decoded-field converter for task snapshot values.
-Next, independently review this candidate and run the composed tree's gates.
-Keep nonempty migration closed until its enclosing contracts are implemented.
+Use the explicit decoded-field converter for complete task snapshots.
+Next, handle `TaskValueError` and use `task_to_values` to inspect the normalized
+values or pass the validated record to the task ticket emitter.

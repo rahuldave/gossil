@@ -278,3 +278,48 @@ pub fn task_to_values(task: &TaskValues) -> TaskValueInputs {
         updated_at: Value::from(task.updated_at.to_rfc3339()),
     }
 }
+
+/// Borrowed canonical JSON values for the task ticket emitter, without model clones.
+#[derive(serde::Serialize)]
+#[serde(untagged)]
+pub(crate) enum CanonicalTaskValue<'a> {
+    /// Exact model string or canonical status.
+    Text(&'a str),
+    /// Optional identifier, preserving explicit JSON null.
+    OptionalText(Option<&'a str>),
+    /// Numeric priority or explicit JSON null.
+    Priority(Option<u8>),
+    /// Arbitrary metadata, borrowed recursively by serde.
+    Json(&'a Value),
+    /// Bounded canonical business timestamp string or explicit JSON null.
+    Timestamp(Option<String>),
+}
+
+/// Enumerate the same eleven fields as `task_to_values` for bounded serialization.
+/// Only the bounded timestamp representations are allocated. Arbitrary model
+/// strings and metadata remain borrowed. This module owns validation and status conversion.
+/// # Arguments
+/// * `task` - Validated task whose canonical fields are borrowed.
+/// # Returns
+/// All eleven field names and borrowed canonical values.
+pub(crate) fn canonical_task_fields(
+    task: &TaskValues,
+) -> [(&'static str, CanonicalTaskValue<'_>); 11] {
+    use CanonicalTaskValue::{Json, OptionalText, Priority, Text, Timestamp};
+    [
+        ("assigned_to", OptionalText(task.assigned_to.as_deref())),
+        ("created_at", Timestamp(Some(task.created_at.to_rfc3339()))),
+        ("description", Text(&task.description)),
+        ("gest_id", Text(&task.gest_id)),
+        ("metadata", Json(&task.metadata)),
+        ("priority", Priority(task.priority)),
+        ("project_id", Text(&task.project_id)),
+        (
+            "resolved_at",
+            Timestamp(task.resolved_at.map(|dt| dt.to_rfc3339())),
+        ),
+        ("status", Text(task.status)),
+        ("title", Text(&task.title)),
+        ("updated_at", Timestamp(Some(task.updated_at.to_rfc3339()))),
+    ]
+}

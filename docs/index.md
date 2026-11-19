@@ -3,7 +3,7 @@ title: Gossil
 ---
 
 Gossil aims to keep agent work, issues and file history together alongside Git.
-This build exposes a Rust library for Fossil delta bytes, artifact parsing and
+Fossil is a version-control system. This build exposes a Rust library for its delta bytes, artifact parsing and
 local storage. The `gossil` command creates, applies and checks deltas between
 files without a version-control checkout.
 
@@ -30,6 +30,7 @@ Gest is a task and artifact tracker. The converters below use its task and proje
 | Own a local database transaction | [Local storage](local-storage.md) |
 | Initialize an empty root or store private bytes | [Native storage](native-storage.md) |
 | Validate decoded task snapshots in memory | [Gest task values](gest-task-values.md) |
+| Emit bounded task creation artifact bytes | [Task tickets](task-ticket.md) |
 | Validate decoded project snapshots in memory | [Gest project values](gest-project-values.md) |
 
 The [concepts guide](concepts.md) explains how these modules fit together.

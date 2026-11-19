@@ -6,7 +6,8 @@ The generated [Rust API](api/index.qmd) describes the public library surface.
 
 The standalone [Gest task values converter](gest-task-values.md) validates eleven decoded fields.
 The [Gest project values converter](gest-project-values.md) validates four canonical project fields.
-Both converters operate in memory. Storage integration, raw field admission and the full Gest API remain future work.
+The [task ticket emitter](task-ticket.md) serializes validated task snapshots with
+caller-supplied native identity, actor and date. Both converters operate in memory. Storage integration, raw field admission and the full Gest API remain future work.
 
 ## Current scope
 
@@ -23,7 +24,8 @@ extend that public graph. Build this version from source. The implemented module
 full-engine compatibility. Git remains the source-code authority for this project.
 
 Historical results qualify only their recorded source, inputs and environment.
-The accepted bounded `delta1` run does not qualify storage or the full engine.
+The archived `delta1` suite tests delta operations with explicit bounds.
+It does not qualify storage or the full Fossil engine.
 Linux qualification and clean-clone CI remain separate work.
 
 ## Contributor setup
@@ -67,7 +69,7 @@ just docs-build
 `just test` and `just integration` use the installed coverage workflow.
 Keep failed, blocked, skipped and disabled-feature observations distinct from
 passes. Installed tool copies and hook files do not prove actual executions.
-The coordinator owns final ordered gates and reviewed delivery to `main`.
+Complete the required checks and independent review before delivery to `main`.
 
 ## Documentation build
 
@@ -128,12 +130,6 @@ Keep canonical baselines unchanged. Review the source diff before updating the
 adapted patch, source identity and affected manifest receipts together.
 The provenance record is `evidence/libsql-provider/provenance.json`.
 
-Five frozen task-value captures retain literal whitespace through exact `.gitattributes` paths.
-They are `green.log`, `guide.diff` and `source.diff` under `evidence/gest-task-values-cause-fix`,
-plus `focused-test.log` and `source-edge-observation.log` under `evidence/gest-task-values`.
-These paths preserve command output and patch context without changing the captured bytes.
-Ordinary authored files, suffixed paths and neighboring names retain whitespace checks.
-
 ## Evidence archive
 
 The repository keeps exact experiments in
@@ -144,6 +140,18 @@ which is excluded from rendering, navigation and search.
 These archives preserve source identities, failures and qualifications.
 The local companion specification is `~/Projects/AIProjectInfra/docs/gossil/README.md`.
 It is not required to use the current CLI or library.
+
+## Shared value validation
+
+Task and project conversion share private field validators. The task ticket emitter
+borrows the status and UTC timestamp forms defined by `gest_task_values`.
+Changes must preserve public conversion behavior and the original parser errors
+returned through the public error accessor.
+Only timestamp strings with a fixed maximum length are allocated before output
+size planning; task strings and metadata remain borrowed.
+
+Historical task-value source mappings and run accounting are preserved in
+[the task value evidence archive](https://github.com/rahuldave/gossil/blob/main/docs/_history/task-value-evidence.md).
 
 ## Recommendations
 
