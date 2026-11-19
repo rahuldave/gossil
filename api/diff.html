@@ -1,0 +1,269 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="generator" content="smalldocs-0.5.12"><meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes"><meta name="description" content="Compute bounded line edit scripts ported from Fossil's `src/diff.c`."><title>diff – Gossil</title><link rel="icon" href="../site_libs/themes/atelier/logo.svg"><link rel="stylesheet" href="../site_libs/themes/atelier/atelier.css" data-mode="light" class="quarto-color-scheme" id="quarto-bootstrap-light" media="not all and (prefers-color-scheme: dark)"><link rel="stylesheet" href="../site_libs/themes/atelier/atelier-dark.css" data-mode="dark" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap-dark" media="(prefers-color-scheme: dark)"><link rel="stylesheet" href="../site_libs/bootstrap-icons/bootstrap-icons.min.css"><link rel="stylesheet" href="../site_libs/smalldocs.css"><meta name="smalldocs:offset" content="../"><script src="../site_libs/bootstrap/bootstrap.bundle.min.js"></script><script src="../site_libs/fuse/fuse.min.js"></script><script src="../site_libs/smalldocs.js" defer></script><script>(function(){var d=document.documentElement,s=null;try{s=localStorage.getItem('smalldocs-scheme')}catch(e){}var alt=s?s==='alternate':!!(window.matchMedia&&matchMedia('(prefers-color-scheme: dark)').matches);var ls=document.querySelectorAll('link.quarto-color-scheme');if(alt)d.dataset.scheme='alternate';if(s)ls.forEach(function(l){var on=l.classList.contains('quarto-color-alternate')===alt;if(on)l.setAttribute('blocking','render');l.media=on?'all':'not all'});var on=ls[alt?1:0];if(on&&on.dataset.mode==='dark')d.classList.add('quarto-dark')})();</script></head><body class="nav-sidebar floating nav-fixed"><header id="quarto-header" class="headroom sticky-top"><nav class="navbar navbar-expand-lg sd-navbar-default"><div class="navbar-container container-fluid"><div class="navbar-brand-container mx-auto"><a class="navbar-brand" href="../index.html"><span class="navbar-title">Gossil</span></a></div><button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button><div class="collapse navbar-collapse" id="navbarCollapse"><ul class="navbar-nav navbar-nav-scroll me-auto"><li class="nav-item"><a class="nav-link" href="../getting-started.html"><span class="menu-text">Start</span></a></li><li class="nav-item"><a class="nav-link" href="../concepts.html"><span class="menu-text">Library concepts</span></a></li><li class="nav-item"><a class="nav-link" href="../cli.html"><span class="menu-text">CLI</span></a></li><li class="nav-item"><a class="nav-link" href="index.html"><span class="menu-text">Rust API</span></a></li><li class="nav-item"><a class="nav-link" href="../development-plan.html"><span class="menu-text">Development</span></a></li></ul><ul class="navbar-nav navbar-nav-scroll ms-auto"><li class="nav-item compact"><a class="nav-link" href="https://github.com/rahuldave/gossil" aria-label="github"><i class="bi bi-github" role="img"></i></a></li><li class="nav-item compact"><a class="quarto-color-scheme-toggle nav-link" href="" title="Toggle dark mode" onclick="window.smalldocsToggleScheme(); return false;"><i class="bi"></i></a></li></ul><div class="quarto-navbar-tools"><div class="smalldocs-search" id="quarto-search"><i class="bi bi-search" aria-hidden="true"></i><input type="search" class="form-control form-control-sm" placeholder="Search" aria-label="Search" autocomplete="off"><div class="smalldocs-search-results dropdown-menu"></div></div></div></div></div></nav><nav class="quarto-secondary-nav"><div class="container-fluid d-flex"><button type="button" class="quarto-btn-toggle btn" aria-controls="quarto-sidebar" aria-label="Toggle sidebar navigation"><i class="bi bi-layout-text-sidebar-reverse"></i></button><nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="index.html">Rust API</a></li><li class="breadcrumb-item"><a href="diff.html">diff</a></li></ol></nav></div></nav></header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article has-sidebar has-margin"><nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto"><div class="sidebar-menu-container"><ul class="list-unstyled mt-1"><li class="sidebar-item"><div class="sidebar-item-container"><a href="../index.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Gossil</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="../getting-started.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Get started</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="../cli.html" class="sidebar-item-text sidebar-link"><span class="menu-text">CLI reference</span></a></div></li><li class="sidebar-item sidebar-item-section"><div class="sidebar-item-container"><a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true"><span class="menu-text">Guides</span></a><a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section"><i class="bi bi-chevron-right ms-2"></i></a></div><ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show"><li class="sidebar-item"><div class="sidebar-item-container"><a href="../working-with-repositories.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Working with repositories</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="../compare-with-git.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Compare Gossil with Git</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="../concepts.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Library concepts</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="../examples.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Rust library examples</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="../delta-encoder.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Bounded delta encoder</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="../delta-decoder.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Bounded delta decoder</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="../blob-primitives.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Byte digests and packed blobs</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="../artifact-checksum.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Artifact byte checksums</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="../token-codec.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Fossil token bytes</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="../artifact-parser.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Artifact parser</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="../diff.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Compare normalized byte lines</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="../task-ticket.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Emit a task creation artifact</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="../local-storage.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Local database ownership</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="../native-storage.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Native local storage</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="../gest-task-values.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Gest task values</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="../gest-project-values.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Gest project values</span></a></div></li></ul></li><li class="sidebar-item sidebar-item-section"><div class="sidebar-item-container"><a class="sidebar-item-text sidebar-link" href="index.html"><span class="menu-text">Rust API</span></a><a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Toggle section"><i class="bi bi-chevron-right ms-2"></i></a></div><ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show"><li class="sidebar-item"><div class="sidebar-item-container"><a href="artifact.html" class="sidebar-item-text sidebar-link"><span class="menu-text">artifact</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="artifact_checksum.html" class="sidebar-item-text sidebar-link"><span class="menu-text">artifact_checksum</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="compression.html" class="sidebar-item-text sidebar-link"><span class="menu-text">compression</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="content_hash.html" class="sidebar-item-text sidebar-link"><span class="menu-text">content_hash</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="delta.html" class="sidebar-item-text sidebar-link"><span class="menu-text">delta</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="diff.html" class="sidebar-item-text sidebar-link active" aria-current="page"><span class="menu-text">diff</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="gest_project_values.html" class="sidebar-item-text sidebar-link"><span class="menu-text">gest_project_values</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="gest_task_values.html" class="sidebar-item-text sidebar-link"><span class="menu-text">gest_task_values</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="gossil.html" class="sidebar-item-text sidebar-link"><span class="menu-text">gossil</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="native_date.html" class="sidebar-item-text sidebar-link"><span class="menu-text">native_date</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="product.html" class="sidebar-item-text sidebar-link"><span class="menu-text">product</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="storage.html" class="sidebar-item-text sidebar-link"><span class="menu-text">storage</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="task_ticket.html" class="sidebar-item-text sidebar-link"><span class="menu-text">task_ticket</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="token_codec.html" class="sidebar-item-text sidebar-link"><span class="menu-text">token_codec</span></a></div></li></ul></li><li class="sidebar-item sidebar-item-section"><div class="sidebar-item-container"><a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true"><span class="menu-text">Development</span></a><a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true" aria-label="Toggle section"><i class="bi bi-chevron-right ms-2"></i></a></div><ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show"><li class="sidebar-item"><div class="sidebar-item-container"><a href="../development-plan.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Development and contributing</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="../conformance.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Inherited-test runner</span></a></div></li></ul></li></ul></div></nav><div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item"></div><div id="quarto-margin-sidebar" class="sidebar margin-sidebar"><nav id="TOC" role="doc-toc" class="toc-active"><h2 id="toc-title">On this page</h2><ul><li><a href="#recommendations" id="toc-recommendations" class="nav-link" data-scroll-target="#recommendations">Recommendations</a></li><li><a href="#Whitespace" id="toc-Whitespace" class="nav-link" data-scroll-target="#Whitespace">enum Whitespace</a></li><li><a href="#LineDiffOptions" id="toc-LineDiffOptions" class="nav-link" data-scroll-target="#LineDiffOptions">struct LineDiffOptions</a></li><li><a href="#DiffLimits" id="toc-DiffLimits" class="nav-link" data-scroll-target="#DiffLimits">struct DiffLimits</a></li><li><a href="#Edit" id="toc-Edit" class="nav-link" data-scroll-target="#Edit">struct Edit</a></li><li><a href="#DiffError" id="toc-DiffError" class="nav-link" data-scroll-target="#DiffError">enum DiffError</a></li><li><a href="#line_diff" id="toc-line_diff" class="nav-link" data-scroll-target="#line_diff">fn line_diff</a></li></ul></nav></div><main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="index.html">Rust API</a></li><li class="breadcrumb-item"><a href="diff.html">diff</a></li></ol></nav><div class="quarto-title"><h1 class="title">diff</h1></div><div><div class="description">Compute bounded line edit scripts ported from Fossil’s <code>src/diff.c</code>.</div></div><div class="quarto-title-meta"></div></header><p>This module supplies the normalized-byte line layer of <code>text_diff</code>. The
+callers must perform <code>blob_to_utf8_no_bom</code> conversion separately. Bytes need
+not be valid UTF-8. No BOM removal, UTF-16 conversion, token diff, renderer,
+regular expression filter, filesystem or repository access occurs here.</p>
+<p>Derived from Fossil b3a1c8efb2731dffbd5cc38c58ac349746de6da6.
+Copyright (c) 2007 D. Richard Hipp. Distributed under the 2-Clause BSD license.</p>
+<section id="recommendations" class="level2">
+<h2 class="anchored" data-anchor-id="recommendations">Recommendations</h2>
+<p>Normalize inputs before calling this layer and select finite caller limits.</p>
+</section>
+<section id="Whitespace" class="level2">
+<h2 class="anchored" data-anchor-id="Whitespace">enum Whitespace</h2>
+<p><a href="https://github.com/rahuldave/gossil/blob/main/src/diff.rs#L16" class="source-link">source</a></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span class="kw">pub</span> <span class="kw">enum</span> Whitespace</code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Whitespace comparison used when hashing and comparing lines.</p>
+<div class="sd-table">
+<table class="caption-top table">
+<thead>
+<tr>
+<th>Variant</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Exact</code></td>
+<td>Compare all bytes except the line terminator.</td>
+</tr>
+<tr>
+<td><code>IgnoreEol</code></td>
+<td>Ignore Fossil’s trailing whitespace bytes (8, 9, 10, 12, 13, 32).</td>
+</tr>
+<tr>
+<td><code>IgnoreAll</code></td>
+<td>Ignore Fossil’s whitespace bytes throughout each line.</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Implements <a href="https://doc.rust-lang.org/nightly/core/clone/trait.Clone.html"><code>Clone</code></a>, <a href="https://doc.rust-lang.org/nightly/core/marker/trait.Copy.html"><code>Copy</code></a>, <a href="https://doc.rust-lang.org/nightly/core/fmt/trait.Debug.html"><code>Debug</code></a>, <a href="https://doc.rust-lang.org/nightly/core/default/trait.Default.html"><code>Default</code></a>, <a href="https://doc.rust-lang.org/nightly/core/cmp/trait.PartialEq.html"><code>PartialEq</code></a>, <a href="https://doc.rust-lang.org/nightly/core/cmp/trait.Eq.html"><code>Eq</code></a>.</p>
+</section>
+<section id="LineDiffOptions" class="level2">
+<h2 class="anchored" data-anchor-id="LineDiffOptions">struct LineDiffOptions</h2>
+<p><a href="https://github.com/rahuldave/gossil/blob/main/src/diff.rs#L28" class="source-link">source</a></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span class="kw">pub</span> <span class="kw">struct</span> LineDiffOptions</code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Options supported by the raw, line-based portion of Fossil <code>text_diff</code>.</p>
+<div class="sd-table">
+<table class="caption-top table">
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>whitespace</code></td>
+<td>Whitespace</td>
+<td>Select exact, trailing-space or all-space comparison.</td>
+</tr>
+<tr>
+<td><code>strip_cr</code></td>
+<td>bool</td>
+<td>Remove a trailing carriage return, including on an unterminated line.</td>
+</tr>
+<tr>
+<td><code>invert</code></td>
+<td>bool</td>
+<td>Exchange FROM and TO before computing the script.</td>
+</tr>
+<tr>
+<td><code>optimize</code></td>
+<td>bool</td>
+<td>Apply native readability shifts (<code>DIFF_NOOPT</code> disables this).</td>
+</tr>
+<tr>
+<td><code>not_too_big</code></td>
+<td>bool</td>
+<td>Reject scripts with more than 10,000 inserted plus deleted lines.</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Implements <a href="https://doc.rust-lang.org/nightly/core/clone/trait.Clone.html"><code>Clone</code></a>, <a href="https://doc.rust-lang.org/nightly/core/marker/trait.Copy.html"><code>Copy</code></a>, <a href="https://doc.rust-lang.org/nightly/core/fmt/trait.Debug.html"><code>Debug</code></a>, <a href="https://doc.rust-lang.org/nightly/core/cmp/trait.PartialEq.html"><code>PartialEq</code></a>, <a href="https://doc.rust-lang.org/nightly/core/cmp/trait.Eq.html"><code>Eq</code></a>, <a href="https://doc.rust-lang.org/nightly/core/default/trait.Default.html"><code>Default</code></a>.</p>
+</section>
+<section id="DiffLimits" class="level2">
+<h2 class="anchored" data-anchor-id="DiffLimits">struct DiffLimits</h2>
+<p><a href="https://github.com/rahuldave/gossil/blob/main/src/diff.rs#L55" class="source-link">source</a></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span class="kw">pub</span> <span class="kw">struct</span> DiffLimits</code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Caller-selected bounds on admitted input and algorithm work.</p>
+<div class="sd-table">
+<table class="caption-top table">
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>max_input_bytes</code></td>
+<td>usize</td>
+<td>Maximum sum of the two input byte lengths.</td>
+</tr>
+<tr>
+<td><code>max_lines</code></td>
+<td>usize</td>
+<td>Maximum sum of the two input line counts.</td>
+</tr>
+<tr>
+<td><code>max_edits</code></td>
+<td>usize</td>
+<td>Maximum number of triples, including the terminating zero triple.</td>
+</tr>
+<tr>
+<td><code>max_work</code></td>
+<td>u64</td>
+<td>Maximum charged byte inspections, comparisons and search iterations.</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Implements <a href="https://doc.rust-lang.org/nightly/core/clone/trait.Clone.html"><code>Clone</code></a>, <a href="https://doc.rust-lang.org/nightly/core/marker/trait.Copy.html"><code>Copy</code></a>, <a href="https://doc.rust-lang.org/nightly/core/fmt/trait.Debug.html"><code>Debug</code></a>, <a href="https://doc.rust-lang.org/nightly/core/default/trait.Default.html"><code>Default</code></a>.</p>
+</section>
+<section id="Edit" class="level2">
+<h2 class="anchored" data-anchor-id="Edit">struct Edit</h2>
+<p><a href="https://github.com/rahuldave/gossil/blob/main/src/diff.rs#L79" class="source-link">source</a></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span class="kw">pub</span> <span class="kw">struct</span> Edit</code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>One COPY/DELETE/INSERT triple, in numbers of lines.</p>
+<div class="sd-table">
+<table class="caption-top table">
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>copy</code></td>
+<td>usize</td>
+<td>Common lines consumed from both inputs.</td>
+</tr>
+<tr>
+<td><code>delete</code></td>
+<td>usize</td>
+<td>Lines consumed only from FROM.</td>
+</tr>
+<tr>
+<td><code>insert</code></td>
+<td>usize</td>
+<td>Lines consumed only from TO.</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Implements <a href="https://doc.rust-lang.org/nightly/core/clone/trait.Clone.html"><code>Clone</code></a>, <a href="https://doc.rust-lang.org/nightly/core/marker/trait.Copy.html"><code>Copy</code></a>, <a href="https://doc.rust-lang.org/nightly/core/fmt/trait.Debug.html"><code>Debug</code></a>, <a href="https://doc.rust-lang.org/nightly/core/default/trait.Default.html"><code>Default</code></a>, <a href="https://doc.rust-lang.org/nightly/core/cmp/trait.PartialEq.html"><code>PartialEq</code></a>, <a href="https://doc.rust-lang.org/nightly/core/cmp/trait.Eq.html"><code>Eq</code></a>.</p>
+</section>
+<section id="DiffError" class="level2">
+<h2 class="anchored" data-anchor-id="DiffError">enum DiffError</h2>
+<p><a href="https://github.com/rahuldave/gossil/blob/main/src/diff.rs#L90" class="source-link">source</a></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span class="kw">pub</span> <span class="kw">enum</span> DiffError</code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Native rejection or a caller resource boundary.</p>
+<div class="sd-table">
+<table class="caption-top table">
+<thead>
+<tr>
+<th>Variant</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Binary</code></td>
+<td>Embedded NUL or a line longer than 32767 bytes.</td>
+</tr>
+<tr>
+<td><code>WhitespaceOnly</code></td>
+<td>Whitespace mode produced the native unchanged-script rejection.</td>
+</tr>
+<tr>
+<td><code>TooManyChanges</code></td>
+<td><code>not_too_big</code> rejected more than 10,000 changed lines.</td>
+</tr>
+<tr>
+<td><code>Limit</code></td>
+<td>A caller bound, checked arithmetic or allocation failed.</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Implements <a href="https://doc.rust-lang.org/nightly/core/clone/trait.Clone.html"><code>Clone</code></a>, <a href="https://doc.rust-lang.org/nightly/core/marker/trait.Copy.html"><code>Copy</code></a>, <a href="https://doc.rust-lang.org/nightly/core/fmt/trait.Debug.html"><code>Debug</code></a>, <a href="https://doc.rust-lang.org/nightly/core/cmp/trait.PartialEq.html"><code>PartialEq</code></a>, <a href="https://doc.rust-lang.org/nightly/core/cmp/trait.Eq.html"><code>Eq</code></a>.</p>
+</section>
+<section id="line_diff" class="level2">
+<h2 class="anchored" data-anchor-id="line_diff">fn line_diff</h2>
+<p><a href="https://github.com/rahuldave/gossil/blob/main/src/diff.rs#L755" class="source-link">source</a></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span class="kw">pub</span> <span class="kw">fn</span> <span class="fu">line_diff</span>(
+    from: <span class="kw">&amp;</span>[<span class="dt">u8</span>],
+    to: <span class="kw">&amp;</span>[<span class="dt">u8</span>],
+    options: LineDiffOptions,
+    limits: DiffLimits,
+) -&gt; <span class="bu">Result</span><span class="op">&lt;</span><span class="bu">Vec</span><span class="op">&lt;</span>Edit<span class="op">&gt;</span>, DiffError<span class="op">&gt;</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Compute native line COPY/DELETE/INSERT triples for normalized byte text.</p>
+<p>The result includes the native terminating zero triple. LF is excluded from
+comparison, so adding or removing the final LF does not change a line. This
+API does not perform the BOM or UTF-16 conversion of <code>blob_to_utf8_no_bom</code>.</p>
+<section id="errors" class="level4">
+<h4 class="anchored" data-anchor-id="errors">Errors</h4>
+<p>Returns <a href="diff.html#DiffError"><code>DiffError::Binary</code></a> for an embedded NUL or a line longer than 32,767
+bytes. Returns <a href="diff.html#DiffError"><code>DiffError::WhitespaceOnly</code></a> when a whitespace mode produces
+one copy-only triple followed by the zero triple, and <a href="diff.html#DiffError"><code>DiffError::TooManyChanges</code></a>
+when <code>not_too_big</code> rejects more than 10,000 inserted plus deleted lines.
+Returns <a href="diff.html#DiffError"><code>DiffError::Limit</code></a> for caller bounds, fixed input caps, checked
+arithmetic or allocation failure. No partial script is returned on failure.</p>
+</section>
+<section id="examples" class="level4">
+<h4 class="anchored" data-anchor-id="examples">Examples</h4>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span class="kw">use</span> gossil::diff::{line_diff, DiffLimits, Edit, LineDiffOptions};
+<span class="kw">let</span> edits <span class="op">=</span> line_diff(
+    <span class="st">b&quot;</span><span class="st">old</span><span class="sc">\n</span><span class="st">&quot;</span>, <span class="st">b&quot;</span><span class="st">new</span><span class="sc">\n</span><span class="st">&quot;</span>, LineDiffOptions::default(), DiffLimits::default(),
+).unwrap();
+<span class="fu">assert_eq!</span>(edits, <span class="fu">vec!</span>[
+    Edit { copy: <span class="dv">0</span>, delete: <span class="dv">1</span>, insert: <span class="dv">1</span> },
+    Edit::default(),
+]);</code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="sd-table">
+<table class="caption-top table">
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>from</code></td>
+<td>&amp;[u8]</td>
+<td>Already-normalized FROM bytes.</td>
+</tr>
+<tr>
+<td><code>to</code></td>
+<td>&amp;[u8]</td>
+<td>Already-normalized TO bytes.</td>
+</tr>
+<tr>
+<td><code>options</code></td>
+<td>LineDiffOptions</td>
+<td>Supported line comparison and edit options.</td>
+</tr>
+<tr>
+<td><code>limits</code></td>
+<td>DiffLimits</td>
+<td>Finite resource bounds for this invocation.</td>
+</tr>
+<tr>
+<td>returns</td>
+<td>Result&lt;Vec&lt;Edit&gt;, DiffError&gt;</td>
+<td>Native triples ending in a zero triple.</td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+</section>
+<nav class="page-navigation"><div class="nav-page nav-page-previous"><a href="delta.html" class="pagination-link"><i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">delta</span></a></div><div class="nav-page nav-page-next"><a href="gest_project_values.html" class="pagination-link"><span class="nav-page-text">gest_project_values</span> <i class="bi bi-arrow-right-short"></i></a></div></nav></main></div></body></html>
