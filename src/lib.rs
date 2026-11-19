@@ -1,4 +1,5 @@
 //! Supply inherited-test tools, bounded byte primitives, local storage and decoded task values.
+pub mod diff;
 mod invocation;
 pub use invocation::{InvocationId, InvocationPlan, PlanPin, PlanRow, Position};
 use serde::{Deserialize, Serialize};

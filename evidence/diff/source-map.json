@@ -1,0 +1,641 @@
+{
+  "status": "source authored; reference-only capture executed; candidate not compiled or tested",
+  "fossil_revision": "b3a1c8efb2731dffbd5cc38c58ac349746de6da6",
+  "source_sha256": "ff63709d01ff80776300f8a79ecd68fa571de83c0f23099618d54d489688a5a8",
+  "api": "line_diff normalized byte line layer; NOT full text_diff",
+  "conversion_dependency": {
+    "function": "blob_to_utf8_no_bom(blob,0)",
+    "status": "not ported",
+    "source": "src/blob.c:2018",
+    "contract": "UTF-8 BOM stripping uses C-string append; UTF-16 BOM detection, byte swapping and fossil_unicode_to_utf8 conversion; BOMless bytes unchanged for useMbcs=0",
+    "downstream": "full text_diff wrapper remains unported"
+  },
+  "functions": [
+    {
+      "name": "diff_config_init",
+      "disposition": "outside normalized line engine slice; unported"
+    },
+    {
+      "name": "count_lines",
+      "disposition": "ported source; execution pending"
+    },
+    {
+      "name": "break_into_lines",
+      "disposition": "ported source; execution pending"
+    },
+    {
+      "name": "count_tokens",
+      "disposition": "outside normalized line engine slice; unported"
+    },
+    {
+      "name": "break_into_tokens",
+      "disposition": "outside normalized line engine slice; unported"
+    },
+    {
+      "name": "compare_dline",
+      "disposition": "ported source; execution pending"
+    },
+    {
+      "name": "compare_dline_ignore_allws",
+      "disposition": "ported source; execution pending"
+    },
+    {
+      "name": "re_dline_match",
+      "disposition": "outside normalized line engine slice; unported"
+    },
+    {
+      "name": "appendDiffLine",
+      "disposition": "outside normalized line engine slice; unported"
+    },
+    {
+      "name": "appendDiffLineno",
+      "disposition": "outside normalized line engine slice; unported"
+    },
+    {
+      "name": "contextDiff",
+      "disposition": "outside normalized line engine slice; unported"
+    },
+    {
+      "name": "textLCS",
+      "disposition": "outside normalized line engine slice; unported"
+    },
+    {
+      "name": "textLineChanges",
+      "disposition": "outside normalized line engine slice; unported"
+    },
+    {
+      "name": "allSpaces",
+      "disposition": "outside normalized line engine slice; unported"
+    },
+    {
+      "name": "improveReadability",
+      "disposition": "outside normalized line engine slice; unported"
+    },
+    {
+      "name": "oneLineChange",
+      "disposition": "outside normalized line engine slice; unported"
+    },
+    {
+      "name": "test_line_diff",
+      "disposition": "outside normalized line engine slice; unported"
+    },
+    {
+      "name": "minInt",
+      "disposition": "outside normalized line engine slice; unported"
+    },
+    {
+      "name": "dfdebugSkip",
+      "disposition": "outside normalized line engine slice; unported"
+    },
+    {
+      "name": "dfdebugCommon",
+      "disposition": "outside normalized line engine slice; unported"
+    },
+    {
+      "name": "dfdebugInsert",
+      "disposition": "outside normalized line engine slice; unported"
+    },
+    {
+      "name": "dfdebugDelete",
+      "disposition": "outside normalized line engine slice; unported"
+    },
+    {
+      "name": "dfdebugReplace",
+      "disposition": "outside normalized line engine slice; unported"
+    },
+    {
+      "name": "dfdebugEdit",
+      "disposition": "outside normalized line engine slice; unported"
+    },
+    {
+      "name": "dfdebugEnd",
+      "disposition": "outside normalized line engine slice; unported"
+    },
+    {
+      "name": "dfdebugNew",
+      "disposition": "outside normalized line engine slice; unported"
+    },
+    {
+      "name": "dftclSkip",
+      "disposition": "outside normalized line engine slice; unported"
+    },
+    {
+      "name": "dftclCommon",
+      "disposition": "outside normalized line engine slice; unported"
+    },
+    {
+      "name": "dftclInsert",
+      "disposition": "outside normalized line engine slice; unported"
+    },
+    {
+      "name": "dftclDelete",
+      "disposition": "outside normalized line engine slice; unported"
+    },
+    {
+      "name": "dftclReplace",
+      "disposition": "outside normalized line engine slice; unported"
+    },
+    {
+      "name": "dftclEdit",
+      "disposition": "outside normalized line engine slice; unported"
+    },
+    {
+      "name": "dftclEnd",
+      "disposition": "outside normalized line engine slice; unported"
+    },
+    {
+      "name": "dftclNew",
+      "disposition": "outside normalized line engine slice; unported"
+    },
+    {
+      "name": "dfjsonSkip",
+      "disposition": "outside normalized line engine slice; unported"
+    },
+    {
+      "name": "dfjsonCommon",
+      "disposition": "outside normalized line engine slice; unported"
+    },
+    {
+      "name": "dfjsonInsert",
+      "disposition": "outside normalized line engine slice; unported"
+    },
+    {
+      "name": "dfjsonDelete",
+      "disposition": "outside normalized line engine slice; unported"
+    },
+    {
+      "name": "dfjsonReplace",
+      "disposition": "outside normalized line engine slice; unported"
+    },
+    {
+      "name": "dfjsonEdit",
+      "disposition": "outside normalized line engine slice; unported"
+    },
+    {
+      "name": "dfjsonEnd",
+      "disposition": "outside normalized line engine slice; unported"
+    },
+    {
+      "name": "dfjsonNew",
+      "disposition": "outside normalized line engine slice; unported"
+    },
+    {
+      "name": "dfunifiedFinishDelete",
+      "disposition": "outside normalized line engine slice; unported"
+    },
+    {
+      "name": "dfunifiedFinishInsert",
+      "disposition": "outside normalized line engine slice; unported"
+    },
+    {
+      "name": "dfunifiedFinishRow",
+      "disposition": "outside normalized line engine slice; unported"
+    },
+    {
+      "name": "dfunifiedStartRow",
+      "disposition": "outside normalized line engine slice; unported"
+    },
+    {
+      "name": "dfunifiedSkip",
+      "disposition": "outside normalized line engine slice; unported"
+    },
+    {
+      "name": "dfunifiedCommon",
+      "disposition": "outside normalized line engine slice; unported"
+    },
+    {
+      "name": "dfunifiedInsert",
+      "disposition": "outside normalized line engine slice; unported"
+    },
+    {
+      "name": "dfunifiedDelete",
+      "disposition": "outside normalized line engine slice; unported"
+    },
+    {
+      "name": "dfunifiedReplace",
+      "disposition": "outside normalized line engine slice; unported"
+    },
+    {
+      "name": "dfunifiedEdit",
+      "disposition": "outside normalized line engine slice; unported"
+    },
+    {
+      "name": "dfunifiedEnd",
+      "disposition": "outside normalized line engine slice; unported"
+    },
+    {
+      "name": "dfunifiedNew",
+      "disposition": "outside normalized line engine slice; unported"
+    },
+    {
+      "name": "dfsplitChangeState",
+      "disposition": "outside normalized line engine slice; unported"
+    },
+    {
+      "name": "dfsplitFinishRow",
+      "disposition": "outside normalized line engine slice; unported"
+    },
+    {
+      "name": "dfsplitStartRow",
+      "disposition": "outside normalized line engine slice; unported"
+    },
+    {
+      "name": "dfsplitSkip",
+      "disposition": "outside normalized line engine slice; unported"
+    },
+    {
+      "name": "dfsplitCommon",
+      "disposition": "outside normalized line engine slice; unported"
+    },
+    {
+      "name": "dfsplitInsert",
+      "disposition": "outside normalized line engine slice; unported"
+    },
+    {
+      "name": "dfsplitDelete",
+      "disposition": "outside normalized line engine slice; unported"
+    },
+    {
+      "name": "dfsplitReplace",
+      "disposition": "outside normalized line engine slice; unported"
+    },
+    {
+      "name": "dfsplitEdit",
+      "disposition": "outside normalized line engine slice; unported"
+    },
+    {
+      "name": "dfsplitEnd",
+      "disposition": "outside normalized line engine slice; unported"
+    },
+    {
+      "name": "dfsplitNew",
+      "disposition": "outside normalized line engine slice; unported"
+    },
+    {
+      "name": "dfsbsSkip",
+      "disposition": "outside normalized line engine slice; unported"
+    },
+    {
+      "name": "sbs_append_chars",
+      "disposition": "outside normalized line engine slice; unported"
+    },
+    {
+      "name": "dfsbsCommon",
+      "disposition": "outside normalized line engine slice; unported"
+    },
+    {
+      "name": "dfsbsInsert",
+      "disposition": "outside normalized line engine slice; unported"
+    },
+    {
+      "name": "dfsbsDelete",
+      "disposition": "outside normalized line engine slice; unported"
+    },
+    {
+      "name": "dfsbsEdit",
+      "disposition": "outside normalized line engine slice; unported"
+    },
+    {
+      "name": "dfsbsEnd",
+      "disposition": "outside normalized line engine slice; unported"
+    },
+    {
+      "name": "dfsbsNew",
+      "disposition": "outside normalized line engine slice; unported"
+    },
+    {
+      "name": "match_dline",
+      "disposition": "outside normalized line engine slice; unported"
+    },
+    {
+      "name": "test_dline_match",
+      "disposition": "outside normalized line engine slice; unported"
+    },
+    {
+      "name": "diffBlockAlignment",
+      "disposition": "outside normalized line engine slice; unported"
+    },
+    {
+      "name": "longestCommonSequence",
+      "disposition": "ported source; execution pending"
+    },
+    {
+      "name": "diffDLineXfer",
+      "disposition": "outside normalized line engine slice; unported"
+    },
+    {
+      "name": "diffBlockAlignmentIgnoreSpace",
+      "disposition": "outside normalized line engine slice; unported"
+    },
+    {
+      "name": "diffBlockAlignmentDivideAndConquer",
+      "disposition": "outside normalized line engine slice; unported"
+    },
+    {
+      "name": "smallGap",
+      "disposition": "outside normalized line engine slice; unported"
+    },
+    {
+      "name": "formatDiff",
+      "disposition": "outside normalized line engine slice; unported"
+    },
+    {
+      "name": "optimalLCS",
+      "disposition": "ported source; execution pending"
+    },
+    {
+      "name": "expandEdit",
+      "disposition": "ported source; execution pending"
+    },
+    {
+      "name": "appendTriple",
+      "disposition": "ported for triples emitted by the private all traversal; consecutive changed leaves are separated by positive COPY; general consecutive-change helper calls are outside this private contract"
+    },
+    {
+      "name": "likelyNotIndentChngArtifact",
+      "disposition": "ported source; execution pending"
+    },
+    {
+      "name": "diff_step",
+      "disposition": "ported source; execution pending"
+    },
+    {
+      "name": "diff_all",
+      "disposition": "ported source; execution pending"
+    },
+    {
+      "name": "diff_optimize",
+      "disposition": "ported source; execution pending"
+    },
+    {
+      "name": "diff_context_lines",
+      "disposition": "outside normalized line engine slice; unported"
+    },
+    {
+      "name": "diff_width",
+      "disposition": "outside normalized line engine slice; unported"
+    },
+    {
+      "name": "diff_errmsg",
+      "disposition": "outside normalized line engine slice; unported"
+    },
+    {
+      "name": "text_diff",
+      "disposition": "outside normalized line engine slice; unported"
+    },
+    {
+      "name": "diff_options",
+      "disposition": "outside normalized line engine slice; unported"
+    },
+    {
+      "name": "xdiff_cmd",
+      "disposition": "outside normalized line engine slice; unported"
+    },
+    {
+      "name": "fdiff_cmd",
+      "disposition": "outside normalized line engine slice; unported"
+    },
+    {
+      "name": "annotation_start",
+      "disposition": "outside normalized line engine slice; unported"
+    },
+    {
+      "name": "annotation_step",
+      "disposition": "outside normalized line engine slice; unported"
+    },
+    {
+      "name": "current_time_in_milliseconds",
+      "disposition": "outside normalized line engine slice; unported"
+    },
+    {
+      "name": "annotate_file",
+      "disposition": "outside normalized line engine slice; unported"
+    },
+    {
+      "name": "gradient_color",
+      "disposition": "outside normalized line engine slice; unported"
+    },
+    {
+      "name": "annotation_page",
+      "disposition": "outside normalized line engine slice; unported"
+    },
+    {
+      "name": "annotate_cmd",
+      "disposition": "outside normalized line engine slice; unported"
+    }
+  ],
+  "flags": {
+    "supported": [
+      "DIFF_IGNORE_EOLWS",
+      "DIFF_IGNORE_ALLWS",
+      "DIFF_NOOPT",
+      "DIFF_INVERT",
+      "DIFF_NOTTOOBIG",
+      "DIFF_STRIP_EOLCR"
+    ],
+    "outside_slice": [
+      "DIFF_BY_TOKEN",
+      "all rendering/file/CLI flags",
+      "regex filtering"
+    ]
+  },
+  "inherited_tests": [
+    {
+      "name": "diff-ls-1",
+      "disposition": "checkout/filename/render wrapper not ported"
+    },
+    {
+      "name": "diff-file0-1",
+      "disposition": "binary input pure predicate extracted; repository and rendered assertion not ported"
+    },
+    {
+      "name": "diff-file1-1",
+      "disposition": "binary input pure predicate extracted; repository and rendered assertion not ported"
+    },
+    {
+      "name": "diff-file2-1",
+      "disposition": "binary input pure predicate extracted; repository and rendered assertion not ported"
+    },
+    {
+      "name": "diff-file3-1",
+      "disposition": "binary input pure predicate extracted; repository and rendered assertion not ported"
+    },
+    {
+      "name": "diff-file4-1",
+      "disposition": "binary input pure predicate extracted; repository and rendered assertion not ported"
+    },
+    {
+      "name": "diff-file5-1",
+      "disposition": "binary input pure predicate extracted; repository and rendered assertion not ported"
+    },
+    {
+      "name": "diff-file-6-1",
+      "disposition": "line payload applicable; side-by-side renderer not ported"
+    },
+    {
+      "name": "diff-deleted-file-1",
+      "disposition": "checkout/filename/render wrapper not ported"
+    },
+    {
+      "name": "diff-added-file-1",
+      "disposition": "checkout/filename/render wrapper not ported"
+    }
+  ],
+  "diagnostics": {
+    "test-text-diff": "absent in pinned source",
+    "test-diff / xdiff --raw": "applicable native triple diagnostic; execution pending",
+    "test-line-diff": "intraline renderer diagnostic outside slice"
+  },
+  "resource_contract": {
+    "input": "sum bytes <= caller bound and i32::MAX; lines <= caller bound and 1000000 before DLine allocation",
+    "allocation": "try_reserve_exact for line, edit and explicit recursion stack capacities",
+    "work": "bounded input scanning, hashing/comparison and loop iterations; no partial output on limit",
+    "stack": "iterative divide-and-conquer; no recursive native call stack"
+  },
+  "known_incomplete": [
+    {
+      "function": "diff_optimize",
+      "reason": "potential native EOF insertion one-past read under independent review; diff_all common-footer removal appears to prevent it because an EOF insert matching prior last line becomes an insertion BEFORE common footer; actual eof-repeat raw/native fixture confirms insert1/copy1 in optimize and noopt, not proof of full invariant"
+    }
+  ],
+  "verification": {
+    "tests": "authored before implementation; NOT EXECUTED (not RED)",
+    "static": "rustfmt and git diff --check executed",
+    "planned": [
+      "native golden captures including every option and inherited pure inputs",
+      "candidate exact goldens and deterministic differential matrix",
+      "baseline absent-module compile failure then candidate run",
+      "mutate tie score / hash chain / whitespace and verify oracle failures",
+      "Just lint/typecheck/unit/integration/coverage/docstring/API gates under compiler lease",
+      "independent actual source review before merge"
+    ]
+  },
+  "dependency_impact": {
+    "native_ast_queries": [
+      "text_diff($$$ARGS);",
+      "$RET = text_diff($$$ARGS);"
+    ],
+    "native_calls": [
+      {
+        "file": "json_wiki.c",
+        "line": 601,
+        "text": "text_diff(&w1, &w2, &d, &DCfg);"
+      },
+      {
+        "file": "merge.c",
+        "line": 339,
+        "text": "text_diff(pLeft, pRight, &out, &cfg);"
+      },
+      {
+        "file": "ajax.c",
+        "line": 167,
+        "text": "text_diff(pOrig, pContent, &out, &DCfg);"
+      },
+      {
+        "file": "tkt.c",
+        "line": 1498,
+        "text": "text_diff(prev, &val, &d, &DCfg);"
+      },
+      {
+        "file": "wiki.c",
+        "line": 1904,
+        "text": "text_diff(&w2, &w1, &d, &DCfg);"
+      },
+      {
+        "file": "diff.c",
+        "line": 3401,
+        "text": "text_diff(&a, &b, &out, &DCfg);"
+      },
+      {
+        "file": "diff.c",
+        "line": 3447,
+        "text": "text_diff(&a, &b, &out, &DCfg);"
+      },
+      {
+        "file": "skins.c",
+        "line": 1041,
+        "text": "text_diff(&from, &to, &out, &DCfg);"
+      },
+      {
+        "file": "skins.c",
+        "line": 1045,
+        "text": "text_diff(&from, &to, &out, &DCfg);"
+      },
+      {
+        "file": "diffcmd.c",
+        "line": 598,
+        "text": "text_diff(pFile1, &file2, &out, pCfg);"
+      },
+      {
+        "file": "diffcmd.c",
+        "line": 707,
+        "text": "text_diff(pFile1, pFile2, &out, pCfg);"
+      },
+      {
+        "file": "json_diff.c",
+        "line": 64,
+        "text": "text_diff(&from, &to, &out, &DCfg);"
+      },
+      {
+        "file": "info.c",
+        "line": 370,
+        "text": "text_diff(&from, &to, cgi_output_blob(), pCfg);"
+      },
+      {
+        "file": "info.c",
+        "line": 804,
+        "text": "text_diff(&old, &new, cgi_output_blob(), pCfg);"
+      },
+      {
+        "file": "info.c",
+        "line": 886,
+        "text": "text_diff(&lhs, &rhs, cgi_output_blob(), pCfg);"
+      },
+      {
+        "file": "info.c",
+        "line": 2162,
+        "text": "text_diff(&c1, &c2, pOut, &DCfg);"
+      },
+      {
+        "file": "blob.c",
+        "line": 1017,
+        "text": "text_diff(&f, &h, &out, &dCfg);"
+      },
+      {
+        "file": "merge3.c",
+        "line": 770,
+        "text": "aC1 = text_diff(p->pPivot, p->pV1, 0, &DCfg);"
+      },
+      {
+        "file": "merge3.c",
+        "line": 771,
+        "text": "aC2 = text_diff(p->pPivot, p->pV2, 0, &DCfg);"
+      }
+    ],
+    "c_pattern_caveat": "bare call without semicolon parses as macro_type_specifier and gave false empty result; corrected statement/assignment queries total 19 calls",
+    "rust": "new module; existing production API dependers absent; tests added; only src/lib.rs export changed",
+    "tags": "root classified gossil/leaf and impact.ast_grep.required=true"
+  },
+  "reference_capture": {
+    "cases": 143,
+    "bytes_on_disk": "1.9MiB",
+    "all_exit_zero": true,
+    "evidence": "/tmp/gossil-fossil-diff-impl-20261119/reference",
+    "binary_sha256": "75550c754e94a4b7fa0269f40ce8e4918daf67e05ba12b236ed735d424c8e16c",
+    "native_pin": "7e8ecf0ce4a3c05aa39de7ffe2828d23e334efe446ef2387e09f205ef00b2227",
+    "candidate_status": "not run",
+    "fixture": "tests/fixtures/diff/native-raw.json",
+    "inherited_binary_cases": 6
+  },
+  "caller_contract_deviations": {
+    "classification": "Applied source simplification; final-tree execution and gates pending.",
+    "append": {
+      "native": "appendTriple accepts consecutive change triples in its general helper contract.",
+      "rust": "Private Context::append has only Context::all as caller. Its traversal separates changed leaves with positive COPY triples, so only a copy-only tail can merge.",
+      "omitted": "Two merge alternatives for consecutive change triples are omitted because this caller cannot produce them. This does not claim arbitrary private-helper equivalence."
+    },
+    "equal": "IgnoreAll hashes encode identical non-space counts after the same signed-byte indentation. The zero-count case returns through the prefix comparison. Successful paired comparisons consume positive counts together and skip trailing spaces, so both cursors remain in bounds together at each loop entry. The redundant paired bounds guard and asymmetric-finish guard are omitted under that invariant. Genuine content collisions still use byte comparison.",
+    "line_admission": "Successful splitting preserves the exact LF-plus-unterminated-line count admitted before allocation. The repeated post-split bound is omitted; both checked additions and all original admission limits remain.",
+    "preserved": "Every charged work operation, error order, checked arithmetic operation, upstream attribution and native fixture is retained."
+  }
+}
