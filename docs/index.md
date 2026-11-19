@@ -12,6 +12,8 @@ Start with a [file round trip](getting-started.md), browse the
 Use [working with repositories](working-with-repositories.md) to plan agent
 files alongside Git. It explains checkouts, stored history and the intended
 private and shared workflows.
+Read [compare Gossil with Git](compare-with-git.md) for the planned coordination
+of file history, exact issue state and versioned links to code.
 The [examples](examples.md) show library calls for deltas, compressed bytes,
 hashes and token escaping.
 

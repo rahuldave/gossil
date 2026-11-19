@@ -36,6 +36,7 @@ website:
       - section: Guides
         contents:
           - working-with-repositories.md
+          - compare-with-git.md
           - concepts.md
           - examples.md
           - delta-encoder.md

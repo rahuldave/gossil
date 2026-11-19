@@ -8,6 +8,51 @@ For file selection, check-ins, branches and sharing, read
 [working with repositories](working-with-repositories.md). This page describes
 the library modules available to application authors.
 
+## Files and issues in one operation
+
+The intended product coordinates agent files and structured issue records in one
+repository database. A local operation can commit a plan revision, its task
+change and a private trace together. Its transaction includes canonical
+artifacts, derived projections, scope, local command history and Gossil checkout
+heads. A projection is a database view of retained artifact records.
+
+Git remains the external source authority; its commits are separate operations.
+Checkout filesystem writes follow database commit through recoverable work.
+This integrated workflow remains planned.
+
+A historical view selects a permitted file check-in and
+exact record boundaries for each issue or discussion. The record boundary
+names the complete contributor set and projection version, with all dependencies
+required by the claimed view. Contributors are immutable artifacts that determine
+the record's state. The projection version identifies the reconstruction rules;
+scope distinguishes shared access from an authorized owner's combined view.
+Record-only changes create no file check-in, so a file hash
+alone cannot identify issue history.
+
+Later arrivals leave an exact historical
+set fixed, subject to access permission and byte availability.
+
+Typed links connect an issue to exact code versions and support reverse lookup
+from code to issues. A Git target pins its registered repository, commit, path
+and blob, with a versioned selector for a range. Captures can retain the
+permitted bytes; an object ID alone does not guarantee their availability.
+
+Shared history must be complete without private-only dependencies. Receiving it
+does not automatically update a checkout or an owner's private issue selection.
+Explicit update and publication enforce the relevant revision and scope checks.
+A descriptor is a structured record naming a versioned link target and any
+selected range. Its transferable encoding remains unfinished, so these guides
+do not yet give a format that applications can exchange.
+
+Fossil supplies immutable file and ticket history; Gest supplies task workflows.
+Gossil's specified additions coordinate exact issue boundaries with shared/private
+file heads and strengthen Gest's multi-statement helpers with one owned
+transaction. Planned command undo validates complete inverse changes and rejects
+stale dependencies; it retains artifacts and does not rewind Git.
+Read [compare Gossil with Git](compare-with-git.md) for the plan/task example
+and [working with repositories](working-with-repositories.md) for file selection.
+The library modules below provide the implemented subset.
+
 ## Bytes and identities
 
 The `delta` module creates and applies Fossil deltas. Application takes an
