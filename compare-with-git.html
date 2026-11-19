@@ -1,0 +1,146 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="generator" content="smalldocs-0.5.12"><meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes"><title>Compare Gossil with Git – Gossil</title><link rel="icon" href="site_libs/themes/atelier/logo.svg"><link rel="stylesheet" href="site_libs/themes/atelier/atelier.css" data-mode="light" class="quarto-color-scheme" id="quarto-bootstrap-light" media="not all and (prefers-color-scheme: dark)"><link rel="stylesheet" href="site_libs/themes/atelier/atelier-dark.css" data-mode="dark" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap-dark" media="(prefers-color-scheme: dark)"><link rel="stylesheet" href="site_libs/bootstrap-icons/bootstrap-icons.min.css"><link rel="stylesheet" href="site_libs/smalldocs.css"><meta name="smalldocs:offset" content="./"><script src="site_libs/bootstrap/bootstrap.bundle.min.js"></script><script src="site_libs/fuse/fuse.min.js"></script><script src="site_libs/smalldocs.js" defer></script><script>(function(){var d=document.documentElement,s=null;try{s=localStorage.getItem('smalldocs-scheme')}catch(e){}var alt=s?s==='alternate':!!(window.matchMedia&&matchMedia('(prefers-color-scheme: dark)').matches);var ls=document.querySelectorAll('link.quarto-color-scheme');if(alt)d.dataset.scheme='alternate';if(s)ls.forEach(function(l){var on=l.classList.contains('quarto-color-alternate')===alt;if(on)l.setAttribute('blocking','render');l.media=on?'all':'not all'});var on=ls[alt?1:0];if(on&&on.dataset.mode==='dark')d.classList.add('quarto-dark')})();</script></head><body class="nav-sidebar floating nav-fixed"><header id="quarto-header" class="headroom sticky-top"><nav class="navbar navbar-expand-lg sd-navbar-default"><div class="navbar-container container-fluid"><div class="navbar-brand-container mx-auto"><a class="navbar-brand" href="index.html"><span class="navbar-title">Gossil</span></a></div><button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button><div class="collapse navbar-collapse" id="navbarCollapse"><ul class="navbar-nav navbar-nav-scroll me-auto"><li class="nav-item"><a class="nav-link" href="getting-started.html"><span class="menu-text">Start</span></a></li><li class="nav-item"><a class="nav-link" href="concepts.html"><span class="menu-text">Library concepts</span></a></li><li class="nav-item"><a class="nav-link" href="cli.html"><span class="menu-text">CLI</span></a></li><li class="nav-item"><a class="nav-link" href="api/index.html"><span class="menu-text">Rust API</span></a></li><li class="nav-item"><a class="nav-link" href="development-plan.html"><span class="menu-text">Development</span></a></li></ul><ul class="navbar-nav navbar-nav-scroll ms-auto"><li class="nav-item compact"><a class="nav-link" href="https://github.com/rahuldave/gossil" aria-label="github"><i class="bi bi-github" role="img"></i></a></li><li class="nav-item compact"><a class="quarto-color-scheme-toggle nav-link" href="" title="Toggle dark mode" onclick="window.smalldocsToggleScheme(); return false;"><i class="bi"></i></a></li></ul><div class="quarto-navbar-tools"><div class="smalldocs-search" id="quarto-search"><i class="bi bi-search" aria-hidden="true"></i><input type="search" class="form-control form-control-sm" placeholder="Search" aria-label="Search" autocomplete="off"><div class="smalldocs-search-results dropdown-menu"></div></div></div></div></div></nav><nav class="quarto-secondary-nav"><div class="container-fluid d-flex"><button type="button" class="quarto-btn-toggle btn" aria-controls="quarto-sidebar" aria-label="Toggle sidebar navigation"><i class="bi bi-layout-text-sidebar-reverse"></i></button><nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="working-with-repositories.html">Guides</a></li><li class="breadcrumb-item"><a href="compare-with-git.html">Compare Gossil with Git</a></li></ol></nav></div></nav></header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article has-sidebar has-margin"><nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto"><div class="sidebar-menu-container"><ul class="list-unstyled mt-1"><li class="sidebar-item"><div class="sidebar-item-container"><a href="index.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Gossil</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="getting-started.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Get started</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="cli.html" class="sidebar-item-text sidebar-link"><span class="menu-text">CLI reference</span></a></div></li><li class="sidebar-item sidebar-item-section"><div class="sidebar-item-container"><a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true"><span class="menu-text">Guides</span></a><a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section"><i class="bi bi-chevron-right ms-2"></i></a></div><ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show"><li class="sidebar-item"><div class="sidebar-item-container"><a href="working-with-repositories.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Working with repositories</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="compare-with-git.html" class="sidebar-item-text sidebar-link active" aria-current="page"><span class="menu-text">Compare Gossil with Git</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="concepts.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Library concepts</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="examples.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Rust library examples</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="delta-encoder.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Bounded delta encoder</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="delta-decoder.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Bounded delta decoder</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="blob-primitives.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Byte digests and packed blobs</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="artifact-checksum.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Artifact byte checksums</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="token-codec.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Fossil token bytes</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="artifact-parser.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Artifact parser</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="task-ticket.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Emit a task creation artifact</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="local-storage.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Local database ownership</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="native-storage.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Native local storage</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="gest-task-values.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Gest task values</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="gest-project-values.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Gest project values</span></a></div></li></ul></li><li class="sidebar-item sidebar-item-section"><div class="sidebar-item-container"><a class="sidebar-item-text sidebar-link" href="api/index.html"><span class="menu-text">Rust API</span></a><a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Toggle section"><i class="bi bi-chevron-right ms-2"></i></a></div><ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show"><li class="sidebar-item"><div class="sidebar-item-container"><a href="api/artifact.html" class="sidebar-item-text sidebar-link"><span class="menu-text">artifact</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="api/artifact_checksum.html" class="sidebar-item-text sidebar-link"><span class="menu-text">artifact_checksum</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="api/compression.html" class="sidebar-item-text sidebar-link"><span class="menu-text">compression</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="api/content_hash.html" class="sidebar-item-text sidebar-link"><span class="menu-text">content_hash</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="api/delta.html" class="sidebar-item-text sidebar-link"><span class="menu-text">delta</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="api/gest_project_values.html" class="sidebar-item-text sidebar-link"><span class="menu-text">gest_project_values</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="api/gest_task_values.html" class="sidebar-item-text sidebar-link"><span class="menu-text">gest_task_values</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="api/gossil.html" class="sidebar-item-text sidebar-link"><span class="menu-text">gossil</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="api/native_date.html" class="sidebar-item-text sidebar-link"><span class="menu-text">native_date</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="api/product.html" class="sidebar-item-text sidebar-link"><span class="menu-text">product</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="api/storage.html" class="sidebar-item-text sidebar-link"><span class="menu-text">storage</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="api/task_ticket.html" class="sidebar-item-text sidebar-link"><span class="menu-text">task_ticket</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="api/token_codec.html" class="sidebar-item-text sidebar-link"><span class="menu-text">token_codec</span></a></div></li></ul></li><li class="sidebar-item sidebar-item-section"><div class="sidebar-item-container"><a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true"><span class="menu-text">Development</span></a><a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true" aria-label="Toggle section"><i class="bi bi-chevron-right ms-2"></i></a></div><ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show"><li class="sidebar-item"><div class="sidebar-item-container"><a href="development-plan.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Development and contributing</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="conformance.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Inherited-test runner</span></a></div></li></ul></li></ul></div></nav><div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item"></div><div id="quarto-margin-sidebar" class="sidebar margin-sidebar"><nav id="TOC" role="doc-toc" class="toc-active"><h2 id="toc-title">On this page</h2><ul><li><a href="#what-each-history-records" id="toc-what-each-history-records" class="nav-link" data-scroll-target="#what-each-history-records">What each history records</a></li><li><a href="#recover-the-agents-decision" id="toc-recover-the-agents-decision" class="nav-link" data-scroll-target="#recover-the-agents-decision">Recover the agent’s decision</a></li><li><a href="#select-files-and-sharing-separately" id="toc-select-files-and-sharing-separately" class="nav-link" data-scroll-target="#select-files-and-sharing-separately">Select files and sharing separately</a></li><li><a href="#recommendations" id="toc-recommendations" class="nav-link" data-scroll-target="#recommendations">Recommendations</a></li></ul></nav></div><main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="working-with-repositories.html">Guides</a></li><li class="breadcrumb-item"><a href="compare-with-git.html">Compare Gossil with Git</a></li></ol></nav><div class="quarto-title"><h1 class="title">Compare Gossil with Git</h1></div><div class="quarto-title-meta"></div></header><p>Gossil is designed to keep agent files, typed issues and their connections to
+code in one coordinated history alongside Git. A historical view selects an
+exact file head, complete issue and discussion boundaries, and versioned links
+between issues and code. Git remains the source-code authority.</p>
+<p>This page compares that intended design with Git’s available behavior.
+The public Gossil CLI currently offers three delta diagnostics.
+The Rust library provides typed task/project converters, a task artifact emitter,
+and native storage primitives. It does not yet create or read persisted issues.
+Issue commands and repository initialization commands remain planned.
+See the <a href="development-plan.html">current limits</a> and
+<a href="cli.html">CLI reference</a> before trying a command.</p>
+<section id="what-each-history-records" class="level2">
+<h2 class="anchored" data-anchor-id="what-each-history-records">What each history records</h2>
+<p>In Git, the working tree contains the files you edit. The index is the staging
+area for the next commit. Normally, a commit records the index as a file tree,
+with parents and a message. You can stage selected changes before committing;
+a commit need not include every edit on disk.
+See the <a href="https://git-scm.com/docs/gittutorial">Git tutorial</a> and
+<a href="https://git-scm.com/docs/git-commit">commit reference</a>.</p>
+<p>Git can version task documents, plans and evidence in that same tree.
+Branches and commit history support many ways to organize the work.
+Git notes can attach information to an object without changing that object;
+notes have their own references and history.
+See <a href="https://git-scm.com/docs/git-notes">Git notes</a>.</p>
+<div class="sd-table">
+<table class="caption-top table">
+<thead>
+<tr>
+<th>Need</th>
+<th>Git</th>
+<th>Intended Gossil design</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Record selected files</td>
+<td>Commits retain trees selected through the index or commit options</td>
+<td>Native file check-ins retain explicitly tracked agent files</td>
+</tr>
+<tr>
+<td>Record a task</td>
+<td>Version a task document or use a chosen tracker and integration</td>
+<td>Typed project/task records have defined fields, identities and reconstruction rules</td>
+</tr>
+<tr>
+<td>Select an earlier review state</td>
+<td>Name commits and any separately required task or notes history</td>
+<td>Select the file head plus complete exact boundaries for issues, links and discussions</td>
+</tr>
+<tr>
+<td>Connect an issue to code</td>
+<td>Adopt conventions or tools for references and reverse lookup</td>
+<td>Version typed links to registered Git repositories and support lookup in both directions</td>
+</tr>
+<tr>
+<td>Coordinate related changes</td>
+<td>A commit can include code and task documents in one tree</td>
+<td>One local database transaction coordinates selected Gossil files, records, scope and checkout heads</td>
+</tr>
+<tr>
+<td>Keep private agent material</td>
+<td>Choose a repository layout and sharing policy</td>
+<td>Keep private and shared material within one repository, with an explicit internal boundary</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>A standalone tracker beside Git or Fossil can also retain detailed history.
+The extra requirement is to coordinate the exact states and dependencies that
+belong to a review. Gossil defines that coordination as part of its repository
+model, rather than leaving it to a convention between independent tools.
+Fossil already has immutable ticket artifacts and file history.
+The <a href="working-with-repositories.html#review-files-and-issues-together">repository guide</a>
+explains Gossil’s specified additions.</p>
+</section>
+<section id="recover-the-agents-decision" class="level2">
+<h2 class="anchored" data-anchor-id="recover-the-agents-decision">Recover the agent’s decision</h2>
+<p>Suppose an agent revises <code>plan.md</code>, marks its task ready for review, and saves
+a private trace of a failed approach. The implementation is in a separate Git
+repository. In the planned Gossil workflow:</p>
+<ol>
+<li>Review the plan diff, task changes and permitted evidence together.</li>
+<li>Request the integrated operation with the expected file and issue revisions.</li>
+<li>Record the Gossil artifacts, derived records, scope, local command history and checkout heads in one database transaction.</li>
+<li>Retain the permitted file head and the complete issue boundaries for later review.</li>
+</ol>
+<p>A file head identifies a file check-in. An issue boundary identifies its scope,
+complete contributing artifact set and projection version. Artifacts are immutable
+stored records; the projection version names the rules that reconstruct the
+issue’s values. Contributors include losing assignments even when a current screen displays
+other values. Notes, links and discussions need their required
+dependencies too.</p>
+<p>If the agent later changes only the task’s status, the file head stays the same.
+The earlier issue boundary still selects the state reviewed with the plan.
+Record-only changes create no file check-in. Later arrivals do not silently
+change that selected historical set, subject to permission and byte availability.
+A file hash alone cannot recover this context.</p>
+<p>The code link names a registered Git repository, full commit, path and blob,
+with a versioned selector when it names a range. The blob identifies file bytes.
+From the issue, a reviewer can reach the pinned code; from that code version,
+the reviewer can find the issue. A known filename or current checkout path
+helps locate material, but neither supplies its repository identity or historical
+version. Local paths can change without changing the registered repository’s
+identity. The design introduces no global file identity.</p>
+<p>Uncommitted code needs a captured snapshot. An authorized capture can retain
+bytes if the external Git checkout later disappears; an object reference alone
+does not guarantee availability. The link descriptor encoding remains unfinished.
+See the <a href="working-with-repositories.html#review-files-and-issues-together">repository guide</a>
+for the planned coordination and its limits.</p>
+<p>The integrated transaction governs the Gossil database. An external Git commit
+remains a separate operation. Checkout files are written after database commit
+through recoverable work, so filesystem recovery can still be necessary.
+Ordinary issue edits do not automatically batch unrelated work.</p>
+</section>
+<section id="select-files-and-sharing-separately" class="level2">
+<h2 class="anchored" data-anchor-id="select-files-and-sharing-separately">Select files and sharing separately</h2>
+<p>The planned Gossil checkout root can sit above several Git repositories.
+Select <code>AGENTS.md</code> and chosen agent files inside those repositories explicitly;
+initialization does not track every descendant. Gossil’s selection is independent
+of the nested Git indices and must preserve their branches and commits.
+The <a href="working-with-repositories.html#choose-the-checkout-root-and-tracked-files">repository guide</a>
+shows how to choose this layout.</p>
+<p>Git ignore rules help omit untracked files; they do not affect files already
+tracked. Sparse checkout controls which tracked paths appear in the working
+tree. Neither mechanism establishes a private/shared boundary for stored history.
+See <a href="https://git-scm.com/docs/gitignore">gitignore</a> and
+<a href="https://git-scm.com/docs/git-sparse-checkout">sparse checkout</a>.</p>
+<p>Git transfer can select references through refspecs, which map source references
+to destinations. This selects history to fetch, not a confidentiality policy for
+individual paths. Access rules depend on the chosen repository and service
+configuration. See <a href="https://git-scm.com/docs/git-fetch">Git fetch</a>.</p>
+<p>Gossil’s chosen design keeps private and shared history in one local repository.
+Shared history must be usable without private-only dependencies. Team replication,
+sync and autosync remain planned; this design does not promise arbitrary partial
+sharing within the shared portion today.</p>
+<p>This page follows the nossaifd writing guide, including principles credited to
+Rosalind Reid, Shreya Shankar and Oskar Austegard.</p>
+</section>
+<section id="recommendations" class="level2">
+<h2 class="anchored" data-anchor-id="recommendations">Recommendations</h2>
+<p>Keep Git for source work today. Next, try the <a href="getting-started.html">delta tutorial</a>
+and use the repository guide to select agent files.
+For a future integrated review, retain the exact file head, complete issue
+boundaries and versioned code links together.</p>
+</section>
+<nav class="page-navigation"><div class="nav-page nav-page-previous"><a href="working-with-repositories.html" class="pagination-link"><i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">Working with repositories</span></a></div><div class="nav-page nav-page-next"><a href="concepts.html" class="pagination-link"><span class="nav-page-text">Library concepts</span> <i class="bi bi-arrow-right-short"></i></a></div></nav></main></div></body></html>
