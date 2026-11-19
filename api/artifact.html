@@ -1,4 +1,4 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="generator" content="smalldocs-0.5.12"><meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes"><meta name="description" content="Parse structural artifacts with explicit resource limits. Parse bounded structural artifacts with an explicit date provider."><title>artifact – Gossil</title><link rel="icon" href="../site_libs/themes/atelier/logo.svg"><link rel="stylesheet" href="../site_libs/themes/atelier/atelier.css" data-mode="light" class="quarto-color-scheme" id="quarto-bootstrap-light" media="not all and (prefers-color-scheme: dark)"><link rel="stylesheet" href="../site_libs/themes/atelier/atelier-dark.css" data-mode="dark" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap-dark" media="(prefers-color-scheme: dark)"><link rel="stylesheet" href="../site_libs/bootstrap-icons/bootstrap-icons.min.css"><link rel="stylesheet" href="../site_libs/smalldocs.css"><meta name="smalldocs:offset" content="../"><script src="../site_libs/bootstrap/bootstrap.bundle.min.js"></script><script src="../site_libs/fuse/fuse.min.js"></script><script src="../site_libs/smalldocs.js" defer></script><script>(function(){var d=document.documentElement,s=null;try{s=localStorage.getItem('smalldocs-scheme')}catch(e){}var alt=s?s==='alternate':!!(window.matchMedia&&matchMedia('(prefers-color-scheme: dark)').matches);var ls=document.querySelectorAll('link.quarto-color-scheme');if(alt)d.dataset.scheme='alternate';if(s)ls.forEach(function(l){var on=l.classList.contains('quarto-color-alternate')===alt;if(on)l.setAttribute('blocking','render');l.media=on?'all':'not all'});var on=ls[alt?1:0];if(on&&on.dataset.mode==='dark')d.classList.add('quarto-dark')})();</script></head><body class="nav-sidebar floating nav-fixed"><header id="quarto-header" class="headroom sticky-top"><nav class="navbar navbar-expand-lg sd-navbar-default"><div class="navbar-container container-fluid"><div class="navbar-brand-container mx-auto"><a class="navbar-brand" href="../index.html"><span class="navbar-title">Gossil</span></a></div><button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button><div class="collapse navbar-collapse" id="navbarCollapse"><ul class="navbar-nav navbar-nav-scroll me-auto"><li class="nav-item"><a class="nav-link" href="../getting-started.html"><span class="menu-text">Start</span></a></li><li class="nav-item"><a class="nav-link" href="../concepts.html"><span class="menu-text">Library concepts</span></a></li><li class="nav-item"><a class="nav-link" href="../cli.html"><span class="menu-text">CLI</span></a></li><li class="nav-item"><a class="nav-link" href="index.html"><span class="menu-text">Rust API</span></a></li><li class="nav-item"><a class="nav-link" href="../development-plan.html"><span class="menu-text">Development</span></a></li></ul><ul class="navbar-nav navbar-nav-scroll ms-auto"><li class="nav-item compact"><a class="nav-link" href="https://github.com/rahuldave/gossil" aria-label="github"><i class="bi bi-github" role="img"></i></a></li><li class="nav-item compact"><a class="quarto-color-scheme-toggle nav-link" href="" title="Toggle dark mode" onclick="window.smalldocsToggleScheme(); return false;"><i class="bi"></i></a></li></ul><div class="quarto-navbar-tools"><div class="smalldocs-search" id="quarto-search"><i class="bi bi-search" aria-hidden="true"></i><input type="search" class="form-control form-control-sm" placeholder="Search" aria-label="Search" autocomplete="off"><div class="smalldocs-search-results dropdown-menu"></div></div></div></div></div></nav><nav class="quarto-secondary-nav"><div class="container-fluid d-flex"><button type="button" class="quarto-btn-toggle btn" aria-controls="quarto-sidebar" aria-label="Toggle sidebar navigation"><i class="bi bi-layout-text-sidebar-reverse"></i></button><nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="index.html">Rust API</a></li><li class="breadcrumb-item"><a href="artifact.html">artifact</a></li></ol></nav></div></nav></header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article has-sidebar has-margin"><nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto"><div class="sidebar-menu-container"><ul class="list-unstyled mt-1"><li class="sidebar-item"><div class="sidebar-item-container"><a href="../index.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Gossil</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="../getting-started.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Get started</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="../cli.html" class="sidebar-item-text sidebar-link"><span class="menu-text">CLI reference</span></a></div></li><li class="sidebar-item sidebar-item-section"><div class="sidebar-item-container"><a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true"><span class="menu-text">Guides</span></a><a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section"><i class="bi bi-chevron-right ms-2"></i></a></div><ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show"><li class="sidebar-item"><div class="sidebar-item-container"><a href="../working-with-repositories.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Working with repositories</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="../compare-with-git.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Compare Gossil with Git</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="../concepts.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Library concepts</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="../examples.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Rust library examples</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="../delta-encoder.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Bounded delta encoder</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="../delta-decoder.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Bounded delta decoder</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="../blob-primitives.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Byte digests and packed blobs</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="../artifact-checksum.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Artifact byte checksums</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="../token-codec.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Fossil token bytes</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="../artifact-parser.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Artifact parser</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="../task-ticket.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Emit a task creation artifact</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="../local-storage.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Local database ownership</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="../native-storage.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Native local storage</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="../gest-task-values.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Gest task values</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="../gest-project-values.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Gest project values</span></a></div></li></ul></li><li class="sidebar-item sidebar-item-section"><div class="sidebar-item-container"><a class="sidebar-item-text sidebar-link" href="index.html"><span class="menu-text">Rust API</span></a><a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Toggle section"><i class="bi bi-chevron-right ms-2"></i></a></div><ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show"><li class="sidebar-item"><div class="sidebar-item-container"><a href="artifact.html" class="sidebar-item-text sidebar-link active" aria-current="page"><span class="menu-text">artifact</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="artifact_checksum.html" class="sidebar-item-text sidebar-link"><span class="menu-text">artifact_checksum</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="compression.html" class="sidebar-item-text sidebar-link"><span class="menu-text">compression</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="content_hash.html" class="sidebar-item-text sidebar-link"><span class="menu-text">content_hash</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="delta.html" class="sidebar-item-text sidebar-link"><span class="menu-text">delta</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="gest_project_values.html" class="sidebar-item-text sidebar-link"><span class="menu-text">gest_project_values</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="gest_task_values.html" class="sidebar-item-text sidebar-link"><span class="menu-text">gest_task_values</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="gossil.html" class="sidebar-item-text sidebar-link"><span class="menu-text">gossil</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="native_date.html" class="sidebar-item-text sidebar-link"><span class="menu-text">native_date</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="product.html" class="sidebar-item-text sidebar-link"><span class="menu-text">product</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="storage.html" class="sidebar-item-text sidebar-link"><span class="menu-text">storage</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="task_ticket.html" class="sidebar-item-text sidebar-link"><span class="menu-text">task_ticket</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="token_codec.html" class="sidebar-item-text sidebar-link"><span class="menu-text">token_codec</span></a></div></li></ul></li><li class="sidebar-item sidebar-item-section"><div class="sidebar-item-container"><a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true"><span class="menu-text">Development</span></a><a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true" aria-label="Toggle section"><i class="bi bi-chevron-right ms-2"></i></a></div><ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show"><li class="sidebar-item"><div class="sidebar-item-container"><a href="../development-plan.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Development and contributing</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="../conformance.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Inherited-test runner</span></a></div></li></ul></li></ul></div></nav><div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item"></div><div id="quarto-margin-sidebar" class="sidebar margin-sidebar"><nav id="TOC" role="doc-toc" class="toc-active"><h2 id="toc-title">On this page</h2><ul><li><a href="#ArtifactType" id="toc-ArtifactType" class="nav-link" data-scroll-target="#ArtifactType">enum ArtifactType</a></li><li><a href="#ParseLimits" id="toc-ParseLimits" class="nav-link" data-scroll-target="#ParseLimits">struct ParseLimits</a></li><li><a href="#DateProviderError" id="toc-DateProviderError" class="nav-link" data-scroll-target="#DateProviderError">struct DateProviderError</a></li><li><a href="#DateProvider" id="toc-DateProvider" class="nav-link" data-scroll-target="#DateProvider">trait DateProvider</a><ul><li><a href="#DateProvider.julianday" id="toc-DateProvider.julianday" class="nav-link" data-scroll-target="#DateProvider.julianday">DateProvider::julianday</a></li></ul></li><li><a href="#ArtifactError" id="toc-ArtifactError" class="nav-link" data-scroll-target="#ArtifactError">enum ArtifactError</a></li><li><a href="#Tag" id="toc-Tag" class="nav-link" data-scroll-target="#Tag">struct Tag</a><ul><li><a href="#Tag.name" id="toc-Tag.name" class="nav-link" data-scroll-target="#Tag.name">Tag::name</a></li><li><a href="#Tag.target" id="toc-Tag.target" class="nav-link" data-scroll-target="#Tag.target">Tag::target</a></li><li><a href="#Tag.value" id="toc-Tag.value" class="nav-link" data-scroll-target="#Tag.value">Tag::value</a></li></ul></li><li><a href="#ParsedArtifact" id="toc-ParsedArtifact" class="nav-link" data-scroll-target="#ParsedArtifact">struct ParsedArtifact</a><ul><li><a href="#ParsedArtifact.artifact_type" id="toc-ParsedArtifact.artifact_type" class="nav-link" data-scroll-target="#ParsedArtifact.artifact_type">ParsedArtifact::artifact_type</a></li><li><a href="#ParsedArtifact.raw" id="toc-ParsedArtifact.raw" class="nav-link" data-scroll-target="#ParsedArtifact.raw">ParsedArtifact::raw</a></li><li><a href="#ParsedArtifact.comment" id="toc-ParsedArtifact.comment" class="nav-link" data-scroll-target="#ParsedArtifact.comment">ParsedArtifact::comment</a></li><li><a href="#ParsedArtifact.user" id="toc-ParsedArtifact.user" class="nav-link" data-scroll-target="#ParsedArtifact.user">ParsedArtifact::user</a></li><li><a href="#ParsedArtifact.date_token" id="toc-ParsedArtifact.date_token" class="nav-link" data-scroll-target="#ParsedArtifact.date_token">ParsedArtifact::date_token</a></li><li><a href="#ParsedArtifact.event_date_token" id="toc-ParsedArtifact.event_date_token" class="nav-link" data-scroll-target="#ParsedArtifact.event_date_token">ParsedArtifact::event_date_token</a></li><li><a href="#ParsedArtifact.date" id="toc-ParsedArtifact.date" class="nav-link" data-scroll-target="#ParsedArtifact.date">ParsedArtifact::date</a></li><li><a href="#ParsedArtifact.repository_checksum" id="toc-ParsedArtifact.repository_checksum" class="nav-link" data-scroll-target="#ParsedArtifact.repository_checksum">ParsedArtifact::repository_checksum</a></li><li><a href="#ParsedArtifact.tags" id="toc-ParsedArtifact.tags" class="nav-link" data-scroll-target="#ParsedArtifact.tags">ParsedArtifact::tags</a></li><li><a href="#ParsedArtifact.baseline" id="toc-ParsedArtifact.baseline" class="nav-link" data-scroll-target="#ParsedArtifact.baseline">ParsedArtifact::baseline</a></li><li><a href="#ParsedArtifact.files" id="toc-ParsedArtifact.files" class="nav-link" data-scroll-target="#ParsedArtifact.files">ParsedArtifact::files</a></li><li><a href="#ParsedArtifact.parents" id="toc-ParsedArtifact.parents" class="nav-link" data-scroll-target="#ParsedArtifact.parents">ParsedArtifact::parents</a></li><li><a href="#ParsedArtifact.cherrypicks" id="toc-ParsedArtifact.cherrypicks" class="nav-link" data-scroll-target="#ParsedArtifact.cherrypicks">ParsedArtifact::cherrypicks</a></li><li><a href="#ParsedArtifact.cluster_children" id="toc-ParsedArtifact.cluster_children" class="nav-link" data-scroll-target="#ParsedArtifact.cluster_children">ParsedArtifact::cluster_children</a></li><li><a href="#ParsedArtifact.ticket_fields" id="toc-ParsedArtifact.ticket_fields" class="nav-link" data-scroll-target="#ParsedArtifact.ticket_fields">ParsedArtifact::ticket_fields</a></li><li><a href="#ParsedArtifact.ticket_id" id="toc-ParsedArtifact.ticket_id" class="nav-link" data-scroll-target="#ParsedArtifact.ticket_id">ParsedArtifact::ticket_id</a></li><li><a href="#ParsedArtifact.wiki_title" id="toc-ParsedArtifact.wiki_title" class="nav-link" data-scroll-target="#ParsedArtifact.wiki_title">ParsedArtifact::wiki_title</a></li><li><a href="#ParsedArtifact.mimetype" id="toc-ParsedArtifact.mimetype" class="nav-link" data-scroll-target="#ParsedArtifact.mimetype">ParsedArtifact::mimetype</a></li><li><a href="#ParsedArtifact.body" id="toc-ParsedArtifact.body" class="nav-link" data-scroll-target="#ParsedArtifact.body">ParsedArtifact::body</a></li><li><a href="#ParsedArtifact.event_date" id="toc-ParsedArtifact.event_date" class="nav-link" data-scroll-target="#ParsedArtifact.event_date">ParsedArtifact::event_date</a></li><li><a href="#ParsedArtifact.event_id" id="toc-ParsedArtifact.event_id" class="nav-link" data-scroll-target="#ParsedArtifact.event_id">ParsedArtifact::event_id</a></li><li><a href="#ParsedArtifact.thread_root" id="toc-ParsedArtifact.thread_root" class="nav-link" data-scroll-target="#ParsedArtifact.thread_root">ParsedArtifact::thread_root</a></li><li><a href="#ParsedArtifact.thread_title" id="toc-ParsedArtifact.thread_title" class="nav-link" data-scroll-target="#ParsedArtifact.thread_title">ParsedArtifact::thread_title</a></li><li><a href="#ParsedArtifact.in_reply_to" id="toc-ParsedArtifact.in_reply_to" class="nav-link" data-scroll-target="#ParsedArtifact.in_reply_to">ParsedArtifact::in_reply_to</a></li><li><a href="#ParsedArtifact.attachment" id="toc-ParsedArtifact.attachment" class="nav-link" data-scroll-target="#ParsedArtifact.attachment">ParsedArtifact::attachment</a></li></ul></li><li><a href="#FileEntry" id="toc-FileEntry" class="nav-link" data-scroll-target="#FileEntry">struct FileEntry</a><ul><li><a href="#FileEntry.name" id="toc-FileEntry.name" class="nav-link" data-scroll-target="#FileEntry.name">FileEntry::name</a></li><li><a href="#FileEntry.hash" id="toc-FileEntry.hash" class="nav-link" data-scroll-target="#FileEntry.hash">FileEntry::hash</a></li><li><a href="#FileEntry.permissions" id="toc-FileEntry.permissions" class="nav-link" data-scroll-target="#FileEntry.permissions">FileEntry::permissions</a></li><li><a href="#FileEntry.prior_name" id="toc-FileEntry.prior_name" class="nav-link" data-scroll-target="#FileEntry.prior_name">FileEntry::prior_name</a></li></ul></li><li><a href="#TicketField" id="toc-TicketField" class="nav-link" data-scroll-target="#TicketField">struct TicketField</a><ul><li><a href="#TicketField.name" id="toc-TicketField.name" class="nav-link" data-scroll-target="#TicketField.name">TicketField::name</a></li><li><a href="#TicketField.value" id="toc-TicketField.value" class="nav-link" data-scroll-target="#TicketField.value">TicketField::value</a></li></ul></li><li><a href="#Cherrypick" id="toc-Cherrypick" class="nav-link" data-scroll-target="#Cherrypick">struct Cherrypick</a><ul><li><a href="#Cherrypick.target" id="toc-Cherrypick.target" class="nav-link" data-scroll-target="#Cherrypick.target">Cherrypick::target</a></li><li><a href="#Cherrypick.base" id="toc-Cherrypick.base" class="nav-link" data-scroll-target="#Cherrypick.base">Cherrypick::base</a></li></ul></li><li><a href="#Attachment" id="toc-Attachment" class="nav-link" data-scroll-target="#Attachment">struct Attachment</a><ul><li><a href="#Attachment.name" id="toc-Attachment.name" class="nav-link" data-scroll-target="#Attachment.name">Attachment::name</a></li><li><a href="#Attachment.target" id="toc-Attachment.target" class="nav-link" data-scroll-target="#Attachment.target">Attachment::target</a></li><li><a href="#Attachment.source" id="toc-Attachment.source" class="nav-link" data-scroll-target="#Attachment.source">Attachment::source</a></li></ul></li><li><a href="#parse_artifact" id="toc-parse_artifact" class="nav-link" data-scroll-target="#parse_artifact">fn parse_artifact</a></li></ul></nav></div><main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="index.html">Rust API</a></li><li class="breadcrumb-item"><a href="artifact.html">artifact</a></li></ol></nav><div class="quarto-title"><h1 class="title">artifact</h1></div><div><div class="description">Parse structural artifacts with explicit resource limits. Parse bounded structural artifacts with an explicit date provider.</div></div><div class="quarto-title-meta"></div></header><p>This module ports Fossil <code>manifest.c</code> (Copyright 2007 D. Richard Hipp, Simplified BSD).</p>
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="generator" content="smalldocs-0.5.12"><meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes"><meta name="description" content="Parse structural artifacts with explicit resource limits. Parse bounded structural artifacts with an explicit date provider."><title>artifact – Gossil</title><link rel="icon" href="../site_libs/themes/atelier/logo.svg"><link rel="stylesheet" href="../site_libs/themes/atelier/atelier.css" data-mode="light" class="quarto-color-scheme" id="quarto-bootstrap-light" media="not all and (prefers-color-scheme: dark)"><link rel="stylesheet" href="../site_libs/themes/atelier/atelier-dark.css" data-mode="dark" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap-dark" media="(prefers-color-scheme: dark)"><link rel="stylesheet" href="../site_libs/bootstrap-icons/bootstrap-icons.min.css"><link rel="stylesheet" href="../site_libs/smalldocs.css"><meta name="smalldocs:offset" content="../"><script src="../site_libs/bootstrap/bootstrap.bundle.min.js"></script><script src="../site_libs/fuse/fuse.min.js"></script><script src="../site_libs/smalldocs.js" defer></script><script>(function(){var d=document.documentElement,s=null;try{s=localStorage.getItem('smalldocs-scheme')}catch(e){}var alt=s?s==='alternate':!!(window.matchMedia&&matchMedia('(prefers-color-scheme: dark)').matches);var ls=document.querySelectorAll('link.quarto-color-scheme');if(alt)d.dataset.scheme='alternate';if(s)ls.forEach(function(l){var on=l.classList.contains('quarto-color-alternate')===alt;if(on)l.setAttribute('blocking','render');l.media=on?'all':'not all'});var on=ls[alt?1:0];if(on&&on.dataset.mode==='dark')d.classList.add('quarto-dark')})();</script></head><body class="nav-sidebar floating nav-fixed"><header id="quarto-header" class="headroom sticky-top"><nav class="navbar navbar-expand-lg sd-navbar-default"><div class="navbar-container container-fluid"><div class="navbar-brand-container mx-auto"><a class="navbar-brand" href="../index.html"><span class="navbar-title">Gossil</span></a></div><button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button><div class="collapse navbar-collapse" id="navbarCollapse"><ul class="navbar-nav navbar-nav-scroll me-auto"><li class="nav-item"><a class="nav-link" href="../getting-started.html"><span class="menu-text">Start</span></a></li><li class="nav-item"><a class="nav-link" href="../concepts.html"><span class="menu-text">Library concepts</span></a></li><li class="nav-item"><a class="nav-link" href="../cli.html"><span class="menu-text">CLI</span></a></li><li class="nav-item"><a class="nav-link" href="index.html"><span class="menu-text">Rust API</span></a></li><li class="nav-item"><a class="nav-link" href="../development-plan.html"><span class="menu-text">Development</span></a></li></ul><ul class="navbar-nav navbar-nav-scroll ms-auto"><li class="nav-item compact"><a class="nav-link" href="https://github.com/rahuldave/gossil" aria-label="github"><i class="bi bi-github" role="img"></i></a></li><li class="nav-item compact"><a class="quarto-color-scheme-toggle nav-link" href="" title="Toggle dark mode" onclick="window.smalldocsToggleScheme(); return false;"><i class="bi"></i></a></li></ul><div class="quarto-navbar-tools"><div class="smalldocs-search" id="quarto-search"><i class="bi bi-search" aria-hidden="true"></i><input type="search" class="form-control form-control-sm" placeholder="Search" aria-label="Search" autocomplete="off"><div class="smalldocs-search-results dropdown-menu"></div></div></div></div></div></nav><nav class="quarto-secondary-nav"><div class="container-fluid d-flex"><button type="button" class="quarto-btn-toggle btn" aria-controls="quarto-sidebar" aria-label="Toggle sidebar navigation"><i class="bi bi-layout-text-sidebar-reverse"></i></button><nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="index.html">Rust API</a></li><li class="breadcrumb-item"><a href="artifact.html">artifact</a></li></ol></nav></div></nav></header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article has-sidebar has-margin"><nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto"><div class="sidebar-menu-container"><ul class="list-unstyled mt-1"><li class="sidebar-item"><div class="sidebar-item-container"><a href="../index.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Gossil</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="../getting-started.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Get started</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="../cli.html" class="sidebar-item-text sidebar-link"><span class="menu-text">CLI reference</span></a></div></li><li class="sidebar-item sidebar-item-section"><div class="sidebar-item-container"><a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true"><span class="menu-text">Guides</span></a><a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section"><i class="bi bi-chevron-right ms-2"></i></a></div><ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show"><li class="sidebar-item"><div class="sidebar-item-container"><a href="../working-with-repositories.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Working with repositories</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="../compare-with-git.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Compare Gossil with Git</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="../concepts.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Library concepts</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="../examples.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Rust library examples</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="../delta-encoder.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Bounded delta encoder</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="../delta-decoder.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Bounded delta decoder</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="../blob-primitives.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Byte digests and packed blobs</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="../artifact-checksum.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Artifact byte checksums</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="../token-codec.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Fossil token bytes</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="../artifact-parser.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Artifact parser</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="../task-ticket.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Emit a task creation artifact</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="../local-storage.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Local database ownership</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="../native-storage.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Native local storage</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="../gest-task-values.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Gest task values</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="../gest-project-values.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Gest project values</span></a></div></li></ul></li><li class="sidebar-item sidebar-item-section"><div class="sidebar-item-container"><a class="sidebar-item-text sidebar-link" href="index.html"><span class="menu-text">Rust API</span></a><a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Toggle section"><i class="bi bi-chevron-right ms-2"></i></a></div><ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show"><li class="sidebar-item"><div class="sidebar-item-container"><a href="artifact.html" class="sidebar-item-text sidebar-link active" aria-current="page"><span class="menu-text">artifact</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="artifact_checksum.html" class="sidebar-item-text sidebar-link"><span class="menu-text">artifact_checksum</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="compression.html" class="sidebar-item-text sidebar-link"><span class="menu-text">compression</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="content_hash.html" class="sidebar-item-text sidebar-link"><span class="menu-text">content_hash</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="delta.html" class="sidebar-item-text sidebar-link"><span class="menu-text">delta</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="gest_project_values.html" class="sidebar-item-text sidebar-link"><span class="menu-text">gest_project_values</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="gest_task_values.html" class="sidebar-item-text sidebar-link"><span class="menu-text">gest_task_values</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="gossil.html" class="sidebar-item-text sidebar-link"><span class="menu-text">gossil</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="native_date.html" class="sidebar-item-text sidebar-link"><span class="menu-text">native_date</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="product.html" class="sidebar-item-text sidebar-link"><span class="menu-text">product</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="storage.html" class="sidebar-item-text sidebar-link"><span class="menu-text">storage</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="task_ticket.html" class="sidebar-item-text sidebar-link"><span class="menu-text">task_ticket</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="token_codec.html" class="sidebar-item-text sidebar-link"><span class="menu-text">token_codec</span></a></div></li></ul></li><li class="sidebar-item sidebar-item-section"><div class="sidebar-item-container"><a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true"><span class="menu-text">Development</span></a><a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true" aria-label="Toggle section"><i class="bi bi-chevron-right ms-2"></i></a></div><ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show"><li class="sidebar-item"><div class="sidebar-item-container"><a href="../development-plan.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Development and contributing</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="../conformance.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Inherited-test runner</span></a></div></li></ul></li></ul></div></nav><div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item"></div><div id="quarto-margin-sidebar" class="sidebar margin-sidebar"><nav id="TOC" role="doc-toc" class="toc-active"><h2 id="toc-title">On this page</h2><ul><li><a href="#ArtifactType" id="toc-ArtifactType" class="nav-link" data-scroll-target="#ArtifactType">enum ArtifactType</a></li><li><a href="#ParseLimits" id="toc-ParseLimits" class="nav-link" data-scroll-target="#ParseLimits">struct ParseLimits</a></li><li><a href="#ParseUsage" id="toc-ParseUsage" class="nav-link" data-scroll-target="#ParseUsage">struct ParseUsage</a></li><li><a href="#DateProviderError" id="toc-DateProviderError" class="nav-link" data-scroll-target="#DateProviderError">struct DateProviderError</a></li><li><a href="#DateProvider" id="toc-DateProvider" class="nav-link" data-scroll-target="#DateProvider">trait DateProvider</a><ul><li><a href="#DateProvider.julianday" id="toc-DateProvider.julianday" class="nav-link" data-scroll-target="#DateProvider.julianday">DateProvider::julianday</a></li></ul></li><li><a href="#ArtifactError" id="toc-ArtifactError" class="nav-link" data-scroll-target="#ArtifactError">enum ArtifactError</a></li><li><a href="#Tag" id="toc-Tag" class="nav-link" data-scroll-target="#Tag">struct Tag</a><ul><li><a href="#Tag.name" id="toc-Tag.name" class="nav-link" data-scroll-target="#Tag.name">Tag::name</a></li><li><a href="#Tag.target" id="toc-Tag.target" class="nav-link" data-scroll-target="#Tag.target">Tag::target</a></li><li><a href="#Tag.value" id="toc-Tag.value" class="nav-link" data-scroll-target="#Tag.value">Tag::value</a></li></ul></li><li><a href="#ParsedArtifact" id="toc-ParsedArtifact" class="nav-link" data-scroll-target="#ParsedArtifact">struct ParsedArtifact</a><ul><li><a href="#ParsedArtifact.artifact_type" id="toc-ParsedArtifact.artifact_type" class="nav-link" data-scroll-target="#ParsedArtifact.artifact_type">ParsedArtifact::artifact_type</a></li><li><a href="#ParsedArtifact.raw" id="toc-ParsedArtifact.raw" class="nav-link" data-scroll-target="#ParsedArtifact.raw">ParsedArtifact::raw</a></li><li><a href="#ParsedArtifact.comment" id="toc-ParsedArtifact.comment" class="nav-link" data-scroll-target="#ParsedArtifact.comment">ParsedArtifact::comment</a></li><li><a href="#ParsedArtifact.user" id="toc-ParsedArtifact.user" class="nav-link" data-scroll-target="#ParsedArtifact.user">ParsedArtifact::user</a></li><li><a href="#ParsedArtifact.date_token" id="toc-ParsedArtifact.date_token" class="nav-link" data-scroll-target="#ParsedArtifact.date_token">ParsedArtifact::date_token</a></li><li><a href="#ParsedArtifact.event_date_token" id="toc-ParsedArtifact.event_date_token" class="nav-link" data-scroll-target="#ParsedArtifact.event_date_token">ParsedArtifact::event_date_token</a></li><li><a href="#ParsedArtifact.date" id="toc-ParsedArtifact.date" class="nav-link" data-scroll-target="#ParsedArtifact.date">ParsedArtifact::date</a></li><li><a href="#ParsedArtifact.repository_checksum" id="toc-ParsedArtifact.repository_checksum" class="nav-link" data-scroll-target="#ParsedArtifact.repository_checksum">ParsedArtifact::repository_checksum</a></li><li><a href="#ParsedArtifact.tags" id="toc-ParsedArtifact.tags" class="nav-link" data-scroll-target="#ParsedArtifact.tags">ParsedArtifact::tags</a></li><li><a href="#ParsedArtifact.baseline" id="toc-ParsedArtifact.baseline" class="nav-link" data-scroll-target="#ParsedArtifact.baseline">ParsedArtifact::baseline</a></li><li><a href="#ParsedArtifact.files" id="toc-ParsedArtifact.files" class="nav-link" data-scroll-target="#ParsedArtifact.files">ParsedArtifact::files</a></li><li><a href="#ParsedArtifact.parents" id="toc-ParsedArtifact.parents" class="nav-link" data-scroll-target="#ParsedArtifact.parents">ParsedArtifact::parents</a></li><li><a href="#ParsedArtifact.cherrypicks" id="toc-ParsedArtifact.cherrypicks" class="nav-link" data-scroll-target="#ParsedArtifact.cherrypicks">ParsedArtifact::cherrypicks</a></li><li><a href="#ParsedArtifact.cluster_children" id="toc-ParsedArtifact.cluster_children" class="nav-link" data-scroll-target="#ParsedArtifact.cluster_children">ParsedArtifact::cluster_children</a></li><li><a href="#ParsedArtifact.ticket_fields" id="toc-ParsedArtifact.ticket_fields" class="nav-link" data-scroll-target="#ParsedArtifact.ticket_fields">ParsedArtifact::ticket_fields</a></li><li><a href="#ParsedArtifact.ticket_id" id="toc-ParsedArtifact.ticket_id" class="nav-link" data-scroll-target="#ParsedArtifact.ticket_id">ParsedArtifact::ticket_id</a></li><li><a href="#ParsedArtifact.wiki_title" id="toc-ParsedArtifact.wiki_title" class="nav-link" data-scroll-target="#ParsedArtifact.wiki_title">ParsedArtifact::wiki_title</a></li><li><a href="#ParsedArtifact.mimetype" id="toc-ParsedArtifact.mimetype" class="nav-link" data-scroll-target="#ParsedArtifact.mimetype">ParsedArtifact::mimetype</a></li><li><a href="#ParsedArtifact.body" id="toc-ParsedArtifact.body" class="nav-link" data-scroll-target="#ParsedArtifact.body">ParsedArtifact::body</a></li><li><a href="#ParsedArtifact.event_date" id="toc-ParsedArtifact.event_date" class="nav-link" data-scroll-target="#ParsedArtifact.event_date">ParsedArtifact::event_date</a></li><li><a href="#ParsedArtifact.event_id" id="toc-ParsedArtifact.event_id" class="nav-link" data-scroll-target="#ParsedArtifact.event_id">ParsedArtifact::event_id</a></li><li><a href="#ParsedArtifact.thread_root" id="toc-ParsedArtifact.thread_root" class="nav-link" data-scroll-target="#ParsedArtifact.thread_root">ParsedArtifact::thread_root</a></li><li><a href="#ParsedArtifact.thread_title" id="toc-ParsedArtifact.thread_title" class="nav-link" data-scroll-target="#ParsedArtifact.thread_title">ParsedArtifact::thread_title</a></li><li><a href="#ParsedArtifact.in_reply_to" id="toc-ParsedArtifact.in_reply_to" class="nav-link" data-scroll-target="#ParsedArtifact.in_reply_to">ParsedArtifact::in_reply_to</a></li><li><a href="#ParsedArtifact.attachment" id="toc-ParsedArtifact.attachment" class="nav-link" data-scroll-target="#ParsedArtifact.attachment">ParsedArtifact::attachment</a></li></ul></li><li><a href="#FileEntry" id="toc-FileEntry" class="nav-link" data-scroll-target="#FileEntry">struct FileEntry</a><ul><li><a href="#FileEntry.name" id="toc-FileEntry.name" class="nav-link" data-scroll-target="#FileEntry.name">FileEntry::name</a></li><li><a href="#FileEntry.hash" id="toc-FileEntry.hash" class="nav-link" data-scroll-target="#FileEntry.hash">FileEntry::hash</a></li><li><a href="#FileEntry.permissions" id="toc-FileEntry.permissions" class="nav-link" data-scroll-target="#FileEntry.permissions">FileEntry::permissions</a></li><li><a href="#FileEntry.prior_name" id="toc-FileEntry.prior_name" class="nav-link" data-scroll-target="#FileEntry.prior_name">FileEntry::prior_name</a></li></ul></li><li><a href="#TicketField" id="toc-TicketField" class="nav-link" data-scroll-target="#TicketField">struct TicketField</a><ul><li><a href="#TicketField.name" id="toc-TicketField.name" class="nav-link" data-scroll-target="#TicketField.name">TicketField::name</a></li><li><a href="#TicketField.value" id="toc-TicketField.value" class="nav-link" data-scroll-target="#TicketField.value">TicketField::value</a></li></ul></li><li><a href="#Cherrypick" id="toc-Cherrypick" class="nav-link" data-scroll-target="#Cherrypick">struct Cherrypick</a><ul><li><a href="#Cherrypick.target" id="toc-Cherrypick.target" class="nav-link" data-scroll-target="#Cherrypick.target">Cherrypick::target</a></li><li><a href="#Cherrypick.base" id="toc-Cherrypick.base" class="nav-link" data-scroll-target="#Cherrypick.base">Cherrypick::base</a></li></ul></li><li><a href="#Attachment" id="toc-Attachment" class="nav-link" data-scroll-target="#Attachment">struct Attachment</a><ul><li><a href="#Attachment.name" id="toc-Attachment.name" class="nav-link" data-scroll-target="#Attachment.name">Attachment::name</a></li><li><a href="#Attachment.target" id="toc-Attachment.target" class="nav-link" data-scroll-target="#Attachment.target">Attachment::target</a></li><li><a href="#Attachment.source" id="toc-Attachment.source" class="nav-link" data-scroll-target="#Attachment.source">Attachment::source</a></li></ul></li><li><a href="#parse_artifact" id="toc-parse_artifact" class="nav-link" data-scroll-target="#parse_artifact">fn parse_artifact</a></li><li><a href="#parse_artifact_with_usage" id="toc-parse_artifact_with_usage" class="nav-link" data-scroll-target="#parse_artifact_with_usage">fn parse_artifact_with_usage</a></li></ul></nav></div><main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="index.html">Rust API</a></li><li class="breadcrumb-item"><a href="artifact.html">artifact</a></li></ol></nav><div class="quarto-title"><h1 class="title">artifact</h1></div><div><div class="description">Parse structural artifacts with explicit resource limits. Parse bounded structural artifacts with an explicit date provider.</div></div><div class="quarto-title-meta"></div></header><p>This module ports Fossil <code>manifest.c</code> (Copyright 2007 D. Richard Hipp, Simplified BSD).</p>
 <section id="ArtifactType" class="level2">
 <h2 class="anchored" data-anchor-id="ArtifactType">enum ArtifactType</h2>
 <p><a href="https://github.com/rahuldave/gossil/blob/main/src/artifact.rs#L41" class="source-link">source</a></p>
@@ -78,7 +78,7 @@
 <tr>
 <td><code>owned_bytes</code></td>
 <td>usize</td>
-<td>Maximum owned byte output, including the retained input.</td>
+<td>Maximum logical owned-byte charges, including retained input and encoded tokens.</td>
 </tr>
 <tr>
 <td><code>entries</code></td>
@@ -90,22 +90,66 @@
 </div>
 <p>Implements <a href="https://doc.rust-lang.org/nightly/core/fmt/trait.Debug.html"><code>Debug</code></a>, <a href="https://doc.rust-lang.org/nightly/core/clone/trait.Clone.html"><code>Clone</code></a>, <a href="https://doc.rust-lang.org/nightly/core/marker/trait.Copy.html"><code>Copy</code></a>.</p>
 </section>
+<section id="ParseUsage" class="level2">
+<h2 class="anchored" data-anchor-id="ParseUsage">struct ParseUsage</h2>
+<p><a href="https://github.com/rahuldave/gossil/blob/main/src/artifact.rs#L78" class="source-link">source</a></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span class="kw">pub</span> <span class="kw">struct</span> ParseUsage</code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Report the exact resource charges of one successful parse.</p>
+<p>These counters use the same accounting as <a href="artifact.html#ParseLimits"><code>ParseLimits</code></a>, including conservative
+encoded token charges rather than decoded lengths. Subtract them from an
+operation’s remaining limits before parsing another artifact. The counters report
+logical charges against <a href="artifact.html#ParseLimits"><code>ParseLimits</code></a>, not every physical Rust allocator byte.</p>
+<div class="sd-table">
+<table class="caption-top table">
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>input_bytes</code></td>
+<td>usize</td>
+<td>Complete raw input size, including any recognized signature envelope.</td>
+</tr>
+<tr>
+<td><code>cards</code></td>
+<td>usize</td>
+<td>Nonzero structural card markers consumed, including Z but excluding a zero sentinel.</td>
+</tr>
+<tr>
+<td><code>owned_bytes</code></td>
+<td>usize</td>
+<td>Total charged owned bytes, including copies, token charges and list entry sizes.</td>
+</tr>
+<tr>
+<td><code>entries</code></td>
+<td>usize</td>
+<td>Total charged list insertions.</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Implements <a href="https://doc.rust-lang.org/nightly/core/fmt/trait.Debug.html"><code>Debug</code></a>, <a href="https://doc.rust-lang.org/nightly/core/clone/trait.Clone.html"><code>Clone</code></a>, <a href="https://doc.rust-lang.org/nightly/core/marker/trait.Copy.html"><code>Copy</code></a>, <a href="https://doc.rust-lang.org/nightly/core/cmp/trait.PartialEq.html"><code>PartialEq</code></a>, <a href="https://doc.rust-lang.org/nightly/core/cmp/trait.Eq.html"><code>Eq</code></a>.</p>
+</section>
 <section id="DateProviderError" class="level2">
 <h2 class="anchored" data-anchor-id="DateProviderError">struct DateProviderError</h2>
-<p><a href="https://github.com/rahuldave/gossil/blob/main/src/artifact.rs#L73" class="source-link">source</a></p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span class="kw">pub</span> <span class="kw">struct</span> DateProviderError(<span class="kw">pub</span> <span class="bu">Box</span><span class="op">&lt;</span><span class="kw">dyn</span> std::error::Error <span class="op">+</span> <span class="bu">Send</span> <span class="op">+</span> <span class="bu">Sync</span><span class="op">&gt;</span>);</code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><a href="https://github.com/rahuldave/gossil/blob/main/src/artifact.rs#L90" class="source-link">source</a></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span class="kw">pub</span> <span class="kw">struct</span> DateProviderError(<span class="kw">pub</span> <span class="bu">Box</span><span class="op">&lt;</span><span class="kw">dyn</span> std::error::Error <span class="op">+</span> <span class="bu">Send</span> <span class="op">+</span> <span class="bu">Sync</span><span class="op">&gt;</span>);</code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Retain a date adapter failure separately from invalid date syntax.</p>
 <p>Implements <a href="https://doc.rust-lang.org/nightly/core/fmt/trait.Debug.html"><code>Debug</code></a>, <a href="https://doc.rust-lang.org/nightly/core/fmt/trait.Display.html"><code>Display</code></a>, <a href="https://doc.rust-lang.org/nightly/core/error/trait.Error.html"><code>Error</code></a>.</p>
 </section>
 <section id="DateProvider" class="level2">
 <h2 class="anchored" data-anchor-id="DateProvider">trait DateProvider</h2>
-<p><a href="https://github.com/rahuldave/gossil/blob/main/src/artifact.rs#L75" class="source-link">source</a></p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span class="kw">pub</span> <span class="kw">trait</span> DateProvider</code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><a href="https://github.com/rahuldave/gossil/blob/main/src/artifact.rs#L92" class="source-link">source</a></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span class="kw">pub</span> <span class="kw">trait</span> DateProvider</code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Convert dates on the selected SQLite provider, possibly borrowing a transaction.</p>
 <section id="DateProvider.julianday" class="level3">
 <h3 class="anchored" data-anchor-id="DateProvider.julianday">DateProvider::julianday</h3>
-<p><a href="https://github.com/rahuldave/gossil/blob/main/src/artifact.rs#L83" class="source-link">source</a></p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span class="kw">fn</span> <span class="fu">julianday</span>(
+<p><a href="https://github.com/rahuldave/gossil/blob/main/src/artifact.rs#L100" class="source-link">source</a></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span class="kw">fn</span> <span class="fu">julianday</span>(
     <span class="op">&amp;</span><span class="va">self</span>,
     token: <span class="bu">Option</span><span class="op">&lt;</span><span class="op">&amp;</span>[<span class="dt">u8</span>]<span class="op">&gt;</span>,
 ) -&gt; impl std::future::Future<span class="op">&lt;</span>Output <span class="op">=</span> <span class="bu">Result</span><span class="op">&lt;</span><span class="bu">Option</span><span class="op">&lt;</span><span class="dt">f64</span><span class="op">&gt;</span>, DateProviderError<span class="op">&gt;</span><span class="op">&gt;</span>;</code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
@@ -141,8 +185,8 @@
 </section>
 <section id="ArtifactError" class="level2">
 <h2 class="anchored" data-anchor-id="ArtifactError">enum ArtifactError</h2>
-<p><a href="https://github.com/rahuldave/gossil/blob/main/src/artifact.rs#L90" class="source-link">source</a></p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span class="kw">pub</span> <span class="kw">enum</span> ArtifactError</code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><a href="https://github.com/rahuldave/gossil/blob/main/src/artifact.rs#L107" class="source-link">source</a></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span class="kw">pub</span> <span class="kw">enum</span> ArtifactError</code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Distinguish syntax, checksum, resource and provider failures.</p>
 <div class="sd-table">
 <table class="caption-top table">
@@ -176,14 +220,14 @@
 </section>
 <section id="Tag" class="level2">
 <h2 class="anchored" data-anchor-id="Tag">struct Tag</h2>
-<p><a href="https://github.com/rahuldave/gossil/blob/main/src/artifact.rs#L109" class="source-link">source</a></p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span class="kw">pub</span> <span class="kw">struct</span> Tag</code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><a href="https://github.com/rahuldave/gossil/blob/main/src/artifact.rs#L126" class="source-link">source</a></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span class="kw">pub</span> <span class="kw">struct</span> Tag</code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Store one parsed tag whose name includes its operator prefix.</p>
 <p>Implements <a href="https://doc.rust-lang.org/nightly/core/fmt/trait.Debug.html"><code>Debug</code></a>.</p>
 <section id="Tag.name" class="level3">
 <h3 class="anchored" data-anchor-id="Tag.name">Tag::name</h3>
-<p><a href="https://github.com/rahuldave/gossil/blob/main/src/artifact.rs#L366" class="source-link">source</a></p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span class="kw">pub</span> <span class="kw">fn</span> <span class="fu">name</span>(<span class="op">&amp;</span><span class="va">self</span>) -&gt; <span class="kw">&amp;</span>DecodedToken</code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><a href="https://github.com/rahuldave/gossil/blob/main/src/artifact.rs#L383" class="source-link">source</a></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span class="kw">pub</span> <span class="kw">fn</span> <span class="fu">name</span>(<span class="op">&amp;</span><span class="va">self</span>) -&gt; <span class="kw">&amp;</span>DecodedToken</code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Read the parsed name without permitting mutation.</p>
 <div class="sd-table">
 <table class="caption-top table">
@@ -206,8 +250,8 @@
 </section>
 <section id="Tag.target" class="level3">
 <h3 class="anchored" data-anchor-id="Tag.target">Tag::target</h3>
-<p><a href="https://github.com/rahuldave/gossil/blob/main/src/artifact.rs#L372" class="source-link">source</a></p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span class="kw">pub</span> <span class="kw">fn</span> <span class="fu">target</span>(<span class="op">&amp;</span><span class="va">self</span>) -&gt; <span class="bu">Option</span><span class="op">&lt;</span><span class="op">&amp;</span>[<span class="dt">u8</span>]<span class="op">&gt;</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><a href="https://github.com/rahuldave/gossil/blob/main/src/artifact.rs#L389" class="source-link">source</a></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span class="kw">pub</span> <span class="kw">fn</span> <span class="fu">target</span>(<span class="op">&amp;</span><span class="va">self</span>) -&gt; <span class="bu">Option</span><span class="op">&lt;</span><span class="op">&amp;</span>[<span class="dt">u8</span>]<span class="op">&gt;</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Read the parsed target without permitting mutation.</p>
 <div class="sd-table">
 <table class="caption-top table">
@@ -230,8 +274,8 @@
 </section>
 <section id="Tag.value" class="level3">
 <h3 class="anchored" data-anchor-id="Tag.value">Tag::value</h3>
-<p><a href="https://github.com/rahuldave/gossil/blob/main/src/artifact.rs#L378" class="source-link">source</a></p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span class="kw">pub</span> <span class="kw">fn</span> <span class="fu">value</span>(<span class="op">&amp;</span><span class="va">self</span>) -&gt; <span class="bu">Option</span><span class="op">&lt;</span><span class="op">&amp;</span>DecodedToken<span class="op">&gt;</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><a href="https://github.com/rahuldave/gossil/blob/main/src/artifact.rs#L395" class="source-link">source</a></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb11"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span class="kw">pub</span> <span class="kw">fn</span> <span class="fu">value</span>(<span class="op">&amp;</span><span class="va">self</span>) -&gt; <span class="bu">Option</span><span class="op">&lt;</span><span class="op">&amp;</span>DecodedToken<span class="op">&gt;</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Read the parsed value without permitting mutation.</p>
 <div class="sd-table">
 <table class="caption-top table">
@@ -255,14 +299,14 @@
 </section>
 <section id="ParsedArtifact" class="level2">
 <h2 class="anchored" data-anchor-id="ParsedArtifact">struct ParsedArtifact</h2>
-<p><a href="https://github.com/rahuldave/gossil/blob/main/src/artifact.rs#L119" class="source-link">source</a></p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb11"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span class="kw">pub</span> <span class="kw">struct</span> ParsedArtifact</code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><a href="https://github.com/rahuldave/gossil/blob/main/src/artifact.rs#L136" class="source-link">source</a></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb12"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span class="kw">pub</span> <span class="kw">struct</span> ParsedArtifact</code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Own an immutable parsed artifact.</p>
 <p>Implements <a href="https://doc.rust-lang.org/nightly/core/fmt/trait.Debug.html"><code>Debug</code></a>.</p>
 <section id="ParsedArtifact.artifact_type" class="level3">
 <h3 class="anchored" data-anchor-id="ParsedArtifact.artifact_type">ParsedArtifact::artifact_type</h3>
-<p><a href="https://github.com/rahuldave/gossil/blob/main/src/artifact.rs#L214" class="source-link">source</a></p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb12"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span class="kw">pub</span> <span class="kw">fn</span> <span class="fu">artifact_type</span>(<span class="op">&amp;</span><span class="va">self</span>) -&gt; ArtifactType</code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><a href="https://github.com/rahuldave/gossil/blob/main/src/artifact.rs#L231" class="source-link">source</a></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb13"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span class="kw">pub</span> <span class="kw">fn</span> <span class="fu">artifact_type</span>(<span class="op">&amp;</span><span class="va">self</span>) -&gt; ArtifactType</code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Read the parsed artifact type without permitting mutation.</p>
 <div class="sd-table">
 <table class="caption-top table">
@@ -285,8 +329,8 @@
 </section>
 <section id="ParsedArtifact.raw" class="level3">
 <h3 class="anchored" data-anchor-id="ParsedArtifact.raw">ParsedArtifact::raw</h3>
-<p><a href="https://github.com/rahuldave/gossil/blob/main/src/artifact.rs#L220" class="source-link">source</a></p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb13"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span class="kw">pub</span> <span class="kw">fn</span> <span class="fu">raw</span>(<span class="op">&amp;</span><span class="va">self</span>) -&gt; <span class="kw">&amp;</span>[<span class="dt">u8</span>]</code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><a href="https://github.com/rahuldave/gossil/blob/main/src/artifact.rs#L237" class="source-link">source</a></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb14"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span class="kw">pub</span> <span class="kw">fn</span> <span class="fu">raw</span>(<span class="op">&amp;</span><span class="va">self</span>) -&gt; <span class="kw">&amp;</span>[<span class="dt">u8</span>]</code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Read the original bytes, including any signature envelope, without permitting mutation.</p>
 <div class="sd-table">
 <table class="caption-top table">
@@ -309,8 +353,8 @@
 </section>
 <section id="ParsedArtifact.comment" class="level3">
 <h3 class="anchored" data-anchor-id="ParsedArtifact.comment">ParsedArtifact::comment</h3>
-<p><a href="https://github.com/rahuldave/gossil/blob/main/src/artifact.rs#L226" class="source-link">source</a></p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb14"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span class="kw">pub</span> <span class="kw">fn</span> <span class="fu">comment</span>(<span class="op">&amp;</span><span class="va">self</span>) -&gt; <span class="bu">Option</span><span class="op">&lt;</span><span class="op">&amp;</span>DecodedToken<span class="op">&gt;</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><a href="https://github.com/rahuldave/gossil/blob/main/src/artifact.rs#L243" class="source-link">source</a></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb15"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span class="kw">pub</span> <span class="kw">fn</span> <span class="fu">comment</span>(<span class="op">&amp;</span><span class="va">self</span>) -&gt; <span class="bu">Option</span><span class="op">&lt;</span><span class="op">&amp;</span>DecodedToken<span class="op">&gt;</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Read the parsed comment without permitting mutation.</p>
 <div class="sd-table">
 <table class="caption-top table">
@@ -333,8 +377,8 @@
 </section>
 <section id="ParsedArtifact.user" class="level3">
 <h3 class="anchored" data-anchor-id="ParsedArtifact.user">ParsedArtifact::user</h3>
-<p><a href="https://github.com/rahuldave/gossil/blob/main/src/artifact.rs#L232" class="source-link">source</a></p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb15"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span class="kw">pub</span> <span class="kw">fn</span> <span class="fu">user</span>(<span class="op">&amp;</span><span class="va">self</span>) -&gt; <span class="bu">Option</span><span class="op">&lt;</span><span class="op">&amp;</span>DecodedToken<span class="op">&gt;</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><a href="https://github.com/rahuldave/gossil/blob/main/src/artifact.rs#L249" class="source-link">source</a></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb16"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span class="kw">pub</span> <span class="kw">fn</span> <span class="fu">user</span>(<span class="op">&amp;</span><span class="va">self</span>) -&gt; <span class="bu">Option</span><span class="op">&lt;</span><span class="op">&amp;</span>DecodedToken<span class="op">&gt;</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Read the parsed user without permitting mutation.</p>
 <div class="sd-table">
 <table class="caption-top table">
@@ -357,8 +401,8 @@
 </section>
 <section id="ParsedArtifact.date_token" class="level3">
 <h3 class="anchored" data-anchor-id="ParsedArtifact.date_token">ParsedArtifact::date_token</h3>
-<p><a href="https://github.com/rahuldave/gossil/blob/main/src/artifact.rs#L238" class="source-link">source</a></p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb16"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span class="kw">pub</span> <span class="kw">fn</span> <span class="fu">date_token</span>(<span class="op">&amp;</span><span class="va">self</span>) -&gt; <span class="bu">Option</span><span class="op">&lt;</span><span class="op">&amp;</span>[<span class="dt">u8</span>]<span class="op">&gt;</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><a href="https://github.com/rahuldave/gossil/blob/main/src/artifact.rs#L255" class="source-link">source</a></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb17"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span class="kw">pub</span> <span class="kw">fn</span> <span class="fu">date_token</span>(<span class="op">&amp;</span><span class="va">self</span>) -&gt; <span class="bu">Option</span><span class="op">&lt;</span><span class="op">&amp;</span>[<span class="dt">u8</span>]<span class="op">&gt;</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Read the exact raw D token supplied to the date provider.</p>
 <div class="sd-table">
 <table class="caption-top table">
@@ -381,8 +425,8 @@
 </section>
 <section id="ParsedArtifact.event_date_token" class="level3">
 <h3 class="anchored" data-anchor-id="ParsedArtifact.event_date_token">ParsedArtifact::event_date_token</h3>
-<p><a href="https://github.com/rahuldave/gossil/blob/main/src/artifact.rs#L244" class="source-link">source</a></p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb17"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span class="kw">pub</span> <span class="kw">fn</span> <span class="fu">event_date_token</span>(<span class="op">&amp;</span><span class="va">self</span>) -&gt; <span class="bu">Option</span><span class="op">&lt;</span><span class="op">&amp;</span>[<span class="dt">u8</span>]<span class="op">&gt;</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><a href="https://github.com/rahuldave/gossil/blob/main/src/artifact.rs#L261" class="source-link">source</a></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb18"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span class="kw">pub</span> <span class="kw">fn</span> <span class="fu">event_date_token</span>(<span class="op">&amp;</span><span class="va">self</span>) -&gt; <span class="bu">Option</span><span class="op">&lt;</span><span class="op">&amp;</span>[<span class="dt">u8</span>]<span class="op">&gt;</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Read the exact raw E date token supplied to the date provider.</p>
 <div class="sd-table">
 <table class="caption-top table">
@@ -405,8 +449,8 @@
 </section>
 <section id="ParsedArtifact.date" class="level3">
 <h3 class="anchored" data-anchor-id="ParsedArtifact.date">ParsedArtifact::date</h3>
-<p><a href="https://github.com/rahuldave/gossil/blob/main/src/artifact.rs#L250" class="source-link">source</a></p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb18"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span class="kw">pub</span> <span class="kw">fn</span> <span class="fu">date</span>(<span class="op">&amp;</span><span class="va">self</span>) -&gt; <span class="bu">Option</span><span class="op">&lt;</span><span class="dt">f64</span><span class="op">&gt;</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><a href="https://github.com/rahuldave/gossil/blob/main/src/artifact.rs#L267" class="source-link">source</a></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb19"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span class="kw">pub</span> <span class="kw">fn</span> <span class="fu">date</span>(<span class="op">&amp;</span><span class="va">self</span>) -&gt; <span class="bu">Option</span><span class="op">&lt;</span><span class="dt">f64</span><span class="op">&gt;</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Read the parsed date without permitting mutation.</p>
 <div class="sd-table">
 <table class="caption-top table">
@@ -429,8 +473,8 @@
 </section>
 <section id="ParsedArtifact.repository_checksum" class="level3">
 <h3 class="anchored" data-anchor-id="ParsedArtifact.repository_checksum">ParsedArtifact::repository_checksum</h3>
-<p><a href="https://github.com/rahuldave/gossil/blob/main/src/artifact.rs#L256" class="source-link">source</a></p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb19"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span class="kw">pub</span> <span class="kw">fn</span> <span class="fu">repository_checksum</span>(<span class="op">&amp;</span><span class="va">self</span>) -&gt; <span class="bu">Option</span><span class="op">&lt;</span><span class="op">&amp;</span>[<span class="dt">u8</span>]<span class="op">&gt;</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><a href="https://github.com/rahuldave/gossil/blob/main/src/artifact.rs#L273" class="source-link">source</a></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb20"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span class="kw">pub</span> <span class="kw">fn</span> <span class="fu">repository_checksum</span>(<span class="op">&amp;</span><span class="va">self</span>) -&gt; <span class="bu">Option</span><span class="op">&lt;</span><span class="op">&amp;</span>[<span class="dt">u8</span>]<span class="op">&gt;</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Read the parsed repository checksum without permitting mutation.</p>
 <div class="sd-table">
 <table class="caption-top table">
@@ -453,8 +497,8 @@
 </section>
 <section id="ParsedArtifact.tags" class="level3">
 <h3 class="anchored" data-anchor-id="ParsedArtifact.tags">ParsedArtifact::tags</h3>
-<p><a href="https://github.com/rahuldave/gossil/blob/main/src/artifact.rs#L262" class="source-link">source</a></p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb20"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span class="kw">pub</span> <span class="kw">fn</span> <span class="fu">tags</span>(<span class="op">&amp;</span><span class="va">self</span>) -&gt; <span class="kw">&amp;</span>[Tag]</code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><a href="https://github.com/rahuldave/gossil/blob/main/src/artifact.rs#L279" class="source-link">source</a></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb21"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span class="kw">pub</span> <span class="kw">fn</span> <span class="fu">tags</span>(<span class="op">&amp;</span><span class="va">self</span>) -&gt; <span class="kw">&amp;</span>[Tag]</code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Read the parsed tags without permitting mutation.</p>
 <div class="sd-table">
 <table class="caption-top table">
@@ -477,8 +521,8 @@
 </section>
 <section id="ParsedArtifact.baseline" class="level3">
 <h3 class="anchored" data-anchor-id="ParsedArtifact.baseline">ParsedArtifact::baseline</h3>
-<p><a href="https://github.com/rahuldave/gossil/blob/main/src/artifact.rs#L268" class="source-link">source</a></p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb21"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span class="kw">pub</span> <span class="kw">fn</span> <span class="fu">baseline</span>(<span class="op">&amp;</span><span class="va">self</span>) -&gt; <span class="bu">Option</span><span class="op">&lt;</span><span class="op">&amp;</span>[<span class="dt">u8</span>]<span class="op">&gt;</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><a href="https://github.com/rahuldave/gossil/blob/main/src/artifact.rs#L285" class="source-link">source</a></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb22"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span class="kw">pub</span> <span class="kw">fn</span> <span class="fu">baseline</span>(<span class="op">&amp;</span><span class="va">self</span>) -&gt; <span class="bu">Option</span><span class="op">&lt;</span><span class="op">&amp;</span>[<span class="dt">u8</span>]<span class="op">&gt;</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Read the parsed baseline without permitting mutation.</p>
 <div class="sd-table">
 <table class="caption-top table">
@@ -501,8 +545,8 @@
 </section>
 <section id="ParsedArtifact.files" class="level3">
 <h3 class="anchored" data-anchor-id="ParsedArtifact.files">ParsedArtifact::files</h3>
-<p><a href="https://github.com/rahuldave/gossil/blob/main/src/artifact.rs#L274" class="source-link">source</a></p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb22"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span class="kw">pub</span> <span class="kw">fn</span> <span class="fu">files</span>(<span class="op">&amp;</span><span class="va">self</span>) -&gt; <span class="kw">&amp;</span>[FileEntry]</code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><a href="https://github.com/rahuldave/gossil/blob/main/src/artifact.rs#L291" class="source-link">source</a></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb23"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span class="kw">pub</span> <span class="kw">fn</span> <span class="fu">files</span>(<span class="op">&amp;</span><span class="va">self</span>) -&gt; <span class="kw">&amp;</span>[FileEntry]</code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Read the parsed files without permitting mutation.</p>
 <div class="sd-table">
 <table class="caption-top table">
@@ -525,8 +569,8 @@
 </section>
 <section id="ParsedArtifact.parents" class="level3">
 <h3 class="anchored" data-anchor-id="ParsedArtifact.parents">ParsedArtifact::parents</h3>
-<p><a href="https://github.com/rahuldave/gossil/blob/main/src/artifact.rs#L280" class="source-link">source</a></p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb23"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span class="kw">pub</span> <span class="kw">fn</span> <span class="fu">parents</span>(<span class="op">&amp;</span><span class="va">self</span>) -&gt; <span class="kw">&amp;</span>[<span class="bu">Vec</span><span class="op">&lt;</span><span class="dt">u8</span><span class="op">&gt;</span>]</code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><a href="https://github.com/rahuldave/gossil/blob/main/src/artifact.rs#L297" class="source-link">source</a></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb24"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span class="kw">pub</span> <span class="kw">fn</span> <span class="fu">parents</span>(<span class="op">&amp;</span><span class="va">self</span>) -&gt; <span class="kw">&amp;</span>[<span class="bu">Vec</span><span class="op">&lt;</span><span class="dt">u8</span><span class="op">&gt;</span>]</code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Read the parsed parents without permitting mutation.</p>
 <div class="sd-table">
 <table class="caption-top table">
@@ -549,8 +593,8 @@
 </section>
 <section id="ParsedArtifact.cherrypicks" class="level3">
 <h3 class="anchored" data-anchor-id="ParsedArtifact.cherrypicks">ParsedArtifact::cherrypicks</h3>
-<p><a href="https://github.com/rahuldave/gossil/blob/main/src/artifact.rs#L286" class="source-link">source</a></p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb24"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span class="kw">pub</span> <span class="kw">fn</span> <span class="fu">cherrypicks</span>(<span class="op">&amp;</span><span class="va">self</span>) -&gt; <span class="kw">&amp;</span>[Cherrypick]</code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><a href="https://github.com/rahuldave/gossil/blob/main/src/artifact.rs#L303" class="source-link">source</a></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb25"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span class="kw">pub</span> <span class="kw">fn</span> <span class="fu">cherrypicks</span>(<span class="op">&amp;</span><span class="va">self</span>) -&gt; <span class="kw">&amp;</span>[Cherrypick]</code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Read the parsed cherrypicks without permitting mutation.</p>
 <div class="sd-table">
 <table class="caption-top table">
@@ -573,8 +617,8 @@
 </section>
 <section id="ParsedArtifact.cluster_children" class="level3">
 <h3 class="anchored" data-anchor-id="ParsedArtifact.cluster_children">ParsedArtifact::cluster_children</h3>
-<p><a href="https://github.com/rahuldave/gossil/blob/main/src/artifact.rs#L292" class="source-link">source</a></p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb25"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span class="kw">pub</span> <span class="kw">fn</span> <span class="fu">cluster_children</span>(<span class="op">&amp;</span><span class="va">self</span>) -&gt; <span class="kw">&amp;</span>[<span class="bu">Vec</span><span class="op">&lt;</span><span class="dt">u8</span><span class="op">&gt;</span>]</code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><a href="https://github.com/rahuldave/gossil/blob/main/src/artifact.rs#L309" class="source-link">source</a></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb26"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span class="kw">pub</span> <span class="kw">fn</span> <span class="fu">cluster_children</span>(<span class="op">&amp;</span><span class="va">self</span>) -&gt; <span class="kw">&amp;</span>[<span class="bu">Vec</span><span class="op">&lt;</span><span class="dt">u8</span><span class="op">&gt;</span>]</code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Read the parsed cluster children without permitting mutation.</p>
 <div class="sd-table">
 <table class="caption-top table">
@@ -597,8 +641,8 @@
 </section>
 <section id="ParsedArtifact.ticket_fields" class="level3">
 <h3 class="anchored" data-anchor-id="ParsedArtifact.ticket_fields">ParsedArtifact::ticket_fields</h3>
-<p><a href="https://github.com/rahuldave/gossil/blob/main/src/artifact.rs#L298" class="source-link">source</a></p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb26"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span class="kw">pub</span> <span class="kw">fn</span> <span class="fu">ticket_fields</span>(<span class="op">&amp;</span><span class="va">self</span>) -&gt; <span class="kw">&amp;</span>[TicketField]</code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><a href="https://github.com/rahuldave/gossil/blob/main/src/artifact.rs#L315" class="source-link">source</a></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb27"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span class="kw">pub</span> <span class="kw">fn</span> <span class="fu">ticket_fields</span>(<span class="op">&amp;</span><span class="va">self</span>) -&gt; <span class="kw">&amp;</span>[TicketField]</code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Read the parsed ticket fields without permitting mutation.</p>
 <div class="sd-table">
 <table class="caption-top table">
@@ -621,8 +665,8 @@
 </section>
 <section id="ParsedArtifact.ticket_id" class="level3">
 <h3 class="anchored" data-anchor-id="ParsedArtifact.ticket_id">ParsedArtifact::ticket_id</h3>
-<p><a href="https://github.com/rahuldave/gossil/blob/main/src/artifact.rs#L304" class="source-link">source</a></p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb27"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span class="kw">pub</span> <span class="kw">fn</span> <span class="fu">ticket_id</span>(<span class="op">&amp;</span><span class="va">self</span>) -&gt; <span class="bu">Option</span><span class="op">&lt;</span><span class="op">&amp;</span>[<span class="dt">u8</span>]<span class="op">&gt;</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><a href="https://github.com/rahuldave/gossil/blob/main/src/artifact.rs#L321" class="source-link">source</a></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb28"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span class="kw">pub</span> <span class="kw">fn</span> <span class="fu">ticket_id</span>(<span class="op">&amp;</span><span class="va">self</span>) -&gt; <span class="bu">Option</span><span class="op">&lt;</span><span class="op">&amp;</span>[<span class="dt">u8</span>]<span class="op">&gt;</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Read the parsed ticket id without permitting mutation.</p>
 <div class="sd-table">
 <table class="caption-top table">
@@ -645,8 +689,8 @@
 </section>
 <section id="ParsedArtifact.wiki_title" class="level3">
 <h3 class="anchored" data-anchor-id="ParsedArtifact.wiki_title">ParsedArtifact::wiki_title</h3>
-<p><a href="https://github.com/rahuldave/gossil/blob/main/src/artifact.rs#L310" class="source-link">source</a></p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb28"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span class="kw">pub</span> <span class="kw">fn</span> <span class="fu">wiki_title</span>(<span class="op">&amp;</span><span class="va">self</span>) -&gt; <span class="bu">Option</span><span class="op">&lt;</span><span class="op">&amp;</span>DecodedToken<span class="op">&gt;</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><a href="https://github.com/rahuldave/gossil/blob/main/src/artifact.rs#L327" class="source-link">source</a></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb29"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span class="kw">pub</span> <span class="kw">fn</span> <span class="fu">wiki_title</span>(<span class="op">&amp;</span><span class="va">self</span>) -&gt; <span class="bu">Option</span><span class="op">&lt;</span><span class="op">&amp;</span>DecodedToken<span class="op">&gt;</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Read the parsed wiki title without permitting mutation.</p>
 <div class="sd-table">
 <table class="caption-top table">
@@ -669,8 +713,8 @@
 </section>
 <section id="ParsedArtifact.mimetype" class="level3">
 <h3 class="anchored" data-anchor-id="ParsedArtifact.mimetype">ParsedArtifact::mimetype</h3>
-<p><a href="https://github.com/rahuldave/gossil/blob/main/src/artifact.rs#L316" class="source-link">source</a></p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb29"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span class="kw">pub</span> <span class="kw">fn</span> <span class="fu">mimetype</span>(<span class="op">&amp;</span><span class="va">self</span>) -&gt; <span class="bu">Option</span><span class="op">&lt;</span><span class="op">&amp;</span>DecodedToken<span class="op">&gt;</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><a href="https://github.com/rahuldave/gossil/blob/main/src/artifact.rs#L333" class="source-link">source</a></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb30"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span class="kw">pub</span> <span class="kw">fn</span> <span class="fu">mimetype</span>(<span class="op">&amp;</span><span class="va">self</span>) -&gt; <span class="bu">Option</span><span class="op">&lt;</span><span class="op">&amp;</span>DecodedToken<span class="op">&gt;</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Read the parsed MIME type without permitting mutation.</p>
 <div class="sd-table">
 <table class="caption-top table">
@@ -693,8 +737,8 @@
 </section>
 <section id="ParsedArtifact.body" class="level3">
 <h3 class="anchored" data-anchor-id="ParsedArtifact.body">ParsedArtifact::body</h3>
-<p><a href="https://github.com/rahuldave/gossil/blob/main/src/artifact.rs#L322" class="source-link">source</a></p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb30"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span class="kw">pub</span> <span class="kw">fn</span> <span class="fu">body</span>(<span class="op">&amp;</span><span class="va">self</span>) -&gt; <span class="bu">Option</span><span class="op">&lt;</span><span class="op">&amp;</span>[<span class="dt">u8</span>]<span class="op">&gt;</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><a href="https://github.com/rahuldave/gossil/blob/main/src/artifact.rs#L339" class="source-link">source</a></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb31"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span class="kw">pub</span> <span class="kw">fn</span> <span class="fu">body</span>(<span class="op">&amp;</span><span class="va">self</span>) -&gt; <span class="bu">Option</span><span class="op">&lt;</span><span class="op">&amp;</span>[<span class="dt">u8</span>]<span class="op">&gt;</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Read the parsed body without permitting mutation.</p>
 <div class="sd-table">
 <table class="caption-top table">
@@ -717,8 +761,8 @@
 </section>
 <section id="ParsedArtifact.event_date" class="level3">
 <h3 class="anchored" data-anchor-id="ParsedArtifact.event_date">ParsedArtifact::event_date</h3>
-<p><a href="https://github.com/rahuldave/gossil/blob/main/src/artifact.rs#L328" class="source-link">source</a></p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb31"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span class="kw">pub</span> <span class="kw">fn</span> <span class="fu">event_date</span>(<span class="op">&amp;</span><span class="va">self</span>) -&gt; <span class="bu">Option</span><span class="op">&lt;</span><span class="dt">f64</span><span class="op">&gt;</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><a href="https://github.com/rahuldave/gossil/blob/main/src/artifact.rs#L345" class="source-link">source</a></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb32"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span class="kw">pub</span> <span class="kw">fn</span> <span class="fu">event_date</span>(<span class="op">&amp;</span><span class="va">self</span>) -&gt; <span class="bu">Option</span><span class="op">&lt;</span><span class="dt">f64</span><span class="op">&gt;</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Read the parsed event date without permitting mutation.</p>
 <div class="sd-table">
 <table class="caption-top table">
@@ -741,8 +785,8 @@
 </section>
 <section id="ParsedArtifact.event_id" class="level3">
 <h3 class="anchored" data-anchor-id="ParsedArtifact.event_id">ParsedArtifact::event_id</h3>
-<p><a href="https://github.com/rahuldave/gossil/blob/main/src/artifact.rs#L334" class="source-link">source</a></p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb32"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span class="kw">pub</span> <span class="kw">fn</span> <span class="fu">event_id</span>(<span class="op">&amp;</span><span class="va">self</span>) -&gt; <span class="bu">Option</span><span class="op">&lt;</span><span class="op">&amp;</span>[<span class="dt">u8</span>]<span class="op">&gt;</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><a href="https://github.com/rahuldave/gossil/blob/main/src/artifact.rs#L351" class="source-link">source</a></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb33"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span class="kw">pub</span> <span class="kw">fn</span> <span class="fu">event_id</span>(<span class="op">&amp;</span><span class="va">self</span>) -&gt; <span class="bu">Option</span><span class="op">&lt;</span><span class="op">&amp;</span>[<span class="dt">u8</span>]<span class="op">&gt;</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Read the parsed event id without permitting mutation.</p>
 <div class="sd-table">
 <table class="caption-top table">
@@ -765,8 +809,8 @@
 </section>
 <section id="ParsedArtifact.thread_root" class="level3">
 <h3 class="anchored" data-anchor-id="ParsedArtifact.thread_root">ParsedArtifact::thread_root</h3>
-<p><a href="https://github.com/rahuldave/gossil/blob/main/src/artifact.rs#L340" class="source-link">source</a></p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb33"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span class="kw">pub</span> <span class="kw">fn</span> <span class="fu">thread_root</span>(<span class="op">&amp;</span><span class="va">self</span>) -&gt; <span class="bu">Option</span><span class="op">&lt;</span><span class="op">&amp;</span>[<span class="dt">u8</span>]<span class="op">&gt;</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><a href="https://github.com/rahuldave/gossil/blob/main/src/artifact.rs#L357" class="source-link">source</a></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb34"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span class="kw">pub</span> <span class="kw">fn</span> <span class="fu">thread_root</span>(<span class="op">&amp;</span><span class="va">self</span>) -&gt; <span class="bu">Option</span><span class="op">&lt;</span><span class="op">&amp;</span>[<span class="dt">u8</span>]<span class="op">&gt;</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Read the parsed thread root without permitting mutation.</p>
 <div class="sd-table">
 <table class="caption-top table">
@@ -789,8 +833,8 @@
 </section>
 <section id="ParsedArtifact.thread_title" class="level3">
 <h3 class="anchored" data-anchor-id="ParsedArtifact.thread_title">ParsedArtifact::thread_title</h3>
-<p><a href="https://github.com/rahuldave/gossil/blob/main/src/artifact.rs#L346" class="source-link">source</a></p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb34"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span class="kw">pub</span> <span class="kw">fn</span> <span class="fu">thread_title</span>(<span class="op">&amp;</span><span class="va">self</span>) -&gt; <span class="bu">Option</span><span class="op">&lt;</span><span class="op">&amp;</span>DecodedToken<span class="op">&gt;</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><a href="https://github.com/rahuldave/gossil/blob/main/src/artifact.rs#L363" class="source-link">source</a></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb35"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span class="kw">pub</span> <span class="kw">fn</span> <span class="fu">thread_title</span>(<span class="op">&amp;</span><span class="va">self</span>) -&gt; <span class="bu">Option</span><span class="op">&lt;</span><span class="op">&amp;</span>DecodedToken<span class="op">&gt;</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Read the parsed thread title without permitting mutation.</p>
 <div class="sd-table">
 <table class="caption-top table">
@@ -813,8 +857,8 @@
 </section>
 <section id="ParsedArtifact.in_reply_to" class="level3">
 <h3 class="anchored" data-anchor-id="ParsedArtifact.in_reply_to">ParsedArtifact::in_reply_to</h3>
-<p><a href="https://github.com/rahuldave/gossil/blob/main/src/artifact.rs#L352" class="source-link">source</a></p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb35"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span class="kw">pub</span> <span class="kw">fn</span> <span class="fu">in_reply_to</span>(<span class="op">&amp;</span><span class="va">self</span>) -&gt; <span class="bu">Option</span><span class="op">&lt;</span><span class="op">&amp;</span>[<span class="dt">u8</span>]<span class="op">&gt;</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><a href="https://github.com/rahuldave/gossil/blob/main/src/artifact.rs#L369" class="source-link">source</a></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb36"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span class="kw">pub</span> <span class="kw">fn</span> <span class="fu">in_reply_to</span>(<span class="op">&amp;</span><span class="va">self</span>) -&gt; <span class="bu">Option</span><span class="op">&lt;</span><span class="op">&amp;</span>[<span class="dt">u8</span>]<span class="op">&gt;</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Read the forum parent hash without permitting mutation.</p>
 <div class="sd-table">
 <table class="caption-top table">
@@ -837,8 +881,8 @@
 </section>
 <section id="ParsedArtifact.attachment" class="level3">
 <h3 class="anchored" data-anchor-id="ParsedArtifact.attachment">ParsedArtifact::attachment</h3>
-<p><a href="https://github.com/rahuldave/gossil/blob/main/src/artifact.rs#L358" class="source-link">source</a></p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb36"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span class="kw">pub</span> <span class="kw">fn</span> <span class="fu">attachment</span>(<span class="op">&amp;</span><span class="va">self</span>) -&gt; <span class="bu">Option</span><span class="op">&lt;</span><span class="op">&amp;</span>Attachment<span class="op">&gt;</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><a href="https://github.com/rahuldave/gossil/blob/main/src/artifact.rs#L375" class="source-link">source</a></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb37"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span class="kw">pub</span> <span class="kw">fn</span> <span class="fu">attachment</span>(<span class="op">&amp;</span><span class="va">self</span>) -&gt; <span class="bu">Option</span><span class="op">&lt;</span><span class="op">&amp;</span>Attachment<span class="op">&gt;</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Read the parsed attachment without permitting mutation.</p>
 <div class="sd-table">
 <table class="caption-top table">
@@ -862,14 +906,14 @@
 </section>
 <section id="FileEntry" class="level2">
 <h2 class="anchored" data-anchor-id="FileEntry">struct FileEntry</h2>
-<p><a href="https://github.com/rahuldave/gossil/blob/main/src/artifact.rs#L174" class="source-link">source</a></p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb37"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span class="kw">pub</span> <span class="kw">struct</span> FileEntry</code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><a href="https://github.com/rahuldave/gossil/blob/main/src/artifact.rs#L191" class="source-link">source</a></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb38"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span class="kw">pub</span> <span class="kw">struct</span> FileEntry</code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Store a manifest file entry with decoded names and opaque permissions.</p>
 <p>Implements <a href="https://doc.rust-lang.org/nightly/core/fmt/trait.Debug.html"><code>Debug</code></a>.</p>
 <section id="FileEntry.name" class="level3">
 <h3 class="anchored" data-anchor-id="FileEntry.name">FileEntry::name</h3>
-<p><a href="https://github.com/rahuldave/gossil/blob/main/src/artifact.rs#L386" class="source-link">source</a></p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb38"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span class="kw">pub</span> <span class="kw">fn</span> <span class="fu">name</span>(<span class="op">&amp;</span><span class="va">self</span>) -&gt; <span class="kw">&amp;</span>DecodedToken</code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><a href="https://github.com/rahuldave/gossil/blob/main/src/artifact.rs#L403" class="source-link">source</a></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb39"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span class="kw">pub</span> <span class="kw">fn</span> <span class="fu">name</span>(<span class="op">&amp;</span><span class="va">self</span>) -&gt; <span class="kw">&amp;</span>DecodedToken</code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Read the parsed name without permitting mutation.</p>
 <div class="sd-table">
 <table class="caption-top table">
@@ -892,8 +936,8 @@
 </section>
 <section id="FileEntry.hash" class="level3">
 <h3 class="anchored" data-anchor-id="FileEntry.hash">FileEntry::hash</h3>
-<p><a href="https://github.com/rahuldave/gossil/blob/main/src/artifact.rs#L392" class="source-link">source</a></p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb39"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span class="kw">pub</span> <span class="kw">fn</span> <span class="fu">hash</span>(<span class="op">&amp;</span><span class="va">self</span>) -&gt; <span class="bu">Option</span><span class="op">&lt;</span><span class="op">&amp;</span>[<span class="dt">u8</span>]<span class="op">&gt;</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><a href="https://github.com/rahuldave/gossil/blob/main/src/artifact.rs#L409" class="source-link">source</a></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb40"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span class="kw">pub</span> <span class="kw">fn</span> <span class="fu">hash</span>(<span class="op">&amp;</span><span class="va">self</span>) -&gt; <span class="bu">Option</span><span class="op">&lt;</span><span class="op">&amp;</span>[<span class="dt">u8</span>]<span class="op">&gt;</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Read the parsed hash without permitting mutation.</p>
 <div class="sd-table">
 <table class="caption-top table">
@@ -916,8 +960,8 @@
 </section>
 <section id="FileEntry.permissions" class="level3">
 <h3 class="anchored" data-anchor-id="FileEntry.permissions">FileEntry::permissions</h3>
-<p><a href="https://github.com/rahuldave/gossil/blob/main/src/artifact.rs#L398" class="source-link">source</a></p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb40"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span class="kw">pub</span> <span class="kw">fn</span> <span class="fu">permissions</span>(<span class="op">&amp;</span><span class="va">self</span>) -&gt; <span class="bu">Option</span><span class="op">&lt;</span><span class="op">&amp;</span>[<span class="dt">u8</span>]<span class="op">&gt;</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><a href="https://github.com/rahuldave/gossil/blob/main/src/artifact.rs#L415" class="source-link">source</a></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb41"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span class="kw">pub</span> <span class="kw">fn</span> <span class="fu">permissions</span>(<span class="op">&amp;</span><span class="va">self</span>) -&gt; <span class="bu">Option</span><span class="op">&lt;</span><span class="op">&amp;</span>[<span class="dt">u8</span>]<span class="op">&gt;</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Read the parsed permissions without permitting mutation.</p>
 <div class="sd-table">
 <table class="caption-top table">
@@ -940,8 +984,8 @@
 </section>
 <section id="FileEntry.prior_name" class="level3">
 <h3 class="anchored" data-anchor-id="FileEntry.prior_name">FileEntry::prior_name</h3>
-<p><a href="https://github.com/rahuldave/gossil/blob/main/src/artifact.rs#L404" class="source-link">source</a></p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb41"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span class="kw">pub</span> <span class="kw">fn</span> <span class="fu">prior_name</span>(<span class="op">&amp;</span><span class="va">self</span>) -&gt; <span class="bu">Option</span><span class="op">&lt;</span><span class="op">&amp;</span>DecodedToken<span class="op">&gt;</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><a href="https://github.com/rahuldave/gossil/blob/main/src/artifact.rs#L421" class="source-link">source</a></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb42"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span class="kw">pub</span> <span class="kw">fn</span> <span class="fu">prior_name</span>(<span class="op">&amp;</span><span class="va">self</span>) -&gt; <span class="bu">Option</span><span class="op">&lt;</span><span class="op">&amp;</span>DecodedToken<span class="op">&gt;</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Read the parsed prior name without permitting mutation.</p>
 <div class="sd-table">
 <table class="caption-top table">
@@ -965,14 +1009,14 @@
 </section>
 <section id="TicketField" class="level2">
 <h2 class="anchored" data-anchor-id="TicketField">struct TicketField</h2>
-<p><a href="https://github.com/rahuldave/gossil/blob/main/src/artifact.rs#L186" class="source-link">source</a></p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb42"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span class="kw">pub</span> <span class="kw">struct</span> TicketField</code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><a href="https://github.com/rahuldave/gossil/blob/main/src/artifact.rs#L203" class="source-link">source</a></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb43"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span class="kw">pub</span> <span class="kw">struct</span> TicketField</code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Store one ticket update with its raw name and decoded value.</p>
 <p>Implements <a href="https://doc.rust-lang.org/nightly/core/fmt/trait.Debug.html"><code>Debug</code></a>.</p>
 <section id="TicketField.name" class="level3">
 <h3 class="anchored" data-anchor-id="TicketField.name">TicketField::name</h3>
-<p><a href="https://github.com/rahuldave/gossil/blob/main/src/artifact.rs#L412" class="source-link">source</a></p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb43"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span class="kw">pub</span> <span class="kw">fn</span> <span class="fu">name</span>(<span class="op">&amp;</span><span class="va">self</span>) -&gt; <span class="kw">&amp;</span>[<span class="dt">u8</span>]</code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><a href="https://github.com/rahuldave/gossil/blob/main/src/artifact.rs#L429" class="source-link">source</a></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb44"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span class="kw">pub</span> <span class="kw">fn</span> <span class="fu">name</span>(<span class="op">&amp;</span><span class="va">self</span>) -&gt; <span class="kw">&amp;</span>[<span class="dt">u8</span>]</code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Read the parsed name without permitting mutation.</p>
 <div class="sd-table">
 <table class="caption-top table">
@@ -995,8 +1039,8 @@
 </section>
 <section id="TicketField.value" class="level3">
 <h3 class="anchored" data-anchor-id="TicketField.value">TicketField::value</h3>
-<p><a href="https://github.com/rahuldave/gossil/blob/main/src/artifact.rs#L418" class="source-link">source</a></p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb44"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span class="kw">pub</span> <span class="kw">fn</span> <span class="fu">value</span>(<span class="op">&amp;</span><span class="va">self</span>) -&gt; <span class="kw">&amp;</span>DecodedToken</code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><a href="https://github.com/rahuldave/gossil/blob/main/src/artifact.rs#L435" class="source-link">source</a></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb45"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span class="kw">pub</span> <span class="kw">fn</span> <span class="fu">value</span>(<span class="op">&amp;</span><span class="va">self</span>) -&gt; <span class="kw">&amp;</span>DecodedToken</code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Read the parsed value without permitting mutation.</p>
 <div class="sd-table">
 <table class="caption-top table">
@@ -1020,14 +1064,14 @@
 </section>
 <section id="Cherrypick" class="level2">
 <h2 class="anchored" data-anchor-id="Cherrypick">struct Cherrypick</h2>
-<p><a href="https://github.com/rahuldave/gossil/blob/main/src/artifact.rs#L194" class="source-link">source</a></p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb45"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span class="kw">pub</span> <span class="kw">struct</span> Cherrypick</code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><a href="https://github.com/rahuldave/gossil/blob/main/src/artifact.rs#L211" class="source-link">source</a></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb46"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span class="kw">pub</span> <span class="kw">struct</span> Cherrypick</code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Store one signed cherrypick with an optional base hash.</p>
 <p>Implements <a href="https://doc.rust-lang.org/nightly/core/fmt/trait.Debug.html"><code>Debug</code></a>.</p>
 <section id="Cherrypick.target" class="level3">
 <h3 class="anchored" data-anchor-id="Cherrypick.target">Cherrypick::target</h3>
-<p><a href="https://github.com/rahuldave/gossil/blob/main/src/artifact.rs#L426" class="source-link">source</a></p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb46"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span class="kw">pub</span> <span class="kw">fn</span> <span class="fu">target</span>(<span class="op">&amp;</span><span class="va">self</span>) -&gt; <span class="kw">&amp;</span>[<span class="dt">u8</span>]</code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><a href="https://github.com/rahuldave/gossil/blob/main/src/artifact.rs#L443" class="source-link">source</a></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb47"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span class="kw">pub</span> <span class="kw">fn</span> <span class="fu">target</span>(<span class="op">&amp;</span><span class="va">self</span>) -&gt; <span class="kw">&amp;</span>[<span class="dt">u8</span>]</code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Read the parsed target without permitting mutation.</p>
 <div class="sd-table">
 <table class="caption-top table">
@@ -1050,8 +1094,8 @@
 </section>
 <section id="Cherrypick.base" class="level3">
 <h3 class="anchored" data-anchor-id="Cherrypick.base">Cherrypick::base</h3>
-<p><a href="https://github.com/rahuldave/gossil/blob/main/src/artifact.rs#L432" class="source-link">source</a></p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb47"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span class="kw">pub</span> <span class="kw">fn</span> <span class="fu">base</span>(<span class="op">&amp;</span><span class="va">self</span>) -&gt; <span class="bu">Option</span><span class="op">&lt;</span><span class="op">&amp;</span>[<span class="dt">u8</span>]<span class="op">&gt;</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><a href="https://github.com/rahuldave/gossil/blob/main/src/artifact.rs#L449" class="source-link">source</a></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb48"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span class="kw">pub</span> <span class="kw">fn</span> <span class="fu">base</span>(<span class="op">&amp;</span><span class="va">self</span>) -&gt; <span class="bu">Option</span><span class="op">&lt;</span><span class="op">&amp;</span>[<span class="dt">u8</span>]<span class="op">&gt;</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Read the parsed base without permitting mutation.</p>
 <div class="sd-table">
 <table class="caption-top table">
@@ -1075,14 +1119,14 @@
 </section>
 <section id="Attachment" class="level2">
 <h2 class="anchored" data-anchor-id="Attachment">struct Attachment</h2>
-<p><a href="https://github.com/rahuldave/gossil/blob/main/src/artifact.rs#L202" class="source-link">source</a></p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb48"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span class="kw">pub</span> <span class="kw">struct</span> Attachment</code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><a href="https://github.com/rahuldave/gossil/blob/main/src/artifact.rs#L219" class="source-link">source</a></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb49"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span class="kw">pub</span> <span class="kw">struct</span> Attachment</code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Store an attachment whose name is reduced to the native platform basename.</p>
 <p>Implements <a href="https://doc.rust-lang.org/nightly/core/fmt/trait.Debug.html"><code>Debug</code></a>.</p>
 <section id="Attachment.name" class="level3">
 <h3 class="anchored" data-anchor-id="Attachment.name">Attachment::name</h3>
-<p><a href="https://github.com/rahuldave/gossil/blob/main/src/artifact.rs#L440" class="source-link">source</a></p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb49"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span class="kw">pub</span> <span class="kw">fn</span> <span class="fu">name</span>(<span class="op">&amp;</span><span class="va">self</span>) -&gt; <span class="kw">&amp;</span>DecodedToken</code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><a href="https://github.com/rahuldave/gossil/blob/main/src/artifact.rs#L457" class="source-link">source</a></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb50"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span class="kw">pub</span> <span class="kw">fn</span> <span class="fu">name</span>(<span class="op">&amp;</span><span class="va">self</span>) -&gt; <span class="kw">&amp;</span>DecodedToken</code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Read the parsed name without permitting mutation.</p>
 <div class="sd-table">
 <table class="caption-top table">
@@ -1105,8 +1149,8 @@
 </section>
 <section id="Attachment.target" class="level3">
 <h3 class="anchored" data-anchor-id="Attachment.target">Attachment::target</h3>
-<p><a href="https://github.com/rahuldave/gossil/blob/main/src/artifact.rs#L446" class="source-link">source</a></p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb50"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span class="kw">pub</span> <span class="kw">fn</span> <span class="fu">target</span>(<span class="op">&amp;</span><span class="va">self</span>) -&gt; <span class="kw">&amp;</span>DecodedToken</code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><a href="https://github.com/rahuldave/gossil/blob/main/src/artifact.rs#L463" class="source-link">source</a></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb51"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span class="kw">pub</span> <span class="kw">fn</span> <span class="fu">target</span>(<span class="op">&amp;</span><span class="va">self</span>) -&gt; <span class="kw">&amp;</span>DecodedToken</code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Read the parsed target without permitting mutation.</p>
 <div class="sd-table">
 <table class="caption-top table">
@@ -1129,8 +1173,8 @@
 </section>
 <section id="Attachment.source" class="level3">
 <h3 class="anchored" data-anchor-id="Attachment.source">Attachment::source</h3>
-<p><a href="https://github.com/rahuldave/gossil/blob/main/src/artifact.rs#L452" class="source-link">source</a></p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb51"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span class="kw">pub</span> <span class="kw">fn</span> <span class="fu">source</span>(<span class="op">&amp;</span><span class="va">self</span>) -&gt; <span class="bu">Option</span><span class="op">&lt;</span><span class="op">&amp;</span>[<span class="dt">u8</span>]<span class="op">&gt;</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><a href="https://github.com/rahuldave/gossil/blob/main/src/artifact.rs#L469" class="source-link">source</a></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb52"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span class="kw">pub</span> <span class="kw">fn</span> <span class="fu">source</span>(<span class="op">&amp;</span><span class="va">self</span>) -&gt; <span class="bu">Option</span><span class="op">&lt;</span><span class="op">&amp;</span>[<span class="dt">u8</span>]<span class="op">&gt;</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Read the parsed source without permitting mutation.</p>
 <div class="sd-table">
 <table class="caption-top table">
@@ -1154,8 +1198,8 @@
 </section>
 <section id="parse_artifact" class="level2">
 <h2 class="anchored" data-anchor-id="parse_artifact">fn parse_artifact</h2>
-<p><a href="https://github.com/rahuldave/gossil/blob/main/src/artifact.rs#L789" class="source-link">source</a></p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb52"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span class="kw">pub</span> <span class="kw">async</span> <span class="kw">fn</span> <span class="fu">parse_artifact</span>(
+<p><a href="https://github.com/rahuldave/gossil/blob/main/src/artifact.rs#L807" class="source-link">source</a></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb53"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span class="kw">pub</span> <span class="kw">async</span> <span class="kw">fn</span> <span class="fu">parse_artifact</span>(
     input: <span class="kw">&amp;</span>[<span class="dt">u8</span>],
     limits: ParseLimits,
     dates: <span class="kw">&amp;</span>impl DateProvider,
@@ -1165,7 +1209,7 @@
 Date conversion must use the caller’s selected SQLite/libSQL engine.</p>
 <section id="examples" class="level4">
 <h4 class="anchored" data-anchor-id="examples">Examples</h4>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb53"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span class="kw">use</span> gossil::artifact::{
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb54"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span class="kw">use</span> gossil::artifact::{
     ArtifactError, DateProvider, ParseLimits, ParsedArtifact, parse_artifact,
 };
 
@@ -1213,7 +1257,90 @@ Date conversion must use the caller’s selected SQLite/libSQL engine.</p>
 <tr>
 <td>returns</td>
 <td>Result&lt;ParsedArtifact, ArtifactError&gt;</td>
-<td>An owned result exposing read-only parsed fields and the exact original bytes.</td>
+<td>An owned result exposing read-only parsed fields and the exact original bytes. Use <a href="artifact.html#parse_artifact_with_usage"><code>parse_artifact_with_usage</code></a> when the caller also needs resource charges.</td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+</section>
+<section id="parse_artifact_with_usage" class="level2">
+<h2 class="anchored" data-anchor-id="parse_artifact_with_usage">fn parse_artifact_with_usage</h2>
+<p><a href="https://github.com/rahuldave/gossil/blob/main/src/artifact.rs#L867" class="source-link">source</a></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb55"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span class="kw">pub</span> <span class="kw">async</span> <span class="kw">fn</span> <span class="fu">parse_artifact_with_usage</span>(
+    input: <span class="kw">&amp;</span>[<span class="dt">u8</span>],
+    limits: ParseLimits,
+    dates: <span class="kw">&amp;</span>impl DateProvider,
+) -&gt; <span class="bu">Result</span><span class="op">&lt;</span>(ParsedArtifact, ParseUsage), ArtifactError<span class="op">&gt;</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Parse an artifact and report its existing resource counters on success.</p>
+<p>Uses the same grammar and allocation checks as <a href="artifact.html#parse_artifact"><code>parse_artifact</code></a>. No usage is
+returned on failure; an aggregate caller must stop its operation on an error.</p>
+<section id="examples-1" class="level4">
+<h4 class="anchored" data-anchor-id="examples-1">Examples</h4>
+<p>Parse a cluster, which has no date card, and debit a caller-owned budget.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb56"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span class="kw">use</span> gossil::artifact::{
+    ArtifactError, DateProvider, DateProviderError, ParseLimits, parse_artifact_with_usage,
+};
+<span class="kw">struct</span> NoDates;
+<span class="kw">impl</span> DateProvider <span class="cf">for</span> NoDates {
+    <span class="kw">async</span> <span class="kw">fn</span> <span class="fu">julianday</span>(<span class="op">&amp;</span><span class="va">self</span>, _: <span class="bu">Option</span><span class="op">&lt;</span><span class="op">&amp;</span>[<span class="dt">u8</span>]<span class="op">&gt;</span>) -&gt; <span class="bu">Result</span><span class="op">&lt;</span><span class="bu">Option</span><span class="op">&lt;</span><span class="dt">f64</span><span class="op">&gt;</span>, DateProviderError<span class="op">&gt;</span> {
+        <span class="bu">Ok</span>(<span class="bu">None</span>)
+    }
+}
+<span class="kw">let</span> <span class="kw">mut</span> input <span class="op">=</span> <span class="st">b&quot;</span><span class="st">M aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa</span><span class="sc">\n</span><span class="st">&quot;</span>.to_vec();
+<span class="kw">let</span> checksum <span class="op">=</span> gossil::artifact_checksum::md5(<span class="op">&amp;</span>input);
+input.extend_from_slice(<span class="st">b&quot;</span><span class="st">Z </span><span class="st">&quot;</span>);
+<span class="cf">for</span> byte <span class="kw">in</span> checksum {
+    input.extend_from_slice(<span class="fu">format!</span>(<span class="st">&quot;</span><span class="st">{byte:02x}</span><span class="st">&quot;</span>).as_bytes());
+}
+input.push(<span class="ch">b&#x27;\n&#x27;</span>);
+<span class="kw">let</span> <span class="kw">mut</span> remaining <span class="op">=</span> ParseLimits {
+    input_bytes: <span class="dv">4096</span>, cards: <span class="dv">100</span>, owned_bytes: <span class="dv">8192</span>, entries: <span class="dv">100</span>,
+};
+<span class="kw">let</span> (_, usage) <span class="op">=</span> parse_artifact_with_usage(<span class="op">&amp;</span>input, remaining, <span class="op">&amp;</span>NoDates).<span class="cf">await</span><span class="op">?</span>;
+<span class="fu">assert_eq!</span>(usage.input_bytes, input.len());
+<span class="fu">assert_eq!</span>(usage.cards, <span class="dv">2</span>);
+<span class="fu">assert_eq!</span>(usage.entries, <span class="dv">1</span>);
+remaining.input_bytes <span class="op">-</span><span class="op">=</span> usage.input_bytes;
+remaining.cards <span class="op">-</span><span class="op">=</span> usage.cards;
+remaining.owned_bytes <span class="op">-</span><span class="op">=</span> usage.owned_bytes;
+remaining.entries <span class="op">-</span><span class="op">=</span> usage.entries;
+<span class="fu">assert_eq!</span>(remaining.cards, <span class="dv">98</span>);</code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>The successful charges fit the supplied limits, so these subtractions cannot
+underflow. On an error, stop and discard the enclosing operation state.</p>
+</section>
+<section id="errors-2" class="level4">
+<h4 class="anchored" data-anchor-id="errors-2">Errors</h4>
+<p>Returns syntax, checksum, resource-limit or provider failure separately.</p>
+<div class="sd-table">
+<table class="caption-top table">
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>input</code></td>
+<td>&amp;[u8]</td>
+<td>Complete raw bytes, including any supported signature envelope.</td>
+</tr>
+<tr>
+<td><code>limits</code></td>
+<td>ParseLimits</td>
+<td>Remaining input, card, owned-byte and entry bounds for the operation.</td>
+</tr>
+<tr>
+<td><code>dates</code></td>
+<td>&amp;impl DateProvider</td>
+<td>Selected date provider, possibly borrowing the caller’s transaction.</td>
+</tr>
+<tr>
+<td>returns</td>
+<td>Result&lt;(ParsedArtifact, ParseUsage), ArtifactError&gt;</td>
+<td>The validated artifact and the exact logical charges against the supplied limits. These charges do not measure every physical Rust allocator byte.</td>
 </tr>
 </tbody>
 </table>
