@@ -12,7 +12,7 @@
 [package]
 edition = "2021"
 name = "libsql-ffi"
-version = "0.9.30"
+version = "0.10.0"
 authors = ["the libSQL authors"]
 build = "build.rs"
 exclude = [
@@ -28,6 +28,7 @@ description = "Native bindings to libSQL"
 readme = false
 license = "MIT"
 repository = "https://github.com/tursodatabase/libsql"
+resolver = "3"
 
 [features]
 bundled-sqlcipher = []

@@ -87,6 +87,52 @@ impl StorageError {
     }
 }
 
+/// Open the selected native provider while preserving non-UTF-8 Unix filename bytes.
+/// SQLite URI percent encoding bridges the Rust driver's UTF-8 filename boundary.
+/// It does not change repository bytes or introduce another storage engine.
+/// # Arguments
+/// * `path` - Native filesystem name, rejected if it contains NUL.
+/// * `flags` - Existing native read/write/create flags.
+/// # Returns
+/// The configured database factory for that exact filename.
+/// # Errors
+/// Returns filename, current-directory or original libsql open failures.
+pub(crate) async fn open_native_database(
+    path: &Path,
+    flags: libsql::OpenFlags,
+) -> Result<libsql::Database, StorageError> {
+    std::ffi::CString::new(path.as_os_str().as_encoded_bytes())
+        .map_err(|e| StorageError::caused("invalid local database path", e))?;
+    if path.as_os_str().is_empty() {
+        return Ok(Builder::new_local(path).flags(flags).build().await?);
+    }
+    let absolute = if path.is_absolute() {
+        path.to_path_buf()
+    } else {
+        std::env::current_dir()
+            .map_err(|e| StorageError::caused("local database current directory unavailable", e))?
+            .join(path)
+    };
+    // Native command paths are filesystem names. An absolute filename cannot
+    // accidentally activate SQLite's compiled-in `file:` URI interpretation.
+    if absolute.to_str().is_some() {
+        return Ok(Builder::new_local(&absolute).flags(flags).build().await?);
+    }
+    // An explicit empty authority preserves even a native leading double slash.
+    let mut uri = String::from("file://");
+    for byte in absolute.as_os_str().as_encoded_bytes() {
+        use std::fmt::Write;
+        if byte.is_ascii_alphanumeric() || b"/-._~".contains(byte) {
+            uri.push(*byte as char);
+        } else {
+            write!(&mut uri, "%{byte:02X}").unwrap();
+        }
+    }
+    // SQLITE_OPEN_URI, from the pinned provider's sqlite3.h. Preserve all selected flags.
+    let flags = libsql::OpenFlags::from_bits_retain(flags.bits() | 0x00000040);
+    Ok(Builder::new_local(uri).flags(flags).build().await?)
+}
+
 /// A configured local database with exactly one unexposed connection.
 pub struct LocalStore {
     /// Sole connection, absent while a mutation owns it or after poisoning.
@@ -96,6 +142,8 @@ pub struct LocalStore {
 }
 impl LocalStore {
     /// Open and verify a local file database; never fall back to memory.
+    /// Nonempty paths are literal native filenames, including `file:` and URI punctuation.
+    /// Raw Unix filename bytes remain subject to the filesystem's acceptance rules.
     /// # Arguments
     /// * `path` - Local database file, whose parent must exist.
     /// # Returns
@@ -129,15 +177,19 @@ impl LocalStore {
     /// configuration failures, or a state error when required settings differ.
     async fn open_inner(path: impl AsRef<Path>, file: bool) -> Result<Self, StorageError> {
         let path = path.as_ref();
-        // The pinned driver unwraps CString construction at connect; validate before entering it.
-        std::ffi::CString::new(path.as_os_str().as_encoded_bytes()).map_err(|error| {
-            StorageError {
-                operation: format!("invalid local database path: {error}"),
-                cleanup: None,
-                source: Some(Arc::new(error)),
-            }
-        })?;
-        let database = Builder::new_local(path).build().await?;
+        let database = if file {
+            open_native_database(path, libsql::OpenFlags::default()).await?
+        } else {
+            // The pinned driver unwraps CString construction at connect.
+            std::ffi::CString::new(path.as_os_str().as_encoded_bytes()).map_err(|error| {
+                StorageError {
+                    operation: format!("invalid local database path: {error}"),
+                    cleanup: None,
+                    source: Some(Arc::new(error)),
+                }
+            })?;
+            Builder::new_local(path).build().await?
+        };
         let connection = database.connect()?;
         connection.busy_timeout(Duration::from_millis(5000))?;
         connection.execute("PRAGMA foreign_keys=ON", ()).await?;
@@ -1010,7 +1062,25 @@ mod tests {
                 .await
                 .is_err()
         );
-        assert!(LocalStore::open(":memory:").await.is_err());
+        // The native filename adapter treats this as a literal file, not URI/memory syntax.
+        let literal = temp.path().join(":memory:");
+        let mut literal_store = LocalStore::open(&literal).await.unwrap();
+        let mut tx = literal_store.begin_write().await.unwrap();
+        tx.execute("CREATE TABLE literal_path(value)")
+            .await
+            .unwrap();
+        tx.execute("INSERT INTO literal_path VALUES(17)")
+            .await
+            .unwrap();
+        tx.commit().await.unwrap();
+        drop(literal_store);
+        assert!(literal.is_file());
+        let mut reopened = LocalStore::open(&literal).await.unwrap();
+        assert_eq!(
+            read(&mut reopened, "SELECT value FROM literal_path").await,
+            vec![vec![Value::Integer(17)]]
+        );
+        drop(reopened);
         let mut store = LocalStore::open(temp.path().join("db")).await.unwrap();
         let mut tx = store.begin_write().await.unwrap();
         assert!(tx.restore().is_err());
@@ -1069,27 +1139,29 @@ mod tests {
             .unwrap();
     }
     #[tokio::test]
-    /// Reject embedded NUL filenames through the public opening API without panicking.
+    /// Reject embedded NUL filenames on file and memory routes with their original cause.
     async fn embedded_nul_path_returns_error_with_original_cause() {
         use std::error::Error;
-        let result = LocalStore::open("bad\0name.db").await;
-        let error = result
-            .err()
-            .expect("embedded NUL path must return an error");
-        assert!(error.operation.contains("path"));
-        let cause = error
-            .source()
-            .unwrap()
-            .downcast_ref::<std::ffi::NulError>()
-            .unwrap();
-        assert_eq!(cause.nul_position(), 3);
-        assert!(error.cleanup.is_none());
+        for file in [true, false] {
+            let result = LocalStore::open_inner("bad\0name.db", file).await;
+            let error = result
+                .err()
+                .expect("embedded NUL path must return an error");
+            assert!(error.operation.contains("path"));
+            let cause = error
+                .source()
+                .unwrap()
+                .downcast_ref::<std::ffi::NulError>()
+                .unwrap();
+            assert_eq!(cause.nul_position(), 3);
+            assert!(error.cleanup.is_none());
+        }
     }
 
     #[tokio::test]
-    /// Preserve the driver's UTF-8 rejection and SQLite temporary-file semantics.
-    async fn path_validation_preserves_empty_invalid_utf8_and_valid_file_behavior() {
-        use std::{error::Error, os::unix::ffi::OsStrExt};
+    /// Preserve SQLite temporary-file semantics and ordinary native file behavior.
+    async fn path_validation_preserves_empty_and_valid_file_behavior() {
+        use std::error::Error;
         let error = LocalStore::open("")
             .await
             .err()
@@ -1099,15 +1171,6 @@ mod tests {
             "configuration disagreement: PRAGMA journal_mode"
         );
         assert!(error.source().is_none());
-        let invalid = Path::new(std::ffi::OsStr::from_bytes(b"invalid-\xff.db"));
-        let error = LocalStore::open(invalid)
-            .await
-            .err()
-            .expect("invalid UTF-8 path must return an error");
-        assert!(matches!(
-            error.source().unwrap().downcast_ref::<libsql::Error>(),
-            Some(libsql::Error::InvalidUTF8Path)
-        ));
         let temp = tempfile::tempdir().unwrap();
         let path = temp.path().join("valid.db");
         let mut store = LocalStore::open(&path).await.unwrap();

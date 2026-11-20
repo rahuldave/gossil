@@ -7,24 +7,15 @@ import os
 from pathlib import Path, PurePosixPath
 import re
 import stat
+import tomllib
 import subprocess
 
 VENDOR = "vendor/libsql-ffi"
 MANIFEST = "vendor/libsql-ffi.manifest.json"
-IDENTITY = {
-    "crate": "libsql-ffi",
-    "version": "0.9.30",
-    "archive_sha256": "0be1da6f123ceb2cd23f469883415cab9ee963286a85d61e22afb8b12e15e681",
-    "crate_vcs": "0653c5788d77ef16a97c56ff3e9fdc11717a72d9",
-    "original_source_sha256": "d9791dc493f043172d75c4fe6ef48307db6534c98f2106c843551ca5cbfa2912",
-    "native_source_sha256": "fa1ca7a8ac45af89632ab480a3133556a48120fc76bffdd2d5cbb54cfb2e7ab0",
-    "patched_source_sha256": "84808835ee823cc6ad4fe14267f6a88ae3077fd877b3fd80007fbb7ff00f9416",
-}
+IDENTITY = {'crate': 'libsql-ffi', 'version': '0.10.0', 'archive_sha256': 'f232292810b6298d17466b59bf8077d075fb016d89c281ca9dc968ea4a3b9d03', 'crate_vcs': 'd8bc862d20bedc72945a1da27c8b7045414c0261', 'original_source_sha256': '0eb52e017a09ddb955a7fbaa5c2e5c39ed238f7480ec485e45f64fbb624ee7fb', 'native_source_sha256': 'fa1ca7a8ac45af89632ab480a3133556a48120fc76bffdd2d5cbb54cfb2e7ab0', 'patched_source_sha256': '78516943f8216206dd48091daa8b69aea172b5090c878e12d8dcba6cd445c072'}
 
 
-PRESERVED_READERS = {'vendor/libsql-ffi/bundled/SQLite3MultipleCiphers/readme.md': '451308d2943483efcd506effdde8d5362a25a81a844beb37ef7c034a15ceb123',
- 'vendor/libsql-ffi/bundled/SQLite3MultipleCiphers/src/filelist.md': '113a3c0eb9c38669ebef8c5821ce437a01e70f09dd313a6be2a58bf816726348',
- 'vendor/libsql-ffi/bundled/sqlean/regexp/pcre2/README.md': 'cbc112fe687da99471dc6befddda9ae13412725f3a0b8a272d1992a113f93b96'}
+PRESERVED_READERS = {'vendor/libsql-ffi/bundled/SQLite3MultipleCiphers/readme.md': 'fd2e51292e7be006a3ed781422045701f532b1e5aa224e9f233564484e360782', 'vendor/libsql-ffi/bundled/SQLite3MultipleCiphers/src/filelist.md': '113a3c0eb9c38669ebef8c5821ce437a01e70f09dd313a6be2a58bf816726348', 'vendor/libsql-ffi/bundled/sqlean/regexp/pcre2/README.md': 'cbc112fe687da99471dc6befddda9ae13412725f3a0b8a272d1992a113f93b96'}
 READER_MAP = ".agents/nossaifd-checkers.json"
 READER_POLICY = {
     "version": 1,
@@ -34,6 +25,8 @@ READER_POLICY = {
     }],
 }
 
+
+OFFICIAL_ABI_FILES = {'build.rs': '452e349bbcfcc4367565352650341eea33a0a2492d90f4709ca4ce3a843cd2ed', 'bundled/src/sqlite3.h': 'ee6eab8416938332fb2aa93e257a07773cb2721661a293ce4e227c7a1ea9aa63', 'bundled/src/sqlite3ext.h': '79b7bb7d2e25a7c7b0960d25a2be07e49f1f9cfd54b869214592e93b37c26914', 'bundled/bindings/bindgen.rs': 'b03594f88895b4386165388bf50e426cdd1279d6c825b5a380022d113e6419d5', 'bundled/bindings/session_bindgen.rs': '652b23963ebb5bc967070344e813e8f03fe10b24752235662863a5ffe4443f34'}
 
 def digest(data):
     """Return the full byte identity used by the frozen manifest."""
@@ -156,6 +149,14 @@ def validate(root, indexed=False):
         "tests/test_libsql_vendor.py",
         "tests/test_libsql_provider_compile.py",
         "evidence/libsql-provider/upstream-style-original.txt",
+        'tests/fixtures/provider-compile/abi-010.c',
+        'tests/fixtures/provider-compile/provenance.json',
+        'tests/fixtures/provider-compile/libsql-0.9.30-adapted-before-stdint.c.gz.part1',
+        'tests/fixtures/provider-compile/libsql-0.9.30-adapted-before-stdint.c.gz.part2',
+        'tests/fixtures/provider-compile/libsql-0.9.30-adapted-before-stdint.c.gz.part3',
+        'evidence/libsql-provider/upgrade-0.10/adaptation-map.json',
+        'evidence/libsql-provider/upgrade-0.10/adapted-0.9.30.patch',
+        'evidence/libsql-provider/upgrade-0.10/provenance-0.9.30.json',
     }
     if not isinstance(artifacts, dict) or not required.issubset(artifacts):
         raise ValueError("missing provenance artifacts")
@@ -172,6 +173,12 @@ def validate(root, indexed=False):
             raise ValueError("invalid digest: " + path)
         if digest(read(path)) != row:
             raise ValueError("byte identity disagreement: " + path)
+    package = tomllib.loads(read(VENDOR + "/Cargo.toml").decode("utf-8"))["package"]
+    if package["name"] != "libsql-ffi" or package["version"] != "0.10.0":
+        raise ValueError("official provider package identity differs")
+    for path, expected_hash in OFFICIAL_ABI_FILES.items():
+        if hashlib.sha256(read(VENDOR + "/" + path)).hexdigest() != expected_hash:
+            raise ValueError("official provider ABI/build bytes differ: " + path)
     provenance = strict_json(read("evidence/libsql-provider/provenance.json"))
     if provenance["identity"] != IDENTITY:
         raise ValueError("wrong provenance artifact")

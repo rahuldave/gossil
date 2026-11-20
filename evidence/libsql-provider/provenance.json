@@ -1,43 +1,54 @@
 {
   "identity": {
     "crate": "libsql-ffi",
-    "version": "0.9.30",
-    "archive_sha256": "0be1da6f123ceb2cd23f469883415cab9ee963286a85d61e22afb8b12e15e681",
-    "crate_vcs": "0653c5788d77ef16a97c56ff3e9fdc11717a72d9",
-    "original_source_sha256": "d9791dc493f043172d75c4fe6ef48307db6534c98f2106c843551ca5cbfa2912",
+    "version": "0.10.0",
+    "archive_sha256": "f232292810b6298d17466b59bf8077d075fb016d89c281ca9dc968ea4a3b9d03",
+    "crate_vcs": "d8bc862d20bedc72945a1da27c8b7045414c0261",
+    "original_source_sha256": "0eb52e017a09ddb955a7fbaa5c2e5c39ed238f7480ec485e45f64fbb624ee7fb",
     "native_source_sha256": "fa1ca7a8ac45af89632ab480a3133556a48120fc76bffdd2d5cbb54cfb2e7ab0",
-    "patched_source_sha256": "84808835ee823cc6ad4fe14267f6a88ae3077fd877b3fd80007fbb7ff00f9416"
+    "patched_source_sha256": "78516943f8216206dd48091daa8b69aea172b5090c878e12d8dcba6cd445c072"
   },
-  "crate_archive": "https://static.crates.io/crates/libsql-ffi/libsql-ffi-0.9.30.crate",
-  "native_fossil_revision": "7e8ecf0ce4a3c05aa39de7ffe2828d23e334efe446ef2387e09f205ef00b2227",
-  "native_input_path": "extsrc/sqlite3.c from pinned Fossil source",
-  "native_sqlite_version": "3.55.0",
-  "native_sqlite_source_id": "2026-11-15 00:55:04 ad4ee20509dc4e2803f35093b03df55cb3e39c8083b0d4ad231e1432516c7841",
-  "base_sqlite_version": "3.45.1",
-  "packaging_difference": "Complete published registry archive with only bundled/src/sqlite3.c replaced by reviewed bytes. Cargo extraction marker .cargo-ok is absent in archive and omitted; no source file omitted. build.rs unchanged.",
-  "source_review_sha256": "a0bbe1e08e1d83b68a083945011a8762504977ea493e4a2ad2498ad1d801fd0f",
-  "patch_sha256": "b6fa14773869e4f222e53b4180ec03cf35d619efe25cdc6d457cbb2a41218db0",
-  "patch_hunks": 8,
-  "provider_identity": "Base sqlite_version/sourceid remain unchanged; candidate identity is complete provenance + patched source hash.",
+  "crate_archive": "https://static.crates.io/crates/libsql-ffi/libsql-ffi-0.10.0.crate",
+  "crate_license": "MIT (official Cargo.toml); all published bundled notices retained",
+  "official_sqlite_version": "3.47.0",
+  "official_sqlite_source_id": "2024-10-21 16:30:22 03a9703e27c44437c39363d0baf82db4ebc94538a0f28411c85dda156f82alt1",
+  "packaging_difference": "Complete official archive with only bundled/src/sqlite3.c adapted. No published file omitted. build.rs, headers, bindings, WAL ABI2 implementation and MultipleCiphers sources remain official bytes.",
+  "native_reference": {
+    "native_fossil_revision": "7e8ecf0ce4a3c05aa39de7ffe2828d23e334efe446ef2387e09f205ef00b2227",
+    "native_input_path": "extsrc/sqlite3.c from pinned Fossil source",
+    "native_sqlite_version": "3.55.0",
+    "native_sqlite_source_id": "2026-11-15 00:55:04 ad4ee20509dc4e2803f35093b03df55cb3e39c8083b0d4ad231e1432516c7841",
+    "upstream_calendar_commit": "https://github.com/sqlite/sqlite/commit/aa2258e35b3df3dcd49220f2fed53725b150ac2b",
+    "upstream_fraction_commit": "https://github.com/sqlite/sqlite/commit/255548562b125e6c148bb27d49aaa01b2fe61dba",
+    "upstream_hour24_commits": [
+      "4b495f91a98381444a4688dcfdc6582e09ee9e56",
+      "1bf688324433bae5833168cbb1ef62dca536bcfe",
+      "3bce1260e7ef31b6b7bdde9d3781eb1264d68f37"
+    ]
+  },
+  "patch_sha256": "613b3fbf276cfbdb5d0010f3d09e271c0bfbc1a115d72f387a8ac38beb8bd19d",
+  "patch_hunks": 7,
+  "old_adaptation_mapping": "upgrade-0.10/adaptation-map.json",
   "source_changes": [
     "date-only internal upstream numeric closure with unchanged legacy AtoF API",
     "fraction clamp, hour24 validation and signed month/year rollover",
     "negative Gregorian century arithmetic",
     "explicit stdint.h in the adapted numerical closure supplies UINT64_C without optional HAVE_STDINT_H/HAVE_INTTYPES_H build definitions"
   ],
-  "upstream_calendar_commit": "https://github.com/sqlite/sqlite/commit/aa2258e35b3df3dcd49220f2fed53725b150ac2b",
-  "upstream_fraction_commit": "https://github.com/sqlite/sqlite/commit/255548562b125e6c148bb27d49aaa01b2fe61dba",
-  "upstream_hour24_commits": [
-    "4b495f91a98381444a4688dcfdc6582e09ee9e56",
-    "1bf688324433bae5833168cbb1ef62dca536bcfe",
-    "3bce1260e7ef31b6b7bdde9d3781eb1264d68f37"
+  "port_decisions": [
+    "Official3.47 already includes old negative-Gregorian century fix, so that old hunk is not duplicated.",
+    "Signed year assignment is ported while retaining official computeFloor(p) and timezone representation.",
+    "Date-only numerical closure remains identical; upstream sqlite3AtoF public length/encoding contract unchanged.",
+    "Official WAL ABI2 xSavepointForget headers/C/bindings are adopted together, not relabeled old ABI."
   ],
-  "limitations": [
-    "actual inherited/Gossil D/E parser unimplemented/unexecuted",
-    "now/subsec/subsecond runtime untested",
-    "date modifiers/strftime not qualified",
-    "MultipleCiphers sources unchanged and unqualified; dependency core-only",
-    "only local macOSarm64 observations; Linux/otherarchitectures/alternateflags unqualified",
-    "bounded489+30 characterization; no unrestricted engine/parity approval"
-  ]
+  "historical_evidence": "All earlier provider characterization and proof reports describe0.9.30, retained verbatim. upgrade-0.10/provenance-0.9.30.json preserves prior provenance including its then-current parser limitation. Those results do not qualify0.10.",
+  "current_qualification": {
+    "static": "Official checksum/path safety and unique-context adaptation mapping executed externally.",
+    "runtime": "No0.10 compiler/ABI/semantic/storage/coverage execution yet.",
+    "limitations": [
+      "Linux and other architectures unqualified pending central tests.",
+      "Date modifiers/strftime/MultipleCiphers and non-core features remain outside retained finite characterization.",
+      "Existing Gossil parser/native functionality is present in current source; old unimplemented-parser statement is historical, not current."
+    ]
+  }
 }

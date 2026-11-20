@@ -69,7 +69,7 @@ class VendorIntegrity(DisposableGitTest):
 
     def test_complete_copy_passes(self):
         """The exact complete tree is accepted before any tampering."""
-        self.assertEqual(VERIFY.validate(self.root), 272)
+        self.assertEqual(VERIFY.validate(self.root), 273)
 
     def test_missing_extra_changed_and_symlink_are_rejected(self):
         """Detect each independent inventory and byte mutation."""
@@ -125,7 +125,7 @@ class VendorIntegrity(DisposableGitTest):
         """Reject unstaged edits, stale staged manifest/source and indexed symlinks."""
         self.git("init", "-q")
         self.git("add", ".")
-        self.assertEqual(VERIFY.validate(self.root, True), 272)
+        self.assertEqual(VERIFY.validate(self.root, True), 273)
         path = self.root / VERIFY.VENDOR / "Cargo.toml"
         original = path.read_bytes()
         path.write_bytes(original + b"\n")
@@ -173,6 +173,50 @@ class VendorIntegrity(DisposableGitTest):
         with self.assertRaisesRegex(ValueError, "hunk count"):
             REGENERATE.apply(b"a\n", b"--- a/bundled/src/sqlite3.c\n+++ b/bundled/src/sqlite3.c\n")
 
+    def test_repinning_official_abi_or_package_bytes_is_rejected(self):
+        """A rewritten manifest cannot bless a different ABI header, binding or package version."""
+        paths = list(VERIFY.OFFICIAL_ABI_FILES) + ["Cargo.toml"]
+        for relative in paths:
+            with self.subTest(path=relative):
+                path = self.root / VERIFY.VENDOR / relative
+                original = path.read_bytes()
+                manifest_path = self.root / VERIFY.MANIFEST
+                original_manifest = manifest_path.read_bytes()
+                changed = original.replace(b'version = "0.10.0"', b'version = "0.9.30"', 1) if relative == "Cargo.toml" else original + b"\n"
+                self.assertNotEqual(changed, original)
+                path.write_bytes(changed)
+                value = json.loads(original_manifest)
+                value["files"][relative] = VERIFY.digest(changed)
+                manifest_path.write_text(json.dumps(value))
+                self.reject()
+                path.write_bytes(original)
+                manifest_path.write_bytes(original_manifest)
+        self.assertEqual(VERIFY.validate(self.root), 273)
+
+
+    def test_required_regression_inputs_cannot_be_removed_with_manifest_entries(self):
+        """Reject missing ABI and historical controls even when their digest entries disappear."""
+        paths = ['tests/fixtures/provider-compile/abi-010.c', 'tests/fixtures/provider-compile/provenance.json', 'tests/fixtures/provider-compile/libsql-0.9.30-adapted-before-stdint.c.gz.part1', 'tests/fixtures/provider-compile/libsql-0.9.30-adapted-before-stdint.c.gz.part2', 'tests/fixtures/provider-compile/libsql-0.9.30-adapted-before-stdint.c.gz.part3', 'evidence/libsql-provider/upgrade-0.10/adaptation-map.json', 'evidence/libsql-provider/upgrade-0.10/adapted-0.9.30.patch', 'evidence/libsql-provider/upgrade-0.10/provenance-0.9.30.json']
+        for removed in [*[ [path] for path in paths ], paths]:
+            with self.subTest(removed=removed):
+                manifest_path = self.root / VERIFY.MANIFEST
+                original_manifest = manifest_path.read_bytes()
+                original_files = {path: (self.root / path).read_bytes() for path in removed}
+                value = json.loads(original_manifest)
+                try:
+                    for path in removed:
+                        (self.root / path).unlink()
+                        del value["artifacts"][path]
+                    manifest_path.write_text(json.dumps(value))
+                    with self.assertRaisesRegex(ValueError, "missing provenance artifacts"):
+                        VERIFY.validate(self.root)
+                finally:
+                    manifest_path.write_bytes(original_manifest)
+                    for path, data in original_files.items():
+                        (self.root / path).write_bytes(data)
+        self.assertEqual(VERIFY.validate(self.root), 273)
+
+
 
 class LiteralWhitespacePolicy(DisposableGitTest):
     """Preserve frozen source bytes while rejecting ordinary authored whitespace."""
@@ -186,6 +230,7 @@ class LiteralWhitespacePolicy(DisposableGitTest):
             literals = [
                 "vendor/libsql-ffi/bundled/fixture.c",
                 "evidence/libsql-provider/adapted.patch",
+                "evidence/libsql-provider/upgrade-0.10/adapted-0.9.30.patch",
                 "evidence/libsql-provider/fossil-configure.stdout",
                 "evidence/libsql-provider/product-red.stdout",
                 "evidence/gest-task-values-cause-fix/green.log",
@@ -207,6 +252,8 @@ class LiteralWhitespacePolicy(DisposableGitTest):
                 "ordinary.rs", "docs/ordinary.md", "scripts/ordinary.py", "config.toml",
                 "vendor/libsql-ffi-extra/file.c",
                 "evidence/libsql-provider/product-red.stdout.more",
+                "evidence/libsql-provider/upgrade-0.10/adapted-0.9.30.patch.more",
+                "evidence/libsql-provider/upgrade-0.10/ordinary.patch",
                 "evidence/gest-task-values-cause-fix/green.log.more",
                 "evidence/gest-task-values-cause-fix/guide.diff.more",
                 "evidence/gest-task-values-cause-fix/source.diff.more",
@@ -214,11 +261,19 @@ class LiteralWhitespacePolicy(DisposableGitTest):
                 "evidence/gest-task-values/source-edge-observation.log.more",
                 "evidence/gest-task-values-cause-fix/neighbor.log",
                 "evidence/gest-task-values/neighbor.log",
-                "docs/_extensions/atelier/fonts/dmsans-OFL.txt.more",
-                "docs/_extensions/atelier/fonts/ibmplexmono-OFL.txt.more",
-                "docs/_extensions/atelier/fonts/ordinary.txt",
-                "docs/_extensions/atelier/fonts-extra/dmsans-OFL.txt",
+                "docs/_extensions-extra/atelier/fonts/dmsans-OFL.txt.more",
+                "docs/_extensions-extra/atelier/fonts/ibmplexmono-OFL.txt.more",
+                "docs/_extensions-extra/atelier/fonts/ordinary.txt",
+                "docs/_extensions-extra/atelier/fonts-extra/dmsans-OFL.txt",
             ]
+            attributes = subprocess.run(
+                ["git", "check-attr", "whitespace", "--", *literals, *ordinary],
+                cwd=root, check=True, capture_output=True, text=True,
+            ).stdout.splitlines()
+            self.assertEqual(attributes, [
+                *[name + ": whitespace: unset" for name in literals],
+                *[name + ": whitespace: unspecified" for name in ordinary],
+            ])
             for name in ordinary:
                 path = root / name
                 path.parent.mkdir(parents=True, exist_ok=True)
@@ -357,7 +412,7 @@ class HookIsolation(DisposableGitTest):
                       git(worktree, "status", "--porcelain").stdout,
                       git(worktree, "ls-files", "--stage", "-z").stdout)
             pushed = git(worktree, "push", "origin", "HEAD:refs/heads/hook-control")
-            self.assertIn(b"Ran 12 tests", pushed.stderr)
+            self.assertIn(b"Ran 14 tests", pushed.stderr)
             self.assertIn(b"OK", pushed.stderr)
             after = (index.read_bytes(), config.read_bytes(), (worktree / "sentinel").read_bytes(),
                      git(worktree, "status", "--porcelain").stdout,
