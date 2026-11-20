@@ -19,7 +19,14 @@ Migration and broader adapters remain unimplemented.</p>
 Use <a href="api/storage.html#LocalOwnerRepository"><code>LocalOwnerRepository</code></a> for admitted native content operations. The example
 above uses only the low-level lifecycle API.</p>
 <p><code>LocalStore::open(path)</code> builds a local database and retains one connection.
-Every file open sets and reads back WAL, foreign keys ON, <code>synchronous=FULL</code>
+It treats nonempty paths as literal native filenames, including relative names
+that begin with <code>file:</code> and names that contain <code>?</code>, <code>#</code> or <code>%</code>.
+On Unix, it preserves filename bytes that are not valid UTF-8 when the filesystem
+accepts them. A filesystem rejection remains an open error.
+An embedded NUL returns an error with the original <code>std::ffi::NulError</code> cause.
+An empty path retains SQLite’s temporary-database behavior and fails the required
+WAL check.</p>
+<p>Every file open sets and reads back WAL, foreign keys ON, <code>synchronous=FULL</code>
 and a 5000 ms busy timeout. WAL is SQLite’s write-ahead journal mode.
 An open fails if configuration differs from these requirements.</p>
 <p><code>begin_write(&amp;mut self)</code> takes the connection before it issues <code>BEGIN IMMEDIATE</code>.

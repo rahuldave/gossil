@@ -471,14 +471,16 @@ Unsupported required public graphs, corruption and limits reject the operation.<
 </section>
 <section id="LocalStore" class="level2">
 <h2 class="anchored" data-anchor-id="LocalStore">struct LocalStore</h2>
-<p><a href="https://github.com/rahuldave/gossil/blob/main/src/storage.rs#L91" class="source-link">source</a></p>
+<p><a href="https://github.com/rahuldave/gossil/blob/main/src/storage.rs#L137" class="source-link">source</a></p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb19"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span class="kw">pub</span> <span class="kw">struct</span> LocalStore</code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>A configured local database with exactly one unexposed connection.</p>
 <section id="LocalStore.open" class="level3">
 <h3 class="anchored" data-anchor-id="LocalStore.open">LocalStore::open</h3>
-<p><a href="https://github.com/rahuldave/gossil/blob/main/src/storage.rs#L118" class="source-link">source</a></p>
+<p><a href="https://github.com/rahuldave/gossil/blob/main/src/storage.rs#L166" class="source-link">source</a></p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb20"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span class="kw">pub</span> <span class="kw">async</span> <span class="kw">fn</span> <span class="fu">open</span>(path: impl <span class="bu">AsRef</span><span class="op">&lt;</span>Path<span class="op">&gt;</span>) -&gt; <span class="bu">Result</span><span class="op">&lt;</span><span class="va">Self</span>, StorageError<span class="op">&gt;</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Open and verify a local file database; never fall back to memory.</p>
+<p>Open and verify a local file database; never fall back to memory.
+Nonempty paths are literal native filenames, including <code>file:</code> and URI punctuation.
+Raw Unix filename bytes remain subject to the filesystem’s acceptance rules.</p>
 <section id="errors-5" class="level5">
 <h5 class="anchored" data-anchor-id="errors-5">Errors</h5>
 <p>Returns an error for invalid input, open, configuration or verification failure.
@@ -519,7 +521,7 @@ store.begin_write().<span class="cf">await</span><span class="op">?</span>.rollb
 </section>
 <section id="LocalStore.is_poisoned" class="level3">
 <h3 class="anchored" data-anchor-id="LocalStore.is_poisoned">LocalStore::is_poisoned</h3>
-<p><a href="https://github.com/rahuldave/gossil/blob/main/src/storage.rs#L169" class="source-link">source</a></p>
+<p><a href="https://github.com/rahuldave/gossil/blob/main/src/storage.rs#L221" class="source-link">source</a></p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb22"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span class="kw">pub</span> <span class="kw">fn</span> <span class="fu">is_poisoned</span>(<span class="op">&amp;</span><span class="va">self</span>) -&gt; <span class="dt">bool</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Report whether unexpected destruction or failed cleanup prevents reuse.</p>
 <div class="sd-table">
@@ -543,7 +545,7 @@ store.begin_write().<span class="cf">await</span><span class="op">?</span>.rollb
 </section>
 <section id="LocalStore.begin_write" class="level3">
 <h3 class="anchored" data-anchor-id="LocalStore.begin_write">LocalStore::begin_write</h3>
-<p><a href="https://github.com/rahuldave/gossil/blob/main/src/storage.rs#L186" class="source-link">source</a></p>
+<p><a href="https://github.com/rahuldave/gossil/blob/main/src/storage.rs#L238" class="source-link">source</a></p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb23"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span class="kw">pub</span> <span class="kw">async</span> <span class="kw">fn</span> <span class="fu">begin_write</span>(<span class="op">&amp;</span><span class="kw">mut</span> <span class="va">self</span>) -&gt; <span class="bu">Result</span><span class="op">&lt;</span>WriteTransaction<span class="op">&lt;</span><span class="op">&#x27;</span><span class="bu">_</span><span class="op">&gt;</span>, StorageError<span class="op">&gt;</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Begin IMMEDIATE before returning the uniquely borrowed mutation owner.</p>
 <section id="errors-6" class="level5">
@@ -581,7 +583,7 @@ store.begin_write().<span class="cf">await</span><span class="op">?</span>.rollb
 </section>
 <section id="WriteTransaction" class="level2">
 <h2 class="anchored" data-anchor-id="WriteTransaction">struct WriteTransaction</h2>
-<p><a href="https://github.com/rahuldave/gossil/blob/main/src/storage.rs#L216" class="source-link">source</a></p>
+<p><a href="https://github.com/rahuldave/gossil/blob/main/src/storage.rs#L268" class="source-link">source</a></p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb25"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span class="kw">pub</span> <span class="kw">struct</span> WriteTransaction<span class="op">&lt;</span><span class="op">&#x27;</span><span class="at">a</span><span class="op">&gt;</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Own an exclusive write boundary without exposing a connection, statement or lazy result.</p>
 <section id="examples-8" class="level4">
@@ -597,7 +599,7 @@ store.begin_write().<span class="cf">await</span><span class="op">?</span>.rollb
 </section>
 <section id="WriteTransaction.commit" class="level3">
 <h3 class="anchored" data-anchor-id="WriteTransaction.commit">WriteTransaction::commit</h3>
-<p><a href="https://github.com/rahuldave/gossil/blob/main/src/storage.rs#L402" class="source-link">source</a></p>
+<p><a href="https://github.com/rahuldave/gossil/blob/main/src/storage.rs#L454" class="source-link">source</a></p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb28"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span class="kw">pub</span> <span class="kw">async</span> <span class="kw">fn</span> <span class="fu">commit</span>(<span class="va">self</span>) -&gt; <span class="bu">Result</span><span class="op">&lt;</span>(), StorageError<span class="op">&gt;</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Commit all changes, or reject a rollback-only owner with its original error.</p>
 <section id="errors-7" class="level5">
@@ -625,7 +627,7 @@ store.begin_write().<span class="cf">await</span><span class="op">?</span>.rollb
 </section>
 <section id="WriteTransaction.rollback" class="level3">
 <h3 class="anchored" data-anchor-id="WriteTransaction.rollback">WriteTransaction::rollback</h3>
-<p><a href="https://github.com/rahuldave/gossil/blob/main/src/storage.rs#L423" class="source-link">source</a></p>
+<p><a href="https://github.com/rahuldave/gossil/blob/main/src/storage.rs#L475" class="source-link">source</a></p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb29"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span class="kw">pub</span> <span class="kw">async</span> <span class="kw">fn</span> <span class="fu">rollback</span>(<span class="va">self</span>) -&gt; <span class="bu">Result</span><span class="op">&lt;</span>(), StorageError<span class="op">&gt;</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Explicitly roll back and restore the connection only after checked cleanup.</p>
 <section id="errors-8" class="level5">
