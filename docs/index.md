@@ -5,7 +5,8 @@ title: Gossil
 Gossil aims to keep agent work, issues and file history together alongside Git.
 Fossil is a version-control system. This build exposes a Rust library for its delta bytes, artifact parsing and
 local storage. The `gossil` command creates, applies and checks deltas between
-files without a version-control checkout.
+files without a version-control checkout. It also initializes an empty
+repository through [`vcs init`](cli.md#initialize-a-repository), without creating a checkout.
 
 Start with a [file round trip](getting-started.md), browse the
 [CLI reference](cli.md), or use the [Rust API reference](api/index.qmd).

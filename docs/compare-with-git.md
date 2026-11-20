@@ -6,10 +6,10 @@ exact file head, complete issue and discussion boundaries, and versioned links
 between issues and code. Git remains the source-code authority.
 
 This page compares that intended design with Git's available behavior.
-The public Gossil CLI currently offers three delta diagnostics.
-The Rust library provides typed task/project converters, a task artifact emitter,
+The source CLI initializes empty repositories without a checkout and offers three delta diagnostics.
+The Rust library provides typed task, project and author converters, a task artifact emitter,
 and native storage primitives. It does not yet create or read persisted issues.
-Issue commands and repository initialization commands remain planned.
+Issue commands, checkout registration and file recording remain planned in this source CLI.
 See the [current limits](development-plan.md) and
 [CLI reference](cli.md) before trying a command.
 
@@ -83,7 +83,7 @@ does not guarantee availability. The link descriptor encoding remains unfinished
 See the [repository guide](working-with-repositories.md#review-files-and-issues-together)
 for the planned coordination and its limits.
 
-The integrated transaction governs the Gossil database. An external Git commit
+The integrated transaction commits changes to the Gossil database. An external Git commit
 remains a separate operation. Checkout files are written after database commit
 through recoverable work, so filesystem recovery can still be necessary.
 Ordinary issue edits do not automatically batch unrelated work.

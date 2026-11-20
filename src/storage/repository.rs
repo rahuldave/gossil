@@ -6,9 +6,13 @@ use super::{LocalStore, StorageError, content::Limits, policy::Principal};
 use libsql::Value;
 use std::path::Path;
 
+mod initialization;
+pub use initialization::InitializeOptions;
+
 /// Fixed scalar predicates bound returned data, not total SQLite scan work.
 /// The admitted root cannot produce other artifact types or a current file/merge selection.
-/// Historical rows, diagnostics, opaque content and target-only references retain no root authority.
+/// Catalog1 historical rows, diagnostics, opaque content and target-only references retain no root authority.
+/// Catalog4 admission separately requires empty local tables and exactly one native root.
 const ROOT_PROJECTION_CONFLICTS: &str = concat!(
     "SELECT EXISTS(SELECT 1 FROM plink WHERE pid=?1 OR cid=?1 OR baseid=?1),",
     "EXISTS(SELECT 1 FROM mlink WHERE mid=?1 OR fid=?1 OR pmid=?1 OR pid=?1),",
@@ -53,7 +57,7 @@ struct AdmissionProof {
     authority: Vec<Vec<Vec<Value>>>,
 }
 
-/// Explicit local identities and bounds for a newly created native repository.
+/// Explicit local identities and bounds for a new catalog1 repository with a checkout.
 /// Owner identity is bound to this new local file; it is not an authentication credential.
 pub struct CreateOptions<'a> {
     /// Existing native project identity encoding, forty lowercase hexadecimal bytes.
@@ -141,9 +145,9 @@ impl LocalOwnerRepository {
     pub fn shared_view(&mut self) -> SharedView<'_> {
         SharedView { repository: self }
     }
-    /// Create a complete repository in an exclusively created destination file.
+    /// Create a catalog1 repository bound to an existing checkout directory.
     /// # Arguments
-    /// * `path` - New database path; existing files are rejected.
+    /// * `path` - New native database path; existing destinations and recovery sidecars are rejected.
     /// * `options` - Local bindings, native root fields and explicit finite bounds.
     /// # Returns
     /// A sealed local owner after complete root admission and commit.
@@ -155,7 +159,10 @@ impl LocalOwnerRepository {
     /// }
     /// ```
     /// # Errors
-    /// Rejects an existing destination, invalid root/bindings, or any initialization failure.
+    /// Rejects an existing destination, any `-journal`, `-wal` or `-shm` entry,
+    /// invalid root/bindings, or any initialization failure. Sidecar observation
+    /// failures retain their operating-system cause. Sidecar observations do not
+    /// prevent concurrent pathname changes; callers must retain a stable local namespace.
     pub async fn create(
         path: impl AsRef<Path>,
         options: CreateOptions<'_>,
@@ -168,6 +175,55 @@ impl LocalOwnerRepository {
         )
         .await
     }
+    /// Initialize a native repository without registering a filesystem checkout.
+    /// # Arguments
+    /// * `path` - New literal native filename; keep its namespace stable through engine cleanup.
+    /// * `options` - Explicit administrator, password, date, hash policy and finite limits.
+    /// # Returns
+    /// An admitted owner of the canonical empty catalog4 repository.
+    /// Private writes and checkout registration are unsupported in this scope.
+    /// No environment variables, preference database or templates supply defaults.
+    /// # Examples
+    /// ```no_run
+    /// async fn initialize(path: &std::path::Path, options: gossil::storage::InitializeOptions<'_>) {
+    ///     let owner = gossil::storage::LocalOwnerRepository::initialize(path, options).await.unwrap();
+    ///     drop(owner);
+    /// }
+    /// ```
+    /// # Errors
+    /// Rejects invalid identities or administrator bytes before destination creation; rejects
+    /// existing destinations/sidecars, invalid dates, limits and engine failures. Cleanup
+    /// retains any possibly opened engine file and reports that uncertainty separately.
+    pub async fn initialize(
+        path: impl AsRef<Path>,
+        options: InitializeOptions<'_>,
+    ) -> Result<Self, StorageError> {
+        if options.user.is_empty() || options.user.contains(&0) || options.password.contains('\0') {
+            return Err(StorageError::state(
+                "invalid native administrator or password",
+            ));
+        }
+        std::str::from_utf8(options.user)
+            .map_err(|e| StorageError::caused("local native user is not UTF-8", e))?;
+        let create = CreateOptions {
+            repository_id: options.repository_id,
+            owner_id: options.owner_id,
+            checkout_id: "",
+            checkout_root: Path::new(""),
+            date: options.date.as_bytes(),
+            user: options.user,
+            content_limits: options.content_limits,
+            parse_limits: options.parse_limits,
+        };
+        Self::create_configured(
+            path,
+            create,
+            Some(&options),
+            #[cfg(test)]
+            None,
+        )
+        .await
+    }
     /// Keep deterministic phase failures private to the module's tests.
     /// # Arguments
     /// * `path` - New local database destination.
@@ -175,10 +231,35 @@ impl LocalOwnerRepository {
     /// # Returns
     /// A sealed owner after complete initialization and admission.
     /// # Errors
-    /// Rejects existing destinations, invalid identities or roots, resource limits and filesystem or SQL failures.
+    /// Rejects existing destinations or recovery sidecars, invalid identities or roots,
+    /// resource limits and filesystem or SQL failures.
     async fn create_internal(
         path: impl AsRef<Path>,
         options: CreateOptions<'_>,
+        #[cfg(test)] failure: Option<&str>,
+    ) -> Result<Self, StorageError> {
+        Self::create_configured(
+            path,
+            options,
+            None,
+            #[cfg(test)]
+            failure,
+        )
+        .await
+    }
+    /// Construct either the existing bound catalog1 or the unbound native catalog4.
+    /// # Arguments
+    /// * `path` - Exclusively created literal destination.
+    /// * `options` - Canonical root fields and optional bound checkout fields.
+    /// * `native` - Implemented native settings, selecting unbound catalog4 when present.
+    /// # Returns
+    /// A complete admitted owner.
+    /// # Errors
+    /// Preserves the first initialization failure and checked conservative cleanup diagnostics.
+    async fn create_configured(
+        path: impl AsRef<Path>,
+        options: CreateOptions<'_>,
+        native: Option<&InitializeOptions<'_>>,
         #[cfg(test)] failure: Option<&str>,
     ) -> Result<Self, StorageError> {
         use std::os::unix::fs::MetadataExt;
@@ -189,53 +270,75 @@ impl LocalOwnerRepository {
                 .bytes()
                 .all(|b| b.is_ascii_digit() || (b'a'..=b'f').contains(&b))
             || options.owner_id.is_empty()
-            || options.checkout_id.is_empty()
+            || (native.is_none() && options.checkout_id.is_empty())
         {
             return Err(StorageError::state(
                 "invalid local repository identity binding",
             ));
         }
-        let root = std::fs::canonicalize(options.checkout_root)
-            .map_err(|e| StorageError::caused("checkout root unavailable", e))?;
-        let metadata = std::fs::metadata(&root)
-            .map_err(|e| StorageError::caused("checkout root metadata unavailable", e))?;
-        if !metadata.is_dir() {
-            return Err(StorageError::state("checkout root is not a directory"));
-        }
-        let root_text = root
-            .to_str()
-            .ok_or_else(|| StorageError::state("checkout root is not UTF-8"))?;
+        let binding = if native.is_none() {
+            let root = std::fs::canonicalize(options.checkout_root)
+                .map_err(|e| StorageError::caused("checkout root unavailable", e))?;
+            let metadata = std::fs::metadata(&root)
+                .map_err(|e| StorageError::caused("checkout root metadata unavailable", e))?;
+            if !metadata.is_dir() {
+                return Err(StorageError::state("checkout root is not a directory"));
+            }
+            checkout_root_text(&root)?;
+            Some((root, metadata))
+        } else {
+            None
+        };
         let root_ceiling = usize::try_from(
             u64::from(options.content_limits.max_output_bytes)
                 .min(options.content_limits.max_total_decoded_bytes),
         )
         .unwrap_or(usize::MAX)
         .min(options.parse_limits.input_bytes);
-        let bytes = empty_root_bytes(options.date, options.user, root_ceiling)?;
+        if native.is_none() {
+            empty_root_bytes(options.date, options.user, root_ceiling)?;
+        }
+        initialization::check_sidecars(path)?;
         let file = std::fs::OpenOptions::new()
             .read(true)
             .write(true)
             .create_new(true)
             .open(path)
             .map_err(|e| StorageError::caused("exclusive repository creation failed", e))?;
+        let metadata = file
+            .metadata()
+            .map_err(|error| StorageError::caused("new repository identity unavailable", error))?;
+        let mut cleanup = initialization::NewFileCleanup::new(path, &metadata, native.is_some());
+        let identity = super::FileIdentity::from_metadata(path, false, &metadata)?;
         drop(file);
-        let mut store = LocalStore::open(path).await?;
+        let result = async {
+        initialization::check_sidecars(path)?;
+        identity.observe()?;
+        cleanup.engine_opening();
+        let mut store = LocalStore::open_observed(path, true, Some(identity.clone())).await?;
         let mut tx = store.begin_write().await?;
         let result = async {
-            tx.install_schema().await?;
+            if native.is_some() { tx.install_schema_catalog4().await?; } else { tx.install_schema().await?; }
+            let date_token = if let Some(native) = native { tx.initial_date(native.date).await? } else { String::from_utf8(options.date.to_vec()).map_err(|e| StorageError::caused("native date UTF-8", e))? };
+            let bytes = empty_root_bytes(date_token.as_bytes(), options.user, root_ceiling)?;
             #[cfg(test)]
             if failure == Some("schema") { return Err(StorageError::state("injected initialization phase failure")); }
             let parsed = parse_owned(&tx, &bytes, options.parse_limits).await?;
             validate_empty_root(&parsed)?;
             let date = parsed.date().ok_or_else(|| StorageError::state("empty root has no date"))?;
             std::str::from_utf8(options.user).map_err(|e| StorageError::caused("local native user is not UTF-8", e))?;
-            let hash = crate::content_hash::hex(&crate::content_hash::sha3(&bytes, 256).unwrap());
+            let sha1 = if let Some(native) = native { tx.initialize_native_settings(native).await? } else { false };
+            let hash = if sha1 { crate::content_hash::hex(&crate::content_hash::sha1(&bytes)) } else { crate::content_hash::hex(&crate::content_hash::sha3(&bytes, 256).unwrap()) };
             tx.verify_content_name(&hash, &bytes)?;
             let packed = crate::compression::pack_bounded(&bytes, -1, usize::try_from(options.content_limits.max_stored_bytes.min(options.content_limits.max_total_stored_bytes)).unwrap_or(usize::MAX))
                 .map_err(|e| StorageError::caused("empty root compression failed", e))?;
             tx.decode_full_content(&hash, bytes.len() as i64, &packed, options.content_limits)?;
             tx.execute_bound("INSERT INTO config(name,value,mtime) VALUES('project-code',?1,unixepoch()),('content-schema','2',unixepoch()),('aux-schema','2015-01-24',unixepoch()),('server-code',lower(hex(randomblob(20))),unixepoch())", vec![Value::Text(options.repository_id.into())]).await?;
+            if native.is_some() {
+                tx.execute_bound("INSERT INTO g_storage VALUES(1,?1,4,'gest-ticket-v1',0,0)", vec![Value::Text(options.repository_id.into())]).await?;
+            } else {
             tx.execute_bound("INSERT INTO g_storage VALUES(1,?1,1,'gest-ticket-v1',0)", vec![Value::Text(options.repository_id.into())]).await?;
+            }
             tx.execute_bound("INSERT INTO g_local_owner VALUES(1,?1)", vec![Value::Text(options.owner_id.into())]).await?;
             tx.execute_bound("INSERT INTO rcvfrom(rcvid,uid,mtime) VALUES(1,0,?1)", vec![Value::Real(date)]).await?;
             tx.execute_bound("INSERT INTO blob(rid,rcvid,size,uuid,content) VALUES(1,1,?1,?2,?3)", vec![Value::Integer(bytes.len() as i64), Value::Text(hash.clone()), Value::Blob(packed)]).await?;
@@ -248,8 +351,11 @@ impl LocalOwnerRepository {
             tx.execute_bound("INSERT INTO g_public_receipt VALUES(?1,'local-explicit-publication',?1)", vec![Value::Text(hash.clone())]).await?;
             #[cfg(test)]
             if failure == Some("receipt") { return Err(StorageError::state("injected initialization phase failure")); }
+            if let Some((root, metadata)) = &binding {
+                let root_text = root.to_str().unwrap();
             tx.execute_bound("INSERT INTO g_checkout VALUES(?1,?2,?3,NULL,0,0,'ready')", vec![Value::Text(options.checkout_id.into()), Value::Text(root_text.into()), Value::Text(hash)]).await?;
             tx.execute_bound("INSERT INTO g_checkout_owner VALUES(?1,?2,?3,?4)", vec![Value::Text(options.checkout_id.into()), Value::Text(options.owner_id.into()), Value::Text(metadata.dev().to_string()), Value::Text(metadata.ino().to_string())]).await?;
+            }
             tx.validate_catalog().await?;
             #[cfg(test)]
             if failure == Some("bindings") { return Err(StorageError::state("injected initialization phase failure")); }
@@ -264,8 +370,11 @@ impl LocalOwnerRepository {
             return Err(tx.commit().await.unwrap_err());
         }
         let admission = tx.capture_admission().await;
+        cleanup.commit_attempted();
         tx.commit().await?;
+        cleanup.committed();
         let admission = admission?;
+        identity.observe()?;
         Ok(Self {
             store,
             principal: Principal {
@@ -274,11 +383,15 @@ impl LocalOwnerRepository {
             },
             admission,
         })
+        }.await;
+        cleanup.finish(result)
     }
     /// Open an existing complete repository under local operating-system authority.
     ///
     /// The durable repository and owner identities are read from this file rather
     /// than accepted as caller-selected capability strings.
+    /// Supports bound catalog1 and strictly empty catalog4 only, without migration.
+    /// Catalog4 requires zero checkouts, one native root and empty remaining local tables.
     /// # Arguments
     /// * `path` - Existing local database under operating-system owner authority.
     /// * `admission_limits` - Explicit finite root decode and parser budgets.
@@ -309,7 +422,9 @@ impl LocalOwnerRepository {
                 "local repository is not a regular file",
             ));
         }
-        let mut store = LocalStore::open(path).await?;
+        let identity = super::FileIdentity::from_metadata(path, true, &metadata)?;
+        drop(file);
+        let mut store = LocalStore::open_observed(path, true, Some(identity.clone())).await?;
         let mut tx = store.begin_write().await?;
         let result = async {
             let rows = tx.query_bound("SELECT s.repository_id,o.owner_id FROM g_storage s CROSS JOIN g_local_owner o WHERE s.singleton=1 AND o.singleton=1", vec![]).await?;
@@ -328,6 +443,7 @@ impl LocalOwnerRepository {
         tx.commit().await?;
         let admission = admission?;
         let principal = principal?;
+        identity.observe()?;
         Ok(Self {
             store,
             principal,
@@ -349,6 +465,7 @@ impl LocalOwnerRepository {
     /// ```
     /// # Errors
     /// Rejects policy, hash, size, codec and limit errors, or required unresolved crosslinks.
+    /// Private writes are unsupported for the initializer-only catalog4 scope.
     pub async fn put_private_file_content(
         &mut self,
         native_name: &str,
@@ -358,6 +475,25 @@ impl LocalOwnerRepository {
         let mut tx = self.store.begin_write().await?;
         let validation = tx.check_admission(&self.principal, &self.admission).await;
         if validation.is_err() {
+            return tx.commit().await;
+        }
+        let supported = async {
+            if tx
+                .query_bound(
+                    "SELECT storage_version FROM g_storage WHERE singleton=1",
+                    vec![],
+                )
+                .await?
+                != vec![vec![Value::Integer(1)]]
+            {
+                return Err(StorageError::state(
+                    "private writes unsupported for empty catalog4 scope",
+                ));
+            }
+            Ok(())
+        }
+        .await;
+        if tx.record(supported).is_err() {
             return tx.commit().await;
         }
         let result = tx
@@ -510,6 +646,291 @@ impl super::WriteTransaction<'_> {
         }.await;
         self.record(result)
     }
+    /// Refuse every unimplemented local/native state in the zero-checkout catalog4 scope.
+    /// # Arguments
+    /// * `rid` - Authenticated canonical root RID.
+    /// * `root` - Authenticated canonical native hash.
+    /// * `date` - Native numeric date authenticated from the artifact.
+    /// # Returns
+    /// Success only for the single-root constructor's supported empty scope.
+    /// # Errors
+    /// Rejects populated tables, extra native history and noncanonical receive/index facts.
+    async fn validate_empty_catalog4(
+        &mut self,
+        rid: i64,
+        root: &str,
+        date: &Value,
+    ) -> Result<(), StorageError> {
+        if self
+            .query_bound(
+                "SELECT singleton FROM g_local_owner ORDER BY singleton LIMIT 2",
+                vec![],
+            )
+            .await?
+            != vec![vec![Value::Integer(1)]]
+        {
+            return Err(StorageError::state(
+                "unsupported catalog4 owner cardinality",
+            ));
+        }
+        /// Complete local and native table inventory that must be empty for catalog4 admission.
+        const EMPTY_TABLES: &[(&str, &str)] = &[
+            ("g_admission", "SELECT EXISTS(SELECT 1 FROM g_admission)"),
+            ("g_checkout", "SELECT EXISTS(SELECT 1 FROM g_checkout)"),
+            (
+                "g_checkout_owner",
+                "SELECT EXISTS(SELECT 1 FROM g_checkout_owner)",
+            ),
+            (
+                "g_checkout_project",
+                "SELECT EXISTS(SELECT 1 FROM g_checkout_project)",
+            ),
+            ("g_code_link", "SELECT EXISTS(SELECT 1 FROM g_code_link)"),
+            (
+                "g_contributor",
+                "SELECT EXISTS(SELECT 1 FROM g_contributor)",
+            ),
+            ("g_delivery", "SELECT EXISTS(SELECT 1 FROM g_delivery)"),
+            (
+                "g_delivery_lane",
+                "SELECT EXISTS(SELECT 1 FROM g_delivery_lane)",
+            ),
+            ("g_dependency", "SELECT EXISTS(SELECT 1 FROM g_dependency)"),
+            ("g_descriptor", "SELECT EXISTS(SELECT 1 FROM g_descriptor)"),
+            ("g_diagnostic", "SELECT EXISTS(SELECT 1 FROM g_diagnostic)"),
+            (
+                "g_discussion_message",
+                "SELECT EXISTS(SELECT 1 FROM g_discussion_message)",
+            ),
+            (
+                "g_discussion_target",
+                "SELECT EXISTS(SELECT 1 FROM g_discussion_target)",
+            ),
+            (
+                "g_discussion_thread",
+                "SELECT EXISTS(SELECT 1 FROM g_discussion_thread)",
+            ),
+            ("g_file_undo", "SELECT EXISTS(SELECT 1 FROM g_file_undo)"),
+            (
+                "g_gest_artifacts",
+                "SELECT EXISTS(SELECT 1 FROM g_gest_artifacts)",
+            ),
+            (
+                "g_gest_authors",
+                "SELECT EXISTS(SELECT 1 FROM g_gest_authors)",
+            ),
+            (
+                "g_gest_entity_tags",
+                "SELECT EXISTS(SELECT 1 FROM g_gest_entity_tags)",
+            ),
+            (
+                "g_gest_iteration_tasks",
+                "SELECT EXISTS(SELECT 1 FROM g_gest_iteration_tasks)",
+            ),
+            (
+                "g_gest_iterations",
+                "SELECT EXISTS(SELECT 1 FROM g_gest_iterations)",
+            ),
+            ("g_gest_notes", "SELECT EXISTS(SELECT 1 FROM g_gest_notes)"),
+            (
+                "g_gest_projects",
+                "SELECT EXISTS(SELECT 1 FROM g_gest_projects)",
+            ),
+            (
+                "g_gest_relationships",
+                "SELECT EXISTS(SELECT 1 FROM g_gest_relationships)",
+            ),
+            ("g_gest_tags", "SELECT EXISTS(SELECT 1 FROM g_gest_tags)"),
+            ("g_gest_tasks", "SELECT EXISTS(SELECT 1 FROM g_gest_tasks)"),
+            (
+                "g_git_checkout",
+                "SELECT EXISTS(SELECT 1 FROM g_git_checkout)",
+            ),
+            ("g_identity", "SELECT EXISTS(SELECT 1 FROM g_identity)"),
+            (
+                "g_inverse_chain",
+                "SELECT EXISTS(SELECT 1 FROM g_inverse_chain)",
+            ),
+            ("g_journal", "SELECT EXISTS(SELECT 1 FROM g_journal)"),
+            (
+                "g_journal_file",
+                "SELECT EXISTS(SELECT 1 FROM g_journal_file)",
+            ),
+            (
+                "g_local_command",
+                "SELECT EXISTS(SELECT 1 FROM g_local_command)",
+            ),
+            ("g_mergestat", "SELECT EXISTS(SELECT 1 FROM g_mergestat)"),
+            (
+                "g_message_context",
+                "SELECT EXISTS(SELECT 1 FROM g_message_context)",
+            ),
+            (
+                "g_message_context_target",
+                "SELECT EXISTS(SELECT 1 FROM g_message_context_target)",
+            ),
+            ("g_path_scope", "SELECT EXISTS(SELECT 1 FROM g_path_scope)"),
+            (
+                "g_pending_path",
+                "SELECT EXISTS(SELECT 1 FROM g_pending_path)",
+            ),
+            (
+                "g_project_binding",
+                "SELECT EXISTS(SELECT 1 FROM g_project_binding)",
+            ),
+            (
+                "g_project_workspaces",
+                "SELECT EXISTS(SELECT 1 FROM g_project_workspaces)",
+            ),
+            (
+                "g_record_diagnostic",
+                "SELECT EXISTS(SELECT 1 FROM g_record_diagnostic)",
+            ),
+            ("g_selector", "SELECT EXISTS(SELECT 1 FROM g_selector)"),
+            (
+                "g_selector_member",
+                "SELECT EXISTS(SELECT 1 FROM g_selector_member)",
+            ),
+            (
+                "g_selector_revision",
+                "SELECT EXISTS(SELECT 1 FROM g_selector_revision)",
+            ),
+            ("g_stash", "SELECT EXISTS(SELECT 1 FROM g_stash)"),
+            ("g_stashfile", "SELECT EXISTS(SELECT 1 FROM g_stashfile)"),
+            ("g_suggestion", "SELECT EXISTS(SELECT 1 FROM g_suggestion)"),
+            (
+                "g_suggestion_application",
+                "SELECT EXISTS(SELECT 1 FROM g_suggestion_application)",
+            ),
+            (
+                "g_target_entity_member",
+                "SELECT EXISTS(SELECT 1 FROM g_target_entity_member)",
+            ),
+            ("g_undo_stash", "SELECT EXISTS(SELECT 1 FROM g_undo_stash)"),
+            (
+                "g_undo_stashfile",
+                "SELECT EXISTS(SELECT 1 FROM g_undo_stashfile)",
+            ),
+            ("g_undo_vfile", "SELECT EXISTS(SELECT 1 FROM g_undo_vfile)"),
+            (
+                "g_undo_vmerge",
+                "SELECT EXISTS(SELECT 1 FROM g_undo_vmerge)",
+            ),
+            ("g_vfile", "SELECT EXISTS(SELECT 1 FROM g_vfile)"),
+            ("g_vmerge", "SELECT EXISTS(SELECT 1 FROM g_vmerge)"),
+            ("g_vvar", "SELECT EXISTS(SELECT 1 FROM g_vvar)"),
+            ("accesslog", "SELECT EXISTS(SELECT 1 FROM accesslog)"),
+            ("admin_log", "SELECT EXISTS(SELECT 1 FROM admin_log)"),
+            ("attachment", "SELECT EXISTS(SELECT 1 FROM attachment)"),
+            ("backlink", "SELECT EXISTS(SELECT 1 FROM backlink)"),
+            ("chat", "SELECT EXISTS(SELECT 1 FROM chat)"),
+            ("cherrypick", "SELECT EXISTS(SELECT 1 FROM cherrypick)"),
+            ("concealed", "SELECT EXISTS(SELECT 1 FROM concealed)"),
+            ("delta", "SELECT EXISTS(SELECT 1 FROM delta)"),
+            ("filename", "SELECT EXISTS(SELECT 1 FROM filename)"),
+            ("forumpost", "SELECT EXISTS(SELECT 1 FROM forumpost)"),
+            ("mlink", "SELECT EXISTS(SELECT 1 FROM mlink)"),
+            ("modreq", "SELECT EXISTS(SELECT 1 FROM modreq)"),
+            ("orphan", "SELECT EXISTS(SELECT 1 FROM orphan)"),
+            ("phantom", "SELECT EXISTS(SELECT 1 FROM phantom)"),
+            ("plink", "SELECT EXISTS(SELECT 1 FROM plink)"),
+            ("private", "SELECT EXISTS(SELECT 1 FROM private)"),
+            ("shun", "SELECT EXISTS(SELECT 1 FROM shun)"),
+            ("ticket", "SELECT EXISTS(SELECT 1 FROM ticket)"),
+            ("ticketchng", "SELECT EXISTS(SELECT 1 FROM ticketchng)"),
+            ("unsent", "SELECT EXISTS(SELECT 1 FROM unsent)"),
+            ("unversioned", "SELECT EXISTS(SELECT 1 FROM unversioned)"),
+        ];
+        for &(table, sql) in EMPTY_TABLES {
+            // SQL literals enumerate the fixed reviewed schema inventory above.
+            if self.query_bound(sql, vec![]).await? != vec![vec![Value::Integer(0)]] {
+                return Err(StorageError::state(format!(
+                    "unsupported nonempty catalog4 table: {table}"
+                )));
+            }
+        }
+        if rid != 1
+            || self
+                .query_bound(
+                    "SELECT rid,rcvid,uuid FROM blob ORDER BY rid LIMIT 2",
+                    vec![],
+                )
+                .await?
+                != vec![vec![
+                    Value::Integer(1),
+                    Value::Integer(1),
+                    Value::Text(root.into()),
+                ]]
+        {
+            return Err(StorageError::state(
+                "unsupported extra native content history",
+            ));
+        }
+        for sql in [
+            "SELECT objid FROM event ORDER BY objid LIMIT 2",
+            "SELECT rid FROM leaf ORDER BY rid LIMIT 2",
+            "SELECT rid FROM unclustered ORDER BY rid LIMIT 2",
+        ] {
+            if self.query_bound(sql, vec![]).await? != vec![vec![Value::Integer(1)]] {
+                return Err(StorageError::state("unsupported native root index history"));
+            }
+        }
+        if self
+            .query_bound(
+                "SELECT rcvid,uid,mtime,nonce,ipaddr FROM rcvfrom ORDER BY rcvid LIMIT 2",
+                vec![],
+            )
+            .await?
+            != vec![vec![
+                Value::Integer(1),
+                Value::Integer(0),
+                date.clone(),
+                Value::Null,
+                Value::Null,
+            ]]
+        {
+            return Err(StorageError::state("native root receive facts differ"));
+        }
+        if self
+            .query_bound("SELECT count(*) FROM tagxref", vec![])
+            .await?
+            != vec![vec![Value::Integer(2)]]
+        {
+            return Err(StorageError::state("unsupported native tag history"));
+        }
+        let tags = self
+            .query_bound("SELECT tagid,tagname FROM tag ORDER BY tagid", vec![])
+            .await?;
+        let expected: Vec<Vec<Value>> = [
+            "bgcolor",
+            "comment",
+            "user",
+            "date",
+            "hidden",
+            "private",
+            "cluster",
+            "branch",
+            "closed",
+            "parent",
+            "note",
+            "sym-trunk",
+        ]
+        .into_iter()
+        .enumerate()
+        .map(|(i, name)| vec![Value::Integer((i + 1) as i64), Value::Text(name.into())])
+        .collect();
+        if tags != expected {
+            return Err(StorageError::state("unsupported native tag definitions"));
+        }
+        let identities = self
+            .query_bound("SELECT value FROM config WHERE name='server-code'", vec![])
+            .await?;
+        if !matches!(identities.as_slice(), [row] if matches!(row.as_slice(), [Value::Text(value)] if value.len()==40 && value.bytes().all(|b| b.is_ascii_digit() || (b'a'..=b'f').contains(&b))))
+        {
+            return Err(StorageError::state("native server identity unavailable"));
+        }
+        Ok(())
+    }
     /// Validate every supported public receipt and checkout root from exact bytes.
     /// # Arguments
     /// * `principal` - Sealed local repository and owner binding.
@@ -531,8 +952,13 @@ impl super::WriteTransaction<'_> {
             let [Value::Text(root)] = roots[0].as_slice() else { return Err(StorageError::state("corrupt public root binding")); };
             let receipts = self.query_bound("SELECT native_hash,supporting_root,validation_class FROM g_public_receipt ORDER BY native_hash,supporting_root LIMIT 2",vec![]).await?;
             if receipts != vec![vec![Value::Text(root.clone()),Value::Text(root.clone()),Value::Text("local-explicit-publication".into())]] { return Err(StorageError::state("unsupported required public graph closure")); }
-            let bytes = self.read_owner_content(principal,root,limits.content).await?;
-            let parsed = parse_owned(self,&bytes,limits.parser).await?;
+            let mut budget = super::content::Budget::new(limits.content)?;
+            let bytes = self.read_owner_content_budget(principal,root,&mut budget).await?;
+            let version = self.query_bound("SELECT storage_version FROM g_storage WHERE singleton=1",vec![]).await?;
+            let parsed = if version == vec![vec![Value::Integer(4)]] {
+                let mut parse_work = ParseWork::new(limits.parser)?;
+                parse_owned_budgeted(self,&bytes,&mut parse_work).await?
+            } else { parse_owned(self,&bytes,limits.parser).await? };
             validate_empty_root(&parsed)?;
             let rows = self.query_bound("SELECT b.rid,e.type,e.mtime,e.user,e.comment,e.omtime,e.tagid,e.uid,e.bgcolor,e.euser,e.ecomment,e.brief FROM blob b JOIN event e ON e.objid=b.rid JOIN leaf l ON l.rid=b.rid WHERE b.uuid=?1 AND NOT EXISTS(SELECT 1 FROM private p WHERE p.rid=b.rid) AND NOT EXISTS(SELECT 1 FROM delta d WHERE d.rid=b.rid)",vec![Value::Text(root.clone())]).await?;
             let [row] = rows.as_slice() else { return Err(StorageError::state("native public root crosslink unavailable")); };
@@ -552,8 +978,12 @@ impl super::WriteTransaction<'_> {
                 return Err(StorageError::state("root projection contradicts canonical bytes"));
             }
             let tags = self.query_bound("SELECT t.tagname,x.tagtype,x.srcid,x.origid,x.value,x.mtime FROM tagxref x LEFT JOIN tag t ON t.tagid=x.tagid WHERE x.rid=?1 ORDER BY t.tagname LIMIT 3",vec![Value::Integer(*rid)]).await?;
-            let expected = vec![vec![Value::Text("branch".into()),Value::Integer(2),Value::Integer(*rid),Value::Integer(*rid),Value::Text("trunk".into()),stored_date.clone()],vec![Value::Text("sym-trunk".into()),Value::Integer(2),Value::Integer(*rid),Value::Integer(*rid),Value::Null,stored_date]];
+            let expected = vec![vec![Value::Text("branch".into()),Value::Integer(2),Value::Integer(*rid),Value::Integer(*rid),Value::Text("trunk".into()),stored_date.clone()],vec![Value::Text("sym-trunk".into()),Value::Integer(2),Value::Integer(*rid),Value::Integer(*rid),Value::Null,stored_date.clone()]];
             if tags != expected { return Err(StorageError::state("root branch crosslinks differ from canonical bytes")); }
+            if version == vec![vec![Value::Integer(4)]] {
+                self.validate_empty_catalog4(*rid, root, &stored_date).await?;
+                return Ok(());
+            }
             let checkouts = self.query_bound("SELECT c.shared_head,c.combined_head,c.generation,c.pending_version,c.availability,o.owner_id FROM g_checkout c LEFT JOIN g_checkout_owner o ON o.checkout_id=c.checkout_id",vec![]).await?;
             if checkouts.is_empty() || checkouts.iter().any(|row| row != &vec![Value::Text(root.clone()),Value::Null,Value::Integer(0),Value::Integer(0),Value::Text("ready".into()),Value::Text(principal.owner.clone())]) { return Err(StorageError::state("unsupported or unavailable checkout root closure")); }
             use std::os::unix::fs::MetadataExt;
@@ -588,6 +1018,17 @@ mod boundary_injection {
             METADATA.with(|slot| *slot.borrow_mut() = None);
         }
     }
+}
+/// Validate the text encoding required by a canonical checkout root's stored binding.
+/// # Arguments
+/// * `root` - Canonical checkout directory path obtained by the caller.
+/// # Returns
+/// The exact UTF-8 path text, without lossy conversion.
+/// # Errors
+/// Rejects native path bytes that cannot be stored as the checkout's text root.
+fn checkout_root_text(root: &Path) -> Result<&str, StorageError> {
+    root.to_str()
+        .ok_or_else(|| StorageError::state("checkout root is not UTF-8"))
 }
 /// Preserve metadata IO causes before repository admission can acquire authority.
 /// # Arguments
@@ -658,6 +1099,99 @@ impl crate::artifact::DateProvider for OwnerDates<'_, '_> {
         result.map_err(|e| crate::artifact::DateProviderError(Box::new(e)))
     }
 }
+/// One complete operation's remaining logical parser counters; no defaults or hidden replenishment.
+pub(super) struct ParseWork {
+    /// Unconsumed logical work available to this parser.
+    remaining: crate::artifact::ParseLimits,
+}
+impl ParseWork {
+    /// Start one validated finite operation budget without inherited charges.
+    /// # Arguments
+    /// * `limits` - Positive aggregate input-byte, card, owned-byte and entry ceilings.
+    /// # Returns
+    /// A parser work ledger whose remaining allowance equals the declared ceilings.
+    /// # Errors
+    /// Rejects aggregate parser limits when any input, card, owned-byte or entry ceiling is zero.
+    pub(super) fn new(limits: crate::artifact::ParseLimits) -> Result<Self, StorageError> {
+        if [
+            limits.input_bytes,
+            limits.cards,
+            limits.owned_bytes,
+            limits.entries,
+        ]
+        .contains(&0)
+        {
+            return Err(StorageError::state("invalid aggregate parser limits"));
+        }
+        Ok(Self { remaining: limits })
+    }
+    /// Subtract the parser's exact existing logical charges from the shared remaining work.
+    /// # Arguments
+    /// * `usage` - Exact input-byte, card, owned-byte and entry charges from one parser call.
+    /// # Returns
+    /// Unit after subtracting every charge from the remaining parser allowance.
+    /// # Errors
+    /// Rejects usage exceeding any remaining input-byte, card, owned-byte or entry allowance.
+    pub(super) fn charge(
+        &mut self,
+        usage: crate::artifact::ParseUsage,
+    ) -> Result<(), StorageError> {
+        let exhausted =
+            || StorageError::state("aggregate parser usage exceeds remaining caller limits");
+        let before = self.remaining;
+        self.remaining = crate::artifact::ParseLimits {
+            input_bytes: before
+                .input_bytes
+                .checked_sub(usage.input_bytes)
+                .ok_or_else(exhausted)?,
+            cards: before
+                .cards
+                .checked_sub(usage.cards)
+                .ok_or_else(exhausted)?,
+            owned_bytes: before
+                .owned_bytes
+                .checked_sub(usage.owned_bytes)
+                .ok_or_else(exhausted)?,
+            entries: before
+                .entries
+                .checked_sub(usage.entries)
+                .ok_or_else(exhausted)?,
+        };
+        Ok(())
+    }
+}
+/// Parse on the actual owner with remaining aggregate ceilings checked before parser allocation.
+/// # Arguments
+/// * `tx` - Existing reserved owner transaction used for native date validation.
+/// * `bytes` - Canonical artifact bytes to parse.
+/// * `work` - Existing cumulative parser allowance to debit.
+/// # Returns
+/// The owned parsed artifact after native validation and exact usage charging.
+/// # Errors
+/// Returns an existing latched writer error without parsing. Otherwise propagates structural
+/// artifact/date-provider failures and parser usage exceeding the caller's remaining work.
+pub(super) async fn parse_owned_budgeted(
+    tx: &mut super::WriteTransaction<'_>,
+    bytes: &[u8],
+    work: &mut ParseWork,
+) -> Result<crate::artifact::ParsedArtifact, StorageError> {
+    if let Some(error) = &tx.failure {
+        return Err(error.clone());
+    }
+    let result = async {
+        let (parsed, usage) =
+            crate::artifact::parse_artifact_with_usage(bytes, work.remaining, &OwnerDates(tx))
+                .await
+                .map_err(|error| {
+                    StorageError::caused("native artifact validation failed", error)
+                })?;
+        work.charge(usage)?;
+        Ok(parsed)
+    }
+    .await;
+    tx.record(result)
+}
+
 /// Parse bounded artifact bytes with native dates on the existing transaction owner.
 /// # Arguments
 /// * `tx` - Existing sole-connection transaction owner.
@@ -2362,5 +2896,132 @@ mod tests {
                 .await
                 .is_err()
         );
+    }
+    /// Every parser compartment has a finite positive ceiling and independent exhaustion check.
+    #[test]
+    fn aggregate_parser_limits_and_each_usage_compartment_fail_closed() {
+        for index in 0..4 {
+            let mut limits = root_parse_limits();
+            match index {
+                0 => limits.input_bytes = 0,
+                1 => limits.cards = 0,
+                2 => limits.owned_bytes = 0,
+                _ => limits.entries = 0,
+            }
+            assert_eq!(
+                ParseWork::new(limits).err().unwrap().operation,
+                "invalid aggregate parser limits"
+            );
+            let mut work = ParseWork::new(root_parse_limits()).unwrap();
+            let mut usage = crate::artifact::ParseUsage {
+                input_bytes: 0,
+                cards: 0,
+                owned_bytes: 0,
+                entries: 0,
+            };
+            match index {
+                0 => usage.input_bytes = root_parse_limits().input_bytes + 1,
+                1 => usage.cards = root_parse_limits().cards + 1,
+                2 => usage.owned_bytes = root_parse_limits().owned_bytes + 1,
+                _ => usage.entries = root_parse_limits().entries + 1,
+            }
+            assert_eq!(
+                work.charge(usage).unwrap_err().operation,
+                "aggregate parser usage exceeds remaining caller limits"
+            );
+        }
+    }
+    /// A malformed parse latches its cause; later parsing preserves that first error and allowance.
+    #[tokio::test]
+    async fn budgeted_parser_latches_malformed_artifact_and_preserves_prior_failure() {
+        let mut store = LocalStore::open_inner(":memory:", false).await.unwrap();
+        let mut tx = store.begin_write().await.unwrap();
+        let mut work = ParseWork::new(root_parse_limits()).unwrap();
+        let before = work.remaining;
+        let first = parse_owned_budgeted(&mut tx, b"not an artifact", &mut work)
+            .await
+            .unwrap_err();
+        assert_eq!(first.operation, "native artifact validation failed");
+        let bytes = empty_root_bytes(b"2026-11-18T00:00:00.000", b"Owner", 4096).unwrap();
+        let error = parse_owned_budgeted(&mut tx, &bytes, &mut work)
+            .await
+            .unwrap_err();
+        assert_eq!(error.operation, first.operation);
+        assert_eq!(
+            (
+                work.remaining.input_bytes,
+                work.remaining.cards,
+                work.remaining.owned_bytes,
+                work.remaining.entries
+            ),
+            (
+                before.input_bytes,
+                before.cards,
+                before.owned_bytes,
+                before.entries
+            )
+        );
+        assert_eq!(tx.commit().await.unwrap_err().operation, first.operation);
+    }
+    /// Check the consumed encoding boundary without requiring filesystem support for raw names.
+    #[test]
+    fn checkout_root_text_preserves_utf8_and_refuses_raw_non_utf8_bytes() {
+        use std::os::unix::ffi::OsStringExt;
+        let valid = Path::new("/checkout/valid");
+        assert_eq!(checkout_root_text(valid).unwrap(), "/checkout/valid");
+        let raw = std::path::PathBuf::from(std::ffi::OsString::from_vec(
+            b"/checkout/invalid-\xff".to_vec(),
+        ));
+        assert_eq!(
+            checkout_root_text(&raw).unwrap_err().operation,
+            "checkout root is not UTF-8"
+        );
+    }
+    /// Successful parses debit one shared ledger exactly; the next exhausted parse latches refusal.
+    #[tokio::test]
+    async fn cumulative_parser_ledger_retains_exact_charges_across_successful_parses() {
+        let mut store = LocalStore::open_inner(":memory:", false).await.unwrap();
+        let mut tx = store.begin_write().await.unwrap();
+        let bytes = empty_root_bytes(b"2026-11-18T00:00:00.000", b"Owner", 4096).unwrap();
+        let (_, usage) = crate::artifact::parse_artifact_with_usage(
+            &bytes,
+            root_parse_limits(),
+            &OwnerDates(&tx),
+        )
+        .await
+        .unwrap();
+        let mut work = ParseWork::new(crate::artifact::ParseLimits {
+            input_bytes: usage.input_bytes * 2,
+            cards: usage.cards * 2,
+            owned_bytes: usage.owned_bytes * 2,
+            entries: usage.entries * 2,
+        })
+        .unwrap();
+        for left in [1, 0] {
+            let parsed = parse_owned_budgeted(&mut tx, &bytes, &mut work)
+                .await
+                .unwrap();
+            assert_eq!(parsed.raw(), bytes);
+            assert_eq!(
+                (
+                    work.remaining.input_bytes,
+                    work.remaining.cards,
+                    work.remaining.owned_bytes,
+                    work.remaining.entries
+                ),
+                (
+                    usage.input_bytes * left,
+                    usage.cards * left,
+                    usage.owned_bytes * left,
+                    usage.entries * left
+                )
+            );
+        }
+        let first = parse_owned_budgeted(&mut tx, &bytes, &mut work)
+            .await
+            .unwrap_err();
+        assert_eq!(first.operation, "native artifact validation failed");
+        assert!(std::error::Error::source(&first).is_some());
+        assert_eq!(tx.commit().await.unwrap_err().operation, first.operation);
     }
 }

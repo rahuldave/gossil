@@ -29,8 +29,8 @@ scope distinguishes shared access from an authorized owner's combined view.
 Record-only changes create no file check-in, so a file hash
 alone cannot identify issue history.
 
-Later arrivals leave an exact historical
-set fixed, subject to access permission and byte availability.
+Later arrivals do not change the selected historical set. Access still depends on
+permission and byte availability.
 
 Typed links connect an issue to exact code versions and support reverse lookup
 from code to issues. A Git target pins its registered repository, commit, path
@@ -82,8 +82,15 @@ A transaction must commit or roll back before the connection returns to the
 store. The public interface does not expose arbitrary SQL.
 
 `LocalOwnerRepository` initializes a complete empty public root.
-It also supports bounded private content operations. The empty root is a
-check-in with no files. A private content write does not create a check-in that contains files.
+Its `initialize` constructor creates a repository without a checkout. The
+[`vcs init` command](cli.md#initialize-a-repository) calls this constructor,
+generates identities and a password, and selects a default administrator from
+the environment. The API requires those values explicitly. Its `create`
+constructor binds an existing checkout directory.
+
+Private content writes require the bound
+catalog1 repository and refuse the initializer-only catalog4 repository. The empty
+root is a check-in with no files. A private content write does not create a check-in that contains files.
 
 Admission is the validation of the stored root required before repository
 operations. `SharedView` restricts access to public content that passed this
@@ -115,9 +122,8 @@ defines this conversion separately from native actors and local principals.
 
 The [task ticket emitter](task-ticket.md) produces bounded creation artifact bytes
 from a validated task, a separate native ticket identity, actor bytes and a typed UTC date.
-For task, project and author conversion, callers must check raw field presence, duplicates
-and byte limits before passing
-decoded values to a converter. Storage integration and task, project or author commands remain separate work.
+Before passing decoded task, project or author values to a converter, callers
+must check raw field presence, duplicates and byte limits. Storage integration and task, project or author commands remain separate work.
 
 ## Recommendations
 

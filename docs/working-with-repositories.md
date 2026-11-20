@@ -6,10 +6,10 @@ its plan and the evidence behind a decision.
 Git remains the source-code authority. Gossil is designed to give the
 surrounding agent work its own history and sharing rules.
 
-Most of this page describes planned repository workflows on current `main`.
-That CLI currently has
-[three file-delta diagnostics](cli.md). The Rust library already supports
-[empty-root creation and bounded private content](native-storage.md).
+Most of this page describes planned repository workflows. The source CLI supports
+[empty repository initialization and three file-delta diagnostics](cli.md).
+Initialization creates no checkout and selects no files. The Rust library supports
+[checkout-free initialization and bound private content](native-storage.md).
 That storage foundation does not yet provide ordinary file check-ins or issue
 management. The Fossil references teach the inherited workflow; their commands
 are not Gossil aliases.
@@ -22,8 +22,9 @@ Use a disposable folder and copies of files, and keep Git
 as the source authority.
 
 These commands require that preview's installed `gos` or `gossil` executable.
-Building current `main` does not enable them. The generated Rust API on this
-site describes `main`, not the preview's additional storage methods.
+The source CLI shares the `init` spelling, but does not support the preview's
+checkout or file-history commands. The generated Rust API on this site does not
+describe the preview's additional storage methods.
 
 Start with an empty scratch checkout. Keep the repository database outside it:
 
@@ -96,7 +97,7 @@ scoped links. Gest contributes the task workflow; one owned transaction
 strengthens its multi-statement storage helpers. This coordinated operation is
 planned and is not provided by the current delta diagnostics.
 
-The transaction governs the Gossil database. Git commits remain separate source
+The transaction commits changes to the Gossil database. Git commits remain separate source
 operations, and checkout files are materialized after commit with recovery
 bookkeeping. A failure then can require checkout recovery while the database
 history remains committed. Ordinary commands do not automatically combine
@@ -289,5 +290,5 @@ output path. Compare the restored bytes before replacing a file.
 Keep Git as the source authority and plan a small explicit selection of agent
 files for Gossil. Next, try the current delta tutorial, or use disposable files
 for the installed preview above. Use this workflow guide to choose roots and
-scope before repository commands arrive in `main`. For integrated
+scope before checkout and file-history commands ship in the source CLI. For integrated
 review, retain the file head and complete issue boundaries together.
