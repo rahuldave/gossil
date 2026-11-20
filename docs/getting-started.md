@@ -17,6 +17,9 @@ Install Git, Rust with Cargo, Just, uv and the
 [`jlog` command recorder](https://github.com/rahuldave/jlog#readme).
 These tools must be available on `PATH`. Rust builds also need the native
 compiler and platform development tools used by Cargo dependencies.
+Linux setup also requires Make, zlib development headers and CA certificates
+to build the pinned Tcl and Fossil references. On other hosts, supply the
+[reference prerequisites](conformance.md#local-prerequisites) before setup.
 The commands below use a POSIX shell, such as the default shell on macOS or Linux.
 
 ```sh
@@ -25,15 +28,16 @@ cd gossil
 just setup
 ```
 
-`just setup` fetches the Cargo dependencies.
+`just setup` supplies the Linux references or checks the existing tools on other
+hosts, then fetches the Cargo dependencies.
 `just gossil` then builds and runs the source executable through `jlog` and
-Cargo. You do not need a globally installed `gossil` or a Fossil executable.
+Cargo. You do not need a globally installed `gossil` executable.
 The first build can take longer than later calls.
 
 The example builds from source. Keep the checkout open in
 this shell for the following commands. The
 [contributor setup](development-plan.md#contributor-setup) is for people who
-also need the optional workflow packages and reference-test tools.
+also need the optional workflow packages and verification guidance.
 
 ## Create a delta
 

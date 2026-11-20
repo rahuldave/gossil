@@ -20,6 +20,22 @@ set allow-duplicate-recipes
 default:
     @just --list --unsorted --list-submodules
 
+# Supply pinned native test references, then fetch the Rust dependencies.
+setup: _reference-tools rust::setup
+
+[private]
+_reference-tools:
+    jlog run python3 scripts/setup-reference-tools.py
+
+[private]
+_reference-tools-tests:
+    jlog run python3 tests/test_reference_tools.py -v
+
+# Keep native setup security controls in the generic test contract.
+test *args: _reference-tools-tests
+    just --justfile {{quote(justfile())}} rust test "$@"
+    jlog step test
+
 # Execute one explicit reference or candidate configuration; failed suites exit nonzero.
 conformance CONFIG:
     cargo run --locked --bin gossil-conformance -- "$1"

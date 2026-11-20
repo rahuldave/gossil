@@ -102,8 +102,8 @@ fn password_draws(value: Value) -> Result<String, Error> {
     // util.c:fossil_random_password samples without replacement from this exact alphabet.
     let mut alphabet = b"23456789abcdefghijkmnopqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ".to_vec();
     let mut password = String::new();
-    for draw in draws.chunks_exact(4) {
-        let index = u32::from_ne_bytes(draw.try_into().unwrap()) as usize % alphabet.len();
+    for draw in draws.as_chunks::<4>().0 {
+        let index = u32::from_ne_bytes(*draw) as usize % alphabet.len();
         password.push(alphabet[index] as char);
         alphabet.swap_remove(index);
     }
@@ -318,6 +318,12 @@ mod tests {
     fn native_password_draw_decoder() {
         assert_eq!(
             password_draws(Value::Blob(vec![0; 40])).unwrap(),
+            "2ZYXWVUTSR"
+        );
+        let mut incomplete = vec![0; 40];
+        incomplete.extend_from_slice(&[1, 2, 3]);
+        assert_eq!(
+            password_draws(Value::Blob(incomplete)).unwrap(),
             "2ZYXWVUTSR"
         );
         assert_eq!(

@@ -15,18 +15,33 @@ That result does not mean the inherited Fossil suites pass.
 
 Install Rust with Cargo, Git, Just and uv on `PATH` before using the recipes.
 Rust builds the runner, Just runs `Justfile` recipes, and uv runs the installed
-workflow tools. `just setup` fetches Cargo dependencies. `just install --check`
-checks the saved workflow installation rather than supplying native test tools.
+workflow tools. `just setup` supplies the Linux reference tools and fetches Cargo
+dependencies. `just install --check` checks the saved workflow installation.
 
-This checkout exposes Tcl 8.6.18 and Fossil 2.29 through `.jlog/bin`.
-The Fossil binary is revision `7e8ecf0ce4`, with TLS and FUSE disabled.
-These ignored tools are local prerequisites. A fresh clone does not acquire
-them, so continuous integration from a fresh clone remains unproved.
+The required references are Tcl 8.6.18 and Fossil 2.29 at revision
+`7e8ecf0ce4`, with TLS and FUSE disabled. On Linux, `just setup` builds these
+tools from the archives pinned in `evidence/reference-tools.json`.
+It needs a C compiler, Make, zlib development headers and CA certificates.
+The Tcl installation retains its shell, shared library and core runtime scripts.
 
-Supply the pinned Fossil source and native tools yourself before running
-reference suites. The repository has no automated acquisition procedure.
-The user temporarily permitted the local Tcl installation to use shared
-Homebrew storage rather than keeping all native dependencies inside the checkout.
+Verified tools become available through ignored `.jlog/bin` links after the
+complete installation is published. Its receipt retains source identities,
+configure flags and binary hashes. Repeated setup checks and reuses that installation.
+Changed cache bytes and unknown tool paths fail without replacement.
+Worktrees can check and reuse shared managed references read-only when their
+source receipt, binary hashes and runtime observations match.
+
+On other hosts, setup checks and keeps the existing reference tools.
+Supply them before setup if they are absent. The current macOS tools remain
+the existing Tcl installation in Homebrew storage and the pinned local Fossil build.
+Setup does not adopt those external tools into its managed Linux installation.
+
+The read-only pull-request release check runs `just setup` before the full
+`just check`. Only a successful push to `main` can run its source-tag job.
+Local Linux native-tool controls and Python installer controls are separate
+from Rust coverage and the full Rust suite in CI.
+The [bounded native setup receipt](https://github.com/rahuldave/gossil/blob/main/evidence/reference-tools-linux-20261120.json)
+records the executed Linux scope.
 
 ## Run a suite
 
@@ -284,6 +299,6 @@ under `evidence/baselines` for classified results and limits.
 
 ## Recommendations
 
-To run a suite, use an explicit configuration and retain failed results.
-For development, finish the native-tool acquisition contract and run every
-required reference build configuration before claiming inherited compatibility.
+Use `just setup` before the checks, then run suites with explicit configurations
+and retain failed results. Next, run every required reference build configuration
+before claiming inherited compatibility.
