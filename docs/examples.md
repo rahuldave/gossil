@@ -12,6 +12,7 @@ root `Cargo.toml`. Replace `/absolute/path/to/gossil` with that checkout's path:
 ```toml
 [dependencies]
 gossil = { path = "/absolute/path/to/gossil" }
+serde_json = "1"
 
 [patch.crates-io]
 libsql-ffi = { path = "/absolute/path/to/gossil/vendor/libsql-ffi" }
