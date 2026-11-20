@@ -5,9 +5,9 @@ A delta encodes target bytes as new bytes and copies from an origin file.
 This exercise needs no repository and does not change Git history.
 
 Gossil is intended to keep agent files, issues and their history alongside
-Git. Its command line initializes empty repositories and has three delta diagnostics. The Rust library
-also supports artifact parsing, local storage and task and project value
-conversion. Try the delta commands below. Read
+Git. Its command line initializes empty repositories and has three delta
+diagnostics. The Rust library also supports artifact parsing, local storage
+and task, project and author value conversion. Try the delta commands below. Read
 [working with repositories](working-with-repositories.md) for the intended
 file and issue workflows.
 

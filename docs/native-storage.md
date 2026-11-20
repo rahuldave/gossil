@@ -4,10 +4,9 @@
 
 The storage API creates an empty native repository without a checkout. Its
 bound-checkout constructor also supports private file bytes through one owned
-libSQL transaction. Its supported public
-graph is the initial empty check-in, which contains no files.
-General artifact crosslinks, Gest
-projections and filesystem recovery remain planned.
+libSQL transaction. Its supported public graph is the initial empty check-in,
+which contains no files. General artifact crosslinks, Gest projections and
+filesystem recovery remain planned.
 
 ## Initialize without a checkout
 
@@ -100,15 +99,15 @@ private file name return the same unavailable error. A private association with
 already public root bytes preserves their public classification. A receipt for
 an unsupported general graph cannot grant shared access.
 
-## Admission validity
+## Check admission before operations
 
-Admission is the validation required before repository operations.
-
-A sealed admission proof records SQLite `data_version`, connection
+Admission is the validation required before repository operations. A sealed
+admission proof records SQLite `data_version`, connection
 `total_changes` and exact durable authority metadata. Each content operation
 checks that proof under its writer reservation before a private lookup.
 The saved metadata includes the root-conflict predicates. Refreshing only the
 connection counter cannot accept a newly contradictory projection.
+
 An unrelated external commit conservatively requires explicit readmission.
 Unexpected writes on the same connection also require readmission.
 

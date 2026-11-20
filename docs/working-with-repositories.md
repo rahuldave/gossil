@@ -97,7 +97,7 @@ scoped links. Gest contributes the task workflow; one owned transaction
 strengthens its multi-statement storage helpers. This coordinated operation is
 planned and is not provided by the current delta diagnostics.
 
-The transaction governs the Gossil database. Git commits remain separate source
+The transaction commits changes to the Gossil database. Git commits remain separate source
 operations, and checkout files are materialized after commit with recovery
 bookkeeping. A failure then can require checkout recovery while the database
 history remains committed. Ordinary commands do not automatically combine
@@ -259,8 +259,8 @@ Exact version references are part of the planned issue and
 annotation model. A Git object reference also does not guarantee that a
 recipient has its bytes.
 
-The current [task](gest-task-values.md) and [project](gest-project-values.md)
-converters validate decoded records in memory. They do not save an issue or
+The current [task](gest-task-values.md), [project](gest-project-values.md) and
+[author](gest-author-values.md) converters validate decoded records in memory. They do not save an issue or
 create a file reference. Their generated API links give the callable surface.
 
 Notebook support remains planned. A notebook is a selected directory and its

@@ -784,6 +784,8 @@ pub mod artifact_checksum;
 /// Convert independently admitted Gest task fields into validated owned values.
 pub mod gest_task_values;
 
+/// Convert complete admitted canonical author fields into owned values.
+pub mod gest_author_values;
 /// Convert complete admitted canonical project fields into owned values.
 pub mod gest_project_values;
 /// Share decoded-value validation without exposing a second public authority.

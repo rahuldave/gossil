@@ -40,8 +40,8 @@ existing files, symlinks and SQLite recovery sidecars are refused.
 | `--` | Treat following arguments as literal destination names |
 
 Long value options also accept `--name=value`. Without an explicit administrator,
-the first nonempty environment value wins in this order. The candidates are
-`GOSSIL_USER`, `USER`, `LOGNAME` and `USERNAME`, with `root` as the fallback.
+the command selects the first nonempty value from `GOSSIL_USER`, `USER`,
+`LOGNAME` and `USERNAME`, in that order. If all are absent or empty, it uses `root`.
 No preference file is read or created.
 
 Administrator bytes reach native validation unchanged; the storage API requires valid UTF-8.
