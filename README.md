@@ -47,8 +47,9 @@ The [task ticket emitter](docs/task-ticket.md) turns validated task snapshots in
 task creation artifacts in Fossil's ticket format. Callers supply the identity, actor and date.
 These modules do not store records or add commands.
 
-Native storage initializes a complete empty public root, a check-in with no files,
-and supports bounded private content operations. File-containing check-ins, general
+Native storage initializes an empty public root without a checkout through the
+library API. Bound checkout creation also supports bounded private content
+operations. The root is a check-in with no files. File-containing check-ins, general
 version-control commands, Gest task management, a server and a user interface
 remain planned. Build this version from source.
 

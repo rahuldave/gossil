@@ -9,7 +9,7 @@ surrounding agent work its own history and sharing rules.
 Most of this page describes planned repository workflows on current `main`.
 That CLI currently has
 [three file-delta diagnostics](cli.md). The Rust library already supports
-[empty-root creation and bounded private content](native-storage.md).
+[checkout-free initialization and bound private content](native-storage.md).
 That storage foundation does not yet provide ordinary file check-ins or issue
 management. The Fossil references teach the inherited workflow; their commands
 are not Gossil aliases.

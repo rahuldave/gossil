@@ -6,6 +6,7 @@
 //! is recorded in `evidence/libsql-provider/provenance.json`. Native repository
 //! creation and admission parse the empty root on this same connection. General
 //! artifact crosslinks, runtime clocks and broader date compatibility remain unqualified.
+//! Checkout-free initialization admits only empty catalog4; bound catalog1 retains private writes.
 //!
 //! ## Recommendations
 //! Use one owner for a complete mutation and explicitly commit or roll back.
@@ -15,7 +16,11 @@ mod policy;
 mod repository;
 mod schema;
 pub use content::Limits;
-pub use repository::{AdmissionLimits, CreateOptions, LocalOwnerRepository, SharedView};
+pub use repository::{
+    AdmissionLimits, CreateOptions, InitializeOptions, LocalOwnerRepository, SharedView,
+};
+mod lifecycle;
+use lifecycle::FileIdentity;
 
 use libsql::{Builder, Connection, Value};
 use std::{fmt, path::Path, sync::Arc, time::Duration};
@@ -139,6 +144,17 @@ pub struct LocalStore {
     connection: Option<Connection>,
     /// Whether an abnormal exit prevents reuse.
     poisoned: bool,
+    /// Cooperative pathname expectation for repository constructors.
+    identity: Option<FileIdentity>,
+}
+impl Drop for LocalStore {
+    /// Observe before releasing the safe provider; this does not certify engine disposal.
+    fn drop(&mut self) {
+        if let Some(identity) = &self.identity {
+            let _ = identity.observe();
+        }
+        drop(self.connection.take());
+    }
 }
 impl LocalStore {
     /// Open and verify a local file database; never fall back to memory.
@@ -176,7 +192,25 @@ impl LocalStore {
     /// Returns an input error for an embedded NUL, engine errors for opening or
     /// configuration failures, or a state error when required settings differ.
     async fn open_inner(path: impl AsRef<Path>, file: bool) -> Result<Self, StorageError> {
-        let path = path.as_ref();
+        Self::open_observed(path.as_ref(), file, None).await
+    }
+    /// Open with cooperative regular-file observations before and after engine entry.
+    /// # Arguments
+    /// * `path` - Literal database filename.
+    /// * `file` - Require file WAL configuration.
+    /// * `identity` - Previously captured regular-file identity.
+    /// # Returns
+    /// A configured store retaining the optional identity.
+    /// # Errors
+    /// Retains pathname, configuration and engine failures.
+    async fn open_observed(
+        path: &Path,
+        file: bool,
+        identity: Option<FileIdentity>,
+    ) -> Result<Self, StorageError> {
+        if let Some(expected) = &identity {
+            expected.observe()?;
+        }
         let database = if file {
             open_native_database(path, libsql::OpenFlags::default()).await?
         } else {
@@ -210,9 +244,13 @@ impl LocalStore {
                 )));
             }
         }
+        if let Some(expected) = &identity {
+            expected.observe()?;
+        }
         Ok(Self {
             connection: Some(connection),
             poisoned: false,
+            identity,
         })
     }
     /// Report whether unexpected destruction or failed cleanup prevents reuse.

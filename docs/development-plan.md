@@ -16,8 +16,12 @@ caller-supplied native identity, actor and date. Both converters operate in memo
 | Delta create, apply and two-way file checks | General version-control CLI |
 | Compression, hashes, token escaping and artifact checksums | Repository traversal and persistent selection commands |
 | Eight structural artifact types with explicit limits | General crosslinks, migration, rebuild and filesystem recovery |
-| Complete empty-root initialization and bounded private content | File-containing check-ins, sync and publication |
+| Checkout-free empty-root initialization; bound creation and private content | File-containing check-ins, sync and publication |
 | Explicit inherited-test runner configurations | Gest task CLI, server and user interface |
+
+Checkout-free initialization admits only empty catalog4 repositories. Bound
+catalog1 creation retains its checkout and private content operations. Catalog4
+private writes and populated or registered states remain unsupported.
 
 An empty root is a check-in with no files. Private content operations do not
 extend that public graph. Build this version from source. The implemented modules do not establish
