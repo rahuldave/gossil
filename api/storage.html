@@ -1,7 +1,8 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="generator" content="smalldocs-0.5.12"><meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes"><meta name="description" content="Own local database connections and exclusive write boundaries. Sole-connection local storage. File opens verify WAL, foreign keys, FULL and 5000 ms. Unexpected owner destruction poisons the store and closes its connection. Local SQL blocks its current poll; cancellation after COMMIT cannot undo it."><title>storage – Gossil</title><link rel="icon" href="../site_libs/themes/atelier/logo.svg"><link rel="stylesheet" href="../site_libs/themes/atelier/atelier.css" data-mode="light" class="quarto-color-scheme" id="quarto-bootstrap-light" media="not all and (prefers-color-scheme: dark)"><link rel="stylesheet" href="../site_libs/themes/atelier/atelier-dark.css" data-mode="dark" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap-dark" media="(prefers-color-scheme: dark)"><link rel="stylesheet" href="../site_libs/bootstrap-icons/bootstrap-icons.min.css"><link rel="stylesheet" href="../site_libs/smalldocs.css"><meta name="smalldocs:offset" content="../"><script src="../site_libs/bootstrap/bootstrap.bundle.min.js"></script><script src="../site_libs/fuse/fuse.min.js"></script><script src="../site_libs/smalldocs.js" defer></script><script>(function(){var d=document.documentElement,s=null;try{s=localStorage.getItem('smalldocs-scheme')}catch(e){}var alt=s?s==='alternate':!!(window.matchMedia&&matchMedia('(prefers-color-scheme: dark)').matches);var ls=document.querySelectorAll('link.quarto-color-scheme');if(alt)d.dataset.scheme='alternate';if(s)ls.forEach(function(l){var on=l.classList.contains('quarto-color-alternate')===alt;if(on)l.setAttribute('blocking','render');l.media=on?'all':'not all'});var on=ls[alt?1:0];if(on&&on.dataset.mode==='dark')d.classList.add('quarto-dark')})();</script></head><body class="nav-sidebar floating nav-fixed"><header id="quarto-header" class="headroom sticky-top"><nav class="navbar navbar-expand-lg sd-navbar-default"><div class="navbar-container container-fluid"><div class="navbar-brand-container mx-auto"><a class="navbar-brand" href="../index.html"><span class="navbar-title">Gossil</span></a></div><button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button><div class="collapse navbar-collapse" id="navbarCollapse"><ul class="navbar-nav navbar-nav-scroll me-auto"><li class="nav-item"><a class="nav-link" href="../getting-started.html"><span class="menu-text">Start</span></a></li><li class="nav-item"><a class="nav-link" href="../concepts.html"><span class="menu-text">Library concepts</span></a></li><li class="nav-item"><a class="nav-link" href="../cli.html"><span class="menu-text">CLI</span></a></li><li class="nav-item"><a class="nav-link" href="index.html"><span class="menu-text">Rust API</span></a></li><li class="nav-item"><a class="nav-link" href="../development-plan.html"><span class="menu-text">Development</span></a></li></ul><ul class="navbar-nav navbar-nav-scroll ms-auto"><li class="nav-item compact"><a class="nav-link" href="https://github.com/rahuldave/gossil" aria-label="github"><i class="bi bi-github" role="img"></i></a></li><li class="nav-item compact"><a class="quarto-color-scheme-toggle nav-link" href="" title="Toggle dark mode" onclick="window.smalldocsToggleScheme(); return false;"><i class="bi"></i></a></li></ul><div class="quarto-navbar-tools"><div class="smalldocs-search" id="quarto-search"><i class="bi bi-search" aria-hidden="true"></i><input type="search" class="form-control form-control-sm" placeholder="Search" aria-label="Search" autocomplete="off"><div class="smalldocs-search-results dropdown-menu"></div></div></div></div></div></nav><nav class="quarto-secondary-nav"><div class="container-fluid d-flex"><button type="button" class="quarto-btn-toggle btn" aria-controls="quarto-sidebar" aria-label="Toggle sidebar navigation"><i class="bi bi-layout-text-sidebar-reverse"></i></button><nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="index.html">Rust API</a></li><li class="breadcrumb-item"><a href="storage.html">storage</a></li></ol></nav></div></nav></header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article has-sidebar has-margin"><nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto"><div class="sidebar-menu-container"><ul class="list-unstyled mt-1"><li class="sidebar-item"><div class="sidebar-item-container"><a href="../index.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Gossil</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="../getting-started.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Get started</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="../cli.html" class="sidebar-item-text sidebar-link"><span class="menu-text">CLI reference</span></a></div></li><li class="sidebar-item sidebar-item-section"><div class="sidebar-item-container"><a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true"><span class="menu-text">Guides</span></a><a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section"><i class="bi bi-chevron-right ms-2"></i></a></div><ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show"><li class="sidebar-item"><div class="sidebar-item-container"><a href="../working-with-repositories.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Working with repositories</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="../compare-with-git.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Compare Gossil with Git</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="../concepts.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Library concepts</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="../examples.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Rust library examples</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="../delta-encoder.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Bounded delta encoder</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="../delta-decoder.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Bounded delta decoder</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="../blob-primitives.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Byte digests and packed blobs</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="../artifact-checksum.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Artifact byte checksums</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="../token-codec.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Fossil token bytes</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="../artifact-parser.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Artifact parser</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="../diff.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Compare normalized byte lines</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="../task-ticket.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Emit a task creation artifact</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="../local-storage.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Local database ownership</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="../native-storage.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Native local storage</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="../gest-task-values.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Gest task values</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="../gest-project-values.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Gest project values</span></a></div></li></ul></li><li class="sidebar-item sidebar-item-section"><div class="sidebar-item-container"><a class="sidebar-item-text sidebar-link" href="index.html"><span class="menu-text">Rust API</span></a><a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Toggle section"><i class="bi bi-chevron-right ms-2"></i></a></div><ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show"><li class="sidebar-item"><div class="sidebar-item-container"><a href="artifact.html" class="sidebar-item-text sidebar-link"><span class="menu-text">artifact</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="artifact_checksum.html" class="sidebar-item-text sidebar-link"><span class="menu-text">artifact_checksum</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="compression.html" class="sidebar-item-text sidebar-link"><span class="menu-text">compression</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="content_hash.html" class="sidebar-item-text sidebar-link"><span class="menu-text">content_hash</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="delta.html" class="sidebar-item-text sidebar-link"><span class="menu-text">delta</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="diff.html" class="sidebar-item-text sidebar-link"><span class="menu-text">diff</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="gest_project_values.html" class="sidebar-item-text sidebar-link"><span class="menu-text">gest_project_values</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="gest_task_values.html" class="sidebar-item-text sidebar-link"><span class="menu-text">gest_task_values</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="gossil.html" class="sidebar-item-text sidebar-link"><span class="menu-text">gossil</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="native_date.html" class="sidebar-item-text sidebar-link"><span class="menu-text">native_date</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="product.html" class="sidebar-item-text sidebar-link"><span class="menu-text">product</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="storage.html" class="sidebar-item-text sidebar-link active" aria-current="page"><span class="menu-text">storage</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="task_ticket.html" class="sidebar-item-text sidebar-link"><span class="menu-text">task_ticket</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="token_codec.html" class="sidebar-item-text sidebar-link"><span class="menu-text">token_codec</span></a></div></li></ul></li><li class="sidebar-item sidebar-item-section"><div class="sidebar-item-container"><a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true"><span class="menu-text">Development</span></a><a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true" aria-label="Toggle section"><i class="bi bi-chevron-right ms-2"></i></a></div><ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show"><li class="sidebar-item"><div class="sidebar-item-container"><a href="../development-plan.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Development and contributing</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="../conformance.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Inherited-test runner</span></a></div></li></ul></li></ul></div></nav><div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item"></div><div id="quarto-margin-sidebar" class="sidebar margin-sidebar"><nav id="TOC" role="doc-toc" class="toc-active"><h2 id="toc-title">On this page</h2><ul><li><a href="#recommendations" id="toc-recommendations" class="nav-link" data-scroll-target="#recommendations">Recommendations</a></li><li><a href="#Limits" id="toc-Limits" class="nav-link" data-scroll-target="#Limits">struct Limits</a></li><li><a href="#AdmissionLimits" id="toc-AdmissionLimits" class="nav-link" data-scroll-target="#AdmissionLimits">struct AdmissionLimits</a></li><li><a href="#CreateOptions" id="toc-CreateOptions" class="nav-link" data-scroll-target="#CreateOptions">struct CreateOptions</a></li><li><a href="#LocalOwnerRepository" id="toc-LocalOwnerRepository" class="nav-link" data-scroll-target="#LocalOwnerRepository">struct LocalOwnerRepository</a><ul><li><a href="#LocalOwnerRepository.shared_view" id="toc-LocalOwnerRepository.shared_view" class="nav-link" data-scroll-target="#LocalOwnerRepository.shared_view">LocalOwnerRepository::shared_view</a></li><li><a href="#LocalOwnerRepository.create" id="toc-LocalOwnerRepository.create" class="nav-link" data-scroll-target="#LocalOwnerRepository.create">LocalOwnerRepository::create</a></li><li><a href="#LocalOwnerRepository.open" id="toc-LocalOwnerRepository.open" class="nav-link" data-scroll-target="#LocalOwnerRepository.open">LocalOwnerRepository::open</a></li><li><a href="#LocalOwnerRepository.put_private_file_content" id="toc-LocalOwnerRepository.put_private_file_content" class="nav-link" data-scroll-target="#LocalOwnerRepository.put_private_file_content">LocalOwnerRepository::put_private_file_content</a></li><li><a href="#LocalOwnerRepository.read_content" id="toc-LocalOwnerRepository.read_content" class="nav-link" data-scroll-target="#LocalOwnerRepository.read_content">LocalOwnerRepository::read_content</a></li></ul></li><li><a href="#SharedView" id="toc-SharedView" class="nav-link" data-scroll-target="#SharedView">struct SharedView</a><ul><li><a href="#SharedView.read_content" id="toc-SharedView.read_content" class="nav-link" data-scroll-target="#SharedView.read_content">SharedView::read_content</a></li></ul></li><li><a href="#StorageError" id="toc-StorageError" class="nav-link" data-scroll-target="#StorageError">struct StorageError</a></li><li><a href="#LocalStore" id="toc-LocalStore" class="nav-link" data-scroll-target="#LocalStore">struct LocalStore</a><ul><li><a href="#LocalStore.open" id="toc-LocalStore.open" class="nav-link" data-scroll-target="#LocalStore.open">LocalStore::open</a></li><li><a href="#LocalStore.is_poisoned" id="toc-LocalStore.is_poisoned" class="nav-link" data-scroll-target="#LocalStore.is_poisoned">LocalStore::is_poisoned</a></li><li><a href="#LocalStore.begin_write" id="toc-LocalStore.begin_write" class="nav-link" data-scroll-target="#LocalStore.begin_write">LocalStore::begin_write</a></li></ul></li><li><a href="#WriteTransaction" id="toc-WriteTransaction" class="nav-link" data-scroll-target="#WriteTransaction">struct WriteTransaction</a><ul><li><a href="#WriteTransaction.commit" id="toc-WriteTransaction.commit" class="nav-link" data-scroll-target="#WriteTransaction.commit">WriteTransaction::commit</a></li><li><a href="#WriteTransaction.rollback" id="toc-WriteTransaction.rollback" class="nav-link" data-scroll-target="#WriteTransaction.rollback">WriteTransaction::rollback</a></li></ul></li></ul></nav></div><main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="index.html">Rust API</a></li><li class="breadcrumb-item"><a href="storage.html">storage</a></li></ol></nav><div class="quarto-title"><h1 class="title">storage</h1></div><div><div class="description">Own local database connections and exclusive write boundaries. Sole-connection local storage. File opens verify WAL, foreign keys, FULL and 5000 ms. Unexpected owner destruction poisons the store and closes its connection. Local SQL blocks its current poll; cancellation after COMMIT cannot undo it.</div></div><div class="quarto-title-meta"></div></header><p>The core-only native provider has a reviewed date backport. Its source identity
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="generator" content="smalldocs-0.5.12"><meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes"><meta name="description" content="Own local database connections and exclusive write boundaries. Sole-connection local storage. File opens verify WAL, foreign keys, FULL and 5000 ms. Unexpected owner destruction poisons the store and closes its connection. Local SQL blocks its current poll; cancellation after COMMIT cannot undo it."><title>storage – Gossil</title><link rel="icon" href="../site_libs/themes/atelier/logo.svg"><link rel="stylesheet" href="../site_libs/themes/atelier/atelier.css" data-mode="light" class="quarto-color-scheme" id="quarto-bootstrap-light" media="not all and (prefers-color-scheme: dark)"><link rel="stylesheet" href="../site_libs/themes/atelier/atelier-dark.css" data-mode="dark" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap-dark" media="(prefers-color-scheme: dark)"><link rel="stylesheet" href="../site_libs/bootstrap-icons/bootstrap-icons.min.css"><link rel="stylesheet" href="../site_libs/smalldocs.css"><meta name="smalldocs:offset" content="../"><script src="../site_libs/bootstrap/bootstrap.bundle.min.js"></script><script src="../site_libs/fuse/fuse.min.js"></script><script src="../site_libs/smalldocs.js" defer></script><script>(function(){var d=document.documentElement,s=null;try{s=localStorage.getItem('smalldocs-scheme')}catch(e){}var alt=s?s==='alternate':!!(window.matchMedia&&matchMedia('(prefers-color-scheme: dark)').matches);var ls=document.querySelectorAll('link.quarto-color-scheme');if(alt)d.dataset.scheme='alternate';if(s)ls.forEach(function(l){var on=l.classList.contains('quarto-color-alternate')===alt;if(on)l.setAttribute('blocking','render');l.media=on?'all':'not all'});var on=ls[alt?1:0];if(on&&on.dataset.mode==='dark')d.classList.add('quarto-dark')})();</script></head><body class="nav-sidebar floating nav-fixed"><header id="quarto-header" class="headroom sticky-top"><nav class="navbar navbar-expand-lg sd-navbar-default"><div class="navbar-container container-fluid"><div class="navbar-brand-container mx-auto"><a class="navbar-brand" href="../index.html"><span class="navbar-title">Gossil</span></a></div><button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button><div class="collapse navbar-collapse" id="navbarCollapse"><ul class="navbar-nav navbar-nav-scroll me-auto"><li class="nav-item"><a class="nav-link" href="../getting-started.html"><span class="menu-text">Start</span></a></li><li class="nav-item"><a class="nav-link" href="../concepts.html"><span class="menu-text">Library concepts</span></a></li><li class="nav-item"><a class="nav-link" href="../cli.html"><span class="menu-text">CLI</span></a></li><li class="nav-item"><a class="nav-link" href="index.html"><span class="menu-text">Rust API</span></a></li><li class="nav-item"><a class="nav-link" href="../development-plan.html"><span class="menu-text">Development</span></a></li></ul><ul class="navbar-nav navbar-nav-scroll ms-auto"><li class="nav-item compact"><a class="nav-link" href="https://github.com/rahuldave/gossil" aria-label="github"><i class="bi bi-github" role="img"></i></a></li><li class="nav-item compact"><a class="quarto-color-scheme-toggle nav-link" href="" title="Toggle dark mode" onclick="window.smalldocsToggleScheme(); return false;"><i class="bi"></i></a></li></ul><div class="quarto-navbar-tools"><div class="smalldocs-search" id="quarto-search"><i class="bi bi-search" aria-hidden="true"></i><input type="search" class="form-control form-control-sm" placeholder="Search" aria-label="Search" autocomplete="off"><div class="smalldocs-search-results dropdown-menu"></div></div></div></div></div></nav><nav class="quarto-secondary-nav"><div class="container-fluid d-flex"><button type="button" class="quarto-btn-toggle btn" aria-controls="quarto-sidebar" aria-label="Toggle sidebar navigation"><i class="bi bi-layout-text-sidebar-reverse"></i></button><nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="index.html">Rust API</a></li><li class="breadcrumb-item"><a href="storage.html">storage</a></li></ol></nav></div></nav></header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article has-sidebar has-margin"><nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto"><div class="sidebar-menu-container"><ul class="list-unstyled mt-1"><li class="sidebar-item"><div class="sidebar-item-container"><a href="../index.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Gossil</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="../getting-started.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Get started</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="../cli.html" class="sidebar-item-text sidebar-link"><span class="menu-text">CLI reference</span></a></div></li><li class="sidebar-item sidebar-item-section"><div class="sidebar-item-container"><a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true"><span class="menu-text">Guides</span></a><a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section"><i class="bi bi-chevron-right ms-2"></i></a></div><ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show"><li class="sidebar-item"><div class="sidebar-item-container"><a href="../working-with-repositories.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Working with repositories</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="../compare-with-git.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Compare Gossil with Git</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="../concepts.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Library concepts</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="../examples.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Rust library examples</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="../delta-encoder.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Bounded delta encoder</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="../delta-decoder.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Bounded delta decoder</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="../blob-primitives.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Byte digests and packed blobs</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="../artifact-checksum.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Artifact byte checksums</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="../token-codec.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Fossil token bytes</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="../artifact-parser.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Artifact parser</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="../diff.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Compare normalized byte lines</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="../task-ticket.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Emit a task creation artifact</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="../local-storage.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Local database ownership</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="../native-storage.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Native local storage</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="../gest-task-values.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Gest task values</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="../gest-project-values.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Gest project values</span></a></div></li></ul></li><li class="sidebar-item sidebar-item-section"><div class="sidebar-item-container"><a class="sidebar-item-text sidebar-link" href="index.html"><span class="menu-text">Rust API</span></a><a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Toggle section"><i class="bi bi-chevron-right ms-2"></i></a></div><ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show"><li class="sidebar-item"><div class="sidebar-item-container"><a href="artifact.html" class="sidebar-item-text sidebar-link"><span class="menu-text">artifact</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="artifact_checksum.html" class="sidebar-item-text sidebar-link"><span class="menu-text">artifact_checksum</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="compression.html" class="sidebar-item-text sidebar-link"><span class="menu-text">compression</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="content_hash.html" class="sidebar-item-text sidebar-link"><span class="menu-text">content_hash</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="delta.html" class="sidebar-item-text sidebar-link"><span class="menu-text">delta</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="diff.html" class="sidebar-item-text sidebar-link"><span class="menu-text">diff</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="gest_project_values.html" class="sidebar-item-text sidebar-link"><span class="menu-text">gest_project_values</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="gest_task_values.html" class="sidebar-item-text sidebar-link"><span class="menu-text">gest_task_values</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="gossil.html" class="sidebar-item-text sidebar-link"><span class="menu-text">gossil</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="native_date.html" class="sidebar-item-text sidebar-link"><span class="menu-text">native_date</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="product.html" class="sidebar-item-text sidebar-link"><span class="menu-text">product</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="storage.html" class="sidebar-item-text sidebar-link active" aria-current="page"><span class="menu-text">storage</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="task_ticket.html" class="sidebar-item-text sidebar-link"><span class="menu-text">task_ticket</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="token_codec.html" class="sidebar-item-text sidebar-link"><span class="menu-text">token_codec</span></a></div></li></ul></li><li class="sidebar-item sidebar-item-section"><div class="sidebar-item-container"><a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true"><span class="menu-text">Development</span></a><a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true" aria-label="Toggle section"><i class="bi bi-chevron-right ms-2"></i></a></div><ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show"><li class="sidebar-item"><div class="sidebar-item-container"><a href="../development-plan.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Development and contributing</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="../conformance.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Inherited-test runner</span></a></div></li></ul></li></ul></div></nav><div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item"></div><div id="quarto-margin-sidebar" class="sidebar margin-sidebar"><nav id="TOC" role="doc-toc" class="toc-active"><h2 id="toc-title">On this page</h2><ul><li><a href="#recommendations" id="toc-recommendations" class="nav-link" data-scroll-target="#recommendations">Recommendations</a></li><li><a href="#Limits" id="toc-Limits" class="nav-link" data-scroll-target="#Limits">struct Limits</a></li><li><a href="#AdmissionLimits" id="toc-AdmissionLimits" class="nav-link" data-scroll-target="#AdmissionLimits">struct AdmissionLimits</a></li><li><a href="#CreateOptions" id="toc-CreateOptions" class="nav-link" data-scroll-target="#CreateOptions">struct CreateOptions</a></li><li><a href="#InitializeOptions" id="toc-InitializeOptions" class="nav-link" data-scroll-target="#InitializeOptions">struct InitializeOptions</a></li><li><a href="#LocalOwnerRepository" id="toc-LocalOwnerRepository" class="nav-link" data-scroll-target="#LocalOwnerRepository">struct LocalOwnerRepository</a><ul><li><a href="#LocalOwnerRepository.initialization_identity" id="toc-LocalOwnerRepository.initialization_identity" class="nav-link" data-scroll-target="#LocalOwnerRepository.initialization_identity">LocalOwnerRepository::initialization_identity</a></li><li><a href="#LocalOwnerRepository.shared_view" id="toc-LocalOwnerRepository.shared_view" class="nav-link" data-scroll-target="#LocalOwnerRepository.shared_view">LocalOwnerRepository::shared_view</a></li><li><a href="#LocalOwnerRepository.create" id="toc-LocalOwnerRepository.create" class="nav-link" data-scroll-target="#LocalOwnerRepository.create">LocalOwnerRepository::create</a></li><li><a href="#LocalOwnerRepository.initialize" id="toc-LocalOwnerRepository.initialize" class="nav-link" data-scroll-target="#LocalOwnerRepository.initialize">LocalOwnerRepository::initialize</a></li><li><a href="#LocalOwnerRepository.open" id="toc-LocalOwnerRepository.open" class="nav-link" data-scroll-target="#LocalOwnerRepository.open">LocalOwnerRepository::open</a></li><li><a href="#LocalOwnerRepository.put_private_file_content" id="toc-LocalOwnerRepository.put_private_file_content" class="nav-link" data-scroll-target="#LocalOwnerRepository.put_private_file_content">LocalOwnerRepository::put_private_file_content</a></li><li><a href="#LocalOwnerRepository.read_content" id="toc-LocalOwnerRepository.read_content" class="nav-link" data-scroll-target="#LocalOwnerRepository.read_content">LocalOwnerRepository::read_content</a></li></ul></li><li><a href="#SharedView" id="toc-SharedView" class="nav-link" data-scroll-target="#SharedView">struct SharedView</a><ul><li><a href="#SharedView.read_content" id="toc-SharedView.read_content" class="nav-link" data-scroll-target="#SharedView.read_content">SharedView::read_content</a></li></ul></li><li><a href="#StorageError" id="toc-StorageError" class="nav-link" data-scroll-target="#StorageError">struct StorageError</a></li><li><a href="#LocalStore" id="toc-LocalStore" class="nav-link" data-scroll-target="#LocalStore">struct LocalStore</a><ul><li><a href="#LocalStore.open" id="toc-LocalStore.open" class="nav-link" data-scroll-target="#LocalStore.open">LocalStore::open</a></li><li><a href="#LocalStore.is_poisoned" id="toc-LocalStore.is_poisoned" class="nav-link" data-scroll-target="#LocalStore.is_poisoned">LocalStore::is_poisoned</a></li><li><a href="#LocalStore.begin_write" id="toc-LocalStore.begin_write" class="nav-link" data-scroll-target="#LocalStore.begin_write">LocalStore::begin_write</a></li></ul></li><li><a href="#WriteTransaction" id="toc-WriteTransaction" class="nav-link" data-scroll-target="#WriteTransaction">struct WriteTransaction</a><ul><li><a href="#WriteTransaction.commit" id="toc-WriteTransaction.commit" class="nav-link" data-scroll-target="#WriteTransaction.commit">WriteTransaction::commit</a></li><li><a href="#WriteTransaction.rollback" id="toc-WriteTransaction.rollback" class="nav-link" data-scroll-target="#WriteTransaction.rollback">WriteTransaction::rollback</a></li></ul></li></ul></nav></div><main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="index.html">Rust API</a></li><li class="breadcrumb-item"><a href="storage.html">storage</a></li></ol></nav><div class="quarto-title"><h1 class="title">storage</h1></div><div><div class="description">Own local database connections and exclusive write boundaries. Sole-connection local storage. File opens verify WAL, foreign keys, FULL and 5000 ms. Unexpected owner destruction poisons the store and closes its connection. Local SQL blocks its current poll; cancellation after COMMIT cannot undo it.</div></div><div class="quarto-title-meta"></div></header><p>The core-only native provider has a reviewed date backport. Its source identity
 is recorded in <code>evidence/libsql-provider/provenance.json</code>. Native repository
 creation and admission parse the empty root on this same connection. General
-artifact crosslinks, runtime clocks and broader date compatibility remain unqualified.</p>
+artifact crosslinks, runtime clocks and broader date compatibility remain unqualified.
+Checkout-free initialization admits only empty catalog4; bound catalog1 retains private writes.</p>
 <section id="recommendations" class="level3">
 <h3 class="anchored" data-anchor-id="recommendations">Recommendations</h3>
 <p>Use one owner for a complete mutation and explicitly commit or roll back.
@@ -54,7 +55,7 @@ Use LocalOwnerRepository for admitted native content and explicit finite limits.
 </section>
 <section id="AdmissionLimits" class="level2">
 <h2 class="anchored" data-anchor-id="AdmissionLimits">struct AdmissionLimits</h2>
-<p><a href="https://github.com/rahuldave/gossil/blob/main/src/storage/repository.rs#L40" class="source-link">source</a></p>
+<p><a href="https://github.com/rahuldave/gossil/blob/main/src/storage/repository.rs#L44" class="source-link">source</a></p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span class="kw">pub</span> <span class="kw">struct</span> AdmissionLimits</code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Explicit finite bounds for repository root admission.</p>
 <div class="sd-table">
@@ -84,9 +85,9 @@ Use LocalOwnerRepository for admitted native content and explicit finite limits.
 </section>
 <section id="CreateOptions" class="level2">
 <h2 class="anchored" data-anchor-id="CreateOptions">struct CreateOptions</h2>
-<p><a href="https://github.com/rahuldave/gossil/blob/main/src/storage/repository.rs#L58" class="source-link">source</a></p>
+<p><a href="https://github.com/rahuldave/gossil/blob/main/src/storage/repository.rs#L62" class="source-link">source</a></p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span class="kw">pub</span> <span class="kw">struct</span> CreateOptions<span class="op">&lt;</span><span class="op">&#x27;</span><span class="at">a</span><span class="op">&gt;</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Explicit local identities and bounds for a newly created native repository.
+<p>Explicit local identities and bounds for a new catalog1 repository with a checkout.
 Owner identity is bound to this new local file; it is not an authentication credential.</p>
 <div class="sd-table">
 <table class="caption-top table">
@@ -142,22 +143,117 @@ Owner identity is bound to this new local file; it is not an authentication cred
 </table>
 </div>
 </section>
+<section id="InitializeOptions" class="level2">
+<h2 class="anchored" data-anchor-id="InitializeOptions">struct InitializeOptions</h2>
+<p><a href="https://github.com/rahuldave/gossil/blob/main/src/storage/repository/initialization.rs#L51" class="source-link">source</a></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span class="kw">pub</span> <span class="kw">struct</span> InitializeOptions<span class="op">&lt;</span><span class="op">&#x27;</span><span class="at">a</span><span class="op">&gt;</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>These inputs initialize a native repository without an implicit checkout or preference database.</p>
+<div class="sd-table">
+<table class="caption-top table">
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>repository_id</code></td>
+<td>&amp;'a str</td>
+<td>Forty lowercase hexadecimal project-code bytes.</td>
+</tr>
+<tr>
+<td><code>owner_id</code></td>
+<td>&amp;'a str</td>
+<td>Stable local owner identity, never a remote credential.</td>
+</tr>
+<tr>
+<td><code>date</code></td>
+<td>&amp;'a str</td>
+<td>SQLite date expression, normalized for the native D card.</td>
+</tr>
+<tr>
+<td><code>user</code></td>
+<td>&amp;'a [u8]</td>
+<td>Explicit initial administrator and U-card bytes, valid nonempty UTF-8 without NUL.</td>
+</tr>
+<tr>
+<td><code>password</code></td>
+<td>&amp;'a str</td>
+<td>Initial remote password without NUL, stored as the native project/login/password SHA1 digest.</td>
+</tr>
+<tr>
+<td><a href="content_hash.html#sha1"><code>sha1</code></a></td>
+<td>bool</td>
+<td>Select SHA1 for the initial artifact and native hash policy; false uses SHA3-256.</td>
+</tr>
+<tr>
+<td><code>content_limits</code></td>
+<td>Limits</td>
+<td>Finite content reconstruction ceilings.</td>
+</tr>
+<tr>
+<td><code>parse_limits</code></td>
+<td>crate::artifact::ParseLimits</td>
+<td>Finite artifact parser ceilings.</td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
 <section id="LocalOwnerRepository" class="level2">
 <h2 class="anchored" data-anchor-id="LocalOwnerRepository">struct LocalOwnerRepository</h2>
-<p><a href="https://github.com/rahuldave/gossil/blob/main/src/storage/repository.rs#L82" class="source-link">source</a></p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span class="kw">pub</span> <span class="kw">struct</span> LocalOwnerRepository</code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><a href="https://github.com/rahuldave/gossil/blob/main/src/storage/repository.rs#L86" class="source-link">source</a></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span class="kw">pub</span> <span class="kw">struct</span> LocalOwnerRepository</code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>A sealed local-owner handle bound to the identities read from its own database.</p>
 <p>Opening the local file uses operating-system file permissions. A server must
 use a separate shared/team principal path for network requests; this handle
 must never be passed to a request merely because the server can open the file.</p>
-<section id="LocalOwnerRepository.shared_view" class="level3">
-<h3 class="anchored" data-anchor-id="LocalOwnerRepository.shared_view">LocalOwnerRepository::shared_view</h3>
-<p><a href="https://github.com/rahuldave/gossil/blob/main/src/storage/repository.rs#L141" class="source-link">source</a></p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span class="kw">pub</span> <span class="kw">fn</span> <span class="fu">shared_view</span>(<span class="op">&amp;</span><span class="kw">mut</span> <span class="va">self</span>) -&gt; SharedView<span class="op">&lt;</span><span class="op">&#x27;</span><span class="bu">_</span><span class="op">&gt;</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Select a restricted local shared view without minting a remote principal.</p>
+<section id="LocalOwnerRepository.initialization_identity" class="level3">
+<h3 class="anchored" data-anchor-id="LocalOwnerRepository.initialization_identity">LocalOwnerRepository::initialization_identity</h3>
+<p><a href="https://github.com/rahuldave/gossil/blob/main/src/storage/repository/initialization.rs#L381" class="source-link">source</a></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span class="kw">pub</span> <span class="kw">async</span> <span class="kw">fn</span> <span class="fu">initialization_identity</span>(<span class="op">&amp;</span><span class="kw">mut</span> <span class="va">self</span>) -&gt; <span class="bu">Result</span><span class="op">&lt;</span>(<span class="bu">String</span>, <span class="bu">String</span>), StorageError<span class="op">&gt;</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Read the actual native initialization identities after checking admission.</p>
 <section id="examples" class="level5">
 <h5 class="anchored" data-anchor-id="examples">Examples</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span class="kw">fn</span> <span class="fu">restricted</span>(owner: <span class="kw">&amp;</span>mut gossil::storage::LocalOwnerRepository) {
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span class="kw">async</span> <span class="kw">fn</span> <span class="fu">identities</span>(owner: <span class="kw">&amp;</span>mut gossil::storage::LocalOwnerRepository) {
+    <span class="kw">let</span> (project, server) <span class="op">=</span> owner.initialization_identity().<span class="cf">await</span>.unwrap();
+    <span class="fu">assert_eq!</span>(project.len(), <span class="dv">40</span>);
+    <span class="fu">assert_eq!</span>(server.len(), <span class="dv">40</span>);
+}</code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="errors" class="level5">
+<h5 class="anchored" data-anchor-id="errors">Errors</h5>
+<p>Rejects stale admission, missing or malformed native identities and transaction errors.</p>
+<div class="sd-table">
+<table class="caption-top table">
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>returns</td>
+<td>Result&lt;(String, String), StorageError&gt;</td>
+<td>Native project-code and server-code, in that order.</td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+</section>
+<section id="LocalOwnerRepository.shared_view" class="level3">
+<h3 class="anchored" data-anchor-id="LocalOwnerRepository.shared_view">LocalOwnerRepository::shared_view</h3>
+<p><a href="https://github.com/rahuldave/gossil/blob/main/src/storage/repository.rs#L145" class="source-link">source</a></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span class="kw">pub</span> <span class="kw">fn</span> <span class="fu">shared_view</span>(<span class="op">&amp;</span><span class="kw">mut</span> <span class="va">self</span>) -&gt; SharedView<span class="op">&lt;</span><span class="op">&#x27;</span><span class="bu">_</span><span class="op">&gt;</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Select a restricted local shared view without minting a remote principal.</p>
+<section id="examples-1" class="level5">
+<h5 class="anchored" data-anchor-id="examples-1">Examples</h5>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span class="kw">fn</span> <span class="fu">restricted</span>(owner: <span class="kw">&amp;</span>mut gossil::storage::LocalOwnerRepository) {
     <span class="kw">let</span> _shared <span class="op">=</span> owner.shared_view();
 }</code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="sd-table">
@@ -182,22 +278,25 @@ must never be passed to a request merely because the server can open the file.</
 </section>
 <section id="LocalOwnerRepository.create" class="level3">
 <h3 class="anchored" data-anchor-id="LocalOwnerRepository.create">LocalOwnerRepository::create</h3>
-<p><a href="https://github.com/rahuldave/gossil/blob/main/src/storage/repository.rs#L159" class="source-link">source</a></p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span class="kw">pub</span> <span class="kw">async</span> <span class="kw">fn</span> <span class="fu">create</span>(
+<p><a href="https://github.com/rahuldave/gossil/blob/main/src/storage/repository.rs#L166" class="source-link">source</a></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span class="kw">pub</span> <span class="kw">async</span> <span class="kw">fn</span> <span class="fu">create</span>(
     path: impl <span class="bu">AsRef</span><span class="op">&lt;</span>Path<span class="op">&gt;</span>,
     options: CreateOptions<span class="op">&lt;</span><span class="op">&#x27;</span><span class="bu">_</span><span class="op">&gt;</span>,
 ) -&gt; <span class="bu">Result</span><span class="op">&lt;</span><span class="va">Self</span>, StorageError<span class="op">&gt;</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Create a complete repository in an exclusively created destination file.</p>
-<section id="examples-1" class="level5">
-<h5 class="anchored" data-anchor-id="examples-1">Examples</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span class="kw">async</span> <span class="kw">fn</span> <span class="fu">create</span>(path: <span class="kw">&amp;</span>std::path::Path, options: gossil::storage::CreateOptions<span class="op">&lt;</span><span class="op">&#x27;</span><span class="bu">_</span><span class="op">&gt;</span>) {
+<p>Create a catalog1 repository bound to an existing checkout directory.</p>
+<section id="examples-2" class="level5">
+<h5 class="anchored" data-anchor-id="examples-2">Examples</h5>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb11"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span class="kw">async</span> <span class="kw">fn</span> <span class="fu">create</span>(path: <span class="kw">&amp;</span>std::path::Path, options: gossil::storage::CreateOptions<span class="op">&lt;</span><span class="op">&#x27;</span><span class="bu">_</span><span class="op">&gt;</span>) {
     <span class="kw">let</span> owner <span class="op">=</span> gossil::storage::LocalOwnerRepository::create(path, options).<span class="cf">await</span>.unwrap();
     <span class="bu">drop</span>(owner);
 }</code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
-<section id="errors" class="level5">
-<h5 class="anchored" data-anchor-id="errors">Errors</h5>
-<p>Rejects an existing destination, invalid root/bindings, or any initialization failure.</p>
+<section id="errors-1" class="level5">
+<h5 class="anchored" data-anchor-id="errors-1">Errors</h5>
+<p>Rejects an existing destination, any <code>-journal</code>, <code>-wal</code> or <code>-shm</code> entry,
+invalid root/bindings, or any initialization failure. Sidecar observation
+failures retain their operating-system cause. Sidecar observations do not
+prevent concurrent pathname changes; callers must retain a stable local namespace.</p>
 <div class="sd-table">
 <table class="caption-top table">
 <thead>
@@ -211,7 +310,7 @@ must never be passed to a request merely because the server can open the file.</
 <tr>
 <td><code>path</code></td>
 <td>impl AsRef&lt;Path&gt;</td>
-<td>New database path; existing files are rejected.</td>
+<td>New native database path; existing destinations and recovery sidecars are rejected.</td>
 </tr>
 <tr>
 <td><code>options</code></td>
@@ -228,25 +327,77 @@ must never be passed to a request merely because the server can open the file.</
 </div>
 </section>
 </section>
+<section id="LocalOwnerRepository.initialize" class="level3">
+<h3 class="anchored" data-anchor-id="LocalOwnerRepository.initialize">LocalOwnerRepository::initialize</h3>
+<p><a href="https://github.com/rahuldave/gossil/blob/main/src/storage/repository.rs#L197" class="source-link">source</a></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb12"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span class="kw">pub</span> <span class="kw">async</span> <span class="kw">fn</span> <span class="fu">initialize</span>(
+    path: impl <span class="bu">AsRef</span><span class="op">&lt;</span>Path<span class="op">&gt;</span>,
+    options: InitializeOptions<span class="op">&lt;</span><span class="op">&#x27;</span><span class="bu">_</span><span class="op">&gt;</span>,
+) -&gt; <span class="bu">Result</span><span class="op">&lt;</span><span class="va">Self</span>, StorageError<span class="op">&gt;</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Initialize a native repository without registering a filesystem checkout.</p>
+<section id="examples-3" class="level5">
+<h5 class="anchored" data-anchor-id="examples-3">Examples</h5>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb13"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span class="kw">async</span> <span class="kw">fn</span> <span class="fu">initialize</span>(path: <span class="kw">&amp;</span>std::path::Path, options: gossil::storage::InitializeOptions<span class="op">&lt;</span><span class="op">&#x27;</span><span class="bu">_</span><span class="op">&gt;</span>) {
+    <span class="kw">let</span> owner <span class="op">=</span> gossil::storage::LocalOwnerRepository::initialize(path, options).<span class="cf">await</span>.unwrap();
+    <span class="bu">drop</span>(owner);
+}</code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="errors-2" class="level5">
+<h5 class="anchored" data-anchor-id="errors-2">Errors</h5>
+<p>Rejects invalid identities or administrator bytes before destination creation; rejects
+existing destinations/sidecars, invalid dates, limits and engine failures. Cleanup
+retains any possibly opened engine file and reports that uncertainty separately.</p>
+<div class="sd-table">
+<table class="caption-top table">
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>path</code></td>
+<td>impl AsRef&lt;Path&gt;</td>
+<td>New literal native filename; keep its namespace stable through engine cleanup.</td>
+</tr>
+<tr>
+<td><code>options</code></td>
+<td>InitializeOptions&lt;'_&gt;</td>
+<td>Explicit administrator, password, date, hash policy and finite limits.</td>
+</tr>
+<tr>
+<td>returns</td>
+<td>Result&lt;Self, StorageError&gt;</td>
+<td>An admitted owner of the canonical empty catalog4 repository. Private writes and checkout registration are unsupported in this scope. No environment variables, preference database or templates supply defaults.</td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+</section>
 <section id="LocalOwnerRepository.open" class="level3">
 <h3 class="anchored" data-anchor-id="LocalOwnerRepository.open">LocalOwnerRepository::open</h3>
-<p><a href="https://github.com/rahuldave/gossil/blob/main/src/storage/repository.rs#L296" class="source-link">source</a></p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span class="kw">pub</span> <span class="kw">async</span> <span class="kw">fn</span> <span class="fu">open</span>(
+<p><a href="https://github.com/rahuldave/gossil/blob/main/src/storage/repository.rs#L409" class="source-link">source</a></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb14"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span class="kw">pub</span> <span class="kw">async</span> <span class="kw">fn</span> <span class="fu">open</span>(
     path: impl <span class="bu">AsRef</span><span class="op">&lt;</span>Path<span class="op">&gt;</span>,
     admission_limits: AdmissionLimits,
 ) -&gt; <span class="bu">Result</span><span class="op">&lt;</span><span class="va">Self</span>, StorageError<span class="op">&gt;</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Open an existing complete repository under local operating-system authority.</p>
 <p>The durable repository and owner identities are read from this file rather
-than accepted as caller-selected capability strings.</p>
-<section id="examples-2" class="level5">
-<h5 class="anchored" data-anchor-id="examples-2">Examples</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span class="kw">async</span> <span class="kw">fn</span> <span class="fu">open</span>(path: <span class="kw">&amp;</span>std::path::Path, limits: gossil::storage::AdmissionLimits) {
+than accepted as caller-selected capability strings.
+Supports bound catalog1 and strictly empty catalog4 only, without migration.
+Catalog4 requires zero checkouts, one native root and empty remaining local tables.</p>
+<section id="examples-4" class="level5">
+<h5 class="anchored" data-anchor-id="examples-4">Examples</h5>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb15"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span class="kw">async</span> <span class="kw">fn</span> <span class="fu">open</span>(path: <span class="kw">&amp;</span>std::path::Path, limits: gossil::storage::AdmissionLimits) {
     <span class="kw">let</span> owner <span class="op">=</span> gossil::storage::LocalOwnerRepository::open(path, limits).<span class="cf">await</span>.unwrap();
     <span class="bu">drop</span>(owner);
 }</code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
-<section id="errors-1" class="level5">
-<h5 class="anchored" data-anchor-id="errors-1">Errors</h5>
+<section id="errors-3" class="level5">
+<h5 class="anchored" data-anchor-id="errors-3">Errors</h5>
 <p>Rejects missing policy, unsupported markers, corrupt bindings and engine errors.</p>
 <div class="sd-table">
 <table class="caption-top table">
@@ -280,23 +431,24 @@ than accepted as caller-selected capability strings.</p>
 </section>
 <section id="LocalOwnerRepository.put_private_file_content" class="level3">
 <h3 class="anchored" data-anchor-id="LocalOwnerRepository.put_private_file_content">LocalOwnerRepository::put_private_file_content</h3>
-<p><a href="https://github.com/rahuldave/gossil/blob/main/src/storage/repository.rs#L352" class="source-link">source</a></p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb11"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span class="kw">pub</span> <span class="kw">async</span> <span class="kw">fn</span> <span class="fu">put_private_file_content</span>(
+<p><a href="https://github.com/rahuldave/gossil/blob/main/src/storage/repository.rs#L469" class="source-link">source</a></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb16"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span class="kw">pub</span> <span class="kw">async</span> <span class="kw">fn</span> <span class="fu">put_private_file_content</span>(
     <span class="op">&amp;</span><span class="kw">mut</span> <span class="va">self</span>,
     native_name: <span class="kw">&amp;</span><span class="dt">str</span>,
     bytes: <span class="kw">&amp;</span>[<span class="dt">u8</span>],
     limits: Limits,
 ) -&gt; <span class="bu">Result</span><span class="op">&lt;</span>(), StorageError<span class="op">&gt;</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Store verified private file bytes, independently of artifact interpretation.</p>
-<section id="examples-3" class="level5">
-<h5 class="anchored" data-anchor-id="examples-3">Examples</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb12"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span class="kw">async</span> <span class="kw">fn</span> <span class="fu">put</span>(owner: <span class="kw">&amp;</span>mut gossil::storage::LocalOwnerRepository, hash: <span class="kw">&amp;</span><span class="dt">str</span>, bytes: <span class="kw">&amp;</span>[<span class="dt">u8</span>], limits: gossil::storage::Limits) {
+<section id="examples-5" class="level5">
+<h5 class="anchored" data-anchor-id="examples-5">Examples</h5>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb17"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span class="kw">async</span> <span class="kw">fn</span> <span class="fu">put</span>(owner: <span class="kw">&amp;</span>mut gossil::storage::LocalOwnerRepository, hash: <span class="kw">&amp;</span><span class="dt">str</span>, bytes: <span class="kw">&amp;</span>[<span class="dt">u8</span>], limits: gossil::storage::Limits) {
     owner.put_private_file_content(hash, bytes, limits).<span class="cf">await</span>.unwrap();
 }</code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
-<section id="errors-2" class="level5">
-<h5 class="anchored" data-anchor-id="errors-2">Errors</h5>
-<p>Rejects policy, hash, size, codec and limit errors, or required unresolved crosslinks.</p>
+<section id="errors-4" class="level5">
+<h5 class="anchored" data-anchor-id="errors-4">Errors</h5>
+<p>Rejects policy, hash, size, codec and limit errors, or required unresolved crosslinks.
+Private writes are unsupported for the initializer-only catalog4 scope.</p>
 <div class="sd-table">
 <table class="caption-top table">
 <thead>
@@ -334,22 +486,22 @@ than accepted as caller-selected capability strings.</p>
 </section>
 <section id="LocalOwnerRepository.read_content" class="level3">
 <h3 class="anchored" data-anchor-id="LocalOwnerRepository.read_content">LocalOwnerRepository::read_content</h3>
-<p><a href="https://github.com/rahuldave/gossil/blob/main/src/storage/repository.rs#L388" class="source-link">source</a></p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb13"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span class="kw">pub</span> <span class="kw">async</span> <span class="kw">fn</span> <span class="fu">read_content</span>(
+<p><a href="https://github.com/rahuldave/gossil/blob/main/src/storage/repository.rs#L524" class="source-link">source</a></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb18"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span class="kw">pub</span> <span class="kw">async</span> <span class="kw">fn</span> <span class="fu">read_content</span>(
     <span class="op">&amp;</span><span class="kw">mut</span> <span class="va">self</span>,
     native_name: <span class="kw">&amp;</span><span class="dt">str</span>,
     limits: Limits,
 ) -&gt; <span class="bu">Result</span><span class="op">&lt;</span><span class="bu">Vec</span><span class="op">&lt;</span><span class="dt">u8</span><span class="op">&gt;</span>, StorageError<span class="op">&gt;</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Read exact full content as the local owner using explicit finite limits.</p>
-<section id="examples-4" class="level5">
-<h5 class="anchored" data-anchor-id="examples-4">Examples</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb14"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span class="kw">async</span> <span class="kw">fn</span> <span class="fu">get</span>(owner: <span class="kw">&amp;</span>mut gossil::storage::LocalOwnerRepository, hash: <span class="kw">&amp;</span><span class="dt">str</span>, limits: gossil::storage::Limits) {
+<section id="examples-6" class="level5">
+<h5 class="anchored" data-anchor-id="examples-6">Examples</h5>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb19"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span class="kw">async</span> <span class="kw">fn</span> <span class="fu">get</span>(owner: <span class="kw">&amp;</span>mut gossil::storage::LocalOwnerRepository, hash: <span class="kw">&amp;</span><span class="dt">str</span>, limits: gossil::storage::Limits) {
     <span class="kw">let</span> bytes <span class="op">=</span> owner.read_content(hash, limits).<span class="cf">await</span>.unwrap();
     <span class="bu">drop</span>(bytes);
 }</code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
-<section id="errors-3" class="level5">
-<h5 class="anchored" data-anchor-id="errors-3">Errors</h5>
+<section id="errors-5" class="level5">
+<h5 class="anchored" data-anchor-id="errors-5">Errors</h5>
 <p>Rejects policy changes, unavailable/shunned content, corruption and exhausted limits.</p>
 <div class="sd-table">
 <table class="caption-top table">
@@ -384,28 +536,28 @@ than accepted as caller-selected capability strings.</p>
 </section>
 <section id="SharedView" class="level2">
 <h2 class="anchored" data-anchor-id="SharedView">struct SharedView</h2>
-<p><a href="https://github.com/rahuldave/gossil/blob/main/src/storage/repository.rs#L92" class="source-link">source</a></p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb15"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span class="kw">pub</span> <span class="kw">struct</span> SharedView<span class="op">&lt;</span><span class="op">&#x27;</span><span class="at">a</span><span class="op">&gt;</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><a href="https://github.com/rahuldave/gossil/blob/main/src/storage/repository.rs#L96" class="source-link">source</a></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb20"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span class="kw">pub</span> <span class="kw">struct</span> SharedView<span class="op">&lt;</span><span class="op">&#x27;</span><span class="at">a</span><span class="op">&gt;</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>A restricted shared view selected by a trusted local caller.
 This conveys no network authentication and has no route back to owner scope.</p>
 <section id="SharedView.read_content" class="level3">
 <h3 class="anchored" data-anchor-id="SharedView.read_content">SharedView::read_content</h3>
-<p><a href="https://github.com/rahuldave/gossil/blob/main/src/storage/repository.rs#L113" class="source-link">source</a></p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb16"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span class="kw">pub</span> <span class="kw">async</span> <span class="kw">fn</span> <span class="fu">read_content</span>(
+<p><a href="https://github.com/rahuldave/gossil/blob/main/src/storage/repository.rs#L117" class="source-link">source</a></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb21"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span class="kw">pub</span> <span class="kw">async</span> <span class="kw">fn</span> <span class="fu">read_content</span>(
     <span class="op">&amp;</span><span class="kw">mut</span> <span class="va">self</span>,
     native_name: <span class="kw">&amp;</span><span class="dt">str</span>,
     limits: Limits,
 ) -&gt; <span class="bu">Result</span><span class="op">&lt;</span><span class="bu">Vec</span><span class="op">&lt;</span><span class="dt">u8</span><span class="op">&gt;</span>, StorageError<span class="op">&gt;</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Read only content with supported committed public closure.</p>
-<section id="examples-5" class="level5">
-<h5 class="anchored" data-anchor-id="examples-5">Examples</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb17"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span class="kw">async</span> <span class="kw">fn</span> <span class="fu">shared</span>(owner: <span class="kw">&amp;</span>mut gossil::storage::LocalOwnerRepository, hash: <span class="kw">&amp;</span><span class="dt">str</span>, limits: gossil::storage::Limits) {
+<section id="examples-7" class="level5">
+<h5 class="anchored" data-anchor-id="examples-7">Examples</h5>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb22"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span class="kw">async</span> <span class="kw">fn</span> <span class="fu">shared</span>(owner: <span class="kw">&amp;</span>mut gossil::storage::LocalOwnerRepository, hash: <span class="kw">&amp;</span><span class="dt">str</span>, limits: gossil::storage::Limits) {
     <span class="kw">let</span> bytes <span class="op">=</span> owner.shared_view().read_content(hash, limits).<span class="cf">await</span>.unwrap();
     <span class="bu">drop</span>(bytes);
 }</code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
-<section id="errors-4" class="level5">
-<h5 class="anchored" data-anchor-id="errors-4">Errors</h5>
+<section id="errors-6" class="level5">
+<h5 class="anchored" data-anchor-id="errors-6">Errors</h5>
 <p>Missing and privately excluded names return the same unavailable error.
 Unsupported required public graphs, corruption and limits reject the operation.</p>
 <div class="sd-table">
@@ -441,8 +593,8 @@ Unsupported required public graphs, corruption and limits reject the operation.<
 </section>
 <section id="StorageError" class="level2">
 <h2 class="anchored" data-anchor-id="StorageError">struct StorageError</h2>
-<p><a href="https://github.com/rahuldave/gossil/blob/main/src/storage.rs#L25" class="source-link">source</a></p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb18"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span class="kw">pub</span> <span class="kw">struct</span> StorageError</code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><a href="https://github.com/rahuldave/gossil/blob/main/src/storage.rs#L30" class="source-link">source</a></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb23"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span class="kw">pub</span> <span class="kw">struct</span> StorageError</code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>An operation failure, with a separate checked-cleanup failure when present.</p>
 <div class="sd-table">
 <table class="caption-top table">
@@ -471,25 +623,26 @@ Unsupported required public graphs, corruption and limits reject the operation.<
 </section>
 <section id="LocalStore" class="level2">
 <h2 class="anchored" data-anchor-id="LocalStore">struct LocalStore</h2>
-<p><a href="https://github.com/rahuldave/gossil/blob/main/src/storage.rs#L137" class="source-link">source</a></p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb19"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span class="kw">pub</span> <span class="kw">struct</span> LocalStore</code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><a href="https://github.com/rahuldave/gossil/blob/main/src/storage.rs#L142" class="source-link">source</a></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb24"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span class="kw">pub</span> <span class="kw">struct</span> LocalStore</code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>A configured local database with exactly one unexposed connection.</p>
+<p>Implements <a href="https://doc.rust-lang.org/nightly/core/ops/drop/trait.Drop.html"><code>Drop</code></a>.</p>
 <section id="LocalStore.open" class="level3">
 <h3 class="anchored" data-anchor-id="LocalStore.open">LocalStore::open</h3>
-<p><a href="https://github.com/rahuldave/gossil/blob/main/src/storage.rs#L166" class="source-link">source</a></p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb20"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span class="kw">pub</span> <span class="kw">async</span> <span class="kw">fn</span> <span class="fu">open</span>(path: impl <span class="bu">AsRef</span><span class="op">&lt;</span>Path<span class="op">&gt;</span>) -&gt; <span class="bu">Result</span><span class="op">&lt;</span><span class="va">Self</span>, StorageError<span class="op">&gt;</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><a href="https://github.com/rahuldave/gossil/blob/main/src/storage.rs#L182" class="source-link">source</a></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb25"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span class="kw">pub</span> <span class="kw">async</span> <span class="kw">fn</span> <span class="fu">open</span>(path: impl <span class="bu">AsRef</span><span class="op">&lt;</span>Path<span class="op">&gt;</span>) -&gt; <span class="bu">Result</span><span class="op">&lt;</span><span class="va">Self</span>, StorageError<span class="op">&gt;</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Open and verify a local file database; never fall back to memory.
 Nonempty paths are literal native filenames, including <code>file:</code> and URI punctuation.
 Raw Unix filename bytes remain subject to the filesystem’s acceptance rules.</p>
-<section id="errors-5" class="level5">
-<h5 class="anchored" data-anchor-id="errors-5">Errors</h5>
+<section id="errors-7" class="level5">
+<h5 class="anchored" data-anchor-id="errors-7">Errors</h5>
 <p>Returns an error for invalid input, open, configuration or verification failure.
 An embedded NUL returns an error with a <a href="https://doc.rust-lang.org/nightly/alloc/ffi/c_str/struct.NulError.html"><code>std::ffi::NulError</code></a> source.
 Driver failures retain their original <a href="https://docs.rs/libsql/latest/libsql/errors/enum.Error.html"><code>libsql::Error</code></a> source.</p>
 </section>
-<section id="examples-6" class="level5">
-<h5 class="anchored" data-anchor-id="examples-6">Examples</h5>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb21"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span class="kw">use</span> gossil::storage::LocalStore;
+<section id="examples-8" class="level5">
+<h5 class="anchored" data-anchor-id="examples-8">Examples</h5>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb26"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span class="kw">use</span> gossil::storage::LocalStore;
 <span class="kw">let</span> <span class="kw">mut</span> store <span class="op">=</span> LocalStore::open(path).<span class="cf">await</span><span class="op">?</span>;
 <span class="fu">assert!</span>(<span class="op">!</span>store.is_poisoned());
 store.begin_write().<span class="cf">await</span><span class="op">?</span>.commit().<span class="cf">await</span><span class="op">?</span>;
@@ -521,8 +674,8 @@ store.begin_write().<span class="cf">await</span><span class="op">?</span>.rollb
 </section>
 <section id="LocalStore.is_poisoned" class="level3">
 <h3 class="anchored" data-anchor-id="LocalStore.is_poisoned">LocalStore::is_poisoned</h3>
-<p><a href="https://github.com/rahuldave/gossil/blob/main/src/storage.rs#L221" class="source-link">source</a></p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb22"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span class="kw">pub</span> <span class="kw">fn</span> <span class="fu">is_poisoned</span>(<span class="op">&amp;</span><span class="va">self</span>) -&gt; <span class="dt">bool</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><a href="https://github.com/rahuldave/gossil/blob/main/src/storage.rs#L259" class="source-link">source</a></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb27"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span class="kw">pub</span> <span class="kw">fn</span> <span class="fu">is_poisoned</span>(<span class="op">&amp;</span><span class="va">self</span>) -&gt; <span class="dt">bool</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Report whether unexpected destruction or failed cleanup prevents reuse.</p>
 <div class="sd-table">
 <table class="caption-top table">
@@ -545,17 +698,17 @@ store.begin_write().<span class="cf">await</span><span class="op">?</span>.rollb
 </section>
 <section id="LocalStore.begin_write" class="level3">
 <h3 class="anchored" data-anchor-id="LocalStore.begin_write">LocalStore::begin_write</h3>
-<p><a href="https://github.com/rahuldave/gossil/blob/main/src/storage.rs#L238" class="source-link">source</a></p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb23"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span class="kw">pub</span> <span class="kw">async</span> <span class="kw">fn</span> <span class="fu">begin_write</span>(<span class="op">&amp;</span><span class="kw">mut</span> <span class="va">self</span>) -&gt; <span class="bu">Result</span><span class="op">&lt;</span>WriteTransaction<span class="op">&lt;</span><span class="op">&#x27;</span><span class="bu">_</span><span class="op">&gt;</span>, StorageError<span class="op">&gt;</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><a href="https://github.com/rahuldave/gossil/blob/main/src/storage.rs#L276" class="source-link">source</a></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb28"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span class="kw">pub</span> <span class="kw">async</span> <span class="kw">fn</span> <span class="fu">begin_write</span>(<span class="op">&amp;</span><span class="kw">mut</span> <span class="va">self</span>) -&gt; <span class="bu">Result</span><span class="op">&lt;</span>WriteTransaction<span class="op">&lt;</span><span class="op">&#x27;</span><span class="bu">_</span><span class="op">&gt;</span>, StorageError<span class="op">&gt;</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Begin IMMEDIATE before returning the uniquely borrowed mutation owner.</p>
-<section id="errors-6" class="level5">
-<h5 class="anchored" data-anchor-id="errors-6">Errors</h5>
+<section id="errors-8" class="level5">
+<h5 class="anchored" data-anchor-id="errors-8">Errors</h5>
 <p>Returns an error for a poisoned store or failed BEGIN; failed BEGIN poisons it.</p>
 </section>
-<section id="examples-7" class="level5">
-<h5 class="anchored" data-anchor-id="examples-7">Examples</h5>
+<section id="examples-9" class="level5">
+<h5 class="anchored" data-anchor-id="examples-9">Examples</h5>
 <p>A second owner cannot borrow the store while the first owner remains active.</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb24"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span class="kw">async</span> <span class="kw">fn</span> <span class="fu">overlapping</span>(store: <span class="kw">&amp;</span>mut gossil::storage::LocalStore) {
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb29"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span class="kw">async</span> <span class="kw">fn</span> <span class="fu">overlapping</span>(store: <span class="kw">&amp;</span>mut gossil::storage::LocalStore) {
     <span class="kw">let</span> first <span class="op">=</span> store.begin_write().<span class="cf">await</span>.unwrap();
     <span class="kw">let</span> second <span class="op">=</span> store.begin_write().<span class="cf">await</span>.unwrap();
     first.rollback().<span class="cf">await</span>.unwrap();
@@ -583,27 +736,27 @@ store.begin_write().<span class="cf">await</span><span class="op">?</span>.rollb
 </section>
 <section id="WriteTransaction" class="level2">
 <h2 class="anchored" data-anchor-id="WriteTransaction">struct WriteTransaction</h2>
-<p><a href="https://github.com/rahuldave/gossil/blob/main/src/storage.rs#L268" class="source-link">source</a></p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb25"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span class="kw">pub</span> <span class="kw">struct</span> WriteTransaction<span class="op">&lt;</span><span class="op">&#x27;</span><span class="at">a</span><span class="op">&gt;</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><a href="https://github.com/rahuldave/gossil/blob/main/src/storage.rs#L306" class="source-link">source</a></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb30"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span class="kw">pub</span> <span class="kw">struct</span> WriteTransaction<span class="op">&lt;</span><span class="op">&#x27;</span><span class="at">a</span><span class="op">&gt;</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Own an exclusive write boundary without exposing a connection, statement or lazy result.</p>
-<section id="examples-8" class="level4">
-<h4 class="anchored" data-anchor-id="examples-8">Examples</h4>
+<section id="examples-10" class="level4">
+<h4 class="anchored" data-anchor-id="examples-10">Examples</h4>
 <p>The raw connection and arbitrary SQL helpers are private to this module.</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb26"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span class="kw">fn</span> <span class="fu">raw_alias</span>(owner: <span class="kw">&amp;</span>gossil::storage::WriteTransaction<span class="op">&lt;</span><span class="op">&#x27;</span><span class="bu">_</span><span class="op">&gt;</span>) {
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb31"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span class="kw">fn</span> <span class="fu">raw_alias</span>(owner: <span class="kw">&amp;</span>gossil::storage::WriteTransaction<span class="op">&lt;</span><span class="op">&#x27;</span><span class="bu">_</span><span class="op">&gt;</span>) {
     <span class="kw">let</span> alias <span class="op">=</span> owner.connection();
 }</code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb27"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span class="kw">async</span> <span class="kw">fn</span> <span class="fu">arbitrary_sql</span>(owner: <span class="kw">&amp;</span>mut gossil::storage::WriteTransaction<span class="op">&lt;</span><span class="op">&#x27;</span><span class="bu">_</span><span class="op">&gt;</span>) {
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb32"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span class="kw">async</span> <span class="kw">fn</span> <span class="fu">arbitrary_sql</span>(owner: <span class="kw">&amp;</span>mut gossil::storage::WriteTransaction<span class="op">&lt;</span><span class="op">&#x27;</span><span class="bu">_</span><span class="op">&gt;</span>) {
     owner.execute(<span class="st">&quot;</span><span class="st">DELETE FROM tasks</span><span class="st">&quot;</span>).<span class="cf">await</span>.unwrap();
 }</code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Implements <a href="https://doc.rust-lang.org/nightly/core/ops/drop/trait.Drop.html"><code>Drop</code></a>.</p>
 </section>
 <section id="WriteTransaction.commit" class="level3">
 <h3 class="anchored" data-anchor-id="WriteTransaction.commit">WriteTransaction::commit</h3>
-<p><a href="https://github.com/rahuldave/gossil/blob/main/src/storage.rs#L454" class="source-link">source</a></p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb28"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span class="kw">pub</span> <span class="kw">async</span> <span class="kw">fn</span> <span class="fu">commit</span>(<span class="va">self</span>) -&gt; <span class="bu">Result</span><span class="op">&lt;</span>(), StorageError<span class="op">&gt;</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><a href="https://github.com/rahuldave/gossil/blob/main/src/storage.rs#L492" class="source-link">source</a></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb33"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span class="kw">pub</span> <span class="kw">async</span> <span class="kw">fn</span> <span class="fu">commit</span>(<span class="va">self</span>) -&gt; <span class="bu">Result</span><span class="op">&lt;</span>(), StorageError<span class="op">&gt;</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Commit all changes, or reject a rollback-only owner with its original error.</p>
-<section id="errors-7" class="level5">
-<h5 class="anchored" data-anchor-id="errors-7">Errors</h5>
+<section id="errors-9" class="level5">
+<h5 class="anchored" data-anchor-id="errors-9">Errors</h5>
 <p>Preserves operation and cleanup failures separately; uncertain connections are discarded.</p>
 <div class="sd-table">
 <table class="caption-top table">
@@ -627,11 +780,11 @@ store.begin_write().<span class="cf">await</span><span class="op">?</span>.rollb
 </section>
 <section id="WriteTransaction.rollback" class="level3">
 <h3 class="anchored" data-anchor-id="WriteTransaction.rollback">WriteTransaction::rollback</h3>
-<p><a href="https://github.com/rahuldave/gossil/blob/main/src/storage.rs#L475" class="source-link">source</a></p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb29"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span class="kw">pub</span> <span class="kw">async</span> <span class="kw">fn</span> <span class="fu">rollback</span>(<span class="va">self</span>) -&gt; <span class="bu">Result</span><span class="op">&lt;</span>(), StorageError<span class="op">&gt;</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><a href="https://github.com/rahuldave/gossil/blob/main/src/storage.rs#L513" class="source-link">source</a></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb34"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span class="kw">pub</span> <span class="kw">async</span> <span class="kw">fn</span> <span class="fu">rollback</span>(<span class="va">self</span>) -&gt; <span class="bu">Result</span><span class="op">&lt;</span>(), StorageError<span class="op">&gt;</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Explicitly roll back and restore the connection only after checked cleanup.</p>
-<section id="errors-8" class="level5">
-<h5 class="anchored" data-anchor-id="errors-8">Errors</h5>
+<section id="errors-10" class="level5">
+<h5 class="anchored" data-anchor-id="errors-10">Errors</h5>
 <p>Returns the original operation error if one occurred, with any cleanup error attached.</p>
 <div class="sd-table">
 <table class="caption-top table">

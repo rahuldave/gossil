@@ -3,10 +3,10 @@ and how to connect tasks to exact file versions. Plan the history around a task,
 its plan and the evidence behind a decision.
 Git remains the source-code authority. Gossil is designed to give the
 surrounding agent work its own history and sharing rules.</p>
-<p>Most of this page describes planned repository workflows on current <code>main</code>.
-That CLI currently has
-<a href="cli.html">three file-delta diagnostics</a>. The Rust library already supports
-<a href="native-storage.html">empty-root creation and bounded private content</a>.
+<p>Most of this page describes planned repository workflows. The source CLI supports
+<a href="cli.html">empty repository initialization and three file-delta diagnostics</a>.
+Initialization creates no checkout and selects no files. The Rust library supports
+<a href="native-storage.html">checkout-free initialization and bound private content</a>.
 That storage foundation does not yet provide ordinary file check-ins or issue
 management. The Fossil references teach the inherited workflow; their commands
 are not Gossil aliases.</p>
@@ -17,8 +17,9 @@ This unmerged preview is not a release, and full qualification is incomplete.
 Use a disposable folder and copies of files, and keep Git
 as the source authority.</p>
 <p>These commands require that preview’s installed <code>gos</code> or <code>gossil</code> executable.
-Building current <code>main</code> does not enable them. The generated Rust API on this
-site describes <code>main</code>, not the preview’s additional storage methods.</p>
+The source CLI shares the <code>init</code> spelling, but does not support the preview’s
+checkout or file-history commands. The generated Rust API on this site does not
+describe the preview’s additional storage methods.</p>
 <p>Start with an empty scratch checkout. Keep the repository database outside it:</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode sh code-with-copy"><code class="sourceCode sh"><span class="va">trial</span><span class="op">=</span><span class="kw">$(</span>mktemp -d /tmp/gossil-preview.XXXXXX<span class="kw">)</span>
 mkdir -p <span class="st">&quot;</span><span class="va">$trial</span><span class="st">/work/app/.agent</span><span class="st">&quot;</span> <span class="st">&quot;</span><span class="va">$trial</span><span class="st">/work/service/.agent</span><span class="st">&quot;</span>
@@ -289,7 +290,7 @@ output path. Compare the restored bytes before replacing a file.</p>
 <p>Keep Git as the source authority and plan a small explicit selection of agent
 files for Gossil. Next, try the current delta tutorial, or use disposable files
 for the installed preview above. Use this workflow guide to choose roots and
-scope before repository commands arrive in <code>main</code>. For integrated
+scope before checkout and file-history commands ship in the source CLI. For integrated
 review, retain the file head and complete issue boundaries together.</p>
 </section>
 <nav class="page-navigation"><div class="nav-page nav-page-previous"><a href="cli.html" class="pagination-link"><i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">CLI reference</span></a></div><div class="nav-page nav-page-next"><a href="compare-with-git.html" class="pagination-link"><span class="nav-page-text">Compare Gossil with Git</span> <i class="bi bi-arrow-right-short"></i></a></div></nav></main></div></body></html>

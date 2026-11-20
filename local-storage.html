@@ -5,6 +5,16 @@ at a time. Its low-level lifecycle API also supports the validated
 and implements empty-root initialization and bounded private content operations.
 Opening that higher-level repository validates its stored root and authority metadata.
 Migration and broader adapters remain unimplemented.</p>
+<p>Both <a href="api/storage.html#LocalOwnerRepository.create"><code>LocalOwnerRepository::create</code></a> and <a href="api/storage.html#LocalOwnerRepository.initialize"><code>LocalOwnerRepository::initialize</code></a> refuse existing <code>-journal</code>, <code>-wal</code> and <code>-shm</code>
+entries beside the destination before creating the database. They preserve those
+entries, including dangling symlinks and directories. Observation failures retain
+the operating-system cause. The checks append literal native filename suffixes.
+They observe the namespace before creation and again before SQLite entry.</p>
+<p>Callers must keep that namespace stable through engine cleanup. The constructors
+observe regular-file identity at separate boundaries; these observations do not
+establish atomic binding to an engine handle. Checkout-free initialization retains
+a failed main file if the engine might have opened it or COMMIT was attempted.
+It reports cleanup uncertainty separately from the first operation error.</p>
 <section id="open-and-terminate-a-write" class="level2">
 <h2 class="anchored" data-anchor-id="open-and-terminate-a-write">Open and terminate a write</h2>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span class="kw">use</span> gossil::storage::{LocalStore, StorageError};

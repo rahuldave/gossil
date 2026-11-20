@@ -69,8 +69,14 @@ more storage rules. See the <a href="artifact-parser.html">parser guide</a>.</p>
 A transaction must commit or roll back before the connection returns to the
 store. The public interface does not expose arbitrary SQL.</p>
 <p><a href="api/storage.html#LocalOwnerRepository"><code>LocalOwnerRepository</code></a> initializes a complete empty public root.
-It also supports bounded private content operations. The empty root is a
-check-in with no files. A private content write does not create a check-in that contains files.</p>
+Its <code>initialize</code> constructor creates a repository without a checkout. The
+<a href="cli.html#initialize-a-repository"><code>vcs init</code> command</a> calls this constructor,
+generates identities and a password, and selects a default administrator from
+the environment. The API requires those values explicitly. Its <a href="api/delta.html#create"><code>create</code></a>
+constructor binds an existing checkout directory.</p>
+<p>Private content writes require the bound
+catalog1 repository and refuse the initializer-only catalog4 repository. The empty
+root is a check-in with no files. A private content write does not create a check-in that contains files.</p>
 <p>Admission is the validation of the stored root required before repository
 operations. <a href="api/storage.html#SharedView"><code>SharedView</code></a> restricts access to public content that passed this
 validation. Read and write access to the database file through the operating
