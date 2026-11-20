@@ -11,16 +11,29 @@ That result does not mean the inherited Fossil suites pass.</p>
 <h2 class="anchored" data-anchor-id="local-prerequisites">Local prerequisites</h2>
 <p>Install Rust with Cargo, Git, Just and uv on <code>PATH</code> before using the recipes.
 Rust builds the runner, Just runs <code>Justfile</code> recipes, and uv runs the installed
-workflow tools. <code>just setup</code> fetches Cargo dependencies. <code>just install --check</code>
-checks the saved workflow installation rather than supplying native test tools.</p>
-<p>This checkout exposes Tcl 8.6.18 and Fossil 2.29 through <code>.jlog/bin</code>.
-The Fossil binary is revision <code>7e8ecf0ce4</code>, with TLS and FUSE disabled.
-These ignored tools are local prerequisites. A fresh clone does not acquire
-them, so continuous integration from a fresh clone remains unproved.</p>
-<p>Supply the pinned Fossil source and native tools yourself before running
-reference suites. The repository has no automated acquisition procedure.
-The user temporarily permitted the local Tcl installation to use shared
-Homebrew storage rather than keeping all native dependencies inside the checkout.</p>
+workflow tools. <code>just setup</code> supplies the Linux reference tools and fetches Cargo
+dependencies. <code>just install --check</code> checks the saved workflow installation.</p>
+<p>The required references are Tcl 8.6.18 and Fossil 2.29 at revision
+<code>7e8ecf0ce4</code>, with TLS and FUSE disabled. On Linux, <code>just setup</code> builds these
+tools from the archives pinned in <code>evidence/reference-tools.json</code>.
+It needs a C compiler, Make, zlib development headers and CA certificates.
+The Tcl installation retains its shell, shared library and core runtime scripts.</p>
+<p>Verified tools become available through ignored <code>.jlog/bin</code> links after the
+complete installation is published. Its receipt retains source identities,
+configure flags and binary hashes. Repeated setup checks and reuses that installation.
+Changed cache bytes and unknown tool paths fail without replacement.
+Worktrees can check and reuse shared managed references read-only when their
+source receipt, binary hashes and runtime observations match.</p>
+<p>On other hosts, setup checks and keeps the existing reference tools.
+Supply them before setup if they are absent. The current macOS tools remain
+the existing Tcl installation in Homebrew storage and the pinned local Fossil build.
+Setup does not adopt those external tools into its managed Linux installation.</p>
+<p>The read-only pull-request release check runs <code>just setup</code> before the full
+<code>just check</code>. Only a successful push to <code>main</code> can run its source-tag job.
+Local Linux native-tool controls and Python installer controls are separate
+from Rust coverage and the full Rust suite in CI.
+The <a href="https://github.com/rahuldave/gossil/blob/main/evidence/reference-tools-linux-20261120.json">bounded native setup receipt</a>
+records the executed Linux scope.</p>
 </section>
 <section id="run-a-suite" class="level2">
 <h2 class="anchored" data-anchor-id="run-a-suite">Run a suite</h2>
@@ -277,8 +290,8 @@ under <code>evidence/baselines</code> for classified results and limits.</p>
 </section>
 <section id="recommendations" class="level2">
 <h2 class="anchored" data-anchor-id="recommendations">Recommendations</h2>
-<p>To run a suite, use an explicit configuration and retain failed results.
-For development, finish the native-tool acquisition contract and run every
-required reference build configuration before claiming inherited compatibility.</p>
+<p>Use <code>just setup</code> before the checks, then run suites with explicit configurations
+and retain failed results. Next, run every required reference build configuration
+before claiming inherited compatibility.</p>
 </section>
 <nav class="page-navigation"><div class="nav-page nav-page-previous"><a href="development-plan.html" class="pagination-link"><i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">Development and contributing</span></a></div><div class="nav-page nav-page-next"></div></nav></main></div></body></html>

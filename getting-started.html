@@ -13,18 +13,22 @@ file and issue workflows.</p>
 <a href="https://github.com/rahuldave/jlog#readme"><code>jlog</code> command recorder</a>.
 These tools must be available on <code>PATH</code>. Rust builds also need the native
 compiler and platform development tools used by Cargo dependencies.
+Linux setup also requires Make, zlib development headers and CA certificates
+to build the pinned Tcl and Fossil references. On other hosts, supply the
+<a href="conformance.html#local-prerequisites">reference prerequisites</a> before setup.
 The commands below use a POSIX shell, such as the default shell on macOS or Linux.</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode sh code-with-copy"><code class="sourceCode sh">git clone https://github.com/rahuldave/gossil.git
 <span class="bu">cd</span> gossil
 just setup</code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p><code>just setup</code> fetches the Cargo dependencies.
+<p><code>just setup</code> supplies the Linux references or checks the existing tools on other
+hosts, then fetches the Cargo dependencies.
 <code>just gossil</code> then builds and runs the source executable through <code>jlog</code> and
-Cargo. You do not need a globally installed <code>gossil</code> or a Fossil executable.
+Cargo. You do not need a globally installed <code>gossil</code> executable.
 The first build can take longer than later calls.</p>
 <p>The example builds from source. Keep the checkout open in
 this shell for the following commands. The
 <a href="development-plan.html#contributor-setup">contributor setup</a> is for people who
-also need the optional workflow packages and reference-test tools.</p>
+also need the optional workflow packages and verification guidance.</p>
 </section>
 <section id="create-a-delta" class="level2">
 <h2 class="anchored" data-anchor-id="create-a-delta">Create a delta</h2>

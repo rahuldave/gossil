@@ -56,9 +56,9 @@ Their owning packages are <code>jnterfaces</code>, <code>jnprofile-rust</code>,
 Use <code>SKILL_PACKAGES_DIR</code> to select another package location.</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode sh code-with-copy"><code class="sourceCode sh">just setup
 just install --check</code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p><code>just setup</code> fetches Cargo dependencies. <code>just install</code> refreshes the saved tool
-selection from those companion packages. Neither command acquires the pinned
-Fossil source or local Tcl and Fossil binaries.
+<p><code>just setup</code> supplies the pinned Linux Tcl and Fossil references, or checks the
+existing tools on other hosts, then fetches Cargo dependencies.
+<code>just install</code> refreshes the saved tool selection from those companion packages.
 The <a href="conformance.html#local-prerequisites">runner guide</a> describes those prerequisites.</p>
 <p>Read <code>AGENTS.md</code> before changing the repository. Follow the installed Gest
 workflow for task ownership, tag classification, dependency impact and review.
@@ -76,7 +76,9 @@ just doctests
 just docstring-check
 just docs-check
 just docs-build</code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p><code>just test</code> and <code>just integration</code> use the installed coverage workflow.
+<p><code>just test</code> first runs nine focused Python installer controls, then runs the Rust
+unit tests through the installed coverage workflow. <code>just integration</code> uses that
+Rust coverage workflow. Its reports do not measure Python installer coverage.
 Keep failed, blocked, skipped and disabled-feature observations distinct from
 passes. Installed tool copies and hook files do not prove actual executions.
 Complete the required checks and independent review before delivery to <code>main</code>.</p>
