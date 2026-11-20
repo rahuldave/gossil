@@ -22,6 +22,8 @@ permissions:
 jobs:
   check:
     runs-on: ubuntu-latest
+    env:
+      RUSTUP_TOOLCHAIN: stable
     steps:
       # The whole history and the tags, for the step release-check of just check.
       - uses: actions/checkout@v4
@@ -42,6 +44,12 @@ jobs:
       - name: Install Gest
         # The tasker role declares this provider in skill-package.json.
         run: cargo install --locked --git https://github.com/rahuldave/gest gest
+      - name: Install coverage prerequisites
+        run: |
+          rustup component add llvm-tools-preview --toolchain stable
+          cargo +stable install --locked cargo-llvm-cov@0.9.1
+      - name: Install pinned rustdoc JSON generator
+        run: rustup toolchain install nightly-2026-11-12 --profile minimal
       - name: Check
         run: just check
   release:
