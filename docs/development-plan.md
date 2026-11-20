@@ -98,8 +98,9 @@ generation. Local rendering does not establish a successful deployment.
 
 ## Maintain the bundled provider
 
-The root Cargo patch selects the complete `libsql-ffi` 0.9.30 archive under
-`vendor/libsql-ffi`. Its adapted date conversion includes `<stdint.h>` itself
+The root Cargo patch selects the complete `libsql-ffi` 0.10.0 archive under
+`vendor/libsql-ffi`. The root dependency and lockfile also pin `libsql` and
+`libsql-sys` to 0.10.0. Its adapted date conversion includes `<stdint.h>` itself
 because it uses `UINT64_C`. The upstream build script does not define
 `HAVE_STDINT_H` or `HAVE_INTTYPES_H` for the core build.
 
@@ -110,12 +111,18 @@ just libsql-vendor-check
 just libsql-vendor-test
 just libsql-provider-compile
 just libsql-provider-dates
+cargo test --locked --test libsql_connection_lifecycle
 ```
 
-The compile regression builds the complete adapted C source with the core feature
-flags and both optional header defines unset. On Linux it also reconstructs the
-exact previous adapted source and requires its integer initializers to fail.
-macOS skips that negative control because its transitive headers supply the macro.
+The compile controls build the complete adapted C source and check version 2 of
+the write-ahead log (WAL) interface, including `xSavepointForget`. The core build
+keeps both optional integer-header defines unset. Linux controls retain the
+historical 0.9.30 missing-header failure and test the current integer-header requirement.
+macOS skips those two negative controls because its headers supply the macro.
+A separate negative control removes `<math.h>` before the date conversion code.
+
+The lifecycle tests check connection destruction, retained handles and database isolation.
+They do not establish memory safety through allocator or sanitizer diagnostics.
 The date recipe runs the retained finite date tests through the bundled Rust provider
 without coverage instrumentation.
 
@@ -125,10 +132,16 @@ A successful local macOS run does not establish a Linux pass or a Pages deployme
 
 For regeneration, supply the pinned original registry source and native Fossil
 source to `scripts/regenerate-libsql.py ORIGINAL NATIVE NEW_OUTPUT`.
-The script verifies both input hashes, all eight patch hunks and the output hash.
+The script verifies both input hashes, all seven patch hunks and the output hash.
 Keep canonical baselines unchanged. Review the source diff before updating the
 adapted patch, source identity and affected manifest receipts together.
 The provenance record is `evidence/libsql-provider/provenance.json`.
+
+The seven hunks do not count semantic adaptations. The mapping in
+`evidence/libsql-provider/upgrade-0.10/adaptation-map.json` accounts for all eight
+old hunks. SQLite 3.47.0 already includes the negative Gregorian century fix.
+The signed-year change retains the official floor and timezone control flow.
+Earlier provider reports describe 0.9.30 and do not qualify the upgraded provider.
 
 ## Evidence archive
 

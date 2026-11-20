@@ -15,6 +15,7 @@
 /vendor/libsql-ffi/** -whitespace
 # Preserve literal reviewed patch context and captured command-output bytes.
 /evidence/libsql-provider/adapted.patch -whitespace
+/evidence/libsql-provider/upgrade-0.10/adapted-0.9.30.patch -whitespace
 /evidence/libsql-provider/fossil-configure.stdout -whitespace
 /evidence/libsql-provider/product-red.stdout -whitespace
 

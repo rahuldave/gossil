@@ -8,10 +8,10 @@ import hashlib
 from pathlib import Path
 import re
 
-ORIGINAL = "d9791dc493f043172d75c4fe6ef48307db6534c98f2106c843551ca5cbfa2912"
+ORIGINAL = "0eb52e017a09ddb955a7fbaa5c2e5c39ed238f7480ec485e45f64fbb624ee7fb"
 NATIVE = "fa1ca7a8ac45af89632ab480a3133556a48120fc76bffdd2d5cbb54cfb2e7ab0"
-PATCH = "b6fa14773869e4f222e53b4180ec03cf35d619efe25cdc6d457cbb2a41218db0"
-OUTPUT = "84808835ee823cc6ad4fe14267f6a88ae3077fd877b3fd80007fbb7ff00f9416"
+PATCH = "613b3fbf276cfbdb5d0010f3d09e271c0bfbc1a115d72f387a8ac38beb8bd19d"
+OUTPUT = "78516943f8216206dd48091daa8b69aea172b5090c878e12d8dcba6cd445c072"
 
 
 def checked(path, expected):
@@ -25,7 +25,7 @@ def checked(path, expected):
 
 
 def apply(original, patch):
-    """Apply exactly eight reviewed unified hunks with exact old/new counts."""
+    """Apply exactly seven reviewed unified hunks with exact old/new counts."""
     lines = original.decode("utf-8").splitlines(keepends=True)
     chunks = patch.decode("utf-8").splitlines(keepends=True)
     if chunks[:2] != ["--- a/bundled/src/sqlite3.c\n", "+++ b/bundled/src/sqlite3.c\n"]:
@@ -60,7 +60,7 @@ def apply(original, patch):
         if (old_seen, new_seen) != (old_count, new_count):
             raise ValueError("patch substitution count mismatch")
         hunks += 1
-    if hunks != 8:
+    if hunks != 7:
         raise ValueError("wrong patch hunk count")
     output.extend(lines[cursor:])
     data = "".join(output).encode("utf-8")

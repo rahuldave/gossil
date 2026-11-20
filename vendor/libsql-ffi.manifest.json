@@ -2,25 +2,25 @@
   "schema": 1,
   "identity": {
     "crate": "libsql-ffi",
-    "version": "0.9.30",
-    "archive_sha256": "0be1da6f123ceb2cd23f469883415cab9ee963286a85d61e22afb8b12e15e681",
-    "crate_vcs": "0653c5788d77ef16a97c56ff3e9fdc11717a72d9",
-    "original_source_sha256": "d9791dc493f043172d75c4fe6ef48307db6534c98f2106c843551ca5cbfa2912",
+    "version": "0.10.0",
+    "archive_sha256": "f232292810b6298d17466b59bf8077d075fb016d89c281ca9dc968ea4a3b9d03",
+    "crate_vcs": "d8bc862d20bedc72945a1da27c8b7045414c0261",
+    "original_source_sha256": "0eb52e017a09ddb955a7fbaa5c2e5c39ed238f7480ec485e45f64fbb624ee7fb",
     "native_source_sha256": "fa1ca7a8ac45af89632ab480a3133556a48120fc76bffdd2d5cbb54cfb2e7ab0",
-    "patched_source_sha256": "84808835ee823cc6ad4fe14267f6a88ae3077fd877b3fd80007fbb7ff00f9416"
+    "patched_source_sha256": "78516943f8216206dd48091daa8b69aea172b5090c878e12d8dcba6cd445c072"
   },
   "files": {
     ".cargo_vcs_info.json": {
       "length": 104,
-      "sha256": "cf48a893f10eb872ff85a81632be926ad5b71f2be0f04e17205b1530263b8fde"
+      "sha256": "bb240b384cdcd7007f812f67fd7ec50feb0e7ddbe905daa0aaabe6db9353a6ea"
     },
     "Cargo.lock": {
-      "length": 54164,
-      "sha256": "a3d3a5b3073afac17f5d1ce4f0193605a8ac2924e76ff8be1913335d4a0afd6d"
+      "length": 54581,
+      "sha256": "a70e9cf3457a1841baeffde03a069900056badb4b158604369876c5cfcb429c9"
     },
     "Cargo.toml": {
-      "length": 1963,
-      "sha256": "8acad992eaecb51bb44806dd481e4df9210b1202cc642769f00e8f60fcaca387"
+      "length": 1978,
+      "sha256": "3ef64a89ac6b04cf38adf80487b74e68cd9c0bcd900243b4f72b1fa3aec78c98"
     },
     "Cargo.toml.orig": {
       "length": 1318,
@@ -29,6 +29,10 @@
     "build.rs": {
       "length": 24910,
       "sha256": "452e349bbcfcc4367565352650341eea33a0a2492d90f4709ca4ce3a843cd2ed"
+    },
+    "bundled/SQLite3MultipleCiphers/.editorconfig": {
+      "length": 301,
+      "sha256": "f755120a439683e9570e7afbe97542b2116ebfd9d89e82038cc3602d8dd75860"
     },
     "bundled/SQLite3MultipleCiphers/.gitignore": {
       "length": 671,
@@ -39,16 +43,16 @@
       "sha256": "7993bb8d5fc91508ec8cf82acf1e74ea8b6f9ae6b066c53c6d8dac2f1c72ece2"
     },
     "bundled/SQLite3MultipleCiphers/CHANGELOG.md": {
-      "length": 14480,
-      "sha256": "993e76f2e20781baaf1ee7eea3f64b00637099f42b73ce18b259183ee25aa984"
+      "length": 16810,
+      "sha256": "0ae83934d0febaf76d4b34ee66ab115541df11cac450953909f5047049f92cc2"
     },
     "bundled/SQLite3MultipleCiphers/CMakeLists.txt": {
-      "length": 15642,
-      "sha256": "d59e686419ab771acefa1db2028ca23c6cce4c875025b2784fa8d286b5de2f61"
+      "length": 15405,
+      "sha256": "c1949f298e436218b8e3e9121a0a4bc445f0e266c95aba884bff712e619e52cb"
     },
     "bundled/SQLite3MultipleCiphers/LICENSE": {
       "length": 1074,
-      "sha256": "4cc2340ffda5a4533859b1a8766d0865cf0732e1566236dfa9f3565bea6d75db"
+      "sha256": "ef17378697b38c803a91cd82430dac4be3d6e610c3569ddb3aa547d8d084f983"
     },
     "bundled/SQLite3MultipleCiphers/LICENSE.spdx": {
       "length": 205,
@@ -56,7 +60,7 @@
     },
     "bundled/SQLite3MultipleCiphers/Makefile.am": {
       "length": 5598,
-      "sha256": "e007afc8daafad365e3c4bd1fcfc25f871f0add1333180d67cc51deaf49319e0"
+      "sha256": "11e80c0be031687e323b36809f253871c202c73c58f33315d8645c003cc5e039"
     },
     "bundled/SQLite3MultipleCiphers/admin/build-aux/compile": {
       "length": 7333,
@@ -140,27 +144,27 @@
     },
     "bundled/SQLite3MultipleCiphers/configure.ac": {
       "length": 5783,
-      "sha256": "101bfd81ca87ea9db0e1aeffb090e49b58f63bb039151a29185bbafb59556036"
+      "sha256": "0171526f404738fe78f700e2d3e8ad955c361cee63a4af185959b0ef2d7c2ac8"
     },
     "bundled/SQLite3MultipleCiphers/premake5.lua": {
-      "length": 14599,
-      "sha256": "7ce3a0415b274844276255df72440e7258fca856bb9c587339d9e5279251e721"
+      "length": 14287,
+      "sha256": "99c80a3d2c72371ae254f33750f94785238ce7b78e439a3fa45e74b8f14d914c"
     },
     "bundled/SQLite3MultipleCiphers/readme.md": {
-      "length": 2653,
-      "sha256": "451308d2943483efcd506effdde8d5362a25a81a844beb37ef7c034a15ceb123"
+      "length": 2829,
+      "sha256": "fd2e51292e7be006a3ed781422045701f532b1e5aa224e9f233564484e360782"
     },
     "bundled/SQLite3MultipleCiphers/scripts/amalgamate.py": {
       "length": 10032,
       "sha256": "235a4544cd614ae1db010497f0ab6421d9d089a17e4b7c10f24bd48da77a540e"
     },
     "bundled/SQLite3MultipleCiphers/scripts/patchshell.sh": {
-      "length": 1099,
-      "sha256": "8718c0ac55960916ee2f7d82ddb537e2d714526dc3c9b01c726eca58a3313ff6"
+      "length": 1402,
+      "sha256": "15c9442c6d0bdc076510a8366d802b1289cdd65ac081290714067b21d7856ecf"
     },
     "bundled/SQLite3MultipleCiphers/scripts/patchsqlite3.sh": {
-      "length": 2513,
-      "sha256": "4b4809517c463446c51d2998178d07505eff0ab26a9e996cb3e69c02457ca1d3"
+      "length": 2941,
+      "sha256": "5750b466a4961c3b381e823d6deacb033eb22b0d1342f91bf47b75cd66b63b49"
     },
     "bundled/SQLite3MultipleCiphers/scripts/rekeyvacuum.sh": {
       "length": 2690,
@@ -179,12 +183,12 @@
       "sha256": "11ac53c8db09ee5bffbba172e13404befb33bddfdf20a95581bf225b88d3ebee"
     },
     "bundled/SQLite3MultipleCiphers/src/aes_hardware.c": {
-      "length": 19608,
-      "sha256": "1a673734480ac281662423b9121b3bcbc973cd1669ed3a6bdc8033ba609656dd"
+      "length": 19596,
+      "sha256": "18b6fe43c3e74685186a61c0c76e1bfbcfc5f295be741d9941f592e8e852fd55"
     },
     "bundled/SQLite3MultipleCiphers/src/ascon/aead.c": {
-      "length": 7233,
-      "sha256": "cddd33f80cac1990c7e8786688ec399e8ebae0c7eaa8f446d46a783441621093"
+      "length": 7274,
+      "sha256": "a085d09d7474f54f927f077300777f811952a8f26e63243ed7049634ff32afea"
     },
     "bundled/SQLite3MultipleCiphers/src/ascon/api.h": {
       "length": 927,
@@ -207,28 +211,28 @@
       "sha256": "47345b38e4d327f8a10ed85ad3fd498182b6f9be6b75add2173169015f428d57"
     },
     "bundled/SQLite3MultipleCiphers/src/ascon/crypto_aead.h": {
-      "length": 2063,
-      "sha256": "8071628c105a82dbc1903f056562983cfd4e346768a7acf7722b47e9c48ff2ac"
+      "length": 2147,
+      "sha256": "d8e239057ba98ed42c74db67784e71198608a8a694317daedb33ea43d7656a0e"
     },
     "bundled/SQLite3MultipleCiphers/src/ascon/crypto_hash.h": {
-      "length": 782,
-      "sha256": "11f6729fde9d5b62389e481b656a6098caca69ccbc51481f55c62dd6df1d7bfb"
+      "length": 851,
+      "sha256": "5e3be36400baba7c3a9401acfb93e3c6c4606bcfb59d19d13551eafa43936175"
     },
     "bundled/SQLite3MultipleCiphers/src/ascon/crypto_pbkdf2.h": {
-      "length": 1419,
-      "sha256": "384c0f08539d842a10ca791d1d439226474c74cd55a6594464fa396c7d78a4d6"
+      "length": 1488,
+      "sha256": "db5011c6b92521ff0f828413b348ea57fe3508bac819f2ef06330a4cc2f50a08"
     },
     "bundled/SQLite3MultipleCiphers/src/ascon/forceinline.h": {
       "length": 557,
       "sha256": "e8db44527b3363a5e5fcf435bd053ef46fec3a2c79041c2aa46aac8b82066728"
     },
     "bundled/SQLite3MultipleCiphers/src/ascon/hash.c": {
-      "length": 3282,
-      "sha256": "d394ca65f738cdac7c7a810483e83384a11ce1cb3867017bd37b8db727da7186"
+      "length": 3297,
+      "sha256": "183b28e5ec031705be8f56428144ac361377b1f410ea7eb6fb8dd7114ce212e3"
     },
     "bundled/SQLite3MultipleCiphers/src/ascon/pbkdf2.c": {
-      "length": 4109,
-      "sha256": "dc2dd344c993aebf89ef6305ff85a40e82ddfcfe612d1d1a768e2ea816be2d28"
+      "length": 4116,
+      "sha256": "73c022c30c74214c5fe9936080ff35b0afa576d08684b5fba002bd35a706b27f"
     },
     "bundled/SQLite3MultipleCiphers/src/ascon/permutations.c": {
       "length": 686,
@@ -247,8 +251,8 @@
       "sha256": "d71b6ea9c9405818b0af7b57c731f6ff7c85af719966ba73499fbb1c51d4f17f"
     },
     "bundled/SQLite3MultipleCiphers/src/ascon/prolog.h": {
-      "length": 489,
-      "sha256": "c7b1671fac4b8d53794467c2cc2de0d673dd22293fa05e661735e5dde84cb4c2"
+      "length": 488,
+      "sha256": "0b67666003c5dc54427a63ba8916b40d03ad51c7eea43f16d838b0034107592f"
     },
     "bundled/SQLite3MultipleCiphers/src/ascon/round.h": {
       "length": 706,
@@ -263,172 +267,172 @@
       "sha256": "927d2b9d100164b7861dec9415bec9f17877f6468befabd42f46a95f9edb5e02"
     },
     "bundled/SQLite3MultipleCiphers/src/ascon/word.h": {
-      "length": 1680,
-      "sha256": "53d78cd442cc0763f6c07f5f83c6b27d5087fbb21d90cdff70ea7ce768db9f2e"
+      "length": 1538,
+      "sha256": "d14dcb5ff28b4b4e21cd228a7532e3b7cc469d15f5fb32a1851b4edc98c13672"
     },
     "bundled/SQLite3MultipleCiphers/src/carray.c": {
-      "length": 16592,
-      "sha256": "1f5a73ed200e66f472f2f62d8c7125dfd6035a247106ba6673b73f86eca1cd34"
+      "length": 16585,
+      "sha256": "564161e21a833f79b8695b8b91dfa1195e5961305b3ceafd887e0305961324b8"
     },
     "bundled/SQLite3MultipleCiphers/src/carray.h": {
       "length": 1530,
       "sha256": "81c0983311c22fce21d972431edc77cfda2877371c57a0d25fa745cbbbc4acfb"
     },
     "bundled/SQLite3MultipleCiphers/src/chacha20poly1305.c": {
-      "length": 11061,
-      "sha256": "9bf493c0b491828a82939e8b8e1e09cfe09a87f4ef3d935997b002c87574ba79"
+      "length": 11119,
+      "sha256": "40c0f9fdc4146e018e89fedabc999ca9580ef06fe552e5195379309f8eae1eba"
     },
     "bundled/SQLite3MultipleCiphers/src/cipher_ascon.c": {
-      "length": 10923,
-      "sha256": "0f099f15964aed6f8a633d382c52b51178936bcd3008d65f4670312a128e64d7"
+      "length": 10715,
+      "sha256": "af66564628623c883cd521ec985fe9d7a04ba93418ab950b9145eda24051e6b2"
     },
     "bundled/SQLite3MultipleCiphers/src/cipher_chacha20.c": {
-      "length": 12014,
-      "sha256": "f454be5035a7e4435797ba053d03eadf3d87fc8d3f19d07bc879eae5ee1969c8"
+      "length": 11813,
+      "sha256": "57ab9d261a09ca8f222a13b3e87c530765f6961bb76dc1049f6c402e9d6053ce"
     },
     "bundled/SQLite3MultipleCiphers/src/cipher_common.c": {
-      "length": 19054,
-      "sha256": "fb14ce8498a78e2e0af0cb5644f80b4682862e4e23dd3541fb523603cb78854f"
+      "length": 20069,
+      "sha256": "9fad965b924fd705553952018bace5ea7977f8f1e8759f50de1666be6e08362e"
     },
     "bundled/SQLite3MultipleCiphers/src/cipher_common.h": {
-      "length": 8876,
-      "sha256": "25c77fd89b24c074f1dc94236fe363899f8b067b9b70de746871bf591a2ed671"
+      "length": 9040,
+      "sha256": "88b18c040dcab5a12e2b44bc5935133d4bb33dbaeb64c642acb7e59a9815ed5f"
     },
     "bundled/SQLite3MultipleCiphers/src/cipher_config.c": {
-      "length": 33784,
-      "sha256": "43413d4351edc8f53237581e3f3731a8ae542684333ab0125c6d6224bd6398d0"
+      "length": 34234,
+      "sha256": "a8e92e2e3f46b97ad0833e1bc99753337a67bfda403f41167750e839a623b6f4"
     },
     "bundled/SQLite3MultipleCiphers/src/cipher_config.h": {
-      "length": 1292,
-      "sha256": "6a0c93ed151d0c84b2a67a67bebbf143eb657019500978fad7965beb15167a8b"
+      "length": 1300,
+      "sha256": "733ea1b38328937883862b8052d06eb918399b8bbc5173706a05617b43604f3c"
     },
     "bundled/SQLite3MultipleCiphers/src/cipher_sds_rc4.c": {
-      "length": 4257,
-      "sha256": "6b0d8095cd292edc3df63e2f3b11e00b91ee626a12b55b0989865ee416ab9514"
+      "length": 4242,
+      "sha256": "8423b9386340a58e925f162db555f86857f17e48189b91f4dc72d577c8036496"
     },
     "bundled/SQLite3MultipleCiphers/src/cipher_sqlcipher.c": {
-      "length": 18621,
-      "sha256": "5e31d3532ae1d8fca240c7a291be60b14528a27edfbb753e1952a92c80d20617"
+      "length": 18726,
+      "sha256": "851f513b9f8b731866bd9f285a18b254ee34ab225af8488ad4895a3c33c2d85a"
     },
     "bundled/SQLite3MultipleCiphers/src/cipher_wxaes128.c": {
-      "length": 7695,
-      "sha256": "12ae46c3112561c7fdc9b8462467c3037e7da938d1b36af9ab30a2810b756bf5"
+      "length": 7680,
+      "sha256": "546d42ead9ad885ac41270fa70a594a84e7ab0b0400a7f21c66cc55749ca95e0"
     },
     "bundled/SQLite3MultipleCiphers/src/cipher_wxaes256.c": {
-      "length": 7595,
-      "sha256": "2843442f1fad7d2c30899a6481f5c7519a2c3d56191eee1ccf26e637365f3d35"
+      "length": 7580,
+      "sha256": "f31dc04b05c20840bd5e05ae8bfff16d918cfa29129b1ad95b189dfec0962a91"
     },
     "bundled/SQLite3MultipleCiphers/src/codec_algos.c": {
-      "length": 5835,
-      "sha256": "3a687f9d2224fa1a49463c1b71ba3fe3c97248d948a2712f6ee92516b14ece97"
+      "length": 5831,
+      "sha256": "ccef255cd872f024415d8adfc4687ad69867db5d991ed1aab74e36d88c96dbfb"
     },
     "bundled/SQLite3MultipleCiphers/src/codecext.c": {
-      "length": 19017,
-      "sha256": "a463a3a59f7d53165bc55e436db56639e7ad083e2ce1f1fc0fa2ced4f9e69cdc"
+      "length": 19931,
+      "sha256": "93d7866a0727bbb63cba6358f681de83c910dc4b19f8e000667ada75e263bc5f"
     },
     "bundled/SQLite3MultipleCiphers/src/compress.c": {
-      "length": 3844,
-      "sha256": "b669ef8027426637cbeda28de36854c60aaf9e4d574029be9f1277b71ec4e9f8"
+      "length": 3841,
+      "sha256": "132741b554e2043fb3007973c75c623063dabfb12eaf4fcb9a7306311407411f"
     },
     "bundled/SQLite3MultipleCiphers/src/csv.c": {
-      "length": 29669,
-      "sha256": "a471bd2f1a731601e4c5ee94f9113f5e83b6e52bae1d62861cb409065b3d190c"
+      "length": 29656,
+      "sha256": "e9551acd6939c21848242c8edc9f9025dee2a6f030a760a0b72e13ce0ddf8011"
     },
     "bundled/SQLite3MultipleCiphers/src/extensionfunctions.c": {
-      "length": 53871,
-      "sha256": "1fc1f9bcecb388dbc41c42895aee16371a6e1da6f541ae481a6255f59d0ddf3d"
+      "length": 53831,
+      "sha256": "a747a842d847a7b294787ed961be9d3af294c4e780adf1886e2ae3957f53918b"
     },
     "bundled/SQLite3MultipleCiphers/src/fastpbkdf2.c": {
-      "length": 20440,
-      "sha256": "71b8324245e92d923af1d8bb66470184bb819e9a27824952b94ccf526a384ba5"
+      "length": 20500,
+      "sha256": "b80b748d754e576805c600c2f6e24d56d29150f1d8b95ef24db7827eebb546ba"
     },
     "bundled/SQLite3MultipleCiphers/src/fastpbkdf2.h": {
-      "length": 2728,
-      "sha256": "31f0ec6741165b55e7aca8b3450fbf503cd7c2c620741befeb958aa8bc26e16f"
+      "length": 2842,
+      "sha256": "6e0b05436344a41ebb135b6b71d363dc34c937d8453e6c8eb55f263e88aa0353"
     },
     "bundled/SQLite3MultipleCiphers/src/fileio.c": {
-      "length": 29797,
-      "sha256": "3c28ede33df194f5085e2bf6ce555c09e153d1cc0b589899894b64dba6198d71"
+      "length": 30313,
+      "sha256": "c9b91b6e7e1022cd146cd9042205738715a1cef0ec137a190c8dbb427b4fbacd"
     },
     "bundled/SQLite3MultipleCiphers/src/filelist.md": {
       "length": 5217,
       "sha256": "113a3c0eb9c38669ebef8c5821ce437a01e70f09dd313a6be2a58bf816726348"
     },
     "bundled/SQLite3MultipleCiphers/src/md5.c": {
-      "length": 9267,
-      "sha256": "ec0f9b5b714655f5c4e36110982fcd018f0409b63ff4f0e98925e468b9553713"
+      "length": 9292,
+      "sha256": "0bbc8e2bbd16a8163c5ffd3cbd31de8a369677025784d1dfd43c1a75e85cfa87"
     },
     "bundled/SQLite3MultipleCiphers/src/memory_secure.c": {
-      "length": 4959,
-      "sha256": "e4df5a1f5fbe8c3d686c1ed782c4de7724674aeda7a78c306f6d49a6eb80f87f"
+      "length": 4124,
+      "sha256": "b701aa03d6aca4646562b79fa3b9377b82cfa8c3b11e90f49c5d629cef50ac2f"
     },
     "bundled/SQLite3MultipleCiphers/src/miniz.c": {
-      "length": 319839,
-      "sha256": "222e87f608d26206ea9f2fdd08fb3b166f7711ec066bfda2cf4b87bb8a84d0c0"
+      "length": 320622,
+      "sha256": "7e2eedd07d7a090f687c268a38ccb36aab05f09d4ad055e44183e71bbd92b54d"
     },
     "bundled/SQLite3MultipleCiphers/src/miniz.h": {
-      "length": 69441,
-      "sha256": "29a084ba8827330badadbd9afe437489c4635c2e1567d472de9a223a7b7f1255"
+      "length": 69451,
+      "sha256": "fcbf4efb32489f82dae21b97c2b9236dd934298ea0a5939d51d8fa3afecac6b9"
     },
     "bundled/SQLite3MultipleCiphers/src/mystdint.h": {
-      "length": 688,
-      "sha256": "6512593b1048811f037281152a8b6ad7a16189dc67a77379e1867d680bae7a1e"
+      "length": 687,
+      "sha256": "1ba3994991da053d94f8729c8fdeeb35a28772ddd5822c2ae1a86e5fc9f0aa0a"
     },
     "bundled/SQLite3MultipleCiphers/src/regexp.c": {
-      "length": 27067,
-      "sha256": "383d259f876590869bb9c8f30e3594f1a999b8e1546660595da62abf3f3c9136"
+      "length": 27061,
+      "sha256": "6c43a07c0b59aca6b3f0326cee0c04f40c6250f1de8276089753df01813f080e"
     },
     "bundled/SQLite3MultipleCiphers/src/rekeyvacuum.c": {
-      "length": 12044,
-      "sha256": "7d885b511eb894cf4fe7830b0d794e07d8717d5cd53b09804963167d00396e6f"
+      "length": 12337,
+      "sha256": "305459569f4e221bb3648b0b03c1f8746cfc59be5da76ab46cc0ab985b873008"
     },
     "bundled/SQLite3MultipleCiphers/src/rijndael.c": {
-      "length": 106244,
-      "sha256": "5558e2dee8af013643e05fb8266c068408f9baadb84279e2eca8f06a6985d963"
+      "length": 106302,
+      "sha256": "dc27b4fa1a660d390f487566c306371b9cf2d0df1fa6e430ecc62f1a3ac39936"
     },
     "bundled/SQLite3MultipleCiphers/src/rijndael.h": {
-      "length": 6504,
-      "sha256": "f80640183b62026a1793e796cfb650fb703c2f609fce361a208b8e314621c4f1"
+      "length": 6727,
+      "sha256": "3f3fe2e6728520be5717d039269a8c7a4a9911fd5eaef021f22c0a062711395b"
     },
     "bundled/SQLite3MultipleCiphers/src/series.c": {
-      "length": 19447,
-      "sha256": "bf1d4782f6ac108839f39845b8a4de512165eaa06972476706934f3514433e4c"
+      "length": 26938,
+      "sha256": "3440d57dda971ba9312d8f95e31127e6f94b7fb5ae849b478ce86755b8fb408d"
     },
     "bundled/SQLite3MultipleCiphers/src/sha1.c": {
-      "length": 9705,
-      "sha256": "ad386b579c29865ebfa77c299a3798aac37157f41764126e53748c62dd22e689"
+      "length": 9767,
+      "sha256": "0bc4eb9711de5e5345dbce2e59467ea5b27ea385cc151363786487e914ddbced"
     },
     "bundled/SQLite3MultipleCiphers/src/sha1.h": {
-      "length": 688,
-      "sha256": "7abe9a9ac0a757001a4d61e86e4e9aac75298f8a04651f72246495a14af1cefc"
+      "length": 802,
+      "sha256": "2938cb3c8d4cafab51a24cbc663c8b9ba42f28fc1cf9679e0f7f7ca48b214f37"
     },
     "bundled/SQLite3MultipleCiphers/src/sha2.c": {
-      "length": 33527,
-      "sha256": "e2c26048b6486c07905b2627d34cc9b1a80118f82da39d8fb798f46603df2b9e"
+      "length": 33838,
+      "sha256": "090cada90e2b1e78c18ceaf45578edb56c1b2677e75753eb3fb061bafc20ace4"
     },
     "bundled/SQLite3MultipleCiphers/src/sha2.h": {
-      "length": 5552,
-      "sha256": "b0f10bdbd1888edacddc8361086c00ef1fd926b6a4a629f64bc3f7bd00aaaebc"
+      "length": 5751,
+      "sha256": "32f32eda8c02f43e68cedcf07dda541c04e3d0bbefb2b5e91d7d1a6efa7748de"
     },
     "bundled/SQLite3MultipleCiphers/src/shathree.c": {
-      "length": 20998,
-      "sha256": "16e215b1908192f7e8cca4e8133401ce629581dcd67d101b1ac9a9ec8af35dba"
+      "length": 25404,
+      "sha256": "03ba4f4ec5c91232ea95b76c69a0ef1b5f3ff2fd2524db83e065280572bfe153"
     },
     "bundled/SQLite3MultipleCiphers/src/shell.c": {
-      "length": 907117,
-      "sha256": "29f3eb844635186d540f18656f5b0e561644bf1cc3b762129bf41a48e64e8848"
+      "length": 1044014,
+      "sha256": "16dc46ba551eb8937ab48cc1a73c50827935c1633411f762e24f5b590a83bb47"
     },
     "bundled/SQLite3MultipleCiphers/src/sqlar.c": {
-      "length": 3866,
-      "sha256": "859ce91554754a70a027df23d8f5444e1ccbd18be148cad1783c3431834fb023"
+      "length": 3893,
+      "sha256": "52ec2e9b5756a239874cae8b4d189249c4feac85c6380af085ae7e99ef13f4c4"
     },
     "bundled/SQLite3MultipleCiphers/src/sqlite3.c": {
-      "length": 9322339,
-      "sha256": "d9791dc493f043172d75c4fe6ef48307db6534c98f2106c843551ca5cbfa2912"
+      "length": 9500173,
+      "sha256": "0eb52e017a09ddb955a7fbaa5c2e5c39ed238f7480ec485e45f64fbb624ee7fb"
     },
     "bundled/SQLite3MultipleCiphers/src/sqlite3.h": {
-      "length": 662578,
-      "sha256": "dce697eff7a5b432dfa6c430134b2d78583c494b1e1f0a507f02100f0c155faf"
+      "length": 672767,
+      "sha256": "ee6eab8416938332fb2aa93e257a07773cb2721661a293ce4e227c7a1ea9aa63"
     },
     "bundled/SQLite3MultipleCiphers/src/sqlite370.ico": {
       "length": 2238,
@@ -439,52 +443,52 @@
       "sha256": "b184dd1586d935133d37ad76fa353faf0a1021ff2fdedeedcc3498fff74bbb94"
     },
     "bundled/SQLite3MultipleCiphers/src/sqlite3mc.c": {
-      "length": 20966,
-      "sha256": "1a1ab74f21c6561cd252ebea3eb4f9513c34f78d05c61b127fb9c0fda6110a68"
+      "length": 21029,
+      "sha256": "66665149caf3897964f6b6d066f5b0c45fdec935adcad3a620f70056d6a87612"
     },
     "bundled/SQLite3MultipleCiphers/src/sqlite3mc.def": {
-      "length": 7923,
-      "sha256": "77a56221f451a4c88f1cd32130f2ecfb8f35a176c8a9a20deb7295b5077c2e34"
+      "length": 7840,
+      "sha256": "4f932100df11c8094ea948ac405cce655aac76a17f16ae8ed7104b39e465b671"
     },
     "bundled/SQLite3MultipleCiphers/src/sqlite3mc.h": {
       "length": 6550,
-      "sha256": "bde64916db2bdd85b2750eb387a84cf0a3524d836d3f6190ab4eb3023adfbd1e"
+      "sha256": "4a72015ceb7dfcb4259cfe8552e16d8c64f02182b996aeaeffba6040fd5eb47f"
     },
     "bundled/SQLite3MultipleCiphers/src/sqlite3mc.rc": {
-      "length": 2395,
-      "sha256": "d3858f586625b38b927b5a319dd6d341973ae2e4d8be9aa8d935e0a2e03c7dc8"
+      "length": 2394,
+      "sha256": "6d6d83759605df816a5e213562e2d83b2373d9bfa51d68dc0d1c2cc5fb168406"
     },
     "bundled/SQLite3MultipleCiphers/src/sqlite3mc_config.h": {
-      "length": 4004,
-      "sha256": "bcf74cb8fd098025d5b00dffb9ee93126819d29eff89e6d2b426ee5d89e920da"
+      "length": 4230,
+      "sha256": "9faf4b9c5ba85d38b4d9d5575f54e1c5cf896c47e5a1bc0402241d38ddc6cb0a"
     },
     "bundled/SQLite3MultipleCiphers/src/sqlite3mc_shell.rc": {
-      "length": 2438,
-      "sha256": "ef58903fa34314ad2ba73764bd2639fc6c084a6b5800c7b8c455252c2d355fcc"
+      "length": 2437,
+      "sha256": "e37893f93ae8fca4fd1d77ef71d766c87bfbb924118cdbc1c3e4443dbd40079f"
     },
     "bundled/SQLite3MultipleCiphers/src/sqlite3mc_version.h": {
       "length": 631,
-      "sha256": "ac57adbc0a52ff5d035268ef9faff9f9fd67b0c28ee4dc47dc0bbe22742b90c0"
+      "sha256": "b15829862af4b05ec28a1676afacee5e657001062ae60acd255ac7b3c53b6442"
     },
     "bundled/SQLite3MultipleCiphers/src/sqlite3mc_vfs.c": {
-      "length": 44896,
-      "sha256": "d58942c499a39e15ed6afe572863d59e7d23d4ef649c9ee33cab3b878f7f96e6"
+      "length": 45805,
+      "sha256": "ef20ab7a0151cb06046e31dec0e1964cd65b06de3ad76748f6a4950fabbb5bbf"
     },
     "bundled/SQLite3MultipleCiphers/src/sqlite3mc_vfs.h": {
-      "length": 642,
-      "sha256": "54067668529e8f1056c97ff7b009972db849504800148389219875772b336940"
+      "length": 643,
+      "sha256": "af10634ba7790eaf1653cff244ecaef3f18a43eb1d47125519dbdb5304da40f7"
     },
     "bundled/SQLite3MultipleCiphers/src/sqlite3patched.c": {
-      "length": 8917994,
-      "sha256": "2bf0d6a2bdf6977e9dc33b6e0215e1637efa06dcb2d240c648e5acd6f6dfd92d"
+      "length": 9194921,
+      "sha256": "c01806f4ddfd4dd640b3042f07c864660536e7eb63b7cda103272eb4a3e8746f"
     },
     "bundled/SQLite3MultipleCiphers/src/sqlite3userauth.h": {
-      "length": 3635,
-      "sha256": "809099fb93d4a2d4070c84236b16a41817aa0e48bd9ffaaed191bf75b654a8cb"
+      "length": 3634,
+      "sha256": "136fc0e48e5dfa2dec13dd6aa75c59a9ca9bd7ab2879b7fa8bf9d2b5f76c29f3"
     },
     "bundled/SQLite3MultipleCiphers/src/tclsqlite.c": {
-      "length": 128147,
-      "sha256": "a9a2d7b1cc4ba7e4d6c22fcc0cd32b838ecd48a0eb125af12f330b08e83cf7a3"
+      "length": 130437,
+      "sha256": "b52dbe9e0612227eb06f5dd6262af8ac18e48926648cf2b81b59de8e5b768a59"
     },
     "bundled/SQLite3MultipleCiphers/src/test_windirent.c": {
       "length": 4641,
@@ -495,20 +499,20 @@
       "sha256": "cd60a85546cb8ba717e3b2fee8f08d025131045456002e65c75b9232209b3e46"
     },
     "bundled/SQLite3MultipleCiphers/src/userauth.c": {
-      "length": 11864,
-      "sha256": "2a8e008bde8c573f816809fa697fd5df7fa76f116a38eba3a23ca7950fef7a5b"
+      "length": 11861,
+      "sha256": "48919e4f2fc2f4058e656527261e185f6bffc42a7998628f24b193f5630ca6da"
     },
     "bundled/SQLite3MultipleCiphers/src/uuid.c": {
-      "length": 7121,
-      "sha256": "8b90b44e4c3aebe75f9f9e1ab9f59b73e2590a621668636831f210690f9ae20c"
+      "length": 7120,
+      "sha256": "e7f3121c0b1bbb678f24d99e718e110cba5d8df41da94d9c3ad444b5f784a0f5"
     },
     "bundled/SQLite3MultipleCiphers/src/vsv.c": {
       "length": 61007,
       "sha256": "4c72281415eabe6504dc4c24fbd66152fcaa128096b6b4ebc588ead43b7232e8"
     },
     "bundled/SQLite3MultipleCiphers/src/zipfile.c": {
-      "length": 65832,
-      "sha256": "a333ff22de2bec9e59b9f8e44d88e3e93dd6a345a536723bb9901416677e8edd"
+      "length": 66102,
+      "sha256": "67c8c4685c9e8893d2ac3152f3f651cdb4f7ccf75255a706c25ad91f217f8222"
     },
     "bundled/SQLite3MultipleCiphers/src/zlibwrap.h": {
       "length": 456,
@@ -519,12 +523,12 @@
       "sha256": "702bfe4b3a97014e0d3463723177be416d166b03562c5c59814c8e6b7a9aa2b2"
     },
     "bundled/bindings/bindgen.rs": {
-      "length": 122899,
-      "sha256": "5e16cb83f45292d28f4c7a39abd75d6e6c21f4a92975c06cbcafaa0664034059"
+      "length": 126481,
+      "sha256": "b03594f88895b4386165388bf50e426cdd1279d6c825b5a380022d113e6419d5"
     },
     "bundled/bindings/session_bindgen.rs": {
-      "length": 139742,
-      "sha256": "10cf04ffe0d3236530bb6246575b88bba792ca5eabe2057dc9ea95cda557de34"
+      "length": 143824,
+      "sha256": "652b23963ebb5bc967070344e813e8f03fe10b24752235662863a5ffe4443f34"
     },
     "bundled/sqlean/crypto/base32.c": {
       "length": 2465,
@@ -1083,12 +1087,12 @@
       "sha256": "9e179588a56b38d87c09703a1a009fd040a1b7e6f50233dd50c9e74b61caba6f"
     },
     "bundled/src/sqlite3.c": {
-      "length": 9334487,
-      "sha256": "84808835ee823cc6ad4fe14267f6a88ae3077fd877b3fd80007fbb7ff00f9416"
+      "length": 9512313,
+      "sha256": "78516943f8216206dd48091daa8b69aea172b5090c878e12d8dcba6cd445c072"
     },
     "bundled/src/sqlite3.h": {
-      "length": 662578,
-      "sha256": "dce697eff7a5b432dfa6c430134b2d78583c494b1e1f0a507f02100f0c155faf"
+      "length": 672767,
+      "sha256": "ee6eab8416938332fb2aa93e257a07773cb2721661a293ce4e227c7a1ea9aa63"
     },
     "bundled/src/sqlite3ext.h": {
       "length": 38837,
@@ -1101,8 +1105,8 @@
   },
   "artifacts": {
     "evidence/libsql-provider/adapted.patch": {
-      "length": 14510,
-      "sha256": "b6fa14773869e4f222e53b4180ec03cf35d619efe25cdc6d457cbb2a41218db0"
+      "length": 14251,
+      "sha256": "613b3fbf276cfbdb5d0010f3d09e271c0bfbc1a115d72f387a8ac38beb8bd19d"
     },
     "evidence/libsql-provider/adoption-report.json": {
       "length": 4193,
@@ -1549,8 +1553,8 @@
       "sha256": "7b9b984c26bfe9ab51c623ee6eb3e3a5a1a73d65ed0ad1c94f3f347ab9e349fb"
     },
     "evidence/libsql-provider/provenance.json": {
-      "length": 2740,
-      "sha256": "e3449747c088d6d518c6ee43bde851cb593647aae2e96661a098cf43e21ad00e"
+      "length": 3707,
+      "sha256": "925a8b5374a85fa14796245f93489f7007f4fd926c5c7e99df2f5e9830380572"
     },
     "evidence/libsql-provider/rust-run.json": {
       "length": 14565,
@@ -1594,11 +1598,11 @@
     },
     "scripts/regenerate-libsql.py": {
       "length": 3980,
-      "sha256": "733e1fe186cacb321c37c42e0ba114184312ed4803ef3d2aa505ba2f21c53c8d"
+      "sha256": "f790b4f76956b61a14254720507b184f4cce40d3d849d01a858d0b371cd9b692"
     },
     "scripts/verify-libsql-vendor.py": {
-      "length": 8395,
-      "sha256": "e9704548ca3372bb1b35882e39812f009045422ffa354a7b4f387e14af4a28fd"
+      "length": 9922,
+      "sha256": "ba97fbf31a5a52339b13fe82854b3eedd35ed0e090c124daa4aab307ed6487a6"
     },
     "tests/fixtures/libsql-date/main.json": {
       "length": 138639,
@@ -1613,8 +1617,8 @@
       "sha256": "bf41011ed9136fe4f1819d4586ae84e6d37bad648c7a522193f8375d10cc476a"
     },
     ".gitattributes": {
-      "length": 2149,
-      "sha256": "4ff0fa6682484bebf50e7cebe205f13db07a2ec59d73da014b3447e497e641a6"
+      "length": 2221,
+      "sha256": "7f88c0224568a0655c9ff84fc4060725880f17e49260940a3e7d4cbbe1466781"
     },
     "evidence/libsql-provider/product-whitespace-controls.stdin": {
       "length": 0,
@@ -1689,8 +1693,8 @@
       "sha256": "8a08bf79bec17ab6a9fa41d8a21c3bb83d0012ac6566257f99d79b968d090b67"
     },
     "tests/test_libsql_vendor.py": {
-      "length": 17869,
-      "sha256": "76205a941b9a157b6852d017befc58659f49800f06241c8082cb8aa2915b0e8f"
+      "length": 21472,
+      "sha256": "3b68f09373602f561520833ed6f458e0439e4246dff766ca8bed3b2a5fcbe701"
     },
     "evidence/libsql-provider/reader-policy-green.txt": {
       "length": 2578,
@@ -1737,8 +1741,40 @@
       "sha256": "66f5c4834a1aee54683a49843eb7ed93d4d44d88e373100851af38980e1001ab"
     },
     "tests/test_libsql_provider_compile.py": {
-      "length": 3397,
-      "sha256": "d78ae06264229cc5bd89f164e47b90e91cc223ea10dc62fbcd5617c51a3c2da0"
+      "length": 9488,
+      "sha256": "418d9314d6eca08c6bdde9d9b869cf481a7821071f0355ca726e84d0a58afe2c"
+    },
+    "evidence/libsql-provider/upgrade-0.10/adaptation-map.json": {
+      "length": 3729,
+      "sha256": "224edf99c11a4eb98f8a6632ee79bf96eba1f558724c0b77eaedb1750f766e6a"
+    },
+    "evidence/libsql-provider/upgrade-0.10/adapted-0.9.30.patch": {
+      "length": 14510,
+      "sha256": "b6fa14773869e4f222e53b4180ec03cf35d619efe25cdc6d457cbb2a41218db0"
+    },
+    "evidence/libsql-provider/upgrade-0.10/provenance-0.9.30.json": {
+      "length": 2740,
+      "sha256": "e3449747c088d6d518c6ee43bde851cb593647aae2e96661a098cf43e21ad00e"
+    },
+    "tests/fixtures/provider-compile/libsql-0.9.30-adapted-before-stdint.c.gz.part1": {
+      "length": 900000,
+      "sha256": "5171481098a6ea993ff33d15b6417194859c7b9067c77525dd730f9c16ba4287"
+    },
+    "tests/fixtures/provider-compile/provenance.json": {
+      "length": 1771,
+      "sha256": "eb966dabe9361cc52d00ad8c06b6843064815e25c2b20906d5fbad4bf5d3a1e8"
+    },
+    "tests/fixtures/provider-compile/libsql-0.9.30-adapted-before-stdint.c.gz.part2": {
+      "length": 900000,
+      "sha256": "71de6b5fc180af1837825b339b41916257ffbc89b907a6e55fb890ef30982016"
+    },
+    "tests/fixtures/provider-compile/libsql-0.9.30-adapted-before-stdint.c.gz.part3": {
+      "length": 592705,
+      "sha256": "ae08a908fa0db8ac6bc33ba0b08daae283d92aa915c7876d00e92534095652b3"
+    },
+    "tests/fixtures/provider-compile/abi-010.c": {
+      "length": 4766,
+      "sha256": "5146e2f230033417823e7898cefc3674312997b5d00b7bc5d019a69624f9da3a"
     }
   }
 }

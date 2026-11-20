@@ -1,0 +1,33 @@
+{
+  "historical_fixture": "Ordered gzip part1,part2,part3; concatenate bytes before decompression.",
+  "purpose": "Exact historical adapted 0.9.30 Linux negative, never evidence for current0.10.",
+  "decompressed_sha256": "1c99ebdc5a6fccdecb30c7702f7f6b07fa8258eea7d4216d878863cb3b7deefd",
+  "construction": "Current pre-upgrade adapted0.9.30 sqlite3.c; remove exactly one stdint include immediately following pinned date closure math include. Original test asserted this identical hash.",
+  "source_before_sha256": "84808835ee823cc6ad4fe14267f6a88ae3077fd877b3fd80007fbb7ff00f9416",
+  "gzip_sha256": "a24ede40d3d24a529a15093a69d7e7ca96a91d321edfaec5f93be19812d0a48b",
+  "gzip_mtime": 0,
+  "attribution": "Complete source comments/licenses retained inside compressed fixture. Official0.9.30 archive is historical base; adapted source is not relabeled official.",
+  "current_official_archive": {
+    "name": "libsql-ffi-0.10.0.crate",
+    "sha256": "f232292810b6298d17466b59bf8077d075fb016d89c281ca9dc968ea4a3b9d03"
+  },
+  "executed": false,
+  "parts": [
+    {
+      "name": "libsql-0.9.30-adapted-before-stdint.c.gz.part1",
+      "sha256": "5171481098a6ea993ff33d15b6417194859c7b9067c77525dd730f9c16ba4287",
+      "bytes": 900000
+    },
+    {
+      "name": "libsql-0.9.30-adapted-before-stdint.c.gz.part2",
+      "sha256": "71de6b5fc180af1837825b339b41916257ffbc89b907a6e55fb890ef30982016",
+      "bytes": 900000
+    },
+    {
+      "name": "libsql-0.9.30-adapted-before-stdint.c.gz.part3",
+      "sha256": "ae08a908fa0db8ac6bc33ba0b08daae283d92aa915c7876d00e92534095652b3",
+      "bytes": 592705
+    }
+  ],
+  "packaging": "Every part is below unchanged1000KB hook threshold; no exception. Combined compressed and decompressed bytes are identical to initial candidate."
+}

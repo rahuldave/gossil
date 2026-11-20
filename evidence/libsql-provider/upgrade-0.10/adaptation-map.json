@@ -1,0 +1,67 @@
+{
+  "old_hunks": 8,
+  "all_mapped": true,
+  "mapping": [
+    {
+      "old_hunk": 1,
+      "old_header": "@@ -24830,6 +24830,387 @@",
+      "old_fragment_sha256": "38d03a8549c0612473f6b8af6bb35fb1c8da325f96d9cf57650b5ce20f847e9b",
+      "adapted_fragment_sha256": "56aafe69fa51c77812d44628846376889c105f4b9fb6916157ea561f5591c2a1",
+      "disposition": "Exact old adaptation replacement applied to unique matching official context; same inserted/replaced bytes."
+    },
+    {
+      "old_hunk": 2,
+      "old_header": "@@ -25053,10 +25434,12 @@",
+      "old_fragment_sha256": "7c0a80d429ff5bca6ed0f7b7a45ab09cd86b083734817a92162b00022f4edf0d",
+      "adapted_fragment_sha256": "2d93aa0ad9cd7c8513c5992812dd7c335d8487f5a03b740e795c00964cf30b81",
+      "disposition": "Exact old adaptation replacement applied to unique matching official context; same inserted/replaced bytes."
+    },
+    {
+      "old_hunk": 3,
+      "old_header": "@@ -25094,6 +25477,7 @@",
+      "old_fragment_sha256": "0a607522bb1a1b2e069e5c045fc6428496fba6c5f7977c47af52fdd3b178fe9b",
+      "adapted_fragment_sha256": "351e58d096795b999c4540250f5d11e58b1d074ec9d9fe4ce22db17d20acac58",
+      "disposition": "Exact old adaptation replacement applied to unique matching official context; same inserted/replaced bytes."
+    },
+    {
+      "old_hunk": 4,
+      "old_header": "@@ -25103,8 +25487,8 @@",
+      "old_fragment_sha256": "78b06cb89c6d12d83ef91ad5c6ad8fdee7fc28c15aa6cd40067cf8a1fdabc7be",
+      "adapted_fragment_sha256": "b64d703d87cf715b03459cc4df7063b502b4c2960ad4f0037c80426956e49993",
+      "disposition": "Already adopted verbatim in official SQLite3.47; no duplicate patch applied."
+    },
+    {
+      "old_hunk": 5,
+      "old_header": "@@ -25132,6 +25516,18 @@",
+      "old_fragment_sha256": "787d4468c58f51f38dd211eeff8bcd4b74f89f38af27dc65fb16ceaf979a2862",
+      "adapted_fragment_sha256": "38f7823d2e95138fd382a8ae4f20ce6fef61a2e4bdfbf80fe6b36790820e004d",
+      "disposition": "Exact old adaptation replacement applied to unique matching official context; same inserted/replaced bytes."
+    },
+    {
+      "old_hunk": 6,
+      "old_header": "@@ -25144,10 +25540,23 @@",
+      "old_fragment_sha256": "2b3b4f83277940e89c5fb0419d54ee67e76e509c4977756a9bcf1861a3223115",
+      "adapted_fragment_sha256": "49648d3b812b3b4d8b6c876c5ca6e1c427ecb079e743da5707c6873e8d8a5460",
+      "disposition": "Exact old adaptation replacement applied to unique matching official context; same inserted/replaced bytes."
+    },
+    {
+      "old_hunk": 7,
+      "old_header": "@@ -25155,7 +25564,7 @@",
+      "old_fragment_sha256": "139b463871873172fdecaa638cc492fedf957b5960fba0a218f35a1bd1ba41a7",
+      "adapted_fragment_sha256": "6ccbf072134d61d6196968124cd63cdb1b53b2d8badab8d7cb5fade6b2d81f36",
+      "disposition": "Port same signed-year assignment; preserve official computeFloor(p) and if(p->tz) control flow."
+    },
+    {
+      "old_hunk": 8,
+      "old_header": "@@ -25222,7 +25631,7 @@",
+      "old_fragment_sha256": "2f7c89d39808553996ef1a16edc062e35104e60fae5b2d533bb0439cb2e719cc",
+      "adapted_fragment_sha256": "03467b4559f39ff49aefa4e428c34f409cdbf5a7c96f3e0fddb2639ddd9dc539",
+      "disposition": "Exact old adaptation replacement applied to unique matching official context; same inserted/replaced bytes."
+    }
+  ],
+  "official_source_sha256": "0eb52e017a09ddb955a7fbaa5c2e5c39ed238f7480ec485e45f64fbb624ee7fb",
+  "ported_source_sha256": "78516943f8216206dd48091daa8b69aea172b5090c878e12d8dcba6cd445c072",
+  "new_patch_sha256": "613b3fbf276cfbdb5d0010f3d09e271c0bfbc1a115d72f387a8ac38beb8bd19d",
+  "new_hunks": 7,
+  "qualification": "Static unique-context port only. Runtime calendar/date/numeric,ABI and platform qualification pending."
+}
