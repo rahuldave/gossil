@@ -207,8 +207,7 @@ fn lines<'a>(
         let mut indent = 0;
         let mut nw = 0;
         let mut hash = 0u64;
-        let length;
-        if options.whitespace == Whitespace::IgnoreAll {
+        let length = if options.whitespace == Whitespace::IgnoreAll {
             // Fossil's plain char is signed on supported macOS/Linux targets.
             while indent < k && (text[indent] as i8) <= 32 {
                 indent += 1;
@@ -223,18 +222,17 @@ fn lines<'a>(
                         .wrapping_mul(9_000_000_000_000_000_041);
                 }
             }
-            length = k - numws - indent;
+            k - numws - indent
         } else {
-            let mut chunks = text[..k].chunks_exact(8);
-            for chunk in &mut chunks {
-                hash = (hash ^ u64::from_ne_bytes(chunk.try_into().expect("eight-byte chunk")))
-                    .wrapping_mul(9_000_000_000_000_000_041);
+            let (chunks, remainder) = text[..k].as_chunks::<8>();
+            for chunk in chunks {
+                hash = (hash ^ u64::from_ne_bytes(*chunk)).wrapping_mul(9_000_000_000_000_000_041);
             }
             let mut tail = [0; 8];
-            tail[..chunks.remainder().len()].copy_from_slice(chunks.remainder());
+            tail[..remainder.len()].copy_from_slice(remainder);
             hash ^= u64::from_ne_bytes(tail);
-            length = k;
-        }
+            k
+        };
         work.charge(text.len())?;
         hash = ((hash % 281_474_976_710_597) << 15) | length as u64;
         result.push(Line {

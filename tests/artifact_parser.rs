@@ -523,7 +523,7 @@ async fn actual_provider_d_e_preserve_all_pinned_binary64_results() {
                 expected["type"].as_u64().unwrap(),
                 "provider storage class {token:?}"
             );
-            for card in [b'D', b'E'] {
+            for card in *b"DE" {
                 let mut prefix = if card == b'D' {
                     b"C c\nD ".to_vec()
                 } else {
@@ -817,7 +817,7 @@ async fn escape_and_hash_edge_families() {
     ];
     for token in tokens {
         let want = gossil::token_codec::defossilize(token).unwrap();
-        for card in [b'C', b'H', b'N', b'U'] {
+        for card in *b"CHNU" {
             let mut cards = if card == b'H' {
                 baseline("forum")
             } else {
@@ -857,7 +857,7 @@ async fn escape_and_hash_edge_families() {
         assert_eq!(parsed.ticket_fields()[0].name(), b"+append");
     }
     for len in [0, 1, 31, 32, 33, 39, 40, 41, 63, 64, 65] {
-        for byte in [b'a', b'A', b'g'] {
+        for byte in *b"aAg" {
             let token = vec![byte; len];
             let mut cards = baseline("manifest");
             let mut b = b"B ".to_vec();
