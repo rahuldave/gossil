@@ -13,7 +13,10 @@ from source comments.
 
 ## Try the CLI
 
-From a source checkout with Rust, Cargo, Just, uv and `jlog` installed:
+Use a source checkout with Rust, Cargo, Just, uv and `jlog` installed.
+Linux setup also needs a C compiler, Make, zlib development headers and CA
+certificates. Other hosts need the existing pinned Tcl and Fossil references
+described in the [setup guide](docs/conformance.md#local-prerequisites).
 
 ```sh
 just setup
