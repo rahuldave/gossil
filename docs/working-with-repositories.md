@@ -6,13 +6,64 @@ its plan and the evidence behind a decision.
 Git remains the source-code authority. Gossil is designed to give the
 surrounding agent work its own history and sharing rules.
 
-The repository workflows below describe the intended product. They are not yet
-available through the Gossil CLI, which currently has
+Most of this page describes planned repository workflows on current `main`.
+That CLI currently has
 [three file-delta diagnostics](cli.md). The Rust library already supports
 [empty-root creation and bounded private content](native-storage.md).
 That storage foundation does not yet provide ordinary file check-ins or issue
 management. The Fossil references teach the inherited workflow; their commands
 are not Gossil aliases.
+
+## Try the installed development preview
+
+A separately installed development preview supports a small local file workflow.
+This unmerged preview is not a release, and full qualification is incomplete.
+The installed preview has a known crash during database cleanup. Use a disposable folder and copies of files, and keep Git
+as the source authority.
+
+These commands require that preview's installed `gos` or `gossil` executable.
+Building current `main` does not enable them. The generated Rust API on this
+site describes `main`, not the preview's additional storage methods.
+
+Start with an empty scratch checkout. Keep the repository database outside it:
+
+```sh
+trial=$(mktemp -d /tmp/gossil-preview.XXXXXX)
+mkdir -p "$trial/work/app/.agent" "$trial/work/service/.agent"
+gos vcs init "$trial/history.gossil"
+gos vcs open --repository "$trial/history.gossil" --checkout source --root "$trial/work"
+printf 'first plan\n' > "$trial/work/app/.agent/plan.md"
+printf 'first review\n' > "$trial/work/service/.agent/review.md"
+gos vcs add --repository "$trial/history.gossil" --checkout source --path app/.agent/plan.md service/.agent/review.md
+gos vcs status --repository "$trial/history.gossil" --checkout source --json
+gos vcs commit --repository "$trial/history.gossil" --checkout source -m "Record agent files"
+```
+
+The folders can sit below sibling Git repositories. Gossil tracks the explicitly
+named paths independently of Git's index. Here, `add` chooses paths for tracking;
+it is not Git-style content staging for each later commit.
+
+Edit a tracked file, inspect the change and commit again without re-adding it:
+
+```sh
+printf 'revised plan\n' > "$trial/work/app/.agent/plan.md"
+gos vcs status --repository "$trial/history.gossil" --checkout source --json
+gos vcs diff --repository "$trial/history.gossil" --checkout source --path app/.agent/plan.md
+gossil vcs commit --repository "$trial/history.gossil" --checkout source -m "Revise the plan"
+gos vcs timeline --repository "$trial/history.gossil" --checkout source --limit 10 --json
+gossil vcs log --repository "$trial/history.gossil" --checkout source --limit 10 --json
+gos vcs open --repository "$trial/history.gossil" --checkout source
+```
+
+A recording commit includes changed tracked paths; these examples do not request
+a partial commit. `log` is the alias for `timeline`. Reopening an existing
+checkout omits `--root`; it does not restore or replace working files.
+No issue, project or author initialization is required for this file workflow.
+
+The installed preview passed an isolated smoke test covering the initial empty
+check-in, two later commits and reopen. This result does not establish release
+readiness, branching, sync, automatic checkout discovery or full Fossil parity.
+Issue commands and the server remain unavailable in the preview.
 
 ## Review files and issues together
 
@@ -236,6 +287,7 @@ output path. Compare the restored bytes before replacing a file.
 ## Recommendations
 
 Keep Git as the source authority and plan a small explicit selection of agent
-files for Gossil. Next, try the current delta tutorial. Use this workflow guide
-to choose roots and scope before repository commands arrive. For integrated
+files for Gossil. Next, try the current delta tutorial, or use disposable files
+for the installed preview above. Use this workflow guide to choose roots and
+scope before repository commands arrive in `main`. For integrated
 review, retain the file head and complete issue boundaries together.
