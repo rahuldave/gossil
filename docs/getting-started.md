@@ -6,7 +6,7 @@ This exercise needs no repository and does not change Git history.
 
 Gossil is intended to keep agent files, issues and their history alongside
 Git. Its command line currently has three delta diagnostics. The Rust library
-also supports artifact parsing, local storage and task and project value
+also supports artifact parsing, local storage and task, project and author value
 conversion. Try the delta commands below. Read
 [working with repositories](working-with-repositories.md) for the intended
 file and issue workflows.
