@@ -27,6 +27,14 @@ Use `LocalOwnerRepository` for admitted native content operations. The example
 above uses only the low-level lifecycle API.
 
 `LocalStore::open(path)` builds a local database and retains one connection.
+It treats nonempty paths as literal native filenames, including relative names
+that begin with `file:` and names that contain `?`, `#` or `%`.
+On Unix, it preserves filename bytes that are not valid UTF-8 when the filesystem
+accepts them. A filesystem rejection remains an open error.
+An embedded NUL returns an error with the original `std::ffi::NulError` cause.
+An empty path retains SQLite's temporary-database behavior and fails the required
+WAL check.
+
 Every file open sets and reads back WAL, foreign keys ON, `synchronous=FULL`
 and a 5000 ms busy timeout. WAL is SQLite's write-ahead journal mode.
 An open fails if configuration differs from these requirements.
