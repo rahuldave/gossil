@@ -112,9 +112,8 @@ impl TaskValueError {
     /// # Returns
     /// The actual parser error for input or canonical UTC output parsing, or
     /// `None` for validation failures that did not come from the parser.
-    /// Chrono's alloc-only build does not implement `std::error::Error` for
-    /// [`chrono::ParseError`], so this accessor supplies the cause instead of
-    /// [`std::error::Error::source`].
+    /// This accessor exposes the retained typed cause.
+    /// [`std::error::Error::source`] for [`TaskValueError`] returns `None`.
     pub fn parse_cause(&self) -> Option<&chrono::ParseError> {
         self.parse_cause.as_ref()
     }

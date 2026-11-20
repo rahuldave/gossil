@@ -54,8 +54,9 @@ Callers can inspect its `kind()` to distinguish failures such as `TooShort`
 and `OutOfRange`. Other validation failures return no parse cause.
 Error equality includes the retained cause, so errors with equal display text
 can compare unequal.
-Chrono's alloc-only build does not implement `std::error::Error` for this parser
-error, so callers use the accessor rather than `Error::source()`.
+`TaskValueError::source()` returns no cause. Callers use `parse_cause()` to
+inspect the retained parser error.
+
 The validated record stays unchanged if a caller changes
 the owned fields returned by `task_to_values`.
 
@@ -124,11 +125,12 @@ Metadata has no further type restriction.
 
 ## Dependency scope
 
-`Cargo.toml` pins chrono to 0.4.44 with default features disabled and `alloc`
-as its only enabled feature. Clock access and chrono's serde support are disabled.
-The lockfile includes chrono 0.4.44, num-traits 0.2.19 and autocfg 1.5.1.
-These additions support timestamp conversion in Rust and do not add a native
-Fossil process or a SQL date conversion to this module.
+`Cargo.toml` pins chrono to 0.4.44 with default features disabled and explicitly
+enables `alloc`, `clock` and `serde`. The `clock` feature enables standard-library
+support, so `chrono::ParseError` implements `std::error::Error` in this build.
+The converter parses caller-supplied timestamps and formats UTC output.
+It does not read the clock, generate identifiers or use chrono's serde support.
+Timestamp conversion runs in Rust without a native Fossil process or SQL date conversion.
 
 ## Caller responsibilities
 

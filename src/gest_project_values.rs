@@ -53,7 +53,7 @@ impl ProjectValueError {
     ///
     /// # Returns
     /// The original typed chrono cause, or `None` for non-parser failures.
-    /// Chrono's alloc-only parser error does not implement `std::error::Error`.
+    /// [`std::error::Error::source`] for [`ProjectValueError`] returns `None`.
     pub fn parse_cause(&self) -> Option<&chrono::ParseError> {
         self.failure.parse_cause.as_ref()
     }
