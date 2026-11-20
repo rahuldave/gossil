@@ -9,7 +9,10 @@ surrounding agent work its own history and sharing rules.
 Most of this page describes planned repository workflows. The source CLI supports
 [empty repository initialization and three file-delta diagnostics](cli.md).
 Initialization creates no checkout and selects no files. The Rust library supports
-[checkout-free initialization and bound private content](native-storage.md).
+[checkout-free initialization, one native directory registration and catalog1
+private content](native-storage.md). Library registration selects no files and
+publishes no locator; it adds no source CLI command.
+
 That storage foundation does not yet provide ordinary file check-ins or issue
 management. The Fossil references teach the inherited workflow; their commands
 are not Gossil aliases.

@@ -16,12 +16,16 @@ caller-supplied native identity, actor and date. Both converters operate in memo
 | Delta create, apply and two-way file checks | General version-control CLI |
 | Compression, hashes, token escaping and artifact checksums | Repository traversal and persistent selection commands |
 | Eight structural artifact types with explicit limits | General crosslinks, migration, rebuild and filesystem recovery |
-| Checkout-free empty-root initialization; bound creation and private content | File-containing check-ins, sync and publication |
+| Checkout-free initialization, one native empty-root registration; catalog1 private content | File-containing check-ins, sync and publication |
 | Explicit inherited-test runner configurations | Gest task CLI, server and user interface |
 
-Checkout-free initialization admits only empty catalog4 repositories. Bound
+Initialization creates catalog4 without a checkout. The library can register
+one existing directory and authenticate its registration by ID or exact root.
+Reopen admits exactly zero or one registration at the initial empty root. Bound
 catalog1 creation retains its checkout and private content operations. Catalog4
-private writes and populated or registered states remain unsupported.
+private writes and file-containing states remain unsupported. Registration
+changes the database only; CLI open, locator publication and filesystem
+materialization remain future work.
 
 An empty root is a check-in with no files. Private content operations do not
 extend that public graph. Build this version from source. The implemented modules do not establish
@@ -183,9 +187,15 @@ retain their dispatcher and argument contracts.
 The focused CLI controls are in `tests/vcs_init_cli.rs`; parser, environment,
 password and receipt controls are in the private `vcs_init` module. Source edits
 and authored tests do not establish a passing qualification run. Versioned
-executable and matching documentation delivery remain separate steps after
-qualification. Preserve the existing default mini-VCS preview during that delivery.
-Checkout registration and file operations remain future work.
+executable and matching documentation delivery have their own qualification checks.
+CLI checkout registration and file operations remain future work. The library
+registration API is described in [native storage](native-storage.md#register-one-existing-directory).
+
+The source package version reserves 0.4.0; this is not a published release.
+Version 0.2.0 executable and documentation delivery is complete. The annotated
+`v0.2.0` tag resolves to `2fc3fa1`; source CI and documentation CI passed. The
+versioned executables, smoke tests and live CLI and API pages were verified.
+The default previews were preserved, and issue 22 is closed.
 
 ## Recommendations
 

@@ -32,9 +32,10 @@ Reopen authenticates the single canonical empty root, its native hash, date,
 event, branch tags and receive/index facts. It checks the exact schema,
 complete policy, owner binding and foreign keys.
 
-All 54 other local tables must be empty. Extra native content or indexed
-history also refuses admission, even when checkout counters remain zero.
-Registered, populated, typed and mixed catalog4 states remain unsupported.
+The remaining local tables must be empty, except for the exact registration
+inventory described below. Extra native content or indexed history refuses
+admission, even when checkout counters remain zero. File-containing, typed and
+mixed catalog4 states remain unsupported.
 Catalog5 and catalog6 remain unsupported. No upgrade occurs on open.
 Private content writes through this handle also refuse catalog4.
 
@@ -44,6 +45,63 @@ Failures retain the first cause and report cleanup uncertainty separately.
 A possibly opened engine or an attempted commit prevents automatic main-file
 removal. Pathname observations do not certify engine disposal or atomic binding.
 Templates, global preferences and project display fields are outside this API.
+
+## Register one existing directory
+
+After checkout-free initialization, call
+`LocalOwnerRepository::register_checkout(checkout_id, root, limits)` to register
+one existing directory against the initial empty root. This API supports only
+catalog4 with no existing registration. It refuses catalog1 and a second
+registration, including a retry with the same ID or an alias of the same root.
+
+Supply a nonempty, NUL-free checkout ID of at most 1024 UTF-8 bytes. Supply an
+existing directory with a nonempty, NUL-free UTF-8 path of at most 4096 bytes,
+both before and after canonicalization. Both ceilings also use the smaller
+`limits.parser.input_bytes`. Relative paths and caller aliases resolve to the
+canonical directory.
+
+Persisted roots must retain their exact canonical spelling,
+device, inode and owner binding on every admission. Canonical components are
+observed without following links. Callers must keep the namespace stable.
+These pathname observations do not protect against hostile concurrent replacement.
+
+Registration uses one exclusive database transaction. It checks the saved
+admission proof and complete native state before writing one checkout row, one
+owner row and `checkout_count=1`. It writes exactly the three native keys
+`checkout`, `checkout-hash` and `fingerprint`. These keys retain the actual initial root RID,
+its hash and the native fingerprint derived from the receive record. The API
+validates the complete result and captures its proof before checked commit.
+It replaces the saved proof only after known success.
+
+Earlier writes roll back on failure. The lifecycle rules still govern commit
+and cleanup uncertainty.
+
+The returned `CheckoutView` owns the repository ID, checkout ID, canonical root
+and actual public initial head. Its combined head is absent, and its generation
+and pending version are zero.
+
+`checkout_view(checkout_id, limits)` authenticates
+that exact persisted registration. `checkout_view_for_root(root, limits)`
+authenticates the sole registration for the explicitly chosen canonical root.
+Both methods revalidate complete native state and refuse stale authority,
+invalid bindings or unsupported inventory. Root lookup refuses absence, another
+root, unauthorized ownership and multiple registrations. It allocates no identity
+and repairs no registration or native key.
+
+Ordinary files and nested Git repositories in the directory remain unselected
+and unchanged. Registration creates no file check-in, materializes no files and
+publishes no `ROOT/.gossil/checkout.json` locator. These methods require no Gest
+project, issue or author initialization. The source CLI has no `vcs open`
+command yet.
+
+A future adapter must use the adopted locator publisher and recovery
+contract, including the same rules for explicit repository and checkout flags.
+The root lookup gives authenticated facts for that work. It does not recover
+a locator itself.
+
+Reopen accepts exactly zero or one such catalog4 registration. It independently
+checks the complete checkout, owner and key inventory against `checkout_count`,
+the native root and receipt. Private content writes still refuse catalog4.
 
 ## Local owner and shared view
 
@@ -169,6 +227,7 @@ unimplemented. The public APIs do not offer those operations.
 
 ## Recommendations
 
-Prefer `initialize` for a repository without a checkout and `create` for an
-explicit bound checkout. Use finite admission limits. Next, consult the
+Prefer `initialize`, then `register_checkout` when one native empty-root
+registration is needed. Use `create` for catalog1 private content operations.
+Set finite admission limits, then consult the
 [generated API](api/index.qmd) for repository creation, admission and content methods.

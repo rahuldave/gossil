@@ -6,7 +6,7 @@
 //! is recorded in `evidence/libsql-provider/provenance.json`. Native repository
 //! creation and admission parse the empty root on this same connection. General
 //! artifact crosslinks, runtime clocks and broader date compatibility remain unqualified.
-//! Checkout-free initialization admits only empty catalog4; bound catalog1 retains private writes.
+//! Native initialization and zero-or-one empty-root registration admit catalog4; bound catalog1 retains private writes.
 //!
 //! ## Recommendations
 //! Use one owner for a complete mutation and explicitly commit or roll back.
@@ -17,7 +17,8 @@ mod repository;
 mod schema;
 pub use content::Limits;
 pub use repository::{
-    AdmissionLimits, CreateOptions, InitializeOptions, LocalOwnerRepository, SharedView,
+    AdmissionLimits, CheckoutView, CreateOptions, InitializeOptions, LocalOwnerRepository,
+    SharedView,
 };
 mod lifecycle;
 use lifecycle::FileIdentity;

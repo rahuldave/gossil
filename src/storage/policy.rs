@@ -17,7 +17,7 @@ impl WriteTransaction<'_> {
     /// # Arguments
     /// * `principal` - Sealed local repository and owner binding.
     /// # Returns
-    /// Success when durable policy matches the sealed local binding.
+    /// Success when durable policy matches the sealed local binding and catalog4 has an exact zero-or-one checkout count.
     /// # Errors
     /// Rejects absent or mismatched complete policy and owner bindings, corrupt rows and SQL failures.
     pub(super) async fn validate_principal(
@@ -37,7 +37,7 @@ impl WriteTransaction<'_> {
                 [row] => match row.get(1) { Some(Value::Integer(version @ (1 | 4))) => *version, _ => return Err(StorageError::state("unsupported storage version")) },
                 _ => return Err(StorageError::state("repository principal or complete policy unavailable")),
             };
-            if version == 4 && self.query_bound("SELECT checkout_count FROM g_storage WHERE singleton=1",vec![]).await? != vec![vec![Value::Integer(0)]] {
+            if version == 4 && !matches!(self.query_bound("SELECT checkout_count,(SELECT count(*) FROM g_checkout) FROM g_storage WHERE singleton=1",vec![]).await?.as_slice(), [row] if matches!(row.as_slice(), [Value::Integer(count @ (0 | 1)), Value::Integer(actual)] if count == actual)) {
                 return Err(StorageError::state("unsupported populated catalog4 checkout scope"));
             }
             let expected = vec![vec![Value::Text(principal.repository.clone()), Value::Integer(version), Value::Text("gest-ticket-v1".into()), Value::Integer(1), Value::Text(principal.owner.clone())]];

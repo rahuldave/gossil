@@ -63,8 +63,12 @@ task creation artifacts in Fossil's ticket format. Callers supply the identity, 
 These modules do not store records or add commands.
 
 Native storage initializes an empty public root without a checkout through the
-library API. Bound checkout creation also supports bounded private content
-operations. The root is a check-in with no files. File-containing check-ins, general
+library API. It can then register one existing directory and authenticate that
+registration by ID or exact root. Registration changes the database only; it
+selects no files and publishes no checkout locator. See the
+[native storage guide](docs/native-storage.md#register-one-existing-directory).
+
+Bound catalog1 creation also supports bounded private content operations. The root is a check-in with no files. File-containing check-ins, general
 version-control commands, Gest task management, a server and a user interface
 remain planned. Build this version from source.
 

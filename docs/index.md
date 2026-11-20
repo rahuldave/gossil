@@ -37,7 +37,7 @@ Gest is a task and artifact tracker. The task and project converters in the modu
 | Parse structural artifact records | [Artifact parser](artifact-parser.md) |
 | Compare normalized byte lines | [Line diff](diff.md) |
 | Own a local database transaction | [Local storage](local-storage.md) |
-| Initialize an empty root or store private bytes | [Native storage](native-storage.md) |
+| Initialize an empty root, register a directory or store private bytes | [Native storage](native-storage.md) |
 | Validate decoded task snapshots in memory | [Gest task values](gest-task-values.md) |
 | Emit bounded task creation artifact bytes | [Task tickets](task-ticket.md) |
 | Validate decoded project snapshots in memory | [Gest project values](gest-project-values.md) |

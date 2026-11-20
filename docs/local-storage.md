@@ -4,8 +4,9 @@
 
 The `storage` module opens local libSQL files and owns one write transaction
 at a time. Its low-level lifecycle API also supports the validated
-[native storage boundary](native-storage.md), which installs the complete schema
-and implements empty-root initialization and bounded private content operations.
+[native storage boundary](native-storage.md). That boundary installs the complete
+schema and implements empty-root initialization, one native directory registration
+and bounded catalog1 private content operations.
 Opening that higher-level repository validates its stored root and authority metadata.
 Migration and broader adapters remain unimplemented.
 

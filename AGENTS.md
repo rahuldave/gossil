@@ -31,9 +31,11 @@ both directions through `gossil vcs test-delta`. The local libSQL boundary owns 
 The CLI also exposes `vcs init` and `vcs new` through `gossil` or `gos`, with
 `v` as the group alias. These create an empty repository without a checkout.
 
-Native local storage supports checkout-free initialization and reopen of strict
-empty catalog4 repositories. Bound catalog1 creation and bounded private content
-operations remain supported; private writes refuse catalog4. File-containing check-ins, broader crosslinks,
+Native local storage supports checkout-free initialization, then one library
+checkout registration at the empty root. Reopen admits strict catalog4 with zero
+or one registration. ID and exact-root views authenticate existing registrations;
+they publish no locator and add no CLI open command. Bound catalog1 creation and
+bounded private content operations remain supported; private writes refuse catalog4. File-containing check-ins, broader crosslinks,
 the remaining source port and Gest integration remain planned work.
 
 ## Commands and evidence
