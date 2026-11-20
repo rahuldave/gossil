@@ -6,6 +6,8 @@ use super::{LocalStore, StorageError, content::Limits, policy::Principal};
 use libsql::Value;
 use std::path::Path;
 
+mod initialization;
+
 /// Fixed scalar predicates bound returned data, not total SQLite scan work.
 /// The admitted root cannot produce other artifact types or a current file/merge selection.
 /// Historical rows, diagnostics, opaque content and target-only references retain no root authority.
@@ -143,7 +145,7 @@ impl LocalOwnerRepository {
     }
     /// Create a complete repository in an exclusively created destination file.
     /// # Arguments
-    /// * `path` - New database path; existing files are rejected.
+    /// * `path` - New native database path; existing destinations and recovery sidecars are rejected.
     /// * `options` - Local bindings, native root fields and explicit finite bounds.
     /// # Returns
     /// A sealed local owner after complete root admission and commit.
@@ -155,7 +157,10 @@ impl LocalOwnerRepository {
     /// }
     /// ```
     /// # Errors
-    /// Rejects an existing destination, invalid root/bindings, or any initialization failure.
+    /// Rejects an existing destination, any `-journal`, `-wal` or `-shm` entry,
+    /// invalid root/bindings, or any initialization failure. Sidecar observation
+    /// failures retain their operating-system cause. Sidecar observations do not
+    /// prevent concurrent pathname changes; callers must retain a stable local namespace.
     pub async fn create(
         path: impl AsRef<Path>,
         options: CreateOptions<'_>,
@@ -175,7 +180,8 @@ impl LocalOwnerRepository {
     /// # Returns
     /// A sealed owner after complete initialization and admission.
     /// # Errors
-    /// Rejects existing destinations, invalid identities or roots, resource limits and filesystem or SQL failures.
+    /// Rejects existing destinations or recovery sidecars, invalid identities or roots,
+    /// resource limits and filesystem or SQL failures.
     async fn create_internal(
         path: impl AsRef<Path>,
         options: CreateOptions<'_>,
@@ -212,6 +218,7 @@ impl LocalOwnerRepository {
         .unwrap_or(usize::MAX)
         .min(options.parse_limits.input_bytes);
         let bytes = empty_root_bytes(options.date, options.user, root_ceiling)?;
+        initialization::check_sidecars(path)?;
         let file = std::fs::OpenOptions::new()
             .read(true)
             .write(true)
@@ -219,6 +226,7 @@ impl LocalOwnerRepository {
             .open(path)
             .map_err(|e| StorageError::caused("exclusive repository creation failed", e))?;
         drop(file);
+        initialization::check_sidecars(path)?;
         let mut store = LocalStore::open(path).await?;
         let mut tx = store.begin_write().await?;
         let result = async {

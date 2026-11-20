@@ -9,6 +9,13 @@ and implements empty-root initialization and bounded private content operations.
 Opening that higher-level repository validates its stored root and authority metadata.
 Migration and broader adapters remain unimplemented.
 
+`LocalOwnerRepository::create` refuses existing `-journal`, `-wal` and `-shm`
+entries beside the destination before creating the database. It preserves those
+entries, including dangling symlinks and directories. Observation failures retain
+the operating-system cause. The checks append literal native filename suffixes.
+They observe the namespace before creation and again before SQLite entry.
+Callers must keep that namespace stable throughout creation.
+
 ## Open and terminate a write
 
 ```rust
