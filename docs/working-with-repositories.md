@@ -18,7 +18,7 @@ are not Gossil aliases.
 
 A separately installed development preview supports a small local file workflow.
 This unmerged preview is not a release, and full qualification is incomplete.
-The installed preview has a known crash during database cleanup. Use a disposable folder and copies of files, and keep Git
+Use a disposable folder and copies of files, and keep Git
 as the source authority.
 
 These commands require that preview's installed `gos` or `gossil` executable.

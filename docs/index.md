@@ -15,7 +15,7 @@ private and shared workflows.
 
 For an already installed development preview, try
 the [disposable file-history walkthrough](working-with-repositories.md#try-the-installed-development-preview).
-The preview is unmerged and has a known crash during database cleanup.
+The preview is unmerged.
 
 Read [compare Gossil with Git](compare-with-git.md) for the planned coordination
 of file history, exact issue state and versioned links to code.
