@@ -2,7 +2,7 @@
 
 Gossil aims to keep agent work, issues and file history together alongside Git.
 Fossil is a version-control system. This build exposes a Rust library for its delta bytes, artifact records
-and local storage. Its `gossil` CLI creates, applies and checks deltas between files.
+and local storage. Its `gossil` CLI creates, applies and checks deltas between files, and initializes empty repositories.
 The library includes bounded compression, content hashes, token escaping,
 artifact checksums and owned local database transactions.
 
@@ -25,6 +25,18 @@ creating and applying deltas in both directions. The
 [getting started guide](docs/getting-started.md) includes a complete example.
 The `gos` executable and the `v` group name run the same diagnostics as
 `gossil` and `vcs`. See [short names](docs/cli.md#short-names) to run `gos` from this source checkout.
+
+## Initialize an empty repository
+
+From this source checkout, run `just gossil vcs init NEW_REPOSITORY`.
+The destination must be new. `vcs new` is an alias. Initialization creates the
+native empty root and prints project and server identifiers, the administrator
+name and an initial remote-access password. It creates no checkout.
+See [initialization options](docs/cli.md#initialize-a-repository) for dates and SHA1.
+
+This source capability is separate from the existing default mini-VCS preview.
+Versioned executable and matching documentation delivery follow qualification;
+this page records no new installation or publication result.
 
 ## Use the library
 

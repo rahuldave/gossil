@@ -15,7 +15,10 @@ projections and filesystem recovery remain planned.
 repository without registering a checkout. Supply the project and local owner
 identities, administrator, password, SQLite date expression, SHA1 selection and
 finite content/parser limits. The API requires an explicit administrator.
-It does not read environment variables or a preference database.
+It does not read environment variables or a preference database. The
+[`vcs init` CLI adapter](cli.md#initialize-a-repository) supplies generated
+identities and a password, and chooses the administrator from options or the
+environment. It uses this strict catalog4 contract; it does not bind a checkout.
 
 Initialization normalizes the date for the root D card. It installs the native
 default report, system users and administrator password digest. SHA1 selection

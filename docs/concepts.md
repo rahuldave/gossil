@@ -82,8 +82,13 @@ A transaction must commit or roll back before the connection returns to the
 store. The public interface does not expose arbitrary SQL.
 
 `LocalOwnerRepository` initializes a complete empty public root.
-Its `initialize` constructor creates a repository without a checkout. Its `create`
-constructor binds an existing checkout directory. Private content writes require the bound
+Its `initialize` constructor creates a repository without a checkout. The
+[`vcs init` command](cli.md#initialize-a-repository) calls this constructor,
+generates identities and a password, and selects a default administrator from
+the environment. The API requires those values explicitly. Its `create`
+constructor binds an existing checkout directory.
+
+Private content writes require the bound
 catalog1 repository and refuse the initializer-only catalog4 repository. The empty
 root is a check-in with no files. A private content write does not create a check-in that contains files.
 

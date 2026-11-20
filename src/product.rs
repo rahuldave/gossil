@@ -1,4 +1,4 @@
-//! Repository-free diagnostics for bounded Fossil delta creation and application.
+//! Route native repository initialization and repository-free Fossil delta diagnostics.
 use crate::delta::{DeltaError, Limits, apply, create};
 use std::collections::TryReserveError;
 use std::ffi::OsString;
@@ -248,13 +248,24 @@ fn dispatch(args: &[OsString]) -> Result<(), CommandError> {
 /// Print the adapter error once, with the native newline and exit status.
 ///
 /// # Returns
-/// The success exit code after a completed diagnostic, or the failure exit code
+/// The success exit code after initialization or a completed diagnostic, or the failure exit code
 /// after printing its error to standard error. The first argument `v` is accepted
 /// as an alias for `vcs`.
 pub fn entry() -> std::process::ExitCode {
     let mut args = std::env::args_os().skip(1).collect::<Vec<_>>();
     if args.first().is_some_and(|arg| arg == "v") {
         args[0] = OsString::from("vcs");
+    }
+    if args.first().is_some_and(|arg| arg == "vcs")
+        && args.get(1).is_some_and(|arg| arg == "init" || arg == "new")
+    {
+        return match crate::vcs_init::run(&args[2..]) {
+            Ok(()) => std::process::ExitCode::SUCCESS,
+            Err(error) => {
+                eprintln!("{error}");
+                std::process::ExitCode::FAILURE
+            }
+        };
     }
     match dispatch(&args) {
         Ok(()) => std::process::ExitCode::SUCCESS,

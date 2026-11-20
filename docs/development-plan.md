@@ -1,7 +1,7 @@
 # Development and contributing
 
 Gossil implements byte primitives, structural artifact parsing and bounded local
-storage. The `gossil` executable implements three delta diagnostics.
+storage. The `gossil` executable initializes empty repositories and implements three delta diagnostics.
 The generated [Rust API](api/index.qmd) describes the public library surface.
 
 The standalone [Gest task values converter](gest-task-values.md) validates eleven decoded fields.
@@ -169,6 +169,21 @@ size planning; task strings and metadata remain borrowed.
 
 Historical task-value source mappings and run accounting are preserved in
 [the task value evidence archive](https://github.com/rahuldave/gossil/blob/main/docs/_history/task-value-evidence.md).
+
+## Empty repository CLI
+
+The source routes `gossil` and `gos`, `vcs` and `v`, and `init` and `new`
+to the checkout-free native initializer. It accepts administrator, date and SHA1
+options and uses SQLite randomness in a private memory database. Login fallback
+uses environment values without a preference database. Existing delta diagnostics
+retain their dispatcher and argument contracts.
+
+The focused CLI controls are in `tests/vcs_init_cli.rs`; parser, environment,
+password and receipt controls are in the private `vcs_init` module. Source edits
+and authored tests do not establish a passing qualification run. Versioned
+executable and matching documentation delivery remain separate steps after
+qualification. Preserve the existing default mini-VCS preview during that delivery.
+Checkout registration and file operations remain future work.
 
 ## Recommendations
 
