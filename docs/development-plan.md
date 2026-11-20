@@ -41,9 +41,9 @@ just setup
 just install --check
 ```
 
-`just setup` fetches Cargo dependencies. `just install` refreshes the saved tool
-selection from those companion packages. Neither command acquires the pinned
-Fossil source or local Tcl and Fossil binaries.
+`just setup` supplies the pinned Linux Tcl and Fossil references, or checks the
+existing tools on other hosts, then fetches Cargo dependencies.
+`just install` refreshes the saved tool selection from those companion packages.
 The [runner guide](conformance.md#local-prerequisites) describes those prerequisites.
 
 Read `AGENTS.md` before changing the repository. Follow the installed Gest
@@ -66,7 +66,9 @@ just docs-check
 just docs-build
 ```
 
-`just test` and `just integration` use the installed coverage workflow.
+`just test` first runs nine focused Python installer controls, then runs the Rust
+unit tests through the installed coverage workflow. `just integration` uses that
+Rust coverage workflow. Its reports do not measure Python installer coverage.
 Keep failed, blocked, skipped and disabled-feature observations distinct from
 passes. Installed tool copies and hook files do not prove actual executions.
 Complete the required checks and independent review before delivery to `main`.
