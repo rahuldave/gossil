@@ -5,9 +5,9 @@ A delta encodes target bytes as new bytes and copies from an origin file.
 This exercise needs no repository and does not change Git history.
 
 Gossil is intended to keep agent files, issues and their history alongside
-Git. Its command line initializes empty repositories and has three delta diagnostics. The Rust library
-also supports artifact parsing, local storage and task and project value
-conversion. Try the delta commands below. Read
+Git. Its command line initializes empty repositories and has three delta
+diagnostics. The Rust library also supports artifact parsing, local storage
+and task, project and author value conversion. Try the delta commands below. Read
 [working with repositories](working-with-repositories.md) for the intended
 file and issue workflows.
 
@@ -89,7 +89,8 @@ just gossil v test-delta "$example_dir/origin" "$example_dir/target"
 
 The source also builds a `gos` executable with the same diagnostics. See
 [short executable names](cli.md#short-names) for its source invocation.
-These aliases do not enable issue, checkout or sync commands.
+The same aliases support [native checkout open](cli.md#open-a-native-checkout).
+Issue, file-recording and sync commands remain planned.
 
 ## Handle failures and choose the next step
 
@@ -123,6 +124,23 @@ a checkout or tracked files. It reads no preference file. See the
 [initialization reference](cli.md#initialize-a-repository) for date, hash and login options.
 The existing default mini-VCS preview is a separate installation; these commands
 build the current source.
+
+## Register an existing directory
+
+After the initialization above, create a directory and register it from source:
+
+```sh
+mkdir example-work
+just gossil vcs open --repository example.gossil --checkout work --root example-work
+```
+
+Open registers the initial empty root and publishes its private lookup locator.
+It selects no files and requires no issue, project or author initialization.
+Configuration, permissions and existing markers can refuse the operation.
+Read [native checkout open](cli.md#open-a-native-checkout) before retrying a
+failure, because database commit and locator publication have distinct outcomes.
+This 0.4 source adds the open/locator capability. Publication and installation
+require their own delivery evidence.
 
 ## Recommendations
 

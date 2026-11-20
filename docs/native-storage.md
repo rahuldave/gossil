@@ -4,10 +4,9 @@
 
 The storage API creates an empty native repository without a checkout. Its
 bound-checkout constructor also supports private file bytes through one owned
-libSQL transaction. Its supported public
-graph is the initial empty check-in, which contains no files.
-General artifact crosslinks, Gest
-projections and filesystem recovery remain planned.
+libSQL transaction. Its supported public graph is the initial empty check-in,
+which contains no files. General artifact crosslinks, Gest projections and
+filesystem recovery remain planned.
 
 ## Initialize without a checkout
 
@@ -91,13 +90,11 @@ and repairs no registration or native key.
 Ordinary files and nested Git repositories in the directory remain unselected
 and unchanged. Registration creates no file check-in, materializes no files and
 publishes no `ROOT/.gossil/checkout.json` locator. These methods require no Gest
-project, issue or author initialization. The source CLI has no `vcs open`
-command yet.
-
-A future adapter must use the adopted locator publisher and recovery
-contract, including the same rules for explicit repository and checkout flags.
-The root lookup gives authenticated facts for that work. It does not recover
-a locator itself.
+project, issue or author initialization. The source
+[`vcs open` adapter](cli.md#open-a-native-checkout) composes these library methods
+with locator publication and recovery. Its explicit flags still use the same
+admission and publisher rules. Root lookup itself only gives authenticated
+facts and does not recover a locator.
 
 Reopen accepts exactly zero or one such catalog4 registration. It independently
 checks the complete checkout, owner and key inventory against `checkout_count`,
@@ -158,15 +155,15 @@ private file name return the same unavailable error. A private association with
 already public root bytes preserves their public classification. A receipt for
 an unsupported general graph cannot grant shared access.
 
-## Admission validity
+## Check admission before operations
 
-Admission is the validation required before repository operations.
-
-A sealed admission proof records SQLite `data_version`, connection
+Admission is the validation required before repository operations. A sealed
+admission proof records SQLite `data_version`, connection
 `total_changes` and exact durable authority metadata. Each content operation
 checks that proof under its writer reservation before a private lookup.
 The saved metadata includes the root-conflict predicates. Refreshing only the
 connection counter cannot accept a newly contradictory projection.
+
 An unrelated external commit conservatively requires explicit readmission.
 Unexpected writes on the same connection also require readmission.
 

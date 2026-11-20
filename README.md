@@ -2,7 +2,7 @@
 
 Gossil aims to keep agent work, issues and file history together alongside Git.
 Fossil is a version-control system. This build exposes a Rust library for its delta bytes, artifact records
-and local storage. Its `gossil` CLI creates, applies and checks deltas between files, and initializes empty repositories.
+and local storage. Its `gossil` CLI creates, applies and checks deltas between files, initializes empty repositories and opens one native empty-root checkout.
 The library includes bounded compression, content hashes, token escaping,
 artifact checksums and owned local database transactions.
 
@@ -37,9 +37,11 @@ native empty root and prints project and server identifiers, the administrator
 name and an initial remote-access password. It creates no checkout.
 See [initialization options](docs/cli.md#initialize-a-repository) for dates and SHA1.
 
-This source capability is separate from the existing default mini-VCS preview.
-Versioned executable and matching documentation delivery follow qualification;
-this page records no new installation or publication result.
+To register an existing directory and publish its lookup locator, use the source
+[`vcs open` command](docs/cli.md#open-a-native-checkout). It selects no files.
+This 0.4 source adds open and locator recovery. This guide records no new
+installation or publication result.
+The existing default mini-VCS preview remains a separate installation.
 
 ## Use the library
 
@@ -53,10 +55,11 @@ assert_eq!(restored, b"after");
 See [application setup and examples](docs/examples.md) for the required Cargo
 provider patch, and [library concepts](docs/concepts.md) for module choices.
 
-Gest is a task and artifact tracker. The two converters below use its task and project record model.
-The [Gest task values converter](docs/gest-task-values.md) validates complete decoded
-task snapshots in memory. The [Gest project values converter](docs/gest-project-values.md)
-validates all four canonical project fields.
+Gest is a task and artifact tracker. The converters below use its task, project and author record model.
+The converters validate complete decoded snapshots in memory. They cover
+[task values](docs/gest-task-values.md), all four canonical
+[project fields](docs/gest-project-values.md), and all six canonical
+[author fields](docs/gest-author-values.md).
 
 The [task ticket emitter](docs/task-ticket.md) turns validated task snapshots into bounded
 task creation artifacts in Fossil's ticket format. Callers supply the identity, actor and date.

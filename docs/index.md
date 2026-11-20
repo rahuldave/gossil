@@ -7,6 +7,8 @@ Fossil is a version-control system. This build exposes a Rust library for its de
 local storage. The `gossil` command creates, applies and checks deltas between
 files without a version-control checkout. It also initializes an empty
 repository through [`vcs init`](cli.md#initialize-a-repository), without creating a checkout.
+The source [`vcs open` command](cli.md#open-a-native-checkout) registers or reopens
+one empty-root checkout and publishes its lookup locator without selecting files.
 
 Start with a [file round trip](getting-started.md), browse the
 [CLI reference](cli.md), or use the [Rust API reference](api/index.qmd).
@@ -23,7 +25,7 @@ of file history, exact issue state and versioned links to code.
 The [examples](examples.md) show library calls for deltas, compressed bytes,
 hashes and token escaping.
 
-Gest is a task and artifact tracker. The task and project converters in the module table use its task and project record model.
+Gest is a task and artifact tracker. The converters in the module table use its task, project and author record model.
 
 ## Choose a library module
 
@@ -41,6 +43,7 @@ Gest is a task and artifact tracker. The task and project converters in the modu
 | Validate decoded task snapshots in memory | [Gest task values](gest-task-values.md) |
 | Emit bounded task creation artifact bytes | [Task tickets](task-ticket.md) |
 | Validate decoded project snapshots in memory | [Gest project values](gest-project-values.md) |
+| Validate decoded author snapshots in memory | [Gest author values](gest-author-values.md) |
 
 The [concepts guide](concepts.md) explains how these modules fit together.
 Gossil is under development. General version-control commands, Gest task

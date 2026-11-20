@@ -818,6 +818,48 @@ mod tests {
             vec![vec![Value::Integer(0)]]
         );
     }
+    /// Compose a real generic COMMIT failure with complete prepared-locator cleanup.
+    /// This helper fixture does not establish native repository or registration admission.
+    /// # Panics
+    /// Panics if preparation, deferred-FK rollback, connection reuse or cleanup differs.
+    #[tokio::test]
+    async fn commit_failure_discards_prepared_locator_without_publication() {
+        use crate::checkout_locator::{Locator, Prepared, prepare_directory};
+        let temp = tempfile::tempdir().unwrap();
+        let path = temp.path().join("db");
+        let marker = temp.path().join("marker");
+        let mut store = LocalStore::open(&path).await.unwrap();
+        fixture(&mut store).await;
+        prepare_directory(&marker).unwrap();
+        let value = Locator::new(
+            &path,
+            "0123456789abcdef0123456789abcdef01234567".into(),
+            "work".into(),
+        )
+        .unwrap();
+        let prepared = Prepared::new(&marker, &value).unwrap();
+        let entries = std::fs::read_dir(&marker)
+            .unwrap()
+            .map(|entry| entry.unwrap().path())
+            .collect::<Vec<_>>();
+        assert_eq!(entries.len(), 1);
+        assert_eq!(crate::checkout_locator::read(&entries[0]).unwrap(), value);
+        assert!(!marker.join("checkout.json").exists());
+        let mut tx = store.begin_write().await.unwrap();
+        tx.execute("INSERT INTO child VALUES(99)").await.unwrap();
+        let error = tx.commit().await.unwrap_err();
+        assert!(error.operation.contains("FOREIGN KEY"));
+        assert_eq!(error.cleanup, None);
+        assert!(!store.is_poisoned());
+        assert!(store.connection.as_ref().unwrap().is_autocommit());
+        assert_eq!(
+            read(&mut store, "SELECT count(*) FROM child").await,
+            vec![vec![Value::Integer(0)]]
+        );
+        drop(prepared);
+        assert_eq!(std::fs::read_dir(&marker).unwrap().count(), 0);
+        assert!(!marker.join("checkout.json").exists());
+    }
     /// Verify cleanup failures retain the first error and poison the store.
     #[tokio::test]
     async fn failed_cleanup_preserves_original_and_poison_policy() {

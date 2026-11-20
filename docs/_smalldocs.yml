@@ -51,6 +51,7 @@ website:
           - native-storage.md
           - gest-task-values.md
           - gest-project-values.md
+          - gest-author-values.md
       - section: Rust API
         href: api/index.qmd
         contents:

@@ -29,8 +29,8 @@ scope distinguishes shared access from an authorized owner's combined view.
 Record-only changes create no file check-in, so a file hash
 alone cannot identify issue history.
 
-Later arrivals leave an exact historical
-set fixed, subject to access permission and byte availability.
+Later arrivals do not change the selected historical set. Access still depends on
+permission and byte availability.
 
 Typed links connect an issue to exact code versions and support reverse lookup
 from code to issues. A Git target pins its registered repository, commit, path
@@ -92,6 +92,9 @@ After `initialize`,
 `register_checkout` can register one existing directory in catalog4.
 `checkout_view` authenticates its ID; `checkout_view_for_root` authenticates its
 exact root. These library methods change no working files and publish no locator.
+The source [`vcs open` adapter](cli.md#open-a-native-checkout) adds locator
+publication and recovery around those admitted database operations. It also
+leaves working files unselected.
 
 Private content writes require the bound
 catalog1 repository and refuse catalog4, with or without its single registration. The empty
@@ -106,9 +109,9 @@ The [native storage guide](native-storage.md) defines admission, content bounds
 and access rules. General links between artifacts in the repository graph remain planned, so parsing
 does not establish parent relationships or resolve references. Sync and team authentication also remain planned.
 
-## Task and project values
+## Gest record values
 
-Gest is a task and artifact tracker. These converters use its task and project record model.
+Gest is a task and artifact tracker. These converters use its task, project and author record model.
 The `gest_task_values` module validates eleven already decoded task fields.
 It returns an owned record with a standardized status and UTC timestamps.
 The [task values guide](gest-task-values.md) defines validation and caller responsibilities.
@@ -120,11 +123,15 @@ It returns an owned record with an identifier, nullable archive time and UTC tim
 The [project values guide](gest-project-values.md) defines the complete field contract.
 A local checkout root is outside the canonical project record.
 
+The `gest_author_values` module validates six canonical author fields and returns
+an owned record. It preserves names and nullable email exactly, normalizes author
+types and converts timestamps to UTC. The [author values guide](gest-author-values.md)
+defines this conversion separately from native actors and local principals.
+
 The [task ticket emitter](task-ticket.md) produces bounded creation artifact bytes
 from a validated task, a separate native ticket identity, actor bytes and a typed UTC date.
-For task and project conversion, callers must check raw field presence, duplicates
-and byte limits before passing
-decoded values to a converter. Storage integration and task or project commands remain separate work.
+Before passing decoded task, project or author values to a converter, callers
+must check raw field presence, duplicates and byte limits. Storage integration and task, project or author commands remain separate work.
 
 ## Recommendations
 
