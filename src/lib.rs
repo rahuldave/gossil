@@ -791,6 +791,8 @@ mod gest_value_validation;
 
 /// Shared implementation for both product executable names.
 pub mod product;
+/// Adapt checkout-free native initialization for the product executables.
+mod vcs_init;
 
 /// Represent validated native dates as integer nanoseconds.
 pub mod native_date;

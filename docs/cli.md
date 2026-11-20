@@ -1,7 +1,7 @@
 # CLI reference
 
-The `gossil` executable has three file diagnostics. Each command runs without
-a repository. Run it from this source checkout with `just gossil`, which builds
+The `gossil` executable initializes empty repositories and has three file diagnostics.
+Each diagnostic runs without a repository. Run it from this source checkout with `just gossil`, which builds
 and runs the executable through Cargo. Cargo may print build messages on stderr.
 
 | Command | Arguments | Successful output |
@@ -19,6 +19,45 @@ just gossil vcs test-delta FILE1 FILE2
 Replace capitalized arguments with file paths. The commands accept exactly the
 number of paths shown. Each diagnostic requires the `vcs` or `v` group. Neither executable has help subcommands.
 File data comes from paths and goes to paths. Stdin and stdout do not carry it.
+
+## Initialize a repository
+
+```sh
+just gossil vcs init --admin-user alice --date-override '2026-11-18 12:34:56' NEW_REPOSITORY
+just gossil vcs new --sha1 ANOTHER_NEW_REPOSITORY
+```
+
+Initialization accepts exactly one destination. Both executable names and both
+group names support `init` and its `new` alias. The destination must be new;
+existing files, symlinks and SQLite recovery sidecars are refused.
+
+| Option | Behavior |
+|---|---|
+| `--admin-user USERNAME`, `-A USERNAME` | Set the initial administrator |
+| `--date-override DATETIME` | Set the root date; default `now` |
+| `--sha1` | Use SHA1 for the initial root and native hash policy |
+| `--help`, `-h` | Print initialization help and exit successfully |
+| `--` | Treat following arguments as literal destination names |
+
+Long value options also accept `--name=value`. Without an explicit administrator,
+the first nonempty environment value wins in this order. The candidates are
+`GOSSIL_USER`, `USER`, `LOGNAME` and `USERNAME`, with `root` as the fallback.
+No preference file is read or created.
+
+Administrator bytes reach native validation unchanged; the storage API requires valid UTF-8.
+Repository filenames retain native bytes, including names beginning with `file:`.
+Dates must be UTF-8 and accepted by the native date provider.
+
+The receipt prints the committed project and server identifiers, administrator
+and initial remote-access password. Keep that password private. A receipt write
+failure returns status 1 after commit and leaves the repository initialized.
+Other initialization failures also return status 1. Initialization help returns 0.
+
+The command creates an empty native root without a checkout. Templates, project
+display fields and global preference options are unsupported and rejected before
+creation. Checkout registration, file recording and history commands remain planned.
+This source interface is separate from the existing default mini-VCS preview;
+this guide does not record a new installation or publication.
 
 ## Short names
 
@@ -59,7 +98,7 @@ acceptance rules are in the [runner guide](conformance.md).
 ## Planned commands
 
 Broader version-control commands and Gest task commands are planned. They are
-not accepted by `gossil` or `gos`. The short names above apply only to the
+not accepted by `gossil` or `gos`. The short names above apply to initialization and the
 three delta diagnostics.
 
 ## Recommendations

@@ -2,7 +2,7 @@
 
 Gossil aims to keep agent work, issues and file history together alongside Git.
 Fossil is a version-control system. This build exposes a Rust library for its delta bytes, artifact records
-and local storage. Its `gossil` CLI creates, applies and checks deltas between files.
+and local storage. Its `gossil` CLI creates, applies and checks deltas between files, and initializes empty repositories.
 The library includes bounded compression, content hashes, token escaping,
 artifact checksums and owned local database transactions.
 
@@ -29,6 +29,18 @@ creating and applying deltas in both directions. The
 The `gos` executable and the `v` group name run the same diagnostics as
 `gossil` and `vcs`. See [short names](docs/cli.md#short-names) to run `gos` from this source checkout.
 
+## Initialize an empty repository
+
+From this source checkout, run `just gossil vcs init NEW_REPOSITORY`.
+The destination must be new. `vcs new` is an alias. Initialization creates the
+native empty root and prints project and server identifiers, the administrator
+name and an initial remote-access password. It creates no checkout.
+See [initialization options](docs/cli.md#initialize-a-repository) for dates and SHA1.
+
+This source capability is separate from the existing default mini-VCS preview.
+Versioned executable and matching documentation delivery follow qualification;
+this page records no new installation or publication result.
+
 ## Use the library
 
 ```rust
@@ -50,8 +62,9 @@ The [task ticket emitter](docs/task-ticket.md) turns validated task snapshots in
 task creation artifacts in Fossil's ticket format. Callers supply the identity, actor and date.
 These modules do not store records or add commands.
 
-Native storage initializes a complete empty public root, a check-in with no files,
-and supports bounded private content operations. File-containing check-ins, general
+Native storage initializes an empty public root without a checkout through the
+library API. Bound checkout creation also supports bounded private content
+operations. The root is a check-in with no files. File-containing check-ins, general
 version-control commands, Gest task management, a server and a user interface
 remain planned. Build this version from source.
 

@@ -5,7 +5,7 @@ A delta encodes target bytes as new bytes and copies from an origin file.
 This exercise needs no repository and does not change Git history.
 
 Gossil is intended to keep agent files, issues and their history alongside
-Git. Its command line currently has three delta diagnostics. The Rust library
+Git. Its command line initializes empty repositories and has three delta diagnostics. The Rust library
 also supports artifact parsing, local storage and task and project value
 conversion. Try the delta commands below. Read
 [working with repositories](working-with-repositories.md) for the intended
@@ -108,6 +108,21 @@ For application code, use the [library examples](examples.md) and
 [generated Rust API](api/index.qmd). The application manifest must select
 Gossil's bundled libSQL provider as shown in those examples. The provider implements
 the Fossil date arithmetic required by artifact parsing and repository validation.
+
+## Create an empty repository
+
+Choose a destination that does not exist:
+
+```sh
+just gossil vcs init --admin-user alice example.gossil
+```
+
+The receipt gives the project and server identifiers and the initial administrator
+password. Save the password privately. This command creates the empty root without
+a checkout or tracked files. It reads no preference file. See the
+[initialization reference](cli.md#initialize-a-repository) for date, hash and login options.
+The existing default mini-VCS preview is a separate installation; these commands
+build the current source.
 
 ## Recommendations
 

@@ -40,7 +40,7 @@ impl Limits {
 }
 
 /// One complete operation's work accounting, including every traversed RID.
-struct Budget {
+pub(super) struct Budget {
     /// Validated caller ceilings for this operation.
     limits: Limits,
     /// Aggregate compressed bytes charged so far.
@@ -58,7 +58,7 @@ impl Budget {
     /// Empty accounting with validated finite limits.
     /// # Errors
     /// Rejects invalid finite limits.
-    fn new(limits: Limits) -> Result<Self, StorageError> {
+    pub(super) fn new(limits: Limits) -> Result<Self, StorageError> {
         Ok(Self {
             limits: limits.validate()?,
             stored: 0,
@@ -99,7 +99,7 @@ impl Budget {
     /// Success after charging decoded work within the total ceiling.
     /// # Errors
     /// Rejects aggregate decoded work overflow or a total above the caller ceiling.
-    fn charge_decoded(&mut self, length: usize) -> Result<(), StorageError> {
+    pub(super) fn charge_decoded(&mut self, length: usize) -> Result<(), StorageError> {
         self.decoded = self
             .decoded
             .checked_add(length as u64)
@@ -281,8 +281,32 @@ impl WriteTransaction<'_> {
         if let Some(error) = &self.failure {
             return Err(error.clone());
         }
+        let new_budget = Budget::new(limits);
+        let mut budget = self.record(new_budget)?;
+        self.read_owner_content_budget(principal, name, &mut budget)
+            .await
+    }
+    /// Read verified content using one caller-owned aggregate allowance.
+    /// # Arguments
+    /// * `principal` - Sealed local owner binding.
+    /// * `name` - Native full content identity.
+    /// * `budget` - Aggregate stored and decoded allowances retained by the caller.
+    /// # Returns
+    /// Owned authenticated reconstructed bytes.
+    /// # Errors
+    /// Rejects invalid policy, unavailable content, corrupt chains, exhausted allowances and SQL failures.
+    pub(super) async fn read_owner_content_budget(
+        &mut self,
+        principal: &super::policy::Principal,
+        name: &str,
+        budget: &mut Budget,
+    ) -> Result<Vec<u8>, StorageError> {
+        if let Some(error) = &self.failure {
+            return Err(error.clone());
+        }
         let result = async {
-            let mut budget = Budget::new(limits)?;
+            budget.visited.clear();
+            let limits = budget.limits;
             self.validate_principal(principal).await?;
             let mut wanted = name.to_owned();
             let mut chain = Vec::new();
@@ -466,5 +490,140 @@ mod tests {
             })
             .is_err()
         );
+    }
+    /// A prior transaction failure takes precedence over later invalid content allowances.
+    #[tokio::test]
+    async fn owner_content_read_preserves_first_failure_before_invalid_budget() {
+        let mut store = LocalStore::open_inner(":memory:", false).await.unwrap();
+        let mut tx = store.begin_write().await.unwrap();
+        let first = tx
+            .record::<()>(Err(StorageError::caused(
+                "first",
+                std::io::Error::from_raw_os_error(13),
+            )))
+            .unwrap_err();
+        let principal = super::super::policy::Principal {
+            repository: "not-authority".into(),
+            owner: "not-authority".into(),
+        };
+        let invalid = Limits {
+            max_chain_depth: 0,
+            ..limits()
+        };
+        let error = tx
+            .read_owner_content(&principal, &name(b"abc"), invalid)
+            .await
+            .unwrap_err();
+        assert_eq!(error.operation, first.operation);
+        assert_eq!(
+            std::error::Error::source(&error)
+                .unwrap()
+                .downcast_ref::<std::io::Error>()
+                .unwrap()
+                .raw_os_error(),
+            Some(13)
+        );
+        let terminal = tx.commit().await.unwrap_err();
+        assert_eq!(terminal.operation, first.operation);
+        assert_eq!(
+            std::error::Error::source(&terminal)
+                .unwrap()
+                .downcast_ref::<std::io::Error>()
+                .unwrap()
+                .raw_os_error(),
+            Some(13)
+        );
+    }
+
+    /// Repeated verified reads reset traversal identity while retaining both aggregate byte counters.
+    #[tokio::test]
+    async fn cumulative_content_budget_retains_charges_across_verified_reads() {
+        use crate::storage::{CreateOptions, LocalOwnerRepository};
+        let temp = tempfile::tempdir().unwrap();
+        let path = temp.path().join("repo");
+        let repository = "0123456789abcdef0123456789abcdef01234567";
+        let mut owner = LocalOwnerRepository::create(
+            &path,
+            CreateOptions {
+                repository_id: repository,
+                owner_id: "owner",
+                checkout_id: "checkout",
+                checkout_root: temp.path(),
+                date: b"2026-11-18T00:00:00.000",
+                user: b"Owner",
+                content_limits: Limits {
+                    max_stored_bytes: 4096,
+                    max_output_bytes: 4096,
+                    max_chain_depth: 4,
+                    max_total_stored_bytes: 8192,
+                    max_total_decoded_bytes: 16384,
+                },
+                parse_limits: crate::artifact::ParseLimits {
+                    input_bytes: 4096,
+                    cards: 16,
+                    owned_bytes: 16384,
+                    entries: 64,
+                },
+            },
+        )
+        .await
+        .unwrap();
+        let bytes = b"owner bytes";
+        let hash = name(bytes);
+        owner
+            .put_private_file_content(&hash, bytes, limits())
+            .await
+            .unwrap();
+        drop(owner);
+        let stored = compression::pack(bytes, -1).unwrap().len() as u64;
+        let mut budget = Budget::new(Limits {
+            max_stored_bytes: stored,
+            max_total_stored_bytes: stored * 4,
+            max_total_decoded_bytes: bytes.len() as u64 * 4,
+            ..limits()
+        })
+        .unwrap();
+        let principal = super::super::policy::Principal {
+            repository: repository.into(),
+            owner: "owner".into(),
+        };
+        let mut store = LocalStore::open(&path).await.unwrap();
+        let mut tx = store.begin_write().await.unwrap();
+        for reads in [1, 2] {
+            assert_eq!(
+                tx.read_owner_content_budget(&principal, &hash, &mut budget)
+                    .await
+                    .unwrap(),
+                bytes
+            );
+            assert_eq!(budget.stored, stored * reads);
+            assert_eq!(budget.decoded, bytes.len() as u64 * 2 * reads);
+            assert_eq!(budget.visited.len(), 1);
+        }
+        let first = tx
+            .read_owner_content_budget(&principal, &hash, &mut budget)
+            .await
+            .unwrap_err();
+        assert_eq!(
+            first.operation,
+            "native content envelope: declared capacity exceeds caller limit"
+        );
+        assert!(matches!(
+            std::error::Error::source(&first)
+                .unwrap()
+                .downcast_ref::<compression::BlobError>(),
+            Some(compression::BlobError::Limit)
+        ));
+        assert_eq!(budget.decoded, bytes.len() as u64 * 4);
+        assert_eq!(budget.limits.max_total_decoded_bytes - budget.decoded, 0);
+        assert_eq!(budget.stored, stored * 3);
+        let terminal = tx.commit().await.unwrap_err();
+        assert_eq!(terminal.operation, first.operation);
+        assert!(matches!(
+            std::error::Error::source(&terminal)
+                .unwrap()
+                .downcast_ref::<compression::BlobError>(),
+            Some(compression::BlobError::Limit)
+        ));
     }
 }

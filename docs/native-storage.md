@@ -2,15 +2,52 @@
 
 [API: `LocalOwnerRepository`](api/storage.qmd#LocalOwnerRepository) gives the exact contract.
 
-The storage API creates a complete empty native repository and stores
-private file bytes through one owned libsql transaction. Its supported public
+The storage API creates an empty native repository without a checkout. Its
+bound-checkout constructor also supports private file bytes through one owned
+libSQL transaction. Its supported public
 graph is the initial empty check-in, which contains no files.
 General artifact crosslinks, Gest
 projections and filesystem recovery remain planned.
 
+## Initialize without a checkout
+
+`LocalOwnerRepository::initialize(path, InitializeOptions)` creates a native
+repository without registering a checkout. Supply the project and local owner
+identities, administrator, password, SQLite date expression, SHA1 selection and
+finite content/parser limits. The API requires an explicit administrator.
+It does not read environment variables or a preference database. The
+[`vcs init` CLI adapter](cli.md#initialize-a-repository) supplies generated
+identities and a password, and chooses the administrator from options or the
+environment. It uses this strict catalog4 contract; it does not bind a checkout.
+
+Initialization normalizes the date for the root D card. It installs the native
+default report, system users and administrator password digest. SHA1 selection
+sets the native hash policy and hashes the actual root with SHA1.
+Otherwise the root uses SHA3-256. `initialization_identity()` returns the stored
+project-code and server-code after checking admission.
+
+This constructor installs catalog4 with `checkout_count=0`. Its only nonempty
+`g_*` tables are `g_storage`, `g_local_owner` and `g_public_receipt`.
+Reopen authenticates the single canonical empty root, its native hash, date,
+event, branch tags and receive/index facts. It checks the exact schema,
+complete policy, owner binding and foreign keys.
+
+All 54 other local tables must be empty. Extra native content or indexed
+history also refuses admission, even when checkout counters remain zero.
+Registered, populated, typed and mixed catalog4 states remain unsupported.
+Catalog5 and catalog6 remain unsupported. No upgrade occurs on open.
+Private content writes through this handle also refuse catalog4.
+
+The destination and its recovery neighbors must remain stable through engine
+cleanup. Existing destinations and recovery entries are preserved.
+Failures retain the first cause and report cleanup uncertainty separately.
+A possibly opened engine or an attempted commit prevents automatic main-file
+removal. Pathname observations do not certify engine disposal or atomic binding.
+Templates, global preferences and project display fields are outside this API.
+
 ## Local owner and shared view
 
-`LocalOwnerRepository::create` exclusively creates the database file and binds
+`LocalOwnerRepository::create` installs catalog1, exclusively creates the database file and binds
 its repository, owner and checkout identities. The initial root contains native
 C, D, R, T, U and Z records. The parser validates those bytes with date conversion
 on the same owned SQL connection.
@@ -29,8 +66,9 @@ Metadata errors preserve the underlying operating-system cause.
 
 `LocalOwnerRepository::open` requires an existing readable and writable regular
 file. Its explicit `AdmissionLimits` bound root reconstruction and parsing.
-Admission checks canonical bytes, native branch tags and event, the public
-receipt, checkout bindings, complete policy and native versions.
+For the bound catalog1 constructor, admission checks canonical bytes, native
+branch tags and event, the public receipt, checkout bindings, complete policy
+and native versions.
 The receipt must identify the root itself with validation class
 `local-explicit-publication`. The event fields and both branch tags must match
 the canonical root, including absent event overrides.
@@ -42,8 +80,8 @@ A producer identifies the artifact that creates a fact. A target identifies
 what a fact refers to. Admission distinguishes those roles rather than rejecting
 every row that mentions the root.
 
-Operational and provenance rows, invalid diagnostic records and historical
-selection records can remain. Unrelated private blobs and physical deltas can
+In catalog1, operational and provenance rows, invalid diagnostic records and
+historical selection records can remain. Unrelated private blobs and physical deltas can
 remain, including a private delta whose baseline is the public root. These rows
 do not extend the supported public graph or implement their corresponding
 product operations.
@@ -74,7 +112,7 @@ connection counter cannot accept a newly contradictory projection.
 An unrelated external commit conservatively requires explicit readmission.
 Unexpected writes on the same connection also require readmission.
 
-Supported private file operations refresh only `total_changes` after checked
+In catalog1, supported private file operations refresh only `total_changes` after checked
 commit or rollback. They preserve the admitted root and policy, and they never
 advance the saved `data_version`. Future root or policy mutation APIs must
 invalidate or replace the proof after full validation.
@@ -85,8 +123,9 @@ Creation and open use their separate, explicit admission limits.
 
 ## Content bounds and rollback
 
-Use `put_private_file_content` to store private bytes and `read_content` to
-retrieve them through `LocalOwnerRepository`. Every content read or write receives finite `Limits`. Those limits bound each
+For a bound catalog1 repository, use `put_private_file_content` to store private
+bytes. Use `read_content` to retrieve content through `LocalOwnerRepository`.
+Every content read or write receives finite `Limits`. Those limits bound each
 stored envelope, decoded output, chain depth and aggregate stored and decoded
 work. Reconstruction checks every intermediate native size and full hash.
 
@@ -117,7 +156,9 @@ their native and typed crosslinks are implemented.
 
 ## Schema and remaining work
 
-The complete schema comes from six SQL files under `src/storage/schema/`. The required object inventory and complete stored definitions are
+Each catalog installs six SQL inputs under `src/storage/schema/`. Catalog4
+substitutes `adapter-catalog4.sql` for the catalog1 adapter. The required object
+inventory and complete stored definitions are
 checked before mutation. Known optional schema families return an unsupported
 configuration error. Unregistered persistent triggers receive a separate error.
 
@@ -128,5 +169,6 @@ unimplemented. The public APIs do not offer those operations.
 
 ## Recommendations
 
-Use explicit local admission and finite content limits. Next, consult the
+Prefer `initialize` for a repository without a checkout and `create` for an
+explicit bound checkout. Use finite admission limits. Next, consult the
 [generated API](api/index.qmd) for repository creation, admission and content methods.
