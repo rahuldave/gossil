@@ -1,0 +1,25 @@
+{
+  "finding": "P2 portability, /tmp/gossil-glob-preflight-20261118/sol-adversarial.json",
+  "previous_freeze": "/tmp/gossil-glob-freeze-20261118-vryfpa99",
+  "changed_contract": "Unix exact argument bytes; non-Unix lossless Unicode-to-UTF-8 or typed rejection without replacement",
+  "dependency_impact": "ast-grep as_bytes calls inspected before change: pattern and candidate arguments only; both now use cfg-gated helper",
+  "changed_files": [
+    "src/bin/gossil.rs",
+    "docs/glob.md",
+    "evidence/glob/prose-check.log",
+    "evidence/glob/portability-*"
+  ],
+  "tests": {
+    "cargo test --locked --bin gossil glob_argument_encoding_policy": "1 passed",
+    "just test-paths tests/glob.rs": "6 passed",
+    "just lint": "passed",
+    "just docstring-check": "passed",
+    "nossaifd check -v docs/glob.md": "see prose-check.log"
+  },
+  "installed_targets": [
+    "aarch64-apple-darwin",
+    "x86_64-unknown-linux-gnu"
+  ],
+  "non_unix_validation": "No installed non-Unix target. Source/cfg review only; Windows-only unpaired-surrogate test not executed. No target installation or runtime qualification.",
+  "gates": "Parent-owned fresh coverage, independent review/prose and ordered acceptance pending"
+}

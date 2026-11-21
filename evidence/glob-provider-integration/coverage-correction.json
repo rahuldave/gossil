@@ -1,0 +1,42 @@
+{
+  "observed_gaps": {
+    "src/bin/gossil.rs": [
+      58,
+      87,
+      88,
+      217,
+      218,
+      219
+    ]
+  },
+  "production_glob_changed_line_coverage": "100%",
+  "correction": "Added actual CLI dispatch budget/source diagnostic and closed stdout process regressions; no implementation changes.",
+  "ast_impact": {
+    "tool": "ast-grep",
+    "scope": "CommandError::Glob and unicode_glob_argument in src/bin/gossil.rs",
+    "public_api_changes": false
+  },
+  "qualification": "Executed ordinary Rust tests on Unix; no new native Fossil observations or non-Unix runtime claim.",
+  "second_run": {
+    "exit_code": 1,
+    "coverage_percent": 99,
+    "missing_lines": {
+      "src/bin/gossil.rs": [
+        88
+      ]
+    },
+    "follow_up": "Actual dispatch usage and settings diagnostics retain no nested cause; focused ordinary regression passed."
+  },
+  "final_run": {
+    "command": "just coverage-check",
+    "exit_code": 0,
+    "changed_executable_lines": 293,
+    "missing_lines": 0,
+    "coverage_percent": 100,
+    "source_files": [
+      "src/bin/gossil.rs",
+      "src/glob.rs"
+    ],
+    "scope": "Full installed unit and integration recipes, sequential instrumentation; no exclusions."
+  }
+}

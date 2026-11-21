@@ -1,0 +1,143 @@
+{
+  "classification": "source inspection and Rust execution; no new native Fossil runs",
+  "source_revision": "b3a1c8efb2731dffbd5cc38c58ac349746de6da6",
+  "sources": {
+    "src/glob.c": "35024750c5decb2fa281c0462cee7bc0d94e17e20478d689b193af6c1e5da724",
+    "src/blob.c": "19f47a4a0e4f9c435aca397ddfb7c0e83e3c6cdf410262e4b030ca2b1296fa9a",
+    "test/glob.test": "b8cc987104daad63c15c18d176af0b8dd6ae7e625b7ff94f10a0ff8ec45927d3",
+    "COPYRIGHT-BSD2.txt": "f65c4693891811303213aad3cc737d85114fc0ede82ec65bc0b923069b646c55"
+  },
+  "dispositions": {
+    "glob_create": "src/glob.rs::glob_create",
+    "glob_match": "src/glob.rs::Glob::glob_match",
+    "glob_multi_match": "src/glob.rs::glob_multi_match",
+    "glob_expr": "src/glob.rs::glob_expr",
+    "glob_free": "Rust ownership and Drop",
+    "glob_test_cmd": "src/bin/gossil.rs test-glob adapter; setting lookup deferred",
+    "glob_render_json_to_blob": "follow-up",
+    "glob_render_json_to_cgi": "follow-up"
+  },
+  "assertions": [
+    {
+      "id": "glob-parse-100.1",
+      "source": "test/glob.test",
+      "test": "tests/glob.rs::upstream_assertions"
+    },
+    {
+      "id": "glob-parse-101.1",
+      "source": "test/glob.test",
+      "test": "tests/glob.rs::upstream_assertions"
+    },
+    {
+      "id": "glob-parse-102.1",
+      "source": "test/glob.test",
+      "test": "tests/glob.rs::upstream_assertions"
+    },
+    {
+      "id": "glob-parse-103.1",
+      "source": "test/glob.test",
+      "test": "tests/glob.rs::upstream_assertions"
+    },
+    {
+      "id": "glob-parse-104.1",
+      "source": "test/glob.test",
+      "test": "tests/glob.rs::upstream_assertions"
+    },
+    {
+      "id": "glob-parse-105.1",
+      "source": "test/glob.test",
+      "test": "tests/glob.rs::upstream_assertions"
+    },
+    {
+      "id": "glob-parse-106.1",
+      "source": "test/glob.test",
+      "test": "tests/glob.rs::upstream_assertions"
+    },
+    {
+      "id": "glob-parse-107.1",
+      "source": "test/glob.test",
+      "test": "tests/glob.rs::upstream_assertions"
+    },
+    {
+      "id": "glob-parse-108.1",
+      "source": "test/glob.test",
+      "test": "tests/glob.rs::upstream_assertions"
+    },
+    {
+      "id": "glob-parse-109.1",
+      "source": "test/glob.test",
+      "test": "tests/glob.rs::upstream_assertions"
+    },
+    {
+      "id": "glob-parse-110.1",
+      "source": "test/glob.test",
+      "test": "tests/glob.rs::upstream_assertions"
+    },
+    {
+      "id": "glob-parse-111.1",
+      "source": "test/glob.test",
+      "test": "tests/glob.rs::upstream_assertions"
+    },
+    {
+      "id": "glob-parse-112.1",
+      "source": "test/glob.test",
+      "test": "tests/glob.rs::upstream_assertions"
+    },
+    {
+      "id": "glob-parse-113.1",
+      "source": "test/glob.test",
+      "test": "tests/glob.rs::upstream_assertions"
+    },
+    {
+      "id": "glob-parse-114.1",
+      "source": "test/glob.test",
+      "test": "tests/glob.rs::upstream_assertions"
+    },
+    {
+      "id": "glob-parse-115.1",
+      "source": "test/glob.test",
+      "test": "tests/glob.rs::upstream_assertions"
+    },
+    {
+      "id": "glob-parse-116.1",
+      "source": "test/glob.test",
+      "test": "tests/glob.rs::upstream_assertions"
+    },
+    {
+      "id": "glob-parse-117.1",
+      "source": "test/glob.test",
+      "test": "tests/glob.rs::upstream_assertions"
+    },
+    {
+      "id": "glob-parse-118.1",
+      "source": "test/glob.test",
+      "test": "tests/glob.rs::upstream_assertions"
+    },
+    {
+      "id": "glob-parse-119.1",
+      "source": "test/glob.test",
+      "test": "tests/glob.rs::upstream_assertions"
+    }
+  ],
+  "dependency_impact": "ast-grep inspected libsql uses and CLI dispatch before edit; new glob API has adapter/tests only",
+  "limitations": [
+    "No tracking, traversal, path-boundary, selection-persistence, settings lookup or JSON rendering implementation",
+    "No new native Fossil probes; extracted source expectations are not observed native output",
+    "SQLite matching CPU/stack behavior belongs to the selected engine; byte limits do not claim CPU bounds"
+  ],
+  "existing_native_evidence": {
+    "record": "evidence/baselines/fossil/glob-full_record.json",
+    "log": "evidence/baselines/fossil/glob-raw_log.log",
+    "observation": "Previously captured 20 glob assertions plus one framework assertion passed; not re-executed in this leaf"
+  },
+  "focused_checks": {
+    "just test-paths tests/glob.rs": "6 tests passed, final source",
+    "jlog run tclsh evidence/glob/run-upstream.tcl target/debug/gossil": "20 unchanged assertions passed",
+    "just lint": "passed",
+    "just docstring-check": "passed",
+    "just integration --test glob": "6 passed; before final added delimiter-only multi-match assertion",
+    "just test glob": "instrumented binary terminated by SIGKILL before tests; cause unestablished",
+    "full fresh gates": "parent-owned pending",
+    "independent prose": "parent-owned pending"
+  }
+}

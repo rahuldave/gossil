@@ -329,6 +329,15 @@ a complete matching locator. Their grammar differs from the installed preview
 above. They accept neither `--limit` nor `--json`. These source commands supply
 no new evidence about the installed preview or its reopen behavior.
 
+## Glob matching and explicit file tracking
+
+The prepared [glob module](glob.md) and repository-free
+[`test-glob` diagnostic](cli.md#inspect-a-fossil-glob-list) inspect pattern lists.
+They add no wildcard tracking or directory traversal. Continue to pass exact
+paths to add and scope commands. The [focused source checkpoint](glob.md#current-source-status)
+passed its recorded controls; complete delivery qualification and the installed
+development preview are separate.
+
 ## Recommendations
 
 Keep Git as the source authority and plan a small explicit selection of agent

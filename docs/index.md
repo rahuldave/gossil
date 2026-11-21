@@ -49,6 +49,7 @@ through `recorded_timeline`, with native metadata bytes and the shared root last
 | Compress bytes or compute a content hash | [Byte primitives](blob-primitives.md) |
 | Compute a legacy artifact checksum | [Artifact checksums](artifact-checksum.md) |
 | Escape bytes in Fossil tokens | [Token codec](token-codec.md) |
+| Match bounded Fossil pattern lists or construct SQL expressions | [Glob matching](glob.md) |
 | Parse structural artifact records | [Artifact parser](artifact-parser.md) |
 | Compare normalized byte lines | [Line diff](diff.md) |
 | Own a local database transaction | [Local storage](local-storage.md) |
@@ -76,6 +77,14 @@ require explicit repository, checkout, scope and recording metadata. Try the
 [private recording walkthrough](getting-started.md#record-private-files-from-source).
 [Development status](development-plan.md#private-recording-qualification) separates
 this source contract from released and installed versions.
+
+## Glob source checkpoint
+
+The [glob module](glob.md) and [`vcs test-glob` diagnostic](cli.md#inspect-a-fossil-glob-list)
+operate without storage. The [2026-11-21 focused checkpoint](glob.md#current-source-status)
+passed with the selected libSQL 0.10.0 engine. It does not establish complete
+frozen-tree gates or release qualification. Historical 0.9.30 results remain
+separate. File tracking continues to use exact paths.
 
 ## Recommendations
 

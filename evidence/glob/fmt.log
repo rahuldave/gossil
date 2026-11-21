@@ -1,0 +1,2 @@
+just --justfile '/Users/rahul/Projects/gossil.worktrees/gest-nqmzptsq-glob-port/Justfile' rust fmt "$@"
+cargo fmt --all "$@"

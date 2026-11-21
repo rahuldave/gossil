@@ -1,4 +1,5 @@
-//! Supply inherited-test tools, bounded byte primitives, local storage and decoded task values.
+//! Supply inherited-test tools, bounded byte primitives, Fossil glob matching, local storage
+//! and decoded task values.
 pub mod diff;
 mod invocation;
 pub use invocation::{InvocationId, InvocationPlan, PlanPin, PlanRow, Position};
@@ -814,3 +815,6 @@ mod vcs_tracking;
 pub mod native_date;
 /// Emit bounded task creation ticket bytes.
 pub mod task_ticket;
+
+/// Bounded Fossil glob parsing, matching and SQL expression construction.
+pub mod glob;

@@ -4,7 +4,9 @@ Gossil implements byte primitives, structural artifact parsing and bounded local
 storage. The `gossil` executable initializes empty repositories, opens native
 checkouts, adds explicit paths, lists tracked states and implements three delta
 diagnostics. The CLI calls the library to select immutable path scopes and record the complete
-private tracked tree.
+private tracked tree. The prepared [glob source](glob.md) adds bounded list
+matching and a repository-free diagnostic, with a focused source checkpoint
+described below.
 The generated [Rust API](api/index.qmd) describes the public library surface.
 
 The standalone [Gest task values converter](gest-task-values.md) validates eleven decoded fields.
@@ -18,6 +20,7 @@ caller-supplied native identity, actor and date. All three converters operate in
 | Available in source | Planned |
 |---|---|
 | Delta create, apply and two-way file checks | General version-control CLI |
+| Bounded glob API and `test-glob` diagnostic; focused checkpoint | Settings lookup, wildcard tracking and directory traversal |
 | Compression, hashes, token escaping and artifact checksums | Repository traversal and changes to persisted scope choices |
 | Eight structural artifact types with explicit limits | General crosslinks, migration, rebuild and filesystem recovery |
 | Native initialization/open, tracking, scope/commit CLI and library; catalog1 private content | Shared recording, sync and artifact publication |
@@ -276,8 +279,9 @@ establish execution. The qualification results above identify the checks that ra
 The current source adds `LocalOwnerRepository::recorded_timeline` and
 `RecordedCheckin` for complete supported catalog4 checkout ancestry. The checkpoint
 covers the library. A separate source CLI checkpoint adds `timeline` and `log`.
-The provisional Cargo version is 0.8.0, which is not a release or installation
-claim. Recheck actual release ordering before selecting a release version.
+The timeline delivery baseline is accepted at `4250b873` and released as
+`v0.8.0`. The checkpoint results below retain their original, narrower scope.
+They do not qualify subsequent source changes.
 
 The guarded focused run passed eight public API tests, 116 repository unit tests
 and 69 existing native integration tests. Strict lint also passed. The unit
@@ -323,8 +327,49 @@ inventories are compared; no physical database byte identity is claimed.
 The native comparison remains 34 owned assertions and zero inherited assertions.
 No broader Fossil parity is claimed. `cat` remains separate issue 18 work;
 issue 17 remains open. Neither issue is completed by these ancestry commands.
-Next, qualify the complete CLI tree and recheck release ordering before
-publication or installation.
+The later accepted timeline delivery at `4250b873` completed the `v0.8.0`
+release. That delivery is separate from the prepared glob source below.
+
+## Glob source checkpoint and pending qualification
+
+The prepared `glob` API and shared `test-glob` adapter port Fossil list parsing,
+matching and SQL construction. See the [module guide](glob.md) and
+[CLI grammar](cli.md#inspect-a-fossil-glob-list). The adaptation uses the existing
+selected libSQL 0.10.0 engine, with an exact direct `libsql-ffi` dependency and
+default features disabled. The 2026-11-21 focused graph comparison retained all
+126 nonroot packages and complete edges/features, with one 0.10.0 FFI provider.
+
+The 37 files under `evidence/glob/` and `evidence/glob-provider-integration/`
+retain the donor's exact historical bytes. The earlier execution used 0.9.30.
+Its 20 unchanged `glob.test` families, 100 through 119, and coverage results
+remain historical observations. They do not qualify the present source.
+
+The focused checkpoint built both product binaries and passed 3 CLI tests,
+9 glob integration tests, 5 filtered library units (4 glob plus one existing
+global-state control) and all 20 unchanged Tcl assertions. Controls cover all
+four aliases, exact output and errors, raw arguments, first-match and NUL
+boundaries, budgets and generated SQL through the selected engine. Non-Unix
+argument conversion has source review only, with no cross-compilation or runtime
+qualification.
+
+Source metadata selects candidate 0.9.0. The focused tree
+`a5583c3c6a73dda1a75ad1dd4c168efc06655c40` used a prospective checked-commit
+prerequisite while actual parent remained `4250b873`.
+[PR 47](https://github.com/rahuldave/gossil/pull/47) supplies typed commit and
+cleanup causes. Strict Rust 1.100 lint
+stopped at the prerequisite's `commit_checked` large-error lint. The owner's
+local fix is synchronized, without a fresh qualification claim for that source
+successor.
+
+Confirm PR 47's accepted revision before final gates.
+Then qualify the complete resulting tree, including the regression suite,
+independent prose and review, API/site checks and the frozen-tree Just gates.
+The focused checkpoint does not establish those complete gates.
+
+Release, isolated installation of the exact merged binaries and complete
+published HTML parity checks remain later delivery work. Preserve the default
+installed previews until their separate replacement is authorized. Glob adds
+no settings lookup, traversal, persistent selection or wildcard add/status.
 
 ## Recommendations
 

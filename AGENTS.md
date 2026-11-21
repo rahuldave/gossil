@@ -17,7 +17,8 @@ Read and follow @.agents/instructions/prose.md
   portable fixtures and the private storage composition test.
 - Local guides: `docs/conformance.md`, `docs/delta-encoder.md`,
   `docs/delta-decoder.md`, `docs/blob-primitives.md`, `docs/token-codec.md`,
-  `docs/local-storage.md`, `docs/native-storage.md`, `docs/artifact-parser.md` and `docs/development-plan.md`.
+  `docs/local-storage.md`, `docs/native-storage.md`, `docs/artifact-parser.md`,
+  `docs/glob.md` and `docs/development-plan.md`.
 - Product specification: `~/Projects/AIProjectInfra/docs/gossil/README.md` and its linked pages.
 - Workflow playbook: `.agents/skills/gtw/references/gest_codex_workflow.md`.
 
@@ -59,13 +60,16 @@ The library also exposes `recorded_timeline` and `RecordedCheckin` for complete
 current-first native ancestry, with the immutable shared root last. It preserves
 full hashes and exact native metadata bytes after full admission, within one
 transaction and shared operation ledgers. It reads no working-file contents and
-makes no durable mutation. The source CLI exposes `timeline` and `log` through
+makes no durable mutation.
+
+The source CLI exposes `timeline` and `log` through
 both executable and group aliases. It requires explicit repository and checkout
 selections and an existing matching locator, then prints complete ordered NDJSON.
 Opening admission, the API operation and serialization have separate finite
 allowances. See
 `docs/native-storage.md` and `docs/development-plan.md` for the contract and
-focused qualification limits. The proposed 0.8.0 Cargo version is not released.
+focused qualification limits. The timeline delivery baseline is accepted
+`4250b873` and released as `v0.8.0`. Those results do not qualify later glob source.
 
 ## Commands and evidence
 
@@ -116,10 +120,36 @@ smalldocs 0.5.12. The main-only workflow also uploads the built site and deploys
 it through GitHub Pages. Configure Pages to use GitHub Actions. A workflow
 file and a successful build do not prove that the public site is live.
 
+## Prepared glob boundary
+
+`src/glob.rs` ports bounded Fossil list parsing, matching and SQL construction.
+The source `test-glob` diagnostic uses the shared product entry for all four
+executable/group combinations. Keep the single selected 0.10.0 engine and the
+vendored provider patch. Only patterns are SQL-escaped; `glob_expr` requires a
+trusted SQL expression, with untrusted candidate values bound separately.
+
+The 37 retained glob evidence files describe historical source and 0.9.30
+execution. Preserve their bytes.
+
+The 2026-11-21 focused checkpoint built both binaries and passed
+3 CLI tests, 9 glob integration tests, 5 filtered library units (4 glob and one
+existing global-state control), and all 20 unchanged Tcl assertions. Its graph
+comparison retained all 126 nonroot packages and edges/features with one
+0.10.0 FFI provider. Source metadata selects candidate 0.9.0.
+
+The checkpoint
+used a prospective checked-commit prerequisite, with actual parent `4250b873`;
+it did not establish accepted prerequisite ancestry or full frozen-tree gates.
+Strict Rust 1.100 lint stopped at the prerequisite
+`commit_checked` large-error lint. The owner's local fix is synchronized;
+fresh qualification must cover that successor and the final accepted parent.
+Do not infer
+settings, traversal or wildcard tracking support from this module.
+
 ## Recommendations
 
 Use the module guides for explicit bounds and lifecycle contracts.
 Next, review the composed core and preserve the unchanged `delta1` evidence
 and its qualifications. The library checkpoint has passed its recorded gates.
-Next, qualify the separate timeline and log CLI checkpoint before integration
-and delivery; focused passes do not establish a final full-feature pass.
+Next, qualify the prepared glob source on the accepted base before integration
+and delivery; historical passes do not establish a current full-feature pass.

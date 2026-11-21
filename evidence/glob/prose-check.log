@@ -1,0 +1,34 @@
+WARN `--no-project` was provided, but no project was found
+docs/glob.md: checked by check.py of the skill, 0 hard, 32 soft
+  soft 3: an -ing form: parsing
+  soft 3: an -ing form: matching
+  soft 3: a semicolon
+  soft 8: an -ing form: matching
+  soft 8: an -ing form: using
+  soft 8: an -ing form: allocating
+  soft 8: an -ing form: calling
+  soft 18: an -ing form: closing
+  soft 18: an -ing form: matching
+  soft 24: an -ing form: handling
+  soft 24: an -ing form: matching
+  soft 24: maybe passive: are checked
+  soft 24: a semicolon
+  soft 32: an -ing form: beginning
+  soft 32: an -ing form: rendering
+  soft 32: a semicolon
+  soft 38: maybe passive: be represented
+  soft 38: maybe passive: were installed
+  soft 38: a semicolon
+  soft 46: an -ing form: executing
+  soft 46: an -ing form: including
+  soft 52: an -ing form: escaping
+  soft 52: an -ing form: matching
+  soft 52: an -ing form: passing
+  soft 59: an -ing form: passing
+  soft 59: maybe passive: was added
+  soft 68: an -ing form: tracking
+  soft 68: a semicolon
+  soft 75: an -ing form: matching
+  soft 75: an -ing form: rendering
+  soft 75: an -ing form: using
+  soft 75: an -ing form: tracking

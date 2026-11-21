@@ -1,0 +1,15 @@
+libsql-ffi v0.9.30 (/Users/rahul/Projects/gossil.worktrees/gest-nqmzptsq-glob-integration/vendor/libsql-ffi)
+└── gossil v0.1.0 (/Users/rahul/Projects/gossil.worktrees/gest-nqmzptsq-glob-integration)
+    └── gossil feature "default" (command-line)
+└── libsql-ffi feature "default"
+    └── libsql-sys v0.9.30
+        ├── libsql-sys feature "api"
+        │   └── libsql-sys feature "default"
+        │       └── libsql v0.9.30
+        │           ├── libsql feature "core"
+        │           │   └── gossil v0.1.0 (/Users/rahul/Projects/gossil.worktrees/gest-nqmzptsq-glob-integration) (*)
+        │           └── libsql feature "libsql-sys"
+        │               └── libsql feature "core" (*)
+        ├── libsql-sys feature "default" (*)
+        └── libsql-sys feature "wal"
+            └── libsql-sys feature "api" (*)

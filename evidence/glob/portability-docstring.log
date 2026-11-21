@@ -1,0 +1,5 @@
+just --justfile '/Users/rahul/Projects/gossil.worktrees/gest-nqmzptsq-glob-port/Justfile' rust docstring-check
+uv run --no-project --quiet --python '>=3.11' python '/Users/rahul/Projects/gossil.worktrees/gest-nqmzptsq-glob-port/.agents/just/rust/steps.py' docs
+WARN `--no-project` was provided, but no project was found
+jlog step docstring-check
+{"kind":"step","run":"2dd7e462-9b60-4295-afef-1cd2e9040a1e","harness":"codex","session":"01a1eda3-b6c6-7de1-9a40-2fd4ce472c7d","child":null,"time":"2026-11-18T08:06:52Z","argv":["just","docstring-check"],"step":"docstring-check"}

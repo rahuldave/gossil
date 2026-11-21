@@ -73,10 +73,14 @@ fidelity tests also passed. Their receipts are under
 the complete VCS or Gest feature sets.
 
 The wrapper correction was integrated for Gossil 0.4.1 and retained in the
-released 0.5.0 tracking baseline. This checkout prepares a separate private
-recording library checkpoint. The [development guide](development-plan.md)
-distinguishes that preparation from delivered tracking. The focused controls
-here do not establish a complete private-recording qualification or installation.
+released 0.5.0 tracking baseline and later timeline delivery in `v0.8.0`.
+The prepared [glob module](glob.md) adds a direct exact 0.10.0 FFI edge to the
+same selected engine. It changes no wrapper pin or provider patch. The
+[2026-11-21 focused checkpoint](glob.md#current-source-status) retained the
+complete nonroot graph and passed the focused runtime controls with 0.10.0.
+Complete frozen-tree qualification is separate; historical glob runs used 0.9.30.
+The [development guide](development-plan.md) separates current
+source preparation from recorded releases and installed previews.
 
 Writing follows nossaifd guidance, including Rosalind Reid's communication
 principles, Shreya Shankar's plain-writing guidance and Oskar Austegard's

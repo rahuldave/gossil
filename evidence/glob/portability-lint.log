@@ -1,0 +1,6 @@
+just --justfile '/Users/rahul/Projects/gossil.worktrees/gest-nqmzptsq-glob-port/Justfile' rust lint "$@"
+cargo clippy --workspace --all-targets --all-features --locked "$@" -- -D warnings
+    Checking gossil v0.1.0 (/Users/rahul/Projects/gossil.worktrees/gest-nqmzptsq-glob-port)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.82s
+jlog step lint
+{"kind":"step","run":"11c2aa61-2c5b-4ab1-b47b-def38aa46942","harness":"codex","session":"01a1eda3-b6c6-7de1-9a40-2fd4ce472c7d","child":null,"time":"2026-11-18T08:06:51Z","argv":["just","lint"],"step":"lint"}

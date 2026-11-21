@@ -1,0 +1,159 @@
+{
+  "paths": [
+    {
+      "path": "Cargo.toml",
+      "sha256": "da8c6e6bf0ccdac8c375cdb649f4dc7e7de09b12c5e77c20ec506ca87e27c1ce",
+      "matches_candidate": false
+    },
+    {
+      "path": "Cargo.lock",
+      "sha256": "0782dd8092e485be0172e6c003afd905757ba98a08a3904a3c0c36ae21ab0172",
+      "matches_candidate": false
+    },
+    {
+      "path": "src/glob.rs",
+      "sha256": "2d61b7bf6c061b883847bdb43df1502f0130352f41bd3b4c7c950b507a52596a",
+      "matches_candidate": true
+    },
+    {
+      "path": "tests/glob.rs",
+      "sha256": "1093cbd6bd3ce187e101be556d1cf6f7112063dbd0bf57b8b102de1b65b140ea",
+      "matches_candidate": true
+    },
+    {
+      "path": "src/lib.rs",
+      "sha256": "c2f368ada802f2a05c400cdf87d0511bbd2c2e2be922e7bbeafa25f1c60a92dd",
+      "matches_candidate": true
+    },
+    {
+      "path": "src/bin/gossil.rs",
+      "sha256": "eb1250a49de8d2c75b017baf7544f997e1e46ad0efff0f8fa326f17f447568e7",
+      "matches_candidate": true
+    },
+    {
+      "path": "docs/glob.md",
+      "sha256": "71f5313ee9f054eec8c797c186f82c5a3809205c157fc612aefb994e98fe2dd9",
+      "matches_candidate": true
+    },
+    {
+      "path": "evidence/glob/coverage-focused.log.gz",
+      "sha256": "40a8de3d4121b5fdb90a379fcb68100cc8dac7f1b6472b3fad5c8f306999a0da",
+      "matches_candidate": true
+    },
+    {
+      "path": "evidence/glob/docstring.log",
+      "sha256": "6a1ab99a62ad55393eaf3dbeb5fe36e1903cc1f51d0d938cdb360d43168ef661",
+      "matches_candidate": true
+    },
+    {
+      "path": "evidence/glob/early-failures.json",
+      "sha256": "e18ec8d7350f50546ea7e9b9235792a622649637ea419bd2643f214b61c7267a",
+      "matches_candidate": true
+    },
+    {
+      "path": "evidence/glob/engine-after.txt",
+      "sha256": "00f85f09a03e74e48444f0ef4c6e422778db6d853869f99531591774d2079e32",
+      "matches_candidate": true
+    },
+    {
+      "path": "evidence/glob/engine-before.txt",
+      "sha256": "079c56b73f40e35e2dfca51a008bd51955b850455ab983934a0d00d725be193d",
+      "matches_candidate": true
+    },
+    {
+      "path": "evidence/glob/fmt.log",
+      "sha256": "9d7db2de24db3d0e4431889d7f274c9bf9a3cd1f32aa6a48fefe24479cd1e9d4",
+      "matches_candidate": true
+    },
+    {
+      "path": "evidence/glob/fossil-license.txt",
+      "sha256": "f65c4693891811303213aad3cc737d85114fc0ede82ec65bc0b923069b646c55",
+      "matches_candidate": true
+    },
+    {
+      "path": "evidence/glob/green.log.gz",
+      "sha256": "e75cf33a6d1058e7135b315852e267ee7f7f674c98651294238fef8bb67ab9b2",
+      "matches_candidate": true
+    },
+    {
+      "path": "evidence/glob/integration-focused.log.gz",
+      "sha256": "f7a52901b09aca052aa84e040eba6dbae91d9508cd8157ddd7120a8645b657ea",
+      "matches_candidate": true
+    },
+    {
+      "path": "evidence/glob/lint.log",
+      "sha256": "90a720984b54a6eba327a09e244b785e6310442b9a7e029cadb39611a6a6f60b",
+      "matches_candidate": true
+    },
+    {
+      "path": "evidence/glob/portability-correction.json",
+      "sha256": "bd8ff72eba9061d283342abeb6f56924ec18413211930c950960f8977ad4411d",
+      "matches_candidate": true
+    },
+    {
+      "path": "evidence/glob/portability-docstring.log",
+      "sha256": "12c20e7175cd03505dfd7ffaf752d2458fd656a2273ab81578cfd1609c3e0630",
+      "matches_candidate": true
+    },
+    {
+      "path": "evidence/glob/portability-fmt.log",
+      "sha256": "9d7db2de24db3d0e4431889d7f274c9bf9a3cd1f32aa6a48fefe24479cd1e9d4",
+      "matches_candidate": true
+    },
+    {
+      "path": "evidence/glob/portability-lint.log",
+      "sha256": "76705932e4fb1722ab77b6f47612395689eba0fb893c147a267f15c43072656e",
+      "matches_candidate": true
+    },
+    {
+      "path": "evidence/glob/portability-regression.log",
+      "sha256": "2e8d34efff233aec7cdd98992ca6a31e4bb503125c35e14f27d2ba0e428886f4",
+      "matches_candidate": true
+    },
+    {
+      "path": "evidence/glob/portability-test.log",
+      "sha256": "17519c75205361b9955faa032cab23a633a7524f8c6856e2ec23e68b4e09063a",
+      "matches_candidate": true
+    },
+    {
+      "path": "evidence/glob/prose-check.log",
+      "sha256": "3cba50e4d2f9320b3d779a9f9b866de5af71ad61f91072254642807b3d9c7b2c",
+      "matches_candidate": true
+    },
+    {
+      "path": "evidence/glob/red.log.gz",
+      "sha256": "4c6b1588841ab707012019686c2a0576ddea0269a6ff48b6f115da1847833428",
+      "matches_candidate": true
+    },
+    {
+      "path": "evidence/glob/run-upstream.tcl",
+      "sha256": "b579ba888d03b21d22f0bc54ef35db9dbf8eea4cda440fab9c0af93cfefb3e95",
+      "matches_candidate": true
+    },
+    {
+      "path": "evidence/glob/source-map.json",
+      "sha256": "1afa7378b94738f34250c78f6292d05d3b080f0a989ff13e00ad9a5eca7d31be",
+      "matches_candidate": true
+    },
+    {
+      "path": "evidence/glob/upstream-candidate.log.gz",
+      "sha256": "f5c460fea09ea80ad58422cb9f2f6ceaa77283e6a36683579dba1c71a504dc9e",
+      "matches_candidate": true
+    },
+    {
+      "path": "evidence/glob/upstream-cases.hex",
+      "sha256": "50b6ccf09e62c15456ec8a8d4390da9a3696f625e7bee84dd806bd654d04bb44",
+      "matches_candidate": true
+    },
+    {
+      "path": "evidence/glob/upstream-glob.test",
+      "sha256": "b8cc987104daad63c15c18d176af0b8dd6ae7e625b7ff94f10a0ff8ec45927d3",
+      "matches_candidate": true
+    }
+  ],
+  "unchanged_candidate_paths": 28,
+  "vendor_changes": false,
+  "feature_tree_matches_reviewed_candidate_after_path_normalization": true,
+  "cargo_toml_diff": "Only adds libsql-ffi = { version = \"=0.9.30\", default-features = false }",
+  "cargo_lock_diff": "Only adds libsql-ffi to gossil dependency list; provider lock identity retained"
+}
