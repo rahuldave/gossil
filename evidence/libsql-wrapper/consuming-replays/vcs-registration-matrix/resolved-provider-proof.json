@@ -1,0 +1,49 @@
+{
+  "status": "Actual locked offline Cargo graph verified before execution",
+  "pin": "c02db34ae8a7e91ca7ab8faee18fe41515626940",
+  "packages": {
+    "gossil": {
+      "id": "path+file:///Users/rahul/Projects/gossil.worktrees/gest-rxpptpwz-file-tracking#gossil@0.5.0",
+      "version": "0.5.0",
+      "source": null,
+      "manifest_path": "/Users/rahul/Projects/gossil.worktrees/gest-rxpptpwz-file-tracking/Cargo.toml",
+      "real_manifest_path": "/Users/rahul/Projects/gossil.worktrees/gest-rxpptpwz-file-tracking/Cargo.toml",
+      "manifest_sha256": "4732456ea40848639864a849562c5f9c8a3c429739ea1dbae1217155e0a84123",
+      "features": []
+    },
+    "libsql": {
+      "id": "git+https://github.com/rahuldave/gossil-libsql?rev=c02db34ae8a7e91ca7ab8faee18fe41515626940#libsql@0.10.0",
+      "version": "0.10.0",
+      "source": "git+https://github.com/rahuldave/gossil-libsql?rev=c02db34ae8a7e91ca7ab8faee18fe41515626940#c02db34ae8a7e91ca7ab8faee18fe41515626940",
+      "manifest_path": "/tmp/gossil-vcs-provider-cargo-20261120/git/checkouts/gossil-libsql-ea6f9c6597ddb583/c02db34/Cargo.toml",
+      "real_manifest_path": "/private/tmp/gossil-vcs-provider-cargo-20261120/git/checkouts/gossil-libsql-ea6f9c6597ddb583/c02db34/Cargo.toml",
+      "manifest_sha256": "e6cbcfc367f53987d268e7d3c5b5621b6f5484ff31f59f9cf1bf9d4b3034f363",
+      "features": [
+        "core",
+        "libsql-sys"
+      ]
+    },
+    "libsql-ffi": {
+      "id": "path+file:///Users/rahul/Projects/gossil.worktrees/gest-rxpptpwz-file-tracking/vendor/libsql-ffi#0.10.0",
+      "version": "0.10.0",
+      "source": null,
+      "manifest_path": "/Users/rahul/Projects/gossil.worktrees/gest-rxpptpwz-file-tracking/vendor/libsql-ffi/Cargo.toml",
+      "real_manifest_path": "/Users/rahul/Projects/gossil.worktrees/gest-rxpptpwz-file-tracking/vendor/libsql-ffi/Cargo.toml",
+      "manifest_sha256": "3ef64a89ac6b04cf38adf80487b74e68cd9c0bcd900243b4f72b1fa3aec78c98",
+      "features": []
+    },
+    "libsql-sys": {
+      "id": "registry+https://github.com/rust-lang/crates.io-index#libsql-sys@0.10.0",
+      "version": "0.10.0",
+      "source": "registry+https://github.com/rust-lang/crates.io-index",
+      "manifest_path": "/tmp/gossil-vcs-provider-cargo-20261120/registry/src/index.crates.io-1949cf8c6b5b557f/libsql-sys-0.10.0/Cargo.toml",
+      "real_manifest_path": "/Users/rahul/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/libsql-sys-0.10.0/Cargo.toml",
+      "manifest_sha256": "b12e1dd453343be162a70df15b0bd3bf7473c060feb0201e254b06cfb31fa3c1",
+      "features": [
+        "api",
+        "default",
+        "wal"
+      ]
+    }
+  }
+}

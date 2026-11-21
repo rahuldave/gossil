@@ -1,0 +1,1692 @@
+{
+  "status": "static source/pin and actual metadata identity audit complete",
+  "sealed_unchanged_paths": [
+    {
+      "path": "Justfile",
+      "sha256": "7d9f16b66632a05eca83b314ac4997dde81320cb43be386aa4cf071200ff33cd"
+    },
+    {
+      "path": "README.md",
+      "sha256": "d772dcbe22e7123c795e42e836f02413800e174036895e6c32380d9021c3acac"
+    },
+    {
+      "path": "build.rs",
+      "sha256": "02bb37e8e68cc171dcad9530884358faaa4a355484efbb22d03a15e432fc2205"
+    },
+    {
+      "path": "docs/_smalldocs.yml",
+      "sha256": "10b42b2e253cd55c2aaede791976eea3cb13da4dfe064d8f8d86b1f488a227dd"
+    },
+    {
+      "path": "docs/concepts.md",
+      "sha256": "00ef45adc8a859fa84ae217897ea872c94e688a4c93e89be568a6ae2e272c4d6"
+    },
+    {
+      "path": "docs/development-plan.md",
+      "sha256": "435ebe9a67b1fd0c9751e59c8a1a2f14faa29b15a50b75b27d58fe0fa4fe4283"
+    },
+    {
+      "path": "docs/gest-service-support.md",
+      "sha256": "306e8da82bc7e42006ce7a527c163d37d95dcb2dc243fc314bab726750d1c1da"
+    },
+    {
+      "path": "docs/index.md",
+      "sha256": "33b01ff73811d2a64b13d87ae94b8d7d2acf86ffcf52a901bba39d2136c7ea44"
+    },
+    {
+      "path": "src/gest_cli_runtime.rs",
+      "sha256": "530c0618999a7d80a5c7864609fd7f6f2a7ffb5de9f1ea326bad1c9409d18152"
+    },
+    {
+      "path": "src/gest_cli_runtime/error.rs",
+      "sha256": "d57f5b47afe0313e1480ac59b59f777bc8e1f6de24a28b8cc573ae73d9f99c51"
+    },
+    {
+      "path": "src/gest_cli_runtime/error/tests.rs",
+      "sha256": "d9f9d6790d8675ab78494bf1ae39f0d57995739def0532d8daa9077431c056ec"
+    },
+    {
+      "path": "src/gest_service.rs",
+      "sha256": "039ca7db26c88a2247b77c22db46672a6a262e98ddf5f0a4cd836856e75e8eed"
+    },
+    {
+      "path": "src/gest_service/actions.rs",
+      "sha256": "d0b0d76b2a1753ecd65f7957f174d4c23631cc412ea5be98d0ca1d68929ff308"
+    },
+    {
+      "path": "src/gest_service/actions/meta.rs",
+      "sha256": "ddc2658e4dbe95e0ce572f5b4ebca5fc1e755640cc1e0c3db57f8fb8893c688c"
+    },
+    {
+      "path": "src/gest_service/actions/note.rs",
+      "sha256": "80c46dc28ef201fe9cc31a5b8a055a77615f7c36e8031de0e59e55a352994c73"
+    },
+    {
+      "path": "src/gest_service/actions/support_contract_tests.rs",
+      "sha256": "181ae4b76c7af04e7f68b0d691154af964b132b7adc40271b9052c64a2d190c4"
+    },
+    {
+      "path": "src/gest_service/actions/tag.rs",
+      "sha256": "ceeee1d5e986a54ca4606eb07f0c77a71b5154734ddb7a3e6e66235bf1754d35"
+    },
+    {
+      "path": "src/gest_service/actions/tests.rs",
+      "sha256": "bce3e28ba6cc4c1bfbe3f338820be6bc0c8b2b5953162821766780483335e95c"
+    },
+    {
+      "path": "src/gest_service/actions/transition.rs",
+      "sha256": "d398bc6fa63f10ae9209a296bb1e7e70b1336845efa02b5d7e693a531712df93"
+    },
+    {
+      "path": "src/gest_service/avatar_cache.rs",
+      "sha256": "8f17757cf48e196cd0e12c88dde5d6bc96dba9afb4265a8e1959ccff73b9cee8"
+    },
+    {
+      "path": "src/gest_service/avatar_cache/transport_controls.rs",
+      "sha256": "a114c0fc379d8b01f1950aaf82c58eb9e3a5d25b41b87e9c37c143b6b7063b4e"
+    },
+    {
+      "path": "src/gest_service/command.rs",
+      "sha256": "776c353128cad3d31de8d17f22fe96104d8dea53b70dd6fabae1c83424c80c84"
+    },
+    {
+      "path": "src/gest_service/command/native_error_tests.rs",
+      "sha256": "32e9f6ee8f3cdb5c5b44a6a8fc96b92d9cf47f481e6ba11c79d2ae6bef88af9c"
+    },
+    {
+      "path": "src/gest_service/command/ownership_tests.rs",
+      "sha256": "0c78cee403ad3d88d49b923c9b5ded0694ccb5a7043b6d235a1aeeab1a7c0bc4"
+    },
+    {
+      "path": "src/gest_service/command/tests.rs",
+      "sha256": "87a174f9d1ae1ab3fcce6818bb95ca69e57b1aaa8a56176a0009d8f9b5469258"
+    },
+    {
+      "path": "src/gest_service/command/validation_controls.rs",
+      "sha256": "52fa34018f7f0a7cbfd5754c4cc249717e959ac8bedd3a3dcd583c71437a5453"
+    },
+    {
+      "path": "src/gest_service/gest-LICENSE.txt",
+      "sha256": "d00518f42ee6be402fec0f4c2456358e2748848defe2ecf50f5faeb5f8ea8c46"
+    },
+    {
+      "path": "src/gest_service/git.rs",
+      "sha256": "689b2f6635e461fd80548d2fd73d140ce0e87b1ddb5926414d0366632aa9b6aa"
+    },
+    {
+      "path": "src/gest_service/git/identity_controls.rs",
+      "sha256": "0be21b335af17b42848e11f6e479c6ea1653b6e1f33a5b179f37b60827fd3eff"
+    },
+    {
+      "path": "src/gest_service/meta.rs",
+      "sha256": "c0dbead813ab645aa8a54ba803636d70709596cff195e437776c8133b1b855dc"
+    },
+    {
+      "path": "src/gest_service/model.rs",
+      "sha256": "14db79d8d215878e6906ea21549abbdd37623c549e7235a87059d9eeba20655b"
+    },
+    {
+      "path": "src/gest_service/model/artifact.rs",
+      "sha256": "585cf6972a1f9f554aa3f2f6b607aa0b684386a29e9b6a3de87aeca01effaf09"
+    },
+    {
+      "path": "src/gest_service/model/artifact/support_contract_tests.rs",
+      "sha256": "3261cc63f1d7fc8057ede9119d73bc7a85f45fab837b7666b1a50ec104905d30"
+    },
+    {
+      "path": "src/gest_service/model/author.rs",
+      "sha256": "f36c84d227e59670e6f6b5d4aa998d9c35c458f0bc68d3cadfd4472b42f2156e"
+    },
+    {
+      "path": "src/gest_service/model/entity_tag.rs",
+      "sha256": "d9f2e97783e860d74bb8be7d5aaff752856195008539cbf23d840cc0ae22c07d"
+    },
+    {
+      "path": "src/gest_service/model/iteration.rs",
+      "sha256": "66477161b90abf3335d66ef299d4e7c59d4edc59a9986c5189136faaa73dbc9d"
+    },
+    {
+      "path": "src/gest_service/model/note.rs",
+      "sha256": "c6240b841d475234acc5a570eb01d2923e3afc3daf6c4525908dc73e348c3cff"
+    },
+    {
+      "path": "src/gest_service/model/primitives.rs",
+      "sha256": "f0377d97b40d7564c66c03a630abc7a006861e27151b3507f1d9baca3df890ed"
+    },
+    {
+      "path": "src/gest_service/model/primitives/author_type.rs",
+      "sha256": "25f6564a550c06c3e2a4a6330b379162697c758b188e52528fe0eaa461f59d65"
+    },
+    {
+      "path": "src/gest_service/model/primitives/entity_type.rs",
+      "sha256": "cecb2c0fcf013d3e9cc1bd1b74e221e2c3336f3060a33766ba3bcd4978e27d6b"
+    },
+    {
+      "path": "src/gest_service/model/primitives/id.rs",
+      "sha256": "e5f46c520da4c199cc7dac0b43b9cfb0ad2f00feb731ae9673a1ddc4ba2d1f95"
+    },
+    {
+      "path": "src/gest_service/model/primitives/id/decoding_controls.rs",
+      "sha256": "0eeb14150e19a99737e4927239c697310d272125249520552d76eb73204b2b9f"
+    },
+    {
+      "path": "src/gest_service/model/primitives/iteration_status.rs",
+      "sha256": "b9ff1ae50d8a5b263e5bc354a95cb5398b9bc979e754330dcfe07d8ecce7f6e7"
+    },
+    {
+      "path": "src/gest_service/model/primitives/priority.rs",
+      "sha256": "1385b59b70341c737adcf1915b553266359ae997d992a187ef1f7d8c2d92ae5e"
+    },
+    {
+      "path": "src/gest_service/model/primitives/relationship_type.rs",
+      "sha256": "723e881e9e1e9254d2a3ec05c5edcdb138b5f763525285000876ecb9cef49e76"
+    },
+    {
+      "path": "src/gest_service/model/primitives/task_status.rs",
+      "sha256": "0504da98d534c87e8c9e8ee4ee6854abe9d495e1760322a9c850e008eef7a939"
+    },
+    {
+      "path": "src/gest_service/model/project.rs",
+      "sha256": "356b823429f23e0aaef892d28646f997aca62b5e67198e1191236556009c0f96"
+    },
+    {
+      "path": "src/gest_service/model/project_workspace.rs",
+      "sha256": "842c30504c3dfc3fd545351b0182aef9bae998fbf1ac51074b0eba132e79ab26"
+    },
+    {
+      "path": "src/gest_service/model/relationship.rs",
+      "sha256": "a4e9fdcb48601e600c4d3ec138e8e81da1d9b37b68fbb20ea1db9250cf8e6c0a"
+    },
+    {
+      "path": "src/gest_service/model/row_controls.rs",
+      "sha256": "5a16a952168eda46a701e857a4346bb66166549426022acc683bcdc4ff7274a9"
+    },
+    {
+      "path": "src/gest_service/model/tag.rs",
+      "sha256": "223ee68f7891d3d3c584991e5702a86e5372c3e10751b3423220f3a88161694f"
+    },
+    {
+      "path": "src/gest_service/model/task.rs",
+      "sha256": "17c3aa5330162c8463e50edea7d2337f9c9e692bfd947716da298306e879009a"
+    },
+    {
+      "path": "src/gest_service/model/transaction.rs",
+      "sha256": "74571ffd8faa1ae43958b5f4b8e977b08badc91a364971aca8ad96f9c4f0d44f"
+    },
+    {
+      "path": "src/gest_service/native_failure.rs",
+      "sha256": "ed5435a888c68f5c5d847f79bd36d416ae8e271b4f546f5fea5b5f22220190a3"
+    },
+    {
+      "path": "src/gest_service/native_failure/tests.rs",
+      "sha256": "907462004d7f86a8983bdbf810528aa362b43004338e1ad731fb835573cb8a29"
+    },
+    {
+      "path": "src/gest_service/repo.rs",
+      "sha256": "eb2b8e79e849e9d4425edf3d0f0905ba1ca46a7855a0ef4ff79c5ae17554f1f0"
+    },
+    {
+      "path": "src/gest_service/repo/artifact.rs",
+      "sha256": "c956d588548ea6aab307b92b0f8c41abbd00640b71360ccfd2feec793678d2d3"
+    },
+    {
+      "path": "src/gest_service/repo/author.rs",
+      "sha256": "fbb6417130d2b574cf6d5acb24fce464831394d19f5dacd0fbc0385ceb3c5dbe"
+    },
+    {
+      "path": "src/gest_service/repo/entity.rs",
+      "sha256": "ab4eaa4b1df9169ddadb582e6167125a545abaabedd6cef94b83c1a309429588"
+    },
+    {
+      "path": "src/gest_service/repo/entity/delete.rs",
+      "sha256": "780a85345de7c71719900f7b562e9b0b80ac23dac3e1c4ebcd01fa338be63bfd"
+    },
+    {
+      "path": "src/gest_service/repo/graph.rs",
+      "sha256": "1e082711ec309f86ead5377573c6ae690afdad98ef44869a0786f9451196bf7f"
+    },
+    {
+      "path": "src/gest_service/repo/graph/tests.rs",
+      "sha256": "b402c7639f6925c0c0ff55fbf75e48210839f0b9cd56eb6a07ad2ca91149f83c"
+    },
+    {
+      "path": "src/gest_service/repo/iteration.rs",
+      "sha256": "e5a432bdde3e29c14133e243bb3ec3469e7aafb11599387b2245aa6fca49de47"
+    },
+    {
+      "path": "src/gest_service/repo/note.rs",
+      "sha256": "cd766a0fd884714869144f230b2bafed229f21dd0d72a641ed07f534f6f3df24"
+    },
+    {
+      "path": "src/gest_service/repo/project.rs",
+      "sha256": "25cce0f3107ee7342db12c1533733cec8a6e48bfbaf4571d197944e2bf678110"
+    },
+    {
+      "path": "src/gest_service/repo/purge.rs",
+      "sha256": "cee0f19dad51f40240c090620d8ec8d30c06a4894a7e887a2c93987975598df8"
+    },
+    {
+      "path": "src/gest_service/repo/relationship.rs",
+      "sha256": "113b8b0fad115f061527f7a7401ace6babe4effeeb723a3a65576e2b35bc3a8b"
+    },
+    {
+      "path": "src/gest_service/repo/resolve.rs",
+      "sha256": "55088a3a3e0ab882692343a441e7f79555e794a42d4650088404909fa2ad0eb1"
+    },
+    {
+      "path": "src/gest_service/repo/resolve/probe_tests.rs",
+      "sha256": "ae9dab29f8e3a1c75a2017ed1c498e150e981d54d41411d2d5ba9126997ff7f7"
+    },
+    {
+      "path": "src/gest_service/repo/search.rs",
+      "sha256": "5b2849b447de927434e749bbd70723e6ab626b665bf09b77d5842d775bf509ce"
+    },
+    {
+      "path": "src/gest_service/repo/tag.rs",
+      "sha256": "0f219a8aaa71f934c4bed6a2cadfb220d4fe1fbe7eb870557721367871ca5923"
+    },
+    {
+      "path": "src/gest_service/repo/task.rs",
+      "sha256": "d8ef30f93ac9e2bd5e529a81ac09b880df229b45023e26a5d984075eafff2816"
+    },
+    {
+      "path": "src/gest_service/repo/transaction.rs",
+      "sha256": "58cc1930c231243ff9c1df1f70391a3cc082ba7dbd094674c955eef1a3e14df0"
+    },
+    {
+      "path": "src/gest_service/search_query.rs",
+      "sha256": "64a01d8e039fdec661dc08fed388ba20bccb08e145f97192e2822540c731a343"
+    },
+    {
+      "path": "src/gest_service/testing.rs",
+      "sha256": "efd0d8aa1d23ad3d1ff8624a783d93fd05a5ea3604a7e33ff6e634d4a0f9c256"
+    },
+    {
+      "path": "src/gest_service/testing/lifecycle_controls.rs",
+      "sha256": "464fde0fadeb68a10053e8050dd1d6876ec6c076649aabcae4c7fff48691f3dd"
+    },
+    {
+      "path": "src/lib.rs",
+      "sha256": "4e9a94ec353b6cb6e33efffbdf6cc49eceaca0311bde05ca2dfe5f4b075cb10b"
+    },
+    {
+      "path": "src/ui.rs",
+      "sha256": "7932cc1ede41b10f9a68d21196cd05004cde6e7e2d472a1427cbeebac35180e4"
+    },
+    {
+      "path": "src/ui/components.rs",
+      "sha256": "db189f3793c2769d811f908d51da682a34874d9ab14e82da63f92e636ece3f66"
+    },
+    {
+      "path": "src/ui/components/atoms.rs",
+      "sha256": "889698403c381c232b46f7867d455f460f8d374a2703ff96fa1cae25b9569124"
+    },
+    {
+      "path": "src/ui/components/atoms/badge.rs",
+      "sha256": "5e4eaead40d004dd5c0a6b1fe2d933822741fdc37acdfb39f8f1d0351746dfa7"
+    },
+    {
+      "path": "src/ui/components/atoms/column.rs",
+      "sha256": "3a1f1f7b6c04e222723c53a9a43d74a71ae2857b8dd9f340fd85b88dcb40a981"
+    },
+    {
+      "path": "src/ui/components/atoms/icon.rs",
+      "sha256": "28e798723e7dfe98c1a569c4970711756db267606dbbd45c8edc68e9a4180260"
+    },
+    {
+      "path": "src/ui/components/atoms/id.rs",
+      "sha256": "0086d2944505107ad396ee68a072fafda207e76bc86294702b867202570231bf"
+    },
+    {
+      "path": "src/ui/components/atoms/label.rs",
+      "sha256": "2715c75815615c8fc92ce99ee5b379c3ddc180d897e9d05afd829692490cea0f"
+    },
+    {
+      "path": "src/ui/components/atoms/separator.rs",
+      "sha256": "a9d62d8d4e22a2476e6fda9a4b99dda0d28f420b3c11bb46643a83edeae691d7"
+    },
+    {
+      "path": "src/ui/components/atoms/tag.rs",
+      "sha256": "20609e63dc77b786627a4d706139865837d42d4ed77c32ea2a2af9c0b337208b"
+    },
+    {
+      "path": "src/ui/components/atoms/title.rs",
+      "sha256": "2ddd2d35f5a3b452227f3ed0833f1763b0d72420cd9cbc4931711f36f5b09393"
+    },
+    {
+      "path": "src/ui/components/atoms/value.rs",
+      "sha256": "e09dd661166b84ba331fc728bc6f651d22ec46f03f575cbc1138f377db6a822e"
+    },
+    {
+      "path": "src/ui/components/molecules.rs",
+      "sha256": "b079fe0a09ac0f1b42ffad69933834dafd96616fba0da8578f083d86f9388065"
+    },
+    {
+      "path": "src/ui/components/molecules/banner.rs",
+      "sha256": "7d2f091691f31f420b3ec9c1ab0c31dc175f7775c0646beed4e9aef5415e0992"
+    },
+    {
+      "path": "src/ui/components/molecules/confirm_prompt.rs",
+      "sha256": "7a613be4f6aa099a69e7e91f0d6f2070903c54eebc020f7a216960c9c964ca81"
+    },
+    {
+      "path": "src/ui/components/molecules/confirm_prompt/controls.rs",
+      "sha256": "b004f12b9fbde4e00c2a21869b4eb57adc57d2bebc7f356801a3288405775b8c"
+    },
+    {
+      "path": "src/ui/components/molecules/confirm_prompt/pty_control.py",
+      "sha256": "d962f71f4ca0a7977b951e8effac81e0f58865c613bd8a73fae69c4b99cb9f20"
+    },
+    {
+      "path": "src/ui/components/molecules/empty_list.rs",
+      "sha256": "dff8248f1bec458874712ac438527eea3a1d3873b8308b005ae5bcc438049af1"
+    },
+    {
+      "path": "src/ui/components/molecules/error_message.rs",
+      "sha256": "091b9abd01bcbca20ec9a7e6235dc00a72530c0fef173d9e2545cb1f1def7c26"
+    },
+    {
+      "path": "src/ui/components/molecules/field_list.rs",
+      "sha256": "a40369321ff0345ae9d0fd498650cc3c916bb52f71232adb1d04642fc08fb69b"
+    },
+    {
+      "path": "src/ui/components/molecules/grid.rs",
+      "sha256": "7bf56da55729ae0dcb9367cfcf88739edd31d3d82ee7bd01b24e826a84e5cc00"
+    },
+    {
+      "path": "src/ui/components/molecules/grouped_list.rs",
+      "sha256": "56b7ef9a5f616d716fd66036a919bb86c262f028cd74567653a9b94ebf33a472"
+    },
+    {
+      "path": "src/ui/components/molecules/indicators.rs",
+      "sha256": "9bab43b09e68ee7a69567fd009c757f1abe9660c2898dfb33bc271ad2e26cdaa"
+    },
+    {
+      "path": "src/ui/components/molecules/output_controls.rs",
+      "sha256": "9bab2fc553a2eba96419093ba455444783b9c541a11829ccc411a81ddd7e641d"
+    },
+    {
+      "path": "src/ui/components/molecules/phase_header.rs",
+      "sha256": "ae0dc1ec72bc051d607d4cb9b9514e47cac3ed110b36e06afb8c6417fe253389"
+    },
+    {
+      "path": "src/ui/components/molecules/row.rs",
+      "sha256": "ed52c99315231a464e8db8b9314a7381afc00e2f5ddc07a1281a11982e1b2c72"
+    },
+    {
+      "path": "src/ui/components/molecules/status_badge.rs",
+      "sha256": "6a88f7cd12ae1aa267ae7663ddeb9cf18464f10b20ab9745640dd09812c99c94"
+    },
+    {
+      "path": "src/ui/components/molecules/success_message.rs",
+      "sha256": "23a527205ae73036d9c42cc1a789d4a72b2db102b22c0c9a7be444e16cd305d9"
+    },
+    {
+      "path": "src/ui/components/molecules/summary.rs",
+      "sha256": "7961f736b977ea2098d302461822f95a9ad93de811dd1df8cd40a65da4c662e1"
+    },
+    {
+      "path": "src/ui/components/molecules/task_row.rs",
+      "sha256": "814305415555ac7b6326db0411d05d3f92f35249fd56417b82004ad151aa9963"
+    },
+    {
+      "path": "src/ui/components/molecules/update_notice.rs",
+      "sha256": "5a8f8f151f25e9e3267a3de9d55c839f321fc7ed2e24db9e262cf94a86fda8a0"
+    },
+    {
+      "path": "src/ui/components/views.rs",
+      "sha256": "94262af93e8f863046768e14239c9c9b3693232c11085eca8307f71e2cbd7c95"
+    },
+    {
+      "path": "src/ui/components/views/artifact_detail.rs",
+      "sha256": "9500487d2f556ac8d3357097aa34c465901407bc50ae5e4329ac34ae99798f1c"
+    },
+    {
+      "path": "src/ui/components/views/artifact_list.rs",
+      "sha256": "19595e795e7c041e8247974cf7c27b6a603223bcb714d4e5cc8b717f9c2c652a"
+    },
+    {
+      "path": "src/ui/components/views/coverage_controls.rs",
+      "sha256": "48a98b85cf7adde19097c09f716b25fc6fd51de5658d30070abae72544ad2b74"
+    },
+    {
+      "path": "src/ui/components/views/iteration_detail.rs",
+      "sha256": "a11b9647d847b8a28a3673cfd5c5e77e06059aadddeb70419bbbb3e12d62e118"
+    },
+    {
+      "path": "src/ui/components/views/iteration_graph.rs",
+      "sha256": "4b28e32a2179f9fededf9bc606e67d01f9ac38d516ea9badab2bfaffd9c6fa04"
+    },
+    {
+      "path": "src/ui/components/views/iteration_list.rs",
+      "sha256": "b5426bc13a955491c38bfa7fd904988125ca549ac42ea711ddde79fb60acd79e"
+    },
+    {
+      "path": "src/ui/components/views/meta_get.rs",
+      "sha256": "d00c4cb4c6aa27cfb8f204f30f525d4a780853e6daf74d98e468d0e868a7c1e0"
+    },
+    {
+      "path": "src/ui/components/views/project_list.rs",
+      "sha256": "73c3710c5ce79630c8757cec90aa6243709d9774869193c354d017cd67d0ad70"
+    },
+    {
+      "path": "src/ui/components/views/project_show.rs",
+      "sha256": "3a0ddbda1c35c8e8ecdc2400c65771d9b2f64815008832a41379bdd7a63cce67"
+    },
+    {
+      "path": "src/ui/components/views/search_result.rs",
+      "sha256": "f19d5225ef84e1a1c3844a13f2bace714ac27613e135a3fe79e9d86957fb56e7"
+    },
+    {
+      "path": "src/ui/components/views/search_results.rs",
+      "sha256": "87eeaf3612ff0089adb7751ef25c9be1f4bdd9c54af2cf5a595c447074938e43"
+    },
+    {
+      "path": "src/ui/components/views/task_detail.rs",
+      "sha256": "9f9d0541d4e929f37c09a71ee12a92afa568320162b5feb9fc50368d945cba9b"
+    },
+    {
+      "path": "src/ui/components/views/task_list.rs",
+      "sha256": "018c6071d32ed1075316ac3ceeb8f86affca3af6c795ae529e8d0ab0a74e1b7d"
+    },
+    {
+      "path": "src/ui/config.rs",
+      "sha256": "fff0299f98af291ce8be96e288eec15a0f459ce26a6280634811dee616e83ee0"
+    },
+    {
+      "path": "src/ui/config/colors.rs",
+      "sha256": "4c5c31b36ce121fa86209956b37058456fa95ebbeff1f21f93413d06758a0d7f"
+    },
+    {
+      "path": "src/ui/envelope.rs",
+      "sha256": "fdc2cca9cc51fbd16d0c3e3c3171bf836e9dd070dfb59b2d6ef4c3e587e02ab8"
+    },
+    {
+      "path": "src/ui/envelope/controls.rs",
+      "sha256": "187af47d3eadce36339d153a1a6fde862587d39894d5cc2b660f9af44b41df8e"
+    },
+    {
+      "path": "src/ui/json.rs",
+      "sha256": "f0c922f7621e8a71822ce6d0d6ca13e218c9f1b7e2c9a4919bbbbf1c94703771"
+    },
+    {
+      "path": "src/ui/json/output_controls.rs",
+      "sha256": "7d078c817f000475175580c65f7e7b1f14c778ca3708700270116cefbf904053"
+    },
+    {
+      "path": "src/ui/markdown.rs",
+      "sha256": "d2c752014ca1d36e1ab988bd5ca4e110698d53f80cc770d31c2d8153061f6643"
+    },
+    {
+      "path": "src/ui/markdown/block.rs",
+      "sha256": "99ae305e9ffd55ff1268229538479f3a5aca4a8340b39ca47773afc862f9556d"
+    },
+    {
+      "path": "src/ui/markdown/parse.rs",
+      "sha256": "7b9f940ce0dbe30cf252312f0024bdcbb4c3c533867b732321d894dbc8aebf81"
+    },
+    {
+      "path": "src/ui/markdown/render.rs",
+      "sha256": "294b523ccb49d1e771f099e947de8d884ee49f1e73b37af10ce49bd22b48b8cc"
+    },
+    {
+      "path": "src/ui/style.rs",
+      "sha256": "e038025d83f4cb481ea74cfa80f81b0cc006bfdff25169dd1df846fbcab8f99a"
+    },
+    {
+      "path": "src/ui/test_support.rs",
+      "sha256": "262b46bc4a2ce26165b258a65357d37d85958f1b93bc62cb5f7c036da561432d"
+    },
+    {
+      "path": "src/web.rs",
+      "sha256": "544dcfcc852d892483130c58353253b2842a19f04f3723c161fa1b88a9b2e322"
+    },
+    {
+      "path": "templates/base.html",
+      "sha256": "9286563986285f2bf8e46744f9ffefe62fa2fc8777262ae4b40c07b238fb1613"
+    },
+    {
+      "path": "templates/error.html",
+      "sha256": "8b60bf49a9d3bf52dae3ca1495f246aa1e62dfffb31cff0c97fadb70f6f1838a"
+    },
+    {
+      "path": "templates/not_found.html",
+      "sha256": "bdca9d6443366f25426af3eb675c7ce62ec895f591be07efb02043015c22dc28"
+    },
+    {
+      "path": "tests/build_metadata.rs",
+      "sha256": "86cd9ea79c1ae6085494518a9698405b8a6bbb1a962b6e0804e194fbebf19d34"
+    },
+    {
+      "path": "tests/test_build_metadata.py",
+      "sha256": "d7c49a17655815ead5ca317d43eae8f15452f76377cf5d918c0bc6b092dc5046"
+    }
+  ],
+  "sealed_unchanged_count": 140,
+  "manifest_delta": "only exact full-revision top-level libsql patch added; package0.6 and direct=0.10/core unchanged",
+  "lock_delta": "only libsql source/checksum; all remaining TOML values/packages/edges equal",
+  "fidelity_tests": "entire sealed row_controls file unchanged including all4 persisted fidelity tests and two preexisting provider Null observations",
+  "ffi_files": [
+    {
+      "path": "vendor/libsql-ffi/Cargo.toml",
+      "sha256": "3ef64a89ac6b04cf38adf80487b74e68cd9c0bcd900243b4f72b1fa3aec78c98"
+    },
+    {
+      "path": "vendor/libsql-ffi/Cargo.lock",
+      "sha256": "a70e9cf3457a1841baeffde03a069900056badb4b158604369876c5cfcb429c9"
+    },
+    {
+      "path": "vendor/libsql-ffi/build.rs",
+      "sha256": "452e349bbcfcc4367565352650341eea33a0a2492d90f4709ca4ce3a843cd2ed"
+    },
+    {
+      "path": "vendor/libsql-ffi/.cargo_vcs_info.json",
+      "sha256": "bb240b384cdcd7007f812f67fd7ec50feb0e7ddbe905daa0aaabe6db9353a6ea"
+    },
+    {
+      "path": "vendor/libsql-ffi/Cargo.toml.orig",
+      "sha256": "2a96402d047018e3dc125ab63fe23b8724fbde849429454890e7e4abf70e9efa"
+    },
+    {
+      "path": "vendor/libsql-ffi/src/lib.rs",
+      "sha256": "3ea2ce7d73d87dedce9f41986d0bf830b66a81c95c8cfab009242046a391cd63"
+    },
+    {
+      "path": "vendor/libsql-ffi/bundled/sqlean/sqlite3-sqlean.c",
+      "sha256": "d268ebf0075e21bb34843844cc77a5ead31841538065ee4e2f80f16ab3261907"
+    },
+    {
+      "path": "vendor/libsql-ffi/bundled/sqlean/sqlite3-define.c",
+      "sha256": "5d776e654f872c5ceab0d06091627fcd4e2680d49fa3bc560c6c2cca4f1926b2"
+    },
+    {
+      "path": "vendor/libsql-ffi/bundled/sqlean/sqlite3-fuzzy.c",
+      "sha256": "231bc0feb2d90a2abb9fcfa493ba1880df5f8501ddadb55945bb7ccae4782510"
+    },
+    {
+      "path": "vendor/libsql-ffi/bundled/sqlean/sqlean.h",
+      "sha256": "0344b45213c9554feb1d72a44a3e6e9df2f48e39131f9c6550cb4b1d1215f180"
+    },
+    {
+      "path": "vendor/libsql-ffi/bundled/sqlean/sqlite3-crypto.c",
+      "sha256": "58d987c61b04747577df20a9177df7fef99af6c07c1fe0375faabdf241548e0b"
+    },
+    {
+      "path": "vendor/libsql-ffi/bundled/sqlean/sqlite3-time.c",
+      "sha256": "e8e39494a082ff7429b969297e0d14257c3c907dc480843d51c32a771b3d6b02"
+    },
+    {
+      "path": "vendor/libsql-ffi/bundled/sqlean/sqlite3-ipaddr.c",
+      "sha256": "b3eab504595265dfda74958e4c6f6dc675aa91ef0ccb8c915de1999bda447e33"
+    },
+    {
+      "path": "vendor/libsql-ffi/bundled/sqlean/sqlite3-vsv.c",
+      "sha256": "645b6bb631762f975ab4ea974d65df37438798fa530f12d16cfc9994103c418f"
+    },
+    {
+      "path": "vendor/libsql-ffi/bundled/sqlean/sqlite3-text.c",
+      "sha256": "5ef5fc0003374615f430f2f52bf56bd0b0c3b23a24e4aca18203df4d40aa1ec9"
+    },
+    {
+      "path": "vendor/libsql-ffi/bundled/sqlean/sqlite3-stats.c",
+      "sha256": "156cdfaa0265760ee0a22b48eb4a032e6de9ee6b5357a86926ec159c50351e45"
+    },
+    {
+      "path": "vendor/libsql-ffi/bundled/sqlean/sqlite3-uuid.c",
+      "sha256": "f647a66b5669e1aca28033c98ad392a606fc6133e43b16e8204f1219feba5279"
+    },
+    {
+      "path": "vendor/libsql-ffi/bundled/sqlean/sqlite3-unicode.c",
+      "sha256": "7890a910b8edd1284d39eb20a7c7e1222a0cf3195fab1481370955b7ec93ad17"
+    },
+    {
+      "path": "vendor/libsql-ffi/bundled/sqlean/sqlite3-fileio.c",
+      "sha256": "587403adfe2b17fff841c532441e935063e90f67e123a2df384791a0c62fc0f3"
+    },
+    {
+      "path": "vendor/libsql-ffi/bundled/sqlean/sqlite3-regexp.c",
+      "sha256": "dcde28f5bb5d55d6ff1fc4e50c70b27f5660f964099b38c6799437a8c37ae987"
+    },
+    {
+      "path": "vendor/libsql-ffi/bundled/sqlean/sqlite3-math.c",
+      "sha256": "875c1b8495fdab586b8888e7e2fd4329f5e9cd5a2e592302d73407e8849a6cf6"
+    },
+    {
+      "path": "vendor/libsql-ffi/bundled/SQLite3MultipleCiphers/configure.ac",
+      "sha256": "0171526f404738fe78f700e2d3e8ad955c361cee63a4af185959b0ef2d7c2ac8"
+    },
+    {
+      "path": "vendor/libsql-ffi/bundled/SQLite3MultipleCiphers/CMakeLists.txt",
+      "sha256": "c1949f298e436218b8e3e9121a0a4bc445f0e266c95aba884bff712e619e52cb"
+    },
+    {
+      "path": "vendor/libsql-ffi/bundled/SQLite3MultipleCiphers/wx_config.lua",
+      "sha256": "702bfe4b3a97014e0d3463723177be416d166b03562c5c59814c8e6b7a9aa2b2"
+    },
+    {
+      "path": "vendor/libsql-ffi/bundled/SQLite3MultipleCiphers/LICENSE",
+      "sha256": "ef17378697b38c803a91cd82430dac4be3d6e610c3569ddb3aa547d8d084f983"
+    },
+    {
+      "path": "vendor/libsql-ffi/bundled/SQLite3MultipleCiphers/CHANGELOG.md",
+      "sha256": "0ae83934d0febaf76d4b34ee66ab115541df11cac450953909f5047049f92cc2"
+    },
+    {
+      "path": "vendor/libsql-ffi/bundled/SQLite3MultipleCiphers/sqlite3mc.pc.in",
+      "sha256": "11ac53c8db09ee5bffbba172e13404befb33bddfdf20a95581bf225b88d3ebee"
+    },
+    {
+      "path": "vendor/libsql-ffi/bundled/SQLite3MultipleCiphers/.editorconfig",
+      "sha256": "f755120a439683e9570e7afbe97542b2116ebfd9d89e82038cc3602d8dd75860"
+    },
+    {
+      "path": "vendor/libsql-ffi/bundled/SQLite3MultipleCiphers/Makefile.am",
+      "sha256": "11e80c0be031687e323b36809f253871c202c73c58f33315d8645c003cc5e039"
+    },
+    {
+      "path": "vendor/libsql-ffi/bundled/SQLite3MultipleCiphers/readme.md",
+      "sha256": "fd2e51292e7be006a3ed781422045701f532b1e5aa224e9f233564484e360782"
+    },
+    {
+      "path": "vendor/libsql-ffi/bundled/SQLite3MultipleCiphers/.gitignore",
+      "sha256": "e38a0005972cb2bde47058f7b027fa4d754a803516d7b22b6276a5260c977cb1"
+    },
+    {
+      "path": "vendor/libsql-ffi/bundled/SQLite3MultipleCiphers/premake5.lua",
+      "sha256": "99c80a3d2c72371ae254f33750f94785238ce7b78e439a3fa45e74b8f14d914c"
+    },
+    {
+      "path": "vendor/libsql-ffi/bundled/SQLite3MultipleCiphers/LICENSE.spdx",
+      "sha256": "ad57de27c76254688bd784507a3fd5290edee9ec70a1c68925f72290b4c9b1b7"
+    },
+    {
+      "path": "vendor/libsql-ffi/bundled/SQLite3MultipleCiphers/.travis.yml",
+      "sha256": "7993bb8d5fc91508ec8cf82acf1e74ea8b6f9ae6b066c53c6d8dac2f1c72ece2"
+    },
+    {
+      "path": "vendor/libsql-ffi/bundled/bindings/bindgen.rs",
+      "sha256": "b03594f88895b4386165388bf50e426cdd1279d6c825b5a380022d113e6419d5"
+    },
+    {
+      "path": "vendor/libsql-ffi/bundled/bindings/session_bindgen.rs",
+      "sha256": "652b23963ebb5bc967070344e813e8f03fe10b24752235662863a5ffe4443f34"
+    },
+    {
+      "path": "vendor/libsql-ffi/bundled/src/sqlite3.c",
+      "sha256": "78516943f8216206dd48091daa8b69aea172b5090c878e12d8dcba6cd445c072"
+    },
+    {
+      "path": "vendor/libsql-ffi/bundled/src/sqlite3.h",
+      "sha256": "ee6eab8416938332fb2aa93e257a07773cb2721661a293ce4e227c7a1ea9aa63"
+    },
+    {
+      "path": "vendor/libsql-ffi/bundled/src/sqlite3ext.h",
+      "sha256": "79b7bb7d2e25a7c7b0960d25a2be07e49f1f9cfd54b869214592e93b37c26914"
+    },
+    {
+      "path": "vendor/libsql-ffi/bundled/src/sqlite3-sqlean-generated.c",
+      "sha256": "9e179588a56b38d87c09703a1a009fd040a1b7e6f50233dd50c9e74b61caba6f"
+    },
+    {
+      "path": "vendor/libsql-ffi/bundled/SQLite3MultipleCiphers/scripts/rekeyvacuum.sh",
+      "sha256": "2403b8ab9472082bae1c03e5a36093b28c87f0b00a73f83aa2186abc6b4790c7"
+    },
+    {
+      "path": "vendor/libsql-ffi/bundled/SQLite3MultipleCiphers/scripts/sqlite3mc.h.json",
+      "sha256": "5eb140f85590a06a15dcd1c9f85320ee7a02328c6e23d3c040846ec98692e6b8"
+    },
+    {
+      "path": "vendor/libsql-ffi/bundled/SQLite3MultipleCiphers/scripts/patchshell.sh",
+      "sha256": "15c9442c6d0bdc076510a8366d802b1289cdd65ac081290714067b21d7856ecf"
+    },
+    {
+      "path": "vendor/libsql-ffi/bundled/SQLite3MultipleCiphers/scripts/sqlite3mc.c.json",
+      "sha256": "55b6435cc68784b3acc2aa92a0523e14aa5f45834621630014a7147df1f9951c"
+    },
+    {
+      "path": "vendor/libsql-ffi/bundled/SQLite3MultipleCiphers/scripts/amalgamate.py",
+      "sha256": "235a4544cd614ae1db010497f0ab6421d9d089a17e4b7c10f24bd48da77a540e"
+    },
+    {
+      "path": "vendor/libsql-ffi/bundled/SQLite3MultipleCiphers/scripts/patchsqlite3.sh",
+      "sha256": "5750b466a4961c3b381e823d6deacb033eb22b0d1342f91bf47b75cd66b63b49"
+    },
+    {
+      "path": "vendor/libsql-ffi/bundled/SQLite3MultipleCiphers/conan/config.yml",
+      "sha256": "4931fe8b29bfc1b33652a9f503cd5a87e60919a9aa52706bc94e213d84341200"
+    },
+    {
+      "path": "vendor/libsql-ffi/bundled/SQLite3MultipleCiphers/src/cipher_chacha20.c",
+      "sha256": "57ab9d261a09ca8f222a13b3e87c530765f6961bb76dc1049f6c402e9d6053ce"
+    },
+    {
+      "path": "vendor/libsql-ffi/bundled/SQLite3MultipleCiphers/src/memory_secure.c",
+      "sha256": "b701aa03d6aca4646562b79fa3b9377b82cfa8c3b11e90f49c5d629cef50ac2f"
+    },
+    {
+      "path": "vendor/libsql-ffi/bundled/SQLite3MultipleCiphers/src/sha2.c",
+      "sha256": "090cada90e2b1e78c18ceaf45578edb56c1b2677e75753eb3fb061bafc20ace4"
+    },
+    {
+      "path": "vendor/libsql-ffi/bundled/SQLite3MultipleCiphers/src/miniz.c",
+      "sha256": "7e2eedd07d7a090f687c268a38ccb36aab05f09d4ad055e44183e71bbd92b54d"
+    },
+    {
+      "path": "vendor/libsql-ffi/bundled/SQLite3MultipleCiphers/src/rijndael.c",
+      "sha256": "dc27b4fa1a660d390f487566c306371b9cf2d0df1fa6e430ecc62f1a3ac39936"
+    },
+    {
+      "path": "vendor/libsql-ffi/bundled/SQLite3MultipleCiphers/src/userauth.c",
+      "sha256": "48919e4f2fc2f4058e656527261e185f6bffc42a7998628f24b193f5630ca6da"
+    },
+    {
+      "path": "vendor/libsql-ffi/bundled/SQLite3MultipleCiphers/src/fileio.c",
+      "sha256": "c9b91b6e7e1022cd146cd9042205738715a1cef0ec137a190c8dbb427b4fbacd"
+    },
+    {
+      "path": "vendor/libsql-ffi/bundled/SQLite3MultipleCiphers/src/mystdint.h",
+      "sha256": "1ba3994991da053d94f8729c8fdeeb35a28772ddd5822c2ae1a86e5fc9f0aa0a"
+    },
+    {
+      "path": "vendor/libsql-ffi/bundled/SQLite3MultipleCiphers/src/sqlite3.c",
+      "sha256": "0eb52e017a09ddb955a7fbaa5c2e5c39ed238f7480ec485e45f64fbb624ee7fb"
+    },
+    {
+      "path": "vendor/libsql-ffi/bundled/SQLite3MultipleCiphers/src/compress.c",
+      "sha256": "132741b554e2043fb3007973c75c623063dabfb12eaf4fcb9a7306311407411f"
+    },
+    {
+      "path": "vendor/libsql-ffi/bundled/SQLite3MultipleCiphers/src/sqlite3mc_version.h",
+      "sha256": "b15829862af4b05ec28a1676afacee5e657001062ae60acd255ac7b3c53b6442"
+    },
+    {
+      "path": "vendor/libsql-ffi/bundled/SQLite3MultipleCiphers/src/fastpbkdf2.c",
+      "sha256": "b80b748d754e576805c600c2f6e24d56d29150f1d8b95ef24db7827eebb546ba"
+    },
+    {
+      "path": "vendor/libsql-ffi/bundled/SQLite3MultipleCiphers/src/cipher_sds_rc4.c",
+      "sha256": "8423b9386340a58e925f162db555f86857f17e48189b91f4dc72d577c8036496"
+    },
+    {
+      "path": "vendor/libsql-ffi/bundled/SQLite3MultipleCiphers/src/codec_algos.c",
+      "sha256": "ccef255cd872f024415d8adfc4687ad69867db5d991ed1aab74e36d88c96dbfb"
+    },
+    {
+      "path": "vendor/libsql-ffi/bundled/SQLite3MultipleCiphers/src/sqlite3mc.c",
+      "sha256": "66665149caf3897964f6b6d066f5b0c45fdec935adcad3a620f70056d6a87612"
+    },
+    {
+      "path": "vendor/libsql-ffi/bundled/SQLite3MultipleCiphers/src/carray.h",
+      "sha256": "81c0983311c22fce21d972431edc77cfda2877371c57a0d25fa745cbbbc4acfb"
+    },
+    {
+      "path": "vendor/libsql-ffi/bundled/SQLite3MultipleCiphers/src/sqlar.c",
+      "sha256": "52ec2e9b5756a239874cae8b4d189249c4feac85c6380af085ae7e99ef13f4c4"
+    },
+    {
+      "path": "vendor/libsql-ffi/bundled/SQLite3MultipleCiphers/src/cipher_config.h",
+      "sha256": "733ea1b38328937883862b8052d06eb918399b8bbc5173706a05617b43604f3c"
+    },
+    {
+      "path": "vendor/libsql-ffi/bundled/SQLite3MultipleCiphers/src/sha1.c",
+      "sha256": "0bc4eb9711de5e5345dbce2e59467ea5b27ea385cc151363786487e914ddbced"
+    },
+    {
+      "path": "vendor/libsql-ffi/bundled/SQLite3MultipleCiphers/src/test_windirent.h",
+      "sha256": "cd60a85546cb8ba717e3b2fee8f08d025131045456002e65c75b9232209b3e46"
+    },
+    {
+      "path": "vendor/libsql-ffi/bundled/SQLite3MultipleCiphers/src/zipfile.c",
+      "sha256": "67c8c4685c9e8893d2ac3152f3f651cdb4f7ccf75255a706c25ad91f217f8222"
+    },
+    {
+      "path": "vendor/libsql-ffi/bundled/SQLite3MultipleCiphers/src/cipher_common.c",
+      "sha256": "9fad965b924fd705553952018bace5ea7977f8f1e8759f50de1666be6e08362e"
+    },
+    {
+      "path": "vendor/libsql-ffi/bundled/SQLite3MultipleCiphers/src/sqlite370.ico",
+      "sha256": "8d1976b86205bd357f1d03e5df3d5e435c7978c0eaa40c3b48a732fcccf3800b"
+    },
+    {
+      "path": "vendor/libsql-ffi/bundled/SQLite3MultipleCiphers/src/sqlite3mc_vfs.c",
+      "sha256": "ef20ab7a0151cb06046e31dec0e1964cd65b06de3ad76748f6a4950fabbb5bbf"
+    },
+    {
+      "path": "vendor/libsql-ffi/bundled/SQLite3MultipleCiphers/src/series.c",
+      "sha256": "3440d57dda971ba9312d8f95e31127e6f94b7fb5ae849b478ce86755b8fb408d"
+    },
+    {
+      "path": "vendor/libsql-ffi/bundled/SQLite3MultipleCiphers/src/regexp.c",
+      "sha256": "6c43a07c0b59aca6b3f0326cee0c04f40c6250f1de8276089753df01813f080e"
+    },
+    {
+      "path": "vendor/libsql-ffi/bundled/SQLite3MultipleCiphers/src/sqlite3mc.rc",
+      "sha256": "6d6d83759605df816a5e213562e2d83b2373d9bfa51d68dc0d1c2cc5fb168406"
+    },
+    {
+      "path": "vendor/libsql-ffi/bundled/SQLite3MultipleCiphers/src/cipher_wxaes256.c",
+      "sha256": "f31dc04b05c20840bd5e05ae8bfff16d918cfa29129b1ad95b189dfec0962a91"
+    },
+    {
+      "path": "vendor/libsql-ffi/bundled/SQLite3MultipleCiphers/src/sqlite3mc_config.h",
+      "sha256": "9faf4b9c5ba85d38b4d9d5575f54e1c5cf896c47e5a1bc0402241d38ddc6cb0a"
+    },
+    {
+      "path": "vendor/libsql-ffi/bundled/SQLite3MultipleCiphers/src/miniz.h",
+      "sha256": "fcbf4efb32489f82dae21b97c2b9236dd934298ea0a5939d51d8fa3afecac6b9"
+    },
+    {
+      "path": "vendor/libsql-ffi/bundled/SQLite3MultipleCiphers/src/shell.c",
+      "sha256": "16dc46ba551eb8937ab48cc1a73c50827935c1633411f762e24f5b590a83bb47"
+    },
+    {
+      "path": "vendor/libsql-ffi/bundled/SQLite3MultipleCiphers/src/vsv.c",
+      "sha256": "4c72281415eabe6504dc4c24fbd66152fcaa128096b6b4ebc588ead43b7232e8"
+    },
+    {
+      "path": "vendor/libsql-ffi/bundled/SQLite3MultipleCiphers/src/sha2.h",
+      "sha256": "32f32eda8c02f43e68cedcf07dda541c04e3d0bbefb2b5e91d7d1a6efa7748de"
+    },
+    {
+      "path": "vendor/libsql-ffi/bundled/SQLite3MultipleCiphers/src/cipher_wxaes128.c",
+      "sha256": "546d42ead9ad885ac41270fa70a594a84e7ab0b0400a7f21c66cc55749ca95e0"
+    },
+    {
+      "path": "vendor/libsql-ffi/bundled/SQLite3MultipleCiphers/src/csv.c",
+      "sha256": "e9551acd6939c21848242c8edc9f9025dee2a6f030a760a0b72e13ce0ddf8011"
+    },
+    {
+      "path": "vendor/libsql-ffi/bundled/SQLite3MultipleCiphers/src/codecext.c",
+      "sha256": "93d7866a0727bbb63cba6358f681de83c910dc4b19f8e000667ada75e263bc5f"
+    },
+    {
+      "path": "vendor/libsql-ffi/bundled/SQLite3MultipleCiphers/src/cipher_sqlcipher.c",
+      "sha256": "851f513b9f8b731866bd9f285a18b254ee34ab225af8488ad4895a3c33c2d85a"
+    },
+    {
+      "path": "vendor/libsql-ffi/bundled/SQLite3MultipleCiphers/src/filelist.md",
+      "sha256": "113a3c0eb9c38669ebef8c5821ce437a01e70f09dd313a6be2a58bf816726348"
+    },
+    {
+      "path": "vendor/libsql-ffi/bundled/SQLite3MultipleCiphers/src/fastpbkdf2.h",
+      "sha256": "6e0b05436344a41ebb135b6b71d363dc34c937d8453e6c8eb55f263e88aa0353"
+    },
+    {
+      "path": "vendor/libsql-ffi/bundled/SQLite3MultipleCiphers/src/rekeyvacuum.c",
+      "sha256": "305459569f4e221bb3648b0b03c1f8746cfc59be5da76ab46cc0ab985b873008"
+    },
+    {
+      "path": "vendor/libsql-ffi/bundled/SQLite3MultipleCiphers/src/sqlite3mc.def",
+      "sha256": "4f932100df11c8094ea948ac405cce655aac76a17f16ae8ed7104b39e465b671"
+    },
+    {
+      "path": "vendor/libsql-ffi/bundled/SQLite3MultipleCiphers/src/uuid.c",
+      "sha256": "e7f3121c0b1bbb678f24d99e718e110cba5d8df41da94d9c3ad444b5f784a0f5"
+    },
+    {
+      "path": "vendor/libsql-ffi/bundled/SQLite3MultipleCiphers/src/sqlite3.h",
+      "sha256": "ee6eab8416938332fb2aa93e257a07773cb2721661a293ce4e227c7a1ea9aa63"
+    },
+    {
+      "path": "vendor/libsql-ffi/bundled/SQLite3MultipleCiphers/src/sqlite3ext.h",
+      "sha256": "b184dd1586d935133d37ad76fa353faf0a1021ff2fdedeedcc3498fff74bbb94"
+    },
+    {
+      "path": "vendor/libsql-ffi/bundled/SQLite3MultipleCiphers/src/aes_hardware.c",
+      "sha256": "18b6fe43c3e74685186a61c0c76e1bfbcfc5f295be741d9941f592e8e852fd55"
+    },
+    {
+      "path": "vendor/libsql-ffi/bundled/SQLite3MultipleCiphers/src/rijndael.h",
+      "sha256": "3f3fe2e6728520be5717d039269a8c7a4a9911fd5eaef021f22c0a062711395b"
+    },
+    {
+      "path": "vendor/libsql-ffi/bundled/SQLite3MultipleCiphers/src/sha1.h",
+      "sha256": "2938cb3c8d4cafab51a24cbc663c8b9ba42f28fc1cf9679e0f7f7ca48b214f37"
+    },
+    {
+      "path": "vendor/libsql-ffi/bundled/SQLite3MultipleCiphers/src/cipher_config.c",
+      "sha256": "a8e92e2e3f46b97ad0833e1bc99753337a67bfda403f41167750e839a623b6f4"
+    },
+    {
+      "path": "vendor/libsql-ffi/bundled/SQLite3MultipleCiphers/src/md5.c",
+      "sha256": "0bbc8e2bbd16a8163c5ffd3cbd31de8a369677025784d1dfd43c1a75e85cfa87"
+    },
+    {
+      "path": "vendor/libsql-ffi/bundled/SQLite3MultipleCiphers/src/carray.c",
+      "sha256": "564161e21a833f79b8695b8b91dfa1195e5961305b3ceafd887e0305961324b8"
+    },
+    {
+      "path": "vendor/libsql-ffi/bundled/SQLite3MultipleCiphers/src/tclsqlite.c",
+      "sha256": "b52dbe9e0612227eb06f5dd6262af8ac18e48926648cf2b81b59de8e5b768a59"
+    },
+    {
+      "path": "vendor/libsql-ffi/bundled/SQLite3MultipleCiphers/src/sqlite3mc.h",
+      "sha256": "4a72015ceb7dfcb4259cfe8552e16d8c64f02182b996aeaeffba6040fd5eb47f"
+    },
+    {
+      "path": "vendor/libsql-ffi/bundled/SQLite3MultipleCiphers/src/chacha20poly1305.c",
+      "sha256": "40c0f9fdc4146e018e89fedabc999ca9580ef06fe552e5195379309f8eae1eba"
+    },
+    {
+      "path": "vendor/libsql-ffi/bundled/SQLite3MultipleCiphers/src/sqlite3patched.c",
+      "sha256": "c01806f4ddfd4dd640b3042f07c864660536e7eb63b7cda103272eb4a3e8746f"
+    },
+    {
+      "path": "vendor/libsql-ffi/bundled/SQLite3MultipleCiphers/src/shathree.c",
+      "sha256": "03ba4f4ec5c91232ea95b76c69a0ef1b5f3ff2fd2524db83e065280572bfe153"
+    },
+    {
+      "path": "vendor/libsql-ffi/bundled/SQLite3MultipleCiphers/src/sqlite3mc_shell.rc",
+      "sha256": "e37893f93ae8fca4fd1d77ef71d766c87bfbb924118cdbc1c3e4443dbd40079f"
+    },
+    {
+      "path": "vendor/libsql-ffi/bundled/SQLite3MultipleCiphers/src/extensionfunctions.c",
+      "sha256": "a747a842d847a7b294787ed961be9d3af294c4e780adf1886e2ae3957f53918b"
+    },
+    {
+      "path": "vendor/libsql-ffi/bundled/SQLite3MultipleCiphers/src/zlibwrap.h",
+      "sha256": "9a1b4506584c82c8c10f8f6b86331915ec6f501de745cfc60a801e3b84a02279"
+    },
+    {
+      "path": "vendor/libsql-ffi/bundled/SQLite3MultipleCiphers/src/sqlite3mc_vfs.h",
+      "sha256": "af10634ba7790eaf1653cff244ecaef3f18a43eb1d47125519dbdb5304da40f7"
+    },
+    {
+      "path": "vendor/libsql-ffi/bundled/SQLite3MultipleCiphers/src/sqlite3userauth.h",
+      "sha256": "136fc0e48e5dfa2dec13dd6aa75c59a9ca9bd7ab2879b7fa8bf9d2b5f76c29f3"
+    },
+    {
+      "path": "vendor/libsql-ffi/bundled/SQLite3MultipleCiphers/src/cipher_common.h",
+      "sha256": "88b18c040dcab5a12e2b44bc5935133d4bb33dbaeb64c642acb7e59a9815ed5f"
+    },
+    {
+      "path": "vendor/libsql-ffi/bundled/SQLite3MultipleCiphers/src/test_windirent.c",
+      "sha256": "9d0b540ca2623f0f7f7ce4ff6aa9e11cb86c5ced93c964501d65cb5daec756c9"
+    },
+    {
+      "path": "vendor/libsql-ffi/bundled/SQLite3MultipleCiphers/src/cipher_ascon.c",
+      "sha256": "af66564628623c883cd521ec985fe9d7a04ba93418ab950b9145eda24051e6b2"
+    },
+    {
+      "path": "vendor/libsql-ffi/bundled/SQLite3MultipleCiphers/src/ascon/crypto_aead.h",
+      "sha256": "d8e239057ba98ed42c74db67784e71198608a8a694317daedb33ea43d7656a0e"
+    },
+    {
+      "path": "vendor/libsql-ffi/bundled/SQLite3MultipleCiphers/src/ascon/ascon.h",
+      "sha256": "f6591057e06574e0ce62b9e1bfc611fb660228dc81062b1be481e7eb7907e552"
+    },
+    {
+      "path": "vendor/libsql-ffi/bundled/SQLite3MultipleCiphers/src/ascon/printstate.h",
+      "sha256": "d71b6ea9c9405818b0af7b57c731f6ff7c85af719966ba73499fbb1c51d4f17f"
+    },
+    {
+      "path": "vendor/libsql-ffi/bundled/SQLite3MultipleCiphers/src/ascon/aead.c",
+      "sha256": "a085d09d7474f54f927f077300777f811952a8f26e63243ed7049634ff32afea"
+    },
+    {
+      "path": "vendor/libsql-ffi/bundled/SQLite3MultipleCiphers/src/ascon/config.h",
+      "sha256": "225fed35b5128ae3dd5f6286f29a73b5a0b7b83c2925a6ff101ae6ac39aa8fd2"
+    },
+    {
+      "path": "vendor/libsql-ffi/bundled/SQLite3MultipleCiphers/src/ascon/crypto_pbkdf2.h",
+      "sha256": "db5011c6b92521ff0f828413b348ea57fe3508bac819f2ef06330a4cc2f50a08"
+    },
+    {
+      "path": "vendor/libsql-ffi/bundled/SQLite3MultipleCiphers/src/ascon/round.h",
+      "sha256": "91d5e14efe0cd4aa9ddf7a9196227eff82e09c2920486895b9be5ff77351de91"
+    },
+    {
+      "path": "vendor/libsql-ffi/bundled/SQLite3MultipleCiphers/src/ascon/crypto_hash.h",
+      "sha256": "5e3be36400baba7c3a9401acfb93e3c6c4606bcfb59d19d13551eafa43936175"
+    },
+    {
+      "path": "vendor/libsql-ffi/bundled/SQLite3MultipleCiphers/src/ascon/round32.h",
+      "sha256": "3da21fcb9744ac867efeda72b78b016d45404b61d51f9199b5a50393cf876d23"
+    },
+    {
+      "path": "vendor/libsql-ffi/bundled/SQLite3MultipleCiphers/src/ascon/permutations.c",
+      "sha256": "a108f202201c96ed00e3a539bfc004870133ca1939f0ba3e85a2f2678042b7e2"
+    },
+    {
+      "path": "vendor/libsql-ffi/bundled/SQLite3MultipleCiphers/src/ascon/hash.c",
+      "sha256": "183b28e5ec031705be8f56428144ac361377b1f410ea7eb6fb8dd7114ce212e3"
+    },
+    {
+      "path": "vendor/libsql-ffi/bundled/SQLite3MultipleCiphers/src/ascon/api.h",
+      "sha256": "fd85cfe231ca82e56e1536d5782470e6ef02064cf8c84ab6251d9a59db4a64ba"
+    },
+    {
+      "path": "vendor/libsql-ffi/bundled/SQLite3MultipleCiphers/src/ascon/forceinline.h",
+      "sha256": "e8db44527b3363a5e5fcf435bd053ef46fec3a2c79041c2aa46aac8b82066728"
+    },
+    {
+      "path": "vendor/libsql-ffi/bundled/SQLite3MultipleCiphers/src/ascon/constants.h",
+      "sha256": "47345b38e4d327f8a10ed85ad3fd498182b6f9be6b75add2173169015f428d57"
+    },
+    {
+      "path": "vendor/libsql-ffi/bundled/SQLite3MultipleCiphers/src/ascon/printstate.c",
+      "sha256": "3d21492b2cedadd569a391ab4a76825a2a40240f4ed177bfbdb7cba9b2a24cf7"
+    },
+    {
+      "path": "vendor/libsql-ffi/bundled/SQLite3MultipleCiphers/src/ascon/round64.h",
+      "sha256": "927d2b9d100164b7861dec9415bec9f17877f6468befabd42f46a95f9edb5e02"
+    },
+    {
+      "path": "vendor/libsql-ffi/bundled/SQLite3MultipleCiphers/src/ascon/word.h",
+      "sha256": "d14dcb5ff28b4b4e21cd228a7532e3b7cc469d15f5fb32a1851b4edc98c13672"
+    },
+    {
+      "path": "vendor/libsql-ffi/bundled/SQLite3MultipleCiphers/src/ascon/permutations.h",
+      "sha256": "84bc003882907d3bfbbee7be3b32cbc82d495ea65c7b093d4f7fd063b838973b"
+    },
+    {
+      "path": "vendor/libsql-ffi/bundled/SQLite3MultipleCiphers/src/ascon/bendian.h",
+      "sha256": "4c38890a760b7f9ffa1eea1c6af74061a4e2efc9a7401ce3dcba91776f3fc0e3"
+    },
+    {
+      "path": "vendor/libsql-ffi/bundled/SQLite3MultipleCiphers/src/ascon/pbkdf2.c",
+      "sha256": "73c022c30c74214c5fe9936080ff35b0afa576d08684b5fba002bd35a706b27f"
+    },
+    {
+      "path": "vendor/libsql-ffi/bundled/SQLite3MultipleCiphers/src/ascon/prolog.h",
+      "sha256": "0b67666003c5dc54427a63ba8916b40d03ad51c7eea43f16d838b0034107592f"
+    },
+    {
+      "path": "vendor/libsql-ffi/bundled/SQLite3MultipleCiphers/conan/all/conanfile.py",
+      "sha256": "509637a6efefc7e32d3c65b698971d730585081858e935050c290534160d9a6b"
+    },
+    {
+      "path": "vendor/libsql-ffi/bundled/SQLite3MultipleCiphers/conan/all/conandata.yml",
+      "sha256": "be677da9b59f791403b91b116d7fc1ed8a15c8cb08dcd48e7bff4c20f0d43af3"
+    },
+    {
+      "path": "vendor/libsql-ffi/bundled/SQLite3MultipleCiphers/conan/all/test_package/CMakeLists.txt",
+      "sha256": "841886cb93a458c4739e9a2cf83d9994473b627fd230af78ce86f5d3d598f355"
+    },
+    {
+      "path": "vendor/libsql-ffi/bundled/SQLite3MultipleCiphers/conan/all/test_package/conanfile.py",
+      "sha256": "be10a7fd82401efb4e62b1e7ac77859027d3b59f3ef22962391c9026cfb6ca09"
+    },
+    {
+      "path": "vendor/libsql-ffi/bundled/SQLite3MultipleCiphers/conan/all/test_package/main.c",
+      "sha256": "8e91cb119781c13bbe5eeeb89f3f1c2b77e8d382747d1af54910fbbeca2615d2"
+    },
+    {
+      "path": "vendor/libsql-ffi/bundled/SQLite3MultipleCiphers/admin/build-aux/install-sh",
+      "sha256": "a88e06f38cbacb8716af1d326a5023cdc458d7a6dba448a424c517930af0a32d"
+    },
+    {
+      "path": "vendor/libsql-ffi/bundled/SQLite3MultipleCiphers/admin/build-aux/ltmain.sh",
+      "sha256": "f3a9a2cce3be0f55687d18c0a0be91efef937630883c3a8454dd88b335791f27"
+    },
+    {
+      "path": "vendor/libsql-ffi/bundled/SQLite3MultipleCiphers/admin/build-aux/config.guess",
+      "sha256": "47da33933b3825049bbc04871747a9598ce90fd45a438b6a8a58b74bf6d73a4d"
+    },
+    {
+      "path": "vendor/libsql-ffi/bundled/SQLite3MultipleCiphers/admin/build-aux/depcomp",
+      "sha256": "732bcd6b9e23f241e015d71b0a3a862104053aba20718c1f56b292cee7e29371"
+    },
+    {
+      "path": "vendor/libsql-ffi/bundled/SQLite3MultipleCiphers/admin/build-aux/missing",
+      "sha256": "f038345dab184e538098d22a8edc423762da66a90ebe269f23bfef85287cd30c"
+    },
+    {
+      "path": "vendor/libsql-ffi/bundled/SQLite3MultipleCiphers/admin/build-aux/config.sub",
+      "sha256": "f4cf53ff68e5b9c3437a1e7ad3086c4c669136caebd721ffc58ef21944bd395a"
+    },
+    {
+      "path": "vendor/libsql-ffi/bundled/SQLite3MultipleCiphers/admin/build-aux/compile",
+      "sha256": "c8af04e62bad4ab75dafd22119026e5e3943f385bdcbe7731a4938102453754c"
+    },
+    {
+      "path": "vendor/libsql-ffi/bundled/SQLite3MultipleCiphers/admin/m4/ltversion.m4",
+      "sha256": "d10626cfa21a7023b425838971ba1c856fe1daeb05f7d2cdfd40c234b781891a"
+    },
+    {
+      "path": "vendor/libsql-ffi/bundled/SQLite3MultipleCiphers/admin/m4/libtool.m4",
+      "sha256": "b9b328e874d9278ec27f2b47f6ed11c1f2eca4a9cb9ebf945e990f65324db97b"
+    },
+    {
+      "path": "vendor/libsql-ffi/bundled/SQLite3MultipleCiphers/admin/m4/ltoptions.m4",
+      "sha256": "42cf144d09271b31c1cde8979df1f0a07d09fc1bd15edf07d029ee2db53126e2"
+    },
+    {
+      "path": "vendor/libsql-ffi/bundled/SQLite3MultipleCiphers/admin/m4/ltsugar.m4",
+      "sha256": "e8bfa437be7af72bf41b86e7e714bc8b8545046c339f80cfb5e69681bc97f90d"
+    },
+    {
+      "path": "vendor/libsql-ffi/bundled/SQLite3MultipleCiphers/admin/m4/wxwin.m4",
+      "sha256": "d6a8e781905b911b39c96ddda58e2b37522da709d75e28df87d37b8e4f3abdbb"
+    },
+    {
+      "path": "vendor/libsql-ffi/bundled/SQLite3MultipleCiphers/admin/m4/lt~obsolete.m4",
+      "sha256": "ee8a1723c8c022eb20bb2d03450cc37f92ec6c3db2c7b8c313eb3f5e935249fc"
+    },
+    {
+      "path": "vendor/libsql-ffi/bundled/SQLite3MultipleCiphers/admin/travis/before_install.sh",
+      "sha256": "dffabb153595ac4d857abee77fba134273db2b779b6dacad5f5a1523f3dd12cf"
+    },
+    {
+      "path": "vendor/libsql-ffi/bundled/sqlean/crypto/hex.c",
+      "sha256": "af78219d7f1fafffde512e38cd6e64adbd051250eb6cf2920f1681ce4336d56e"
+    },
+    {
+      "path": "vendor/libsql-ffi/bundled/sqlean/crypto/url.c",
+      "sha256": "802ea7e493b761c50dc6b3593eb81cb79c20ed9b252faac8a2fbbd2ce1135d8d"
+    },
+    {
+      "path": "vendor/libsql-ffi/bundled/sqlean/crypto/sha2.c",
+      "sha256": "6891949f9d257cbe6ad826b593b997a00b760f75f141f7c5e0a6b16d97ace7a6"
+    },
+    {
+      "path": "vendor/libsql-ffi/bundled/sqlean/crypto/base32.c",
+      "sha256": "50607e8e5618a9c7e39987c712d6e1a3a696b2764e8c2f545fd682137d6eb44c"
+    },
+    {
+      "path": "vendor/libsql-ffi/bundled/sqlean/crypto/extension.c",
+      "sha256": "2f8c8b6a63c4ccc94fe646942fa95cf94c6caeacc99c112daf46e2a309528479"
+    },
+    {
+      "path": "vendor/libsql-ffi/bundled/sqlean/crypto/base64.h",
+      "sha256": "bbc81ac70ba1d0b98e8f8ff46e6170065315a121cedf238f4dc3191726bbc509"
+    },
+    {
+      "path": "vendor/libsql-ffi/bundled/sqlean/crypto/base85.c",
+      "sha256": "ccf7eb34620519cda757e35780884f99c0e26e124bac5b88df8330cee35d3aed"
+    },
+    {
+      "path": "vendor/libsql-ffi/bundled/sqlean/crypto/md5.h",
+      "sha256": "1741d8efe09c68d01e6434bdc4e06deab2345f2bdbbbd8a296afa34adf174e52"
+    },
+    {
+      "path": "vendor/libsql-ffi/bundled/sqlean/crypto/blake3.h",
+      "sha256": "00de06243891d36f2b2fdec4be6acf5da8bc8f28efd39321bfbc857e4cd22e55"
+    },
+    {
+      "path": "vendor/libsql-ffi/bundled/sqlean/crypto/sha1.c",
+      "sha256": "35c8f5d4b99052f4ca9a63793d227f2e6b42890a4b558cbf83f1a9d43108023f"
+    },
+    {
+      "path": "vendor/libsql-ffi/bundled/sqlean/crypto/blake3_reference_impl.c",
+      "sha256": "a0d4bbc6d624e5113283403c5d5e66a1b470cf02dacfd03c3a16ccd5e958250b"
+    },
+    {
+      "path": "vendor/libsql-ffi/bundled/sqlean/crypto/base32.h",
+      "sha256": "292d2a4723b936e93b97a1ac0edfc147a75cbd16d8792d96f2bfae7899871121"
+    },
+    {
+      "path": "vendor/libsql-ffi/bundled/sqlean/crypto/sha2.h",
+      "sha256": "30ed24a5b566c04d7a8bc0e251e6a05ebf1007b42097439e38caf20495ea46cf"
+    },
+    {
+      "path": "vendor/libsql-ffi/bundled/sqlean/crypto/url.h",
+      "sha256": "d6eac6748a026bb38c8c1727c73fb51643949d71b834ed9adc1d09bf16fc2b87"
+    },
+    {
+      "path": "vendor/libsql-ffi/bundled/sqlean/crypto/hex.h",
+      "sha256": "18feb32d7cf261d2c71dcab2fc39a15bc3e62ec2b8c3de6ea55d6f91e416442c"
+    },
+    {
+      "path": "vendor/libsql-ffi/bundled/sqlean/crypto/base85.h",
+      "sha256": "97c1fcfb8b77e1769d014917aee7b804e28c42b48ad14509662e92c399b6965d"
+    },
+    {
+      "path": "vendor/libsql-ffi/bundled/sqlean/crypto/base64.c",
+      "sha256": "9ab5e759f04d7fd293ed81634e21e64e52a614769655caebd6d25dff8d274018"
+    },
+    {
+      "path": "vendor/libsql-ffi/bundled/sqlean/crypto/extension.h",
+      "sha256": "73fba993090d40e439044392a9d8360ecceebcb663df764e7f845d8ca8bb9813"
+    },
+    {
+      "path": "vendor/libsql-ffi/bundled/sqlean/crypto/sha1.h",
+      "sha256": "4216fd4d27b2577e9b7644c1462a6ee1e3c2d4a64378e3fcccf09887a78c30c9"
+    },
+    {
+      "path": "vendor/libsql-ffi/bundled/sqlean/crypto/blake3.c",
+      "sha256": "dce0eac76a9abfa3d9baabf3fb8aed9bd94953ca5314b2dd0e5f5cc2e4045f7d"
+    },
+    {
+      "path": "vendor/libsql-ffi/bundled/sqlean/crypto/md5.c",
+      "sha256": "121903bafc268971ede56eec919d9a025edfe391142bbf0439189520786ac867"
+    },
+    {
+      "path": "vendor/libsql-ffi/bundled/sqlean/crypto/blake3_reference_impl.h",
+      "sha256": "ed70ae3b5a67e42a69559cab1309c996b0a7d7b288f5a5a765ec4c61dc238954"
+    },
+    {
+      "path": "vendor/libsql-ffi/bundled/sqlean/regexp/extension.c",
+      "sha256": "7d7c161e2fbd3ceab2d7cc4f051b529111127ff95d6224ae54df634f62dcb92c"
+    },
+    {
+      "path": "vendor/libsql-ffi/bundled/sqlean/regexp/regexp.c",
+      "sha256": "ed7bb2e6772f1306566263041985e8aebf660143da8673a982106126d0b857c3"
+    },
+    {
+      "path": "vendor/libsql-ffi/bundled/sqlean/regexp/constants.h",
+      "sha256": "291946ec5dce3be2f5b5ae38d9dd46394c29a6d4ff5ba94c69831f2c46ad7238"
+    },
+    {
+      "path": "vendor/libsql-ffi/bundled/sqlean/regexp/extension.h",
+      "sha256": "80f1376666198537f974d481e1be2f22f31e3abdb50f4914d7767b94957af003"
+    },
+    {
+      "path": "vendor/libsql-ffi/bundled/sqlean/regexp/regexp.h",
+      "sha256": "3dcbb6b36d387c884baaa34befa77fbae56eb7a5c10096a578b59b54312b2649"
+    },
+    {
+      "path": "vendor/libsql-ffi/bundled/sqlean/define/eval.c",
+      "sha256": "260dcb9121d9a6639bcc0f320308152af17de6c1ea4bf14a737562f70a5656a1"
+    },
+    {
+      "path": "vendor/libsql-ffi/bundled/sqlean/define/extension.c",
+      "sha256": "aacba984282fa3497716e906ad8b6845f7dbb63d75a4558caad3254f5e65b38a"
+    },
+    {
+      "path": "vendor/libsql-ffi/bundled/sqlean/define/define.h",
+      "sha256": "0e295958816d72ec3a4d714b06309cbc8e8b02d457349e1665757a8662e5ad74"
+    },
+    {
+      "path": "vendor/libsql-ffi/bundled/sqlean/define/module.c",
+      "sha256": "af0349fd08c24ca6a683e6084736ca187bef7a010d3923eae9b8273fd3e95511"
+    },
+    {
+      "path": "vendor/libsql-ffi/bundled/sqlean/define/manage.c",
+      "sha256": "c3eca6c45fce29918733b8750daa690bd423926d7f99a15195180f45ce49f5c0"
+    },
+    {
+      "path": "vendor/libsql-ffi/bundled/sqlean/define/extension.h",
+      "sha256": "aabebaee2f10afa73c7745db12436b6b5f200e5a61745eeafdfc450b2d2526c6"
+    },
+    {
+      "path": "vendor/libsql-ffi/bundled/sqlean/unicode/extension.c",
+      "sha256": "d545a9277851421889299608173a2b37084d4913731cdfd6c076b635eee8b556"
+    },
+    {
+      "path": "vendor/libsql-ffi/bundled/sqlean/unicode/extension.h",
+      "sha256": "eda811a317c3f17b924d47eea5e7d677b800fbfdd3f7dfd7d9d6097b2499a02e"
+    },
+    {
+      "path": "vendor/libsql-ffi/bundled/sqlean/fileio/extension.c",
+      "sha256": "1d959da277d7715e6e2687530742aa3948e5cdc0e29abb2db4cd669231bf8914"
+    },
+    {
+      "path": "vendor/libsql-ffi/bundled/sqlean/fileio/scan.c",
+      "sha256": "3878c7754e6154340128a16c20f6f752a2c6d3b7d611e5c2eabe6c494d1fabcd"
+    },
+    {
+      "path": "vendor/libsql-ffi/bundled/sqlean/fileio/fileio.h",
+      "sha256": "289d61b84196726f6f5924978e89bdab79e46bff33a80adf9a1044802353556c"
+    },
+    {
+      "path": "vendor/libsql-ffi/bundled/sqlean/fileio/legacy.c",
+      "sha256": "41edbbb60b2d0f588e9a8492b7f22e4ef74fd01dd99725c977ca438d1b60f174"
+    },
+    {
+      "path": "vendor/libsql-ffi/bundled/sqlean/fileio/extension.h",
+      "sha256": "62abbbf2e89aa99f8b9d2955f4a87de9f0a4900bf63b957ea4fcf134372ba130"
+    },
+    {
+      "path": "vendor/libsql-ffi/bundled/sqlean/ipaddr/extension.c",
+      "sha256": "3b761886ee654885246f935c6229f144de7cf48a5f661178278363cb3166e955"
+    },
+    {
+      "path": "vendor/libsql-ffi/bundled/sqlean/ipaddr/extension.h",
+      "sha256": "58b4e6a79cb4481ab5c0e1a238e5c12c8884b4575708e2222b78a86c9259572a"
+    },
+    {
+      "path": "vendor/libsql-ffi/bundled/sqlean/fuzzy/common.c",
+      "sha256": "b30039d61e7558c055899f6aa38c422af07b6342b243e2e0bbed96ca80db5a9d"
+    },
+    {
+      "path": "vendor/libsql-ffi/bundled/sqlean/fuzzy/extension.c",
+      "sha256": "930efc438d4c3722579f7d693808401950afdd2756ad763c23173aca4fc069fa"
+    },
+    {
+      "path": "vendor/libsql-ffi/bundled/sqlean/fuzzy/editdist.c",
+      "sha256": "d9965b70eb683fd73c9ca1081cbe061c8c201c1348ba2dd55cae29b8fbd86930"
+    },
+    {
+      "path": "vendor/libsql-ffi/bundled/sqlean/fuzzy/phonetic.c",
+      "sha256": "a26a7598991af3102b4133389c8915cb950464ca26793e8312e7cea465ce7cf6"
+    },
+    {
+      "path": "vendor/libsql-ffi/bundled/sqlean/fuzzy/damlev.c",
+      "sha256": "9f35e36e8942f4340a3d01d413c6c79b1241361052c017c19f68a1c5df62b285"
+    },
+    {
+      "path": "vendor/libsql-ffi/bundled/sqlean/fuzzy/soundex.c",
+      "sha256": "b6280eb1c8f9436895f2ce5439d70d86b9f886dfd540e6f2319ac6d17dcebfcb"
+    },
+    {
+      "path": "vendor/libsql-ffi/bundled/sqlean/fuzzy/jarowin.c",
+      "sha256": "b3d21f228c41716c143e487dc7ab19149e387efde0e162a251ba7a87bc991c47"
+    },
+    {
+      "path": "vendor/libsql-ffi/bundled/sqlean/fuzzy/leven.c",
+      "sha256": "353e5e38ecc12bedede3a44de9240bc4f206466a99e8ea1503c2ab1a4afd8409"
+    },
+    {
+      "path": "vendor/libsql-ffi/bundled/sqlean/fuzzy/hamming.c",
+      "sha256": "03036a82759a8c9a7c55c4973f5473d3a4abba99c60ef088135d591c44258202"
+    },
+    {
+      "path": "vendor/libsql-ffi/bundled/sqlean/fuzzy/fuzzy.h",
+      "sha256": "cfb1ccdf6e7757d3b5ff4b0eb124208d270d1a91f8164eb2ff606d348b4f70b4"
+    },
+    {
+      "path": "vendor/libsql-ffi/bundled/sqlean/fuzzy/common.h",
+      "sha256": "063af5a54e856b666684ac7ec152b933bc6c439edc1aac9010ac272dcf56e746"
+    },
+    {
+      "path": "vendor/libsql-ffi/bundled/sqlean/fuzzy/translit.c",
+      "sha256": "2e63e8e1951364ffb4b5e923c5c99b0440c3984d6e40ff87a75e5641c519b9a7"
+    },
+    {
+      "path": "vendor/libsql-ffi/bundled/sqlean/fuzzy/caver.c",
+      "sha256": "903c2a3be141d49b200cdcce4763177fc54641741f70ba38a427f56f2146fbef"
+    },
+    {
+      "path": "vendor/libsql-ffi/bundled/sqlean/fuzzy/rsoundex.c",
+      "sha256": "4431770846f59d3565a721fa35545160c8536fc5f1a2f6fedf1eb60d91814e7d"
+    },
+    {
+      "path": "vendor/libsql-ffi/bundled/sqlean/fuzzy/extension.h",
+      "sha256": "57ff5e4086039f212141255f9a90fa2314a279fb4b1eda85004c51d855a7d3d0"
+    },
+    {
+      "path": "vendor/libsql-ffi/bundled/sqlean/fuzzy/osadist.c",
+      "sha256": "16f3b1a22d924f17ad7c80446f67941550a889202171fe239a5ed3ced952f6ab"
+    },
+    {
+      "path": "vendor/libsql-ffi/bundled/sqlean/math/extension.c",
+      "sha256": "db8ded6a172aaf263d0c25b059a9e6723cbc74bc5b1ba58b64db2d3d6f77fa88"
+    },
+    {
+      "path": "vendor/libsql-ffi/bundled/sqlean/math/extension.h",
+      "sha256": "9087f5dbcaf67d0330e71d82977f1d3bb965b6ef6a9ca6107393bc031b095520"
+    },
+    {
+      "path": "vendor/libsql-ffi/bundled/sqlean/time/extension.c",
+      "sha256": "95ab3360b826dd2c4ae9afc6b877225258c8f25ecd19ef7bf09392ceea205494"
+    },
+    {
+      "path": "vendor/libsql-ffi/bundled/sqlean/time/timex.h",
+      "sha256": "ab458049721f6ff1bd82b2e4ab100f57bbe3340eec0b8a6b10619ba2035f7c1a"
+    },
+    {
+      "path": "vendor/libsql-ffi/bundled/sqlean/time/time.c",
+      "sha256": "96f00eb6d2d34ac0a944b24e819d6565856d77c2e660af985d8858b2593313dc"
+    },
+    {
+      "path": "vendor/libsql-ffi/bundled/sqlean/time/duration.c",
+      "sha256": "d1bbf6b09c1004b4e38ee83d7bf3bd990afdc795a07f905942d6515d606fb6fd"
+    },
+    {
+      "path": "vendor/libsql-ffi/bundled/sqlean/time/extension.h",
+      "sha256": "00fb1eb6e2ac9c5855a675b8d86da32c7ea5769979e9085f6e8f405b3a3cf9d3"
+    },
+    {
+      "path": "vendor/libsql-ffi/bundled/sqlean/text/extension.c",
+      "sha256": "b2d48e0d0b3c13af93c9c317866ccf128281950e3b6388613895b13b6b88ea0a"
+    },
+    {
+      "path": "vendor/libsql-ffi/bundled/sqlean/text/rstring.c",
+      "sha256": "2ddb6156e221286fccedcd86bfcd09e0449fdfc65bb08a8706e97b330d61b721"
+    },
+    {
+      "path": "vendor/libsql-ffi/bundled/sqlean/text/bstring.h",
+      "sha256": "fa8f6b7a226d3d2a71c4c9db925bbd25ffde48afe7eb02b5ea7152918f1222ae"
+    },
+    {
+      "path": "vendor/libsql-ffi/bundled/sqlean/text/runes.c",
+      "sha256": "dbf38400384bd84fb0c62f6ec4501487eb9762a72dd530bdb0dfa7bf69c4f998"
+    },
+    {
+      "path": "vendor/libsql-ffi/bundled/sqlean/text/rstring.h",
+      "sha256": "4a6610e0908775f962f10cade952248a8a7fab0a8d4bbe89e5d0973923e9b926"
+    },
+    {
+      "path": "vendor/libsql-ffi/bundled/sqlean/text/extension.h",
+      "sha256": "85d42fb51eb5d98e0b37dd98ff8f76df51ba4d9fed260e7e0502e0e8121069b7"
+    },
+    {
+      "path": "vendor/libsql-ffi/bundled/sqlean/text/runes.h",
+      "sha256": "ccc5853372919e1f46dcb59726569be1b5e2d0a5235b3751718a3ad30243b0c4"
+    },
+    {
+      "path": "vendor/libsql-ffi/bundled/sqlean/text/bstring.c",
+      "sha256": "044c0792de1efba3663ec3cd5102309457e523865782abae53556c2676632e84"
+    },
+    {
+      "path": "vendor/libsql-ffi/bundled/sqlean/vsv/extension.c",
+      "sha256": "3c4767f41df8168d9091bab4cf1dff70141535ee8aa6946dc021fe6489a10767"
+    },
+    {
+      "path": "vendor/libsql-ffi/bundled/sqlean/vsv/extension.h",
+      "sha256": "1eb1fc5d685b952bbf45d3047003af35f7a7472b580c30127ba3587577ed40b8"
+    },
+    {
+      "path": "vendor/libsql-ffi/bundled/sqlean/uuid/extension.c",
+      "sha256": "795b7f8a4edc12fdae6b76011d045554e9c973de3bd08affe67c1d9ff7ebc0c8"
+    },
+    {
+      "path": "vendor/libsql-ffi/bundled/sqlean/uuid/extension.h",
+      "sha256": "92ab910bfb91d04f2d5a54a78db2e8b740d6348eb08695bb4b55c04af3d2fde0"
+    },
+    {
+      "path": "vendor/libsql-ffi/bundled/sqlean/stats/extension.c",
+      "sha256": "199ce11d8e007f43f32125456d1e76313f7b809e305f649b8685db1ff9521a76"
+    },
+    {
+      "path": "vendor/libsql-ffi/bundled/sqlean/stats/series.c",
+      "sha256": "60dbf184977b7457373e42bcf0f8953d7396db1049bd3cf81458de772d35d98e"
+    },
+    {
+      "path": "vendor/libsql-ffi/bundled/sqlean/stats/extension.h",
+      "sha256": "ca69d1fd8d7fb653cd36a2dbfedd9df968f10329e38d4a7e77388d1c8a1d8c78"
+    },
+    {
+      "path": "vendor/libsql-ffi/bundled/sqlean/stats/stats.h",
+      "sha256": "158d1baf3b3d63b691e11098aa8931a259a0c0559a22af43b8746030206bf223"
+    },
+    {
+      "path": "vendor/libsql-ffi/bundled/sqlean/stats/scalar.c",
+      "sha256": "52d9db9a355104109234f28f9509bd2059a702d4ffd50dc9db114912a4990427"
+    },
+    {
+      "path": "vendor/libsql-ffi/bundled/sqlean/text/utf8/case.c",
+      "sha256": "32a74dbb00aced0259ae6ea9ed055c8d9f506f8f0f3912bc30092ce752b57c27"
+    },
+    {
+      "path": "vendor/libsql-ffi/bundled/sqlean/text/utf8/utf8.c",
+      "sha256": "33ec0e11f133c1ae553c346dfb014534de80b96d00ca1f3644a63efc564e9d51"
+    },
+    {
+      "path": "vendor/libsql-ffi/bundled/sqlean/text/utf8/rune.h",
+      "sha256": "522a83bf35eb2cf176b1bf08da025d926afcf882a706c66eecd314c3228b6d41"
+    },
+    {
+      "path": "vendor/libsql-ffi/bundled/sqlean/text/utf8/tables.h",
+      "sha256": "27211bf6fb2d6a88b6f5b4d1323c5d63089529300bd466aefbf6be1f9c69878d"
+    },
+    {
+      "path": "vendor/libsql-ffi/bundled/sqlean/text/utf8/utf8.h",
+      "sha256": "d943f1df508ca1e7da884f96e91c6484b0cda52714a97e509ad2771460b4ba89"
+    },
+    {
+      "path": "vendor/libsql-ffi/bundled/sqlean/text/utf8/rune.c",
+      "sha256": "a6805e53d1cfad9ced65cb37cb2cbb7ab082e445a89e6bdb79ba1479c997d7c6"
+    },
+    {
+      "path": "vendor/libsql-ffi/bundled/sqlean/text/utf8/groups.h",
+      "sha256": "286d86220dbd3f7bd8b79ace41d7e4cc09169999df6a406ac99907327a9d537b"
+    },
+    {
+      "path": "vendor/libsql-ffi/bundled/sqlean/regexp/pcre2/pcre2_xclass.c",
+      "sha256": "0f176d694ad6469e12e9e483a151cd83992716e518b52391a1c2c0ab373b0050"
+    },
+    {
+      "path": "vendor/libsql-ffi/bundled/sqlean/regexp/pcre2/pcre2_script_run.c",
+      "sha256": "ddb522cbc3bb4e554a096e5f16a9f8105c867906c3fcdfd63d720690da37bb49"
+    },
+    {
+      "path": "vendor/libsql-ffi/bundled/sqlean/regexp/pcre2/pcre2_convert.c",
+      "sha256": "81c16075736c61411da08ebda2f5acee70647a046890f8d56cb63d192cf29576"
+    },
+    {
+      "path": "vendor/libsql-ffi/bundled/sqlean/regexp/pcre2/pcre2_fuzzsupport.c",
+      "sha256": "d6279d593fc2b63a6e0432a14a647f534e42e1e37d2a9a4539fca5bbc883021c"
+    },
+    {
+      "path": "vendor/libsql-ffi/bundled/sqlean/regexp/pcre2/LICENSE",
+      "sha256": "c332b1fc7af4108c9366c725d172cd75032d96823f9eaade3f148c4560b847a0"
+    },
+    {
+      "path": "vendor/libsql-ffi/bundled/sqlean/regexp/pcre2/config.h",
+      "sha256": "5843b14698dc777836d45e5633d2610df3b65a28540ea265f6bdc3ff05cca2d9"
+    },
+    {
+      "path": "vendor/libsql-ffi/bundled/sqlean/regexp/pcre2/pcre2_dfa_match.c",
+      "sha256": "f27871471ebf968fa7c890f056c3af79899e029f0fe861e5fe785d2a1bad65e8"
+    },
+    {
+      "path": "vendor/libsql-ffi/bundled/sqlean/regexp/pcre2/pcre2_internal.h",
+      "sha256": "4ee0dd46ea390c39c29bd02ce25ded39627013b2c0bed462d634814034d017f6"
+    },
+    {
+      "path": "vendor/libsql-ffi/bundled/sqlean/regexp/pcre2/pcre2_string_utils.c",
+      "sha256": "9d80c17b645d0000912e5554630005a2f170c435621c0a15d91db75d48ebd1ad"
+    },
+    {
+      "path": "vendor/libsql-ffi/bundled/sqlean/regexp/pcre2/pcre2_pattern_info.c",
+      "sha256": "6d683585f6004809be840a24aff43cba0a4e6a0764aa67233582259245828e62"
+    },
+    {
+      "path": "vendor/libsql-ffi/bundled/sqlean/regexp/pcre2/pcre2_extuni.c",
+      "sha256": "0b801c9eaa16dbea3fbb1b8548bab65d21c93558ec21f694619e8a16c2de5903"
+    },
+    {
+      "path": "vendor/libsql-ffi/bundled/sqlean/regexp/pcre2/pcre2_chartables.c",
+      "sha256": "5e3e06f10d2e4d31b0ed11415b2cd73e0084a655a7cc4cede0f732e2754ea5c7"
+    },
+    {
+      "path": "vendor/libsql-ffi/bundled/sqlean/regexp/pcre2/pcre2_match.c",
+      "sha256": "7595a06e5eaf63e01dc79d87d2c67f7584dfcbe9524146f1c162a7e6bbff8c43"
+    },
+    {
+      "path": "vendor/libsql-ffi/bundled/sqlean/regexp/pcre2/pcre2_substring.c",
+      "sha256": "fb25086c6920ff2c819cc15741c92811237b2dda1b65f46b6a00059a786deebf"
+    },
+    {
+      "path": "vendor/libsql-ffi/bundled/sqlean/regexp/pcre2/pcre2_compile.c",
+      "sha256": "9174b0d19fc6a7f997745decdbd6e9924393159ba15dfba091236c4192dc7226"
+    },
+    {
+      "path": "vendor/libsql-ffi/bundled/sqlean/regexp/pcre2/pcre2_ord2utf.c",
+      "sha256": "e641ffbbe066ea926ed2928eb2d7ab44afdc9a79a23ea439c4b4dc03126575e1"
+    },
+    {
+      "path": "vendor/libsql-ffi/bundled/sqlean/regexp/pcre2/pcre2_tables.c",
+      "sha256": "0273bd33512edd511e0fc2035113b31d7441f784d5c0c22d78f1f9986cc997dd"
+    },
+    {
+      "path": "vendor/libsql-ffi/bundled/sqlean/regexp/pcre2/pcre2_maketables.c",
+      "sha256": "7d26245c5946a45cff3a367e2c1c590131c2bd10757386ba63c7038704884086"
+    },
+    {
+      "path": "vendor/libsql-ffi/bundled/sqlean/regexp/pcre2/README.md",
+      "sha256": "cbc112fe687da99471dc6befddda9ae13412725f3a0b8a272d1992a113f93b96"
+    },
+    {
+      "path": "vendor/libsql-ffi/bundled/sqlean/regexp/pcre2/pcre2_ucd.c",
+      "sha256": "dcffa6ccebdb0f3c04291527a95378f41b1892425639e3b5a8bcd37bf376c89c"
+    },
+    {
+      "path": "vendor/libsql-ffi/bundled/sqlean/regexp/pcre2/pcre2_find_bracket.c",
+      "sha256": "eaa8fdacbb5158574f802ed234745008507f5919ce59ade03473d1e3cafce260"
+    },
+    {
+      "path": "vendor/libsql-ffi/bundled/sqlean/regexp/pcre2/pcre2_substitute.c",
+      "sha256": "907fc8de197f4cd5233c52ce41342902dcdc250396178538a4b3475fda95d4d3"
+    },
+    {
+      "path": "vendor/libsql-ffi/bundled/sqlean/regexp/pcre2/pcre2_ucp.h",
+      "sha256": "66223050c96729c5f51eb779cf5326ebae049c19b8a8de0fe7e8c5446dc93232"
+    },
+    {
+      "path": "vendor/libsql-ffi/bundled/sqlean/regexp/pcre2/pcre2_study.c",
+      "sha256": "2deda7e904ea2cecc150e36a12841ac6f680dc79c333be4ff164950fe3f95a35"
+    },
+    {
+      "path": "vendor/libsql-ffi/bundled/sqlean/regexp/pcre2/pcre2_valid_utf.c",
+      "sha256": "e05e3e6eb5928cb89ee9cafbccde18ee4c57ce5167d6c9ddb70a5cc90fd9c3d4"
+    },
+    {
+      "path": "vendor/libsql-ffi/bundled/sqlean/regexp/pcre2/pcre2.h",
+      "sha256": "6de71c96ca6597db1876c0d454cb3701a22fb2e30f787c930fc65b905afe20ca"
+    },
+    {
+      "path": "vendor/libsql-ffi/bundled/sqlean/regexp/pcre2/pcre2_context.c",
+      "sha256": "003d11ff07a9b3b289e62bae63518ab53719b5b22a2920fccc9758b327f6a5e3"
+    },
+    {
+      "path": "vendor/libsql-ffi/bundled/sqlean/regexp/pcre2/pcre2_intmodedep.h",
+      "sha256": "6fc8dfffd2cab7d13559fa957f61c3a6d684bc13d1ca0f53454245dbf4ea49e9"
+    },
+    {
+      "path": "vendor/libsql-ffi/bundled/sqlean/regexp/pcre2/pcre2_match_data.c",
+      "sha256": "c8def30a74ccc8cb1c754de88dbe73cd814ff3e944491c3f16181c809585dcc0"
+    },
+    {
+      "path": "vendor/libsql-ffi/bundled/sqlean/regexp/pcre2/pcre2_error.c",
+      "sha256": "5d4c9aefcdd719985a2b6917a0d2a06c57114233570515d93e614c925d9c2efa"
+    },
+    {
+      "path": "vendor/libsql-ffi/bundled/sqlean/regexp/pcre2/pcre2_config.c",
+      "sha256": "9890985c3ed8c41e75062750a4f39dc8e4a2014c4bad1b82fe4c419d6c56ea7b"
+    },
+    {
+      "path": "vendor/libsql-ffi/bundled/sqlean/regexp/pcre2/pcre2_newline.c",
+      "sha256": "25ce487c7f8eb436a2187e99be4c419784656c55406acea057b082b62d1c6eeb"
+    },
+    {
+      "path": "vendor/libsql-ffi/bundled/sqlean/regexp/pcre2/pcre2_auto_possess.c",
+      "sha256": "952dd5ff36df94fc3aefc971b8ef6680f2e59bf7dc8160f9cb74aab67af7eeee"
+    },
+    {
+      "path": "vendor/libsql-ffi/bundled/sqlean/regexp/pcre2/pcre2_serialize.c",
+      "sha256": "ec6e2307a390286acbb85b74753e7047cac9fca2551755c2e07eec38d89cbe49"
+    }
+  ],
+  "ffi_count": 273,
+  "ffi_comparison": "Complete vendor/libsql-ffi file tree byte-identical across composition, original service and director reference worktrees",
+  "metadata": {
+    "receipt_returncode": 0,
+    "one_identity_each": true,
+    "root_id": "path+file:///Users/rahul/Projects/gossil.worktrees/gest-xorypnnk-service-compose-main#gossil@0.6.0",
+    "libsql_id": "git+https://github.com/rahuldave/gossil-libsql?rev=c02db34ae8a7e91ca7ab8faee18fe41515626940#libsql@0.10.0",
+    "libsql_source": "git+https://github.com/rahuldave/gossil-libsql?rev=c02db34ae8a7e91ca7ab8faee18fe41515626940#c02db34ae8a7e91ca7ab8faee18fe41515626940",
+    "expanded_features": [
+      "core",
+      "libsql-sys"
+    ],
+    "core_definition": [
+      "libsql-sys",
+      "dep:bitflags",
+      "dep:bytes",
+      "dep:futures",
+      "dep:parking_lot"
+    ],
+    "libsql_sys_id": "registry+https://github.com/rust-lang/crates.io-index#libsql-sys@0.10.0",
+    "ffi_id": "path+file:///Users/rahul/Projects/gossil.worktrees/gest-xorypnnk-service-compose-main/vendor/libsql-ffi#0.10.0",
+    "canonical_ffi_manifest": "/Users/rahul/Projects/gossil.worktrees/gest-xorypnnk-service-compose-main/vendor/libsql-ffi/Cargo.toml",
+    "root_libsql_sys_ffi_edges_independently_verified": true,
+    "ffi_manifest_entries_hash_verified": 273,
+    "metadata_sha256": "9962dd97ddd0da64a7a6a22a22c4fa4f48766115c241cca033c4e833b580bca7",
+    "proof_corrections": "Receipt accurately distinguishes two mistaken proof assertions from successful first metadata resolution; core dependency-feature expansion verified against actual cached published manifest."
+  },
+  "runtime_checks": [],
+  "recommendation": "Run four unchanged persisted controls and report actual outcome; metadata identity proof establishes resolution only, not compilation or runtime success."
+}

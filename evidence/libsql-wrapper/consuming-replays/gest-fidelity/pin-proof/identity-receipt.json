@@ -1,0 +1,53 @@
+{
+  "classification": "Actual locked/offline Cargo resolution identity proof",
+  "argv": [
+    "cargo",
+    "metadata",
+    "--format-version",
+    "1",
+    "--locked",
+    "--offline"
+  ],
+  "returncode": 0,
+  "root_version": "0.6.0",
+  "libsql": {
+    "id": "git+https://github.com/rahuldave/gossil-libsql?rev=c02db34ae8a7e91ca7ab8faee18fe41515626940#libsql@0.10.0",
+    "version": "0.10.0",
+    "source": "git+https://github.com/rahuldave/gossil-libsql?rev=c02db34ae8a7e91ca7ab8faee18fe41515626940#c02db34ae8a7e91ca7ab8faee18fe41515626940",
+    "manifest_path": "/tmp/gossil-supervisor-gest-20261119/native-lifecycle01/offline-cargo01/cargo-home/git/checkouts/gossil-libsql-ea6f9c6597ddb583/c02db34/Cargo.toml"
+  },
+  "libsql_features": [
+    "core",
+    "libsql-sys"
+  ],
+  "core_feature_definition": [
+    "libsql-sys",
+    "dep:bitflags",
+    "dep:bytes",
+    "dep:futures",
+    "dep:parking_lot"
+  ],
+  "feature_explanation": "core enables implicit optional libsql-sys feature and explicit dep: items; default/replication/remote features absent",
+  "libsql_sys": {
+    "id": "registry+https://github.com/rust-lang/crates.io-index#libsql-sys@0.10.0",
+    "version": "0.10.0",
+    "source": "registry+https://github.com/rust-lang/crates.io-index",
+    "manifest_path": "/tmp/gossil-supervisor-gest-20261119/native-lifecycle01/offline-cargo01/cargo-home/registry/src/index.crates.io-1949cf8c6b5b557f/libsql-sys-0.10.0/Cargo.toml"
+  },
+  "libsql_sys_lock_checksum": "cf4a7f2d76f49442c273a892a574a272b8b35f4bf0b1b25a475f2cc95885fe0f",
+  "libsql_ffi": {
+    "id": "path+file:///Users/rahul/Projects/gossil.worktrees/gest-xorypnnk-service-compose-main/vendor/libsql-ffi#0.10.0",
+    "version": "0.10.0",
+    "source": null,
+    "manifest_path": "/Users/rahul/Projects/gossil.worktrees/gest-xorypnnk-service-compose-main/vendor/libsql-ffi/Cargo.toml"
+  },
+  "one_libsql_crate_identity": true,
+  "root_libsql_sys_ffi_edges_verified": true,
+  "ffi_files_byte_identical_to_root_issue36": 273,
+  "lock_sha256": "7877b4a8c9b37e079aa9228171229319d569c0e25c815467af56e0b2af0f4577",
+  "proof_script_corrections": [
+    "First proof assertion wrongly expected only core in expanded features; actual successful metadata includes its implicit libsql-sys feature.",
+    "Second proof assertion wrongly expected core definition to contain only libsql-sys, omitting explicit dep: items. Final proof verifies both expanded feature names and exact declared definition without changing source or resolution."
+  ],
+  "resolution_failure": false
+}

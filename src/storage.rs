@@ -6,6 +6,7 @@
 //! is recorded in `evidence/libsql-provider/provenance.json`. Native repository
 //! creation and admission parse the empty root on this same connection. General
 //! artifact crosslinks, runtime clocks and broader date compatibility remain unqualified.
+//! Native initialization and zero-or-one empty-root registration admit catalog4; bound catalog1 retains private writes.
 //!
 //! ## Recommendations
 //! Use one owner for a complete mutation and explicitly commit or roll back.
@@ -15,7 +16,12 @@ mod policy;
 mod repository;
 mod schema;
 pub use content::Limits;
-pub use repository::{AdmissionLimits, CreateOptions, LocalOwnerRepository, SharedView};
+pub use repository::{
+    AdmissionLimits, CheckoutView, CreateOptions, InitializeOptions, LocalOwnerRepository,
+    SharedView,
+};
+mod lifecycle;
+use lifecycle::FileIdentity;
 
 use libsql::{Builder, Connection, Value};
 use std::{fmt, path::Path, sync::Arc, time::Duration};
@@ -139,6 +145,17 @@ pub struct LocalStore {
     connection: Option<Connection>,
     /// Whether an abnormal exit prevents reuse.
     poisoned: bool,
+    /// Cooperative pathname expectation for repository constructors.
+    identity: Option<FileIdentity>,
+}
+impl Drop for LocalStore {
+    /// Observe before releasing the safe provider; this does not certify engine disposal.
+    fn drop(&mut self) {
+        if let Some(identity) = &self.identity {
+            let _ = identity.observe();
+        }
+        drop(self.connection.take());
+    }
 }
 impl LocalStore {
     /// Open and verify a local file database; never fall back to memory.
@@ -176,7 +193,25 @@ impl LocalStore {
     /// Returns an input error for an embedded NUL, engine errors for opening or
     /// configuration failures, or a state error when required settings differ.
     async fn open_inner(path: impl AsRef<Path>, file: bool) -> Result<Self, StorageError> {
-        let path = path.as_ref();
+        Self::open_observed(path.as_ref(), file, None).await
+    }
+    /// Open with cooperative regular-file observations before and after engine entry.
+    /// # Arguments
+    /// * `path` - Literal database filename.
+    /// * `file` - Require file WAL configuration.
+    /// * `identity` - Previously captured regular-file identity.
+    /// # Returns
+    /// A configured store retaining the optional identity.
+    /// # Errors
+    /// Retains pathname, configuration and engine failures.
+    async fn open_observed(
+        path: &Path,
+        file: bool,
+        identity: Option<FileIdentity>,
+    ) -> Result<Self, StorageError> {
+        if let Some(expected) = &identity {
+            expected.observe()?;
+        }
         let database = if file {
             open_native_database(path, libsql::OpenFlags::default()).await?
         } else {
@@ -210,9 +245,13 @@ impl LocalStore {
                 )));
             }
         }
+        if let Some(expected) = &identity {
+            expected.observe()?;
+        }
         Ok(Self {
             connection: Some(connection),
             poisoned: false,
+            identity,
         })
     }
     /// Report whether unexpected destruction or failed cleanup prevents reuse.
@@ -778,6 +817,48 @@ mod tests {
             read(&mut store, "SELECT count(*) FROM child").await,
             vec![vec![Value::Integer(0)]]
         );
+    }
+    /// Compose a real generic COMMIT failure with complete prepared-locator cleanup.
+    /// This helper fixture does not establish native repository or registration admission.
+    /// # Panics
+    /// Panics if preparation, deferred-FK rollback, connection reuse or cleanup differs.
+    #[tokio::test]
+    async fn commit_failure_discards_prepared_locator_without_publication() {
+        use crate::checkout_locator::{Locator, Prepared, prepare_directory};
+        let temp = tempfile::tempdir().unwrap();
+        let path = temp.path().join("db");
+        let marker = temp.path().join("marker");
+        let mut store = LocalStore::open(&path).await.unwrap();
+        fixture(&mut store).await;
+        prepare_directory(&marker).unwrap();
+        let value = Locator::new(
+            &path,
+            "0123456789abcdef0123456789abcdef01234567".into(),
+            "work".into(),
+        )
+        .unwrap();
+        let prepared = Prepared::new(&marker, &value).unwrap();
+        let entries = std::fs::read_dir(&marker)
+            .unwrap()
+            .map(|entry| entry.unwrap().path())
+            .collect::<Vec<_>>();
+        assert_eq!(entries.len(), 1);
+        assert_eq!(crate::checkout_locator::read(&entries[0]).unwrap(), value);
+        assert!(!marker.join("checkout.json").exists());
+        let mut tx = store.begin_write().await.unwrap();
+        tx.execute("INSERT INTO child VALUES(99)").await.unwrap();
+        let error = tx.commit().await.unwrap_err();
+        assert!(error.operation.contains("FOREIGN KEY"));
+        assert_eq!(error.cleanup, None);
+        assert!(!store.is_poisoned());
+        assert!(store.connection.as_ref().unwrap().is_autocommit());
+        assert_eq!(
+            read(&mut store, "SELECT count(*) FROM child").await,
+            vec![vec![Value::Integer(0)]]
+        );
+        drop(prepared);
+        assert_eq!(std::fs::read_dir(&marker).unwrap().count(), 0);
+        assert!(!marker.join("checkout.json").exists());
     }
     /// Verify cleanup failures retain the first error and poison the store.
     #[tokio::test]

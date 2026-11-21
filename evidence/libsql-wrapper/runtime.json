@@ -1,0 +1,34 @@
+{
+  "status": "executed focused registry RED and temporary owned path-patch GREEN; fork integration and release not qualified",
+  "base": "8e9a680b206244cc0eee2de3534c2fde140da4e5",
+  "registry_red": {
+    "guard": "f08ddde8-5e53-48a9-8d2a-69991668b933",
+    "passed": 0,
+    "failed": 4
+  },
+  "path_green": {
+    "guard": "8fb0bc15-9a42-49f1-89a1-dece1af75f13",
+    "passed": 4,
+    "failed": 0
+  },
+  "setup_failure": {
+    "guard": "72c0df56-b55d-458e-8acf-2cc83b47cf4a",
+    "reason": "1.95.0 alias absent; stable toolchain used instead",
+    "behavioral_red": false
+  },
+  "public_test_sha256": "2db399ee84aa151d36cb8148d5cffb51e88c56a089de37b5c1625ddecee9a646",
+  "impact": {
+    "gest_red_guard": "d846f736-24e7-4870-a76a-f5493e02ff33",
+    "gest_green": "not-run",
+    "released_checkout_validation_red_guard": "458f1d47-adc7-4a2e-a0f8-b4ef344ebc94",
+    "released_checkout_validation_cases": 21,
+    "released_checkout_validation_red": {
+      "nul_accepted": 3,
+      "utf8_panics": 6,
+      "clean_refusals": 12
+    },
+    "released_checkout_validation_green": "not-run",
+    "test_ancestry": "new matrix belongs to ongoing file-tracking test work; exercised validation functions already on accepted main"
+  },
+  "ffi_unchanged": true
+}

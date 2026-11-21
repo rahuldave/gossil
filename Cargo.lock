@@ -561,6 +561,12 @@ dependencies = [
 ]
 
 [[package]]
+name = "dir_spec"
+version = "0.5.3"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "6d407ed4103b6e5595ed2c0fd18270d40cc8eca9bdee9b4caabf4c9f39c5508f"
+
+[[package]]
 name = "displaydoc"
 version = "0.2.7"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -809,13 +815,14 @@ checksum = "e4eba85ea1d0a966a983acd07deee566e67395d2d96b6fb39e62b5a833f1eb0b"
 
 [[package]]
 name = "gossil"
-version = "0.1.0"
+version = "0.6.0"
 dependencies = [
  "askama",
  "axum",
  "chrono",
  "clap",
  "crossterm",
+ "dir_spec",
  "flate2",
  "getset",
  "keccak",
@@ -1291,8 +1298,7 @@ dependencies = [
 [[package]]
 name = "libsql"
 version = "0.10.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "d6bca1704194048f0f0bbc8a8e05ba85c0c67628b03bd59346dd2fdd946a1588"
+source = "git+https://github.com/rahuldave/gossil-libsql?rev=c02db34ae8a7e91ca7ab8faee18fe41515626940#c02db34ae8a7e91ca7ab8faee18fe41515626940"
 dependencies = [
  "async-trait",
  "bitflags",
@@ -1335,15 +1341,15 @@ checksum = "2e126dda6f34391ab7b444f9922055facc83c07a910da3eb16f1e4d9c45dc777"
 
 [[package]]
 name = "linux-raw-sys"
-version = "0.4.15"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "d26c52dbd32dccf2d10cac7725f8eae5296885fb5703b261f7d0a0739ec807ab"
-
-[[package]]
-name = "linux-raw-sys"
 version = "0.12.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "32a66949e030da00e8c7d4434b251670a91556f4144941d37452769c25d58a53"
+
+[[package]]
+name = "linux-raw-sys"
+version = "0.4.15"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "d26c52dbd32dccf2d10cac7725f8eae5296885fb5703b261f7d0a0739ec807ab"
 
 [[package]]
 name = "litemap"

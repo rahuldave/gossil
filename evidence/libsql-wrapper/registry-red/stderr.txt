@@ -1,0 +1,5 @@
+just --justfile '/Users/rahul/Projects/gossil.worktrees/gest-zpxtnvsq-libsql-text/Justfile' rust test-paths "$@"
+uv run --no-project --quiet --python '>=3.11' python '/Users/rahul/Projects/gossil.worktrees/gest-zpxtnvsq-libsql-text/.agents/just/rust/steps.py' test-paths "$@"
+WARN `--no-project` was provided, but no project was found
+error: Recipe `test-paths` failed on line 16 with exit code 1
+error: Recipe `test-paths` failed on line 71 with exit code 1

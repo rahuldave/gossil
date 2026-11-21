@@ -20,6 +20,22 @@ set allow-duplicate-recipes
 default:
     @just --list --unsorted --list-submodules
 
+# Supply pinned native test references, then fetch the Rust dependencies.
+setup: _reference-tools rust::setup
+
+[private]
+_reference-tools:
+    jlog run python3 scripts/setup-reference-tools.py
+
+[private]
+_reference-tools-tests:
+    jlog run python3 tests/test_reference_tools.py -v
+
+# Keep native setup security controls in the generic test contract.
+test *args: _reference-tools-tests
+    just --justfile {{quote(justfile())}} rust test "$@"
+    jlog step test
+
 # Execute one explicit reference or candidate configuration; failed suites exit nonzero.
 conformance CONFIG:
     cargo run --locked --bin gossil-conformance -- "$1"
@@ -68,13 +84,26 @@ libsql-vendor-check:
 libsql-vendor-test:
     jlog run python3 -m unittest discover -s tests -p 'test_libsql_vendor.py' -v
 
+# Verify the immutable wrapper source and unchanged sys/provider composition.
+libsql-wrapper-check:
+    jlog run python3 scripts/verify-libsql-wrapper.py
+
+# Reject wrapper revision, feature, sys checksum and provider-manifest drift.
+libsql-wrapper-test:
+    jlog run python3 -m unittest discover -s tests -p 'test_libsql_wrapper.py' -v
+
+# Record the actual resolved provider graph for composition audits.
+libsql-wrapper-metadata:
+    mkdir -p target
+    jlog run cargo metadata --locked --all-features --format-version 1 > target/libsql-wrapper-metadata.json
+
 # Retain the Rust profile type check after the mandatory vendor identity check.
-typecheck *args: libsql-vendor-check libsql-vendor-test
+typecheck *args: libsql-vendor-check libsql-vendor-test libsql-wrapper-check libsql-wrapper-test build-metadata-test
     just --justfile {{quote(justfile())}} rust typecheck "$@"
     jlog step typecheck
 
 # Required CI verifies vendor bytes as well as the existing commit evidence gate.
-ci: libsql-vendor-check libsql-vendor-test ci-gate
+ci: libsql-vendor-check libsql-vendor-test libsql-wrapper-check libsql-wrapper-test ci-gate
 
 # Run the current product CLI without coverage instrumentation.
 gossil *args:
@@ -87,3 +116,7 @@ libsql-provider-compile:
 # Run the finite date semantic controls through the actual bundled Rust provider.
 libsql-provider-dates:
     jlog run cargo test --locked --lib storage::date_tests
+
+# Verify build metadata with real Git transitions and the shipped build script.
+build-metadata-test:
+    jlog run python3 tests/test_build_metadata.py

@@ -4,10 +4,23 @@
 
 The `storage` module opens local libSQL files and owns one write transaction
 at a time. Its low-level lifecycle API also supports the validated
-[native storage boundary](native-storage.md), which installs the complete schema
-and implements empty-root initialization and bounded private content operations.
+[native storage boundary](native-storage.md). That boundary installs the complete
+schema and implements empty-root initialization, one native directory registration
+and bounded catalog1 private content operations.
 Opening that higher-level repository validates its stored root and authority metadata.
 Migration and broader adapters remain unimplemented.
+
+Both `LocalOwnerRepository::create` and `LocalOwnerRepository::initialize` refuse existing `-journal`, `-wal` and `-shm`
+entries beside the destination before creating the database. They preserve those
+entries, including dangling symlinks and directories. Observation failures retain
+the operating-system cause. The checks append literal native filename suffixes.
+They observe the namespace before creation and again before SQLite entry.
+
+Callers must keep that namespace stable through engine cleanup. The constructors
+observe regular-file identity at separate boundaries; these observations do not
+establish atomic binding to an engine handle. Checkout-free initialization retains
+a failed main file if the engine might have opened it or COMMIT was attempted.
+It reports cleanup uncertainty separately from the first operation error.
 
 ## Open and terminate a write
 

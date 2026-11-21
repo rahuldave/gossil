@@ -1,13 +1,15 @@
 # Development and contributing
 
 Gossil implements byte primitives, structural artifact parsing and bounded local
-storage. The `gossil` executable implements three delta diagnostics.
+storage. The `gossil` executable initializes empty repositories, opens native
+empty-root checkouts and implements three delta diagnostics.
 The generated [Rust API](api/index.qmd) describes the public library surface.
 
 The standalone [Gest task values converter](gest-task-values.md) validates eleven decoded fields.
 The [Gest project values converter](gest-project-values.md) validates four canonical project fields.
+The [Gest author values converter](gest-author-values.md) validates six canonical author fields.
 The [task ticket emitter](task-ticket.md) serializes validated task snapshots with
-caller-supplied native identity, actor and date. Both converters operate in memory. Storage integration, raw field admission and the full Gest API remain future work.
+caller-supplied native identity, actor and date. All three converters operate in memory. Storage integration, raw field admission and the full Gest API remain future work.
 
 ## Current scope
 
@@ -16,8 +18,19 @@ caller-supplied native identity, actor and date. Both converters operate in memo
 | Delta create, apply and two-way file checks | General version-control CLI |
 | Compression, hashes, token escaping and artifact checksums | Repository traversal and persistent selection commands |
 | Eight structural artifact types with explicit limits | General crosslinks, migration, rebuild and filesystem recovery |
-| Complete empty-root initialization and bounded private content | File-containing check-ins, sync and publication |
+| Checkout-free initialization, native open and locator recovery; catalog1 private content | File-containing check-ins, sync and artifact publication |
 | Explicit inherited-test runner configurations | Gest task CLI, server and user interface |
+
+Initialization creates catalog4 without a checkout. The library can register
+one existing directory and authenticate its registration by ID or exact root.
+Reopen admits exactly zero or one registration at the initial empty root. Bound
+catalog1 creation retains its checkout and private content operations. Catalog4
+private writes and file-containing states remain unsupported. Registration
+changes the database only.
+
+The source CLI composes it with bounded locator
+publication and exact-registration recovery. Working-file materialization
+remains future work. See [native checkout open](cli.md#open-a-native-checkout).
 
 An empty root is a check-in with no files. Private content operations do not
 extend that public graph. Build this version from source. The implemented modules do not establish
@@ -41,9 +54,9 @@ just setup
 just install --check
 ```
 
-`just setup` fetches Cargo dependencies. `just install` refreshes the saved tool
-selection from those companion packages. Neither command acquires the pinned
-Fossil source or local Tcl and Fossil binaries.
+`just setup` supplies the pinned Linux Tcl and Fossil references, or checks the
+existing tools on other hosts, then fetches Cargo dependencies.
+`just install` refreshes the saved tool selection from those companion packages.
 The [runner guide](conformance.md#local-prerequisites) describes those prerequisites.
 
 Read `AGENTS.md` before changing the repository. Follow the installed Gest
@@ -66,7 +79,9 @@ just docs-check
 just docs-build
 ```
 
-`just test` and `just integration` use the installed coverage workflow.
+`just test` first runs nine focused Python installer controls, then runs the Rust
+unit tests through the installed coverage workflow. `just integration` uses that
+Rust coverage workflow. Its reports do not measure Python installer coverage.
 Keep failed, blocked, skipped and disabled-feature observations distinct from
 passes. Installed tool copies and hook files do not prove actual executions.
 Complete the required checks and independent review before delivery to `main`.
@@ -100,7 +115,9 @@ generation. Local rendering does not establish a successful deployment.
 
 The root Cargo patch selects the complete `libsql-ffi` 0.10.0 archive under
 `vendor/libsql-ffi`. The root dependency and lockfile also pin `libsql` and
-`libsql-sys` to 0.10.0. Its adapted date conversion includes `<stdint.h>` itself
+`libsql-sys` to 0.10.0. The Rust wrapper uses the full Git revision in the
+[TEXT retrieval guide](libsql-wrapper.md); `libsql-sys` retains its registry identity.
+The wrapper correction leaves the bundled provider unchanged. Its adapted date conversion includes `<stdint.h>` itself
 because it uses `UINT64_C`. The upstream build script does not define
 `HAVE_STDINT_H` or `HAVE_INTTYPES_H` for the core build.
 
@@ -156,7 +173,7 @@ It is not required to use the current CLI or library.
 
 ## Shared value validation
 
-Task and project conversion share private field validators. The task ticket emitter
+Task, project and author conversion share private field validators. The task ticket emitter
 borrows the status and UTC timestamp forms defined by `gest_task_values`.
 Changes must preserve public conversion behavior and the original parser errors
 returned through the public error accessor.
@@ -165,6 +182,70 @@ size planning; task strings and metadata remain borrowed.
 
 Historical task-value source mappings and run accounting are preserved in
 [the task value evidence archive](https://github.com/rahuldave/gossil/blob/main/docs/_history/task-value-evidence.md).
+
+## Native repository CLI
+
+The source routes `gossil` and `gos`, `vcs` and `v`, and `init` and `new`
+to the checkout-free native initializer. It accepts administrator, date and SHA1
+options and uses SQLite randomness in a private memory database. Login fallback
+uses environment values without a preference database. Existing delta diagnostics
+retain their dispatcher and argument contracts.
+
+The focused CLI controls are in `tests/vcs_init_cli.rs`; parser, environment,
+password and receipt controls are in the private `vcs_init` module. Source edits
+and authored tests do not establish a passing qualification run. Versioned
+executable and matching documentation delivery have their own qualification checks.
+
+The source `vcs open` adapter adds first registration, reopen and bounded locator
+recovery without project initialization. Its configuration comes from the
+invocation directory, independently of an explicit root. The
+[CLI contract](cli.md#open-a-native-checkout) covers selection, conflicts and
+publication phases. File operations remain future work.
+
+Locator/parser/publication controls are in `src/checkout_locator.rs`, configuration
+controls in `src/checkout_config.rs`, and executable controls in
+`tests/vcs_open_cli.rs`. Generic lifecycle commit-failure composition remains
+distinct from an injected native-registration COMMIT failure. Source controls
+and focused passes do not establish full coverage, Linux qualification or delivery.
+
+The working source manifest selects 0.6.0 tentatively, pending pull-request
+readiness. The delivered version is 0.4.1. Source documentation and local checks
+do not establish publication or installation of 0.6.0.
+
+Version 0.2.0 executable and documentation delivery is complete. The annotated
+`v0.2.0` tag resolves to `2fc3fa1`; source CI and documentation CI passed. The
+versioned executables, smoke tests and live CLI and API pages were verified.
+The default previews were preserved, and issue 22 is closed.
+
+## Build metadata
+
+`build.rs` exports `BUILD_DATE` from the local `date` command and `GIT_SHA` from
+Git. Each falls back to `unknown` if its command fails or supplies no usable
+output. Cargo watches the build script and worktree-aware Git metadata, including
+the attached branch reference and packed references when needed. For an unborn
+or packed branch, it watches an existing parent directory so that a new loose
+reference triggers a rebuild. Git supplies the actual paths for linked worktrees.
+The date records the build-script execution date; a cached build need not refresh
+it each day.
+
+`just typecheck` requires `build-metadata-test` as well as the vendor and wrapper
+controls before running the Rust profile type check. `build-metadata-test` runs
+five Python controls in `tests/test_build_metadata.py`. They exercise cached builds
+across real ordinary and linked worktree transitions, source archives, missing
+commands and timeout cleanup.
+
+Cargo also registers `build.rs` directly as the `build_metadata` test target.
+Its two Rust controls in `tests/build_metadata/controls.rs` check child cleanup
+and the shipping metadata helpers.
+The helper control uses seven isolated cases. They cover a directory outside
+Git, missing commands, unborn, attached, detached and packed references, and
+commands that fail.
+This direct registration keeps coverage on the shipping source path.
+The controls are authored tests, not a report that they passed.
+
+The current source has no product banner caller for these exported values.
+Build metadata is a prerequisite for later service work. No service lifecycle,
+web interface, terminal interface or `gos i` command is implemented.
 
 ## Recommendations
 

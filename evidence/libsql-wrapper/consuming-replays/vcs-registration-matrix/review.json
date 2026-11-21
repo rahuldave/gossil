@@ -1,0 +1,85 @@
+{
+  "status": "Focused replay evidence accepted; not full issue32 gates or issue36 acceptance",
+  "findings": [],
+  "source_tree": "59d3466a4e323c3653630951b094dcd3213c7a3a",
+  "frozen32_tree": "626e719c0806a97187816510a3e1f9126a56c0f0",
+  "pin": "c02db34ae8a7e91ca7ab8faee18fe41515626940",
+  "source_verification": {
+    "frozen32_paths": 23,
+    "all_23_byte_identical_to_git_tree": true,
+    "all_25_snapshot_hashes_verified": true,
+    "cargo_snapshots_match_composed_tree": true,
+    "lock_changed_packages": [
+      "gossil",
+      "libsql"
+    ],
+    "registry_sys_and_vendor_ffi_lock_entries_unchanged": true
+  },
+  "resolved_graph": [
+    {
+      "name": "gossil",
+      "version": "0.5.0",
+      "source": null,
+      "features": []
+    },
+    {
+      "name": "libsql",
+      "version": "0.10.0",
+      "source": "git+https://github.com/rahuldave/gossil-libsql?rev=c02db34ae8a7e91ca7ab8faee18fe41515626940#c02db34ae8a7e91ca7ab8faee18fe41515626940",
+      "features": [
+        "core",
+        "libsql-sys"
+      ]
+    },
+    {
+      "name": "libsql-ffi",
+      "version": "0.10.0",
+      "source": null,
+      "features": []
+    },
+    {
+      "name": "libsql-sys",
+      "version": "0.10.0",
+      "source": "registry+https://github.com/rust-lang/crates.io-index",
+      "features": [
+        "api",
+        "default",
+        "wal"
+      ]
+    }
+  ],
+  "execution": {
+    "guard": "af02b3e4-77f3-4d9a-a8ae-7789d8fa4775",
+    "argv": [
+      "just",
+      "integration",
+      "--test",
+      "native_tracking_admission",
+      "registration_text_boundary_runs_complete_raw_byte_matrix"
+    ],
+    "returncode": 0,
+    "elapsed_seconds": 91.25128054106608,
+    "minimum_free_bytes": 8064229376,
+    "live_owned_pids": [],
+    "test": "registration_text_boundary_runs_complete_raw_byte_matrix",
+    "passed": 1,
+    "other_filtered": 6,
+    "test_seconds": 4.9
+  },
+  "assertion_review": "Read complete executed test body: unconditional seven-field by three-form loops, raw typeof/hex injection checks, isolated API thread join records acceptance or panic, complete raw application snapshot and working-byte comparisons, final failures.is_empty assertion. Passing complete test supports all21 clean refusals/no API panic/no compared-state mutation. No per-case error text was emitted; case outcomes are inferred from this complete control flow and final success, not independently logged error messages.",
+  "ffi_evidence": "Retained ffi-verification.txt reports all273 archive/provenance files verified; vendor-FFI lock entry remains identical. Reviewer did not rerun verifier.",
+  "historical_red": "../registration-text-red/result.json preserved and inspected:21 attempted,3NUL acceptances,6invalidUTF8 API panics,12clean rejections; not overwritten by green replay.",
+  "limitations": [
+    "Read-only evidence review; no compiler/Cargo/runtime/test/verifier rerun.",
+    "This accepts the focused actual-provider replay evidence only; complete32 ordered gates, accepted36 ancestry and integration remain separate."
+  ],
+  "evidence_hashes": {
+    "result.json": "dbeeea22f6a421a9d9ebd0752b40102d494d1fb8b77cdfc9fa99f18ce9c59298",
+    "resolved-provider-proof.json": "5c2080be513b7e521682c7bec58a563a8fddffb6d3a44537d89f93ddfb396992",
+    "cargo-metadata.json": "e149276d131c9040188808ca9587bbd3285ef6cd59bcb240498ea2242dec17a2",
+    "cargo-delta.patch": "5fc8f4c106432ddb243a5d8e7655913df76bedfe17ea817a20eeb488318e7eb6",
+    "ffi-verification.txt": "3539419bfaad1da9ae6562b5c9a07dbeb62cb6247496b937240603f0d1eda0f1",
+    "guard/registration-text-matrix-actual-pin.execution.json": "045973bd0f45d36228774be59d31b8e7943e5a551f9f8aa7d05e00e7c2601104",
+    "guard/registration-text-matrix-actual-pin.stdout.txt": "213e69963089442d7aa511bc500df4b2b0f3ee1c3108c0c8531320b05c54fb8b"
+  }
+}

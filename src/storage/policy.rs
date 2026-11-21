@@ -17,7 +17,7 @@ impl WriteTransaction<'_> {
     /// # Arguments
     /// * `principal` - Sealed local repository and owner binding.
     /// # Returns
-    /// Success when durable policy matches the sealed local binding.
+    /// Success when durable policy matches the sealed local binding and catalog4 has an exact zero-or-one checkout count.
     /// # Errors
     /// Rejects absent or mismatched complete policy and owner bindings, corrupt rows and SQL failures.
     pub(super) async fn validate_principal(
@@ -28,9 +28,19 @@ impl WriteTransaction<'_> {
             return Err(error.clone());
         }
         let result = async {
+            if principal.owner.is_empty() || principal.repository.len()!=40 || !principal.repository.bytes().all(|b| b.is_ascii_digit() || (b'a'..=b'f').contains(&b)) {
+                return Err(StorageError::state("invalid local repository identity binding"));
+            }
             self.validate_catalog().await?;
             let rows = self.query_bound("SELECT s.repository_id,s.storage_version,s.projection_version,s.policy_complete,o.owner_id FROM g_storage s CROSS JOIN g_local_owner o WHERE s.singleton=1 AND o.singleton=1", vec![]).await?;
-            let expected = vec![vec![Value::Text(principal.repository.clone()), Value::Integer(1), Value::Text("gest-ticket-v1".into()), Value::Integer(1), Value::Text(principal.owner.clone())]];
+            let version = match rows.as_slice() {
+                [row] => match row.get(1) { Some(Value::Integer(version @ (1 | 4))) => *version, _ => return Err(StorageError::state("unsupported storage version")) },
+                _ => return Err(StorageError::state("repository principal or complete policy unavailable")),
+            };
+            if version == 4 && !matches!(self.query_bound("SELECT checkout_count,(SELECT count(*) FROM g_checkout) FROM g_storage WHERE singleton=1",vec![]).await?.as_slice(), [row] if matches!(row.as_slice(), [Value::Integer(count @ (0 | 1)), Value::Integer(actual)] if count == actual)) {
+                return Err(StorageError::state("unsupported populated catalog4 checkout scope"));
+            }
+            let expected = vec![vec![Value::Text(principal.repository.clone()), Value::Integer(version), Value::Text("gest-ticket-v1".into()), Value::Integer(1), Value::Text(principal.owner.clone())]];
             if rows != expected { return Err(StorageError::state("repository principal or complete policy unavailable")); }
             let markers = self.query_bound("SELECT name,value FROM config WHERE name IN ('project-code','content-schema','aux-schema') ORDER BY name", vec![]).await?;
             let expected = vec![

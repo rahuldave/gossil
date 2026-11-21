@@ -1,0 +1,22 @@
+{
+  "classification": "Exact published companion pin copied from director-owned issue36 manifest; no service/test edits",
+  "pin": "c02db34ae8a7e91ca7ab8faee18fe41515626940",
+  "git": "https://github.com/rahuldave/gossil-libsql",
+  "package_version": "0.6.0",
+  "changed_paths": [
+    {
+      "path": "Cargo.toml",
+      "before_sha256": "5a43c96636bf73ce214c2f082f4cf46e622731abcf2248378ab04c49c19dd778",
+      "after_sha256": "fb985bc5230a6c6598837d35e7ad331c43384246557d4b9389cad76141fd1cb3"
+    },
+    {
+      "path": "Cargo.lock",
+      "before_sha256": "cee721d280afde9b31cac6cec0d53bac426cc5e81fb4045112b3db53251b8039",
+      "after_sha256": "7877b4a8c9b37e079aa9228171229319d569c0e25c815467af56e0b2af0f4577"
+    }
+  ],
+  "other_sealed_paths_unchanged": 140,
+  "manifest_semantic_delta": "Add top-level crates-io.libsql git+fullrev only; existing direct dependency version/core and FFI patch preserved",
+  "lock_semantic_delta": "One libsql0.10.0 registry source/checksum replaced by exact git source; every other package/edge unchanged",
+  "metadata_proof": "pending real locked Cargo resolution"
+}

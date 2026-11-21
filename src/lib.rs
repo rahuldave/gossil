@@ -784,13 +784,23 @@ pub mod artifact_checksum;
 /// Convert independently admitted Gest task fields into validated owned values.
 pub mod gest_task_values;
 
+/// Convert complete admitted canonical author fields into owned values.
+pub mod gest_author_values;
 /// Convert complete admitted canonical project fields into owned values.
 pub mod gest_project_values;
 /// Share decoded-value validation without exposing a second public authority.
 mod gest_value_validation;
 
+/// Load inherited configuration before native checkout selection.
+mod checkout_config;
+/// Prepare and publish bounded owner-local checkout lookup assertions.
+mod checkout_locator;
 /// Shared implementation for both product executable names.
 pub mod product;
+/// Adapt checkout-free native initialization for the product executables.
+mod vcs_init;
+/// Compose native registration and locator recovery for the product CLI.
+mod vcs_open;
 
 /// Represent validated native dates as integer nanoseconds.
 pub mod native_date;

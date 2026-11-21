@@ -1,0 +1,1 @@
+Verified 273 libsql archive files and frozen provenance (worktree).

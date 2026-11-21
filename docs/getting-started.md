@@ -5,9 +5,9 @@ A delta encodes target bytes as new bytes and copies from an origin file.
 This exercise needs no repository and does not change Git history.
 
 Gossil is intended to keep agent files, issues and their history alongside
-Git. Its command line currently has three delta diagnostics. The Rust library
-also supports artifact parsing, local storage and task and project value
-conversion. Try the delta commands below. Read
+Git. Its command line initializes empty repositories and has three delta
+diagnostics. The Rust library also supports artifact parsing, local storage
+and task, project and author value conversion. Try the delta commands below. Read
 [working with repositories](working-with-repositories.md) for the intended
 file and issue workflows.
 
@@ -17,6 +17,9 @@ Install Git, Rust with Cargo, Just, uv and the
 [`jlog` command recorder](https://github.com/rahuldave/jlog#readme).
 These tools must be available on `PATH`. Rust builds also need the native
 compiler and platform development tools used by Cargo dependencies.
+Linux setup also requires Make, zlib development headers and CA certificates
+to build the pinned Tcl and Fossil references. On other hosts, supply the
+[reference prerequisites](conformance.md#local-prerequisites) before setup.
 The commands below use a POSIX shell, such as the default shell on macOS or Linux.
 
 ```sh
@@ -25,15 +28,16 @@ cd gossil
 just setup
 ```
 
-`just setup` fetches the Cargo dependencies.
+`just setup` supplies the Linux references or checks the existing tools on other
+hosts, then fetches the Cargo dependencies.
 `just gossil` then builds and runs the source executable through `jlog` and
-Cargo. You do not need a globally installed `gossil` or a Fossil executable.
+Cargo. You do not need a globally installed `gossil` executable.
 The first build can take longer than later calls.
 
 The example builds from source. Keep the checkout open in
 this shell for the following commands. The
 [contributor setup](development-plan.md#contributor-setup) is for people who
-also need the optional workflow packages and reference-test tools.
+also need the optional workflow packages and verification guidance.
 
 ## Create a delta
 
@@ -85,7 +89,8 @@ just gossil v test-delta "$example_dir/origin" "$example_dir/target"
 
 The source also builds a `gos` executable with the same diagnostics. See
 [short executable names](cli.md#short-names) for its source invocation.
-These aliases do not enable issue, checkout or sync commands.
+The same aliases support [native checkout open](cli.md#open-a-native-checkout).
+Issue, file-recording and sync commands remain planned.
 
 ## Handle failures and choose the next step
 
@@ -104,6 +109,38 @@ For application code, use the [library examples](examples.md) and
 [generated Rust API](api/index.qmd). The application manifest must select
 Gossil's bundled libSQL provider as shown in those examples. The provider implements
 the Fossil date arithmetic required by artifact parsing and repository validation.
+
+## Create an empty repository
+
+Choose a destination that does not exist:
+
+```sh
+just gossil vcs init --admin-user alice example.gossil
+```
+
+The receipt gives the project and server identifiers and the initial administrator
+password. Save the password privately. This command creates the empty root without
+a checkout or tracked files. It reads no preference file. See the
+[initialization reference](cli.md#initialize-a-repository) for date, hash and login options.
+The existing default mini-VCS preview is a separate installation; these commands
+build the current source.
+
+## Register an existing directory
+
+After the initialization above, create a directory and register it from source:
+
+```sh
+mkdir example-work
+just gossil vcs open --repository example.gossil --checkout work --root example-work
+```
+
+Open registers the initial empty root and publishes its private lookup locator.
+It selects no files and requires no issue, project or author initialization.
+Configuration, permissions and existing markers can refuse the operation.
+Read [native checkout open](cli.md#open-a-native-checkout) before retrying a
+failure, because database commit and locator publication have distinct outcomes.
+This 0.4 source adds the open/locator capability. Publication and installation
+require their own delivery evidence.
 
 ## Recommendations
 

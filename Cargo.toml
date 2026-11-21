@@ -1,9 +1,10 @@
 [package]
 name = "gossil"
-version = "0.1.0"
+version = "0.6.0"
 edition = "2024"
 
 [dependencies]
+dir_spec = "0.5"
 yaml_serde = "0.10"
 mime = "0.3"
 reqwest = { version = "0.13", default-features = false, features = ["rustls"] }
@@ -55,8 +56,13 @@ name = "delta_cli"
 path = "tests/delta_cli.rs"
 
 [patch.crates-io]
+libsql = { git = "https://github.com/rahuldave/gossil-libsql", rev = "c02db34ae8a7e91ca7ab8faee18fe41515626940" }
 libsql-ffi = { path = "vendor/libsql-ffi" }
 
 [[bin]]
 name = "gos"
 path = "src/bin/gos.rs"
+
+[[test]]
+name = "build_metadata"
+path = "build.rs"

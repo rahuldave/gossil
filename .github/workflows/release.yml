@@ -1,5 +1,5 @@
 # The tasker role wrote this file once, when the project had none. It is yours from then on.
-# It runs on each push to main. The job check runs just check on the pushed commit. When it passes, the job release
+# It checks pull requests and pushes to main. After a main push passes, the job release
 # runs just release, which makes the next tag vX.Y.Z by semver, pushes it and checks it. A push that needs no release,
 # such as a change of only the docs, makes no tag. Nobody tags by hand.
 # just release takes the number from the commits since the last tag, or from the version of the manifest that the
@@ -13,6 +13,7 @@
 name: release
 
 on:
+  pull_request:
   push:
     branches: [main]
 
@@ -50,9 +51,14 @@ jobs:
           cargo +stable install --locked cargo-llvm-cov@0.9.1
       - name: Install pinned rustdoc JSON generator
         run: rustup toolchain install nightly-2026-11-12 --profile minimal
+      - name: Install native reference build prerequisites
+        run: sudo apt-get update && sudo apt-get install -y --no-install-recommends build-essential zlib1g-dev ca-certificates
+      - name: Set up the project
+        run: just setup
       - name: Check
         run: just check
   release:
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     needs: check
     runs-on: ubuntu-latest
     permissions:

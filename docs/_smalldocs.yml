@@ -51,6 +51,7 @@ website:
           - native-storage.md
           - gest-task-values.md
           - gest-project-values.md
+          - gest-author-values.md
       - section: Rust API
         href: api/index.qmd
         contents:
@@ -59,6 +60,7 @@ website:
         contents:
           - development-plan.md
           - conformance.md
+          - libsql-wrapper.md
 
 # Installed from the canonical repository; exact revision and licenses ship in the extension.
 theme: atelier

@@ -1,0 +1,107 @@
+{
+  "date": "2026-11-20",
+  "scope": "Linux native reference setup and retained Tcl controls; not the Rust Linux suite or Python line coverage",
+  "environment": {
+    "os": "Debian12",
+    "architecture": "aarch64",
+    "compiler": "gcc12.2.0",
+    "image": "sha256:c2bb75547745fadb81104b7f9704902b8f1eee19d4ec71dcbdbe6b3e80fe0fc7",
+    "limits": {
+      "cpus": 1,
+      "memory_bytes": 1073741824,
+      "memory_swap_total_bytes": 1073741824,
+      "pids": 128
+    }
+  },
+  "source_files": {
+    "scripts/setup-reference-tools.py": "fefead7c6b628fc23d7e0c409bc8f3e90f9a31554977e2c34730928899c907ae",
+    "evidence/reference-tools.json": "0d469211302e35dafb10aa29c8b19ee887552b309268d70e80055970d0d5cfeb"
+  },
+  "build": {
+    "exit": 0,
+    "elapsed_seconds": 196.9571531249676,
+    "jobs": 1,
+    "staging_absent_before_controls": true
+  },
+  "runtime_environment": {
+    "PATH": "/usr/bin:/bin",
+    "HOME": "/work-clean/home",
+    "TMPDIR": "/work-clean/tmp",
+    "PYTHONDONTWRITEBYTECODE": "1"
+  },
+  "published_links": {
+    "tclsh": "../tools/reference-0d469211302e-aarch64/tcl/bin/tclsh8.6",
+    "fossil": "../tools/reference-0d469211302e-aarch64/fossil"
+  },
+  "tcl_runtime": "patch=8.6.18\nlibrary=/work-clean/.jlog/tools/reference-0d469211302e-aarch64/tcl/lib/tcl8.6\ninit=1\nhttp=2.9.9\nmsgcat=1.6.1\nencoding=e9\nclock=1969-12-31 19:00:00\n",
+  "fossil_version": "This is fossil version 2.29 [7e8ecf0ce4] 2026-11-16 11:41:54 UTC\nCompiled on Nov 20 2026 19:18:28 using gcc-12.2.0 (64-bit)\nSQLite 3.55.0 2026-11-15 00:55:04 ad4ee20509\nzlib 1.2.13, loaded 1.2.13\n",
+  "source_pins": {
+    "tcl": {
+      "version": "8.6.18",
+      "url": "https://downloads.sourceforge.net/project/tcl/Tcl/8.6.18/tcl8.6.18-src.tar.gz",
+      "archive": "tcl8.6.18-src.tar.gz",
+      "sha256": "14f9af32b1767ff718477a8f974ad03c34341097e6b43f4ce54644ee974e268e",
+      "root": "tcl8.6.18",
+      "uuid": "b0a0551c13a3dbba2dac30ab9b8df30d91cc1dff292f170e19980a5e4168df83"
+    },
+    "fossil": {
+      "version": "2.29",
+      "url": "https://fossil-scm.org/home/tarball/7e8ecf0ce4a3c05aa39de7ffe2828d23e334efe446ef2387e09f205ef00b2227/fossil.tar.gz",
+      "archive": "fossil-7e8ecf0ce4.tar.gz",
+      "sha256": "96f84d059807d2424bccd486ef10c87e303cd022d69116e65fe25b7d4fbdeae9",
+      "root": "fossil",
+      "uuid": "7e8ecf0ce4a3c05aa39de7ffe2828d23e334efe446ef2387e09f205ef00b2227"
+    }
+  },
+  "binary_sha256": {
+    "tclsh": "587b99a364252699e18f107543bc172b64edaa2b295abd5b7ff076875294341d",
+    "fossil": "af19a73276eb5f34fed582fbf51cc5cfe1c015af0bde46ccfd194bd4896f6474"
+  },
+  "native_controls": [
+    {
+      "suite": "pass",
+      "exit": 0,
+      "observation": "positive assertion and framework accepted by Tcl driver"
+    },
+    {
+      "suite": "fail",
+      "exit": 1,
+      "observation": "deliberate failed assertion retained with exit1"
+    },
+    {
+      "suite": "known",
+      "exit": 0,
+      "observation": "known-bug failure explicitly reported; not a Rust acceptance result"
+    },
+    {
+      "suite": "known-pass",
+      "exit": 0,
+      "observation": "known-bug passing marker explicitly reported"
+    },
+    {
+      "suite": "skipped",
+      "exit": 0,
+      "observation": "skip marker explicitly reported; not a conformance pass"
+    }
+  ],
+  "delta1": {
+    "files": 76,
+    "rows": 22804,
+    "byte_identical_plan_and_manifest": true
+  },
+  "idempotence": {
+    "installed_files": 111,
+    "unchanged_inventory_and_receipt": true
+  },
+  "installed_hash_negative": {
+    "tampered_installed_binary_refused": true,
+    "no_silent_replacement_or_receipt_change": true,
+    "original_restored_and_setup_passes": true
+  },
+  "worktree_sharing": {
+    "verified_managed_worktree_share_kept_read_only": true,
+    "source_receipt_and_all_installed_bytes_unchanged": true,
+    "unknown_foreign_share_refused_without_writes": true
+  },
+  "container_writable_bytes_after_controls": 73536222
+}

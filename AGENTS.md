@@ -28,14 +28,30 @@ failed or incomplete suites. It implements no Gossil engine behavior.
 The library also implements bounded delta application, exposed by
 `gossil vcs test-delta-apply ORIGIN DELTA TARGET`. It creates deltas through `gossil vcs test-delta-create` and checks
 both directions through `gossil vcs test-delta`. The local libSQL boundary owns database lifecycle and exclusive transactions.
-Native local storage initializes the complete schema and empty public root, with
-bounded private content operations. File-containing check-ins, broader crosslinks,
+The CLI also exposes `vcs init` and `vcs new` through `gossil` or `gos`, with
+`v` as the group alias. These create an empty repository without a checkout. See
+`docs/cli.md` for the separate native `vcs open` contract.
+
+Native local storage supports checkout-free initialization, then one library
+checkout registration at the empty root. Reopen admits strict catalog4 with zero
+or one registration. ID and exact-root views authenticate existing registrations;
+the library methods publish no locator. The source `vcs open` adapter registers
+or reopens that checkout and publishes or reconstructs its owner-local locator.
+It requires explicit repository and checkout selection, with `--root` for first
+registration. It selects no files.
+
+Bound catalog1 creation and
+bounded private content operations remain supported; private writes refuse catalog4. File-containing check-ins, broader crosslinks,
 the remaining source port and Gest integration remain planned work.
 
 ## Commands and evidence
 
 Use `just conformance CONFIG` for one suite and `just conformance-self-test`
-for runner controls. Use the installed Rust checks through Just, including
+for runner controls. Use generic `just setup` for native reference setup and
+Cargo acquisition. On Linux it builds the pinned real references; on other
+hosts it checks the existing tools without replacing them.
+
+Use the installed Rust checks through Just, including
 `lint`, `typecheck`, `test`, `integration`, `coverage-check`, `docstring-check`
 and `api-check`. `just docs-check` checks the site and API docs.
 `just docs-build` renders the site. Do not weaken checks to get a pass.
@@ -49,8 +65,8 @@ and disabled-feature results distinct from passes. Generic skips mean
 Use `jlog run tclsh` for local Tcl 8.6.18 and `jlog run fossil` for the
 Fossil 2.29 reference binary at `7e8ecf0ce4`. Tcl uses shared Homebrew storage
 under the user's temporary exception. The Fossil build omits TLS and FUSE.
-Ignored `.jlog` tools are local prerequisites, not automatic clone setup.
-Worktrees may share them through `.worktreelink`.
+Ignored `.jlog` tools are explicit setup outputs on Linux. Existing tools remain
+local prerequisites on other hosts. Worktrees may share them through `.worktreelink`.
 
 ## Ownership and delivery
 
@@ -69,7 +85,8 @@ Keep reusable workflow changes in their owning packages.
 
 The public remote is `https://github.com/rahuldave/gossil`. Create reviewed
 pull requests to `main` for subsequent delivery. The coordinator owns pushes,
-GitHub changes and the first publication check. No release is requested.
+GitHub changes and publication checks. The source-only release workflow checks
+pull requests and tags successful pushes to `main`; it publishes no package.
 
 The saved answer `docs-publish=yes` enables `just docs-publish` through
 smalldocs 0.5.12. The main-only workflow also uploads the built site and deploys
