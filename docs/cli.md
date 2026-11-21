@@ -61,7 +61,9 @@ The command creates an empty native root without a checkout. Templates, project
 display fields and global preference options are unsupported and rejected before
 creation. Use the separate open command below to register or reopen one
 empty-root checkout. The scope and commit commands below record private history.
-Broader history commands remain deferred.
+Broader history commands remain deferred. The library-only
+[`recorded_timeline` API](native-storage.md#read-recorded-checkout-ancestry)
+does not add CLI `timeline` or `log` commands.
 
 An already installed mini-VCS preview has a separate
 [command contract](working-with-repositories.md#try-the-installed-development-preview).

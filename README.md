@@ -103,7 +103,7 @@ Use [`vcs info`](docs/cli.md#inspect-current-recorded-checkout-identity) with ex
 repository and checkout selections to inspect the current recorded checkout.
 It prints complete shared and private heads, preserves the supplied repository
 path spelling as a JSON string, and requires a complete existing locator.
-This bounded current-checkout command does not provide timeline or revision selection.
+This bounded current-checkout command does not offer timeline or revision selection.
 
 The source CLI offers [add and status](docs/cli.md#add-explicit-paths-and-inspect-pending-additions).
 Status distinguishes pending additions from recorded paths and prints their
@@ -115,6 +115,13 @@ records an edit without adding the file again.
 See [native storage](docs/native-storage.md#private-recording-library) for the
 request, limits and no-change result, and [development status](docs/development-plan.md#private-recording-qualification)
 for the remaining qualification work.
+
+The library can read [complete recorded checkout ancestry](docs/native-storage.md#read-recorded-checkout-ancestry)
+through `LocalOwnerRepository::recorded_timeline` and `RecordedCheckin`.
+It returns full native identities and exact metadata bytes, current first and
+shared root last, within explicit operation limits. CLI `timeline` and `log`
+remain deferred. See the [API checkpoint status](docs/development-plan.md#recorded-ancestry-api-qualification)
+before treating this source feature as released or installed.
 
 ## Recommendations
 

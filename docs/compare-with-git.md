@@ -11,7 +11,7 @@ reopens one native checkout and offers three delta diagnostics. It also supports
 [explicit add and status](cli.md#add-explicit-paths-and-inspect-pending-additions)
 without recording file content. Status distinguishes pending and recorded paths
 and shows their actual scope.
-The Rust library provides typed task, project and author converters, a task artifact emitter,
+The Rust library has typed task, project and author converters, a task artifact emitter,
 and native storage primitives. It does not yet create or read persisted issues.
 
 [Native checkout open](cli.md#open-a-native-checkout) registers or reopens an
@@ -137,6 +137,12 @@ unchanged. Shared recording and synchronization remain unsupported. The
 the checked library checkpoint from the CLI checkpoint still awaiting final gates.
 The installed tracking release, version 0.5.0, includes neither scope selection
 nor private recording.
+
+The source library also reads [complete recorded ancestry](native-storage.md#read-recorded-checkout-ancestry)
+through `recorded_timeline`. Its rows preserve full native hashes and exact
+metadata bytes, current first and shared root last. CLI `timeline` and `log`
+remain deferred; this bounded reader does not establish general Fossil timeline
+compatibility.
 
 ## Recommendations
 

@@ -55,6 +55,14 @@ and `commit` with explicit repository, checkout and scope selections. Commit
 requires private scope, all tracked paths and explicit actor, comment and date.
 Broader crosslinks, shared recording, sync and Gest integration remain planned work.
 
+The library also exposes `recorded_timeline` and `RecordedCheckin` for complete
+current-first native ancestry, with the immutable shared root last. It preserves
+full hashes and exact native metadata bytes after full admission, within one
+transaction and shared operation ledgers. It reads no working-file contents and
+makes no durable mutation. CLI `timeline` and `log` remain deferred. See
+`docs/native-storage.md` and `docs/development-plan.md` for the contract and
+focused qualification limits. The proposed 0.8.0 Cargo version is not released.
+
 ## Commands and evidence
 
 Use `just conformance CONFIG` for one suite and `just conformance-self-test`

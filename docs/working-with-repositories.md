@@ -316,6 +316,12 @@ The separate preview above has a different command contract. Consult
 [development status](development-plan.md#private-recording-qualification) before
 assuming that a source feature is installed or released.
 
+For a stored history view, library callers can use
+[`recorded_timeline`](native-storage.md#read-recorded-checkout-ancestry).
+It returns the complete current-first ancestry, including the shared root last.
+Pending additions and dirty or deleted working files do not alter these records.
+The source CLI still has no `timeline` or `log` command.
+
 ## Recommendations
 
 Keep Git as the source authority and plan a small explicit selection of agent

@@ -271,6 +271,32 @@ exact all-tracked requests, current bytes and modes, no-change behavior, rollbac
 strict history projections and shared work limits. Source controls alone do not
 establish execution. The qualification results above identify the checks that ran.
 
+## Recorded ancestry API qualification
+
+The current source adds `LocalOwnerRepository::recorded_timeline` and
+`RecordedCheckin` for complete supported catalog4 checkout ancestry. The checkpoint
+covers the library; CLI `timeline` and `log` remain deferred. The proposed
+Cargo version is 0.8.0, which is not a release or installation claim.
+
+The guarded focused run passed eight public API tests, 116 repository unit tests
+and 69 existing native integration tests. Strict lint also passed. The unit
+selection filtered out 102 tests. These results do not establish a final full
+gate pass, changed-line coverage, release, installation or publication.
+
+The native comparison has 34 owned assertions and zero inherited assertions.
+It is a bounded native ancestor and manifest comparison, not execution of the
+full Fossil suite. The independent source review found no source blocker and
+confirmed unchanged old admission checks and accounting by exact body comparison.
+That review is not the final independent gate review.
+
+The reader preserves native bytes and full hashes, shares one content budget
+and parser ledger through admission and projection, and withholds rows until
+checked completion. Existing admission behavior remains unchanged. Its
+[storage contract](native-storage.md#read-recorded-checkout-ancestry) describes
+complete results, refusals and the absence of working-file content reads.
+Next, qualify the complete API tree with the normal documentation, prose and
+independent review gates before beginning the separate CLI checkpoint.
+
 ## Recommendations
 
 Use module guides and the generated API for library work. Next, run the relevant

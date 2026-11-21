@@ -10,12 +10,15 @@ use std::path::Path;
 mod checkout;
 /// Persist and read immutable explicit tracked-path scope choices.
 mod path_scope;
+/// Read complete authenticated check-in metadata without changing repository state.
+mod reading;
 /// Validate the complete supported shared-root and private manifest chain.
 mod recorded_history;
 /// Capture and record all explicitly private tracked files atomically.
 mod recording;
 /// Admit exact native and local projections for supported private history.
 mod recording_admission;
+pub use reading::RecordedCheckin;
 /// Encode canonical full-tree private manifests within borrowed budgets.
 mod recording_manifest;
 mod tracking;
