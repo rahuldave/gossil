@@ -1,4 +1,4 @@
-//! Route native initialization, checkout open, information, tracking, recording and delta diagnostics.
+//! Route native initialization, checkout open, information, tracking, recording, timeline and delta diagnostics.
 use crate::delta::{DeltaError, Limits, apply, create};
 use std::collections::TryReserveError;
 use std::ffi::OsString;
@@ -249,7 +249,7 @@ fn dispatch(args: &[OsString]) -> Result<(), CommandError> {
 ///
 /// # Returns
 /// The success exit code after initialization, native checkout open, tracking,
-/// scope selection, private recording, checkout information or a completed diagnostic. Returns the failure exit code
+/// scope selection, private recording, checkout timeline/information or a completed diagnostic. Returns the failure exit code
 /// after printing an adapter error to standard error. The first argument `v` is accepted
 /// as an alias for `vcs`.
 /// # Panics
@@ -309,6 +309,19 @@ pub fn entry() -> std::process::ExitCode {
             .is_some_and(|arg| arg == "scope" || arg == "commit")
     {
         return crate::vcs_recording::run(&args[2..], args[1] == "commit").map_or_else(
+            |error| {
+                eprintln!("{error}");
+                std::process::ExitCode::FAILURE
+            },
+            |()| std::process::ExitCode::SUCCESS,
+        );
+    }
+    if args.first().is_some_and(|arg| arg == "vcs")
+        && args
+            .get(1)
+            .is_some_and(|arg| arg == "timeline" || arg == "log")
+    {
+        return crate::vcs_timeline::run(&args[2..]).map_or_else(
             |error| {
                 eprintln!("{error}");
                 std::process::ExitCode::FAILURE

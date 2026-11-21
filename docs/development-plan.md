@@ -271,6 +271,61 @@ exact all-tracked requests, current bytes and modes, no-change behavior, rollbac
 strict history projections and shared work limits. Source controls alone do not
 establish execution. The qualification results above identify the checks that ran.
 
+## Recorded ancestry API qualification
+
+The current source adds `LocalOwnerRepository::recorded_timeline` and
+`RecordedCheckin` for complete supported catalog4 checkout ancestry. The checkpoint
+covers the library. A separate source CLI checkpoint adds `timeline` and `log`.
+The provisional Cargo version is 0.8.0, which is not a release or installation
+claim. Recheck actual release ordering before selecting a release version.
+
+The guarded focused run passed eight public API tests, 116 repository unit tests
+and 69 existing native integration tests. Strict lint also passed. The unit
+selection filtered out 102 tests. These results do not establish a final full
+gate pass, changed-line coverage, release, installation or publication.
+
+The native comparison has 34 owned assertions and zero inherited assertions.
+It is a bounded native ancestor and manifest comparison, not execution of the
+full Fossil suite. The independent source review found no source blocker and
+confirmed unchanged old admission checks and accounting by exact body comparison.
+That review is not the final independent gate review.
+
+The reader preserves native bytes and full hashes, shares one content budget
+and parser ledger through admission and projection, and withholds rows until
+checked completion. Existing admission behavior remains unchanged. Its
+[storage contract](native-storage.md#read-recorded-checkout-ancestry) describes
+complete results, refusals and the absence of working-file content reads.
+The committed API checkpoint is `9a6da5aa7efe9246a46f30ff2e736113725a3107`.
+Its full qualification passed 220 unit tests and 246 integration tests, and the
+API check documented all 551 items. Those results qualify the API checkpoint
+and do not establish a full pass for the later CLI tree.
+
+## Recorded ancestry CLI qualification
+
+The source `src/vcs_timeline.rs` adapter exposes complete recorded ancestry
+through both executable names, both group names and `timeline` or `log`.
+[The CLI reference](cli.md#read-complete-recorded-ancestry) defines explicit
+selectors, existing-locator admission, exact NDJSON and separate opening, API
+and serialization allowances. This checkpoint implements no filters, truncation,
+working-file content reads or locator publication.
+
+The guarded focused run passed seven process tests, five adapter unit tests,
+three product unit tests and 19 existing CLI tests. Strict lint passed under
+Rust 1.100. These focused results do not establish a full CLI gate pass. Complete documentation, prose,
+coverage and fresh independent gate review remain necessary before delivery.
+
+Controls cover literal root and private ancestry, all eight aliases, strict
+selectors and help, original metadata escaping, cumulative serialization bounds,
+invalid UTF-8, corruption and locator refusals. Stdout failure retains its
+original cause and can leave partial output. Logical database and working-tree
+inventories are compared; no physical database byte identity is claimed.
+
+The native comparison remains 34 owned assertions and zero inherited assertions.
+No broader Fossil parity is claimed. `cat` remains separate issue 18 work;
+issue 17 remains open. Neither issue is completed by these ancestry commands.
+Next, qualify the complete CLI tree and recheck release ordering before
+publication or installation.
+
 ## Recommendations
 
 Use module guides and the generated API for library work. Next, run the relevant

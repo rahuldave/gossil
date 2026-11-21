@@ -1,7 +1,7 @@
 # Rust library examples
 
-These examples use the library in this checkout. They operate on bytes without
-opening a database. For full signatures and errors, browse the
+These examples use the library in this checkout. The byte examples operate without
+opening a database; the ancestry example uses an existing admitted repository. For full signatures and errors, browse the
 [generated API reference](api/index.qmd).
 
 ## Add Gossil to an application
@@ -72,6 +72,34 @@ Use the explicit C-string function when zero-byte truncation is required.
 
 For asynchronous storage examples, see [local storage](local-storage.md).
 The [artifact parser guide](artifact-parser.md) shows the date-provider boundary.
+
+## Read complete recorded ancestry
+
+Use an existing `LocalOwnerRepository` and explicit finite `AdmissionLimits`.
+This helper propagates `StorageError` and returns every supported ancestor:
+
+```rust
+use gossil::storage::{AdmissionLimits, LocalOwnerRepository, RecordedCheckin, StorageError};
+
+async fn recorded_history(
+    owner: &mut LocalOwnerRepository,
+    limits: AdmissionLimits,
+) -> Result<Vec<RecordedCheckin>, StorageError> {
+    owner.recorded_timeline("work", limits).await
+}
+```
+
+Replace `work` with an existing checkout ID. Rows preserve native date, actor
+and comment bytes, and full verified hashes. The current check-in comes first;
+the shared empty root comes last. The shared empty root alone is a valid result before private
+recording. A missing checkout or exhausted bound returns an error rather than
+an empty or truncated history.
+
+See [native storage](native-storage.md#read-recorded-checkout-ancestry)
+for admission, transaction and ownership limits. To read the same ancestry from
+the source CLI, use [timeline or log](cli.md#read-complete-recorded-ancestry)
+with explicit repository and checkout selectors and an existing matching locator.
+The CLI preserves metadata as JSON strings; the API fields remain byte vectors.
 
 ## Recommendations
 

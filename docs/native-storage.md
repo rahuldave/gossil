@@ -382,6 +382,51 @@ Typed dependents are records in the adapter projections that require the content
 Required orphan, delta or typed dependents cause an explicit refusal until
 their native and typed crosslinks are implemented.
 
+## Read recorded checkout ancestry
+
+`LocalOwnerRepository::recorded_timeline(checkout, limits)` returns a complete
+`Vec<RecordedCheckin>` for an explicit existing catalog4 checkout. Each row has
+`hash: String`, `date: Vec<u8>`, `actor: Vec<u8>`, `comment: Vec<u8>` and
+`private: bool`. The generated [Rust API](api/index.qmd) gives the exact signature.
+
+Results start with the current private check-in and follow its ancestors to the
+immutable shared empty root S. The root occurs exactly once, last, with
+`private == false`; every private row has `private == true`. Before any private
+recording, S is the sole row. The reader follows ancestry rather than sorting
+rows by date. Accepted recordings have strictly increasing dates; equal or
+backward dates still refuse admission.
+
+Hashes are full verified native identities. Dates preserve native D-card bytes;
+actor and comment preserve the decoded native U-card and C-card bytes exactly.
+The supported metadata is UTF-8 without NUL, but these public fields remain byte
+vectors. The reader does not normalize dates, abbreviate hashes or use edited
+display metadata. Complete native equality admission first authenticates the
+original event user and comment. Only then does the reader get their owned
+bytes in the same transaction.
+
+One content budget and one parser ledger cover freshness, complete repository
+admission, metadata queries and result retention. The complete result capacity
+is charged before allocation. Full admission retains every existing authority,
+provider, foreign-key, registration, native-root and history projection check.
+Existing admission callers keep their checks and accounting unchanged.
+
+Success returns the entire ancestry only after checked transaction completion.
+There is no truncation or successful empty history. Missing checkout, stale
+authority, unsupported or corrupt state, invalid or exhausted limits, allocation,
+provider and transaction failures return `StorageError`. The first operation
+cause and separate cleanup failure retain their existing precedence.
+
+This operation reads no working-file contents, makes no durable mutation and
+publishes no locator. Pending additions and dirty or deleted working files do
+not change its recorded result.
+
+The source [timeline and log commands](cli.md#read-complete-recorded-ancestry)
+expose this reader as complete compact NDJSON. Existing-locator opening admission
+is separate from the API operation. Serialization has a third finite allowance
+derived from the unchanged CLI decoded-content limit. No whole-invocation
+aggregate budget is claimed. Revision selection, filters and broader Fossil
+timeline behavior remain deferred.
+
 ## Schema and remaining work
 
 Each catalog installs six SQL inputs under `src/storage/schema/`. Catalog4

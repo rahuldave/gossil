@@ -51,7 +51,7 @@ transaction. Planned command undo validates complete inverse changes and rejects
 stale dependencies; it retains artifacts and does not rewind Git.
 Read [compare Gossil with Git](compare-with-git.md) for the plan/task example
 and [working with repositories](working-with-repositories.md) for file selection.
-The library modules below provide the implemented subset.
+The library modules below form the implemented subset.
 
 ## Bytes and identities
 
@@ -168,6 +168,15 @@ use these library contracts. They require the complete locator binding and expli
 repository, checkout and scope selections. Commit also requires all-tracked consent
 and explicit actor, comment and date. [Final CLI qualification](development-plan.md#private-recording-qualification)
 is still pending.
+
+The library reader `recorded_timeline` returns the complete current-first ancestry
+through the shared empty root. It authenticates all native history before reading
+original metadata in the same transaction. It reads no working-file contents and
+returns no partial result when a bound fails. See the
+[recorded ancestry contract](native-storage.md#read-recorded-checkout-ancestry).
+The source [timeline and log commands](cli.md#read-complete-recorded-ancestry)
+print those rows as compact NDJSON after existing-locator admission and checked
+API completion. Opening, the API and serialization have separate finite bounds.
 
 ## Recommendations
 

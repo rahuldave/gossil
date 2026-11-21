@@ -4,7 +4,8 @@ Gossil aims to keep agent work, issues and file history together alongside Git.
 Fossil is a version-control system. This build exposes a Rust library for Fossil's delta bytes, artifact records
 and local storage. Its `gossil` CLI creates, applies and checks deltas between files.
 It also initializes empty repositories, opens one native checkout,
-adds or lists explicitly tracked files, selects their scopes and records private history.
+adds or lists explicitly tracked files, selects their scopes, records private history
+and reads complete recorded ancestry.
 
 The CLI and library can select immutable
 path scopes and record the complete private tracked tree. A scope assigns a path
@@ -103,7 +104,7 @@ Use [`vcs info`](docs/cli.md#inspect-current-recorded-checkout-identity) with ex
 repository and checkout selections to inspect the current recorded checkout.
 It prints complete shared and private heads, preserves the supplied repository
 path spelling as a JSON string, and requires a complete existing locator.
-This bounded current-checkout command does not provide timeline or revision selection.
+This bounded current-checkout command does not offer timeline or revision selection.
 
 The source CLI offers [add and status](docs/cli.md#add-explicit-paths-and-inspect-pending-additions).
 Status distinguishes pending additions from recorded paths and prints their
@@ -115,6 +116,15 @@ records an edit without adding the file again.
 See [native storage](docs/native-storage.md#private-recording-library) for the
 request, limits and no-change result, and [development status](docs/development-plan.md#private-recording-qualification)
 for the remaining qualification work.
+
+The library can read [complete recorded checkout ancestry](docs/native-storage.md#read-recorded-checkout-ancestry)
+through `LocalOwnerRepository::recorded_timeline` and `RecordedCheckin`.
+It returns full native identities and exact metadata bytes, current first and
+shared root last, within explicit operation limits. The source
+[`vcs timeline` and `vcs log` commands](docs/cli.md#read-complete-recorded-ancestry)
+print that ancestry as compact NDJSON with explicit repository and checkout selections.
+See the [checkpoint status](docs/development-plan.md#recorded-ancestry-api-qualification)
+before treating this source feature as released or installed.
 
 ## Recommendations
 

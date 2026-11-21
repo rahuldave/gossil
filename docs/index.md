@@ -33,8 +33,12 @@ Gest is a task and artifact tracker. The converters in the module table use its 
 
 Use [`vcs info`](cli.md#inspect-current-recorded-checkout-identity) to show the
 current recorded checkout and its shared and private heads. Explicit repository
-and checkout selections and a complete locator are required. Timeline and
-historical revision selection remain unsupported.
+and checkout selections and a complete locator are required. The source
+[`vcs timeline` and `vcs log` commands](cli.md#read-complete-recorded-ancestry)
+print complete recorded ancestry as compact NDJSON. Historical revision selection
+remains unsupported. The library can read
+[complete recorded ancestry](native-storage.md#read-recorded-checkout-ancestry)
+through `recorded_timeline`, with native metadata bytes and the shared root last.
 
 ## Choose a library module
 
@@ -48,7 +52,7 @@ historical revision selection remain unsupported.
 | Parse structural artifact records | [Artifact parser](artifact-parser.md) |
 | Compare normalized byte lines | [Line diff](diff.md) |
 | Own a local database transaction | [Local storage](local-storage.md) |
-| Initialize a root, register a directory, select tracked scopes or record private files | [Native storage](native-storage.md) |
+| Initialize a root, register a directory, record private files or read recorded ancestry | [Native storage](native-storage.md) |
 | Validate decoded task snapshots in memory | [Gest task values](gest-task-values.md) |
 | Emit bounded task creation artifact bytes | [Task tickets](task-ticket.md) |
 | Validate decoded project snapshots in memory | [Gest project values](gest-project-values.md) |

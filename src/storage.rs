@@ -19,7 +19,7 @@ pub use content::Limits;
 pub use repository::{
     AdmissionLimits, CheckoutView, CreateOptions, InitializeOptions, LocalOwnerRepository,
     PathScope, PathScopeSelection, PendingAdd, PrivateRecordingOutcome, PrivateRecordingRequest,
-    SharedView, TrackingLimits,
+    RecordedCheckin, SharedView, TrackingLimits,
 };
 mod lifecycle;
 use lifecycle::FileIdentity;

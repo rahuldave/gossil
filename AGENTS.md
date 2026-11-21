@@ -55,6 +55,18 @@ and `commit` with explicit repository, checkout and scope selections. Commit
 requires private scope, all tracked paths and explicit actor, comment and date.
 Broader crosslinks, shared recording, sync and Gest integration remain planned work.
 
+The library also exposes `recorded_timeline` and `RecordedCheckin` for complete
+current-first native ancestry, with the immutable shared root last. It preserves
+full hashes and exact native metadata bytes after full admission, within one
+transaction and shared operation ledgers. It reads no working-file contents and
+makes no durable mutation. The source CLI exposes `timeline` and `log` through
+both executable and group aliases. It requires explicit repository and checkout
+selections and an existing matching locator, then prints complete ordered NDJSON.
+Opening admission, the API operation and serialization have separate finite
+allowances. See
+`docs/native-storage.md` and `docs/development-plan.md` for the contract and
+focused qualification limits. The proposed 0.8.0 Cargo version is not released.
+
 ## Commands and evidence
 
 Use `just conformance CONFIG` for one suite and `just conformance-self-test`
@@ -109,5 +121,5 @@ file and a successful build do not prove that the public site is live.
 Use the module guides for explicit bounds and lifecycle contracts.
 Next, review the composed core and preserve the unchanged `delta1` evidence
 and its qualifications. The library checkpoint has passed its recorded gates.
-Next, qualify the separate scope and commit CLI checkpoint before integration
+Next, qualify the separate timeline and log CLI checkpoint before integration
 and delivery; focused passes do not establish a final full-feature pass.

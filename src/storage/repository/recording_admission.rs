@@ -3,7 +3,7 @@
 //! ## Recommendations
 //! Keep catalog1 on its original validator. Charge shared work before retaining
 //! catalog4 authority, then admit only the complete recorded-history projection.
-use super::recorded_history::parse_recording_budgeted;
+use super::recorded_history::{RecordedHistory, parse_recording_budgeted};
 use super::{
     AdmissionLimits, AdmissionProof, ParseWork, Principal, StorageError, Value, validate_empty_root,
 };
@@ -333,6 +333,30 @@ impl WriteTransaction<'_> {
         budget: &mut Budget,
         parse: &mut ParseWork,
     ) -> Result<(), StorageError> {
+        self.validate_recording_repository_history(principal, limits, budget, parse)
+            .await
+            .map(|_| ())
+    }
+
+    /// Return supported history only after every complete catalog4 admission guard.
+    /// # Arguments
+    /// * `principal` - Sealed owner binding.
+    /// * `limits` - Complete native and registration ceilings.
+    /// * `budget` - Shared content/retained-work ledger.
+    /// * `parse` - Shared parser ledger for S and every private manifest.
+    /// # Returns
+    /// Authenticated history for the sole registration, or None only for valid unregistered state.
+    /// The compatibility wrapper discards this value without adding charges or queries.
+    /// # Errors
+    /// Refuses foreign schema/policy/provider, corrupted S, unsupported tables,
+    /// invalid registration or any history/projection/fingerprint mismatch.
+    pub(super) async fn validate_recording_repository_history(
+        &mut self,
+        principal: &Principal,
+        limits: AdmissionLimits,
+        budget: &mut Budget,
+        parse: &mut ParseWork,
+    ) -> Result<Option<RecordedHistory>, StorageError> {
         let result = async {
             self.observe_recording_provider()?;
             self.validate_recording_principal_budgeted(principal,budget).await?;
@@ -370,16 +394,17 @@ impl WriteTransaction<'_> {
             let server=self.query_bound("SELECT CAST(value AS BLOB),typeof(value) FROM config WHERE name='server-code'",vec![]).await?;
             if !matches!(server.as_slice(),[row] if matches!(row.as_slice(),[Value::Blob(value),Value::Text(kind)] if kind=="text" && value.len()==40 && value.iter().all(|b|b.is_ascii_digit() || (b'a'..=b'f').contains(b)))) {return Err(StorageError::state("native server identity unavailable"));}
             let counts=self.query_bound("SELECT (SELECT count(*) FROM g_checkout),(SELECT count(*) FROM g_checkout_owner),checkout_count FROM g_storage WHERE singleton=1",vec![]).await?;
-            if counts==vec![vec![Value::Integer(0);3]] {
+            let history = if counts==vec![vec![Value::Integer(0);3]] {
                 // Without a registration, reject private history and scoped or native rows.
                 self.validate_empty_catalog4(1,root,&date,principal,limits).await?;
+                None
             } else {
                 if counts!=vec![vec![Value::Integer(1);3]] {return Err(StorageError::state("unsupported native checkout inventory"));}
                 self.validate_recording_registration(principal,root,limits).await?;
-                self.validate_recorded_history(principal,root,limits,budget,parse).await?;
-            }
+                Some(self.validate_recorded_history(principal,root,limits,budget,parse).await?)
+            };
             self.observe_recording_provider()?;
-            Ok(())
+            Ok(history)
         }.await;
         self.record(result)
     }

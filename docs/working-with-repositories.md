@@ -34,7 +34,9 @@ as the source authority.
 These commands require that preview's installed `gos` or `gossil` executable.
 The source CLI supports `init`, native `open`, add, status, scope and private
 commit with the [explicit source grammar](cli.md#select-scopes-and-record-private-files).
-It does not accept the preview's commit grammar, diff or history commands.
+Its [timeline and log grammar](cli.md#read-complete-recorded-ancestry) differs
+from the preview. It accepts neither `--limit` nor `--json`. The source also
+rejects the preview's commit grammar and has no diff command.
 The generated Rust API on this site does not describe the preview's additional storage methods.
 
 Start with an empty scratch checkout. Keep the repository database outside it:
@@ -315,6 +317,17 @@ for explicit scope selection, private commit, edits without re-add and reopen.
 The separate preview above has a different command contract. Consult
 [development status](development-plan.md#private-recording-qualification) before
 assuming that a source feature is installed or released.
+
+For a stored history view, library callers can use
+[`recorded_timeline`](native-storage.md#read-recorded-checkout-ancestry).
+It returns the complete current-first ancestry, including the shared root last.
+Pending additions and dirty or deleted working files do not alter these records.
+
+The source [timeline and log commands](cli.md#read-complete-recorded-ancestry)
+print those records as compact NDJSON. They require both explicit selectors and
+a complete matching locator. Their grammar differs from the installed preview
+above. They accept neither `--limit` nor `--json`. These source commands supply
+no new evidence about the installed preview or its reopen behavior.
 
 ## Recommendations
 
