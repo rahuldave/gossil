@@ -25,7 +25,7 @@ a date-provider failure.</p>
 parsed result with a <a href="api/artifact.html#ParseUsage"><code>ParseUsage</code></a> value on success. The original
 <a href="api/artifact.html#parse_artifact"><code>parse_artifact</code></a> function delegates to this implementation and returns only the
 parsed result.</p>
-<p><a href="api/artifact.html#ParseUsage"><code>ParseUsage</code></a> reports the existing limit counters. <code>input_bytes</code> counts the full
+<p><a href="api/artifact.html#ParseUsage"><code>ParseUsage</code></a> reports charges against each limit. <code>input_bytes</code> counts the full
 raw input, including a recognized signature envelope. <code>cards</code> counts nonzero
 card markers consumed by the structural loop, including Z and repeated empty
 P cards. A trailing zero marker consumes its delimiter without adding a card.
@@ -42,13 +42,15 @@ allocations. Usage is returned only on success. A caller that needs an atomic
 operation must stop on any error and discard its operation state.</p>
 <p>The parser does not maintain the aggregate budget or remember earlier failures. The
 <a href="api/artifact.html#parse_artifact_with_usage">API example</a> parses a cluster and
-subtracts all four successful charges from a caller-owned budget. Aggregate
-caller integration remains separate work.</p>
+subtracts all four successful charges from a caller-owned budget. The private recording library borrows one parser work ledger across its
+<a href="native-storage.html#private-recording-library">complete repository operation</a>.
+Other callers remain responsible for their own aggregate accounting.</p>
 </section>
 <section id="supply-dates-and-read-results" class="level2">
 <h2 class="anchored" data-anchor-id="supply-dates-and-read-results">Supply dates and read results</h2>
 <p>Implement <a href="api/artifact.html#DateProvider"><code>DateProvider</code></a> on the operation’s selected SQLite/libSQL owner.
-Its asynchronous <code>julianday</code> method can borrow a transaction. It receives an
+The <a href="local-storage.html">local storage guide</a> explains transaction ownership.</p>
+<p>Its asynchronous <code>julianday</code> method can borrow a transaction. It receives an
 optional raw token already truncated by the parser at its native C-string
 boundary, and returns an optional Julian day. A NULL result acts as zero and fails date validation.
 Provider execution errors retain their original cause. A constant date adapter

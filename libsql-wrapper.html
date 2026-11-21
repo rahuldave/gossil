@@ -43,7 +43,8 @@ for its finite core-only evidence.</p>
 <code>target/libsql-wrapper-metadata.json</code>. It runs Cargo metadata with the locked
 dependencies and all features. The graph records source resolution, not runtime behavior.</p>
 <p>A consuming workspace must select the same full Git revision in its own root
-patch table. Cargo ignores patch tables in dependencies. Verify the actual
+patch table, as shown in the <a href="examples.html">application examples</a>. Cargo ignores
+patch tables in dependencies. Verify the actual
 resolved source and provider path when composing Gossil with another package.</p>
 <p><code>tests/libsql_row_text.rs</code> exercises the public erased <code>libsql::Row</code> API.
 It covers NUL positions, Unicode, malformed UTF-8, storage types, invalid
@@ -56,10 +57,11 @@ provider panic or application or working-file mutation. Four unchanged Gest
 fidelity tests also passed. Their receipts are under
 <code>evidence/libsql-wrapper/consuming-replays/</code>. These focused runs do not qualify
 the complete VCS or Gest feature sets.</p>
-<p>The wrapper correction was integrated for Gossil 0.4.1. This checkout prepares
-Gossil 0.5.0; the <a href="development-plan.html">development guide</a> distinguishes its
-preparation results from final feature checks. The focused controls here do not
-establish a complete feature qualification, release or installation.</p>
+<p>The wrapper correction was integrated for Gossil 0.4.1 and retained in the
+released 0.5.0 tracking baseline. This checkout prepares a separate private
+recording library checkpoint. The <a href="development-plan.html">development guide</a>
+distinguishes that preparation from delivered tracking. The focused controls
+here do not establish a complete private-recording qualification or installation.</p>
 <p>Writing follows nossaifd guidance, including Rosalind Reid’s communication
 principles, Shreya Shankar’s plain-writing guidance and Oskar Austegard’s
 revision method.</p>
