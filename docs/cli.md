@@ -1,8 +1,9 @@
 # CLI reference
 
-The `gossil` executable initializes empty repositories, opens native empty-root
-checkouts and has three file diagnostics. This source checkout also has
-[metadata-only add and status](#add-explicit-paths-and-inspect-pending-additions).
+The `gossil` executable initializes empty repositories, opens native checkouts
+and has three file diagnostics. This source checkout also has
+[explicit add and tracked status](#add-explicit-paths-and-inspect-pending-additions).
+`gos` is an alias for `gossil`, and `v` is an alias for `vcs`.
 Each diagnostic runs without a repository. Run it from this source checkout with `just gossil`, which builds
 and runs the executable through Cargo. Cargo may print build messages on stderr.
 
@@ -58,14 +59,16 @@ Other initialization failures also return status 1. Initialization help returns 
 The command creates an empty native root without a checkout. Templates, project
 display fields and global preference options are unsupported and rejected before
 creation. Use the separate open command below to register or reopen one
-empty-root checkout. File recording and history commands remain planned.
-This source interface is separate from the existing default mini-VCS preview;
-this guide does not record a new installation or publication.
+empty-root checkout. Private recording is a library API; its command adapter
+and broader history commands remain deferred.
+An already installed mini-VCS preview has a separate
+[command contract](working-with-repositories.md#try-the-installed-development-preview).
+This guide does not record a new installation or publication.
 
 ## Open a native checkout
 
-This source command opens one native checkout at the initial empty root. A
-checkout registration binds an existing directory to that root. The locator is
+First registration binds one existing directory to the initial empty root.
+Reopen also admits the supported private history written by the library. The locator is
 an owner-local lookup file at `ROOT/.gossil/checkout.json`. Neither operation
 selects files, creates file history or restores working files. The source supports open and locator recovery. Installation and publication
 require separate delivery evidence.
@@ -91,9 +94,10 @@ The root can contain ordinary files and nested Git repositories. Their bytes
 remain unselected and unchanged. Native VCS open requires no issue, project or
 author initialization. It does not grant Gest project authority.
 
-The native library admits catalog4 with exactly zero or one registration at the
-initial empty root, with validated pending additions. Catalog1, file-containing check-ins and a second registration are
-outside this command. Native admission checks the repository and owner binding,
+The native library admits catalog4 with exactly zero or one registration and
+the supported tracking, scope and private recording history. Catalog1, unrelated
+file history and a second registration are outside this command. The [storage guide](native-storage.md) defines those catalog formats.
+Native admission checks the repository and owner binding,
 canonical root, device/inode and complete supported state. The locator cannot
 replace those checks. See [native storage](native-storage.md#register-one-existing-directory)
 for identity, root and resource limits.
@@ -201,17 +205,22 @@ After all durable locator pins are lost, recovery cannot prove historical
 identity against malicious database substitution.
 
 Success prints `Opened checkout ID at ROOT (repository REPOSITORY_ID, head HEAD)`
-and returns status 0. Failures return status 1 with a diagnostic on stderr.
+and returns status 0. `HEAD` is the shared head, which stays at the empty root
+when the library records private history. Failures return status 1 with a diagnostic on stderr.
 Locator diagnostics name their publication phase. Internal error categories do
-not change this process exit status. A receipt write failure can occur after
+not change this process exit status.
+
+A receipt write failure can occur after
 successful publication. It preserves the committed registration and locator,
 so a failed command does not imply that nothing committed.
 
 ## Add explicit paths and inspect pending additions
 
-This source checkout provides `vcs add` and `vcs status` for pending additions
-at the initial empty root. Add records tracking metadata, and status lists that
-metadata. File recording and history commands remain planned.
+This source checkout provides `vcs add` and `vcs status` at the initial root
+or an admitted private recorded head. Add records tracking metadata. Status lists
+all tracked paths, their pending or recorded state, and their actual scope.
+Scope selection and private recording are library APIs in this checkpoint;
+`vcs scope` and `vcs commit` are not accepted commands.
 
 First, use `vcs open` to publish or recover the locator.
 Then run these commands from the registered checkout root or one of its descendants:
@@ -239,7 +248,7 @@ Keep the filesystem namespace stable during the command; these checks do not
 promise protection against hostile concurrent replacement.
 
 The CLI bounds the complete tracked inventory and each batch to 4096 paths.
-Each path has at most 4096 bytes and 128 components. Add limits the initial batch
+Each path has at most 4096 bytes and 128 components. Add temporarily captures files to validate the batch. It limits those initial
 captures to 64 MiB of working bytes and uses a 64 KiB read buffer.
 The final recheck temporarily holds a second copy of one file alongside those
 captures, so captured bytes can total 128 MiB. These bounds exclude other process
@@ -255,24 +264,30 @@ rows or counters. A failed batch rolls back its metadata changes.
 Working files are never written. Temporary reads do not create a stored content
 snapshot, a check-in or a recording receipt.
 
-Both commands print the complete pending-add inventory in pathname order:
+Both commands print the complete tracked inventory in pathname order:
 
 ```text
-Pending additions (scope unselected):
-A	"notes/plan.md"
-A	"notes/review.md"
+Tracked paths (A: pending addition, R: recorded):
+A	unselected	"notes/plan.md"
+A	unselected	"notes/review.md"
 ```
 
-Each row contains `A`, a tab and the path in Rust debug-string syntax, with
-quotes and escapes. Empty status prints only the heading. Status reports native
-pending additions; it does not discover untracked files or report modified,
-missing, removed or renamed files. It does not reread working file content.
+Each row starts with `A` for a pending addition or `R` for a recorded path.
+A tab separates the state, scope and path. Scope is `unselected`, `shared` or
+`private`; the path uses Rust debug-string syntax with quotes and escapes.
+A selected scope assigns a path to shared or owner-local private history.
+`unselected` means that no choice has been stored.
+Empty status prints only the heading.
+
+Status does not discover untracked files or report modified, missing, removed
+or renamed files. It does not reread working file content.
 An output failure returns status 1, and an add may already have committed.
 
-Scope remains **UNSELECTED**: no shared/private choice exists. Tracking grants
-no recording or sync authority. Future recording must require an explicit
-persisted scope decision and reread every tracked file, including files edited
-after add. File recording and history commands remain planned.
+New paths have unselected scope. Add grants no recording or sync authority.
+The [library API](native-storage.md#private-recording-library) can persist explicit
+immutable scopes and record all tracked files when every scope is private.
+It rereads files edited after add. The CLI reports those library-written states
+without adding scope selection or recording commands.
 
 ## Short names
 
@@ -284,7 +299,7 @@ cargo run --locked --bin gos -- v test-delta FILE1 FILE2
 ```
 
 Use either executable with either group name for initialization, native open,
-pending add/status and all three diagnostics.
+add/status and all three diagnostics.
 Usage messages use fixed spellings regardless of the invocation alias.
 Add and status use `gos v`; the other command usage messages use `gossil vcs`.
 
@@ -316,7 +331,8 @@ acceptance rules are in the [runner guide](conformance.md).
 
 Broader version-control commands and Gest task commands are planned. They are
 not accepted by `gossil` or `gos`. The short names above apply to initialization and the
-three delta diagnostics, native open and pending add/status.
+three delta diagnostics, native open and add/status. Scope selection and private
+recording currently require the library API.
 
 ## Recommendations
 

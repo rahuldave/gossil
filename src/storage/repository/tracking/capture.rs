@@ -6,16 +6,16 @@ use super::{StorageError, TrackingLimits};
 use std::{fs::File, os::unix::fs::MetadataExt, path::Path};
 mod unix;
 use unix::Facts;
-pub(super) use unix::OpenedRoot;
+pub(in crate::storage::repository) use unix::OpenedRoot;
 
 /// A capture retains exact bytes, native facts and parent descriptors until the transaction ends.
-pub(super) struct Captured {
+pub(in crate::storage::repository) struct Captured {
     /// Working bytes used only for bounded in-transaction stability checks.
-    pub(super) bytes: Vec<u8>,
+    pub(in crate::storage::repository) bytes: Vec<u8>,
     /// Native executable flag for the new tracking row.
-    pub(super) mode: i64,
+    pub(in crate::storage::repository) mode: i64,
     /// Modification time observed during initial enrollment.
-    pub(super) mtime: i64,
+    pub(in crate::storage::repository) mtime: i64,
     /// Descriptor identity and timestamps compared by the final recheck.
     facts: Facts,
     /// Original directory descriptors and edges retained through final recapture.
@@ -30,7 +30,10 @@ pub(super) struct Captured {
 /// Success when the path has the supported spelling and fits the bounds.
 /// # Errors
 /// Refuses zero structural bounds, invalid or reserved paths and unqualified non-ASCII paths on macOS.
-pub(super) fn checked_path(path: &str, limits: TrackingLimits) -> Result<(), StorageError> {
+pub(in crate::storage::repository) fn checked_path(
+    path: &str,
+    limits: TrackingLimits,
+) -> Result<(), StorageError> {
     if limits.paths == 0
         || limits.path_bytes == 0
         || limits.components == 0
@@ -71,8 +74,40 @@ pub(super) fn checked_path(path: &str, limits: TrackingLimits) -> Result<(), Sto
 /// Owned no-follow root descriptor with its retained ancestry.
 /// # Errors
 /// Refuses traversal failures, spelling mismatches and a changed root identity.
-pub(super) fn open_root(path: &Path, device: u64, inode: u64) -> Result<OpenedRoot, StorageError> {
+pub(in crate::storage::repository) fn open_root(
+    path: &Path,
+    device: u64,
+    inode: u64,
+) -> Result<OpenedRoot, StorageError> {
     OpenedRoot::open(path, device, inode)
+}
+
+/// Open a recording root after charging descriptor ancestry and pathname buffers.
+/// # Arguments
+/// * `path` - Canonical registered root pathname.
+/// * `device` - Registered native device.
+/// * `inode` - Registered native inode.
+/// * `work` - Borrowed whole-operation work ledger.
+/// # Returns
+/// Retained root and ancestry descriptors.
+/// # Errors
+/// Refuses exhausted work before traversal, invalid spelling or changed identity.
+pub(in crate::storage::repository) fn open_root_budget(
+    path: &Path,
+    device: u64,
+    inode: u64,
+    work: &mut crate::storage::content::Budget,
+) -> Result<OpenedRoot, StorageError> {
+    let charge = path
+        .components()
+        .count()
+        .checked_add(1)
+        .and_then(|n| n.checked_mul((libc::PATH_MAX as usize).saturating_add(1024)))
+        .and_then(|n| n.checked_mul(4))
+        .and_then(|n| n.checked_add(path.as_os_str().as_encoded_bytes().len()))
+        .ok_or_else(|| StorageError::state("recording root work overflow"))?;
+    work.charge_decoded(charge)?;
+    open_root(path, device, inode)
 }
 
 /// Capture a regular descriptor without adopting neighboring or special files.
@@ -86,6 +121,7 @@ pub(super) fn open_root(path: &Path, device: u64, inode: u64) -> Result<OpenedRo
 /// Transient working bytes, executable flag, modification time, descriptor facts and retained parent edges.
 /// # Errors
 /// Refuses invalid paths, protected identities, nonregular files, replaced ancestry or leaves, read races, exhausted bounds and filesystem failures.
+#[cfg(test)]
 pub(super) fn capture(
     root: &OpenedRoot,
     path: &str,
@@ -93,12 +129,63 @@ pub(super) fn capture(
     limits: TrackingLimits,
     remaining: u64,
 ) -> Result<Captured, StorageError> {
+    capture_inner(root, path, protected, limits, remaining, None)
+}
+
+/// Capture using the whole recording operation's borrowed work ledger.
+/// # Arguments
+/// * `root` - Retained registered root descriptor.
+/// * `path` - Exact relative tracked path.
+/// * `protected` - Retained provider and sidecar paths.
+/// * `limits` - Finite capture bounds.
+/// * `remaining` - Remaining retained working bytes.
+/// * `work` - Shared operation ledger, charged before reading or allocation.
+/// # Returns
+/// Complete bytes, unchanged descriptor facts and retained parent edges.
+/// # Errors
+/// Refuses exhausted work, invalid paths, identity changes and I/O failures.
+pub(in crate::storage::repository) fn capture_budget(
+    root: &OpenedRoot,
+    path: &str,
+    protected: &[&Path],
+    limits: TrackingLimits,
+    remaining: u64,
+    work: &mut crate::storage::content::Budget,
+) -> Result<Captured, StorageError> {
+    checked_path(path, limits)?;
+    work.charge_decoded(root.capture_work_bytes(path, protected.len())?)?;
+    capture_inner(root, path, protected, limits, remaining, Some(work))
+}
+
+/// Share descriptor validation while optionally charging recording work.
+/// # Arguments
+/// * `root` - Retained registered root descriptor.
+/// * `path` - Exact relative tracked path.
+/// * `protected` - Retained provider and sidecar paths.
+/// * `limits` - Finite capture bounds.
+/// * `remaining` - Remaining retained bytes.
+/// * `work` - Optional shared recording ledger.
+/// # Returns
+/// Complete bytes, stable descriptor facts and retained parent edges.
+/// # Errors
+/// Refuses capture, identity, allocation and work-limit failures.
+fn capture_inner(
+    root: &OpenedRoot,
+    path: &str,
+    protected: &[&Path],
+    limits: TrackingLimits,
+    remaining: u64,
+    work: Option<&mut crate::storage::content::Budget>,
+) -> Result<Captured, StorageError> {
     checked_path(path, limits)?;
     let parent = root.parent(path)?;
     let name = unix::name(path.rsplit('/').next().unwrap().as_bytes())?;
     let mut file = parent.regular(&name)?;
     reject_protected(&file, protected)?;
-    let (bytes, facts) = unix::read(&mut file, remaining, limits.io_buffer_bytes)?;
+    let (bytes, facts) = match work {
+        Some(work) => unix::read_budget(&mut file, remaining, limits.io_buffer_bytes, work)?,
+        None => unix::read(&mut file, remaining, limits.io_buffer_bytes)?,
+    };
     parent.recheck(root)?;
     let live = parent.regular(&name)?;
     require_same_leaf(&facts, &live)?;
@@ -164,6 +251,7 @@ fn reject_protected(file: &File, protected: &[&Path]) -> Result<(), StorageError
 /// Success when retained parent edges still match and a fresh capture matches the earlier bytes and facts.
 /// # Errors
 /// Propagates capture refusals and rejects replaced parent edges, filesystem failures and byte or metadata changes.
+#[cfg(test)]
 pub(super) fn recheck(
     root: &OpenedRoot,
     path: &str,
@@ -172,6 +260,45 @@ pub(super) fn recheck(
     limits: TrackingLimits,
 ) -> Result<(), StorageError> {
     let after = capture(root, path, protected, limits, before.bytes.len() as u64)?;
+    before.parent.recheck(root)?;
+    if before.facts != after.facts || before.bytes != after.bytes {
+        return Err(StorageError::state("tracking file changed before commit"));
+    }
+    Ok(())
+}
+
+/// Recheck retained parent edges, captured bytes and descriptor facts using the same operation ledger.
+/// # Arguments
+/// * `root` - Retained registered root descriptor.
+/// * `path` - Exact relative tracked path.
+/// * `before` - Earlier complete capture.
+/// * `protected` - Retained provider and sidecar paths.
+/// * `limits` - Finite capture bounds.
+/// * `work` - Shared ledger, charged before reread, retained-parent recheck and comparison.
+/// # Returns
+/// Success for unchanged parent edges, bytes and descriptor facts.
+/// # Errors
+/// Refuses exhausted work, replaced parent edges, descriptor changes and byte changes.
+pub(in crate::storage::repository) fn recheck_budget(
+    root: &OpenedRoot,
+    path: &str,
+    before: &Captured,
+    protected: &[&Path],
+    limits: TrackingLimits,
+    work: &mut crate::storage::content::Budget,
+) -> Result<(), StorageError> {
+    work.charge_decoded(before.bytes.len())?;
+    // Reserve the original ancestry recheck separately from the fresh capture's traversal.
+    // capture_budget already charged for allocating the retained parent.
+    work.charge_decoded(root.capture_work_bytes(path, 0)?)?;
+    let after = capture_budget(
+        root,
+        path,
+        protected,
+        limits,
+        before.bytes.len() as u64,
+        work,
+    )?;
     before.parent.recheck(root)?;
     if before.facts != after.facts || before.bytes != after.bytes {
         return Err(StorageError::state("tracking file changed before commit"));
@@ -226,7 +353,16 @@ mod tests {
             std::fs::write(&leaf, b"original").unwrap();
             std::fs::set_permissions(&leaf, std::fs::Permissions::from_mode(0o600)).unwrap();
             let opened = opened(&root);
-            let captured = capture(&opened, "file", &[], limits(), 1024).unwrap();
+            let mut work = crate::storage::content::Budget::new(crate::storage::Limits {
+                max_stored_bytes: 128,
+                max_output_bytes: 128,
+                max_chain_depth: 4,
+                max_total_stored_bytes: 128,
+                max_total_decoded_bytes: 16 << 20,
+            })
+            .unwrap();
+            let captured = capture_budget(&opened, "file", &[], limits(), 1024, &mut work).unwrap();
+            recheck_budget(&opened, "file", &captured, &[], limits(), &mut work).unwrap();
             match change {
                 Change::Bytes => std::fs::write(&leaf, b"changed!").unwrap(),
                 Change::Mode => {
@@ -243,9 +379,64 @@ mod tests {
                 recheck(&opened, "file", &captured, &[], limits()).is_err(),
                 "accepted changed capture"
             );
+            assert!(
+                recheck_budget(&opened, "file", &captured, &[], limits(), &mut work).is_err(),
+                "budgeted recheck accepted changed capture"
+            );
             assert_eq!(std::fs::read(&leaf).unwrap(), bytes);
             assert_eq!(std::fs::metadata(&leaf).unwrap().mode(), mode);
         }
+    }
+
+    /// Capture and final recheck consume one ledger across files and byte comparisons.
+    #[test]
+    fn recording_capture_uses_one_budget_before_file_reads() {
+        use crate::storage::{Limits, content::Budget};
+        let temp = tempfile::tempdir().unwrap();
+        let root = std::fs::canonicalize(temp.path()).unwrap();
+        std::fs::write(root.join("one"), b"abc").unwrap();
+        std::fs::write(root.join("two"), b"def").unwrap();
+        let root = opened(&root);
+        let budget = |decoded| {
+            Budget::new(Limits {
+                max_stored_bytes: 128,
+                max_output_bytes: 128,
+                max_chain_depth: 4,
+                max_total_stored_bytes: 128,
+                max_total_decoded_bytes: decoded,
+            })
+            .unwrap()
+        };
+        // Descriptor/root traversal is charged in addition to file storage/copy work.
+        let one = root.capture_work_bytes("one", 0).unwrap() as u64 + 10;
+        let mut work = budget(1);
+        assert!(capture_budget(&root, "one", &[], limits(), 3, &mut work).is_err());
+        let mut work = budget(one * 2 - 1);
+        let first = capture_budget(&root, "one", &[], limits(), 3, &mut work).unwrap();
+        assert_eq!(first.bytes, b"abc");
+        assert_eq!(
+            capture_budget(&root, "two", &[], limits(), 3, &mut work)
+                .err()
+                .unwrap()
+                .operation,
+            "total decoded content limit"
+        );
+        let parent_recheck = root.capture_work_bytes("one", 0).unwrap() as u64;
+        let complete_recheck = one * 2 + parent_recheck + 3;
+        let mut work = budget(complete_recheck - 1);
+        let first = capture_budget(&root, "one", &[], limits(), 3, &mut work).unwrap();
+        assert_eq!(
+            recheck_budget(&root, "one", &first, &[], limits(), &mut work)
+                .unwrap_err()
+                .operation,
+            "total decoded content limit"
+        );
+        let mut work = budget(complete_recheck);
+        let first = capture_budget(&root, "one", &[], limits(), 3, &mut work).unwrap();
+        recheck_budget(&root, "one", &first, &[], limits(), &mut work).unwrap();
+        let mut work = budget(one);
+        work.charge_decoded(1).unwrap();
+        assert!(capture_budget(&root, "one", &[], limits(), 3, &mut work).is_err());
     }
 
     /// Retained parent edges, the registered root and its ancestors refuse replacement.
@@ -302,8 +493,17 @@ mod tests {
         std::fs::write(root.join("dir/file"), b"same leaf").unwrap();
         std::fs::hard_link(root.join("dir/file"), root.join("spare/file")).unwrap();
         let opened = opened(&root);
-        let captured = capture(&opened, "dir/file", &[], limits(), 1024).unwrap();
+        let mut work = crate::storage::content::Budget::new(crate::storage::Limits {
+            max_stored_bytes: 128,
+            max_output_bytes: 128,
+            max_chain_depth: 4,
+            max_total_stored_bytes: 128,
+            max_total_decoded_bytes: 16 << 20,
+        })
+        .unwrap();
+        let captured = capture_budget(&opened, "dir/file", &[], limits(), 1024, &mut work).unwrap();
         assert!(recheck(&opened, "dir/file", &captured, &[], limits()).is_ok());
+        recheck_budget(&opened, "dir/file", &captured, &[], limits(), &mut work).unwrap();
         std::fs::rename(root.join("dir"), root.join("saved")).unwrap();
         std::fs::rename(root.join("spare"), root.join("dir")).unwrap();
         let live = File::open(root.join("dir/file")).unwrap();
@@ -311,6 +511,12 @@ mod tests {
         assert!(
             recheck(&opened, "dir/file", &captured, &[], limits()).is_err(),
             "accepted changed parent with unchanged leaf"
+        );
+        assert_eq!(
+            recheck_budget(&opened, "dir/file", &captured, &[], limits(), &mut work)
+                .unwrap_err()
+                .operation,
+            "checkout parent replaced"
         );
         assert_eq!(std::fs::read(root.join("dir/file")).unwrap(), b"same leaf");
         assert_eq!(

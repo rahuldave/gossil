@@ -17,7 +17,8 @@ pub struct Limits {
     pub max_chain_depth: u32,
     /// Total compressed envelope bytes consumed by the operation; positive.
     pub max_total_stored_bytes: u64,
-    /// Total envelope and reconstructed intermediate bytes; positive.
+    /// Total decoded content and reconstructed intermediates; positive.
+    /// Catalog4 operations also charge metadata, parser, capture and retained SQL work.
     pub max_total_decoded_bytes: u64,
 }
 impl Limits {
@@ -51,6 +52,55 @@ pub(super) struct Budget {
     visited: BTreeSet<i64>,
 }
 impl Budget {
+    /// Return the unchanged finite ceilings used to create this ledger.
+    /// # Returns
+    /// Caller-selected content limits, without resetting consumed work.
+    pub(super) fn limits(&self) -> Limits {
+        self.limits
+    }
+
+    /// Bound a new compression result by both remaining work ledgers.
+    /// # Returns
+    /// Largest packed output that fits the envelope, stored and ownership ceilings.
+    /// The caller must still debit actual stored bytes and owned bind bytes afterward.
+    pub(super) fn packed_output_ceiling(&self) -> usize {
+        usize::try_from(
+            self.limits
+                .max_stored_bytes
+                .min(
+                    self.limits
+                        .max_total_stored_bytes
+                        .saturating_sub(self.stored),
+                )
+                .min(
+                    self.limits
+                        .max_total_decoded_bytes
+                        .saturating_sub(self.decoded),
+                ),
+        )
+        .unwrap_or(usize::MAX)
+    }
+
+    /// Charge a newly compressed output without entering a reconstruction chain.
+    /// # Arguments
+    /// * `length` - Complete compressed envelope length.
+    /// # Returns
+    /// Success when individual and cumulative stored ceilings admit the output.
+    /// # Errors
+    /// Refuses an oversized envelope, arithmetic overflow or exhausted stored work.
+    pub(super) fn charge_stored(&mut self, length: usize) -> Result<(), StorageError> {
+        let length = u64::try_from(length)
+            .map_err(|_| StorageError::state("stored content size overflow"))?;
+        if length > self.limits.max_stored_bytes {
+            return Err(StorageError::state("stored content limit"));
+        }
+        self.stored = self
+            .stored
+            .checked_add(length)
+            .filter(|total| *total <= self.limits.max_total_stored_bytes)
+            .ok_or_else(|| StorageError::state("total stored content limit"))?;
+        Ok(())
+    }
     /// Start empty accounting after validating every finite ceiling.
     /// # Arguments
     /// * `limits` - Explicit finite bounds for this operation.
@@ -348,6 +398,52 @@ impl WriteTransaction<'_> {
         }.await;
         self.record(result)
     }
+    /// Read a full private-recording envelope under the complete shared ledger.
+    /// The bounded recording family produces no deltas; this entry refuses them.
+    /// # Arguments
+    /// * `principal` - Sealed owner binding reauthenticated under this ledger.
+    /// * `name` - Exact native SHA-1 or SHA3-256 lowercase identity.
+    /// * `budget` - Whole-operation stored and decoded work.
+    /// # Returns
+    /// Complete verified bytes with all SQL materialization and hash work charged.
+    /// # Errors
+    /// Refuses malformed identity, policy, delta rows, unavailable content and exhausted work.
+    pub(super) async fn read_recording_content_budget(
+        &mut self,
+        principal: &super::policy::Principal,
+        name: &str,
+        budget: &mut Budget,
+    ) -> Result<Vec<u8>, StorageError> {
+        use libsql::Value;
+        if let Some(error) = &self.failure {
+            return Err(error.clone());
+        }
+        let result = async {
+            if !matches!(name.len(), 40 | 64) || !name.bytes().all(|b| b.is_ascii_digit() || (b'a'..=b'f').contains(&b)) {
+                return Err(StorageError::state("recording content name invalid"));
+            }
+            self.validate_recording_principal_budgeted(principal, budget).await?;
+            // Scalar output and bind storage are bounded before asking for any payload.
+            budget.charge_decoded(name.len().checked_mul(2).and_then(|n| n.checked_add(1024))
+                .ok_or_else(||StorageError::state("recording content metadata work overflow"))?)?;
+            let rows = self.query_bound("SELECT b.rid,b.size,length(b.content),typeof(b.content),EXISTS(SELECT 1 FROM delta d WHERE d.rid=b.rid) FROM blob b WHERE b.uuid=?1 AND NOT EXISTS(SELECT 1 FROM shun s WHERE s.uuid=b.uuid)", vec![Value::Text(name.into())]).await?;
+            let (rid, size, length) = recording_content_metadata(&rows, budget.limits.max_output_bytes)?;
+            budget.visited.clear();
+            budget.enter(rid, length as u64)?;
+            // Account for the owned provider envelope separately from decoded bytes.
+            budget.charge_decoded(usize::try_from(length).map_err(|_| StorageError::state("recording stored length overflow"))?)?;
+            let rows = self.query_bound("SELECT content FROM blob WHERE rid=?1", vec![Value::Integer(rid)]).await?;
+            let [row] = rows.as_slice() else { return Err(StorageError::state("content unavailable")); };
+            let [Value::Blob(packed)] = row.as_slice() else { return Err(StorageError::state("corrupt recording payload")); };
+            let bytes = budget.unpack(packed)?;
+            if bytes.len() as u64 != size as u64 { return Err(StorageError::state("native content size mismatch")); }
+            budget.charge_decoded(bytes.len())?;
+            self.verify_content_name(name, &bytes)?;
+            Ok(bytes)
+        }.await;
+        self.record(result)
+    }
+
     /// Decode and verify one complete full-byte row through the operation latch.
     /// # Arguments
     /// * `name` - Full native content hash to verify.
@@ -380,6 +476,46 @@ impl WriteTransaction<'_> {
         })();
         self.record(result)
     }
+}
+
+/// Decode the bounded recording envelope metadata before payload ownership.
+/// # Arguments
+/// * `rows` - Fixed metadata query result, excluding shunned identities.
+/// * `max_output_bytes` - Caller ceiling for one reconstructed content object.
+/// # Returns
+/// Native RID, decoded size and packed length for one supported full envelope.
+/// # Errors
+/// Refuses absent or malformed rows, negative sizes, deltas and oversized envelopes.
+fn recording_content_metadata(
+    rows: &[Vec<libsql::Value>],
+    max_output_bytes: u32,
+) -> Result<(i64, i64, i64), StorageError> {
+    use libsql::Value;
+    let [row] = rows else {
+        return Err(StorageError::state("content unavailable"));
+    };
+    let [
+        Value::Integer(rid),
+        Value::Integer(size),
+        Value::Integer(length),
+        Value::Text(kind),
+        Value::Integer(delta),
+    ] = row.as_slice()
+    else {
+        return Err(StorageError::state("corrupt recording content metadata"));
+    };
+    if *size < 0
+        || *length < 0
+        || *size as u64 > u64::from(max_output_bytes)
+        || kind != "blob"
+        || *delta != 0
+    {
+        return Err(StorageError::state(
+            "unsupported recording content envelope",
+        ));
+    }
+
+    Ok((*rid, *size, *length))
 }
 
 #[cfg(test)]
@@ -535,6 +671,31 @@ mod tests {
         );
     }
 
+    /// New packed outputs share stored work with reads without consuming chain slots.
+    #[test]
+    fn packed_outputs_share_stored_ledger_without_resetting_traversal() {
+        let mut budget = Budget::new(Limits {
+            max_stored_bytes: 4,
+            max_total_stored_bytes: 10,
+            ..limits()
+        })
+        .unwrap();
+        budget.enter(1, 3).unwrap();
+        budget.charge_stored(4).unwrap();
+        assert_eq!(budget.stored, 7);
+        assert_eq!(budget.packed_output_ceiling(), 3);
+        assert_eq!(budget.visited.iter().copied().collect::<Vec<_>>(), [1]);
+        assert!(budget.charge_stored(5).is_err());
+        assert_eq!(budget.stored, 7);
+        budget.charge_stored(3).unwrap();
+        assert_eq!(budget.stored, 10);
+        assert_eq!(budget.packed_output_ceiling(), 0);
+        assert!(budget.charge_stored(1).is_err());
+        assert_eq!(budget.stored, 10);
+        assert!(budget.enter(1, 0).is_err());
+        assert_eq!(budget.limits().max_total_stored_bytes, 10);
+    }
+
     /// Repeated verified reads reset traversal identity while retaining both aggregate byte counters.
     #[tokio::test]
     async fn cumulative_content_budget_retains_charges_across_verified_reads() {
@@ -625,5 +786,85 @@ mod tests {
                 .downcast_ref::<compression::BlobError>(),
             Some(compression::BlobError::Limit)
         ));
+    }
+    /// Malformed metadata cannot reach payload loading, even when earlier admission shadows it.
+    #[test]
+    fn recording_metadata_requires_one_typed_full_envelope() {
+        use libsql::Value;
+        let valid = vec![
+            Value::Integer(7),
+            Value::Integer(3),
+            Value::Integer(12),
+            Value::Text("blob".into()),
+            Value::Integer(0),
+        ];
+        assert_eq!(
+            recording_content_metadata(std::slice::from_ref(&valid), 3).unwrap(),
+            (7, 3, 12)
+        );
+        for rows in [vec![], vec![valid.clone(), valid.clone()]] {
+            assert_eq!(
+                recording_content_metadata(&rows, 3).unwrap_err().operation,
+                "content unavailable"
+            );
+        }
+        for index in 0..valid.len() {
+            let mut row = valid.clone();
+            row[index] = Value::Null;
+            assert_eq!(
+                recording_content_metadata(&[row], 3).unwrap_err().operation,
+                "corrupt recording content metadata"
+            );
+        }
+        for (index, value) in [
+            (1, Value::Integer(-1)),
+            (2, Value::Integer(-1)),
+            (3, Value::Text("text".into())),
+            (4, Value::Integer(1)),
+        ] {
+            let mut row = valid.clone();
+            row[index] = value;
+            assert_eq!(
+                recording_content_metadata(&[row], 3).unwrap_err().operation,
+                "unsupported recording content envelope"
+            );
+        }
+        assert_eq!(
+            recording_content_metadata(&[valid], 2)
+                .unwrap_err()
+                .operation,
+            "unsupported recording content envelope"
+        );
+    }
+
+    /// Invalid names latch before any SQL, and a later valid name preserves that first refusal.
+    #[tokio::test]
+    async fn recording_content_name_failure_preserves_the_transaction_latch() {
+        for invalid in [
+            "bad".to_owned(),
+            "A".repeat(40),
+            "g".repeat(64),
+            format!("{}\0", "a".repeat(39)),
+        ] {
+            let mut store = LocalStore::open_inner(":memory:", false).await.unwrap();
+            let mut tx = store.begin_write().await.unwrap();
+            let principal = crate::storage::policy::Principal {
+                repository: "0".repeat(40),
+                owner: "owner".into(),
+            };
+            let mut budget = Budget::new(limits()).unwrap();
+            let first = tx
+                .read_recording_content_budget(&principal, &invalid, &mut budget)
+                .await
+                .unwrap_err();
+            assert_eq!(first.operation, "recording content name invalid");
+            let later = tx
+                .read_recording_content_budget(&principal, &name(b"abc"), &mut budget)
+                .await
+                .unwrap_err();
+            assert_eq!(later.operation, first.operation);
+            assert_eq!(budget.decoded, 0);
+            assert_eq!(tx.commit().await.unwrap_err().operation, first.operation);
+        }
     }
 }

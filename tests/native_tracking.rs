@@ -15,12 +15,13 @@ fn limits() -> AdmissionLimits {
             max_output_bytes: 4096,
             max_chain_depth: 4,
             max_total_stored_bytes: 8192,
-            max_total_decoded_bytes: 16384,
+            // Catalog4 admission charges exact schema/authority and complete operation work.
+            max_total_decoded_bytes: 16777216,
         },
         parser: ParseLimits {
             input_bytes: 4096,
-            cards: 16,
-            owned_bytes: 16384,
+            cards: 4096,
+            owned_bytes: 1048576,
             entries: 64,
         },
     }
@@ -462,4 +463,39 @@ async fn symlink_open_protects_actual_sidecars_and_their_hardlinks() {
     // preservation above, rather than claiming internal sidecar bytes are immutable.
     drop(c);
     drop(db);
+}
+
+/// Input-name charges share one ledger and fail before tracking changes the checkout.
+/// # Panics
+/// Panics if cumulative input work is reset or an early failure changes the owner proof.
+#[tokio::test]
+async fn tracking_input_work_is_cumulative_before_the_transaction() {
+    let temp = tempfile::tempdir().unwrap();
+    let path = temp.path().join("repo");
+    let root = checkout_root(temp.path());
+    std::fs::write(root.join("a"), b"a").unwrap();
+    std::fs::write(root.join("b"), b"b").unwrap();
+    let mut owner = initialize(&path).await;
+    let before = owner
+        .register_checkout("work", &root, limits())
+        .await
+        .unwrap();
+    for bytes in [128, 257] {
+        let mut short = limits();
+        short.content.max_total_decoded_bytes = bytes;
+        assert_eq!(
+            owner
+                .add_files("work", &["a", "b"], &before, short, tracking())
+                .await
+                .unwrap_err()
+                .operation,
+            "total decoded content limit"
+        );
+        assert_eq!(owner.checkout_view("work", limits()).await.unwrap(), before);
+    }
+    let after = owner
+        .add_files("work", &["a", "b"], &before, limits(), tracking())
+        .await
+        .unwrap();
+    assert_eq!(after.pending_version, before.pending_version + 1);
 }

@@ -2,11 +2,16 @@
 
 [API: `LocalOwnerRepository`](api/storage.qmd#LocalOwnerRepository) gives the exact contract.
 
-The storage API creates an empty native repository without a checkout. Its
-bound-checkout constructor also supports private file bytes through one owned
-libSQL transaction. Its supported public graph is the initial empty check-in,
-which contains no files. General artifact crosslinks, Gest projections and
-filesystem recovery remain planned.
+The storage API creates an empty native repository without a checkout. After
+registration, its catalog4 library can track paths, select explicit scopes and
+record the complete private tracked tree through one owned libSQL transaction.
+The shared history remains the initial empty check-in. General artifact
+crosslinks, Gest projections and filesystem recovery remain planned.
+
+Catalog names identify storage formats. Catalog1 binds a checkout at creation
+and supports bounded private content bytes. Catalog4 starts without a checkout
+and supports one later registration. Generic catalog1 content writes remain
+separate from catalog4 recording.
 
 ## Initialize without a checkout
 
@@ -31,12 +36,12 @@ Reopen authenticates the single canonical empty root, its native hash, date,
 event, branch tags and receive/index facts. It checks the exact schema,
 complete policy, owner binding and foreign keys.
 
-The remaining local tables must be empty, except for the exact registration
-and pending-add inventories described below. Admission rejects extra native content
-or indexed history, even when checkout counters remain zero. File-containing check-ins,
-typed projections and mixed catalog4 states remain unsupported.
-Catalog5 and catalog6 remain unsupported. No upgrade occurs on open.
-Private content writes through this handle also refuse catalog4.
+The remaining local tables must be empty, except for the exact registration,
+tracking, scope and private recording inventories described below. Extra native
+content or indexed history outside that family refuses admission. Persisted
+issue projections and states mixing those issues with file history remain unsupported.
+Catalog5 and catalog6 also remain unsupported. No upgrade occurs on open.
+Generic private content writes through this handle refuse catalog4.
 
 The destination and its recovery neighbors must remain stable through engine
 cleanup. Existing destinations and recovery entries are preserved.
@@ -75,9 +80,13 @@ It replaces the saved proof only after known success.
 Earlier writes roll back on failure. The lifecycle rules still govern commit
 and cleanup uncertainty.
 
-The returned `CheckoutView` owns the repository ID, checkout ID, canonical root
-and actual public initial head. Its combined head is absent, and its generation
-and pending version are zero.
+The returned `CheckoutView` owns the repository ID, checkout ID, canonical root,
+shared head, combined head, generation and pending version.
+The combined head selects the owner's private tree together with the shared
+tree, which is empty in this recording family.
+At registration, the shared head is the public initial root, the combined head
+is absent, and both counters are zero. A later private recording advances
+the combined head while the shared head stays fixed.
 
 `checkout_view(checkout_id, limits)` authenticates
 that exact persisted registration. `checkout_view_for_root(root, limits)`
@@ -98,7 +107,8 @@ facts and does not recover a locator.
 
 Reopen accepts exactly zero or one such catalog4 registration. It independently
 checks the complete checkout, owner and key inventory against `checkout_count`,
-the native root and receipt. Private content writes still refuse catalog4.
+the native root and the supported recording history. Generic private content
+writes still refuse catalog4.
 
 ## Track native pending additions
 
@@ -114,16 +124,21 @@ rechecks each regular file, then returns the committed view. The method rejects 
 generation, pending version or admission authority are stale.
 Use the returned view for the next mutation.
 
-`pending_adds(checkout, limits,
-tracking)` returns the complete bounded inventory in pathname order.
+`pending_adds(checkout, limits, tracking)` returns the complete bounded pending
+inventory in pathname order. `tracked_paths` lists both pending and recorded
+paths, and `path_scopes` reads only explicit scope choices.
 `PendingAdd::executable` records the mode at first enrollment. Later mode changes
-do not alter that stored flag.
+do not alter that flag until recording captures the current file.
 
 Only this producer's exact catalog4 state is admitted. New `g_vfile` rows use
-the actual initial `vid`, `rid=mrid=0`, regular-file link flags, executable mode
-and observed modification time. New batches retain earlier rows and advance
+the current combined-head `vid`, or the initial root before recording. They use
+`rid=mrid=0`, regular-file link flags, executable mode
+and observed modification time. A RID is a native artifact row identifier.
+New batches retain earlier rows and advance
 `pending_version` once. Existing-only batches recheck files but change no state.
-`g_pending_path` and `g_path_scope` remain empty. Catalog1 rules remain unchanged.
+
+`g_pending_path` remains empty. New paths have no `g_path_scope` row, and add
+preserves earlier explicit choices. Catalog1 rules remain unchanged.
 
 No file bytes, canonical artifacts, receipts or file-containing check-ins are
 stored by add. Working bytes remain unchanged.
@@ -132,17 +147,125 @@ stored by add. Working bytes remain unchanged.
 path components, initial captured working bytes and read buffer size.
 The final recheck temporarily retains another copy of one captured file.
 The captured-byte limit therefore does not bound total process memory.
-The methods reject zero structural or buffer bounds. The retained
-bytes exist only for transaction validation.
+
+The methods reject zero structural or buffer bounds. Capture, recapture and
+comparison also charge the operation's borrowed content budget, including retained
+parent-directory checks. The cumulative work bounds do not measure
+all process allocations. Captured bytes exist only for transaction validation.
 
 Paths and descriptor identities
 must satisfy the [CLI path contract](cli.md#add-explicit-paths-and-inspect-pending-additions).
 The protected database identities come from the store's retained private
 `FileIdentity`; callers cannot supply replacement authority.
 
-Pending additions have unselected scope. An absent scope row means neither
-shared nor private. Future recording must require a persisted scope decision
-and reread all tracked files. These methods authorize no recording or sync.
+New additions have unselected scope. An absent scope row means neither shared
+nor private. Add alone authorizes no recording or sync.
+
+## Private recording library
+
+Call `initialize`, `register_checkout`, `add_files`, `select_path_scopes`, then
+`commit_private_tracked_files`. Registration, add, scope selection and changed
+recording return checkout views. Pass the most recent returned view as the
+expected view and set `request.scope` to `PathScope::Private`.
+The [storage API](api/storage.qmd#LocalOwnerRepository) gives the exact signatures.
+Supply finite `AdmissionLimits` for content and parsing, plus `TrackingLimits`
+for path counts, path sizes and retained working bytes.
+
+Private recording saves the current bytes and executable modes of every tracked
+file as one complete private history snapshot. Scope is each path's explicit
+shared or private choice. Private means owner-local history; shared marks a path
+for shared history, whose recording and synchronization are not supported here.
+Every tracked path must have private scope before this recorder can run.
+
+This library checkpoint is under qualification. The examples describe its
+source contract and do not establish a passing check, release or installation.
+See [development status](development-plan.md#private-recording-qualification) for
+the accepted tracking baseline and remaining work.
+
+`select_path_scopes(checkout, wanted, selections, limits, tracking)` persists
+immutable explicit choices for tracked paths. An equal batch is a checked no-op;
+a conflicting choice rejects the whole batch. A batch with new choices advances
+`pending_version` once. `path_scopes` reads only explicit choices; `tracked_paths`
+returns the complete ordered tracked inventory. Neither read infers missing scopes.
+
+`commit_private_tracked_files(checkout, request, limits, tracking)` requires
+`PathScope::Private` and a nonempty, duplicate-free set of all tracked paths.
+It rejects an empty path set, including when the checkout has no tracked paths.
+Each path must have a persisted private choice. `request.expected` supplies
+all seven `CheckoutView` fields. They are repository ID, checkout ID, registered root,
+shared head, combined head, generation and pending version. Stale expectations
+or failed owner validation cause the transaction to reject the request.
+
+Catalog1 stores loose private content bytes without a file tree. Catalog4
+recording stores a complete file tree and its admitted history.
+
+The request supplies actor, comment and native date bytes. The actor is nonempty
+UTF-8 without NUL. The comment is UTF-8 with no NUL or literal left bracket.
+Fossil's comment format uses left brackets to start links. Excluding them keeps
+the backlink table outside this bounded family. No alternative escape for a literal left bracket is supported.
+
+The date must use the [native date grammar](task-ticket.md#date-domain) and
+be strictly later than every parent, including under native SQL date conversion. The recorder captures all working files again, retaining their bytes and
+executable modes within finite limits. Edits
+after add are included without a second add. Capture and parser helpers borrow
+one content budget and one parser work ledger, which count cumulative work
+across the whole operation.
+
+A request explicitly supplies all tracked paths and the current view:
+
+```rust
+use gossil::storage::{CheckoutView, PathScope, PrivateRecordingRequest};
+
+fn request<'a>(
+    view: &'a CheckoutView,
+    paths: &'a [&'a str], // Every tracked path, not a selected subset.
+) -> PrivateRecordingRequest<'a> {
+    PrivateRecordingRequest {
+        expected: view,
+        paths,
+        scope: PathScope::Private,
+        actor: b"Owner",
+        comment: b"Save notes",
+        date: b"2026-11-20T12:00:01",
+    }
+}
+```
+
+Select private scope first. Use a date later than the root and previous private
+recording. Pass the request to `commit_private_tracked_files` with explicit limits.
+
+Call the initial shared empty root S and private recordings L1, L2 and so on.
+For example, recording edited notes creates L2 while S stays the shared view.
+The shared empty root S remains immutable. The first private manifest L1 has
+parent S; later manifests have parents Lprev then S. Every private manifest
+contains the complete tree.
+
+Keeping S as a parent preserves the explicit shared base while the first parent
+follows private history. Admission validates the full history and exact native
+and local projections, including private content, parent, event, leaf,
+file-link and checkout facts. Later additions use the current combined-head RID
+as their `vid`.
+
+A projection is a derived database row. Admission rejects a file link whose
+content hash differs from the hash in its manifest.
+Catalog4 recording accepts full compressed content and refuses physical deltas.
+Catalog1 retains its separate delta reconstruction contract.
+
+Content that already
+exists is verified and reused without rewriting its receipt or privacy class.
+General removal and rename remain unsupported.
+
+`Recorded.native_name` is the new manifest/check-in hash. `Recorded` also
+returns the refreshed view after checked commit.
+`NoChange` validates metadata, dates, bytes and modes but creates no receipt
+and changes no head or counter.
+
+Changed recording writes one local receipt, payloads, manifest and projections
+atomically. It advances both generation and pending version once. Working files remain unchanged.
+Shared recording and synchronization remain unsupported. Catalog1 content
+operations keep their separate contract. The source CLI can inspect recorded
+states through [status](cli.md#add-explicit-paths-and-inspect-pending-additions),
+but scope selection and recording commands are deferred.
 
 ## Local owner and shared view
 
@@ -185,7 +308,9 @@ remain, including a private delta whose baseline is the public root. These rows
 do not extend the supported public graph or implement their corresponding
 product operations.
 
-`AdmissionLimits` bound root content reconstruction and parser allocations.
+`AdmissionLimits` bound content reconstruction and parser work. Catalog1 admission
+validates its root; catalog4 admission also checks the complete supported history
+and charges retained metadata to the same operation budget.
 Fixed scalar conflict queries bound the data they return. Neither mechanism
 sets a ceiling on SQLite scan work across stored tables.
 
@@ -269,6 +394,7 @@ unimplemented. The public APIs do not offer those operations.
 ## Recommendations
 
 Prefer `initialize`, then `register_checkout` when one native empty-root
-registration is needed. Use `create` for catalog1 private content operations.
-Set finite admission limits, then consult the
+registration is needed. Use `create` for catalog1 private content operations. For private recording,
+select scopes explicitly and pass the latest complete view and every tracked
+path to the library recorder. Set finite admission limits, then consult the
 [generated API](api/index.qmd) for repository creation, admission and content methods.

@@ -6,15 +6,18 @@ exact file head, complete issue and discussion boundaries, and versioned links
 between issues and code. Git remains the source-code authority.
 
 This page compares that intended design with Git's available behavior.
-The source CLI initializes empty repositories without a checkout, opens one
-native empty-root checkout and offers three delta diagnostics. It also supports
-[explicit add and status](cli.md#add-explicit-paths-and-inspect-pending-additions) for pending additions, without recording file content.
+The source CLI initializes empty repositories without a checkout, registers or
+reopens one native checkout and offers three delta diagnostics. It also supports
+[explicit add and status](cli.md#add-explicit-paths-and-inspect-pending-additions)
+without recording file content. Status distinguishes pending and recorded paths
+and shows their actual scope.
 The Rust library provides typed task, project and author converters, a task artifact emitter,
 and native storage primitives. It does not yet create or read persisted issues.
 
 [Native checkout open](cli.md#open-a-native-checkout) registers or reopens an
-existing directory and publishes its lookup locator. Issue commands and file
-recording remain planned in this source CLI.
+existing directory and publishes its lookup locator. The library can record
+the complete private tracked tree; scope and recording commands remain deferred
+in this source CLI. Issue commands also remain planned.
 See the [current limits](development-plan.md) and
 [CLI reference](cli.md) before trying a command.
 
@@ -120,6 +123,18 @@ sharing within the shared portion today.
 
 This page follows the nossaifd writing guide, including principles credited to
 Rosalind Reid, Shreya Shankar and Oskar Austegard.
+
+## Current private recording library
+
+The [private recorder](native-storage.md#private-recording-library) saves a
+snapshot of every tracked file. Add enrolls paths rather than staging their bytes.
+The recorder reads those paths again, so it includes edits made without re-adding.
+Each path needs an explicit immutable private scope choice before recording.
+
+This operation creates owner-local file history and leaves the shared empty root
+unchanged. Shared recording and synchronization remain unsupported. The library
+is under [qualification](development-plan.md#private-recording-qualification);
+the installed tracking release does not contain this new API.
 
 ## Recommendations
 

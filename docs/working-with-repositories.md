@@ -9,14 +9,19 @@ surrounding agent work its own history and sharing rules.
 Most of this page describes planned repository workflows. The source CLI supports
 [empty repository initialization and three file-delta diagnostics](cli.md).
 Initialization creates no checkout and selects no files. The source
-[`vcs open` command](cli.md#open-a-native-checkout) registers or reopens one
-empty-root checkout with locator publication and recovery. The Rust library supports
-[checkout-free initialization, one native directory registration and catalog1
-private content](native-storage.md). Library registration selects no files and
-publishes no locator.
+[`vcs open` command](cli.md#open-a-native-checkout) registers one checkout at the
+empty root, or reopens it with supported private history and locator recovery.
+The Rust library supports
+[initialization, one directory registration, explicit scopes and private
+file recording](native-storage.md).
 
-That storage foundation does not yet provide ordinary file check-ins or issue
-management. The Fossil references teach the inherited workflow; their commands
+Library registration selects no files and
+publishes no locator, the local file that lets commands find and verify a checkout.
+Catalog1 private content operations follow their separate
+[native storage contract](native-storage.md).
+
+The private recording library saves the complete tracked tree within the
+[resource limits](native-storage.md#private-recording-library) in its storage contract. It does not provide shared recording or issue management. The Fossil references teach the inherited workflow; their commands
 are not Gossil aliases.
 
 ## Try the installed development preview
@@ -27,9 +32,8 @@ Use a disposable folder and copies of files, and keep Git
 as the source authority.
 
 These commands require that preview's installed `gos` or `gossil` executable.
-The source CLI supports `init`, bounded empty-root `open` and the pending-add
-slice described below, but does not
-support the preview's file-recording or history commands. The generated Rust API on this site does not
+The source CLI supports `init`, native `open`, explicit add and tracked status,
+but does not support the preview's file-recording or history commands. The generated Rust API on this site does not
 describe the preview's additional storage methods.
 
 Start with an empty scratch checkout. Keep the repository database outside it:
@@ -291,12 +295,24 @@ operations on checkout files. General recovery commands are not available in the
 CLI. For today's delta diagnostics, preserve the inputs and write to a new
 output path. Compare the restored bytes before replacing a file.
 
-## Pending additions
+## Current library recording
 
-This source checkout provides [explicit pending add and status](cli.md#add-explicit-paths-and-inspect-pending-additions).
-Add stores native tracking metadata with scope unselected, so the files are neither
-classified as shared nor private. It writes no working files or stored file content. Status lists pending additions only. Recording
-and history commands remain planned.
+The [add and status commands](cli.md#add-explicit-paths-and-inspect-pending-additions)
+track exact paths and show pending additions or recorded paths with their actual
+scope. Add stores no file bytes. New paths remain unselected until a library
+caller makes an explicit scope choice.
+
+The [private recording API](native-storage.md#private-recording-library) requires
+immutable private scope for every tracked path. Supply the complete tracked set
+and the latest checkout view. It rereads all current bytes and executable modes,
+including changes made since add, and records one complete private snapshot.
+The shared empty root stays unchanged. An identical tree is a checked no-op,
+and recording never modifies working files.
+
+The new scope and commit commands are deferred in this source checkpoint.
+The separate preview above has a different command contract. Consult
+[development status](development-plan.md#private-recording-qualification) before
+assuming that a source feature is installed or released.
 
 ## Recommendations
 

@@ -5,9 +5,9 @@ A delta encodes target bytes as new bytes and copies from an origin file.
 This exercise needs no repository and does not change Git history.
 
 Gossil is intended to keep agent files, issues and their history alongside
-Git. Its command line initializes empty repositories and has three delta
-diagnostics. The Rust library also supports artifact parsing, local storage
-and task, project and author value conversion. Try the delta commands below. Read
+Git. Its command line initializes and opens repositories, tracks explicit files
+and has three delta diagnostics. The Rust library also supports private file
+recording, artifact parsing, local storage and task, project and author conversion. Try the delta commands below. Read
 [working with repositories](working-with-repositories.md) for the intended
 file and issue workflows.
 
@@ -122,8 +122,9 @@ The receipt gives the project and server identifiers and the initial administrat
 password. Save the password privately. This command creates the empty root without
 a checkout or tracked files. It reads no preference file. See the
 [initialization reference](cli.md#initialize-a-repository) for date, hash and login options.
-The existing default mini-VCS preview is a separate installation; these commands
-build the current source.
+An already installed mini-VCS preview has a separate
+[command contract](working-with-repositories.md#try-the-installed-development-preview);
+these commands build the current source.
 
 ## Register an existing directory
 
@@ -134,18 +135,25 @@ mkdir example-work
 just gossil vcs open --repository example.gossil --checkout work --root example-work
 ```
 
-Open registers the initial empty root and publishes its private lookup locator.
+Open registers the initial empty root and writes a local lookup file,
+`ROOT/.gossil/checkout.json`, so commands can find and verify the checkout.
 It selects no files and requires no issue, project or author initialization.
 Configuration, permissions and existing markers can refuse the operation.
 Read [native checkout open](cli.md#open-a-native-checkout) before retrying a
 failure, because database commit and locator publication have distinct outcomes.
 
-## Pending additions
+## Track explicit paths
 
-This source checkout provides [explicit pending add and status](cli.md#add-explicit-paths-and-inspect-pending-additions).
-Add stores native tracking metadata with scope unselected, so the files are neither
-classified as shared nor private. It writes no working files or stored file content. Status lists pending additions only. Recording
-and history commands remain planned.
+Use [add and status](cli.md#add-explicit-paths-and-inspect-pending-additions)
+to enroll exact file paths. Add stores tracking metadata without changing working
+files or storing file content. Status lists every tracked path with its pending
+or recorded state and actual scope. New paths have unselected scope.
+
+For application code, the [private recording library](native-storage.md#private-recording-library)
+selects explicit immutable scopes and records the complete private tracked tree.
+That API is separate from the current command set. Scope and commit commands
+remain deferred; the [development guide](development-plan.md#private-recording-qualification)
+records the qualification boundary.
 
 ## Recommendations
 

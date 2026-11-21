@@ -6,7 +6,7 @@
 //! is recorded in `evidence/libsql-provider/provenance.json`. Native repository
 //! creation and admission parse the empty root on this same connection. General
 //! artifact crosslinks, runtime clocks and broader date compatibility remain unqualified.
-//! Native initialization and zero-or-one empty-root registration admit catalog4; bound catalog1 retains private writes.
+//! Catalog4 supports native initialization, one registration and exact private recorded history; bound catalog1 retains private writes.
 //!
 //! ## Recommendations
 //! Use one owner for a complete mutation and explicitly commit or roll back.
@@ -18,7 +18,8 @@ mod schema;
 pub use content::Limits;
 pub use repository::{
     AdmissionLimits, CheckoutView, CreateOptions, InitializeOptions, LocalOwnerRepository,
-    PendingAdd, SharedView, TrackingLimits,
+    PathScope, PathScopeSelection, PendingAdd, PrivateRecordingOutcome, PrivateRecordingRequest,
+    SharedView, TrackingLimits,
 };
 mod lifecycle;
 use lifecycle::FileIdentity;
@@ -404,9 +405,9 @@ impl WriteTransaction<'_> {
             .map_err(Into::into);
         self.record(result)
     }
-    /// Step a fixed parameterized query completely before releasing owned values.
+    /// Step a private parameterized query completely before releasing owned values.
     /// # Arguments
-    /// * `sql` - Fixed internal parameterized SQL statement.
+    /// * `sql` - Internal SQL, either fixed or assembled from private schema names.
     /// * `values` - Owned SQL values bound to that statement.
     /// # Returns
     /// Fully materialized owned result rows.
@@ -414,7 +415,7 @@ impl WriteTransaction<'_> {
     /// Returns the prior latched failure or SQL preparation, stepping or value-decoding errors.
     async fn query_bound(
         &mut self,
-        sql: &'static str,
+        sql: &str,
         values: Vec<Value>,
     ) -> Result<Vec<Vec<Value>>, StorageError> {
         if let Some(error) = &self.failure {

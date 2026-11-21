@@ -67,7 +67,7 @@ impl Facts {
     }
 }
 /// Retain the registered root descriptor and identities of its absolute ancestry.
-pub(in crate::storage::repository::tracking) struct OpenedRoot {
+pub(in crate::storage::repository) struct OpenedRoot {
     /// Owned descriptor of the exact registered directory.
     directory: File,
     /// Canonical spelling reopened during reachability checks.
@@ -160,6 +160,31 @@ fn absolute(path: &Path) -> Result<(File, Vec<Facts>), StorageError> {
     Ok((current, chain))
 }
 impl OpenedRoot {
+    /// Bound complete path traversal, rechecks and platform pathname buffers.
+    /// # Arguments
+    /// * `path` - Validated relative path.
+    /// * `protected` - Number of provider/sidecar metadata observations.
+    /// # Returns
+    /// Conservative retained and temporary allocation work before traversal begins.
+    /// # Errors
+    /// Refuses arithmetic overflow.
+    pub(super) fn capture_work_bytes(
+        &self,
+        path: &str,
+        protected: usize,
+    ) -> Result<usize, StorageError> {
+        self.chain
+            .len()
+            .checked_add(path.split('/').count())
+            .and_then(|n| n.checked_add(protected))
+            .and_then(|n| n.checked_add(4))
+            .and_then(|n| n.checked_mul((libc::PATH_MAX as usize).saturating_add(1024)))
+            .and_then(|n| n.checked_mul(8))
+            .and_then(|n| n.checked_add(path.len()))
+            .and_then(|n| n.checked_add(self.path.as_os_str().as_encoded_bytes().len()))
+            .ok_or_else(|| StorageError::state("recording traversal work overflow"))
+    }
+
     /// Bind an absolute root descriptor to its registered device and inode.
     /// # Errors
     /// Refuses traversal failures and a changed root identity.
@@ -292,12 +317,58 @@ pub(super) fn read(
     ceiling: u64,
     buffer: usize,
 ) -> Result<(Vec<u8>, Facts), StorageError> {
+    read_inner(file, ceiling, buffer, None)
+}
+
+/// Charge complete file storage and read buffers before allocating either.
+/// # Arguments
+/// * `file` - Open regular descriptor at its initial offset.
+/// * `ceiling` - Remaining retained file-byte allowance.
+/// * `buffer` - Maximum temporary read-buffer size.
+/// * `work` - Borrowed complete operation ledger.
+/// # Returns
+/// Complete bytes and stable descriptor facts.
+/// # Errors
+/// Refuses exhausted work, unstable descriptors, allocation and I/O errors.
+pub(super) fn read_budget(
+    file: &mut File,
+    ceiling: u64,
+    buffer: usize,
+    work: &mut crate::storage::content::Budget,
+) -> Result<(Vec<u8>, Facts), StorageError> {
+    read_inner(file, ceiling, buffer, Some(work))
+}
+
+/// Perform the shared bounded read after optionally reserving its work.
+/// # Arguments
+/// * `file` - Open regular descriptor.
+/// * `ceiling` - Maximum retained file bytes.
+/// * `buffer` - Nonzero read-buffer ceiling.
+/// * `work` - Optional complete recording ledger.
+/// # Returns
+/// Complete observed bytes and stable facts.
+/// # Errors
+/// Refuses finite limits, unstable descriptors and I/O errors.
+fn read_inner(
+    file: &mut File,
+    ceiling: u64,
+    buffer: usize,
+    work: Option<&mut crate::storage::content::Budget>,
+) -> Result<(Vec<u8>, Facts), StorageError> {
     let before = Facts::read(file)?;
     if before.size > ceiling || buffer == 0 {
         return Err(StorageError::state("checkout read exceeds finite limit"));
     }
     let length = usize::try_from(before.size)
         .map_err(|_| StorageError::state("checkout read size overflow"))?;
+    if let Some(work) = work {
+        // Retained output, byte-copy work and the temporary read buffer share one ledger.
+        let charge = length
+            .checked_mul(2)
+            .and_then(|total| total.checked_add(buffer.min(length.saturating_add(1)).max(1)))
+            .ok_or_else(|| StorageError::state("recording read work overflow"))?;
+        work.charge_decoded(charge)?;
+    }
     let bytes = read_bounded(file, length, buffer)?;
     require_read_facts(&before, &Facts::read(file)?, bytes.len(), length)?;
     Ok((bytes, before))
