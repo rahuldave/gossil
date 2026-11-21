@@ -94,6 +94,16 @@ impl StorageError {
     }
 }
 
+/// A checked commit failed, retaining separate operation and cleanup causes.
+/// A cleanup failure means the uncertain connection was discarded and its store poisoned.
+#[derive(Debug)]
+pub struct CommitFailure {
+    /// Original latched operation, COMMIT, or idle-restoration failure.
+    pub operation: StorageError,
+    /// Independent rollback or idle-restoration failure, if cleanup failed.
+    pub cleanup: Option<StorageError>,
+}
+
 /// Open the selected native provider while preserving non-UTF-8 Unix filename bytes.
 /// SQLite URI percent encoding bridges the Rust driver's UTF-8 filename boundary.
 /// It does not change repository bytes or introduce another storage engine.
@@ -458,7 +468,10 @@ impl WriteTransaction<'_> {
     async fn control(&self, sql: &'static str) -> Result<(), StorageError> {
         #[cfg(test)]
         if self.fail_control == Some(sql) {
-            return Err(StorageError::state("injected control failure"));
+            return Err(StorageError::caused(
+                "injected control failure",
+                std::io::Error::other(format!("injected {sql} failure")),
+            ));
         }
         self.connection().execute(sql, ()).await?;
         Ok(())
@@ -486,12 +499,13 @@ impl WriteTransaction<'_> {
         }
         self.restore()
     }
-    /// Commit all changes, or reject a rollback-only owner with its original error.
+    /// Commit all changes while preserving independent operation and cleanup causes.
     /// # Returns
     /// Success only after COMMIT and confirmed idle restoration.
     /// # Errors
-    /// Preserves operation and cleanup failures separately; uncertain connections are discarded.
-    pub async fn commit(mut self) -> Result<(), StorageError> {
+    /// Returns the original latched, COMMIT or restoration error and the separately
+    /// owned cleanup error. An uncertain connection is discarded and the store poisoned.
+    pub async fn commit_checked(mut self) -> Result<(), CommitFailure> {
         let outcome = if let Some(error) = self.failure.take() {
             Err(error)
         } else {
@@ -499,13 +513,27 @@ impl WriteTransaction<'_> {
         };
         match outcome {
             Ok(()) => Ok(()),
-            Err(mut error) => {
-                if let Err(cleanup) = self.cleanup().await {
-                    error.cleanup = Some(cleanup.operation);
-                }
-                Err(error)
-            }
+            Err(operation) => Err(CommitFailure {
+                operation,
+                cleanup: self.cleanup().await.err(),
+            }),
         }
+    }
+    /// Commit all changes, or reject a rollback-only owner with its original error.
+    /// Use [`Self::commit_checked`] to retain an independently typed cleanup cause.
+    /// # Returns
+    /// Success only after COMMIT and confirmed idle restoration.
+    /// # Errors
+    /// Returns the original error with legacy cleanup text. Uncertain connections
+    /// are discarded. The original operation source remains available.
+    pub async fn commit(self) -> Result<(), StorageError> {
+        self.commit_checked().await.map_err(|failure| {
+            let mut error = failure.operation;
+            if let Some(cleanup) = failure.cleanup {
+                error.cleanup = Some(cleanup.operation);
+            }
+            error
+        })
     }
     /// Explicitly roll back and restore the connection only after checked cleanup.
     /// # Returns
@@ -818,6 +846,53 @@ mod tests {
             read(&mut store, "SELECT count(*) FROM child").await,
             vec![vec![Value::Integer(0)]]
         );
+    }
+    /// Preserve native COMMIT and independent typed cleanup causes after real writes.
+    /// The rollback seam is a control failure, not a simulated disk failure.
+    #[tokio::test]
+    async fn checked_commit_retains_native_and_cleanup_causes_and_discards_connection() {
+        use std::error::Error;
+        let temp = tempfile::tempdir().unwrap();
+        let path = temp.path().join("db");
+        let mut store = LocalStore::open(&path).await.unwrap();
+        fixture(&mut store).await;
+        let mut tx = store.begin_write().await.unwrap();
+        tx.execute("INSERT INTO parent VALUES(1,'lost',NULL)")
+            .await
+            .unwrap();
+        tx.execute("INSERT INTO child VALUES(99)").await.unwrap();
+        tx.fail_control = Some("ROLLBACK");
+        let failure = tx.commit_checked().await.unwrap_err();
+        assert!(failure.operation.operation.contains("FOREIGN KEY"));
+        assert!(failure.operation.source().unwrap().is::<libsql::Error>());
+        let cleanup = failure.cleanup.unwrap();
+        assert_eq!(cleanup.operation, "injected control failure");
+        let cause = cleanup
+            .source()
+            .unwrap()
+            .downcast_ref::<std::io::Error>()
+            .unwrap();
+        assert_eq!(cause.kind(), std::io::ErrorKind::Other);
+        assert_eq!(cause.to_string(), "injected ROLLBACK failure");
+        assert!(store.is_poisoned());
+        assert!(store.connection.is_none());
+        assert!(store.begin_write().await.is_err());
+        let mut reopened = LocalStore::open(&path).await.unwrap();
+        assert_eq!(
+            read(&mut reopened, "SELECT count(*) FROM parent").await,
+            vec![vec![Value::Integer(0)]]
+        );
+        assert_eq!(
+            read(&mut reopened, "SELECT count(*) FROM child").await,
+            vec![vec![Value::Integer(0)]]
+        );
+        reopened
+            .begin_write()
+            .await
+            .unwrap()
+            .commit_checked()
+            .await
+            .unwrap();
     }
     /// Compose a real generic COMMIT failure with complete prepared-locator cleanup.
     /// This helper fixture does not establish native repository or registration admission.

@@ -73,6 +73,11 @@ and report a separate cleanup failure when one occurs.
 If commit fails but checked rollback restores an idle connection, the store
 can begin another write. The commit still returns its original error.
 
+`commit_checked()` returns a `CommitFailure` with the original operation error
+and an optional cleanup error. Both retain their typed source chains.
+`commit()` keeps its existing `StorageError` result and stores cleanup diagnostics
+as text.
+
 A failed BEGIN or cleanup discards the connection and poisons the store.
 A poisoned store requires an explicit new open.
 
