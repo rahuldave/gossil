@@ -797,6 +797,8 @@ mod checkout_config;
 mod checkout_locator;
 /// Shared implementation for both product executable names.
 pub mod product;
+/// Adapt authenticated current checkout information for product executables.
+mod vcs_info;
 /// Adapt checkout-free native initialization for the product executables.
 mod vcs_init;
 /// Compose native registration and locator recovery for the product CLI.
