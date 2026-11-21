@@ -23,8 +23,12 @@ hashes and token escaping.</p>
 <p>Gest is a task and artifact tracker. The converters in the module table use its task, project and author record model.</p>
 <p>Use <a href="cli.html#inspect-current-recorded-checkout-identity"><code>vcs info</code></a> to show the
 current recorded checkout and its shared and private heads. Explicit repository
-and checkout selections and a complete locator are required. Timeline and
-historical revision selection remain unsupported.</p>
+and checkout selections and a complete locator are required. The source
+<a href="cli.html#read-complete-recorded-ancestry"><code>vcs timeline</code> and <code>vcs log</code> commands</a>
+print complete recorded ancestry as compact NDJSON. Historical revision selection
+remains unsupported. The library can read
+<a href="native-storage.html#read-recorded-checkout-ancestry">complete recorded ancestry</a>
+through <code>recorded_timeline</code>, with native metadata bytes and the shared root last.</p>
 <section id="choose-a-library-module" class="level2">
 <h2 class="anchored" data-anchor-id="choose-a-library-module">Choose a library module</h2>
 <div class="sd-table">
@@ -69,7 +73,7 @@ historical revision selection remain unsupported.</p>
 <td><a href="local-storage.html">Local storage</a></td>
 </tr>
 <tr>
-<td>Initialize a root, register a directory, select tracked scopes or record private files</td>
+<td>Initialize a root, register a directory, record private files or read recorded ancestry</td>
 <td><a href="native-storage.html">Native storage</a></td>
 </tr>
 <tr>

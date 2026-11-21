@@ -27,7 +27,9 @@ as the source authority.</p>
 <p>These commands require that preview’s installed <code>gos</code> or <code>gossil</code> executable.
 The source CLI supports <code>init</code>, native <code>open</code>, add, status, scope and private
 commit with the <a href="cli.html#select-scopes-and-record-private-files">explicit source grammar</a>.
-It does not accept the preview’s commit grammar, diff or history commands.
+Its <a href="cli.html#read-complete-recorded-ancestry">timeline and log grammar</a> differs
+from the preview. It accepts neither <code>--limit</code> nor <code>--json</code>. The source also
+rejects the preview’s commit grammar and has no diff command.
 The generated Rust API on this site does not describe the preview’s additional storage methods.</p>
 <p>Start with an empty scratch checkout. Keep the repository database outside it:</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode sh code-with-copy"><code class="sourceCode sh"><span class="va">trial</span><span class="op">=</span><span class="kw">$(</span>mktemp -d /tmp/gossil-preview.XXXXXX<span class="kw">)</span>
@@ -311,6 +313,15 @@ for explicit scope selection, private commit, edits without re-add and reopen.
 The separate preview above has a different command contract. Consult
 <a href="development-plan.html#private-recording-qualification">development status</a> before
 assuming that a source feature is installed or released.</p>
+<p>For a stored history view, library callers can use
+<a href="native-storage.html#read-recorded-checkout-ancestry"><code>recorded_timeline</code></a>.
+It returns the complete current-first ancestry, including the shared root last.
+Pending additions and dirty or deleted working files do not alter these records.</p>
+<p>The source <a href="cli.html#read-complete-recorded-ancestry">timeline and log commands</a>
+print those records as compact NDJSON. They require both explicit selectors and
+a complete matching locator. Their grammar differs from the installed preview
+above. They accept neither <code>--limit</code> nor <code>--json</code>. These source commands supply
+no new evidence about the installed preview or its reopen behavior.</p>
 </section>
 <section id="recommendations" class="level2">
 <h2 class="anchored" data-anchor-id="recommendations">Recommendations</h2>

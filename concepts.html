@@ -41,7 +41,7 @@ transaction. Planned command undo validates complete inverse changes and rejects
 stale dependencies; it retains artifacts and does not rewind Git.
 Read <a href="compare-with-git.html">compare Gossil with Git</a> for the plan/task example
 and <a href="working-with-repositories.html">working with repositories</a> for file selection.
-The library modules below provide the implemented subset.</p>
+The library modules below form the implemented subset.</p>
 </section>
 <section id="bytes-and-identities" class="level2">
 <h2 class="anchored" data-anchor-id="bytes-and-identities">Bytes and identities</h2>
@@ -144,6 +144,14 @@ use these library contracts. They require the complete locator binding and expli
 repository, checkout and scope selections. Commit also requires all-tracked consent
 and explicit actor, comment and date. <a href="development-plan.html#private-recording-qualification">Final CLI qualification</a>
 is still pending.</p>
+<p>The library reader <code>recorded_timeline</code> returns the complete current-first ancestry
+through the shared empty root. It authenticates all native history before reading
+original metadata in the same transaction. It reads no working-file contents and
+returns no partial result when a bound fails. See the
+<a href="native-storage.html#read-recorded-checkout-ancestry">recorded ancestry contract</a>.
+The source <a href="cli.html#read-complete-recorded-ancestry">timeline and log commands</a>
+print those rows as compact NDJSON after existing-locator admission and checked
+API completion. Opening, the API and serialization have separate finite bounds.</p>
 </section>
 <section id="recommendations" class="level2">
 <h2 class="anchored" data-anchor-id="recommendations">Recommendations</h2>
