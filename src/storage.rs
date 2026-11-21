@@ -524,6 +524,8 @@ impl WriteTransaction<'_> {
     ///     }
     /// }
     /// ```
+    // Preserve both owned, independent failure causes in the public error contract.
+    #[allow(clippy::result_large_err)]
     pub async fn commit_checked(mut self) -> Result<(), CommitFailure> {
         let outcome = if let Some(error) = self.failure.take() {
             Err(error)
