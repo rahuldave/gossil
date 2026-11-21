@@ -29,11 +29,19 @@ The library also implements bounded delta application, exposed by
 `gossil vcs test-delta-apply ORIGIN DELTA TARGET`. It creates deltas through `gossil vcs test-delta-create` and checks
 both directions through `gossil vcs test-delta`. The local libSQL boundary owns database lifecycle and exclusive transactions.
 The CLI also exposes `vcs init` and `vcs new` through `gossil` or `gos`, with
-`v` as the group alias. These create an empty repository without a checkout.
+`v` as the group alias. These create an empty repository without a checkout. See
+`docs/cli.md` for the separate native `vcs open` contract.
 
-Native local storage supports checkout-free initialization and reopen of strict
-empty catalog4 repositories. Bound catalog1 creation and bounded private content
-operations remain supported; private writes refuse catalog4. File-containing check-ins, broader crosslinks,
+Native local storage supports checkout-free initialization, then one library
+checkout registration at the empty root. Reopen admits strict catalog4 with zero
+or one registration. ID and exact-root views authenticate existing registrations;
+the library methods publish no locator. The source `vcs open` adapter registers
+or reopens that checkout and publishes or reconstructs its owner-local locator.
+It requires explicit repository and checkout selection, with `--root` for first
+registration. It selects no files.
+
+Bound catalog1 creation and
+bounded private content operations remain supported; private writes refuse catalog4. File-containing check-ins, broader crosslinks,
 the remaining source port and Gest integration remain planned work.
 
 ## Commands and evidence

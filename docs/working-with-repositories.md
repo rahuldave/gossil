@@ -8,8 +8,13 @@ surrounding agent work its own history and sharing rules.
 
 Most of this page describes planned repository workflows. The source CLI supports
 [empty repository initialization and three file-delta diagnostics](cli.md).
-Initialization creates no checkout and selects no files. The Rust library supports
-[checkout-free initialization and bound private content](native-storage.md).
+Initialization creates no checkout and selects no files. The source
+[`vcs open` command](cli.md#open-a-native-checkout) registers or reopens one
+empty-root checkout with locator publication and recovery. The Rust library supports
+[checkout-free initialization, one native directory registration and catalog1
+private content](native-storage.md). Library registration selects no files and
+publishes no locator.
+
 That storage foundation does not yet provide ordinary file check-ins or issue
 management. The Fossil references teach the inherited workflow; their commands
 are not Gossil aliases.
@@ -22,8 +27,8 @@ Use a disposable folder and copies of files, and keep Git
 as the source authority.
 
 These commands require that preview's installed `gos` or `gossil` executable.
-The source CLI shares the `init` spelling, but does not support the preview's
-checkout or file-history commands. The generated Rust API on this site does not
+The source CLI supports `init` and bounded empty-root `open`, but does not
+support the preview's file-recording or history commands. The generated Rust API on this site does not
 describe the preview's additional storage methods.
 
 Start with an empty scratch checkout. Keep the repository database outside it:
@@ -290,5 +295,5 @@ output path. Compare the restored bytes before replacing a file.
 Keep Git as the source authority and plan a small explicit selection of agent
 files for Gossil. Next, try the current delta tutorial, or use disposable files
 for the installed preview above. Use this workflow guide to choose roots and
-scope before checkout and file-history commands ship in the source CLI. For integrated
+scope before file-recording and history commands ship in the source CLI. For integrated
 review, retain the file head and complete issue boundaries together.

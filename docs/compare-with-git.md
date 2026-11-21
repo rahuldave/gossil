@@ -6,10 +6,14 @@ exact file head, complete issue and discussion boundaries, and versioned links
 between issues and code. Git remains the source-code authority.
 
 This page compares that intended design with Git's available behavior.
-The source CLI initializes empty repositories without a checkout and offers three delta diagnostics.
+The source CLI initializes empty repositories without a checkout, opens one
+native empty-root checkout and offers three delta diagnostics.
 The Rust library provides typed task, project and author converters, a task artifact emitter,
 and native storage primitives. It does not yet create or read persisted issues.
-Issue commands, checkout registration and file recording remain planned in this source CLI.
+
+[Native checkout open](cli.md#open-a-native-checkout) registers or reopens an
+existing directory and publishes its lookup locator. Issue commands and file
+recording remain planned in this source CLI.
 See the [current limits](development-plan.md) and
 [CLI reference](cli.md) before trying a command.
 

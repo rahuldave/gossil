@@ -6,13 +6,16 @@ use super::{LocalStore, StorageError, content::Limits, policy::Principal};
 use libsql::Value;
 use std::path::Path;
 
+/// Register and authenticate the sole supported native empty-root checkout.
+mod checkout;
 mod initialization;
+pub use checkout::CheckoutView;
 pub use initialization::InitializeOptions;
 
 /// Fixed scalar predicates bound returned data, not total SQLite scan work.
 /// The admitted root cannot produce other artifact types or a current file/merge selection.
 /// Catalog1 historical rows, diagnostics, opaque content and target-only references retain no root authority.
-/// Catalog4 admission separately requires empty local tables and exactly one native root.
+/// Catalog4 admission separately requires an exact zero-or-one registration and one native root.
 const ROOT_PROJECTION_CONFLICTS: &str = concat!(
     "SELECT EXISTS(SELECT 1 FROM plink WHERE pid=?1 OR cid=?1 OR baseid=?1),",
     "EXISTS(SELECT 1 FROM mlink WHERE mid=?1 OR fid=?1 OR pmid=?1 OR pid=?1),",
@@ -181,7 +184,7 @@ impl LocalOwnerRepository {
     /// * `options` - Explicit administrator, password, date, hash policy and finite limits.
     /// # Returns
     /// An admitted owner of the canonical empty catalog4 repository.
-    /// Private writes and checkout registration are unsupported in this scope.
+    /// Private writes remain unsupported; [`Self::register_checkout`] can register one existing directory later.
     /// No environment variables, preference database or templates supply defaults.
     /// # Examples
     /// ```no_run
@@ -390,8 +393,8 @@ impl LocalOwnerRepository {
     ///
     /// The durable repository and owner identities are read from this file rather
     /// than accepted as caller-selected capability strings.
-    /// Supports bound catalog1 and strictly empty catalog4 only, without migration.
-    /// Catalog4 requires zero checkouts, one native root and empty remaining local tables.
+    /// Supports bound catalog1 and exact zero-or-one empty-root catalog4 registration, without migration.
+    /// Catalog4 requires one native root, an exact zero-or-one registration inventory and empty remaining local tables.
     /// # Arguments
     /// * `path` - Existing local database under operating-system owner authority.
     /// * `admission_limits` - Explicit finite root decode and parser budgets.
@@ -465,7 +468,7 @@ impl LocalOwnerRepository {
     /// ```
     /// # Errors
     /// Rejects policy, hash, size, codec and limit errors, or required unresolved crosslinks.
-    /// Private writes are unsupported for the initializer-only catalog4 scope.
+    /// Private writes are unsupported for the empty-root catalog4 scope.
     pub async fn put_private_file_content(
         &mut self,
         native_name: &str,
@@ -543,7 +546,7 @@ impl LocalOwnerRepository {
 impl super::WriteTransaction<'_> {
     /// Capture durable authority metadata without reading any content envelope.
     /// # Returns
-    /// Owned exact durable authority rows.
+    /// Owned exact durable authority rows, including catalog4 checkout keys and native receive records.
     /// # Errors
     /// Returns SQL execution or owned value-decoding errors.
     async fn authority_snapshot(&mut self) -> Result<Vec<Vec<Vec<Value>>>, StorageError> {
@@ -560,6 +563,23 @@ impl super::WriteTransaction<'_> {
             "SELECT * FROM leaf WHERE rid IN(SELECT rid FROM blob WHERE uuid IN(SELECT supporting_root FROM g_public_receipt)) ORDER BY rid",
         ] {
             snapshot.push(self.query_bound(sql, vec![]).await?);
+        }
+        if self
+            .query_bound(
+                "SELECT storage_version FROM g_storage WHERE singleton=1",
+                vec![],
+            )
+            .await?
+            == vec![vec![Value::Integer(4)]]
+        {
+            snapshot.push(
+                self.query_bound("SELECT * FROM g_vvar ORDER BY checkout_id,name", vec![])
+                    .await?,
+            );
+            snapshot.push(
+                self.query_bound("SELECT * FROM rcvfrom ORDER BY rcvid", vec![])
+                    .await?,
+            );
         }
         let roots = self.query_bound("SELECT rid,uuid FROM blob WHERE uuid IN(SELECT supporting_root FROM g_public_receipt) ORDER BY rid LIMIT 2",vec![]).await?;
         for root in roots {
@@ -646,13 +666,15 @@ impl super::WriteTransaction<'_> {
         }.await;
         self.record(result)
     }
-    /// Refuse every unimplemented local/native state in the zero-checkout catalog4 scope.
+    /// Refuse every unimplemented local/native state in the zero-or-one checkout catalog4 scope.
     /// # Arguments
     /// * `rid` - Authenticated canonical root RID.
     /// * `root` - Authenticated canonical native hash.
     /// * `date` - Native numeric date authenticated from the artifact.
+    /// * `principal` - Sealed repository and owner binding.
+    /// * `limits` - Native root and registration text ceilings.
     /// # Returns
-    /// Success only for the single-root constructor's supported empty scope.
+    /// Success for one native empty root with zero or one exact authenticated checkout registration.
     /// # Errors
     /// Rejects populated tables, extra native history and noncanonical receive/index facts.
     async fn validate_empty_catalog4(
@@ -660,6 +682,8 @@ impl super::WriteTransaction<'_> {
         rid: i64,
         root: &str,
         date: &Value,
+        principal: &Principal,
+        limits: AdmissionLimits,
     ) -> Result<(), StorageError> {
         if self
             .query_bound(
@@ -676,11 +700,6 @@ impl super::WriteTransaction<'_> {
         /// Complete local and native table inventory that must be empty for catalog4 admission.
         const EMPTY_TABLES: &[(&str, &str)] = &[
             ("g_admission", "SELECT EXISTS(SELECT 1 FROM g_admission)"),
-            ("g_checkout", "SELECT EXISTS(SELECT 1 FROM g_checkout)"),
-            (
-                "g_checkout_owner",
-                "SELECT EXISTS(SELECT 1 FROM g_checkout_owner)",
-            ),
             (
                 "g_checkout_project",
                 "SELECT EXISTS(SELECT 1 FROM g_checkout_project)",
@@ -818,7 +837,6 @@ impl super::WriteTransaction<'_> {
             ),
             ("g_vfile", "SELECT EXISTS(SELECT 1 FROM g_vfile)"),
             ("g_vmerge", "SELECT EXISTS(SELECT 1 FROM g_vmerge)"),
-            ("g_vvar", "SELECT EXISTS(SELECT 1 FROM g_vvar)"),
             ("accesslog", "SELECT EXISTS(SELECT 1 FROM accesslog)"),
             ("admin_log", "SELECT EXISTS(SELECT 1 FROM admin_log)"),
             ("attachment", "SELECT EXISTS(SELECT 1 FROM attachment)"),
@@ -929,6 +947,8 @@ impl super::WriteTransaction<'_> {
         {
             return Err(StorageError::state("native server identity unavailable"));
         }
+        self.validate_initial_checkout(principal, rid, root, limits)
+            .await?;
         Ok(())
     }
     /// Validate every supported public receipt and checkout root from exact bytes.
@@ -981,7 +1001,7 @@ impl super::WriteTransaction<'_> {
             let expected = vec![vec![Value::Text("branch".into()),Value::Integer(2),Value::Integer(*rid),Value::Integer(*rid),Value::Text("trunk".into()),stored_date.clone()],vec![Value::Text("sym-trunk".into()),Value::Integer(2),Value::Integer(*rid),Value::Integer(*rid),Value::Null,stored_date.clone()]];
             if tags != expected { return Err(StorageError::state("root branch crosslinks differ from canonical bytes")); }
             if version == vec![vec![Value::Integer(4)]] {
-                self.validate_empty_catalog4(*rid, root, &stored_date).await?;
+                self.validate_empty_catalog4(*rid, root, &stored_date, principal, limits).await?;
                 return Ok(());
             }
             let checkouts = self.query_bound("SELECT c.shared_head,c.combined_head,c.generation,c.pending_version,c.availability,o.owner_id FROM g_checkout c LEFT JOIN g_checkout_owner o ON o.checkout_id=c.checkout_id",vec![]).await?;

@@ -86,10 +86,18 @@ Its `initialize` constructor creates a repository without a checkout. The
 [`vcs init` command](cli.md#initialize-a-repository) calls this constructor,
 generates identities and a password, and selects a default administrator from
 the environment. The API requires those values explicitly. Its `create`
-constructor binds an existing checkout directory.
+constructor binds an existing catalog1 checkout directory.
+
+After `initialize`,
+`register_checkout` can register one existing directory in catalog4.
+`checkout_view` authenticates its ID; `checkout_view_for_root` authenticates its
+exact root. These library methods change no working files and publish no locator.
+The source [`vcs open` adapter](cli.md#open-a-native-checkout) adds locator
+publication and recovery around those admitted database operations. It also
+leaves working files unselected.
 
 Private content writes require the bound
-catalog1 repository and refuse the initializer-only catalog4 repository. The empty
+catalog1 repository and refuse catalog4, with or without its single registration. The empty
 root is a check-in with no files. A private content write does not create a check-in that contains files.
 
 Admission is the validation of the stored root required before repository
