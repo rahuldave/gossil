@@ -1,0 +1,136 @@
+{
+  "classification": "Actual four unchanged fidelity tests GREEN on immutable published candidate; not full service suite or final composition qualification",
+  "run": "de99cd8d-bf93-418f-893d-e9cc81f17494",
+  "provider_pin": "c02db34ae8a7e91ca7ab8faee18fe41515626940",
+  "passed": 4,
+  "failed": 0,
+  "filtered": 698,
+  "seconds": 135.41871275,
+  "minimum_free_bytes": 8032325632,
+  "survivors": 0,
+  "test_source_sha256": "5a16a952168eda46a701e857a4346bb66166549426022acc683bcdc4ff7274a9",
+  "original_red_manifest": "/tmp/gossil-supervisor-gest-20261119/service-support-text-fidelity14/actual-red-preserved/manifest.json",
+  "files": [
+    {
+      "path": "guard/active-lease.json",
+      "bytes": 121,
+      "sha256": "b0c2e86da4366acf9c305638f4927907ec53337732a69b3da08387cbb07df0b0"
+    },
+    {
+      "path": "guard/lease-release.json",
+      "bytes": 86,
+      "sha256": "cc9805e99b5ac2f4916526f60748881e451c3c1534c98bc62fb0476584c11f35"
+    },
+    {
+      "path": "guard/servicecompose15-fidelity.disk.jsonl",
+      "bytes": 18012,
+      "sha256": "4b42128be96a9a339a84a02c6d494c53288f1d064c785a431c566103f38d3134"
+    },
+    {
+      "path": "guard/servicecompose15-fidelity.execution.json",
+      "bytes": 2630,
+      "sha256": "cbedb047ea73429770f23d464ca2681e45ae7e25d099ce5764483d3e96c3c6f2"
+    },
+    {
+      "path": "guard/servicecompose15-fidelity.preflight.json",
+      "bytes": 112483,
+      "sha256": "6eb2627c4508c78f51057f5102673f04316a55736ec8eb58362df988b8890b81"
+    },
+    {
+      "path": "guard/servicecompose15-fidelity.stderr.txt",
+      "bytes": 2430,
+      "sha256": "6ede732bde3790b74607bffb6f86b34ae79dcdeeb08897c882f362b43ac9371b"
+    },
+    {
+      "path": "guard/servicecompose15-fidelity.stdout.txt",
+      "bytes": 1282,
+      "sha256": "472788b35438da0045510fc383055db9cd578a5232f91d086ca6a83573b00427"
+    },
+    {
+      "path": "reports/test.lcov",
+      "bytes": 234769,
+      "sha256": "333fe8b0629d4b51550a234fc3fc15c85e3c6f615b77376806d8e2baf3301b50"
+    },
+    {
+      "path": "reports/test.part0.lcov",
+      "bytes": 2356996,
+      "sha256": "6f50823965542cb56f48c47310bfc8b49b73b77e63d900b925f513e09cf6c1d2"
+    },
+    {
+      "path": "pin-proof/Cargo.lock.after",
+      "bytes": 75066,
+      "sha256": "7877b4a8c9b37e079aa9228171229319d569c0e25c815467af56e0b2af0f4577"
+    },
+    {
+      "path": "pin-proof/Cargo.lock.before",
+      "bytes": 75065,
+      "sha256": "cee721d280afde9b31cac6cec0d53bac426cc5e81fb4045112b3db53251b8039"
+    },
+    {
+      "path": "pin-proof/Cargo.toml.after",
+      "bytes": 1628,
+      "sha256": "fb985bc5230a6c6598837d35e7ad331c43384246557d4b9389cad76141fd1cb3"
+    },
+    {
+      "path": "pin-proof/Cargo.toml.before",
+      "bytes": 1514,
+      "sha256": "5a43c96636bf73ce214c2f082f4cf46e622731abcf2248378ab04c49c19dd778"
+    },
+    {
+      "path": "pin-proof/fetch.json",
+      "bytes": 513,
+      "sha256": "b33c532107b9892691dc4048b43a9c4bf32fa89800f81bd2d1ccb5a370bf07dd"
+    },
+    {
+      "path": "pin-proof/fetch.stderr.txt",
+      "bytes": 73,
+      "sha256": "95033d7777b7ea8d84c628b7231788bbeaef63d6cefad44c7a3ff5f409a579af"
+    },
+    {
+      "path": "pin-proof/fetch.stdout.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "pin-proof/ffi-parity.json",
+      "bytes": 42044,
+      "sha256": "710d056d82cf36d294c2e2c4244011eaf91581d70cebf553b8d03b53d850fb6e"
+    },
+    {
+      "path": "pin-proof/identity-receipt.json",
+      "bytes": 2528,
+      "sha256": "649c931409c14be9fe6f0c15b7e9944930759d12c9a78485a80c01ad8ddb3765"
+    },
+    {
+      "path": "pin-proof/manifest.json",
+      "bytes": 1107,
+      "sha256": "b53f3cc8031d699e832f8b288a291d973df15042b3c266063aafd216551dba1a"
+    },
+    {
+      "path": "pin-proof/metadata.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "pin-proof/metadata.stdout.json",
+      "bytes": 1593285,
+      "sha256": "9962dd97ddd0da64a7a6a22a22c4fa4f48766115c241cca033c4e833b580bca7"
+    },
+    {
+      "path": "review/metadata-identity.json",
+      "bytes": 1401,
+      "sha256": "b1713e3e6e54b30c59c6434707631a3ff9eff900a89b906f3fba70369f3b335c"
+    },
+    {
+      "path": "review/result.json",
+      "bytes": 69857,
+      "sha256": "970a2625139c77b49ed07180a90f529d449d527292c98152d4e44b53bbbe74cd"
+    }
+  ],
+  "raw_archive": {
+    "path": "raw-profiles-and-test-binary.tar.gz",
+    "sha256": "ea065cf3b27c8c06cc44f6fbc10461d249cb2a6fd9cade9e6c1261e8a4021c09",
+    "bytes": 13236157,
+    "verified_members": 14
+  }
+}

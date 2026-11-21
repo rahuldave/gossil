@@ -1,0 +1,37 @@
+{
+  "status": "CANDIDATE PIN COMPOSED; no runtime yet; not36acceptedbase",
+  "pin": "c02db34ae8a7e91ca7ab8faee18fe41515626940",
+  "url": "https://github.com/rahuldave/gossil-libsql",
+  "feature_version": "0.5.0",
+  "preserved_frozen32_source_tree": "626e719c0806a97187816510a3e1f9126a56c0f0",
+  "only_dependency_delta": [
+    "libsql@0.10.0"
+  ],
+  "sys_before_after": {
+    "name": "libsql-sys",
+    "version": "0.10.0",
+    "source": "registry+https://github.com/rust-lang/crates.io-index",
+    "checksum": "cf4a7f2d76f49442c273a892a574a272b8b35f4bf0b1b25a475f2cc95885fe0f",
+    "dependencies": [
+      "bytes",
+      "libsql-ffi",
+      "once_cell",
+      "tracing",
+      "zerocopy"
+    ]
+  },
+  "ffi_before_after": {
+    "name": "libsql-ffi",
+    "version": "0.10.0",
+    "dependencies": [
+      "bindgen",
+      "cc",
+      "cmake",
+      "glob"
+    ]
+  },
+  "files": {
+    "Cargo.toml": "4732456ea40848639864a849562c5f9c8a3c429739ea1dbae1217155e0a84123",
+    "Cargo.lock": "44e3b0099a54061e5ce3dfd514bac62889e7ca44fea214d64cfb6738d7a73340"
+  }
+}

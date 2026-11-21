@@ -1,0 +1,34 @@
+{
+  "name": "wrapper-patched-green",
+  "cwd": "/Users/rahul/Projects/gossil.worktrees/gest-zpxtnvsq-libsql-text",
+  "argv": [
+    "just",
+    "test-paths",
+    "tests/libsql_row_text.rs"
+  ],
+  "returncode": 0,
+  "stop": null,
+  "elapsed": 8.989804666023701,
+  "minimum_free_bytes": 6507102208,
+  "owned_pids": [
+    89042,
+    89071,
+    89078,
+    89090,
+    89119,
+    89126,
+    89127,
+    89130,
+    89134,
+    89209,
+    89284,
+    89295,
+    89303,
+    89304,
+    89326
+  ],
+  "owned_groups": [
+    89042
+  ],
+  "live_owned_pids": []
+}

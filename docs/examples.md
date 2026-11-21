@@ -15,16 +15,18 @@ gossil = { path = "/absolute/path/to/gossil" }
 serde_json = "1"
 
 [patch.crates-io]
+libsql = { git = "https://github.com/rahuldave/gossil-libsql", rev = "c02db34ae8a7e91ca7ab8faee18fe41515626940" }
 libsql-ffi = { path = "/absolute/path/to/gossil/vendor/libsql-ffi" }
 ```
 
 Cargo does not inherit patches from dependencies. The application must select
-Gossil's bundled libSQL provider itself. This provider preserves the Fossil date
+both the corrected Rust wrapper and Gossil's bundled libSQL provider itself. This provider preserves the Fossil date
 arithmetic used by artifact parsing and repository admission. The registry
 provider alone does not establish that compatibility. Preserve the bundled
 source and its [provenance record](https://github.com/rahuldave/gossil/blob/main/evidence/libsql-provider/provenance.json).
 
-For a Cargo workspace, put the patch in the workspace root manifest. Save a
+The [wrapper guide](libsql-wrapper.md) describes the exact TEXT behavior and source checks.
+For a Cargo workspace, put both patches in the workspace root manifest. Save a
 complete byte-operation example below as `src/main.rs` inside `fn main() { ... }`,
 then run `cargo run`. The asynchronous storage example uses a separate runtime.
 

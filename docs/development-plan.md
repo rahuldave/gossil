@@ -115,7 +115,9 @@ generation. Local rendering does not establish a successful deployment.
 
 The root Cargo patch selects the complete `libsql-ffi` 0.10.0 archive under
 `vendor/libsql-ffi`. The root dependency and lockfile also pin `libsql` and
-`libsql-sys` to 0.10.0. Its adapted date conversion includes `<stdint.h>` itself
+`libsql-sys` to 0.10.0. The Rust wrapper uses the full Git revision in the
+[TEXT retrieval guide](libsql-wrapper.md); `libsql-sys` retains its registry identity.
+The wrapper correction leaves the bundled provider unchanged. Its adapted date conversion includes `<stdint.h>` itself
 because it uses `UINT64_C`. The upstream build script does not define
 `HAVE_STDINT_H` or `HAVE_INTTYPES_H` for the core build.
 
@@ -206,7 +208,7 @@ controls in `src/checkout_config.rs`, and executable controls in
 distinct from an injected native-registration COMMIT failure. Source controls
 and focused passes do not establish full coverage, Linux qualification or delivery.
 
-The source package version is 0.4.0. Source documentation and local checks do
+The source package version is 0.4.1. Source documentation and local checks do
 not establish publication or installation of that version.
 Version 0.2.0 executable and documentation delivery is complete. The annotated
 `v0.2.0` tag resolves to `2fc3fa1`; source CI and documentation CI passed. The

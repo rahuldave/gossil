@@ -1,0 +1,58 @@
+{
+  "schema": 1,
+  "identity": {
+    "crate": "libsql",
+    "version": "0.10.0",
+    "repository": "https://github.com/rahuldave/gossil-libsql",
+    "revision": "c02db34ae8a7e91ca7ab8faee18fe41515626940",
+    "baseline": "243281163e4a39303322385d5f9537736277026e",
+    "archive_sha256": "d6bca1704194048f0f0bbc8a8e05ba85c0c67628b03bd59346dd2fdd946a1588",
+    "upstream_commit": "d8bc862d20bedc72945a1da27c8b7045414c0261",
+    "libsql_sys_checksum": "cf4a7f2d76f49442c273a892a574a272b8b35f4bf0b1b25a475f2cc95885fe0f",
+    "ffi_manifest_sha256": "86134dea69ef341167417309f74b0473352932046219f9de1609ff60413a7a65",
+    "correction_patch_sha256": "35223fd9fafbb00dc67fd500392a68d44270581fda29c626a7a3789171689194"
+  },
+  "upstream_related_pr": "https://github.com/tursodatabase/libsql/pull/2288",
+  "upstream_related_head": "d76abc357cb10e6b5639fc5f6ad231f91c94384b",
+  "companion_pr": "https://github.com/rahuldave/gossil-libsql/pull/1",
+  "qualified_contract": "core-only Rust wrapper; existing exact Gossil provider; explicit upstream-baseline lint admission, no Gossil gate change",
+  "qualification": {
+    "unit_passed": 4,
+    "public_passed": 5,
+    "maintenance_controls": 30,
+    "reported_changed_lines": 188,
+    "reported_changed_lines_hit": 188,
+    "mandatory_executable_lines": 32,
+    "lint_baseline": 38,
+    "lint_current": 34,
+    "lint_new": 0,
+    "raw_strict_exit": 101,
+    "receipt_url": "https://github.com/rahuldave/gossil-libsql/blob/c02db34ae8a7e91ca7ab8faee18fe41515626940/evidence/qualification/summary.json"
+  },
+  "integration_status": "Exact c02 source identity and independently owned consuming replays qualified; normal Gossil commit/CI records govern full gates. No release/install claim is made by this provenance file.",
+  "preserved_path_packet": {
+    "local_archive": "/tmp/gossil-libsql-original-path-packet-20261120.tar.gz",
+    "sha256": "47e2132738e7e0003d43da83b9c1403429d22da6bccdbec009dd2fa58b772f85",
+    "required_for_build": false
+  },
+  "consuming_replays": {
+    "vcs_registration_matrix": {
+      "status": "PASS one complete21case matrix; no full32 gate/issue36acceptance claim",
+      "pin": "c02db34ae8a7e91ca7ab8faee18fe41515626940",
+      "guard": "af02b3e4-77f3-4d9a-a8ae-7789d8fa4775",
+      "receipt": "consuming-replays/vcs-registration-matrix/result.json"
+    },
+    "gest_fidelity": {
+      "status": "PASS four unchanged fidelity controls,698filtered; no full service qualification claim",
+      "pin": "c02db34ae8a7e91ca7ab8faee18fe41515626940",
+      "guard": "de99cd8d-bf93-418f-893d-e9cc81f17494",
+      "receipt": "consuming-replays/gest-fidelity/manifest.json"
+    }
+  },
+  "companion_merge": "31da297c80a74d265955dba8e09fce47f7ab7cd6",
+  "retained_correction_patch": {
+    "path": "companion-correction.patch.gz",
+    "encoding": "gzip",
+    "digest_semantics": "identity.correction_patch_sha256 authenticates exact decompressed canonical Git diff bytes"
+  }
+}

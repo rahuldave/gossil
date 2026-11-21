@@ -1,6 +1,6 @@
 [package]
 name = "gossil"
-version = "0.4.0"
+version = "0.4.1"
 edition = "2024"
 
 [dependencies]
@@ -39,6 +39,7 @@ name = "delta_cli"
 path = "tests/delta_cli.rs"
 
 [patch.crates-io]
+libsql = { git = "https://github.com/rahuldave/gossil-libsql", rev = "c02db34ae8a7e91ca7ab8faee18fe41515626940" }
 libsql-ffi = { path = "vendor/libsql-ffi" }
 
 [[bin]]
