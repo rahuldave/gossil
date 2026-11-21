@@ -32,7 +32,7 @@ pub struct CheckoutView {
     pub combined_head: Option<String>,
     /// Persisted generation, zero in the supported initial-root scope.
     pub generation: u64,
-    /// Persisted pending version, zero in the supported initial-root scope.
+    /// Persisted pending version; advances once per batch enrolling new native paths.
     pub pending_version: u64,
 }
 
@@ -313,7 +313,7 @@ impl WriteTransaction<'_> {
     /// Success only for exact catalog4.
     /// # Errors
     /// Refuses every other catalog and provider failure.
-    async fn require_native_checkout(&mut self) -> Result<(), StorageError> {
+    pub(super) async fn require_native_checkout(&mut self) -> Result<(), StorageError> {
         if self
             .query_bound(
                 "SELECT storage_version FROM g_storage WHERE singleton=1",
@@ -367,6 +367,13 @@ impl WriteTransaction<'_> {
     ) -> Result<(), StorageError> {
         let counts = self.query_bound("SELECT (SELECT count(*) FROM g_checkout),(SELECT count(*) FROM g_checkout_owner),(SELECT count(*) FROM g_vvar),checkout_count FROM g_storage WHERE singleton=1", vec![]).await?;
         if counts == vec![vec![Value::Integer(0); 4]] {
+            if self
+                .query_bound("SELECT EXISTS(SELECT 1 FROM g_vfile)", vec![])
+                .await?
+                != vec![vec![Value::Integer(0)]]
+            {
+                return Err(StorageError::state("unregistered native tracked inventory"));
+            }
             return Ok(());
         }
         if counts
@@ -380,7 +387,7 @@ impl WriteTransaction<'_> {
             return Err(StorageError::state("unsupported native checkout inventory"));
         }
         // Refuse unsupported scalar types and values before retaining their raw provider values.
-        let scalars = self.query_bound("SELECT typeof(combined_head)='null' AND typeof(generation)='integer' AND generation IS 0 AND typeof(pending_version)='integer' AND pending_version IS 0 FROM g_checkout", vec![]).await?;
+        let scalars = self.query_bound("SELECT typeof(combined_head)='null' AND typeof(generation)='integer' AND generation IS 0 AND typeof(pending_version)='integer' AND pending_version >= 0 FROM g_checkout", vec![]).await?;
         if scalars != vec![vec![Value::Integer(1)]] {
             return Err(StorageError::state(
                 "unsupported initial checkout scalar state",
@@ -401,6 +408,7 @@ impl WriteTransaction<'_> {
             owner,
             device,
             inode,
+            pending,
         } = initial_checkout_row(&rows)?;
         check_id(id, limits)?;
         let (canonical, metadata) = real_directory(Path::new(path), limits)?;
@@ -422,6 +430,8 @@ impl WriteTransaction<'_> {
         if exact != vec![vec![Value::Integer(3)]] {
             return Err(StorageError::state("initial native checkout keys differ"));
         }
+        self.validate_added_files(principal, id, rid, pending, limits)
+            .await?;
         Ok(())
     }
 
@@ -433,14 +443,14 @@ impl WriteTransaction<'_> {
     /// Owned initial-root view for the exact ID.
     /// # Errors
     /// Rejects absent or malformed registrations and provider failures.
-    async fn read_checkout_view(
+    pub(super) async fn read_checkout_view(
         &mut self,
         principal: &Principal,
         id: &str,
     ) -> Result<CheckoutView, StorageError> {
         let rows = self
             .query_bound(
-                "SELECT root,shared_head FROM g_checkout WHERE checkout_id=?1",
+                "SELECT root,shared_head,pending_version FROM g_checkout WHERE checkout_id=?1",
                 vec![Value::Text(id.into())],
             )
             .await?;
@@ -534,6 +544,8 @@ fn fingerprint_receipt(rows: &[Vec<Value>]) -> Result<String, StorageError> {
 
 /// Borrow the exact typed registration fields after scalar and size preflights.
 struct InitialCheckoutRow<'a> {
+    /// Nonnegative admitted pending additions generation.
+    pending: i64,
     /// Persisted checkout identity.
     id: &'a String,
     /// Canonical registered path.
@@ -567,7 +579,7 @@ fn initial_checkout_row(rows: &[Vec<Value>]) -> Result<InitialCheckoutRow<'_>, S
         Value::Text(shared),
         Value::Null,
         Value::Integer(0),
-        Value::Integer(0),
+        Value::Integer(pending),
         Value::Text(availability),
         Value::Text(owner),
         Value::Text(device),
@@ -576,7 +588,11 @@ fn initial_checkout_row(rows: &[Vec<Value>]) -> Result<InitialCheckoutRow<'_>, S
     else {
         return Err(StorageError::state("unsupported initial checkout state"));
     };
+    if *pending < 0 {
+        return Err(StorageError::state("unsupported initial checkout state"));
+    }
     Ok(InitialCheckoutRow {
+        pending: *pending,
         id,
         path,
         shared,
@@ -604,9 +620,16 @@ fn checkout_view_from_rows(
     let [row] = rows else {
         return Err(StorageError::state("checkout unavailable"));
     };
-    let [Value::Text(root), Value::Text(head)] = row.as_slice() else {
+    let [
+        Value::Text(root),
+        Value::Text(head),
+        Value::Integer(pending),
+    ] = row.as_slice()
+    else {
         return Err(StorageError::state("invalid checkout view"));
     };
+    let pending_version =
+        u64::try_from(*pending).map_err(|_| StorageError::state("invalid checkout view"))?;
     Ok(CheckoutView {
         repository_id: principal.repository.clone(),
         checkout_id: id.into(),
@@ -614,7 +637,7 @@ fn checkout_view_from_rows(
         shared_head: head.clone(),
         combined_head: None,
         generation: 0,
-        pending_version: 0,
+        pending_version,
     })
 }
 
@@ -997,6 +1020,12 @@ mod defensive_controls {
                 "checkout owner binding unavailable"
             );
         }
+        let mut negative = valid.clone();
+        negative[5] = Value::Integer(-1);
+        assert_eq!(
+            initial_checkout_row(&[negative]).err().unwrap().operation,
+            "unsupported initial checkout state"
+        );
         for index in 0..valid.len() {
             let mut row = valid.clone();
             row[index] = if index == 3 {
@@ -1020,7 +1049,11 @@ mod defensive_controls {
             repository: "repository".into(),
             owner: "owner".into(),
         };
-        let valid = vec![Value::Text("/root".into()), Value::Text("head".into())];
+        let valid = vec![
+            Value::Text("/root".into()),
+            Value::Text("head".into()),
+            Value::Integer(0),
+        ];
         let view =
             checkout_view_from_rows(&principal, "work", std::slice::from_ref(&valid)).unwrap();
         assert_eq!(
@@ -1043,7 +1076,33 @@ mod defensive_controls {
                 "checkout unavailable"
             );
         }
+        let changed = checkout_view_from_rows(
+            &principal,
+            "work",
+            &[vec![
+                Value::Text("/root".into()),
+                Value::Text("head".into()),
+                Value::Integer(7),
+            ]],
+        )
+        .unwrap();
+        assert_eq!(changed.pending_version, 7);
         for row in [
+            vec![
+                Value::Text("/root".into()),
+                Value::Text("head".into()),
+                Value::Integer(-1),
+            ],
+            vec![
+                Value::Text("/root".into()),
+                Value::Text("head".into()),
+                Value::Null,
+            ],
+            vec![
+                Value::Text("/root".into()),
+                Value::Text("head".into()),
+                Value::Text("1".into()),
+            ],
             vec![],
             vec![Value::Null, Value::Null],
             vec![Value::Text("/root".into()), Value::Integer(1)],
@@ -1055,5 +1114,38 @@ mod defensive_controls {
                 "invalid checkout view"
             );
         }
+    }
+    /// Refuse tracking rows when no native checkout is registered.
+    /// # Panics
+    /// Panics if fixture SQL fails or orphan tracking rows pass checkout admission.
+    #[tokio::test]
+    async fn private_checkout_admission_refuses_orphan_native_inventory() {
+        let mut store = crate::storage::LocalStore::open_inner(Path::new(":memory:"), false)
+            .await
+            .unwrap();
+        let mut tx = store.begin_write().await.unwrap();
+        for sql in [
+            "CREATE TABLE g_checkout(checkout_id TEXT)",
+            "CREATE TABLE g_checkout_owner(checkout_id TEXT)",
+            "CREATE TABLE g_vvar(checkout_id TEXT)",
+            "CREATE TABLE g_storage(singleton INTEGER,checkout_count INTEGER)",
+            "INSERT INTO g_storage VALUES(1,0)",
+            "CREATE TABLE g_vfile(checkout_id TEXT)",
+            "INSERT INTO g_vfile VALUES('orphan')",
+        ] {
+            tx.execute(sql).await.unwrap();
+        }
+        let principal = Principal {
+            repository: "repo".into(),
+            owner: "owner".into(),
+        };
+        assert_eq!(
+            tx.validate_initial_checkout(&principal, 1, "head", limits())
+                .await
+                .unwrap_err()
+                .operation,
+            "unregistered native tracked inventory"
+        );
+        tx.rollback().await.unwrap();
     }
 }

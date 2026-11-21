@@ -2,7 +2,7 @@
 
 Gossil implements byte primitives, structural artifact parsing and bounded local
 storage. The `gossil` executable initializes empty repositories, opens native
-empty-root checkouts and implements three delta diagnostics.
+empty-root checkouts, adds and lists pending additions, and implements three delta diagnostics.
 The generated [Rust API](api/index.qmd) describes the public library surface.
 
 The standalone [Gest task values converter](gest-task-values.md) validates eleven decoded fields.
@@ -16,20 +16,20 @@ caller-supplied native identity, actor and date. All three converters operate in
 | Available | Planned |
 |---|---|
 | Delta create, apply and two-way file checks | General version-control CLI |
-| Compression, hashes, token escaping and artifact checksums | Repository traversal and persistent selection commands |
+| Compression, hashes, token escaping and artifact checksums | Repository traversal and persistent shared/private scope selection |
 | Eight structural artifact types with explicit limits | General crosslinks, migration, rebuild and filesystem recovery |
-| Checkout-free initialization, native open and locator recovery; catalog1 private content | File-containing check-ins, sync and artifact publication |
+| Checkout-free initialization, native open, locator recovery and pending additions; catalog1 private content | File-containing check-ins, sync and artifact publication |
 | Explicit inherited-test runner configurations | Gest task CLI, server and user interface |
 
 Initialization creates catalog4 without a checkout. The library can register
 one existing directory and authenticate its registration by ID or exact root.
-Reopen admits exactly zero or one registration at the initial empty root. Bound
-catalog1 creation retains its checkout and private content operations. Catalog4
-private writes and file-containing states remain unsupported. Registration
-changes the database only.
+Reopen admits exactly zero or one registration at the initial empty root,
+including the validated pending-add inventory. Bound catalog1 creation retains its
+checkout and private content operations. Catalog4 private content writes and
+file-containing check-ins remain unsupported. Registration changes the database only.
 
-The source CLI composes it with bounded locator
-publication and exact-registration recovery. Working-file materialization
+The source CLI combines registration with bounded locator
+publication and recovery of the exact registration. Working-file materialization
 remains future work. See [native checkout open](cli.md#open-a-native-checkout).
 
 An empty root is a check-in with no files. Private content operations do not
@@ -200,7 +200,8 @@ The source `vcs open` adapter adds first registration, reopen and bounded locato
 recovery without project initialization. Its configuration comes from the
 invocation directory, independently of an explicit root. The
 [CLI contract](cli.md#open-a-native-checkout) covers selection, conflicts and
-publication phases. File operations remain future work.
+publication phases. File recording remains future work; the pending-add slice
+is described below.
 
 Locator/parser/publication controls are in `src/checkout_locator.rs`, configuration
 controls in `src/checkout_config.rs`, and executable controls in
@@ -208,12 +209,26 @@ controls in `src/checkout_config.rs`, and executable controls in
 distinct from an injected native-registration COMMIT failure. Source controls
 and focused passes do not establish full coverage, Linux qualification or delivery.
 
-The source package version is 0.4.1. Source documentation and local checks do
-not establish publication or installation of that version.
+The candidate source package version is 0.5.0. Source documentation and local
+checks do not establish publication or installation of that version.
 Version 0.2.0 executable and documentation delivery is complete. The annotated
 `v0.2.0` tag resolves to `2fc3fa1`; source CI and documentation CI passed. The
 versioned executables, smoke tests and live CLI and API pages were verified.
 The default previews were preserved, and issue 22 is closed.
+
+The candidate source adds [explicit pending add and status](cli.md#add-explicit-paths-and-inspect-pending-additions).
+Add stores native tracking metadata with scope unselected, so the files are neither
+classified as shared nor private. It writes no working files or stored file content. Status lists pending additions only. The accepted
+[libsql wrapper correction](libsql-wrapper.md) is part of this checkout
+through provider-fix merge `bd2b377`.
+
+Before that merge, preparation against the same wrapper pin passed all 158 library
+unit tests and all 204 integration tests. One preexisting native interoperability
+test was ignored, and no integration tests were filtered. The separate
+[registration corruption matrix](https://github.com/rahuldave/gossil/blob/main/evidence/libsql-wrapper/consuming-replays/vcs-registration-matrix/result.json)
+passed all 21 cases without accepted corruption, provider panic or state changes.
+Those runs qualify their candidate tree. Final checks and independent review
+on the accepted base remain required before feature delivery.
 
 ## Recommendations
 

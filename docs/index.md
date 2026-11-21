@@ -3,7 +3,7 @@ title: Gossil
 ---
 
 Gossil aims to keep agent work, issues and file history together alongside Git.
-Fossil is a version-control system. This build exposes a Rust library for its delta bytes, artifact parsing and
+Fossil is a version-control system. This build exposes a Rust library for Fossil's delta bytes, artifact parsing and
 local storage. The `gossil` command creates, applies and checks deltas between
 files without a version-control checkout. It also initializes an empty
 repository through [`vcs init`](cli.md#initialize-a-repository), without creating a checkout.
@@ -39,7 +39,7 @@ Gest is a task and artifact tracker. The converters in the module table use its 
 | Parse structural artifact records | [Artifact parser](artifact-parser.md) |
 | Compare normalized byte lines | [Line diff](diff.md) |
 | Own a local database transaction | [Local storage](local-storage.md) |
-| Initialize an empty root, register a directory or store private bytes | [Native storage](native-storage.md) |
+| Initialize an empty root, register a directory, track pending additions or store private bytes | [Native storage](native-storage.md) |
 | Validate decoded task snapshots in memory | [Gest task values](gest-task-values.md) |
 | Emit bounded task creation artifact bytes | [Task tickets](task-ticket.md) |
 | Validate decoded project snapshots in memory | [Gest project values](gest-project-values.md) |
@@ -49,6 +49,13 @@ The [concepts guide](concepts.md) explains how these modules fit together.
 Gossil is under development. General version-control commands, Gest task
 management, a server and a user interface remain planned.
 See [development](development-plan.md) for current limits and contribution steps.
+
+## Pending additions
+
+This source checkout provides [explicit pending add and status](cli.md#add-explicit-paths-and-inspect-pending-additions).
+Add stores native tracking metadata with scope unselected, so the files are neither
+classified as shared nor private. It writes no working files or stored file content. Status lists pending additions only. Recording
+and history commands remain planned.
 
 ## Recommendations
 

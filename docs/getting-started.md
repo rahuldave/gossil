@@ -139,8 +139,13 @@ It selects no files and requires no issue, project or author initialization.
 Configuration, permissions and existing markers can refuse the operation.
 Read [native checkout open](cli.md#open-a-native-checkout) before retrying a
 failure, because database commit and locator publication have distinct outcomes.
-This 0.4 source adds the open/locator capability. Publication and installation
-require their own delivery evidence.
+
+## Pending additions
+
+This source checkout provides [explicit pending add and status](cli.md#add-explicit-paths-and-inspect-pending-additions).
+Add stores native tracking metadata with scope unselected, so the files are neither
+classified as shared nor private. It writes no working files or stored file content. Status lists pending additions only. Recording
+and history commands remain planned.
 
 ## Recommendations
 

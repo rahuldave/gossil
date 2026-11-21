@@ -1,7 +1,8 @@
 # CLI reference
 
 The `gossil` executable initializes empty repositories, opens native empty-root
-checkouts and has three file diagnostics.
+checkouts and has three file diagnostics. This source checkout also has
+[metadata-only add and status](#add-explicit-paths-and-inspect-pending-additions).
 Each diagnostic runs without a repository. Run it from this source checkout with `just gossil`, which builds
 and runs the executable through Cargo. Cargo may print build messages on stderr.
 
@@ -66,7 +67,7 @@ this guide does not record a new installation or publication.
 This source command opens one native checkout at the initial empty root. A
 checkout registration binds an existing directory to that root. The locator is
 an owner-local lookup file at `ROOT/.gossil/checkout.json`. Neither operation
-selects files, creates file history or restores working files. This 0.4 source adds open and locator recovery. Installation and publication
+selects files, creates file history or restores working files. The source supports open and locator recovery. Installation and publication
 require separate delivery evidence.
 
 ```sh
@@ -91,7 +92,7 @@ remain unselected and unchanged. Native VCS open requires no issue, project or
 author initialization. It does not grant Gest project authority.
 
 The native library admits catalog4 with exactly zero or one registration at the
-initial empty root. Catalog1, populated states and a second registration are
+initial empty root, with validated pending additions. Catalog1, file-containing check-ins and a second registration are
 outside this command. Native admission checks the repository and owner binding,
 canonical root, device/inode and complete supported state. The locator cannot
 replace those checks. See [native storage](native-storage.md#register-one-existing-directory)
@@ -122,7 +123,7 @@ If `checkout.json` is missing, rootless open can reconstruct it from the exact
 existing registration. When no marker exists, run from the registered root
 itself. Recovery authenticates exactly one matching registration and preserves
 its identities, native keys and registration count. It allocates no checkout
-and repairs no database state. An incomplete marker forbids a new registration
+and repairs no database state. An incomplete marker prevents a new registration
 through `--root`. Malformed or conflicting locators remain conflicts and are
 never replaced.
 
@@ -206,6 +207,73 @@ not change this process exit status. A receipt write failure can occur after
 successful publication. It preserves the committed registration and locator,
 so a failed command does not imply that nothing committed.
 
+## Add explicit paths and inspect pending additions
+
+This source checkout provides `vcs add` and `vcs status` for pending additions
+at the initial empty root. Add records tracking metadata, and status lists that
+metadata. File recording and history commands remain planned.
+
+First, use `vcs open` to publish or recover the locator.
+Then run these commands from the registered checkout root or one of its descendants:
+
+```sh
+/path/to/gos v add --repository /absolute/history.gossil --checkout work --path notes/plan.md --path notes/review.md
+/path/to/gos v status --repository /absolute/history.gossil --checkout work
+```
+
+Both `--repository` and `--checkout` are required exactly once. Repeat `--path PATH` for each file;
+there are no positional path lists. Paths are exact UTF-8 names relative to the
+registered root, regardless of the invocation directory. Status accepts no paths.
+Neither command accepts `--json`, `--root`, scope switches or recursive selection.
+Both executable names and both group aliases use this grammar.
+
+Add accepts existing regular files only. It rejects absolute paths, empty
+components, `.` and `..`, backslashes, duplicate paths within a batch, case aliases,
+symlinks and special files. On macOS, paths must also be ASCII. This implementation rejects non-ASCII
+paths because their filesystem name comparisons have not been qualified.
+
+The `.gossil` namespace, selected database, SQLite sidecars and
+known hard-link aliases are protected. Parent directories and leaves are opened
+without following symlinks, and their identities are rechecked before commit.
+Keep the filesystem namespace stable during the command; these checks do not
+promise protection against hostile concurrent replacement.
+
+The CLI bounds the complete tracked inventory and each batch to 4096 paths.
+Each path has at most 4096 bytes and 128 components. Add limits the initial batch
+captures to 64 MiB of working bytes and uses a 64 KiB read buffer.
+The final recheck temporarily holds a second copy of one file alongside those
+captures, so captured bytes can total 128 MiB. These bounds exclude other process
+allocations.
+
+Native admission has separate finite bounds. If any bound is
+exceeded, the command returns an error.
+
+Add persists tracking metadata only. Earlier additions remain tracked across
+batches and reopen. A successful batch with new paths advances `pending_version`
+once; an existing-only batch validates and rereads its inputs without changing
+rows or counters. A failed batch rolls back its metadata changes.
+Working files are never written. Temporary reads do not create a stored content
+snapshot, a check-in or a recording receipt.
+
+Both commands print the complete pending-add inventory in pathname order:
+
+```text
+Pending additions (scope unselected):
+A	"notes/plan.md"
+A	"notes/review.md"
+```
+
+Each row contains `A`, a tab and the path in Rust debug-string syntax, with
+quotes and escapes. Empty status prints only the heading. Status reports native
+pending additions; it does not discover untracked files or report modified,
+missing, removed or renamed files. It does not reread working file content.
+An output failure returns status 1, and an add may already have committed.
+
+Scope remains **UNSELECTED**: no shared/private choice exists. Tracking grants
+no recording or sync authority. Future recording must require an explicit
+persisted scope decision and reread every tracked file, including files edited
+after add. File recording and history commands remain planned.
+
 ## Short names
 
 The `gos` executable runs the same implementation as `gossil`. Both accept `v`
@@ -215,9 +283,10 @@ as a short name for `vcs`. For example, this runs the same round-trip check:
 cargo run --locked --bin gos -- v test-delta FILE1 FILE2
 ```
 
-Use either executable with either group name for initialization, native open
-and all three diagnostics.
-Usage errors retain the spelling `gossil vcs`, including calls through `gos v`.
+Use either executable with either group name for initialization, native open,
+pending add/status and all three diagnostics.
+Usage messages use fixed spellings regardless of the invocation alias.
+Add and status use `gos v`; the other command usage messages use `gossil vcs`.
 
 ## Exit status and errors
 
@@ -247,7 +316,7 @@ acceptance rules are in the [runner guide](conformance.md).
 
 Broader version-control commands and Gest task commands are planned. They are
 not accepted by `gossil` or `gos`. The short names above apply to initialization and the
-three delta diagnostics and native open.
+three delta diagnostics, native open and pending add/status.
 
 ## Recommendations
 
