@@ -2,7 +2,9 @@
 Fossil is a version-control system. This build exposes a Rust library for its delta bytes, artifact parsing and
 local storage. The <code>gossil</code> command creates, applies and checks deltas between
 files without a version-control checkout. It also initializes an empty
-repository through <a href="cli.html#initialize-a-repository"><code>vcs init</code></a>, without creating a checkout.</p>
+repository through <a href="cli.html#initialize-a-repository"><code>vcs init</code></a>, without creating a checkout.
+The source <a href="cli.html#open-a-native-checkout"><code>vcs open</code> command</a> registers or reopens
+one empty-root checkout and publishes its lookup locator without selecting files.</p>
 <p>Start with a <a href="getting-started.html">file round trip</a>, browse the
 <a href="cli.html">CLI reference</a>, or use the <a href="api/index.html">Rust API reference</a>.
 Use <a href="working-with-repositories.html">working with repositories</a> to plan agent
@@ -60,7 +62,7 @@ hashes and token escaping.</p>
 <td><a href="local-storage.html">Local storage</a></td>
 </tr>
 <tr>
-<td>Initialize an empty root or store private bytes</td>
+<td>Initialize an empty root, register a directory or store private bytes</td>
 <td><a href="native-storage.html">Native storage</a></td>
 </tr>
 <tr>

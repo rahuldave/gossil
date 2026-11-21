@@ -2,154 +2,154 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://rahuldave.com/gossil/artifact-checksum.html</loc>
-    <lastmod>2026-11-20T23:42:41Z</lastmod>
+    <lastmod>2026-11-21T00:09:18Z</lastmod>
   </url>
   <url>
     <loc>https://rahuldave.com/gossil/artifact-parser.html</loc>
-    <lastmod>2026-11-20T23:42:41Z</lastmod>
+    <lastmod>2026-11-21T00:09:18Z</lastmod>
   </url>
   <url>
     <loc>https://rahuldave.com/gossil/blob-primitives.html</loc>
-    <lastmod>2026-11-20T23:42:41Z</lastmod>
+    <lastmod>2026-11-21T00:09:18Z</lastmod>
   </url>
   <url>
     <loc>https://rahuldave.com/gossil/cli.html</loc>
-    <lastmod>2026-11-20T23:42:41Z</lastmod>
+    <lastmod>2026-11-21T00:09:18Z</lastmod>
   </url>
   <url>
     <loc>https://rahuldave.com/gossil/compare-with-git.html</loc>
-    <lastmod>2026-11-20T23:42:41Z</lastmod>
+    <lastmod>2026-11-21T00:09:18Z</lastmod>
   </url>
   <url>
     <loc>https://rahuldave.com/gossil/concepts.html</loc>
-    <lastmod>2026-11-20T23:42:41Z</lastmod>
+    <lastmod>2026-11-21T00:09:18Z</lastmod>
   </url>
   <url>
     <loc>https://rahuldave.com/gossil/conformance.html</loc>
-    <lastmod>2026-11-20T23:42:41Z</lastmod>
+    <lastmod>2026-11-21T00:09:18Z</lastmod>
   </url>
   <url>
     <loc>https://rahuldave.com/gossil/delta-decoder.html</loc>
-    <lastmod>2026-11-20T23:42:41Z</lastmod>
+    <lastmod>2026-11-21T00:09:18Z</lastmod>
   </url>
   <url>
     <loc>https://rahuldave.com/gossil/delta-encoder.html</loc>
-    <lastmod>2026-11-20T23:42:41Z</lastmod>
+    <lastmod>2026-11-21T00:09:18Z</lastmod>
   </url>
   <url>
     <loc>https://rahuldave.com/gossil/development-plan.html</loc>
-    <lastmod>2026-11-20T23:42:41Z</lastmod>
+    <lastmod>2026-11-21T00:09:18Z</lastmod>
   </url>
   <url>
     <loc>https://rahuldave.com/gossil/diff.html</loc>
-    <lastmod>2026-11-20T23:42:41Z</lastmod>
+    <lastmod>2026-11-21T00:09:18Z</lastmod>
   </url>
   <url>
     <loc>https://rahuldave.com/gossil/examples.html</loc>
-    <lastmod>2026-11-20T23:42:41Z</lastmod>
+    <lastmod>2026-11-21T00:09:18Z</lastmod>
   </url>
   <url>
     <loc>https://rahuldave.com/gossil/gest-author-values.html</loc>
-    <lastmod>2026-11-20T23:42:41Z</lastmod>
+    <lastmod>2026-11-21T00:09:18Z</lastmod>
   </url>
   <url>
     <loc>https://rahuldave.com/gossil/gest-project-values.html</loc>
-    <lastmod>2026-11-20T23:42:41Z</lastmod>
+    <lastmod>2026-11-21T00:09:18Z</lastmod>
   </url>
   <url>
     <loc>https://rahuldave.com/gossil/gest-task-values.html</loc>
-    <lastmod>2026-11-20T23:42:41Z</lastmod>
+    <lastmod>2026-11-21T00:09:18Z</lastmod>
   </url>
   <url>
     <loc>https://rahuldave.com/gossil/getting-started.html</loc>
-    <lastmod>2026-11-20T23:42:41Z</lastmod>
+    <lastmod>2026-11-21T00:09:18Z</lastmod>
   </url>
   <url>
     <loc>https://rahuldave.com/gossil/index.html</loc>
-    <lastmod>2026-11-20T23:42:41Z</lastmod>
+    <lastmod>2026-11-21T00:09:18Z</lastmod>
   </url>
   <url>
     <loc>https://rahuldave.com/gossil/local-storage.html</loc>
-    <lastmod>2026-11-20T23:42:41Z</lastmod>
+    <lastmod>2026-11-21T00:09:18Z</lastmod>
   </url>
   <url>
     <loc>https://rahuldave.com/gossil/native-storage.html</loc>
-    <lastmod>2026-11-20T23:42:41Z</lastmod>
+    <lastmod>2026-11-21T00:09:18Z</lastmod>
   </url>
   <url>
     <loc>https://rahuldave.com/gossil/task-ticket.html</loc>
-    <lastmod>2026-11-20T23:42:41Z</lastmod>
+    <lastmod>2026-11-21T00:09:18Z</lastmod>
   </url>
   <url>
     <loc>https://rahuldave.com/gossil/token-codec.html</loc>
-    <lastmod>2026-11-20T23:42:41Z</lastmod>
+    <lastmod>2026-11-21T00:09:18Z</lastmod>
   </url>
   <url>
     <loc>https://rahuldave.com/gossil/working-with-repositories.html</loc>
-    <lastmod>2026-11-20T23:42:41Z</lastmod>
+    <lastmod>2026-11-21T00:09:18Z</lastmod>
   </url>
   <url>
     <loc>https://rahuldave.com/gossil/api/artifact.html</loc>
-    <lastmod>2026-11-20T23:43:49Z</lastmod>
+    <lastmod>2026-11-21T00:10:08Z</lastmod>
   </url>
   <url>
     <loc>https://rahuldave.com/gossil/api/artifact_checksum.html</loc>
-    <lastmod>2026-11-20T23:43:49Z</lastmod>
+    <lastmod>2026-11-21T00:10:08Z</lastmod>
   </url>
   <url>
     <loc>https://rahuldave.com/gossil/api/compression.html</loc>
-    <lastmod>2026-11-20T23:43:49Z</lastmod>
+    <lastmod>2026-11-21T00:10:08Z</lastmod>
   </url>
   <url>
     <loc>https://rahuldave.com/gossil/api/content_hash.html</loc>
-    <lastmod>2026-11-20T23:43:49Z</lastmod>
+    <lastmod>2026-11-21T00:10:08Z</lastmod>
   </url>
   <url>
     <loc>https://rahuldave.com/gossil/api/delta.html</loc>
-    <lastmod>2026-11-20T23:43:49Z</lastmod>
+    <lastmod>2026-11-21T00:10:08Z</lastmod>
   </url>
   <url>
     <loc>https://rahuldave.com/gossil/api/diff.html</loc>
-    <lastmod>2026-11-20T23:43:49Z</lastmod>
+    <lastmod>2026-11-21T00:10:08Z</lastmod>
   </url>
   <url>
     <loc>https://rahuldave.com/gossil/api/gest_author_values.html</loc>
-    <lastmod>2026-11-20T23:43:49Z</lastmod>
+    <lastmod>2026-11-21T00:10:08Z</lastmod>
   </url>
   <url>
     <loc>https://rahuldave.com/gossil/api/gest_project_values.html</loc>
-    <lastmod>2026-11-20T23:43:49Z</lastmod>
+    <lastmod>2026-11-21T00:10:08Z</lastmod>
   </url>
   <url>
     <loc>https://rahuldave.com/gossil/api/gest_task_values.html</loc>
-    <lastmod>2026-11-20T23:43:49Z</lastmod>
+    <lastmod>2026-11-21T00:10:08Z</lastmod>
   </url>
   <url>
     <loc>https://rahuldave.com/gossil/api/gossil.html</loc>
-    <lastmod>2026-11-20T23:43:49Z</lastmod>
+    <lastmod>2026-11-21T00:10:08Z</lastmod>
   </url>
   <url>
     <loc>https://rahuldave.com/gossil/api/index.html</loc>
-    <lastmod>2026-11-20T23:43:49Z</lastmod>
+    <lastmod>2026-11-21T00:10:08Z</lastmod>
   </url>
   <url>
     <loc>https://rahuldave.com/gossil/api/native_date.html</loc>
-    <lastmod>2026-11-20T23:43:49Z</lastmod>
+    <lastmod>2026-11-21T00:10:08Z</lastmod>
   </url>
   <url>
     <loc>https://rahuldave.com/gossil/api/product.html</loc>
-    <lastmod>2026-11-20T23:43:49Z</lastmod>
+    <lastmod>2026-11-21T00:10:08Z</lastmod>
   </url>
   <url>
     <loc>https://rahuldave.com/gossil/api/storage.html</loc>
-    <lastmod>2026-11-20T23:43:49Z</lastmod>
+    <lastmod>2026-11-21T00:10:08Z</lastmod>
   </url>
   <url>
     <loc>https://rahuldave.com/gossil/api/task_ticket.html</loc>
-    <lastmod>2026-11-20T23:43:49Z</lastmod>
+    <lastmod>2026-11-21T00:10:08Z</lastmod>
   </url>
   <url>
     <loc>https://rahuldave.com/gossil/api/token_codec.html</loc>
-    <lastmod>2026-11-20T23:43:49Z</lastmod>
+    <lastmod>2026-11-21T00:10:08Z</lastmod>
   </url>
 </urlset>

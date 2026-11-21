@@ -3,10 +3,13 @@ code in one coordinated history alongside Git. A historical view selects an
 exact file head, complete issue and discussion boundaries, and versioned links
 between issues and code. Git remains the source-code authority.</p>
 <p>This page compares that intended design with Git’s available behavior.
-The source CLI initializes empty repositories without a checkout and offers three delta diagnostics.
+The source CLI initializes empty repositories without a checkout, opens one
+native empty-root checkout and offers three delta diagnostics.
 The Rust library provides typed task, project and author converters, a task artifact emitter,
-and native storage primitives. It does not yet create or read persisted issues.
-Issue commands, checkout registration and file recording remain planned in this source CLI.
+and native storage primitives. It does not yet create or read persisted issues.</p>
+<p><a href="cli.html#open-a-native-checkout">Native checkout open</a> registers or reopens an
+existing directory and publishes its lookup locator. Issue commands and file
+recording remain planned in this source CLI.
 See the <a href="development-plan.html">current limits</a> and
 <a href="cli.html">CLI reference</a> before trying a command.</p>
 <section id="what-each-history-records" class="level2">
