@@ -93,8 +93,8 @@ After `initialize`,
 `checkout_view` authenticates its ID; `checkout_view_for_root` authenticates its
 exact root. These library methods change no working files and publish no locator.
 The source [`vcs open` adapter](cli.md#open-a-native-checkout) adds locator
-publication and recovery around those admitted database operations. It also
-leaves working files unselected.
+publication and recovery around those admitted database operations. Open does
+not select additional files.
 
 Private content writes require the bound
 catalog1 repository and refuse catalog4, with or without its single registration. The empty
@@ -132,6 +132,13 @@ The [task ticket emitter](task-ticket.md) produces bounded creation artifact byt
 from a validated task, a separate native ticket identity, actor bytes and a typed UTC date.
 Before passing decoded task, project or author values to a converter, callers
 must check raw field presence, duplicates and byte limits. Storage integration and task, project or author commands remain separate work.
+
+## Pending additions
+
+This source checkout provides [explicit pending add and status](cli.md#add-explicit-paths-and-inspect-pending-additions).
+Add stores native tracking metadata with scope unselected, so the files are neither
+classified as shared nor private. It writes no working files or stored file content. Status lists pending additions only. Recording
+and history commands remain planned.
 
 ## Recommendations
 

@@ -1,4 +1,4 @@
-//! Route native repository initialization, checkout open and repository-free Fossil delta diagnostics.
+//! Route native initialization, checkout open, pending additions and repository-free delta diagnostics.
 use crate::delta::{DeltaError, Limits, apply, create};
 use std::collections::TryReserveError;
 use std::ffi::OsString;
@@ -248,8 +248,9 @@ fn dispatch(args: &[OsString]) -> Result<(), CommandError> {
 /// Print the adapter error once, with the native newline and exit status.
 ///
 /// # Returns
-/// The success exit code after initialization, native checkout open or a completed diagnostic, or the failure exit code
-/// after printing its error to standard error. The first argument `v` is accepted
+/// The success exit code after initialization, native checkout open, pending-add
+/// or status operations, or a completed diagnostic. Returns the failure exit code
+/// after printing an adapter error to standard error. The first argument `v` is accepted
 /// as an alias for `vcs`.
 /// # Panics
 /// Panics if writing an error diagnostic to standard error fails.
@@ -272,6 +273,19 @@ pub fn entry() -> std::process::ExitCode {
     if args.first().is_some_and(|arg| arg == "vcs") && args.get(1).is_some_and(|arg| arg == "open")
     {
         return crate::vcs_open::run(&args[2..]).map_or_else(
+            |error| {
+                eprintln!("{error}");
+                std::process::ExitCode::FAILURE
+            },
+            |()| std::process::ExitCode::SUCCESS,
+        );
+    }
+    if args.first().is_some_and(|arg| arg == "vcs")
+        && args
+            .get(1)
+            .is_some_and(|arg| arg == "add" || arg == "status")
+    {
+        return crate::vcs_tracking::run(&args[2..], args[1] == "add").map_or_else(
             |error| {
                 eprintln!("{error}");
                 std::process::ExitCode::FAILURE

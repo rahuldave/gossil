@@ -7,7 +7,8 @@ between issues and code. Git remains the source-code authority.
 
 This page compares that intended design with Git's available behavior.
 The source CLI initializes empty repositories without a checkout, opens one
-native empty-root checkout and offers three delta diagnostics.
+native empty-root checkout and offers three delta diagnostics. It also supports
+[explicit add and status](cli.md#add-explicit-paths-and-inspect-pending-additions) for pending additions, without recording file content.
 The Rust library provides typed task, project and author converters, a task artifact emitter,
 and native storage primitives. It does not yet create or read persisted issues.
 

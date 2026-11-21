@@ -32,9 +32,9 @@ event, branch tags and receive/index facts. It checks the exact schema,
 complete policy, owner binding and foreign keys.
 
 The remaining local tables must be empty, except for the exact registration
-inventory described below. Extra native content or indexed history refuses
-admission, even when checkout counters remain zero. File-containing, typed and
-mixed catalog4 states remain unsupported.
+and pending-add inventories described below. Admission rejects extra native content
+or indexed history, even when checkout counters remain zero. File-containing check-ins,
+typed projections and mixed catalog4 states remain unsupported.
 Catalog5 and catalog6 remain unsupported. No upgrade occurs on open.
 Private content writes through this handle also refuse catalog4.
 
@@ -99,6 +99,50 @@ facts and does not recover a locator.
 Reopen accepts exactly zero or one such catalog4 registration. It independently
 checks the complete checkout, owner and key inventory against `checkout_count`,
 the native root and receipt. Private content writes still refuse catalog4.
+
+## Track native pending additions
+
+This source checkout exposes `LocalOwnerRepository::add_files` and
+`LocalOwnerRepository::pending_adds`, with `TrackingLimits` and `PendingAdd`.
+
+Call `add_files(checkout, paths, wanted, limits, tracking)` with the exact
+`CheckoutView` from this owner as `wanted`, plus finite admission and tracking
+limits. The `wanted` view states the complete checkout state that the caller
+expects before mutation.
+The method validates the whole batch and cumulative inventory, reads and
+rechecks each regular file, then returns the committed view. The method rejects the batch if the heads,
+generation, pending version or admission authority are stale.
+Use the returned view for the next mutation.
+
+`pending_adds(checkout, limits,
+tracking)` returns the complete bounded inventory in pathname order.
+`PendingAdd::executable` records the mode at first enrollment. Later mode changes
+do not alter that stored flag.
+
+Only this producer's exact catalog4 state is admitted. New `g_vfile` rows use
+the actual initial `vid`, `rid=mrid=0`, regular-file link flags, executable mode
+and observed modification time. New batches retain earlier rows and advance
+`pending_version` once. Existing-only batches recheck files but change no state.
+`g_pending_path` and `g_path_scope` remain empty. Catalog1 rules remain unchanged.
+
+No file bytes, canonical artifacts, receipts or file-containing check-ins are
+stored by add. Working bytes remain unchanged.
+
+`TrackingLimits` bounds the complete inventory and batch count, bytes per path,
+path components, initial captured working bytes and read buffer size.
+The final recheck temporarily retains another copy of one captured file.
+The captured-byte limit therefore does not bound total process memory.
+The methods reject zero structural or buffer bounds. The retained
+bytes exist only for transaction validation.
+
+Paths and descriptor identities
+must satisfy the [CLI path contract](cli.md#add-explicit-paths-and-inspect-pending-additions).
+The protected database identities come from the store's retained private
+`FileIdentity`; callers cannot supply replacement authority.
+
+Pending additions have unselected scope. An absent scope row means neither
+shared nor private. Future recording must require a persisted scope decision
+and reread all tracked files. These methods authorize no recording or sync.
 
 ## Local owner and shared view
 

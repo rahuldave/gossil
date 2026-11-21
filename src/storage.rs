@@ -18,7 +18,7 @@ mod schema;
 pub use content::Limits;
 pub use repository::{
     AdmissionLimits, CheckoutView, CreateOptions, InitializeOptions, LocalOwnerRepository,
-    SharedView,
+    PendingAdd, SharedView, TrackingLimits,
 };
 mod lifecycle;
 use lifecycle::FileIdentity;

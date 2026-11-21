@@ -107,15 +107,24 @@ fn marker(root: &Path) -> Result<Option<(PathBuf, Option<locator::Locator>)>, Er
     }
     Ok(None)
 }
-/// Admit existing storage and exact root before constructing or publishing any lookup assertion.
+/// Native selections observed through the common invocation policy.
+struct Selection {
+    /// Canonical existing database path.
+    repository: PathBuf,
+    /// Exact discovered or explicitly requested canonical root.
+    selected_root: PathBuf,
+    /// Nearest marker and its optional complete assertion.
+    found: Option<(PathBuf, Option<locator::Locator>)>,
+}
+/// Resolve explicit selections through the one invocation/config/marker policy.
+/// No registration, locator publication or database allocation occurs here.
 /// # Arguments
-/// * `options` - Explicit repository/checkout selection and optional exact registration root.
+/// * `options` - Explicit selectors and optional first registration root.
 /// # Returns
-/// An admitted checkout view after required locator publication or recovery; no working files are selected or materialized.
+/// Canonical selections and the nearest observed marker.
 /// # Errors
-/// Reject selection/configuration conflicts, invalid roots, native admission failures and locator preparation or publication failures.
-/// A committed registration survives publication or later output failure; locator errors retain their phase.
-async fn open(options: Options) -> Result<CheckoutView, Error> {
+/// Propagates typed config/locator causes and refuses conflicting selections.
+fn selection(options: &Options) -> Result<Selection, Error> {
     let registration_requested = options.root.is_some();
     let invocation_cwd = std::fs::canonicalize(std::env::current_dir()?)?;
     let requested_root = match &options.root {
@@ -157,6 +166,62 @@ async fn open(options: Options) -> Result<CheckoutView, Error> {
     if registration_requested && found.as_ref().is_some_and(|(_, value)| value.is_none()) {
         return Err("incomplete checkout marker forbids new registration; omit --root for existing registration recovery".into());
     }
+    Ok(Selection {
+        repository,
+        selected_root,
+        found,
+    })
+}
+
+/// Admit an existing complete locator and its exact native binding for add/status.
+/// Missing or incomplete markers require explicit recovery with `vcs open`.
+/// # Arguments
+/// * `repository` - Explicit existing repository path.
+/// * `checkout` - Explicit exact registered identity.
+/// # Returns
+/// Admitted owner and lean snapshot after complete locator/native binding checks.
+/// # Errors
+/// Reject conflicting selections, malformed locators, missing markers and native admission errors.
+pub(crate) async fn admit_existing(
+    repository: PathBuf,
+    checkout: String,
+) -> Result<(LocalOwnerRepository, CheckoutView), Error> {
+    let options = Options {
+        repository,
+        checkout,
+        root: None,
+    };
+    let Selection {
+        repository,
+        selected_root,
+        found,
+    } = selection(&options)?;
+    let Some((_, Some(existing))) = found else {
+        return Err("add/status requires a complete checkout locator; run vcs open first".into());
+    };
+    let mut owner = LocalOwnerRepository::open(&repository, limits()).await?;
+    let view = owner
+        .checkout_view_for_root(&selected_root, limits())
+        .await?;
+    admitted_locator(&repository, &view, &options.checkout, Some(&existing))?;
+    Ok((owner, view))
+}
+
+/// Admit existing storage and exact root before constructing or publishing any lookup assertion.
+/// # Arguments
+/// * `options` - Explicit repository/checkout selection and optional exact registration root.
+/// # Returns
+/// An admitted checkout view after required locator publication or recovery; no working files are selected or materialized.
+/// # Errors
+/// Reject selection/configuration conflicts, invalid roots, native admission failures and locator preparation or publication failures.
+/// A committed registration survives publication or later output failure; locator errors retain their phase.
+async fn open(options: Options) -> Result<CheckoutView, Error> {
+    let registration_requested = options.root.is_some();
+    let Selection {
+        repository,
+        selected_root,
+        found,
+    } = selection(&options)?;
     let mut owner = LocalOwnerRepository::open(&repository, limits()).await?;
     let marker = selected_root.join(".gossil");
     if registration_requested && found.is_none() {

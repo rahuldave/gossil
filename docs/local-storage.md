@@ -5,8 +5,8 @@
 The `storage` module opens local libSQL files and owns one write transaction
 at a time. Its low-level lifecycle API also supports the validated
 [native storage boundary](native-storage.md). That boundary installs the complete
-schema and implements empty-root initialization, one native directory registration
-and bounded catalog1 private content operations.
+schema and implements empty-root initialization, one native directory registration,
+pending additions and bounded catalog1 private content operations.
 Opening that higher-level repository validates its stored root and authority metadata.
 Migration and broader adapters remain unimplemented.
 
@@ -92,6 +92,13 @@ Cancellation after a successful COMMIT leaves committed rows in the database.
 It cannot undo a commit whose result the outer caller has not received.
 A later server adapter must define its blocking scheduling and result-delivery
 boundaries.
+
+## Pending additions
+
+This source checkout provides [explicit pending add and status](cli.md#add-explicit-paths-and-inspect-pending-additions).
+Add stores native tracking metadata with scope unselected, so the files are neither
+classified as shared nor private. It writes no working files or stored file content. Status lists pending additions only. Recording
+and history commands remain planned.
 
 ## Recommendations
 

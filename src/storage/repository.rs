@@ -8,6 +8,8 @@ use std::path::Path;
 
 /// Register and authenticate the sole supported native empty-root checkout.
 mod checkout;
+mod tracking;
+pub use tracking::{PendingAdd, TrackingLimits};
 mod initialization;
 pub use checkout::CheckoutView;
 pub use initialization::InitializeOptions;
@@ -38,6 +40,31 @@ const ROOT_PROJECTION_CONFLICTS: &str = concat!(
     "EXISTS(SELECT 1 FROM g_code_link WHERE attachment_artifact_hash=?2),",
     "EXISTS(SELECT 1 FROM g_discussion_target WHERE attachment_artifact_hash=?2),",
     "EXISTS(SELECT 1 FROM g_vfile UNION ALL SELECT 1 FROM g_vmerge UNION ALL SELECT 1 FROM g_path_scope UNION ALL SELECT 1 FROM g_pending_path UNION ALL SELECT 1 FROM g_journal)",
+);
+/// Catalog4 delegates only g_vfile to exact produced-state admission.
+/// All twenty other flags and the remaining unsupported local state stay sealed.
+const CATALOG4_ROOT_PROJECTION_CONFLICTS: &str = concat!(
+    "SELECT EXISTS(SELECT 1 FROM plink WHERE pid=?1 OR cid=?1 OR baseid=?1),",
+    "EXISTS(SELECT 1 FROM mlink WHERE mid=?1 OR fid=?1 OR pmid=?1 OR pid=?1),",
+    "EXISTS(SELECT 1 FROM cherrypick WHERE parentid=?1 OR childid=?1),",
+    "EXISTS(SELECT 1 FROM phantom WHERE rid=?1),",
+    "EXISTS(SELECT 1 FROM orphan WHERE rid=?1 OR baseline=?1),",
+    "EXISTS(SELECT 1 FROM backlink WHERE srcid=?1),",
+    "EXISTS(SELECT 1 FROM forumpost WHERE fpid=?1 OR froot=?1 OR fprev=?1 OR firt=?1),",
+    "EXISTS(SELECT 1 FROM g_dependency WHERE source_hash=?2 OR (target_hash=?2 AND required=1)),",
+    "EXISTS(SELECT 1 FROM attachment WHERE attachid=?1),",
+    "EXISTS(SELECT 1 FROM ticketchng WHERE tkt_rid=?1),",
+    "EXISTS(SELECT 1 FROM modreq WHERE objid=?1),",
+    "EXISTS(SELECT 1 FROM tagxref WHERE (srcid=?1 OR origid=?1) AND rid IS NOT ?1),",
+    "EXISTS(SELECT 1 FROM g_admission WHERE native_hash=?2),",
+    "EXISTS(SELECT 1 FROM g_contributor WHERE native_hash=?2 AND status='valid'),",
+    "EXISTS(SELECT 1 FROM g_descriptor WHERE (descriptor_hash=?2 OR attachment_artifact_hash=?2) AND status='valid'),",
+    "EXISTS(SELECT 1 FROM g_discussion_message WHERE version_hash=?2),",
+    "EXISTS(SELECT 1 FROM g_message_context WHERE descriptor_hash=?2 OR version_hash=?2),",
+    "EXISTS(SELECT 1 FROM g_message_context_target WHERE descriptor_hash=?2 OR version_hash=?2),",
+    "EXISTS(SELECT 1 FROM g_code_link WHERE attachment_artifact_hash=?2),",
+    "EXISTS(SELECT 1 FROM g_discussion_target WHERE attachment_artifact_hash=?2),",
+    "EXISTS(SELECT 1 FROM g_vmerge UNION ALL SELECT 1 FROM g_path_scope UNION ALL SELECT 1 FROM g_pending_path UNION ALL SELECT 1 FROM g_journal)",
 );
 /// Number of independently sealed scalar root-conflict categories.
 const ROOT_PROJECTION_FLAGS: usize = 21;
@@ -394,7 +421,8 @@ impl LocalOwnerRepository {
     /// The durable repository and owner identities are read from this file rather
     /// than accepted as caller-selected capability strings.
     /// Supports bound catalog1 and exact zero-or-one empty-root catalog4 registration, without migration.
-    /// Catalog4 requires one native root, an exact zero-or-one registration inventory and empty remaining local tables.
+    /// Catalog4 admits this producer's pending additions with zero content RIDs. It requires one native root,
+    /// an exact zero-or-one registration inventory and empty unrelated local tables.
     /// # Arguments
     /// * `path` - Existing local database under operating-system owner authority.
     /// * `admission_limits` - Explicit finite root decode and parser budgets.
@@ -574,6 +602,10 @@ impl super::WriteTransaction<'_> {
         {
             snapshot.push(
                 self.query_bound("SELECT * FROM g_vvar ORDER BY checkout_id,name", vec![])
+                    .await?,
+            );
+            snapshot.push(
+                self.query_bound("SELECT * FROM g_vfile ORDER BY checkout_id,id", vec![])
                     .await?,
             );
             snapshot.push(
@@ -835,7 +867,6 @@ impl super::WriteTransaction<'_> {
                 "g_undo_vmerge",
                 "SELECT EXISTS(SELECT 1 FROM g_undo_vmerge)",
             ),
-            ("g_vfile", "SELECT EXISTS(SELECT 1 FROM g_vfile)"),
             ("g_vmerge", "SELECT EXISTS(SELECT 1 FROM g_vmerge)"),
             ("accesslog", "SELECT EXISTS(SELECT 1 FROM accesslog)"),
             ("admin_log", "SELECT EXISTS(SELECT 1 FROM admin_log)"),
@@ -994,7 +1025,12 @@ impl super::WriteTransaction<'_> {
                 Value::Real(date)
             };
             if row != &vec![Value::Integer(*rid),Value::Text("ci".into()),stored_date.clone(),Value::Text(user.into()),Value::Text("initial empty check-in".into()),stored_date.clone(),Value::Null,Value::Null,Value::Null,Value::Null,Value::Null,Value::Null] { return Err(StorageError::state("root event differs from canonical bytes")); }
-            if self.query_bound(ROOT_PROJECTION_CONFLICTS,vec![Value::Integer(*rid),Value::Text(root.clone())]).await? != vec![vec![Value::Integer(0);ROOT_PROJECTION_FLAGS]] {
+            // Only authenticated catalog4 replaces the g_vfile empty guard.
+            // All remaining root-conflict categories and unsupported tables stay sealed.
+            let conflicts = if version == vec![vec![Value::Integer(4)]] {
+                CATALOG4_ROOT_PROJECTION_CONFLICTS
+            } else { ROOT_PROJECTION_CONFLICTS };
+            if self.query_bound(conflicts,vec![Value::Integer(*rid),Value::Text(root.clone())]).await? != vec![vec![Value::Integer(0);ROOT_PROJECTION_FLAGS]] {
                 return Err(StorageError::state("root projection contradicts canonical bytes"));
             }
             let tags = self.query_bound("SELECT t.tagname,x.tagtype,x.srcid,x.origid,x.value,x.mtime FROM tagxref x LEFT JOIN tag t ON t.tagid=x.tagid WHERE x.rid=?1 ORDER BY t.tagname LIMIT 3",vec![Value::Integer(*rid)]).await?;
@@ -1353,6 +1389,25 @@ fn empty_root_bytes(date: &[u8], user: &[u8], max_output: usize) -> Result<Vec<u
 #[cfg(test)]
 mod tests {
     use super::*;
+    /// Catalog4 substitutes only the exact tracked-row empty guard.
+    #[test]
+    fn catalog4_root_guard_differs_only_by_tracked_row_delegation() {
+        assert_eq!(
+            CATALOG4_ROOT_PROJECTION_CONFLICTS,
+            ROOT_PROJECTION_CONFLICTS.replace("SELECT 1 FROM g_vfile UNION ALL ", "")
+        );
+        assert_eq!(
+            ROOT_PROJECTION_CONFLICTS.matches("EXISTS(").count(),
+            ROOT_PROJECTION_FLAGS
+        );
+        assert_eq!(
+            CATALOG4_ROOT_PROJECTION_CONFLICTS
+                .matches("EXISTS(")
+                .count(),
+            ROOT_PROJECTION_FLAGS
+        );
+    }
+
     use crate::{compression, content_hash};
     /// Allocation observations belong only to the current test thread and never alter production allocation.
     mod allocation_probe {

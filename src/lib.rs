@@ -801,6 +801,7 @@ pub mod product;
 mod vcs_init;
 /// Compose native registration and locator recovery for the product CLI.
 mod vcs_open;
+mod vcs_tracking;
 
 /// Represent validated native dates as integer nanoseconds.
 pub mod native_date;

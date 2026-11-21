@@ -1,8 +1,10 @@
 # Gossil
 
 Gossil aims to keep agent work, issues and file history together alongside Git.
-Fossil is a version-control system. This build exposes a Rust library for its delta bytes, artifact records
-and local storage. Its `gossil` CLI creates, applies and checks deltas between files, initializes empty repositories and opens one native empty-root checkout.
+Fossil is a version-control system. This build exposes a Rust library for Fossil's delta bytes, artifact records
+and local storage. Its `gossil` CLI creates, applies and checks deltas between files.
+It also initializes empty repositories, opens one native empty-root checkout,
+and adds or lists explicitly selected files as pending additions.
 The library includes bounded compression, content hashes, token escaping,
 artifact checksums and owned local database transactions.
 
@@ -39,8 +41,8 @@ See [initialization options](docs/cli.md#initialize-a-repository) for dates and 
 
 To register an existing directory and publish its lookup locator, use the source
 [`vcs open` command](docs/cli.md#open-a-native-checkout). It selects no files.
-This 0.4 source adds open and locator recovery. This guide records no new
-installation or publication result.
+Open can also recover a missing locator. Build the commands from this source
+checkout; installation and publication require separate delivery checks.
 The existing default mini-VCS preview remains a separate installation.
 
 ## Use the library
@@ -81,6 +83,13 @@ Read [development and contributing](docs/development-plan.md) for setup,
 verification, documentation generation and the evidence archive.
 `gossil-conformance` is separate development infrastructure for explicit
 inherited-test configurations. See its [runner guide](docs/conformance.md).
+
+## Pending additions
+
+This source checkout provides [explicit pending add and status](docs/cli.md#add-explicit-paths-and-inspect-pending-additions).
+Add stores native tracking metadata with scope unselected, so the files are neither
+classified as shared nor private. It writes no working files or stored file content. Status lists pending additions only. Recording
+and history commands remain planned.
 
 ## Recommendations
 

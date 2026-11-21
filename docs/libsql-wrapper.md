@@ -71,8 +71,10 @@ fidelity tests also passed. Their receipts are under
 `evidence/libsql-wrapper/consuming-replays/`. These focused runs do not qualify
 the complete VCS or Gest feature sets.
 
-The Gossil source package is 0.4.1. This guide does not attest a normal Gossil
-gate pass, a release or an installation of that version.
+The wrapper correction was integrated for Gossil 0.4.1. This checkout prepares
+Gossil 0.5.0; the [development guide](development-plan.md) distinguishes its
+preparation results from final feature checks. The focused controls here do not
+establish a complete feature qualification, release or installation.
 
 Writing follows nossaifd guidance, including Rosalind Reid's communication
 principles, Shreya Shankar's plain-writing guidance and Oskar Austegard's

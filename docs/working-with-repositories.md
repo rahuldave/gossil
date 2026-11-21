@@ -27,7 +27,8 @@ Use a disposable folder and copies of files, and keep Git
 as the source authority.
 
 These commands require that preview's installed `gos` or `gossil` executable.
-The source CLI supports `init` and bounded empty-root `open`, but does not
+The source CLI supports `init`, bounded empty-root `open` and the pending-add
+slice described below, but does not
 support the preview's file-recording or history commands. The generated Rust API on this site does not
 describe the preview's additional storage methods.
 
@@ -289,6 +290,13 @@ Gossil's intended undo for Gest command history is separate from undo for
 operations on checkout files. General recovery commands are not available in the current
 CLI. For today's delta diagnostics, preserve the inputs and write to a new
 output path. Compare the restored bytes before replacing a file.
+
+## Pending additions
+
+This source checkout provides [explicit pending add and status](cli.md#add-explicit-paths-and-inspect-pending-additions).
+Add stores native tracking metadata with scope unselected, so the files are neither
+classified as shared nor private. It writes no working files or stored file content. Status lists pending additions only. Recording
+and history commands remain planned.
 
 ## Recommendations
 
