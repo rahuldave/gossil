@@ -62,7 +62,8 @@ impl Facts {
     fn same_object(&self, other: &Self) -> bool {
         self.device == other.device
             && self.inode == other.inode
-            && self.mode & (libc::S_IFMT as u32) == other.mode & (libc::S_IFMT as u32)
+            && u64::from(self.mode) & u64::from(libc::S_IFMT)
+                == u64::from(other.mode) & u64::from(libc::S_IFMT)
     }
 }
 /// Retain the registered root descriptor and identities of its absolute ancestry.
@@ -270,7 +271,8 @@ impl Parent {
         // once and closes it on every subsequent error path.
         let file = unsafe { File::from_raw_fd(fd) };
         exact_spelling(&file, basename)?;
-        if Facts::read(&file)?.mode & (libc::S_IFMT as u32) != (libc::S_IFREG as u32) {
+        if u64::from(Facts::read(&file)?.mode) & u64::from(libc::S_IFMT) != u64::from(libc::S_IFREG)
+        {
             return Err(StorageError::state("expected regular checkout leaf"));
         }
         Ok(file)

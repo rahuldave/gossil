@@ -8,7 +8,7 @@ mod unix;
 use unix::Facts;
 pub(super) use unix::OpenedRoot;
 
-/// Exact bytes and native facts, retained only until the transaction ends.
+/// A capture retains exact bytes, native facts and parent descriptors until the transaction ends.
 pub(super) struct Captured {
     /// Working bytes used only for bounded in-transaction stability checks.
     pub(super) bytes: Vec<u8>,
@@ -18,6 +18,8 @@ pub(super) struct Captured {
     pub(super) mtime: i64,
     /// Descriptor identity and timestamps compared by the final recheck.
     facts: Facts,
+    /// Original directory descriptors and edges retained through final recapture.
+    parent: unix::Parent,
 }
 
 /// Refuse path reinterpretation, platform aliases and internal locator paths.
@@ -81,7 +83,7 @@ pub(super) fn open_root(path: &Path, device: u64, inode: u64) -> Result<OpenedRo
 /// * `limits` - Finite pathname, component and read-buffer bounds.
 /// * `remaining` - Remaining aggregate working-byte allowance for this batch.
 /// # Returns
-/// Transient working bytes, executable flag, modification time and descriptor facts.
+/// Transient working bytes, executable flag, modification time, descriptor facts and retained parent edges.
 /// # Errors
 /// Refuses invalid paths, protected identities, nonregular files, replaced ancestry or leaves, read races, exhausted bounds and filesystem failures.
 pub(super) fn capture(
@@ -105,6 +107,7 @@ pub(super) fn capture(
         mtime: facts.mtime,
         bytes,
         facts,
+        parent,
     })
 }
 
@@ -150,17 +153,17 @@ fn reject_protected(file: &File, protected: &[&Path]) -> Result<(), StorageError
     Ok(())
 }
 
-/// Repeat bounded capture and compare exact bytes and descriptor metadata.
+/// Repeat bounded capture and verify retained parent edges, exact bytes and descriptor metadata.
 /// # Arguments
 /// * `root` - Retained registered root descriptor and ancestry.
 /// * `path` - Exact validated relative file pathname.
-/// * `before` - Earlier transient bytes and descriptor facts to compare.
+/// * `before` - Earlier bytes, descriptor facts and retained parent edges to verify.
 /// * `protected` - Database and sidecar names derived from the retained provider identity.
 /// * `limits` - Finite pathname, component and read-buffer bounds.
 /// # Returns
-/// Success when a fresh bounded capture exactly matches the earlier bytes and facts.
+/// Success when retained parent edges still match and a fresh capture matches the earlier bytes and facts.
 /// # Errors
-/// Propagates capture refusals and rejects any byte or metadata change.
+/// Propagates capture refusals and rejects replaced parent edges, filesystem failures and byte or metadata changes.
 pub(super) fn recheck(
     root: &OpenedRoot,
     path: &str,
@@ -169,6 +172,7 @@ pub(super) fn recheck(
     limits: TrackingLimits,
 ) -> Result<(), StorageError> {
     let after = capture(root, path, protected, limits, before.bytes.len() as u64)?;
+    before.parent.recheck(root)?;
     if before.facts != after.facts || before.bytes != after.bytes {
         return Err(StorageError::state("tracking file changed before commit"));
     }
@@ -284,6 +288,35 @@ mod tests {
                 b"outside replacement"
             );
         }
+    }
+
+    /// The final recheck rejects a replaced parent even when a pre-existing hard link preserves the leaf.
+    /// # Panics
+    /// Panics if fixture setup fails, the unchanged capture is refused or the replaced parent is accepted.
+    #[test]
+    fn recheck_refuses_replaced_parent_with_same_leaf() {
+        let temp = tempfile::tempdir().unwrap();
+        let root = std::fs::canonicalize(temp.path()).unwrap();
+        std::fs::create_dir(root.join("dir")).unwrap();
+        std::fs::create_dir(root.join("spare")).unwrap();
+        std::fs::write(root.join("dir/file"), b"same leaf").unwrap();
+        std::fs::hard_link(root.join("dir/file"), root.join("spare/file")).unwrap();
+        let opened = opened(&root);
+        let captured = capture(&opened, "dir/file", &[], limits(), 1024).unwrap();
+        assert!(recheck(&opened, "dir/file", &captured, &[], limits()).is_ok());
+        std::fs::rename(root.join("dir"), root.join("saved")).unwrap();
+        std::fs::rename(root.join("spare"), root.join("dir")).unwrap();
+        let live = File::open(root.join("dir/file")).unwrap();
+        assert_eq!(Facts::read(&live).unwrap(), captured.facts);
+        assert!(
+            recheck(&opened, "dir/file", &captured, &[], limits()).is_err(),
+            "accepted changed parent with unchanged leaf"
+        );
+        assert_eq!(std::fs::read(root.join("dir/file")).unwrap(), b"same leaf");
+        assert_eq!(
+            std::fs::read(root.join("saved/file")).unwrap(),
+            b"same leaf"
+        );
     }
 
     /// A parent symlink and a nonblocking FIFO cannot become regular capture descriptors.
