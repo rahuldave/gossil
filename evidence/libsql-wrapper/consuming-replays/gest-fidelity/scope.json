@@ -1,0 +1,13 @@
+{
+  "status": "observed independently owned four unchanged controls GREEN; no full service/composition qualification claimed",
+  "pin": "c02db34ae8a7e91ca7ab8faee18fe41515626940",
+  "guard": "de99cd8d-bf93-418f-893d-e9cc81f17494",
+  "passed": 4,
+  "failed": 0,
+  "filtered": 698,
+  "source_sha256": "5a16a952168eda46a701e857a4346bb66166549426022acc683bcdc4ff7274a9",
+  "raw_archive_retained_at": "/tmp/gossil-supervisor-gest-20261119/service-compose15/fidelity-green-preserved/raw-profiles-and-test-binary.tar.gz",
+  "manifest_sha256": "b2e016e2d9534fa5d29d90369defcfda759d23f550cf646df4f394bd6a0f017b",
+  "source_changes_copied": false,
+  "retained_compression": "Captured text and metadata may be stored with a .gz suffix; producer manifest paths, byte counts and hashes describe decompressed original bytes."
+}

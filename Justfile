@@ -84,13 +84,26 @@ libsql-vendor-check:
 libsql-vendor-test:
     jlog run python3 -m unittest discover -s tests -p 'test_libsql_vendor.py' -v
 
+# Verify the immutable wrapper source and unchanged sys/provider composition.
+libsql-wrapper-check:
+    jlog run python3 scripts/verify-libsql-wrapper.py
+
+# Reject wrapper revision, feature, sys checksum and provider-manifest drift.
+libsql-wrapper-test:
+    jlog run python3 -m unittest discover -s tests -p 'test_libsql_wrapper.py' -v
+
+# Record the actual resolved provider graph for composition audits.
+libsql-wrapper-metadata:
+    mkdir -p target
+    jlog run cargo metadata --locked --all-features --format-version 1 > target/libsql-wrapper-metadata.json
+
 # Retain the Rust profile type check after the mandatory vendor identity check.
-typecheck *args: libsql-vendor-check libsql-vendor-test
+typecheck *args: libsql-vendor-check libsql-vendor-test libsql-wrapper-check libsql-wrapper-test
     just --justfile {{quote(justfile())}} rust typecheck "$@"
     jlog step typecheck
 
 # Required CI verifies vendor bytes as well as the existing commit evidence gate.
-ci: libsql-vendor-check libsql-vendor-test ci-gate
+ci: libsql-vendor-check libsql-vendor-test libsql-wrapper-check libsql-wrapper-test ci-gate
 
 # Run the current product CLI without coverage instrumentation.
 gossil *args:

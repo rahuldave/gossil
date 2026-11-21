@@ -1,0 +1,25 @@
+{
+  "receipt_returncode": 0,
+  "one_identity_each": true,
+  "root_id": "path+file:///Users/rahul/Projects/gossil.worktrees/gest-xorypnnk-service-compose-main#gossil@0.6.0",
+  "libsql_id": "git+https://github.com/rahuldave/gossil-libsql?rev=c02db34ae8a7e91ca7ab8faee18fe41515626940#libsql@0.10.0",
+  "libsql_source": "git+https://github.com/rahuldave/gossil-libsql?rev=c02db34ae8a7e91ca7ab8faee18fe41515626940#c02db34ae8a7e91ca7ab8faee18fe41515626940",
+  "expanded_features": [
+    "core",
+    "libsql-sys"
+  ],
+  "core_definition": [
+    "libsql-sys",
+    "dep:bitflags",
+    "dep:bytes",
+    "dep:futures",
+    "dep:parking_lot"
+  ],
+  "libsql_sys_id": "registry+https://github.com/rust-lang/crates.io-index#libsql-sys@0.10.0",
+  "ffi_id": "path+file:///Users/rahul/Projects/gossil.worktrees/gest-xorypnnk-service-compose-main/vendor/libsql-ffi#0.10.0",
+  "canonical_ffi_manifest": "/Users/rahul/Projects/gossil.worktrees/gest-xorypnnk-service-compose-main/vendor/libsql-ffi/Cargo.toml",
+  "root_libsql_sys_ffi_edges_independently_verified": true,
+  "ffi_manifest_entries_hash_verified": 273,
+  "metadata_sha256": "9962dd97ddd0da64a7a6a22a22c4fa4f48766115c241cca033c4e833b580bca7",
+  "proof_corrections": "Receipt accurately distinguishes two mistaken proof assertions from successful first metadata resolution; core dependency-feature expansion verified against actual cached published manifest."
+}

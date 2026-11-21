@@ -1,0 +1,23 @@
+{
+  "status": "observed independently owned actual-c02-pin matrix result; no duplicated test/production source",
+  "owner_source_packet": "/tmp/gossil-next-tracking-20261120/qualification/registration-text-actual-pin",
+  "cases": 21,
+  "test_functions": 1,
+  "corruption_accepted": 0,
+  "provider_panics": 0,
+  "application_or_working_mutations": 0,
+  "pin": "c02db34ae8a7e91ca7ab8faee18fe41515626940",
+  "source_ancestry": "matrix test file belongs to ongoing VCS32 source626e719c0806a97187816510a3e1f9126a56c0f0; the exercised checkout-validation behavior already exists in accepted main8e9a680b206244cc0eee2de3534c2fde140da4e5; no test-file ancestry or fullVCS32 qualification is claimed",
+  "guard": "af02b3e4-77f3-4d9a-a8ae-7789d8fa4775",
+  "recorded_files": {
+    "registration-text-matrix-actual-pin.execution.json": "045973bd0f45d36228774be59d31b8e7943e5a551f9f8aa7d05e00e7c2601104",
+    "registration-text-matrix-actual-pin.stdout.txt.gz": "1159fb5d97257b6ab1fb1119f7a1a44d7afaeb2a141dbe10e88f3fd2d1b2c6bf",
+    "result.json": "dbeeea22f6a421a9d9ebd0752b40102d494d1fb8b77cdfc9fa99f18ce9c59298",
+    "resolved-provider-proof.json": "5c2080be513b7e521682c7bec58a563a8fddffb6d3a44537d89f93ddfb396992",
+    "review.json": "5574c03f1d9325dca563b43612b765e6a8f25ab409fe0d06b7906721d97cf397",
+    "cargo-cache.json": "acdecd7d0918a1a635c46ea21fb6d767f37a599f03e00df18273b58a1b65c850",
+    "composition.json": "a8ff77c18c68540d9c3af4d8d89274b763f136610f9e3ae5ff5a5a2450b814ca",
+    "ffi-verification.txt": "3539419bfaad1da9ae6562b5c9a07dbeb62cb6247496b937240603f0d1eda0f1",
+    "registration-text-matrix-actual-pin.stderr.txt.gz": "c40015af715e42dc3e4281c297d46636fdec0a9a82c039998fa8c358c1fccbec"
+  }
+}

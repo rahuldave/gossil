@@ -1,0 +1,13 @@
+{
+  "classification": "Explicit network-capable acquisition of published immutable candidate; no build/test qualification",
+  "argv": [
+    "cargo",
+    "fetch",
+    "--locked"
+  ],
+  "returncode": 0,
+  "elapsed": 3.179519208148122,
+  "cargo_home": "/tmp/gossil-supervisor-gest-20261119/native-lifecycle01/offline-cargo01/cargo-home",
+  "lock_sha_before": "7877b4a8c9b37e079aa9228171229319d569c0e25c815467af56e0b2af0f4577",
+  "lock_sha_after": "7877b4a8c9b37e079aa9228171229319d569c0e25c815467af56e0b2af0f4577"
+}

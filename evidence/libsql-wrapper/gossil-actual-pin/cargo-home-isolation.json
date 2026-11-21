@@ -1,0 +1,7 @@
+{
+  "CARGO_HOME": "/tmp/gossil-libsql-gossil-cargo-20261120",
+  "registry_shared_by_symlink": "/Users/rahul/.cargo/registry",
+  "git_cache": "new normal Cargo-owned cache under isolated home; no shared cache repair/deletion",
+  "reason": "VCS consuming replay recorded a pre-fetch shared bare Git cache initialization error; this composition avoids mutating that shared cache",
+  "shared_cache_readonly_inventory": "/tmp/gossil-libsql-global-git-cache-readonly.json"
+}

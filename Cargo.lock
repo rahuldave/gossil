@@ -357,7 +357,7 @@ checksum = "e4eba85ea1d0a966a983acd07deee566e67395d2d96b6fb39e62b5a833f1eb0b"
 
 [[package]]
 name = "gossil"
-version = "0.4.0"
+version = "0.4.1"
 dependencies = [
  "chrono",
  "dir_spec",
@@ -446,8 +446,7 @@ dependencies = [
 [[package]]
 name = "libsql"
 version = "0.10.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "d6bca1704194048f0f0bbc8a8e05ba85c0c67628b03bd59346dd2fdd946a1588"
+source = "git+https://github.com/rahuldave/gossil-libsql?rev=c02db34ae8a7e91ca7ab8faee18fe41515626940#c02db34ae8a7e91ca7ab8faee18fe41515626940"
 dependencies = [
  "async-trait",
  "bitflags",

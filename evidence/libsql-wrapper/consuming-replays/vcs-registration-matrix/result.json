@@ -1,0 +1,310 @@
+{
+  "status": "PASS focused consuming Gossil21case regression; not full32gate or36acceptance",
+  "source_tree": "59d3466a4e323c3653630951b094dcd3213c7a3a",
+  "source32_prerequisite": "626e719c0806a97187816510a3e1f9126a56c0f0",
+  "source": [
+    {
+      "path": "README.md",
+      "sha256": "b7c3638b9342de1d37c0ae5514974b00787875f42505a44dbfc1643137974c96",
+      "matches_frozen32": true
+    },
+    {
+      "path": "docs/cli.md",
+      "sha256": "d4ef3c6f8504d2a4d0ef15ecff68d69bf9768037e9912dbcbebee28f2afb448f",
+      "matches_frozen32": true
+    },
+    {
+      "path": "docs/concepts.md",
+      "sha256": "c85ad73bf4c42444874e3ccdfc8b730bb0a021e785dda88e062fd21742f7d63a",
+      "matches_frozen32": true
+    },
+    {
+      "path": "docs/development-plan.md",
+      "sha256": "b312cf40059b10c272b127191602fd0d11b4ef87f92f2f05c6133baadaf250d3",
+      "matches_frozen32": true
+    },
+    {
+      "path": "docs/getting-started.md",
+      "sha256": "d4f8daf0d26062a26f0cd8fbd25eb316d57cff809a5c50cf101c992978d0b93d",
+      "matches_frozen32": true
+    },
+    {
+      "path": "docs/index.md",
+      "sha256": "f1b80c76f8b647f3e0f15034e8e5d91a5fd5319602d9e57d3d117ae3f7911179",
+      "matches_frozen32": true
+    },
+    {
+      "path": "docs/local-storage.md",
+      "sha256": "6b30038d987645ac717601e67b02758764842008479b03080e35b26a69644e18",
+      "matches_frozen32": true
+    },
+    {
+      "path": "docs/native-storage.md",
+      "sha256": "dc2db34d3bab16147aeafc85ffdb97899abfff23fd58a62954dbbfda3a0aa077",
+      "matches_frozen32": true
+    },
+    {
+      "path": "docs/working-with-repositories.md",
+      "sha256": "0be6923381d42ae5b6d626a489447d5926cd6372ba63e9eecf5d641c52eaa9d7",
+      "matches_frozen32": true
+    },
+    {
+      "path": "src/lib.rs",
+      "sha256": "6cb7cf9c4955e249792078618f438594a05e26e22d5e81a8b4329e156f127f39",
+      "matches_frozen32": true
+    },
+    {
+      "path": "src/product.rs",
+      "sha256": "25d8c2f6fb3cc337092b583a6fc8276f8d731fa042c10aca5c693d17f51aacba",
+      "matches_frozen32": true
+    },
+    {
+      "path": "src/storage.rs",
+      "sha256": "a6213f82f3153e2bb3530d828aee4bd23b960d5bdd892e4c89f0a3f74100e03f",
+      "matches_frozen32": true
+    },
+    {
+      "path": "src/storage/lifecycle.rs",
+      "sha256": "0e0eecade935cf09099ade00d000958ca8d08023fe7c22b54cc27bb75e8fa04d",
+      "matches_frozen32": true
+    },
+    {
+      "path": "src/storage/repository.rs",
+      "sha256": "a91e90c48f5075fd1899629a8dcff4b7eab28b70a9b0e44de6365acb8cd5a40d",
+      "matches_frozen32": true
+    },
+    {
+      "path": "src/storage/repository/checkout.rs",
+      "sha256": "43a59d79b1b377b65dc58c771549a6f7081c35e2b51fc51228fd5be4b0e10b1a",
+      "matches_frozen32": true
+    },
+    {
+      "path": "src/storage/repository/tracking.rs",
+      "sha256": "892f7aa9702b07f66aa61965ba7f4d30453777e4537f454d2da3d4049114619f",
+      "matches_frozen32": true
+    },
+    {
+      "path": "src/storage/repository/tracking/capture.rs",
+      "sha256": "3606d113045df6b889dbdba773a3422fc7fe74202d1747ad756aed8d5e25e446",
+      "matches_frozen32": true
+    },
+    {
+      "path": "src/storage/repository/tracking/capture/unix.rs",
+      "sha256": "a3bcddea8b7976ba789b0deef3715f53f8ba05a2fecb3e847418caa920bb2856",
+      "matches_frozen32": true
+    },
+    {
+      "path": "src/vcs_open.rs",
+      "sha256": "a42f62240616a33a67db6af00633d523737aa09b29d3019717c8aac80a8a11ed",
+      "matches_frozen32": true
+    },
+    {
+      "path": "src/vcs_tracking.rs",
+      "sha256": "9ecd4f1dcdd2a571dfad94a45cf70e791b8f758483c47fd1e2c7ca8740b171ab",
+      "matches_frozen32": true
+    },
+    {
+      "path": "tests/native_tracking.rs",
+      "sha256": "824f39f2e3597436cfc6bb2022bc56633ae70b555ea7d09c2056b8e42569a02d",
+      "matches_frozen32": true
+    },
+    {
+      "path": "tests/native_tracking_admission.rs",
+      "sha256": "7bf783b44eefd4d3bd91279dd24fea1317847b4ac373a2f658275cf4f450d68b",
+      "matches_frozen32": true
+    },
+    {
+      "path": "tests/vcs_tracking_cli.rs",
+      "sha256": "eaa78962e8b0ecdf98a6bb9eb6ec6fcaf6c9b209b9e074addec5bc2827aa2866",
+      "matches_frozen32": true
+    },
+    {
+      "path": "Cargo.toml",
+      "sha256": "4732456ea40848639864a849562c5f9c8a3c429739ea1dbae1217155e0a84123"
+    },
+    {
+      "path": "Cargo.lock",
+      "sha256": "44e3b0099a54061e5ce3dfd514bac62889e7ca44fea214d64cfb6738d7a73340"
+    }
+  ],
+  "pin": "c02db34ae8a7e91ca7ab8faee18fe41515626940",
+  "version": "0.5.0",
+  "guard": "af02b3e4-77f3-4d9a-a8ae-7789d8fa4775",
+  "command": [
+    "just",
+    "integration",
+    "--test",
+    "native_tracking_admission",
+    "registration_text_boundary_runs_complete_raw_byte_matrix"
+  ],
+  "returncode": 0,
+  "elapsed_seconds": 91.25128054106608,
+  "test_seconds": 4.9,
+  "minimum_free_bytes": 8064229376,
+  "surviving_processes": [],
+  "test_summary": {
+    "passed": 1,
+    "failed": 0,
+    "ignored": 0,
+    "other_tests_filtered": 6,
+    "matrix_cases_attempted": 21,
+    "accepted_corruption": 0,
+    "provider_panics": 0,
+    "application_mutation": 0,
+    "working_mutation": 0
+  },
+  "cases": [
+    {
+      "table": "g_checkout",
+      "field": "checkout_id",
+      "form": "nul_suffix",
+      "outcome": "clean refusal; no panic; raw application state and working bytes preserved",
+      "basis": "Executed complete matrix assertions; success output aggregates all21, no percase error text emitted"
+    },
+    {
+      "table": "g_checkout",
+      "field": "checkout_id",
+      "form": "invalid_utf8_same_length",
+      "outcome": "clean refusal; no panic; raw application state and working bytes preserved",
+      "basis": "Executed complete matrix assertions; success output aggregates all21, no percase error text emitted"
+    },
+    {
+      "table": "g_checkout",
+      "field": "checkout_id",
+      "form": "blob_original_bytes",
+      "outcome": "clean refusal; no panic; raw application state and working bytes preserved",
+      "basis": "Executed complete matrix assertions; success output aggregates all21, no percase error text emitted"
+    },
+    {
+      "table": "g_checkout",
+      "field": "root",
+      "form": "nul_suffix",
+      "outcome": "clean refusal; no panic; raw application state and working bytes preserved",
+      "basis": "Executed complete matrix assertions; success output aggregates all21, no percase error text emitted"
+    },
+    {
+      "table": "g_checkout",
+      "field": "root",
+      "form": "invalid_utf8_same_length",
+      "outcome": "clean refusal; no panic; raw application state and working bytes preserved",
+      "basis": "Executed complete matrix assertions; success output aggregates all21, no percase error text emitted"
+    },
+    {
+      "table": "g_checkout",
+      "field": "root",
+      "form": "blob_original_bytes",
+      "outcome": "clean refusal; no panic; raw application state and working bytes preserved",
+      "basis": "Executed complete matrix assertions; success output aggregates all21, no percase error text emitted"
+    },
+    {
+      "table": "g_checkout",
+      "field": "shared_head",
+      "form": "nul_suffix",
+      "outcome": "clean refusal; no panic; raw application state and working bytes preserved",
+      "basis": "Executed complete matrix assertions; success output aggregates all21, no percase error text emitted"
+    },
+    {
+      "table": "g_checkout",
+      "field": "shared_head",
+      "form": "invalid_utf8_same_length",
+      "outcome": "clean refusal; no panic; raw application state and working bytes preserved",
+      "basis": "Executed complete matrix assertions; success output aggregates all21, no percase error text emitted"
+    },
+    {
+      "table": "g_checkout",
+      "field": "shared_head",
+      "form": "blob_original_bytes",
+      "outcome": "clean refusal; no panic; raw application state and working bytes preserved",
+      "basis": "Executed complete matrix assertions; success output aggregates all21, no percase error text emitted"
+    },
+    {
+      "table": "g_checkout",
+      "field": "availability",
+      "form": "nul_suffix",
+      "outcome": "clean refusal; no panic; raw application state and working bytes preserved",
+      "basis": "Executed complete matrix assertions; success output aggregates all21, no percase error text emitted"
+    },
+    {
+      "table": "g_checkout",
+      "field": "availability",
+      "form": "invalid_utf8_same_length",
+      "outcome": "clean refusal; no panic; raw application state and working bytes preserved",
+      "basis": "Executed complete matrix assertions; success output aggregates all21, no percase error text emitted"
+    },
+    {
+      "table": "g_checkout",
+      "field": "availability",
+      "form": "blob_original_bytes",
+      "outcome": "clean refusal; no panic; raw application state and working bytes preserved",
+      "basis": "Executed complete matrix assertions; success output aggregates all21, no percase error text emitted"
+    },
+    {
+      "table": "g_checkout_owner",
+      "field": "owner_id",
+      "form": "nul_suffix",
+      "outcome": "clean refusal; no panic; raw application state and working bytes preserved",
+      "basis": "Executed complete matrix assertions; success output aggregates all21, no percase error text emitted"
+    },
+    {
+      "table": "g_checkout_owner",
+      "field": "owner_id",
+      "form": "invalid_utf8_same_length",
+      "outcome": "clean refusal; no panic; raw application state and working bytes preserved",
+      "basis": "Executed complete matrix assertions; success output aggregates all21, no percase error text emitted"
+    },
+    {
+      "table": "g_checkout_owner",
+      "field": "owner_id",
+      "form": "blob_original_bytes",
+      "outcome": "clean refusal; no panic; raw application state and working bytes preserved",
+      "basis": "Executed complete matrix assertions; success output aggregates all21, no percase error text emitted"
+    },
+    {
+      "table": "g_checkout_owner",
+      "field": "root_device",
+      "form": "nul_suffix",
+      "outcome": "clean refusal; no panic; raw application state and working bytes preserved",
+      "basis": "Executed complete matrix assertions; success output aggregates all21, no percase error text emitted"
+    },
+    {
+      "table": "g_checkout_owner",
+      "field": "root_device",
+      "form": "invalid_utf8_same_length",
+      "outcome": "clean refusal; no panic; raw application state and working bytes preserved",
+      "basis": "Executed complete matrix assertions; success output aggregates all21, no percase error text emitted"
+    },
+    {
+      "table": "g_checkout_owner",
+      "field": "root_device",
+      "form": "blob_original_bytes",
+      "outcome": "clean refusal; no panic; raw application state and working bytes preserved",
+      "basis": "Executed complete matrix assertions; success output aggregates all21, no percase error text emitted"
+    },
+    {
+      "table": "g_checkout_owner",
+      "field": "root_inode",
+      "form": "nul_suffix",
+      "outcome": "clean refusal; no panic; raw application state and working bytes preserved",
+      "basis": "Executed complete matrix assertions; success output aggregates all21, no percase error text emitted"
+    },
+    {
+      "table": "g_checkout_owner",
+      "field": "root_inode",
+      "form": "invalid_utf8_same_length",
+      "outcome": "clean refusal; no panic; raw application state and working bytes preserved",
+      "basis": "Executed complete matrix assertions; success output aggregates all21, no percase error text emitted"
+    },
+    {
+      "table": "g_checkout_owner",
+      "field": "root_inode",
+      "form": "blob_original_bytes",
+      "outcome": "clean refusal; no panic; raw application state and working bytes preserved",
+      "basis": "Executed complete matrix assertions; success output aggregates all21, no percase error text emitted"
+    }
+  ],
+  "provider_graph": "resolved-provider-proof.json",
+  "ffi": "ffi-verification.txt verifies273files",
+  "cache": "cargo-cache.json",
+  "old_red": "../registration-text-red/result.json",
+  "next": "actual36acceptedbase and complete32orderedqualification remainrequired"
+}

@@ -1,0 +1,7 @@
+{
+  "CARGO_HOME": "/tmp/gossil-vcs-provider-cargo-20261120",
+  "registry_shared_by_symlink": "/Users/rahul/.cargo/registry",
+  "git_cache": "isolated, normalCargo acquisition",
+  "existing_shared_git_cache": "preserved untouched",
+  "reason": "Cargo/libgit2 could not open existing shared bare repo despite gitCLI recognition"
+}
