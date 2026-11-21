@@ -18,7 +18,7 @@ the operating-system cause. The checks append literal native filename suffixes.
 They observe the namespace before creation and again before SQLite entry.
 
 Callers must keep that namespace stable through engine cleanup. The constructors
-observe regular-file identity at separate boundaries; these observations do not
+observe regular-file identity at separate boundaries. These observations do not
 establish atomic binding to an engine handle. Checkout-free initialization retains
 a failed main file if the engine might have opened it or COMMIT was attempted.
 It reports cleanup uncertainty separately from the first operation error.
@@ -73,6 +73,13 @@ and report a separate cleanup failure when one occurs.
 If commit fails but checked rollback restores an idle connection, the store
 can begin another write. The commit still returns its original error.
 
+`commit_checked()` returns a `CommitFailure` with the original operation error
+and an optional cleanup error. Both retain their typed source chains through
+`StorageError::source()` when an underlying cause exists.
+Inspect `operation` first and `cleanup` separately.
+`commit()` keeps its existing `StorageError` result and stores cleanup diagnostics
+as text.
+
 A failed BEGIN or cleanup discards the connection and poisons the store.
 A poisoned store requires an explicit new open.
 
@@ -114,5 +121,6 @@ It does not add public SQL access or change the lifecycle guarantees above.
 ## Recommendations
 
 Use `LocalStore` to own a transaction, or `LocalOwnerRepository` for validated
-repository operations. Next, consult the [generated Rust API](api/index.qmd)
+repository operations. Prefer `commit_checked()` when a caller needs to inspect
+both error causes. Next, consult the [generated Rust API](api/index.qmd)
 for the chosen type's signatures and errors.
