@@ -55,7 +55,8 @@ for its finite core-only evidence.
 dependencies and all features. The graph records source resolution, not runtime behavior.
 
 A consuming workspace must select the same full Git revision in its own root
-patch table. Cargo ignores patch tables in dependencies. Verify the actual
+patch table, as shown in the [application examples](examples.md). Cargo ignores
+patch tables in dependencies. Verify the actual
 resolved source and provider path when composing Gossil with another package.
 
 `tests/libsql_row_text.rs` exercises the public erased `libsql::Row` API.
@@ -71,10 +72,11 @@ fidelity tests also passed. Their receipts are under
 `evidence/libsql-wrapper/consuming-replays/`. These focused runs do not qualify
 the complete VCS or Gest feature sets.
 
-The wrapper correction was integrated for Gossil 0.4.1. This checkout prepares
-Gossil 0.5.0; the [development guide](development-plan.md) distinguishes its
-preparation results from final feature checks. The focused controls here do not
-establish a complete feature qualification, release or installation.
+The wrapper correction was integrated for Gossil 0.4.1 and retained in the
+released 0.5.0 tracking baseline. This checkout prepares a separate private
+recording library checkpoint. The [development guide](development-plan.md)
+distinguishes that preparation from delivered tracking. The focused controls
+here do not establish a complete private-recording qualification or installation.
 
 Writing follows nossaifd guidance, including Rosalind Reid's communication
 principles, Shreya Shankar's plain-writing guidance and Oskar Austegard's

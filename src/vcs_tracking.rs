@@ -1,8 +1,8 @@
-//! Bounded explicit native add and pending-add-only status adapters.
+//! Adapt native add and tracked status to bounded explicit commands.
 //!
 //! ## Recommendations
 //! Run `vcs open` to establish or recover the locator first. Add explicit regular
-//! files; status reports pending additions with scope still unselected.
+//! files, choose scopes explicitly through the library, and inspect recorded versus pending paths.
 use crate::storage::TrackingLimits;
 use std::{ffi::OsString, path::PathBuf};
 /// Preserve storage, locator and I/O causes through the command boundary.
@@ -75,12 +75,12 @@ fn options(args: &[OsString], add: bool) -> Result<Options, Error> {
         paths,
     })
 }
-/// Authenticate the shared locator/native binding, then add or list pending additions.
+/// Authenticate the locator/native binding, then enroll paths or list tracked status.
 /// # Arguments
 /// * `args` - Exact command suffix after add/status.
 /// * `add` - Whether to enroll requested paths before listing.
 /// # Returns
-/// Success after pending-add output completes.
+/// Success after complete tracked state and actual scope output completes.
 /// # Errors
 /// Propagates exact grammar, admission, capture, transaction and output failures.
 /// A failed output after add cannot undo its committed enrollment.
@@ -88,7 +88,7 @@ fn options(args: &[OsString], add: bool) -> Result<Options, Error> {
 /// Panics if invoked within an already running Tokio runtime.
 pub(crate) fn run(args: &[OsString], add: bool) -> Result<(), Error> {
     let options = options(args, add)?;
-    let entries = tokio::runtime::Builder::new_current_thread()
+    let (paths, entries, scopes) = tokio::runtime::Builder::new_current_thread()
         .build()?
         .block_on(async {
             let (mut owner, view) =
@@ -108,13 +108,33 @@ pub(crate) fn run(args: &[OsString], add: bool) -> Result<(), Error> {
             let entries = owner
                 .pending_adds(&view.checkout_id, crate::vcs_open::limits(), limits())
                 .await?;
-            Ok::<_, Error>(entries)
+            let paths = owner
+                .tracked_paths(&view.checkout_id, crate::vcs_open::limits(), limits())
+                .await?;
+            let scopes = owner
+                .path_scopes(&view.checkout_id, crate::vcs_open::limits(), limits())
+                .await?;
+            Ok::<_, Error>((paths, entries, scopes))
         })?;
     use std::io::Write;
     let mut output = std::io::stdout().lock();
-    writeln!(output, "Pending additions (scope unselected):")?;
-    for entry in entries {
-        writeln!(output, "A\t{:?}", entry.path)?;
+    writeln!(output, "Tracked paths (A: pending addition, R: recorded):")?;
+    for path in paths {
+        let state = if entries.iter().any(|entry| entry.path == path) {
+            "A"
+        } else {
+            "R"
+        };
+        let scope = match scopes
+            .iter()
+            .find(|entry| entry.path == path)
+            .map(|entry| entry.scope)
+        {
+            Some(crate::storage::PathScope::Private) => "private",
+            Some(crate::storage::PathScope::Shared) => "shared",
+            None => "unselected",
+        };
+        writeln!(output, "{state}\t{scope}\t{path:?}")?;
     }
     Ok(())
 }

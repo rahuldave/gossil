@@ -1,8 +1,8 @@
 //! Native Fossil-style pending additions on the existing checkout substrate.
 //!
-//! This slice admits only initial-root additions. A later recording commit must
-//! reread every tracked pathname, including edits made without another add.
-//! Path scope remains explicitly unselected. Absent `g_path_scope` rows convey
+//! Additions use the currently selected native check-in, including private history.
+//! Recording rereads every tracked pathname, including edits made without another add.
+//! Newly enrolled paths remain explicitly unselected. Absent `g_path_scope` rows convey
 //! no shared/private classification. Recording and sync must require an explicit
 //! persisted scope decision before treating these additions as commit-ready.
 //!
@@ -15,7 +15,8 @@ use std::{
     collections::BTreeSet,
     path::{Path, PathBuf},
 };
-mod capture;
+/// Capture bounded regular files through stable descriptor observations.
+pub(super) mod capture;
 
 /// Finite ceilings for a complete explicit tracking operation.
 #[derive(Clone, Copy, Debug)]
@@ -80,8 +81,14 @@ impl LocalOwnerRepository {
         if paths.is_empty() || paths.len() > tracking.paths {
             return Err(StorageError::state("tracking batch count limit"));
         }
+        let mut budget = crate::storage::content::Budget::new(limits.content)?;
         let mut unique = BTreeSet::new();
         for path in paths {
+            budget.charge_decoded(
+                path.len()
+                    .checked_add(128)
+                    .ok_or_else(|| StorageError::state("tracking input work overflow"))?,
+            )?;
             capture::checked_path(path, tracking)?;
             if !unique.insert(*path)
                 || paths
@@ -91,42 +98,46 @@ impl LocalOwnerRepository {
                 return Err(StorageError::state("duplicate or aliased tracking path"));
             }
         }
+        let mut parse = super::ParseWork::new(limits.parser)?;
         let mut tx = self.store.begin_write().await?;
         let result = async {
-            tx.check_admission(&self.principal,&self.admission).await?;
+            tx.check_admission_budgeted(&self.principal,&self.admission,&mut budget).await?;
             tx.require_native_checkout().await?;
-            tx.validate_initial_repository(&self.principal,limits).await?;
-            let before = tx.read_checkout_view(&self.principal,checkout).await?;
+            tx.validate_recording_repository(&self.principal,limits,&mut budget,&mut parse).await?;
+            let before = tx.read_checkout_view_budgeted(&self.principal,checkout,&mut budget).await?;
             if &before != wanted { return Err(StorageError::state("tracking checkout changed")); }
             let bindings = tx.query_bound("SELECT root_device,root_inode FROM g_checkout_owner WHERE checkout_id=?1",vec![Value::Text(checkout.into())]).await?;
             let [row] = bindings.as_slice() else {return Err(StorageError::state("tracking owner binding unavailable"));};
             let [Value::Text(device),Value::Text(inode)] = row.as_slice() else {return Err(StorageError::state("tracking owner binding invalid"));};
             let number = |value: &str| value.parse::<u64>().map_err(|e|StorageError::caused("tracking root identity invalid",e));
-            let root = capture::open_root(&before.registered_root,number(device)?,number(inode)?)?;
+            let root = capture::open_root_budget(&before.registered_root,number(device)?,number(inode)?,&mut budget)?;
             // This private hook must use the store's retained native provider identity.
             let protected = tx.tracking_protected_paths()?;
             let protected: Vec<&Path> = protected.iter().map(PathBuf::as_path).collect();
-            let existing = tx.read_pending_adds(checkout,tracking).await?;
+            tx.charge_tracking_inventory(checkout, &mut budget).await?;
+            let existing = tx.read_tracking_inventory(checkout,tracking,false).await?;
             for path in paths {
-                if existing.iter().any(|entry|entry.path != *path && (entry.path.eq_ignore_ascii_case(path) || entry.path.starts_with(&format!("{path}/")) || path.starts_with(&format!("{}/",entry.path)))) {
+                if existing.iter().any(|entry|entry.path != *path && (entry.path.eq_ignore_ascii_case(path) || entry.path.strip_prefix(*path).is_some_and(|tail|tail.starts_with('/')) || path.strip_prefix(entry.path.as_str()).is_some_and(|tail|tail.starts_with('/')))) {
                     return Err(StorageError::state("aliased tracked path"));
                 }
             }
             let total = existing.len().checked_add(paths.iter().filter(|path|!existing.iter().any(|entry|entry.path == **path)).count()).ok_or_else(||StorageError::state("tracking inventory overflow"))?;
             if total>tracking.paths { return Err(StorageError::state("tracking inventory count limit")); }
+            budget.charge_decoded(paths.len().checked_mul(std::mem::size_of::<(&str,capture::Captured)>()).ok_or_else(||StorageError::state("tracking capture work overflow"))?)?;
             let mut captures = Vec::new();
             captures.try_reserve_exact(paths.len()).map_err(|e|StorageError::caused("tracking capture allocation",e))?;
             let mut remaining = tracking.retained_bytes;
             for path in paths {
-                let captured = capture::capture(&root,path,&protected,tracking,remaining)?;
+                let captured = capture::capture_budget(&root,path,&protected,tracking,remaining,&mut budget)?;
                 remaining = remaining.checked_sub(captured.bytes.len() as u64).ok_or_else(||StorageError::state("tracking retained limit"))?;
                 captures.push((*path,captured));
             }
-            let rid = tx.query_bound("SELECT rid FROM blob WHERE uuid=?1",vec![Value::Text(before.shared_head.clone())]).await?;
+            let rid = tx.query_bound("SELECT rid FROM blob WHERE uuid=?1",vec![Value::Text(before.combined_head.as_ref().unwrap_or(&before.shared_head).clone())]).await?;
             let [row] = rid.as_slice() else {return Err(StorageError::state("tracking head unavailable"));};
             let [Value::Integer(rid)] = row.as_slice() else {return Err(StorageError::state("tracking head invalid"));};
             for (path,captured) in &captures {
                 if existing.iter().any(|entry|entry.path == *path) { continue; }
+                budget.charge_decoded(path.len().checked_add(checkout.len()).and_then(|n|n.checked_add(512)).ok_or_else(||StorageError::state("tracking SQL work overflow"))?)?;
                 // Fossil add.c add_one_file: vid=current checkout, rid=mrid=0,
                 // chnged=deleted=islink=0. No content or event row is produced.
                 tx.execute_bound("INSERT INTO g_vfile(checkout_id,id,vid,chnged,deleted,isexe,islink,rid,mrid,mtime,pathname,origname,mhash) SELECT ?1,coalesce(max(id),0)+1,?2,0,0,?3,0,0,0,?4,?5,NULL,NULL FROM g_vfile WHERE checkout_id=?1",vec![Value::Text(checkout.into()),Value::Integer(*rid),Value::Integer(captured.mode),Value::Integer(captured.mtime),Value::Text((*path).into())]).await?;
@@ -135,19 +146,105 @@ impl LocalOwnerRepository {
             let pending = before.pending_version.checked_add(1).ok_or_else(||StorageError::state("tracking pending counter exhausted"))?;
             require_pending_update(tx.execute_bound("UPDATE g_checkout SET pending_version=?1 WHERE checkout_id=?2 AND generation=?3 AND pending_version=?4 AND availability='ready'",vec![Value::Integer(i64::try_from(pending).map_err(|_|StorageError::state("tracking pending counter exhausted"))?),Value::Text(checkout.into()),Value::Integer(i64::try_from(before.generation).map_err(|_|StorageError::state("tracking generation exhausted"))?),Value::Integer(i64::try_from(before.pending_version).map_err(|_|StorageError::state("tracking pending counter exhausted"))?)]).await?)?;
             }
-            for (path,captured) in &captures { capture::recheck(&root,path,captured,&protected,tracking)?; }
+            for (path,captured) in &captures { capture::recheck_budget(&root,path,captured,&protected,tracking,&mut budget)?; }
             // Observe the retained provider again after all descriptor rechecks.
             // Its namespace/suffix vector is immutable; observe refuses any drift.
             tx.tracking_protected_paths()?;
-            tx.validate_initial_repository(&self.principal,limits).await?;
-            let view = tx.read_checkout_view(&self.principal,checkout).await?;
-            Ok((view,tx.capture_admission().await?))
+            tx.validate_recording_repository(&self.principal,limits,&mut budget,&mut parse).await?;
+            let view = tx.read_checkout_view_budgeted(&self.principal,checkout,&mut budget).await?;
+            Ok((view,tx.capture_admission_budgeted(&mut budget).await?))
         }.await;
         let result = tx.record(result);
         tx.commit().await?;
         let (view, admission) = result?;
         self.admission = admission;
         Ok(view)
+    }
+
+    /// Read explicit durable scope choices without assigning absent paths a scope.
+    /// # Arguments
+    /// * `checkout` - Exact admitted checkout identity.
+    /// * `limits` - Whole-operation native admission ceilings.
+    /// * `tracking` - Complete inventory and pathname ceilings.
+    /// # Returns
+    /// Explicit choices only; absent rows remain unselected.
+    /// # Errors
+    /// Refuses stale authority, malformed state and exhausted work.
+    /// # Examples
+    /// ```no_run
+    /// async fn inspect(owner: &mut gossil::storage::LocalOwnerRepository,
+    ///     limits: gossil::storage::AdmissionLimits, tracking: gossil::storage::TrackingLimits) {
+    ///     let explicit = owner.path_scopes("work", limits, tracking).await.unwrap();
+    ///     for choice in explicit { println!("{}: {:?}", choice.path, choice.scope); }
+    /// }
+    /// ```
+    pub async fn path_scopes(
+        &mut self,
+        checkout: &str,
+        limits: AdmissionLimits,
+        tracking: TrackingLimits,
+    ) -> Result<Vec<super::path_scope::PathScopeSelection>, StorageError> {
+        let mut budget = crate::storage::content::Budget::new(limits.content)?;
+        let mut parse = super::ParseWork::new(limits.parser)?;
+        let mut tx = self.store.begin_write().await?;
+        let result = async {
+            tx.check_admission_budgeted(&self.principal, &self.admission, &mut budget)
+                .await?;
+            tx.require_native_checkout().await?;
+            tx.validate_recording_repository(&self.principal, limits, &mut budget, &mut parse)
+                .await?;
+            tx.read_checkout_view_budgeted(&self.principal, checkout, &mut budget)
+                .await?;
+            tx.read_path_scopes_budgeted(checkout, tracking, &mut budget)
+                .await
+        }
+        .await;
+        let result = tx.record(result);
+        tx.commit().await?;
+        result
+    }
+
+    /// List every admitted tracked path, including recorded files and pending additions.
+    /// # Arguments
+    /// * `checkout` - Exact admitted checkout identity.
+    /// * `limits` - Whole-operation native admission ceilings.
+    /// * `tracking` - Complete inventory and pathname ceilings.
+    /// # Returns
+    /// Canonical tracked paths in exact pathname order, without inferred scopes.
+    /// # Errors
+    /// Refuses stale authority, malformed history, invalid inventory and exhausted work.
+    /// # Examples
+    /// ```no_run
+    /// async fn inspect(owner: &mut gossil::storage::LocalOwnerRepository,
+    ///     limits: gossil::storage::AdmissionLimits, tracking: gossil::storage::TrackingLimits) {
+    ///     let all = owner.tracked_paths("work", limits, tracking).await.unwrap();
+    ///     for path in all { println!("{path}"); }
+    /// }
+    /// ```
+    pub async fn tracked_paths(
+        &mut self,
+        checkout: &str,
+        limits: AdmissionLimits,
+        tracking: TrackingLimits,
+    ) -> Result<Vec<String>, StorageError> {
+        let mut budget = crate::storage::content::Budget::new(limits.content)?;
+        let mut parse = super::ParseWork::new(limits.parser)?;
+        let mut tx = self.store.begin_write().await?;
+        let result = async {
+            tx.check_admission_budgeted(&self.principal, &self.admission, &mut budget)
+                .await?;
+            tx.require_native_checkout().await?;
+            tx.validate_recording_repository(&self.principal, limits, &mut budget, &mut parse)
+                .await?;
+            tx.read_checkout_view_budgeted(&self.principal, checkout, &mut budget)
+                .await?;
+            tx.read_scope_tracked_paths(checkout, tracking, &mut budget)
+                .await
+        }
+        .await;
+        let result = tx.record(result);
+        tx.commit().await?;
+        result
     }
 
     /// List the complete bounded native pending-add inventory in pathname order.
@@ -173,13 +270,18 @@ impl LocalOwnerRepository {
         limits: AdmissionLimits,
         tracking: TrackingLimits,
     ) -> Result<Vec<PendingAdd>, StorageError> {
+        let mut budget = crate::storage::content::Budget::new(limits.content)?;
+        let mut parse = super::ParseWork::new(limits.parser)?;
         let mut tx = self.store.begin_write().await?;
         let result = async {
-            tx.check_admission(&self.principal, &self.admission).await?;
-            tx.require_native_checkout().await?;
-            tx.validate_initial_repository(&self.principal, limits)
+            tx.check_admission_budgeted(&self.principal, &self.admission, &mut budget)
                 .await?;
-            tx.read_checkout_view(&self.principal, checkout).await?;
+            tx.require_native_checkout().await?;
+            tx.validate_recording_repository(&self.principal, limits, &mut budget, &mut parse)
+                .await?;
+            tx.read_checkout_view_budgeted(&self.principal, checkout, &mut budget)
+                .await?;
+            tx.charge_tracking_inventory(checkout, &mut budget).await?;
             tx.read_pending_adds(checkout, tracking).await
         }
         .await;
@@ -190,6 +292,29 @@ impl LocalOwnerRepository {
 }
 
 impl WriteTransaction<'_> {
+    /// Charge complete inventory ownership before the all-tracked or pending reader.
+    /// # Arguments
+    /// * `checkout` - Exact admitted identity.
+    /// * `budget` - Shared operation ledger.
+    /// # Returns
+    /// Success after charging both provider rows and decoded entries.
+    /// # Errors
+    /// Refuses invalid scalar counts, overflow and exhausted work.
+    async fn charge_tracking_inventory(
+        &mut self,
+        checkout: &str,
+        budget: &mut crate::storage::content::Budget,
+    ) -> Result<(), StorageError> {
+        budget.charge_decoded(
+            checkout
+                .len()
+                .checked_add(256)
+                .ok_or_else(|| StorageError::state("tracking work overflow"))?,
+        )?;
+        let rows = self.query_bound("SELECT count(*),coalesce(sum(length(CAST(pathname AS BLOB))),0) FROM g_vfile WHERE checkout_id=?1", vec![Value::Text(checkout.into())]).await?;
+        charge_tracking_rows(&rows, budget)
+    }
+
     /// Obtain protected names from the retained resolved store namespace only.
     /// The private accessor rechecks both selected identity and observed namespace;
     /// these are cooperative observations, not atomic SQLite-handle binding.
@@ -197,7 +322,7 @@ impl WriteTransaction<'_> {
     /// Retained resolved database and SQLite sidecar pathnames after namespace observation.
     /// # Errors
     /// Refuses an absent disk identity or a changed or unreadable provider namespace.
-    fn tracking_protected_paths(&self) -> Result<Vec<PathBuf>, StorageError> {
+    pub(super) fn tracking_protected_paths(&self) -> Result<Vec<PathBuf>, StorageError> {
         self.store
             .identity
             .as_ref()
@@ -218,6 +343,24 @@ impl WriteTransaction<'_> {
         checkout: &str,
         limits: TrackingLimits,
     ) -> Result<Vec<PendingAdd>, StorageError> {
+        self.read_tracking_inventory(checkout, limits, true).await
+    }
+
+    /// Read all tracked paths for add membership or only native pending additions.
+    /// # Arguments
+    /// * `checkout` - Exact admitted checkout identity.
+    /// * `limits` - Finite path and inventory bounds.
+    /// * `pending_only` - Select zero-RID additions when true.
+    /// # Returns
+    /// Validated selected paths in canonical order.
+    /// # Errors
+    /// Refuses malformed rows, invalid paths, provider and allocation failures.
+    async fn read_tracking_inventory(
+        &mut self,
+        checkout: &str,
+        limits: TrackingLimits,
+        pending_only: bool,
+    ) -> Result<Vec<PendingAdd>, StorageError> {
         if limits.paths == 0
             || limits.path_bytes == 0
             || limits.components == 0
@@ -237,8 +380,8 @@ impl WriteTransaction<'_> {
         }
         let rows = self
             .query_bound(
-                "SELECT CAST(pathname AS BLOB),isexe FROM g_vfile WHERE checkout_id=?1 ORDER BY pathname",
-                vec![Value::Text(checkout.into())],
+                "SELECT CAST(pathname AS BLOB),isexe FROM g_vfile WHERE checkout_id=?1 AND (?2=0 OR (rid=0 AND mrid=0)) ORDER BY pathname",
+                vec![Value::Text(checkout.into()), Value::Integer(i64::from(pending_only))],
             )
             .await?;
         let mut result = Vec::new();
@@ -316,6 +459,36 @@ impl WriteTransaction<'_> {
     }
 }
 
+/// Decode and charge the complete tracking inventory before retaining its paths.
+/// # Arguments
+/// * `rows` - Fixed aggregate query result for the selected checkout.
+/// * `budget` - Original borrowed operation ledger.
+/// # Returns
+/// Success after charging provider and decoded inventory ownership.
+/// # Errors
+/// Refuses missing/malformed scalars, negative values, overflow and exhausted work.
+fn charge_tracking_rows(
+    rows: &[Vec<Value>],
+    budget: &mut crate::storage::content::Budget,
+) -> Result<(), StorageError> {
+    let [row] = rows else {
+        return Err(StorageError::state("tracking work sizing unavailable"));
+    };
+    let [Value::Integer(count), Value::Integer(bytes)] = row.as_slice() else {
+        return Err(StorageError::state("tracking work sizing invalid"));
+    };
+    let count =
+        usize::try_from(*count).map_err(|_| StorageError::state("tracking work size overflow"))?;
+    let bytes =
+        usize::try_from(*bytes).map_err(|_| StorageError::state("tracking work size overflow"))?;
+    let charge = bytes
+        .checked_mul(2)
+        .and_then(|n| n.checked_add(count.checked_mul(512)?))
+        .and_then(|n| n.checked_add(8192))
+        .ok_or_else(|| StorageError::state("tracking work overflow"))?;
+    budget.charge_decoded(charge)
+}
+
 /// Require one guarded checkout counter update.
 /// # Arguments
 /// * `changed` - Provider-reported affected row count.
@@ -352,6 +525,18 @@ fn pending_add_from_row(row: &[Value], limits: TrackingLimits) -> Result<Pending
         path: path.to_owned(),
         executable: *mode == 1,
     })
+}
+
+/// Apply the exact capture path policy to persisted scope membership.
+/// # Arguments
+/// * `path` - Canonical relative pathname.
+/// * `limits` - Finite path and component bounds.
+/// # Returns
+/// Success for a supported path spelling.
+/// # Errors
+/// Refuses invalid limits, reserved paths and unsupported aliases.
+pub(super) fn checked_scope_path(path: &str, limits: TrackingLimits) -> Result<(), StorageError> {
+    capture::checked_path(path, limits)
 }
 
 #[cfg(test)]
@@ -426,6 +611,75 @@ mod boundary_controls {
                 .unwrap_err()
                 .operation,
             "tracking inventory invalid"
+        );
+        tx.rollback().await.unwrap();
+    }
+    /// Inventory work remains cumulative, and malformed aggregates never become allocations.
+    #[tokio::test]
+    async fn tracking_inventory_charge_refuses_bad_shape_and_early_exhaustion() {
+        use crate::storage::content::Budget;
+        use crate::storage::{Limits, LocalStore};
+        let limits = Limits {
+            max_stored_bytes: 16,
+            max_output_bytes: 16,
+            max_chain_depth: 1,
+            max_total_stored_bytes: 16,
+            max_total_decoded_bytes: 8192,
+        };
+        for rows in [vec![], vec![vec![], vec![]]] {
+            assert_eq!(
+                charge_tracking_rows(&rows, &mut Budget::new(limits).unwrap())
+                    .unwrap_err()
+                    .operation,
+                "tracking work sizing unavailable"
+            );
+        }
+        assert_eq!(
+            charge_tracking_rows(
+                &[vec![Value::Null, Value::Integer(0)]],
+                &mut Budget::new(limits).unwrap()
+            )
+            .unwrap_err()
+            .operation,
+            "tracking work sizing invalid"
+        );
+        for (count, bytes, expected) in [
+            (-1, 0, "tracking work size overflow"),
+            (0, -1, "tracking work size overflow"),
+            (i64::MAX, i64::MAX, "tracking work overflow"),
+        ] {
+            assert_eq!(
+                charge_tracking_rows(
+                    &[vec![Value::Integer(count), Value::Integer(bytes)]],
+                    &mut Budget::new(limits).unwrap()
+                )
+                .unwrap_err()
+                .operation,
+                expected
+            );
+        }
+        let empty = vec![vec![Value::Integer(0), Value::Integer(0)]];
+        let mut exact = Budget::new(limits).unwrap();
+        charge_tracking_rows(&empty, &mut exact).unwrap();
+        assert_eq!(
+            charge_tracking_rows(&empty, &mut exact)
+                .unwrap_err()
+                .operation,
+            "total decoded content limit"
+        );
+        let mut store = LocalStore::open_inner(":memory:", false).await.unwrap();
+        let mut tx = store.begin_write().await.unwrap();
+        let mut work = Budget::new(Limits {
+            max_total_decoded_bytes: 259,
+            ..limits
+        })
+        .unwrap();
+        assert_eq!(
+            tx.charge_tracking_inventory("work", &mut work)
+                .await
+                .unwrap_err()
+                .operation,
+            "total decoded content limit"
         );
         tx.rollback().await.unwrap();
     }

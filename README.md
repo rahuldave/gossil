@@ -3,8 +3,13 @@
 Gossil aims to keep agent work, issues and file history together alongside Git.
 Fossil is a version-control system. This build exposes a Rust library for Fossil's delta bytes, artifact records
 and local storage. Its `gossil` CLI creates, applies and checks deltas between files.
-It also initializes empty repositories, opens one native empty-root checkout,
-and adds or lists explicitly selected files as pending additions.
+It also initializes empty repositories, opens one native checkout,
+adds or lists explicitly tracked files, selects their scopes and records private history.
+
+The CLI and library can select immutable
+path scopes and record the complete private tracked tree. A scope assigns a path
+to shared or owner-local private history; recording shared history remains planned.
+
 The library includes bounded compression, content hashes, token escaping,
 artifact checksums and owned local database transactions.
 
@@ -43,7 +48,8 @@ To register an existing directory and publish its lookup locator, use the source
 [`vcs open` command](docs/cli.md#open-a-native-checkout). It selects no files.
 Open can also recover a missing locator. Build the commands from this source
 checkout; installation and publication require separate delivery checks.
-The existing default mini-VCS preview remains a separate installation.
+An already installed mini-VCS preview has a separate
+[command contract](docs/working-with-repositories.md#try-the-installed-development-preview).
 
 ## Use the library
 
@@ -73,9 +79,10 @@ registration by ID or exact root. Registration changes the database only; it
 selects no files and publishes no checkout locator. See the
 [native storage guide](docs/native-storage.md#register-one-existing-directory).
 
-Bound catalog1 creation also supports bounded private content operations. The root is a check-in with no files. File-containing check-ins, general
-version-control commands, Gest task management, a server and a user interface
-remain planned. Build this version from source.
+Catalog names identify storage formats. Catalog1 creation binds a checkout and
+supports bounded private content operations. Catalog4 starts at an empty shared
+check-in and accepts the private history described below. General history commands, shared recording, Gest task
+management, a server and a user interface remain planned.
 
 ## Contribute
 
@@ -84,12 +91,24 @@ verification, documentation generation and the evidence archive.
 `gossil-conformance` is separate development infrastructure for explicit
 inherited-test configurations. See its [runner guide](docs/conformance.md).
 
-## Pending additions
+## Track and record private files
 
-This source checkout provides [explicit pending add and status](docs/cli.md#add-explicit-paths-and-inspect-pending-additions).
-Add stores native tracking metadata with scope unselected, so the files are neither
-classified as shared nor private. It writes no working files or stored file content. Status lists pending additions only. Recording
-and history commands remain planned.
+Add enrolls paths without staging their bytes. New paths have unselected scope.
+The library's `select_path_scopes` persists an explicit immutable choice for each
+tracked path. `commit_private_tracked_files` requires every tracked path to be
+private and rereads the complete tree, including edits made without re-adding.
+It writes a private check-in while preserving the empty shared root.
+
+The source CLI offers [add and status](docs/cli.md#add-explicit-paths-and-inspect-pending-additions).
+Status distinguishes pending additions from recorded paths and prints their
+actual scopes. Use [`vcs scope` and `vcs commit`](docs/cli.md#select-scopes-and-record-private-files)
+with explicit repository, checkout and scope choices. Commit also requires
+`--all-tracked`, `--user`, `--comment` and `--date-override`.
+The [source walkthrough](docs/getting-started.md#record-private-files-from-source)
+records an edit without adding the file again.
+See [native storage](docs/native-storage.md#private-recording-library) for the
+request, limits and no-change result, and [development status](docs/development-plan.md#private-recording-qualification)
+for the remaining qualification work.
 
 ## Recommendations
 

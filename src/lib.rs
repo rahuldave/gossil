@@ -801,6 +801,9 @@ pub mod product;
 mod vcs_init;
 /// Compose native registration and locator recovery for the product CLI.
 mod vcs_open;
+/// Adapt explicit scope selection and private all-tracked recording for product executables.
+mod vcs_recording;
+/// Adapt explicit tracking enrollment and complete tracked status for product executables.
 mod vcs_tracking;
 
 /// Represent validated native dates as integer nanoseconds.

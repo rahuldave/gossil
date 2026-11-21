@@ -1,4 +1,4 @@
-//! Register one empty native checkout without selecting files or publishing a locator.
+//! Register one native checkout and authenticate its current supported history without publishing a locator.
 //!
 //! ## Recommendations
 //! Register an explicitly chosen existing directory, then reopen with fresh admission limits.
@@ -13,10 +13,11 @@ const ID_BYTES: usize = 1024;
 /// Finite retained canonical root ceiling, further bounded by parser input bytes.
 const ROOT_BYTES: usize = 4096;
 
-/// Describe an authenticated empty-root registration from an admitted [`LocalOwnerRepository`].
+/// Describe an authenticated native checkout registration from an admitted [`LocalOwnerRepository`].
 ///
 /// Returned by [`LocalOwnerRepository::register_checkout`],
 /// [`LocalOwnerRepository::checkout_view`] and [`LocalOwnerRepository::checkout_view_for_root`].
+/// Tracking, scope selection and private recording also return refreshed views.
 /// Fields describe the admitted snapshot; callers can mutate their owned copy without changing storage.
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub struct CheckoutView {
@@ -28,11 +29,11 @@ pub struct CheckoutView {
     pub registered_root: PathBuf,
     /// Actual authenticated public initial check-in name.
     pub shared_head: String,
-    /// No private combined head is supported by this API.
+    /// Current private combined check-in, absent before the first recording.
     pub combined_head: Option<String>,
-    /// Persisted generation, zero in the supported initial-root scope.
+    /// Number of committed private recordings in this checkout.
     pub generation: u64,
-    /// Persisted pending version; advances once per batch enrolling new native paths.
+    /// Persisted pending version; advances once per changed tracking, scope or recording operation.
     pub pending_version: u64,
 }
 
@@ -136,13 +137,35 @@ impl LocalOwnerRepository {
         limits: AdmissionLimits,
     ) -> Result<CheckoutView, StorageError> {
         check_id(checkout_id, limits)?;
+        let mut budget = crate::storage::content::Budget::new(limits.content)?;
+        let mut parse = super::ParseWork::new(limits.parser)?;
+        // Bound fixed registration/view SQL bind and scalar-result ownership.
+        budget.charge_decoded(
+            limits
+                .parser
+                .input_bytes
+                .min(ROOT_BYTES + ID_BYTES)
+                .checked_mul(8)
+                .and_then(|n| n.checked_add(self.principal.owner.len().checked_mul(4)?))
+                .and_then(|n| n.checked_add(8192))
+                .ok_or_else(|| StorageError::state("checkout operation work overflow"))?,
+        )?;
+        // Canonicalization allocates only after caller limits and traversal work are charged.
+        budget.charge_decoded(
+            root.as_os_str()
+                .as_encoded_bytes()
+                .len()
+                .checked_add((libc::PATH_MAX as usize).saturating_mul(4))
+                .ok_or_else(|| StorageError::state("checkout root work overflow"))?,
+        )?;
         let (root, metadata) = real_directory(root, limits)?;
         let mut tx = self.store.begin_write().await?;
         let result =
             async {
-                tx.check_admission(&self.principal, &self.admission).await?;
+                tx.check_admission_budgeted(&self.principal, &self.admission, &mut budget)
+                    .await?;
                 tx.require_native_checkout().await?;
-                tx.validate_initial_repository(&self.principal, limits)
+                tx.validate_recording_repository(&self.principal, limits, &mut budget, &mut parse)
                     .await?;
                 if tx
                     .query_bound("SELECT count(*) FROM g_checkout", vec![])
@@ -216,10 +239,12 @@ impl LocalOwnerRepository {
                     .await?;
                     registration_boundary(4 + index)?;
                 }
-                tx.validate_initial_repository(&self.principal, limits)
+                tx.validate_recording_repository(&self.principal, limits, &mut budget, &mut parse)
                     .await?;
-                let view = tx.read_checkout_view(&self.principal, checkout_id).await?;
-                let admission = tx.capture_admission().await?;
+                let view = tx
+                    .read_checkout_view_budgeted(&self.principal, checkout_id, &mut budget)
+                    .await?;
+                let admission = tx.capture_admission_budgeted(&mut budget).await?;
                 registration_boundary(7)?;
                 Ok((view, admission))
             }
@@ -253,13 +278,28 @@ impl LocalOwnerRepository {
         limits: AdmissionLimits,
     ) -> Result<CheckoutView, StorageError> {
         check_id(checkout_id, limits)?;
+        let mut budget = crate::storage::content::Budget::new(limits.content)?;
+        let mut parse = super::ParseWork::new(limits.parser)?;
+        // Bound fixed registration/view SQL bind and scalar-result ownership.
+        budget.charge_decoded(
+            limits
+                .parser
+                .input_bytes
+                .min(ROOT_BYTES + ID_BYTES)
+                .checked_mul(8)
+                .and_then(|n| n.checked_add(self.principal.owner.len().checked_mul(4)?))
+                .and_then(|n| n.checked_add(8192))
+                .ok_or_else(|| StorageError::state("checkout operation work overflow"))?,
+        )?;
         let mut tx = self.store.begin_write().await?;
         let result = async {
-            tx.check_admission(&self.principal, &self.admission).await?;
-            tx.require_native_checkout().await?;
-            tx.validate_initial_repository(&self.principal, limits)
+            tx.check_admission_budgeted(&self.principal, &self.admission, &mut budget)
                 .await?;
-            tx.read_checkout_view(&self.principal, checkout_id).await
+            tx.require_native_checkout().await?;
+            tx.validate_recording_repository(&self.principal, limits, &mut budget, &mut parse)
+                .await?;
+            tx.read_checkout_view_budgeted(&self.principal, checkout_id, &mut budget)
+                .await
         }
         .await;
         let result = tx.record(result);
@@ -290,21 +330,75 @@ impl LocalOwnerRepository {
         root: &Path,
         limits: AdmissionLimits,
     ) -> Result<CheckoutView, StorageError> {
+        let mut budget = crate::storage::content::Budget::new(limits.content)?;
+        let mut parse = super::ParseWork::new(limits.parser)?;
+        // Bound fixed registration/view SQL bind and scalar-result ownership.
+        budget.charge_decoded(
+            limits
+                .parser
+                .input_bytes
+                .min(ROOT_BYTES + ID_BYTES)
+                .checked_mul(8)
+                .and_then(|n| n.checked_add(self.principal.owner.len().checked_mul(4)?))
+                .and_then(|n| n.checked_add(8192))
+                .ok_or_else(|| StorageError::state("checkout operation work overflow"))?,
+        )?;
+        // Canonicalization allocates only after caller limits and traversal work are charged.
+        budget.charge_decoded(
+            root.as_os_str()
+                .as_encoded_bytes()
+                .len()
+                .checked_add((libc::PATH_MAX as usize).saturating_mul(4))
+                .ok_or_else(|| StorageError::state("checkout root work overflow"))?,
+        )?;
         let (root, metadata) = real_directory(root, limits)?;
         let mut tx = self.store.begin_write().await?;
         let result = async {
-            tx.check_admission(&self.principal, &self.admission).await?;
+            tx.check_admission_budgeted(&self.principal, &self.admission, &mut budget).await?;
             tx.require_native_checkout().await?;
-            tx.validate_initial_repository(&self.principal, limits).await?;
+            tx.validate_recording_repository(&self.principal, limits, &mut budget, &mut parse).await?;
             let rows = tx.query_bound("SELECT c.checkout_id FROM g_checkout c JOIN g_checkout_owner o ON o.checkout_id=c.checkout_id WHERE c.root=?1 AND o.root_device=?2 AND o.root_inode=?3", vec![Value::Text(root.to_str().unwrap().into()), Value::Text(metadata.dev().to_string()), Value::Text(metadata.ino().to_string())]).await?;
             let [row] = rows.as_slice() else { return Err(StorageError::state("checkout for root unavailable")); };
             let [Value::Text(id)] = row.as_slice() else { return Err(StorageError::state("invalid checkout for root")); };
-            tx.read_checkout_view(&self.principal, id).await
+            tx.read_checkout_view_budgeted(&self.principal, id, &mut budget).await
         }.await;
         let result = tx.record(result);
         tx.commit().await?;
         result
     }
+}
+
+/// Charge the bounded view result before allocating the public snapshot.
+/// # Arguments
+/// * `sizes` - Fixed aggregate result for the selected checkout.
+/// * `principal` - Authenticated repository identity retained in the view.
+/// * `id` - Exact checkout identity retained in the view.
+/// * `budget` - Shared operation ledger.
+/// # Returns
+/// Success after charging text and row overhead.
+/// # Errors
+/// Refuses missing/malformed counts, negative sizes, overflow and exhausted work.
+fn charge_checkout_view(
+    sizes: &[Vec<Value>],
+    principal: &Principal,
+    id: &str,
+    budget: &mut crate::storage::content::Budget,
+) -> Result<(), StorageError> {
+    let [row] = sizes else {
+        return Err(StorageError::state("checkout view sizing unavailable"));
+    };
+    let [Value::Integer(1), Value::Integer(bytes)] = row.as_slice() else {
+        return Err(StorageError::state("checkout unavailable"));
+    };
+    let bytes =
+        usize::try_from(*bytes).map_err(|_| StorageError::state("checkout view size overflow"))?;
+    let charge = bytes
+        .checked_mul(2)
+        .and_then(|n| n.checked_add(512))
+        .and_then(|n| n.checked_add(id.len().checked_mul(2)?))
+        .and_then(|n| n.checked_add(principal.repository.len()))
+        .ok_or_else(|| StorageError::state("checkout view work overflow"))?;
+    budget.charge_decoded(charge)
 }
 
 impl WriteTransaction<'_> {
@@ -435,12 +529,37 @@ impl WriteTransaction<'_> {
         Ok(())
     }
 
-    /// Decode a registration only after complete initial-root admission in this transaction.
+    /// Read an authenticated view after charging its exact retained text and row storage.
+    /// # Arguments
+    /// * `principal` - Sealed owner identity.
+    /// * `id` - Exact bounded registered identity.
+    /// * `budget` - Borrowed whole-operation ledger.
+    /// # Returns
+    /// Complete seven-field public snapshot.
+    /// # Errors
+    /// Refuses malformed sizing, missing registration, exhausted work and provider errors.
+    pub(super) async fn read_checkout_view_budgeted(
+        &mut self,
+        principal: &Principal,
+        id: &str,
+        budget: &mut crate::storage::content::Budget,
+    ) -> Result<CheckoutView, StorageError> {
+        budget.charge_decoded(
+            id.len()
+                .checked_add(256)
+                .ok_or_else(|| StorageError::state("checkout view work overflow"))?,
+        )?;
+        let sizes = self.query_bound("SELECT count(*),coalesce(sum(length(CAST(root AS BLOB))+length(CAST(shared_head AS BLOB))+coalesce(length(CAST(combined_head AS BLOB)),0)),0) FROM g_checkout WHERE checkout_id=?1", vec![Value::Text(id.into())]).await?;
+        charge_checkout_view(&sizes, principal, id, budget)?;
+        self.read_checkout_view(principal, id).await
+    }
+
+    /// Decode a registration only after complete supported-history admission in this transaction.
     /// # Arguments
     /// * `principal` - Sealed repository identity for the returned view.
     /// * `id` - Exact registration to read, already text-bounded.
     /// # Returns
-    /// Owned initial-root view for the exact ID.
+    /// Owned admitted checkout view for the exact ID.
     /// # Errors
     /// Rejects absent or malformed registrations and provider failures.
     pub(super) async fn read_checkout_view(
@@ -450,7 +569,7 @@ impl WriteTransaction<'_> {
     ) -> Result<CheckoutView, StorageError> {
         let rows = self
             .query_bound(
-                "SELECT root,shared_head,pending_version FROM g_checkout WHERE checkout_id=?1",
+                "SELECT root,shared_head,combined_head,generation,pending_version FROM g_checkout WHERE checkout_id=?1",
                 vec![Value::Text(id.into())],
             )
             .await?;
@@ -609,7 +728,7 @@ fn initial_checkout_row(rows: &[Vec<Value>]) -> Result<InitialCheckoutRow<'_>, S
 /// * `id` - Explicit bounded checkout identity.
 /// * `rows` - Admitted root/head query result.
 /// # Returns
-/// Owned initial-root view.
+/// Owned admitted checkout view.
 /// # Errors
 /// Rejects missing or ambiguous registrations and malformed root/head fields.
 fn checkout_view_from_rows(
@@ -623,6 +742,8 @@ fn checkout_view_from_rows(
     let [
         Value::Text(root),
         Value::Text(head),
+        combined,
+        Value::Integer(generation),
         Value::Integer(pending),
     ] = row.as_slice()
     else {
@@ -630,13 +751,20 @@ fn checkout_view_from_rows(
     };
     let pending_version =
         u64::try_from(*pending).map_err(|_| StorageError::state("invalid checkout view"))?;
+    let generation =
+        u64::try_from(*generation).map_err(|_| StorageError::state("invalid checkout view"))?;
+    let combined_head = match combined {
+        Value::Null if generation == 0 => None,
+        Value::Text(value) if generation > 0 => Some(value.clone()),
+        _ => return Err(StorageError::state("invalid checkout view")),
+    };
     Ok(CheckoutView {
         repository_id: principal.repository.clone(),
         checkout_id: id.into(),
         registered_root: PathBuf::from(root),
         shared_head: head.clone(),
-        combined_head: None,
-        generation: 0,
+        combined_head,
+        generation,
         pending_version,
     })
 }
@@ -689,12 +817,12 @@ mod injection {
                 max_output_bytes: 4096,
                 max_chain_depth: 4,
                 max_total_stored_bytes: 8192,
-                max_total_decoded_bytes: 16384,
+                max_total_decoded_bytes: 16777216,
             },
             parser: ParseLimits {
                 input_bytes: 4096,
-                cards: 16,
-                owned_bytes: 16384,
+                cards: 4096,
+                owned_bytes: 1048576,
                 entries: 64,
             },
         };
@@ -763,12 +891,12 @@ mod defensive_controls {
                 max_output_bytes: 4096,
                 max_chain_depth: 4,
                 max_total_stored_bytes: 8192,
-                max_total_decoded_bytes: 16384,
+                max_total_decoded_bytes: 16777216,
             },
             parser: ParseLimits {
                 input_bytes: 4096,
-                cards: 16,
-                owned_bytes: 16384,
+                cards: 4096,
+                owned_bytes: 1048576,
                 entries: 64,
             },
         }
@@ -1051,8 +1179,10 @@ mod defensive_controls {
         };
         let valid = vec![
             Value::Text("/root".into()),
-            Value::Text("head".into()),
+            Value::Text("shared".into()),
+            Value::Null,
             Value::Integer(0),
+            Value::Integer(7),
         ];
         let view =
             checkout_view_from_rows(&principal, "work", std::slice::from_ref(&valid)).unwrap();
@@ -1062,13 +1192,20 @@ mod defensive_controls {
                 repository_id: "repository".into(),
                 checkout_id: "work".into(),
                 registered_root: PathBuf::from("/root"),
-                shared_head: "head".into(),
+                shared_head: "shared".into(),
                 combined_head: None,
                 generation: 0,
-                pending_version: 0
+                pending_version: 7,
             }
         );
-        for rows in [vec![], vec![valid.clone(), valid]] {
+        let mut recorded = valid.clone();
+        recorded[2] = Value::Text("private".into());
+        recorded[3] = Value::Integer(2);
+        let changed = checkout_view_from_rows(&principal, "work", &[recorded.clone()]).unwrap();
+        assert_eq!(changed.combined_head.as_deref(), Some("private"));
+        assert_eq!(changed.generation, 2);
+        assert_eq!(changed.pending_version, 7);
+        for rows in [vec![], vec![valid.clone(), valid.clone()]] {
             assert_eq!(
                 checkout_view_from_rows(&principal, "work", &rows)
                     .unwrap_err()
@@ -1076,37 +1213,33 @@ mod defensive_controls {
                 "checkout unavailable"
             );
         }
-        let changed = checkout_view_from_rows(
-            &principal,
-            "work",
-            &[vec![
-                Value::Text("/root".into()),
-                Value::Text("head".into()),
-                Value::Integer(7),
-            ]],
-        )
-        .unwrap();
-        assert_eq!(changed.pending_version, 7);
-        for row in [
-            vec![
-                Value::Text("/root".into()),
-                Value::Text("head".into()),
+        let mut corrupt = vec![vec![], vec![Value::Null; 5]];
+        for index in [0, 1, 3, 4] {
+            let mut row = valid.clone();
+            row[index] = Value::Null;
+            corrupt.push(row);
+        }
+        for index in [3, 4] {
+            for value in [
                 Value::Integer(-1),
-            ],
-            vec![
-                Value::Text("/root".into()),
-                Value::Text("head".into()),
-                Value::Null,
-            ],
-            vec![
-                Value::Text("/root".into()),
-                Value::Text("head".into()),
                 Value::Text("1".into()),
-            ],
-            vec![],
-            vec![Value::Null, Value::Null],
-            vec![Value::Text("/root".into()), Value::Integer(1)],
-        ] {
+                Value::Real(1.0),
+            ] {
+                let mut row = recorded.clone();
+                row[index] = value;
+                corrupt.push(row);
+            }
+        }
+        let mut missing = recorded.clone();
+        missing[2] = Value::Null;
+        corrupt.push(missing);
+        let mut premature = valid.clone();
+        premature[2] = Value::Text("private".into());
+        corrupt.push(premature);
+        let mut blob = recorded;
+        blob[2] = Value::Blob(b"private".to_vec());
+        corrupt.push(blob);
+        for row in corrupt {
             assert_eq!(
                 checkout_view_from_rows(&principal, "work", &[row])
                     .unwrap_err()
@@ -1145,6 +1278,53 @@ mod defensive_controls {
                 .unwrap_err()
                 .operation,
             "unregistered native tracked inventory"
+        );
+        tx.rollback().await.unwrap();
+    }
+    /// View sizing is strict and its initial work charge occurs before issuing SQL.
+    #[tokio::test]
+    async fn checkout_view_charge_refuses_shape_and_preserves_cumulative_work() {
+        use crate::storage::{LocalStore, content::Budget};
+        let principal = Principal {
+            repository: "0".repeat(40),
+            owner: "owner".into(),
+        };
+        let mut work = Budget::new(limits().content).unwrap();
+        assert_eq!(
+            charge_checkout_view(&[], &principal, "work", &mut work)
+                .unwrap_err()
+                .operation,
+            "checkout view sizing unavailable"
+        );
+        assert_eq!(
+            charge_checkout_view(
+                &[vec![Value::Integer(0), Value::Integer(0)]],
+                &principal,
+                "work",
+                &mut work
+            )
+            .unwrap_err()
+            .operation,
+            "checkout unavailable"
+        );
+        let mut exact = limits().content;
+        exact.max_total_decoded_bytes = 560;
+        let mut work = Budget::new(exact).unwrap();
+        let rows = vec![vec![Value::Integer(1), Value::Integer(0)]];
+        charge_checkout_view(&rows, &principal, "work", &mut work).unwrap();
+        assert_eq!(
+            work.charge_decoded(1).unwrap_err().operation,
+            "total decoded content limit"
+        );
+        let mut store = LocalStore::open_inner(":memory:", false).await.unwrap();
+        let mut tx = store.begin_write().await.unwrap();
+        exact.max_total_decoded_bytes = 259;
+        assert_eq!(
+            tx.read_checkout_view_budgeted(&principal, "work", &mut Budget::new(exact).unwrap())
+                .await
+                .unwrap_err()
+                .operation,
+            "total decoded content limit"
         );
         tx.rollback().await.unwrap();
     }

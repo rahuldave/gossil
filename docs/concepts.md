@@ -14,7 +14,7 @@ The intended product coordinates agent files and structured issue records in one
 repository database. A local operation can commit a plan revision, its task
 change and a private trace together. Its transaction includes canonical
 artifacts, derived projections, scope, local command history and Gossil checkout
-heads. A projection is a database view of retained artifact records.
+heads. A projection is stored state reconstructed from retained artifact records.
 
 Git remains the external source authority; its commits are separate operations.
 Checkout filesystem writes follow database commit through recoverable work.
@@ -86,7 +86,9 @@ Its `initialize` constructor creates a repository without a checkout. The
 [`vcs init` command](cli.md#initialize-a-repository) calls this constructor,
 generates identities and a password, and selects a default administrator from
 the environment. The API requires those values explicitly. Its `create`
-constructor binds an existing catalog1 checkout directory.
+constructor creates catalog1 and binds an existing checkout directory. Catalog1 and catalog4
+name storage formats; the [native storage guide](native-storage.md) defines their
+creation and admission rules.
 
 After `initialize`,
 `register_checkout` can register one existing directory in catalog4.
@@ -96,12 +98,13 @@ The source [`vcs open` adapter](cli.md#open-a-native-checkout) adds locator
 publication and recovery around those admitted database operations. Open does
 not select additional files.
 
-Private content writes require the bound
-catalog1 repository and refuse catalog4, with or without its single registration. The empty
-root is a check-in with no files. A private content write does not create a check-in that contains files.
+Generic private content writes require the bound catalog1 repository and refuse
+catalog4. Catalog4 has a separate private recording API, described below. Its
+shared root stays a check-in with no files.
 
-Admission is the validation of the stored root required before repository
-operations. `SharedView` restricts access to public content that passed this
+Admission validates the stored root and authority before repository operations.
+For catalog4, it also validates the complete supported tracking, scope and private
+history state. `SharedView` restricts access to public content that passed this
 validation. Read and write access to the database file through the operating
 system establishes local owner authority.
 
@@ -133,12 +136,38 @@ from a validated task, a separate native ticket identity, actor bytes and a type
 Before passing decoded task, project or author values to a converter, callers
 must check raw field presence, duplicates and byte limits. Storage integration and task, project or author commands remain separate work.
 
-## Pending additions
+## Explicit scope and private recording
 
-This source checkout provides [explicit pending add and status](cli.md#add-explicit-paths-and-inspect-pending-additions).
-Add stores native tracking metadata with scope unselected, so the files are neither
-classified as shared nor private. It writes no working files or stored file content. Status lists pending additions only. Recording
-and history commands remain planned.
+Tracking and scope are separate choices. `add_files` enrolls paths without
+staging their bytes. An absent scope row means unselected, not shared or private.
+`select_path_scopes` persists an immutable `PathScope::Shared` or
+`PathScope::Private` choice for an already tracked path. Repeating an equal
+choice is a checked no-op; changing a choice is unsupported.
+
+`commit_private_tracked_files` requires every tracked path to have private scope.
+The caller supplies the complete path set and the latest `CheckoutView`.
+The recorder captures current bytes and executable modes, so edits after add
+need no second add. It writes one complete private check-in and updates the
+combined head while leaving the empty shared head unchanged. The combined head
+selects the owner's private tree together with the shared tree, which is empty
+in this supported recording family.
+
+The operation validates the full supported history and its derived rows.
+A content budget bounds stored, decoded and retained bytes. A parser ledger
+counts input bytes, cards, owned bytes and entries across parsed artifacts.
+Both bound work across admission, capture, construction and final validation.
+
+An unchanged tree returns `NoChange` without
+a new receipt or changed head or counter. Working files remain unchanged.
+Read [native storage](native-storage.md#private-recording-library) for request
+metadata and limits. Shared recording, synchronization and integrated issue
+operations remain planned.
+
+The source [scope and commit commands](cli.md#select-scopes-and-record-private-files)
+use these library contracts. They require the complete locator binding and explicit
+repository, checkout and scope selections. Commit also requires all-tracked consent
+and explicit actor, comment and date. [Final CLI qualification](development-plan.md#private-recording-qualification)
+is still pending.
 
 ## Recommendations
 

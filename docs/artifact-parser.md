@@ -32,7 +32,7 @@ parsed result with a `ParseUsage` value on success. The original
 `parse_artifact` function delegates to this implementation and returns only the
 parsed result.
 
-`ParseUsage` reports the existing limit counters. `input_bytes` counts the full
+`ParseUsage` reports charges against each limit. `input_bytes` counts the full
 raw input, including a recognized signature envelope. `cards` counts nonzero
 card markers consumed by the structural loop, including Z and repeated empty
 P cards. A trailing zero marker consumes its delimiter without adding a card.
@@ -52,12 +52,15 @@ operation must stop on any error and discard its operation state.
 
 The parser does not maintain the aggregate budget or remember earlier failures. The
 [API example](api/artifact.qmd#parse_artifact_with_usage) parses a cluster and
-subtracts all four successful charges from a caller-owned budget. Aggregate
-caller integration remains separate work.
+subtracts all four successful charges from a caller-owned budget. The private recording library borrows one parser work ledger across its
+[complete repository operation](native-storage.md#private-recording-library).
+Other callers remain responsible for their own aggregate accounting.
 
 ## Supply dates and read results
 
 Implement `DateProvider` on the operation's selected SQLite/libSQL owner.
+The [local storage guide](local-storage.md) explains transaction ownership.
+
 Its asynchronous `julianday` method can borrow a transaction. It receives an
 optional raw token already truncated by the parser at its native C-string
 boundary, and returns an optional Julian day. A NULL result acts as zero and fails date validation.

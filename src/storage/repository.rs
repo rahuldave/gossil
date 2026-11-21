@@ -8,7 +8,19 @@ use std::path::Path;
 
 /// Register and authenticate the sole supported native empty-root checkout.
 mod checkout;
+/// Persist and read immutable explicit tracked-path scope choices.
+mod path_scope;
+/// Validate the complete supported shared-root and private manifest chain.
+mod recorded_history;
+/// Capture and record all explicitly private tracked files atomically.
+mod recording;
+/// Admit exact native and local projections for supported private history.
+mod recording_admission;
+/// Encode canonical full-tree private manifests within borrowed budgets.
+mod recording_manifest;
 mod tracking;
+pub use path_scope::{PathScope, PathScopeSelection};
+pub use recording::{PrivateRecordingOutcome, PrivateRecordingRequest};
 pub use tracking::{PendingAdd, TrackingLimits};
 mod initialization;
 pub use checkout::CheckoutView;
@@ -69,12 +81,12 @@ const CATALOG4_ROOT_PROJECTION_CONFLICTS: &str = concat!(
 /// Number of independently sealed scalar root-conflict categories.
 const ROOT_PROJECTION_FLAGS: usize = 21;
 
-/// Explicit finite bounds for repository root admission.
+/// Finite content and parser bounds for complete supported repository admission.
 #[derive(Clone, Copy)]
 pub struct AdmissionLimits {
-    /// Envelope, reconstruction and work bounds for root content.
+    /// Envelope, reconstruction and cumulative work bounds, including catalog4 metadata and history.
     pub content: Limits,
-    /// Structural parser bounds for root validation.
+    /// Structural parser bounds, shared across root and private manifest validation in catalog4.
     pub parser: crate::artifact::ParseLimits,
 }
 /// Sealed authority snapshot and mutation counters from successful admission.
@@ -85,6 +97,8 @@ struct AdmissionProof {
     total_changes: u64,
     /// Exact durable policy, checkout and supported root authority rows.
     authority: Vec<Vec<Vec<Value>>>,
+    /// Explicit C4 caller limits retained for checked compatibility entry points.
+    content_limits: Option<Limits>,
 }
 
 /// Explicit local identities and bounds for a new catalog1 repository with a checkout.
@@ -150,11 +164,16 @@ impl SharedView<'_> {
         limits: Limits,
     ) -> Result<Vec<u8>, StorageError> {
         let mut tx = self.repository.store.begin_write().await?;
+        let mut c4_work = if self.repository.admission.content_limits.is_some() {
+            Some(super::content::Budget::new(limits)?)
+        } else {
+            None
+        };
         let result = async {
-            tx.check_admission(&self.repository.principal,&self.repository.admission).await?;
+            if let Some(work)=&mut c4_work {tx.check_admission_budgeted(&self.repository.principal,&self.repository.admission,work).await?;} else {tx.check_admission(&self.repository.principal,&self.repository.admission).await?;}
             let rows = tx.query_bound("SELECT b.uuid FROM blob b JOIN g_public_receipt p ON p.native_hash=b.uuid AND p.supporting_root=b.uuid WHERE b.uuid=?1 AND NOT EXISTS(SELECT 1 FROM private x WHERE x.rid=b.rid) AND NOT EXISTS(SELECT 1 FROM delta d WHERE d.rid=b.rid)",vec![Value::Text(native_name.into())]).await?;
             if rows.is_empty() { return Err(StorageError::state("shared content unavailable")); }
-            tx.read_owner_content(&self.repository.principal,native_name,limits).await
+            if let Some(work)=&mut c4_work {tx.read_recording_content_budget(&self.repository.principal,native_name,work).await} else {tx.read_owner_content(&self.repository.principal,native_name,limits).await}
         }.await;
         let result = tx.record(result);
         tx.commit().await?;
@@ -211,7 +230,7 @@ impl LocalOwnerRepository {
     /// * `options` - Explicit administrator, password, date, hash policy and finite limits.
     /// # Returns
     /// An admitted owner of the canonical empty catalog4 repository.
-    /// Private writes remain unsupported; [`Self::register_checkout`] can register one existing directory later.
+    /// Initialization stores no file tree. [`Self::register_checkout`] can register one existing directory; then explicitly track paths and select private scopes before [`Self::commit_private_tracked_files`].
     /// No environment variables, preference database or templates supply defaults.
     /// # Examples
     /// ```no_run
@@ -392,14 +411,23 @@ impl LocalOwnerRepository {
             tx.execute_bound("UPDATE g_storage SET policy_complete=1 WHERE singleton=1", vec![]).await?;
             #[cfg(test)]
             if failure == Some("marker") { return Err(StorageError::state("injected initialization phase failure")); }
-            tx.validate_initial_repository(&Principal { repository: options.repository_id.into(), owner: options.owner_id.into() },AdmissionLimits {content:options.content_limits,parser:options.parse_limits}).await?;
-            Ok(())
+            let principal=Principal { repository: options.repository_id.into(), owner: options.owner_id.into() };
+            let limits=AdmissionLimits {content:options.content_limits,parser:options.parse_limits};
+            if native.is_some() {
+                let mut budget=super::content::Budget::new(limits.content)?;
+                let mut parse=ParseWork::new(limits.parser)?;
+                tx.validate_recording_repository(&principal,limits,&mut budget,&mut parse).await?;
+                tx.capture_admission_budgeted(&mut budget).await
+            } else {
+                tx.validate_initial_repository(&principal,limits).await?;
+                tx.capture_admission(limits).await
+            }
         }.await;
         let result = tx.record(result);
         if result.is_err() {
             return Err(tx.commit().await.unwrap_err());
         }
-        let admission = tx.capture_admission().await;
+        let admission = result;
         cleanup.commit_attempted();
         tx.commit().await?;
         cleanup.committed();
@@ -420,9 +448,8 @@ impl LocalOwnerRepository {
     ///
     /// The durable repository and owner identities are read from this file rather
     /// than accepted as caller-selected capability strings.
-    /// Supports bound catalog1 and exact zero-or-one empty-root catalog4 registration, without migration.
-    /// Catalog4 admits this producer's pending additions with zero content RIDs. It requires one native root,
-    /// an exact zero-or-one registration inventory and empty unrelated local tables.
+    /// Supports bound catalog1 and the exact catalog4 initialized, tracked and private recorded-history family with zero or one checkout registration, without migration.
+    /// Catalog4 requires the immutable shared root and exact supported registration, tracking, scope and native history projections; unrelated local tables remain empty.
     /// # Arguments
     /// * `path` - Existing local database under operating-system owner authority.
     /// * `admission_limits` - Explicit finite root decode and parser budgets.
@@ -458,22 +485,26 @@ impl LocalOwnerRepository {
         let mut store = LocalStore::open_observed(path, true, Some(identity.clone())).await?;
         let mut tx = store.begin_write().await?;
         let result = async {
+            if tx.supported_catalog_version().await? == 4 {
+                let mut budget=super::content::Budget::new(admission_limits.content)?;
+                let mut parse=ParseWork::new(admission_limits.parser)?;
+                let principal=tx.read_recording_principal_budgeted(&mut budget).await?;
+                tx.validate_recording_repository(&principal,admission_limits,&mut budget,&mut parse).await?;
+                let admission=tx.capture_admission_budgeted(&mut budget).await?;
+                return Ok((principal,admission));
+            }
             let rows = tx.query_bound("SELECT s.repository_id,o.owner_id FROM g_storage s CROSS JOIN g_local_owner o WHERE s.singleton=1 AND o.singleton=1", vec![]).await?;
             let [row] = rows.as_slice() else { return Err(StorageError::state("local repository binding unavailable")); };
             let [Value::Text(repository), Value::Text(owner)] = row.as_slice() else { return Err(StorageError::state("corrupt local repository binding")); };
             let principal = Principal { repository: repository.clone(), owner: owner.clone() };
             tx.validate_principal(&principal).await?;
             tx.validate_initial_repository(&principal,admission_limits).await?;
-            Ok(principal)
+            let admission=tx.capture_admission(admission_limits).await?;
+            Ok((principal,admission))
         }.await;
-        let principal = tx.record(result);
-        if principal.is_err() {
-            return Err(tx.commit().await.unwrap_err());
-        }
-        let admission = tx.capture_admission().await;
+        let result = tx.record(result);
         tx.commit().await?;
-        let admission = admission?;
-        let principal = principal?;
+        let (principal, admission) = result?;
         identity.observe()?;
         Ok(Self {
             store,
@@ -558,6 +589,19 @@ impl LocalOwnerRepository {
         limits: Limits,
     ) -> Result<Vec<u8>, StorageError> {
         let mut tx = self.store.begin_write().await?;
+        if self.admission.content_limits.is_some() {
+            let mut work = super::content::Budget::new(limits)?;
+            let result = async {
+                tx.check_admission_budgeted(&self.principal, &self.admission, &mut work)
+                    .await?;
+                tx.read_recording_content_budget(&self.principal, native_name, &mut work)
+                    .await
+            }
+            .await;
+            let result = tx.record(result);
+            tx.commit().await?;
+            return result;
+        }
         let validation = tx.check_admission(&self.principal, &self.admission).await;
         if let Err(error) = validation {
             let cleanup = tx.commit().await;
@@ -571,7 +615,42 @@ impl LocalOwnerRepository {
     }
 }
 
+/// Decode the fixed-size supported-catalog aggregate without owning raw markers.
+/// # Arguments
+/// * `rows` - Count, valid-marker count and supported version from the fixed query.
+/// # Returns
+/// Exactly catalog1 or catalog4 for one valid marker.
+/// # Errors
+/// Refuses missing, ambiguous, malformed or unsupported markers.
+fn supported_catalog_from_rows(rows: &[Vec<Value>]) -> Result<i64, StorageError> {
+    match rows {
+        [row] => match row.as_slice() {
+            [
+                Value::Integer(1),
+                Value::Integer(1),
+                Value::Integer(version @ (1 | 4)),
+            ] => Ok(*version),
+            _ => Err(StorageError::state("unsupported storage version")),
+        },
+        _ => Err(StorageError::state("unsupported storage version")),
+    }
+}
+
 impl super::WriteTransaction<'_> {
+    /// Select an exact supported catalog using only fixed-size scalar results.
+    /// # Returns
+    /// INTEGER1 or INTEGER4 for exactly one INTEGER singleton marker.
+    /// # Errors
+    /// Refuses missing/extra markers and every unsupported type/value before any
+    /// raw marker or principal bytes can be owned by the provider.
+    async fn supported_catalog_version(&mut self) -> Result<i64, StorageError> {
+        let result=async {
+            let rows=self.query_bound("SELECT count(*),coalesce(sum(CASE WHEN typeof(singleton)='integer' AND singleton=1 AND typeof(storage_version)='integer' AND storage_version IN(1,4) THEN 1 ELSE 0 END),0),max(CASE WHEN typeof(singleton)='integer' AND singleton=1 AND typeof(storage_version)='integer' AND storage_version IN(1,4) THEN storage_version ELSE NULL END) FROM g_storage",vec![]).await?;
+            supported_catalog_from_rows(&rows)
+        }.await;
+        self.record(result)
+    }
+
     /// Capture durable authority metadata without reading any content envelope.
     /// # Returns
     /// Owned exact durable authority rows, including catalog4 checkout keys and native receive records.
@@ -620,17 +699,29 @@ impl super::WriteTransaction<'_> {
         Ok(snapshot)
     }
     /// Capture authority and connection counters after successful validation.
+    /// # Arguments
+    /// * `limits` - Finite admission ceilings for the bounded catalog4 authority snapshot.
     /// # Returns
     /// The sealed authority snapshot and current connection counters.
     /// # Errors
     /// Returns SQL execution or owned value-decoding errors while capturing authority.
-    async fn capture_admission(&mut self) -> Result<AdmissionProof, StorageError> {
+    /// For catalog4, also rejects invalid limits, exhausted work, invalid authority
+    /// metadata, allocation failures and failed provider observations.
+    async fn capture_admission(
+        &mut self,
+        limits: AdmissionLimits,
+    ) -> Result<AdmissionProof, StorageError> {
+        if self.supported_catalog_version().await? == 4 {
+            let mut budget = super::content::Budget::new(limits.content)?;
+            return self.capture_admission_budgeted(&mut budget).await;
+        }
         let authority = self.authority_snapshot().await?;
         let data_version = self.query_bound("PRAGMA data_version", vec![]).await?;
         Ok(AdmissionProof {
             authority,
             data_version,
             total_changes: self.connection().total_changes(),
+            content_limits: None,
         })
     }
     /// Any unaccounted connection mutation or external commit requires explicit readmission.
@@ -646,6 +737,12 @@ impl super::WriteTransaction<'_> {
         principal: &Principal,
         proof: &AdmissionProof,
     ) -> Result<(), StorageError> {
+        if let Some(limits) = proof.content_limits {
+            let mut budget = super::content::Budget::new(limits)?;
+            return self
+                .check_admission_budgeted(principal, proof, &mut budget)
+                .await;
+        }
         let result = async {
             if self.connection().total_changes() != proof.total_changes {
                 return Err(StorageError::state(
@@ -995,6 +1092,14 @@ impl super::WriteTransaction<'_> {
         principal: &Principal,
         limits: AdmissionLimits,
     ) -> Result<(), StorageError> {
+        // Catalog1 retains its original validator and all original conflict guards.
+        if self.supported_catalog_version().await? == 4 {
+            let mut budget = super::content::Budget::new(limits.content)?;
+            let mut parse = ParseWork::new(limits.parser)?;
+            return self
+                .validate_recording_repository(principal, limits, &mut budget, &mut parse)
+                .await;
+        }
         let result = async {
             self.validate_principal(principal).await?;
             if !self.query_bound("PRAGMA foreign_key_check",vec![]).await?.is_empty() { return Err(StorageError::state("repository foreign key integrity failure")); }
@@ -1017,13 +1122,7 @@ impl super::WriteTransaction<'_> {
             let user = parsed.user().unwrap();
             let user = std::str::from_utf8(&user.bytes[..user.c_string_len]).map_err(|e| StorageError::caused("root user UTF-8",e))?;
             let date = parsed.date().unwrap();
-            // Native julianday is bounded to 0..5373484.5. NUMERIC affinity stores
-            // an integral day exactly as INTEGER in event and tagxref columns.
-            let stored_date = if date.fract() == 0.0 {
-                Value::Integer(date as i64)
-            } else {
-                Value::Real(date)
-            };
+            let stored_date = native_stored_date(date);
             if row != &vec![Value::Integer(*rid),Value::Text("ci".into()),stored_date.clone(),Value::Text(user.into()),Value::Text("initial empty check-in".into()),stored_date.clone(),Value::Null,Value::Null,Value::Null,Value::Null,Value::Null,Value::Null] { return Err(StorageError::state("root event differs from canonical bytes")); }
             // Only authenticated catalog4 replaces the g_vfile empty guard.
             // All remaining root-conflict categories and unsupported tables stay sealed.
@@ -1101,6 +1200,20 @@ fn repository_metadata(
         .with(|slot| slot.borrow_mut().take())
         .map_or(result, |code| Err(std::io::Error::from_raw_os_error(code)));
     result.map_err(|error| StorageError::caused("local repository metadata unavailable", error))
+}
+/// Match NUMERIC affinity for an already validated native Julian day.
+/// # Arguments
+/// * `date` - Finite native day in SQLite's supported range, 0 through 5373484.5.
+/// # Returns
+/// An integer for an integral day, otherwise its original floating-point value.
+/// # Errors
+/// This conversion cannot fail for a validated native day.
+fn native_stored_date(date: f64) -> Value {
+    if date.fract() == 0.0 {
+        Value::Integer(date as i64)
+    } else {
+        Value::Real(date)
+    }
 }
 /// Decode the fully stepped single native date result without retaining engine rows.
 /// # Arguments
@@ -1416,10 +1529,16 @@ mod tests {
             cell::Cell,
         };
         thread_local! {
+            /// Enable observations only on the current test thread.
             static CAPTURE: Cell<bool> = const { Cell::new(false) };
+            /// Largest Rust allocation request observed during the measured operation.
             static LARGEST: Cell<usize> = const { Cell::new(0) };
         }
+        /// Forward every allocation unchanged while observing test-thread request sizes.
         struct ObservedSystem;
+        /// Retain a bounded scalar measurement without allocating in the allocator.
+        /// # Arguments
+        /// * `size` - Requested allocation size.
         fn observe(size: usize) {
             let _ = CAPTURE.try_with(|capture| {
                 if capture.get() {
@@ -1429,28 +1548,47 @@ mod tests {
         }
         // SAFETY: all requests and their original layouts are forwarded unchanged to System.
         unsafe impl GlobalAlloc for ObservedSystem {
+            /// Forward an allocation request and observe its requested size.
+            /// # Safety
+            /// The caller must supply a nonzero layout satisfying [`GlobalAlloc::alloc`].
             unsafe fn alloc(&self, layout: Layout) -> *mut u8 {
                 observe(layout.size());
                 // SAFETY: the caller supplies GlobalAlloc's valid layout contract.
                 unsafe { System.alloc(layout) }
             }
+            /// Forward a zeroed allocation request and observe its requested size.
+            /// # Safety
+            /// The caller must supply a nonzero layout satisfying [`GlobalAlloc::alloc_zeroed`].
             unsafe fn alloc_zeroed(&self, layout: Layout) -> *mut u8 {
                 observe(layout.size());
                 // SAFETY: the caller supplies GlobalAlloc's valid layout contract.
                 unsafe { System.alloc_zeroed(layout) }
             }
+            /// Release the original pointer using its unchanged allocation layout.
+            /// # Safety
+            /// The pointer must be a live allocation from this allocator with the original layout.
             unsafe fn dealloc(&self, pointer: *mut u8, layout: Layout) {
                 // SAFETY: this is the original pointer/layout from the forwarding allocator.
                 unsafe { System.dealloc(pointer, layout) }
             }
+            /// Forward a resize and observe the new requested size.
+            /// # Safety
+            /// The pointer and layout must identify a live allocation from this allocator.
+            /// The new size must satisfy [`GlobalAlloc::realloc`], including its nonzero size bound.
             unsafe fn realloc(&self, pointer: *mut u8, layout: Layout, new_size: usize) -> *mut u8 {
                 observe(new_size);
                 // SAFETY: the caller supplies the original allocation and valid new size.
                 unsafe { System.realloc(pointer, layout, new_size) }
             }
         }
+        /// Test-only forwarding allocator; production binaries retain their default allocator.
         #[global_allocator]
         static ALLOCATOR: ObservedSystem = ObservedSystem;
+        /// Measure the largest Rust allocation made by a synchronous operation.
+        /// # Arguments
+        /// * `operation` - Operation executed on the current test thread.
+        /// # Returns
+        /// Operation result and largest observed allocation request.
         pub(super) fn measure<T>(operation: impl FnOnce() -> T) -> (T, usize) {
             LARGEST.with(|largest| largest.set(0));
             CAPTURE.with(|capture| capture.set(true));
@@ -1459,6 +1597,130 @@ mod tests {
             (result, LARGEST.with(Cell::get))
         }
     }
+    /// Catalog dispatch accepts exact integers only, never coercing raw markers.
+    #[tokio::test]
+    async fn catalog_dispatch_refuses_malformed_types_and_cardinality() {
+        let cases = [
+            (vec![], None),
+            (vec![(Value::Integer(1), Value::Integer(1))], Some(1)),
+            (vec![(Value::Integer(1), Value::Integer(4))], Some(4)),
+            (vec![(Value::Integer(1), Value::Text("4".into()))], None),
+            (vec![(Value::Integer(1), Value::Blob(b"4".to_vec()))], None),
+            (vec![(Value::Integer(1), Value::Real(4.0))], None),
+            (vec![(Value::Integer(1), Value::Null)], None),
+            (vec![(Value::Integer(1), Value::Integer(2))], None),
+            (vec![(Value::Integer(0), Value::Integer(4))], None),
+            (vec![(Value::Text("1".into()), Value::Integer(4))], None),
+            (
+                vec![
+                    (Value::Integer(1), Value::Integer(4)),
+                    (Value::Integer(2), Value::Integer(4)),
+                ],
+                None,
+            ),
+        ];
+        for (markers, expected) in cases {
+            // Minimal private schema deliberately permits every hostile storage class.
+            let mut store = LocalStore::open_inner(Path::new(":memory:"), false)
+                .await
+                .unwrap();
+            let connection = store.connection.as_ref().unwrap();
+            connection
+                .execute("CREATE TABLE g_storage(singleton,storage_version)", ())
+                .await
+                .unwrap();
+            for (singleton, version) in markers {
+                assert_eq!(
+                    connection
+                        .execute(
+                            "INSERT INTO g_storage VALUES(?1,?2)",
+                            vec![singleton, version]
+                        )
+                        .await
+                        .unwrap(),
+                    1
+                );
+            }
+            let mut tx = store.begin_write().await.unwrap();
+            match expected {
+                Some(expected) => {
+                    assert_eq!(tx.supported_catalog_version().await.unwrap(), expected);
+                    tx.rollback().await.unwrap();
+                }
+                None => {
+                    assert_eq!(
+                        tx.supported_catalog_version().await.unwrap_err().operation,
+                        "unsupported storage version"
+                    );
+                    assert_eq!(
+                        tx.rollback().await.unwrap_err().operation,
+                        "unsupported storage version"
+                    );
+                }
+            }
+        }
+    }
+
+    /// Fresh open rejects huge raw markers without provider-sized Rust ownership.
+    #[test]
+    fn catalog_dispatch_precedes_raw_marker_allocation_at_tiny_limits() {
+        let runtime = tokio::runtime::Builder::new_current_thread()
+            .build()
+            .unwrap();
+        let tiny = AdmissionLimits {
+            content: Limits {
+                max_stored_bytes: 1,
+                max_output_bytes: 1,
+                max_chain_depth: 1,
+                max_total_stored_bytes: 1,
+                max_total_decoded_bytes: 1,
+            },
+            parser: crate::artifact::ParseLimits {
+                input_bytes: 1,
+                cards: 1,
+                owned_bytes: 1,
+                entries: 1,
+            },
+        };
+        let payload = vec![0xff; 1_048_576];
+        for text in [false, true] {
+            let temp = tempfile::tempdir().unwrap();
+            let path = temp.path().join("bad-marker");
+            let raw=runtime.block_on(async {
+                let database=libsql::Builder::new_local(&path).build().await.unwrap();
+                let connection=database.connect().unwrap();
+                connection.execute("CREATE TABLE g_storage(singleton INTEGER,storage_version)",()).await.unwrap();
+                let sql=if text {"INSERT INTO g_storage VALUES(1,CAST(?1 AS TEXT))"} else {"INSERT INTO g_storage VALUES(1,?1)"};
+                assert_eq!(connection.execute(sql,vec![Value::Blob(payload.clone())]).await.unwrap(),1);
+                let mut rows=connection.query("SELECT typeof(storage_version),hex(CAST(storage_version AS BLOB)) FROM g_storage",()).await.unwrap();
+                let row=rows.next().await.unwrap().unwrap();
+                let result=(row.get::<String>(0).unwrap(),row.get::<String>(1).unwrap());
+                assert_eq!(result.0,if text {"text"} else {"blob"});
+                assert_eq!(result.1,"FF".repeat(payload.len()));
+                result
+            });
+            let (result, largest) = allocation_probe::measure(|| {
+                runtime.block_on(LocalOwnerRepository::open(&path, tiny))
+            });
+            assert_eq!(
+                result.err().unwrap().operation,
+                "unsupported storage version"
+            );
+            assert!(
+                largest < payload.len() / 2,
+                "owned a raw-marker-sized Rust allocation: {largest}"
+            );
+            let after=runtime.block_on(async {
+                let database=libsql::Builder::new_local(&path).build().await.unwrap();
+                let connection=database.connect().unwrap();
+                let mut rows=connection.query("SELECT typeof(storage_version),hex(CAST(storage_version AS BLOB)) FROM g_storage",()).await.unwrap();
+                let row=rows.next().await.unwrap().unwrap();
+                (row.get::<String>(0).unwrap(),row.get::<String>(1).unwrap())
+            });
+            assert_eq!(after, raw);
+        }
+    }
+
     #[tokio::test]
     async fn root_numeric_dates_preserve_affinity_and_reject_tampering() {
         for (date, expected) in [
@@ -3098,5 +3360,178 @@ mod tests {
         assert_eq!(first.operation, "native artifact validation failed");
         assert!(std::error::Error::source(&first).is_some());
         assert_eq!(tx.commit().await.unwrap_err().operation, first.operation);
+    }
+    /// Catalog dispatch refuses malformed aggregate shapes without inspecting raw identities.
+    #[test]
+    fn catalog_scalar_decoder_accepts_only_one_supported_marker() {
+        for version in [1, 4] {
+            assert_eq!(
+                supported_catalog_from_rows(&[vec![
+                    Value::Integer(1),
+                    Value::Integer(1),
+                    Value::Integer(version)
+                ]])
+                .unwrap(),
+                version
+            );
+        }
+        for rows in [
+            vec![],
+            vec![vec![], vec![]],
+            vec![vec![
+                Value::Integer(1),
+                Value::Integer(1),
+                Value::Integer(2),
+            ]],
+            vec![vec![
+                Value::Integer(2),
+                Value::Integer(2),
+                Value::Integer(4),
+            ]],
+        ] {
+            assert_eq!(
+                supported_catalog_from_rows(&rows).unwrap_err().operation,
+                "unsupported storage version"
+            );
+        }
+    }
+
+    /// Legacy internal entries route catalog4 through bounded admission and preserve proof equality.
+    #[tokio::test]
+    async fn catalog4_internal_admission_entries_use_recording_validation_and_exact_proof() {
+        let temp = tempfile::tempdir().unwrap();
+        let path = temp.path().join("repository");
+        let mut limits = admission_limits();
+        limits.content.max_total_decoded_bytes = 16_777_216;
+        let mut owner = LocalOwnerRepository::initialize(
+            &path,
+            InitializeOptions {
+                repository_id: "0123456789abcdef0123456789abcdef01234567",
+                owner_id: "owner",
+                date: "2026-11-18 12:34:56.125",
+                user: b"Owner",
+                password: "secret",
+                sha1: false,
+                content_limits: limits.content,
+                parse_limits: limits.parser,
+            },
+        )
+        .await
+        .unwrap();
+        let mut tx = owner.store.begin_write().await.unwrap();
+        let mut invalid = limits;
+        invalid.content.max_total_decoded_bytes = 0;
+        assert_eq!(
+            tx.capture_admission(invalid).await.err().unwrap().operation,
+            "invalid finite content limits"
+        );
+        assert_eq!(
+            tx.validate_initial_repository(&owner.principal, invalid)
+                .await
+                .unwrap_err()
+                .operation,
+            "invalid finite content limits"
+        );
+        invalid = limits;
+        invalid.parser.entries = 0;
+        assert_eq!(
+            tx.validate_initial_repository(&owner.principal, invalid)
+                .await
+                .unwrap_err()
+                .operation,
+            "invalid aggregate parser limits"
+        );
+        tx.validate_initial_repository(&owner.principal, limits)
+            .await
+            .unwrap();
+        let mut proof = tx.capture_admission(limits).await.unwrap();
+        assert!(proof.content_limits.is_some());
+        tx.check_admission_budgeted(
+            &owner.principal,
+            &proof,
+            &mut super::super::content::Budget::new(limits.content).unwrap(),
+        )
+        .await
+        .unwrap();
+        // A proof with missing authority rows is stale even when connection counters still agree.
+        proof.authority.clear();
+        let first = tx
+            .check_admission_budgeted(
+                &owner.principal,
+                &proof,
+                &mut super::super::content::Budget::new(limits.content).unwrap(),
+            )
+            .await
+            .unwrap_err();
+        assert_eq!(
+            first.operation,
+            "repository authority changed; explicit readmission required"
+        );
+        assert_eq!(tx.commit().await.unwrap_err().operation, first.operation);
+    }
+
+    /// Real malformed blob metadata is refused before payload ownership and the failure rolls back.
+    #[tokio::test]
+    async fn recording_content_reader_refuses_persisted_wrong_type_metadata() {
+        let temp = tempfile::tempdir().unwrap();
+        let path = temp.path().join("repository");
+        let mut limits = admission_limits();
+        limits.content.max_total_decoded_bytes = 16_777_216;
+        let mut owner = LocalOwnerRepository::initialize(
+            &path,
+            InitializeOptions {
+                repository_id: "0123456789abcdef0123456789abcdef01234567",
+                owner_id: "owner",
+                date: "2026-11-18 12:34:56.125",
+                user: b"Owner",
+                password: "secret",
+                sha1: false,
+                content_limits: limits.content,
+                parse_limits: limits.parser,
+            },
+        )
+        .await
+        .unwrap();
+        let mut tx = owner.store.begin_write().await.unwrap();
+        let names = tx
+            .query_bound("SELECT uuid FROM blob", vec![])
+            .await
+            .unwrap();
+        assert_eq!(names.len(), 1);
+        assert_eq!(names[0].len(), 1);
+        let name = names[0][0].as_text().expect("native hash expected");
+        let before = tx
+            .read_recording_content_budget(
+                &owner.principal,
+                name,
+                &mut super::super::content::Budget::new(limits.content).unwrap(),
+            )
+            .await
+            .unwrap();
+        tx.execute("UPDATE blob SET size='invalid-size'")
+            .await
+            .unwrap();
+        assert_eq!(
+            tx.query_bound("SELECT typeof(size) FROM blob", vec![])
+                .await
+                .unwrap(),
+            vec![vec![Value::Text("text".into())]]
+        );
+        let error = tx
+            .read_recording_content_budget(
+                &owner.principal,
+                name,
+                &mut super::super::content::Budget::new(limits.content).unwrap(),
+            )
+            .await
+            .unwrap_err();
+        assert_eq!(error.operation, "corrupt recording content metadata");
+        assert_eq!(tx.commit().await.unwrap_err().operation, error.operation);
+        drop(owner);
+        let mut owner = LocalOwnerRepository::open(&path, limits).await.unwrap();
+        assert_eq!(
+            owner.read_content(name, limits.content).await.unwrap(),
+            before
+        );
     }
 }

@@ -6,7 +6,8 @@ The `storage` module opens local libSQL files and owns one write transaction
 at a time. Its low-level lifecycle API also supports the validated
 [native storage boundary](native-storage.md). That boundary installs the complete
 schema and implements empty-root initialization, one native directory registration,
-pending additions and bounded catalog1 private content operations.
+explicit tracking and scopes, private file recording and bounded catalog1 content
+operations. The [native storage guide](native-storage.md) defines the catalog formats.
 Opening that higher-level repository validates its stored root and authority metadata.
 Migration and broader adapters remain unimplemented.
 
@@ -93,14 +94,25 @@ It cannot undo a commit whose result the outer caller has not received.
 A later server adapter must define its blocking scheduling and result-delivery
 boundaries.
 
-## Pending additions
+## Repository recording
 
-This source checkout provides [explicit pending add and status](cli.md#add-explicit-paths-and-inspect-pending-additions).
-Add stores native tracking metadata with scope unselected, so the files are neither
-classified as shared nor private. It writes no working files or stored file content. Status lists pending additions only. Recording
-and history commands remain planned.
+`LocalStore` supplies transaction ownership. `LocalOwnerRepository` adds the
+repository, checkout and history checks required by the
+[private recording library](native-storage.md#private-recording-library).
+Opening a `LocalStore` alone does not establish those prerequisites.
+
+The recorder validates the complete supported history, captures every explicitly
+private tracked file, and writes content, a manifest, its receipt and derived
+rows in one transaction. Helpers borrow the operation's content budget and parser
+ledger throughout. Failure rolls back earlier database writes, and recording
+never writes the working files.
+
+The [qualification record](development-plan.md#private-recording-qualification)
+distinguishes the checked library checkpoint from the CLI awaiting final gates.
+It does not add public SQL access or change the lifecycle guarantees above.
 
 ## Recommendations
 
-Use the contracts above with explicit resource limits. Next, consult the
-[generated Rust API](api/index.qmd) for the full signatures and errors.
+Use `LocalStore` to own a transaction, or `LocalOwnerRepository` for validated
+repository operations. Next, consult the [generated Rust API](api/index.qmd)
+for the chosen type's signatures and errors.

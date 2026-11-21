@@ -34,15 +34,26 @@ The CLI also exposes `vcs init` and `vcs new` through `gossil` or `gos`, with
 
 Native local storage supports checkout-free initialization, then one library
 checkout registration at the empty root. Reopen admits strict catalog4 with zero
-or one registration. ID and exact-root views authenticate existing registrations;
+or one registration, explicit tracked scopes and the supported private recording
+history. ID and exact-root views authenticate existing registrations;
 the library methods publish no locator. The source `vcs open` adapter registers
 or reopens that checkout and publishes or reconstructs its owner-local locator.
 It requires explicit repository and checkout selection, with `--root` for first
 registration. It selects no files.
 
-Bound catalog1 creation and
-bounded private content operations remain supported; private writes refuse catalog4. File-containing check-ins, broader crosslinks,
-the remaining source port and Gest integration remain planned work.
+Bound catalog1 creation and bounded private content operations remain supported.
+Generic private content writes refuse catalog4.
+
+The private recording library requires the complete tracked set, immutable
+private scopes and all seven expected checkout facts. It captures every working file with one borrowed content
+budget and parser ledger, preserves the empty shared root, and admits exact
+private history projections. Working files remain unchanged. Existing CLI status
+prints A/R and actual scope.
+
+Both executable and group aliases accept `scope`
+and `commit` with explicit repository, checkout and scope selections. Commit
+requires private scope, all tracked paths and explicit actor, comment and date.
+Broader crosslinks, shared recording, sync and Gest integration remain planned work.
 
 ## Commands and evidence
 
@@ -97,5 +108,6 @@ file and a successful build do not prove that the public site is live.
 
 Use the module guides for explicit bounds and lifecycle contracts.
 Next, review the composed core and preserve the unchanged `delta1` evidence
-and its qualifications. Next, implement the first private file child with real
-parent and file links after the composed checkpoint passes its ordered gates.
+and its qualifications. The library checkpoint has passed its recorded gates.
+Next, qualify the separate scope and commit CLI checkpoint before integration
+and delivery; focused passes do not establish a final full-feature pass.

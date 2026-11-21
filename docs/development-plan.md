@@ -2,7 +2,9 @@
 
 Gossil implements byte primitives, structural artifact parsing and bounded local
 storage. The `gossil` executable initializes empty repositories, opens native
-empty-root checkouts, adds and lists pending additions, and implements three delta diagnostics.
+checkouts, adds explicit paths, lists tracked states and implements three delta
+diagnostics. The CLI calls the library to select immutable path scopes and record the complete
+private tracked tree.
 The generated [Rust API](api/index.qmd) describes the public library surface.
 
 The standalone [Gest task values converter](gest-task-values.md) validates eleven decoded fields.
@@ -13,20 +15,21 @@ caller-supplied native identity, actor and date. All three converters operate in
 
 ## Current scope
 
-| Available | Planned |
+| Available in source | Planned |
 |---|---|
 | Delta create, apply and two-way file checks | General version-control CLI |
-| Compression, hashes, token escaping and artifact checksums | Repository traversal and persistent shared/private scope selection |
+| Compression, hashes, token escaping and artifact checksums | Repository traversal and changes to persisted scope choices |
 | Eight structural artifact types with explicit limits | General crosslinks, migration, rebuild and filesystem recovery |
-| Checkout-free initialization, native open, locator recovery and pending additions; catalog1 private content | File-containing check-ins, sync and artifact publication |
+| Native initialization/open, tracking, scope/commit CLI and library; catalog1 private content | Shared recording, sync and artifact publication |
 | Explicit inherited-test runner configurations | Gest task CLI, server and user interface |
 
 Initialization creates catalog4 without a checkout. The library can register
 one existing directory and authenticate its registration by ID or exact root.
-Reopen admits exactly zero or one registration at the initial empty root,
-including the validated pending-add inventory. Bound catalog1 creation retains its
-checkout and private content operations. Catalog4 private content writes and
-file-containing check-ins remain unsupported. Registration changes the database only.
+Opening a repository admits exactly zero or one registration and the supported tracking, scope
+and private recording family. Bound catalog1 creation retains its checkout and
+private content operations. Catalog4 generic private content writes remain
+unsupported; its separate recorder writes complete private file trees.
+Registration changes the database only.
 
 The source CLI combines registration with bounded locator
 publication and recovery of the exact registration. Working-file materialization
@@ -39,7 +42,8 @@ full-engine compatibility. Git remains the source-code authority for this projec
 Historical results qualify only their recorded source, inputs and environment.
 The archived `delta1` suite tests delta operations with explicit bounds.
 It does not qualify storage or the full Fossil engine.
-Linux qualification and clean-clone CI remain separate work.
+Linux qualification and clean-clone CI for the current private recording
+checkpoint remain separate work.
 
 ## Contributor setup
 
@@ -117,7 +121,8 @@ The root Cargo patch selects the complete `libsql-ffi` 0.10.0 archive under
 `vendor/libsql-ffi`. The root dependency and lockfile also pin `libsql` and
 `libsql-sys` to 0.10.0. The Rust wrapper uses the full Git revision in the
 [TEXT retrieval guide](libsql-wrapper.md); `libsql-sys` retains its registry identity.
-The wrapper correction leaves the bundled provider unchanged. Its adapted date conversion includes `<stdint.h>` itself
+The [wrapper correction](libsql-wrapper.md) preserves complete valid TEXT
+without changing the bundled provider. Its adapted date conversion includes `<stdint.h>` itself
 because it uses `UINT64_C`. The upstream build script does not define
 `HAVE_STDINT_H` or `HAVE_INTTYPES_H` for the core build.
 
@@ -200,8 +205,8 @@ The source `vcs open` adapter adds first registration, reopen and bounded locato
 recovery without project initialization. Its configuration comes from the
 invocation directory, independently of an explicit root. The
 [CLI contract](cli.md#open-a-native-checkout) covers selection, conflicts and
-publication phases. File recording remains future work; the pending-add slice
-is described below.
+publication phases. Scope selection and private recording are available through
+the library and the separate CLI checkpoint described below.
 
 Locator/parser/publication controls are in `src/checkout_locator.rs`, configuration
 controls in `src/checkout_config.rs`, and executable controls in
@@ -209,26 +214,62 @@ controls in `src/checkout_config.rs`, and executable controls in
 distinct from an injected native-registration COMMIT failure. Source controls
 and focused passes do not establish full coverage, Linux qualification or delivery.
 
-The candidate source package version is 0.5.0. Source documentation and local
-checks do not establish publication or installation of that version.
-Version 0.2.0 executable and documentation delivery is complete. The annotated
-`v0.2.0` tag resolves to `2fc3fa1`; source CI and documentation CI passed. The
-versioned executables, smoke tests and live CLI and API pages were verified.
-The default previews were preserved, and issue 22 is closed.
+## Delivered tracking baseline
 
-The candidate source adds [explicit pending add and status](cli.md#add-explicit-paths-and-inspect-pending-additions).
-Add stores native tracking metadata with scope unselected, so the files are neither
-classified as shared nor private. It writes no working files or stored file content. Status lists pending additions only. The accepted
-[libsql wrapper correction](libsql-wrapper.md) is part of this checkout
-through provider-fix merge `bd2b377`.
+The accepted baseline is [PR 38](https://github.com/rahuldave/gossil/pull/38),
+merged at `fa841b1a914c17dfbd8378bae4ef9ab7e26fb5cc` and tagged `v0.5.0`.
+It includes the accepted [libsql wrapper correction](libsql-wrapper.md).
+That tracking release passed its final source checks, independent review,
+Linux CI and source-release workflow. Its isolated installation passed both
+`gos v` and `gossil vcs` smoke tests. All 41 live HTML files matched the
+merged-source documentation build. The default preview executables stayed unchanged.
 
-Before that merge, preparation against the same wrapper pin passed all 158 library
-unit tests and all 204 integration tests. One preexisting native interoperability
-test was ignored, and no integration tests were filtered. The separate
-[registration corruption matrix](https://github.com/rahuldave/gossil/blob/main/evidence/libsql-wrapper/consuming-replays/vcs-registration-matrix/result.json)
-passed all 21 cases without accepted corruption, provider panic or state changes.
-Those runs qualify their candidate tree. Final checks and independent review
-on the accepted base remain required before feature delivery.
+Version 0.5.0 enrolls explicit pending additions without choosing their scope.
+It does not include this checkpoint's private recording API or new status format.
+A source tag, installed checkpoint and default command are separate delivery facts.
+
+## Private recording qualification
+
+The current branch adds explicit immutable path scopes, complete private file
+recording, and status that reports each tracked path's state and actual scope.
+Its first checkpoint exposes recording through the library. The second adds
+`scope` and `commit` to both executables and both command-group aliases.
+
+The committed library checkpoint is
+`fca8c89f8c3d42a0a1fa7c7589042a4c1cc324d4`. Its normal full qualification passed
+207 unit tests, 232 integration tests and 100 percent changed-line coverage over
+5880 lines. Its API check documented all 533 items. These results qualify that
+library checkpoint, not the later CLI tree.
+
+The focused CLI run passed three parser unit tests and two fresh-process
+integration tests under guard `bbc05d10-b495-4d2e-ae33-dfbc255ccffd`.
+Its unit selection filtered out 207 other tests. Both executable aliases recorded
+first and repeated private commits, including an edit without re-add. A later
+noon commit with closed stdout returned failure after durable native rows changed;
+reopen and an unchanged retry preserved that history.
+The same run checked explicit grammar, scopes and locator refusals.
+
+The API/site check documented all 538 API items before the guide updates and
+version change. That result is not the final documentation gate. Full CLI checks,
+coverage and fresh independent gate records still remain. Draft PR 39 is on hold
+for this second coherent commit, final version and gates. No release, installation
+or publication is claimed for private recording.
+
+An earlier prepared library tree passed 203 library tests and 228 integration
+tests, but failed its coverage check. Those results remain historical and are
+superseded for library qualification by the committed checkpoint above.
+
+The source is based on the [accepted tracking merge](#delivered-tracking-baseline).
+The recorder retains the original parent-directory descriptors to check that
+captured paths still have the same ancestry, charging the same operation budget.
+Native controls are in `tests/native_path_scope.rs`, `tests/native_recording.rs`
+and the private storage modules. CLI controls are in `src/vcs_recording.rs`
+and `tests/vcs_recording_cli.rs`.
+
+The native controls cover the complete expected view, immutable scopes,
+exact all-tracked requests, current bytes and modes, no-change behavior, rollback,
+strict history projections and shared work limits. Source controls alone do not
+establish execution. The qualification results above identify the checks that ran.
 
 ## Recommendations
 

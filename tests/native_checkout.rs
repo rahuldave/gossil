@@ -12,12 +12,13 @@ fn limits() -> AdmissionLimits {
             max_output_bytes: 4096,
             max_chain_depth: 4,
             max_total_stored_bytes: 8192,
-            max_total_decoded_bytes: 16384,
+            // Catalog4 admission charges exact schema/authority and complete operation work.
+            max_total_decoded_bytes: 16777216,
         },
         parser: ParseLimits {
             input_bytes: 4096,
-            cards: 16,
-            owned_bytes: 16384,
+            cards: 4096,
+            owned_bytes: 1048576,
             entries: 64,
         },
     }
@@ -593,7 +594,7 @@ async fn oversized_checkout_scalar_fields_are_rejected_before_row_materializatio
                 Ok(_) => panic!("admitted oversized {kind} in {field}"),
                 Err(error) => error,
             };
-            if error.to_string() != "unsupported initial checkout scalar state" {
+            if error.to_string() != "unsupported recording checkout state" {
                 mismatches.push(format!("{field}/{kind}: {error}"));
             }
             assert_eq!(rows(&c, &inventory).await, before);
@@ -620,5 +621,71 @@ async fn oversized_checkout_scalar_fields_are_rejected_before_row_materializatio
     assert!(
         mismatches.is_empty(),
         "wrong rejection stages: {mismatches:?}"
+    );
+}
+
+/// Initial operation and root traversal charges fail before registration changes any state.
+/// # Panics
+/// Panics if an early refusal consumes the owner's proof or a later registration fails.
+#[tokio::test]
+async fn checkout_entry_work_limits_leave_registration_and_owner_proof_unchanged() {
+    let temp = tempfile::tempdir().unwrap();
+    let path = temp.path().join("repo");
+    let root = checkout_root(temp.path());
+    let mut owner = initialize(&path).await;
+    let mut tiny = limits();
+    tiny.content.max_total_decoded_bytes = 1;
+    assert_eq!(
+        owner
+            .register_checkout("work", &root, tiny)
+            .await
+            .unwrap_err()
+            .operation,
+        "total decoded content limit"
+    );
+    assert_eq!(
+        owner
+            .checkout_view("work", tiny)
+            .await
+            .unwrap_err()
+            .operation,
+        "total decoded content limit"
+    );
+    assert_eq!(
+        owner
+            .checkout_view_for_root(&root, tiny)
+            .await
+            .unwrap_err()
+            .operation,
+        "total decoded content limit"
+    );
+    let operation = limits().parser.input_bytes.min(4096 + 1024) * 8 + "owner".len() * 4 + 8192;
+    let traversal = root.as_os_str().as_encoded_bytes().len() + (libc::PATH_MAX as usize) * 4;
+    let mut short = limits();
+    short.content.max_total_decoded_bytes = (operation + traversal - 1) as u64;
+    assert_eq!(
+        owner
+            .register_checkout("work", &root, short)
+            .await
+            .unwrap_err()
+            .operation,
+        "total decoded content limit"
+    );
+    assert_eq!(
+        owner
+            .checkout_view_for_root(&root, short)
+            .await
+            .unwrap_err()
+            .operation,
+        "total decoded content limit"
+    );
+    let view = owner
+        .register_checkout("work", &root, limits())
+        .await
+        .unwrap();
+    assert_eq!(view.pending_version, 0);
+    assert_eq!(
+        owner.checkout_view_for_root(&root, limits()).await.unwrap(),
+        view
     );
 }
