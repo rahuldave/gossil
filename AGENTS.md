@@ -48,8 +48,12 @@ The private recording library requires the complete tracked set, immutable
 private scopes and all seven expected checkout facts. It captures every working file with one borrowed content
 budget and parser ledger, preserves the empty shared root, and admits exact
 private history projections. Working files remain unchanged. Existing CLI status
-prints A/R and actual scope; new scope and commit commands are deferred. Broader
-crosslinks, shared recording, sync and Gest integration remain planned work.
+prints A/R and actual scope.
+
+Both executable and group aliases accept `scope`
+and `commit` with explicit repository, checkout and scope selections. Commit
+requires private scope, all tracked paths and explicit actor, comment and date.
+Broader crosslinks, shared recording, sync and Gest integration remain planned work.
 
 ## Commands and evidence
 
@@ -104,5 +108,6 @@ file and a successful build do not prove that the public site is live.
 
 Use the module guides for explicit bounds and lifecycle contracts.
 Next, review the composed core and preserve the unchanged `delta1` evidence
-and its qualifications. Qualify the library recording checkpoint on its accepted
-tracking base, then add the scope and commit command adapters in a separate coherent commit.
+and its qualifications. The library checkpoint has passed its recorded gates.
+Next, qualify the separate scope and commit CLI checkpoint before integration
+and delivery; focused passes do not establish a final full-feature pass.

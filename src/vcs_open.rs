@@ -62,7 +62,7 @@ fn options(args: &[OsString]) -> Result<Options, Error> {
         root,
     })
 }
-/// Finite native initial-state admission policy, independent of Gest project policy.
+/// Set finite limits for validating supported native history, independent of Gest project policy.
 /// # Returns
 /// Finite native admission limits, independent of Gest project policy, with explicit content and parser ceilings.
 pub(crate) fn limits() -> AdmissionLimits {
@@ -173,7 +173,7 @@ fn selection(options: &Options) -> Result<Selection, Error> {
     })
 }
 
-/// Admit an existing complete locator and its exact native binding for add/status.
+/// Admit the complete locator and exact native binding for tracking, scope and recording commands.
 /// Missing or incomplete markers require explicit recovery with `vcs open`.
 /// # Arguments
 /// * `repository` - Explicit existing repository path.
@@ -197,7 +197,9 @@ pub(crate) async fn admit_existing(
         found,
     } = selection(&options)?;
     let Some((_, Some(existing))) = found else {
-        return Err("add/status requires a complete checkout locator; run vcs open first".into());
+        return Err(
+            "checkout operation requires a complete checkout locator; run vcs open first".into(),
+        );
     };
     let mut owner = LocalOwnerRepository::open(&repository, limits()).await?;
     let view = owner

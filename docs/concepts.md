@@ -86,7 +86,7 @@ Its `initialize` constructor creates a repository without a checkout. The
 [`vcs init` command](cli.md#initialize-a-repository) calls this constructor,
 generates identities and a password, and selects a default administrator from
 the environment. The API requires those values explicitly. Its `create`
-constructor binds an existing catalog1 checkout directory. Catalog1 and catalog4
+constructor creates catalog1 and binds an existing checkout directory. Catalog1 and catalog4
 name storage formats; the [native storage guide](native-storage.md) defines their
 creation and admission rules.
 
@@ -163,8 +163,10 @@ Read [native storage](native-storage.md#private-recording-library) for request
 metadata and limits. Shared recording, synchronization and integrated issue
 operations remain planned.
 
-The contracts above describe the source library. The new scope and commit command adapters
-are deferred, and [final qualification](development-plan.md#private-recording-qualification)
+The source [scope and commit commands](cli.md#select-scopes-and-record-private-files)
+use these library contracts. They require the complete locator binding and explicit
+repository, checkout and scope selections. Commit also requires all-tracked consent
+and explicit actor, comment and date. [Final CLI qualification](development-plan.md#private-recording-qualification)
 is still pending.
 
 ## Recommendations

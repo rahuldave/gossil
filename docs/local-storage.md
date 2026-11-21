@@ -107,7 +107,8 @@ rows in one transaction. Helpers borrow the operation's content budget and parse
 ledger throughout. Failure rolls back earlier database writes, and recording
 never writes the working files.
 
-The library source is under [qualification](development-plan.md#private-recording-qualification).
+The [qualification record](development-plan.md#private-recording-qualification)
+distinguishes the checked library checkpoint from the CLI awaiting final gates.
 It does not add public SQL access or change the lifecycle guarantees above.
 
 ## Recommendations

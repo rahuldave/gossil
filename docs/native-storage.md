@@ -177,8 +177,9 @@ shared or private choice. Private means owner-local history; shared marks a path
 for shared history, whose recording and synchronization are not supported here.
 Every tracked path must have private scope before this recorder can run.
 
-This library checkpoint is under qualification. The examples describe its
-source contract and do not establish a passing check, release or installation.
+The library checkpoint has passed its recorded checks; the CLI checkpoint still
+needs final qualification. The examples describe source contracts and establish
+no release or installation.
 See [development status](development-plan.md#private-recording-qualification) for
 the accepted tracking baseline and remaining work.
 
@@ -262,10 +263,13 @@ and changes no head or counter.
 
 Changed recording writes one local receipt, payloads, manifest and projections
 atomically. It advances both generation and pending version once. Working files remain unchanged.
-Shared recording and synchronization remain unsupported. Catalog1 content
-operations keep their separate contract. The source CLI can inspect recorded
-states through [status](cli.md#add-explicit-paths-and-inspect-pending-additions),
-but scope selection and recording commands are deferred.
+Shared recording and synchronization remain unsupported.
+
+Catalog1 content
+operations keep their separate contract. The source CLI exposes
+[scope selection and private recording](cli.md#select-scopes-and-record-private-files)
+and inspects recorded states through [status](cli.md#add-explicit-paths-and-inspect-pending-additions).
+A failed write of the CLI receipt to standard output leaves the recorded history durable.
 
 ## Local owner and shared view
 

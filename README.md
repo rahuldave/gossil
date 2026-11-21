@@ -4,9 +4,9 @@ Gossil aims to keep agent work, issues and file history together alongside Git.
 Fossil is a version-control system. This build exposes a Rust library for Fossil's delta bytes, artifact records
 and local storage. Its `gossil` CLI creates, applies and checks deltas between files.
 It also initializes empty repositories, opens one native checkout,
-and adds or lists explicitly tracked files.
+adds or lists explicitly tracked files, selects their scopes and records private history.
 
-The library can select immutable
+The CLI and library can select immutable
 path scopes and record the complete private tracked tree. A scope assigns a path
 to shared or owner-local private history; recording shared history remains planned.
 
@@ -91,7 +91,7 @@ verification, documentation generation and the evidence archive.
 `gossil-conformance` is separate development infrastructure for explicit
 inherited-test configurations. See its [runner guide](docs/conformance.md).
 
-## Track and record through the library
+## Track and record private files
 
 Add enrolls paths without staging their bytes. New paths have unselected scope.
 The library's `select_path_scopes` persists an explicit immutable choice for each
@@ -101,8 +101,11 @@ It writes a private check-in while preserving the empty shared root.
 
 The source CLI offers [add and status](docs/cli.md#add-explicit-paths-and-inspect-pending-additions).
 Status distinguishes pending additions from recorded paths and prints their
-actual scopes. Scope selection and recording are library operations in this
-checkpoint; `vcs scope` and `vcs commit` are not accepted commands.
+actual scopes. Use [`vcs scope` and `vcs commit`](docs/cli.md#select-scopes-and-record-private-files)
+with explicit repository, checkout and scope choices. Commit also requires
+`--all-tracked`, `--user`, `--comment` and `--date-override`.
+The [source walkthrough](docs/getting-started.md#record-private-files-from-source)
+records an edit without adding the file again.
 See [native storage](docs/native-storage.md#private-recording-library) for the
 request, limits and no-change result, and [development status](docs/development-plan.md#private-recording-qualification)
 for the remaining qualification work.

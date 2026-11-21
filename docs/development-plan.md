@@ -3,8 +3,8 @@
 Gossil implements byte primitives, structural artifact parsing and bounded local
 storage. The `gossil` executable initializes empty repositories, opens native
 checkouts, adds explicit paths, lists tracked states and implements three delta
-diagnostics. The library also selects immutable path scopes and records the
-complete private tracked tree.
+diagnostics. The CLI calls the library to select immutable path scopes and record the complete
+private tracked tree.
 The generated [Rust API](api/index.qmd) describes the public library surface.
 
 The standalone [Gest task values converter](gest-task-values.md) validates eleven decoded fields.
@@ -20,12 +20,12 @@ caller-supplied native identity, actor and date. All three converters operate in
 | Delta create, apply and two-way file checks | General version-control CLI |
 | Compression, hashes, token escaping and artifact checksums | Repository traversal and changes to persisted scope choices |
 | Eight structural artifact types with explicit limits | General crosslinks, migration, rebuild and filesystem recovery |
-| Native initialization/open, explicit tracking and scopes, private file recording library; catalog1 private content | Scope/commit CLI, shared recording, sync and artifact publication |
+| Native initialization/open, tracking, scope/commit CLI and library; catalog1 private content | Shared recording, sync and artifact publication |
 | Explicit inherited-test runner configurations | Gest task CLI, server and user interface |
 
 Initialization creates catalog4 without a checkout. The library can register
 one existing directory and authenticate its registration by ID or exact root.
-Reopen admits exactly zero or one registration and the supported tracking, scope
+Opening a repository admits exactly zero or one registration and the supported tracking, scope
 and private recording family. Bound catalog1 creation retains its checkout and
 private content operations. Catalog4 generic private content writes remain
 unsupported; its separate recorder writes complete private file trees.
@@ -205,8 +205,8 @@ The source `vcs open` adapter adds first registration, reopen and bounded locato
 recovery without project initialization. Its configuration comes from the
 invocation directory, independently of an explicit root. The
 [CLI contract](cli.md#open-a-native-checkout) covers selection, conflicts and
-publication phases. Private recording is available through the library;
-its command adapters remain a separate checkpoint.
+publication phases. Scope selection and private recording are available through
+the library and the separate CLI checkpoint described below.
 
 Locator/parser/publication controls are in `src/checkout_locator.rs`, configuration
 controls in `src/checkout_config.rs`, and executable controls in
@@ -232,26 +232,44 @@ A source tag, installed checkpoint and default command are separate delivery fac
 
 The current branch adds explicit immutable path scopes, complete private file
 recording, and status that reports each tracked path's state and actual scope.
-Its first checkpoint exposes recording through the library. A later coherent
-commit will add the scope and commit command adapters.
+Its first checkpoint exposes recording through the library. The second adds
+`scope` and `commit` to both executables and both command-group aliases.
 
-An earlier prepared tree passed 203 library tests and 228 integration tests,
-with one existing opt-in test ignored and no filtered tests. Its coverage check
-failed, so that run was not a full gate pass. Those observations belong to
-the earlier tree and do not qualify the current source.
+The committed library checkpoint is
+`fca8c89f8c3d42a0a1fa7c7589042a4c1cc324d4`. Its normal full qualification passed
+207 unit tests, 232 integration tests and 100 percent changed-line coverage over
+5880 lines. Its API check documented all 533 items. These results qualify that
+library checkpoint, not the later CLI tree.
+
+The focused CLI run passed three parser unit tests and two fresh-process
+integration tests under guard `bbc05d10-b495-4d2e-ae33-dfbc255ccffd`.
+Its unit selection filtered out 207 other tests. Both executable aliases recorded
+first and repeated private commits, including an edit without re-add. A later
+noon commit with closed stdout returned failure after durable native rows changed;
+reopen and an unchanged retry preserved that history.
+The same run checked explicit grammar, scopes and locator refusals.
+
+The API/site check documented all 538 API items before the guide updates and
+version change. That result is not the final documentation gate. Full CLI checks,
+coverage and fresh independent gate records still remain. Draft PR 39 is on hold
+for this second coherent commit, final version and gates. No release, installation
+or publication is claimed for private recording.
+
+An earlier prepared library tree passed 203 library tests and 228 integration
+tests, but failed its coverage check. Those results remain historical and are
+superseded for library qualification by the committed checkpoint above.
 
 The source is based on the [accepted tracking merge](#delivered-tracking-baseline).
-The recorder retains the original parent-directory descriptors so it can check
-that the captured paths still have the same ancestry. That check charges the
-same operation budget. Focused regression execution, full checks, changed-line
-coverage and fresh independent records remain required for this checkpoint.
-No release version, installation or publication is claimed for private recording.
+The recorder retains the original parent-directory descriptors to check that
+captured paths still have the same ancestry, charging the same operation budget.
+Native controls are in `tests/native_path_scope.rs`, `tests/native_recording.rs`
+and the private storage modules. CLI controls are in `src/vcs_recording.rs`
+and `tests/vcs_recording_cli.rs`.
 
-The controls are in `tests/native_path_scope.rs`, `tests/native_recording.rs`
-and the private storage modules. They cover the complete expected view, immutable
-scopes, exact all-tracked requests, current bytes and modes, no-change behavior,
-rollback, strict history projections and shared work limits. Source controls
-are obligations to run, not evidence that their assertions have passed.
+The native controls cover the complete expected view, immutable scopes,
+exact all-tracked requests, current bytes and modes, no-change behavior, rollback,
+strict history projections and shared work limits. Source controls alone do not
+establish execution. The qualification results above identify the checks that ran.
 
 ## Recommendations
 

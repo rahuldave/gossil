@@ -5,9 +5,10 @@ A delta encodes target bytes as new bytes and copies from an origin file.
 This exercise needs no repository and does not change Git history.
 
 Gossil is intended to keep agent files, issues and their history alongside
-Git. Its command line initializes and opens repositories, tracks explicit files
-and has three delta diagnostics. The Rust library also supports private file
-recording, artifact parsing, local storage and task, project and author conversion. Try the delta commands below. Read
+Git. Its command line initializes and opens repositories, tracks explicit files,
+selects their scopes, records private history and has three delta diagnostics.
+The Rust library also supports artifact parsing, local storage and task, project
+and author conversion. Try the delta commands below. Read
 [working with repositories](working-with-repositories.md) for the intended
 file and issue workflows.
 
@@ -90,7 +91,7 @@ just gossil v test-delta "$example_dir/origin" "$example_dir/target"
 The source also builds a `gos` executable with the same diagnostics. See
 [short executable names](cli.md#short-names) for its source invocation.
 The same aliases support [native checkout open](cli.md#open-a-native-checkout).
-Issue, file-recording and sync commands remain planned.
+Issue commands, shared recording and sync remain planned.
 
 ## Handle failures and choose the next step
 
@@ -136,7 +137,7 @@ just gossil vcs open --repository example.gossil --checkout work --root example-
 ```
 
 Open registers the initial empty root and writes a local lookup file,
-`ROOT/.gossil/checkout.json`, so commands can find and verify the checkout.
+`example-work/.gossil/checkout.json`, so commands can find and verify the checkout.
 It selects no files and requires no issue, project or author initialization.
 Configuration, permissions and existing markers can refuse the operation.
 Read [native checkout open](cli.md#open-a-native-checkout) before retrying a
@@ -149,13 +150,57 @@ to enroll exact file paths. Add stores tracking metadata without changing workin
 files or storing file content. Status lists every tracked path with its pending
 or recorded state and actual scope. New paths have unselected scope.
 
-For application code, the [private recording library](native-storage.md#private-recording-library)
-selects explicit immutable scopes and records the complete private tracked tree.
-That API is separate from the current command set. Scope and commit commands
-remain deferred; the [development guide](development-plan.md#private-recording-qualification)
-records the qualification boundary.
+The [scope and commit commands](cli.md#select-scopes-and-record-private-files)
+select immutable scopes and record the complete private tracked tree. The
+[development guide](development-plan.md#private-recording-qualification) records the
+qualification boundary between source, release and installation.
+
+## Record private files from source
+
+Start in the Gossil source repository root after setup. This example runs `gos` through Cargo
+and keeps its database outside the working root. It uses absolute paths, so
+later commands can run inside the registered checkout.
+Existing Gest configuration must satisfy the [open contract](cli.md#configuration-before-mutation).
+
+```sh
+recording_source=$(pwd -P)
+recording_trial=$(mktemp -d /tmp/gossil-recording.XXXXXX)
+recording_gos() {
+  cargo run --locked --manifest-path "$recording_source/Cargo.toml" --bin gos -- "$@"
+}
+mkdir "$recording_trial/work"
+recording_gos v init --admin-user alice --date-override '2026-11-20 00:00:00' "$recording_trial/history.gossil"
+recording_gos v open --repository "$recording_trial/history.gossil" --checkout work --root "$recording_trial/work"
+cd "$recording_trial/work"
+printf 'first plan\n' > plan.md
+printf 'first review\n' > review.md
+recording_gos v add --repository "$recording_trial/history.gossil" --checkout work --path plan.md --path review.md
+recording_gos v scope --repository "$recording_trial/history.gossil" --checkout work --scope private --path plan.md --path review.md
+recording_gos v commit --repository "$recording_trial/history.gossil" --checkout work --scope private --all-tracked --user alice --comment 'Save notes' --date-override '2026-11-21T12:00:00'
+printf 'revised plan\n' > plan.md
+recording_gos v commit --repository "$recording_trial/history.gossil" --checkout work --scope private --all-tracked --user alice --comment 'Revise plan' --date-override '2026-11-22T12:00:00'
+recording_gos v open --repository "$recording_trial/history.gossil" --checkout work
+recording_gos v status --repository "$recording_trial/history.gossil" --checkout work
+recording_gos v commit --repository "$recording_trial/history.gossil" --checkout work --scope private --all-tracked --user alice --comment 'Check unchanged tree' --date-override '2026-11-23T12:00:00'
+```
+
+Scope prints `Selected scopes: 2`. Each changed commit prints
+`Recorded private check-in: HASH`, where `HASH` identifies that check-in.
+The final commit prints `No changes`. Each output ends with a newline.
+Status lists both paths as `R` with private scope. It does not report live edits.
+
+The second commit captures the edit without re-adding the file. Reopen preserves
+the files and private history; the shared head still names the empty root.
+These dates follow the deterministic root and each previous parent. Use later
+valid dates for subsequent commits, including no-change checks. Comments must
+not contain `[`, even when the tree is unchanged.
+
+A nonzero exit after an output failure can leave a durable commit. Retry the
+same binding with unchanged files and valid later metadata; a previously recorded
+tree yields `No changes`. See the [failure contract](cli.md#grammar-limits-and-failures).
+This walkthrough describes current source and does not install a default executable.
 
 ## Recommendations
 
-Use the scratch-file round trip first. Next, repeat it with copies of your
-own files and use distinct output paths before integrating the library.
+Use disposable copies for the source private recording walkthrough. Next,
+inspect status, edit a tracked copy and commit again with a later explicit date.

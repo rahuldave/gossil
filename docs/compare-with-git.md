@@ -16,8 +16,8 @@ and native storage primitives. It does not yet create or read persisted issues.
 
 [Native checkout open](cli.md#open-a-native-checkout) registers or reopens an
 existing directory and publishes its lookup locator. The library can record
-the complete private tracked tree; scope and recording commands remain deferred
-in this source CLI. Issue commands also remain planned.
+the complete private tracked tree. The source [scope and commit commands](cli.md#select-scopes-and-record-private-files)
+expose that operation with explicit selections and metadata. Issue commands remain planned.
 See the [current limits](development-plan.md) and
 [CLI reference](cli.md) before trying a command.
 
@@ -124,7 +124,7 @@ sharing within the shared portion today.
 This page follows the nossaifd writing guide, including principles credited to
 Rosalind Reid, Shreya Shankar and Oskar Austegard.
 
-## Current private recording library
+## Current private recording
 
 The [private recorder](native-storage.md#private-recording-library) saves a
 snapshot of every tracked file. Add enrolls paths rather than staging their bytes.
@@ -132,9 +132,11 @@ The recorder reads those paths again, so it includes edits made without re-addin
 Each path needs an explicit immutable private scope choice before recording.
 
 This operation creates owner-local file history and leaves the shared empty root
-unchanged. Shared recording and synchronization remain unsupported. The library
-is under [qualification](development-plan.md#private-recording-qualification);
-the installed tracking release does not contain this new API.
+unchanged. Shared recording and synchronization remain unsupported. The
+[qualification record](development-plan.md#private-recording-qualification) separates
+the checked library checkpoint from the CLI checkpoint still awaiting final gates.
+The installed tracking release, version 0.5.0, includes neither scope selection
+nor private recording.
 
 ## Recommendations
 

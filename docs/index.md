@@ -10,7 +10,7 @@ repository through [`vcs init`](cli.md#initialize-a-repository), without creatin
 The source [`vcs open` command](cli.md#open-a-native-checkout) registers or reopens
 one native checkout and publishes its lookup locator without selecting files.
 
-The library also selects explicit path scopes and records a complete private
+The CLI and library also select explicit path scopes and record a complete private
 tracked tree while the shared root stays empty. Scope assigns a tracked path
 to shared or owner-local private history. Shared recording remains planned.
 
@@ -62,7 +62,9 @@ Add alone chooses neither shared nor private scope and stores no file bytes.
 
 The [private recording library](native-storage.md#private-recording-library)
 requires explicit private scope for every tracked path and captures all current
-bytes and executable modes. Scope selection and recording currently require the library API.
+bytes and executable modes. The source [scope and commit commands](cli.md#select-scopes-and-record-private-files)
+require explicit repository, checkout, scope and recording metadata. Try the
+[private recording walkthrough](getting-started.md#record-private-files-from-source).
 [Development status](development-plan.md#private-recording-qualification) separates
 this source contract from released and installed versions.
 
