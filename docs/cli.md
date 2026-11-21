@@ -399,7 +399,7 @@ cargo run --locked --bin gos -- v test-delta FILE1 FILE2
 ```
 
 Use either executable with either group name for initialization, native open,
-add/status, scope/commit and all three diagnostics.
+add/status, scope/commit, info and all three diagnostics.
 Usage messages use fixed spellings regardless of the invocation alias.
 Add and status use `gos v`; the other command usage messages use `gossil vcs`.
 
@@ -427,11 +427,63 @@ inherited-test configuration through `just conformance CONFIG`.
 It does not implement a Gossil engine. Its configuration, prerequisites and
 acceptance rules are in the [runner guide](conformance.md).
 
+## Inspect current recorded checkout identity
+
+Run `info` from the registered root or a descendant with a complete checkout locator:
+
+```sh
+/path/to/gossil vcs info --repository /absolute/history.gossil --checkout work
+/path/to/gos v info --repository /absolute/history.gossil --checkout work
+```
+
+Both executable names accept both `vcs` and `v`. Repository and checkout selections
+are required exactly once. The command accepts no revision argument, hash prefix,
+tag, `--root` or `--json`. Standalone `--help` or `-h` succeeds without reading a checkout.
+
+Success prints exactly five lines in this order:
+
+```text
+repository: "/absolute/history.gossil"
+local-root: "/absolute/work"
+checkout: FULL_CURRENT_NATIVE_ID
+shared-head: FULL_SHARED_NATIVE_ID
+private-head: FULL_PRIVATE_NATIVE_ID_OR_none
+```
+
+Each line has one ASCII space after the colon and ends with LF, including the
+last line. Both paths are standard JSON strings with escaping for special
+characters. `repository` preserves the supplied UTF-8 spelling, including relative
+paths and symlink aliases, after successful admission. Non-UTF-8 repository input
+is rejected without lossy conversion. `local-root` is the authenticated canonical
+registered root.
+
+All heads are complete native IDs. `checkout` is the private combined head when
+present, otherwise the shared head. Before the first private recording,
+`private-head` is the literal `none`. The shared head stays at the initial public
+check-in after private recordings. Uncommitted edits do not change these recorded identities.
+
+Info authenticates the existing checkout before producing stdout. Wrong selections,
+missing or incomplete nearest locators, configuration conflicts and corrupted
+native state fail through the existing admission checks. Errors retain their
+underlying causes. Success and failure preserve repository logical state, locator
+bytes and working files. Database file bytes can change during provider admission.
+An output failure returns status 1 and can leave partial stdout.
+
+This command adapts Fossil's current-tree checkout identity assertion from
+`test/set-manifest.test:68-73` and the current-checkout branch of `src/info.c`.
+Fossil prints a 40-character checkout prefix, and its `same_uuid` helper accepts matching prefixes.
+The inherited test is copyright 2016 D. Richard Hipp under the Simplified BSD License.
+Gossil controls compare complete output IDs against an independently authenticated checkout view.
+
+This bounded subset does not implement Fossil's full info interface, timeline,
+parent traversal or historical revision selection. Unrelated inherited suites
+are outside this qualification.
+
 ## Planned commands
 
 Broader version-control commands and Gest task commands are planned. They are
 not accepted by `gossil` or `gos`. The short names above apply to initialization and the
-three delta diagnostics, native open, add/status and scope/commit. Shared
+three delta diagnostics, native open, add/status, scope/commit and info. Shared
 recording, changing scopes, removal, rename, materialization, sync and Gest
 record associations remain unsupported.
 
@@ -440,5 +492,5 @@ record associations remain unsupported.
 Use the three diagnostics for file deltas. For a native checkout, initialize a
 new repository, then register one explicit existing root with open. Next, reopen
 without `--root`, add explicit files, select private scope and commit all tracked
-paths. Follow the [source walkthrough](getting-started.md#record-private-files-from-source)
+paths. Use `info` to inspect the recorded checkout identity. Follow the [source walkthrough](getting-started.md#record-private-files-from-source)
 and preserve durable state when a command reports an output failure.

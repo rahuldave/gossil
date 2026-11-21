@@ -31,6 +31,11 @@ hashes and token escaping.
 
 Gest is a task and artifact tracker. The converters in the module table use its task, project and author record model.
 
+Use [`vcs info`](cli.md#inspect-current-recorded-checkout-identity) to show the
+current recorded checkout and its shared and private heads. Explicit repository
+and checkout selections and a complete locator are required. Timeline and
+historical revision selection remain unsupported.
+
 ## Choose a library module
 
 | Task | Guide |

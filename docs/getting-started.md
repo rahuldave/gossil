@@ -137,7 +137,7 @@ just gossil vcs open --repository example.gossil --checkout work --root example-
 ```
 
 Open registers the initial empty root and writes a local lookup file,
-`example-work/.gossil/checkout.json`, so commands can find and verify the checkout.
+`example-work/.gossil/checkout.json`. Commands use that file to find and verify the checkout.
 It selects no files and requires no issue, project or author initialization.
 Configuration, permissions and existing markers can refuse the operation.
 Read [native checkout open](cli.md#open-a-native-checkout) before retrying a
@@ -199,6 +199,21 @@ A nonzero exit after an output failure can leave a durable commit. Retry the
 same binding with unchanged files and valid later metadata; a previously recorded
 tree yields `No changes`. See the [failure contract](cli.md#grammar-limits-and-failures).
 This walkthrough describes current source and does not install a default executable.
+
+## Inspect the recorded identity
+
+From the source walkthrough checkout above, use its `recording_gos` helper:
+
+```sh
+recording_gos vcs info --repository "$recording_trial/history.gossil" --checkout work
+```
+
+The command prints the supplied repository path and canonical checkout root as
+JSON strings, then the current checkout, shared head and private head.
+Before a private recording, the private head is `none` and checkout equals the
+shared head. After a private recording, checkout equals the private combined head.
+Edits without a commit do not change these recorded IDs. See the
+[exact info contract](cli.md#inspect-current-recorded-checkout-identity) for output and failure rules.
 
 ## Recommendations
 

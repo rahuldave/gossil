@@ -99,6 +99,12 @@ tracked path. `commit_private_tracked_files` requires every tracked path to be
 private and rereads the complete tree, including edits made without re-adding.
 It writes a private check-in while preserving the empty shared root.
 
+Use [`vcs info`](docs/cli.md#inspect-current-recorded-checkout-identity) with explicit
+repository and checkout selections to inspect the current recorded checkout.
+It prints complete shared and private heads, preserves the supplied repository
+path spelling as a JSON string, and requires a complete existing locator.
+This bounded current-checkout command does not provide timeline or revision selection.
+
 The source CLI offers [add and status](docs/cli.md#add-explicit-paths-and-inspect-pending-additions).
 Status distinguishes pending additions from recorded paths and prints their
 actual scopes. Use [`vcs scope` and `vcs commit`](docs/cli.md#select-scopes-and-record-private-files)
