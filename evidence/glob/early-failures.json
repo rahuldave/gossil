@@ -1,0 +1,29 @@
+{
+  "incidents": [
+    {
+      "command": "jlog run tclsh /tmp/gossil-glob-extract.tcl",
+      "failure": "proc test_cleanup {} lacked its empty body; extraction failed before any case ran",
+      "resolution": "Corrected Tcl stub; all 20 cases extracted and independently executed with unchanged source assertions"
+    },
+    {
+      "command": "just test-paths tests/glob.rs (initial setup attempt)",
+      "failure": "--locked rejected missing direct dependency lock edge; no test ran",
+      "resolution": "cargo check --offline updated only gossil direct dependency list; repeated test compiled and recorded behavioral red"
+    },
+    {
+      "command": "just fmt src/glob.rs tests/glob.rs src/bin/gossil.rs src/lib.rs",
+      "failure": "cargo fmt rejects positional file names",
+      "resolution": "just fmt passed"
+    },
+    {
+      "command": "just docstring-check (first run)",
+      "failure": "Glob.patterns and Glob.limits missing private field documentation",
+      "resolution": "Added field docs; repeated check passed"
+    },
+    {
+      "command": "nossaifd docs/glob.md (draft checks)",
+      "failure": "Draft had colon-between-clauses and vague demonstrative; expanded evidence paragraph later exceeded six sentences",
+      "resolution": "Revised and split paragraphs; final checker log retained"
+    }
+  ]
+}

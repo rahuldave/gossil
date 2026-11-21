@@ -236,6 +236,25 @@ contents, select revisions or accept filters. See the
 [ancestry command contract](cli.md#read-complete-recorded-ancestry) for bounds
 and failures. This walkthrough builds source; it supplies no installation evidence.
 
+## Inspect a glob list from source
+
+The diagnostic accepts literal pattern lists and candidates without a
+repository. The [2026-11-21 focused checkpoint](glob.md#current-source-status)
+built and exercised the source interface. Its full qualification limits are
+separate from this example.
+
+Return to the Gossil source root before running this command.
+
+```sh
+just gossil vcs test-glob '*.rs,src/*' src/lib.rs notes.md
+```
+
+The shell quotes keep the pattern list in one argument. The diagnostic prints
+SQL, parsed patterns and both match indices. It selects no tracked files.
+Read the [CLI grammar](cli.md#inspect-a-fossil-glob-list) and
+[glob contract](glob.md) before using it. The default installed development
+preview is a separate build; this source example does not update it.
+
 ## Recommendations
 
 Use disposable copies for the source private recording walkthrough. Next,

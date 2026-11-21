@@ -7,7 +7,7 @@ project:
 
 website:
   title: Gossil
-  description: Rust library and CLI for Fossil delta bytes, artifacts and local storage
+  description: Rust library and CLI for Fossil delta bytes, glob matching, artifacts and local storage
   site-url: https://rahuldave.com/gossil/
   repo-url: https://github.com/rahuldave/gossil
   repo-subdir: docs
@@ -44,6 +44,7 @@ website:
           - blob-primitives.md
           - artifact-checksum.md
           - token-codec.md
+          - glob.md
           - artifact-parser.md
           - diff.md
           - task-ticket.md

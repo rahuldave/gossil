@@ -93,3 +93,63 @@ fn non_utf8_missing_path_is_preserved_in_error() {
         }
     }
 }
+
+/// Every shared entry alias preserves exact glob output and diagnostics.
+#[test]
+fn every_executable_group_pair_runs_glob() {
+    for binary in binaries() {
+        for group in ["vcs", "v"] {
+            let out = Command::new(binary)
+                .args([group, "test-glob", "a*,abc,z", "abc", "z", "no"])
+                .output()
+                .unwrap();
+            assert!(out.status.success());
+            assert!(out.stderr.is_empty());
+            assert_eq!(out.stdout, b"SQL expression: (x GLOB 'a*' OR x GLOB 'abc' OR x GLOB 'z')\npattern[0] = [a*]\npattern[1] = [abc]\npattern[2] = [z]\n1 1 abc\n3 3 z\n0 0 no\n");
+            for (tail, expected) in [
+                (vec![], "Usage: gossil vcs test-glob PATTERN STRING ...\n"),
+                (
+                    vec!["a"],
+                    "Usage: gossil vcs test-glob PATTERN STRING ...\n",
+                ),
+                (
+                    vec!["@ignore-glob", "x"],
+                    "test-glob setting lookup is not implemented\n",
+                ),
+            ] {
+                let out = Command::new(binary)
+                    .args([group, "test-glob"])
+                    .args(tail)
+                    .output()
+                    .unwrap();
+                assert_eq!(out.status.code(), Some(1));
+                assert!(out.stdout.is_empty());
+                assert_eq!(out.stderr, expected.as_bytes());
+            }
+            let raw = OsString::from_vec(vec![0xff]);
+            let out = Command::new(binary)
+                .args([group, "test-glob"])
+                .arg(&raw)
+                .arg(&raw)
+                .output()
+                .unwrap();
+            assert!(out.status.success());
+            assert!(out.stderr.is_empty());
+            assert_eq!(
+                out.stdout,
+                b"SQL expression: (x GLOB '\xff')\npattern[0] = [\xff]\n1 1 \xff\n"
+            );
+            let mut command = Command::new(binary);
+            command.args([group, "test-glob", "a", "a"]);
+            let out = glob_closed_stdout::configure(command).output().unwrap();
+            assert_eq!(out.status.code(), Some(1));
+            assert_eq!(
+                out.stderr,
+                b"unable to open file \"<stdout>\" for writing\n"
+            );
+        }
+    }
+}
+
+#[path = "support/closed_stdout.rs"]
+mod glob_closed_stdout;

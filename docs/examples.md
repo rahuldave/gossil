@@ -1,6 +1,6 @@
 # Rust library examples
 
-These examples use the library in this checkout. The byte examples operate without
+These examples use the library in this checkout. The byte and glob examples operate without
 opening a database; the ancestry example uses an existing admitted repository. For full signatures and errors, browse the
 [generated API reference](api/index.qmd).
 
@@ -100,6 +100,34 @@ for admission, transaction and ownership limits. To read the same ancestry from
 the source CLI, use [timeline or log](cli.md#read-complete-recorded-ancestry)
 with explicit repository and checkout selectors and an existing matching locator.
 The CLI preserves metadata as JSON strings; the API fields remain byte vectors.
+
+## Match a bounded glob list
+
+This prepared source example uses explicit limits and preserves the first-match
+index. It requires the same provider patches shown above and fresh qualification
+of this adaptation.
+
+```rust
+use gossil::glob::{glob_create, glob_expr, glob_multi_match, Limits};
+let limits = Limits {
+    list_bytes: 1024,
+    candidate_bytes: 1024,
+    patterns: 16,
+    expression_bytes: 4096,
+};
+let list = Some(b"*.rs,src/*".as_slice());
+let patterns = glob_create(list, limits).unwrap();
+assert_eq!(patterns.glob_match(b"src/lib.rs").unwrap(), 1);
+assert_eq!(glob_multi_match(list, b"notes.md", limits).unwrap(), 0);
+assert_eq!(glob_expr(b"?1", list, limits).unwrap(),
+           b"(?1 GLOB '*.rs' OR ?1 GLOB 'src/*')");
+```
+
+Handle `GlobError` in an application. `?1` is a trusted parameter expression;
+bind the candidate separately when executing this SQL through your own database
+interface. `glob_expr` returns bytes and executes no SQL. It escapes only the
+patterns, so an untrusted expression argument can inject SQL. The
+[glob guide](glob.md) defines NUL, quotes, SQL parsing and engine work limits.
 
 ## Recommendations
 

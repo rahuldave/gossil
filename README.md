@@ -12,7 +12,13 @@ path scopes and record the complete private tracked tree. A scope assigns a path
 to shared or owner-local private history; recording shared history remains planned.
 
 The library includes bounded compression, content hashes, token escaping,
-artifact checksums and owned local database transactions.
+artifact checksums and owned local database transactions. The
+[glob module](docs/glob.md) parses and matches bounded Fossil pattern lists and
+constructs SQL expressions with the same selected libSQL 0.10.0 engine. Its
+repository-free `vcs test-glob` diagnostic passed the
+[focused 2026-11-21 checkpoint](docs/glob.md#current-source-status). That checkpoint
+qualifies only its recorded composition; complete delivery gates and installation
+proof are separate.
 
 Read the [product documentation](https://rahuldave.com/gossil/), start with
 [a file round trip](docs/getting-started.md), or browse the

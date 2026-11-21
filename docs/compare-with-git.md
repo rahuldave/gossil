@@ -145,6 +145,14 @@ metadata bytes, current first and shared root last. The source
 rows as compact NDJSON with explicit selectors and an existing matching locator.
 This bounded reader does not establish general Fossil timeline compatibility.
 
+## Prepared glob utility
+
+The [glob source](glob.md) matches bounded Fossil pattern lists and constructs
+SQL expressions. It adds no ignore rules, filesystem traversal or wildcard
+selection to add or status. Its [focused source checkpoint](glob.md#current-source-status)
+passed with the selected 0.10.0 engine. Complete frozen-tree and delivery
+qualification are separate.
+
 ## Recommendations
 
 Keep Git for source work today. Next, try the [delta tutorial](getting-started.md)

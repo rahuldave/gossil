@@ -297,6 +297,20 @@ They exercise the inherited driver without changing its assertion procedure.
 The full reference baseline remains separate. See the checked-in evidence
 under `evidence/baselines` for classified results and limits.
 
+## Separate glob qualification
+
+The prepared [glob port](glob.md) retains 20 unchanged `glob.test` families,
+100 through 119. Its `evidence/glob/run-upstream.tcl` adapter invokes a selected
+product executable directly.
+
+The adapter is separate from a configured
+`gossil-conformance` suite and does not qualify unrelated inherited tests.
+Historical 0.9.30 runs remain archived. The
+[2026-11-21 focused checkpoint](glob.md#current-source-status) passed all 20
+unchanged assertions with the selected 0.10.0 engine. That run observed the Rust
+diagnostic, not a fresh native Fossil run. Complete frozen-tree gates and
+accepted-parent qualification are separate.
+
 ## Recommendations
 
 Use `just setup` before the checks, then run suites with explicit configurations

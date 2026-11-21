@@ -1,0 +1,23 @@
+{
+  "compression": "gzip, lossless; raw bytes unchanged after decompression",
+  "logs": [
+    {
+      "raw_path": "evidence/glob/portability-regression.log",
+      "raw_bytes": 956,
+      "raw_sha256": "2e8d34efff233aec7cdd98992ca6a31e4bb503125c35e14f27d2ba0e428886f4",
+      "stored_path": "evidence/glob/portability-regression.log.gz",
+      "stored_bytes": 512,
+      "stored_sha256": "a74558f817e9ab2adbed95c1d241d848760e2422878b31cfa9fc164951e19b9e",
+      "roundtrip_verified": true
+    },
+    {
+      "raw_path": "evidence/glob/portability-test.log",
+      "raw_bytes": 411,
+      "raw_sha256": "17519c75205361b9955faa032cab23a633a7524f8c6856e2ec23e68b4e09063a",
+      "stored_path": "evidence/glob/portability-test.log.gz",
+      "stored_bytes": 297,
+      "stored_sha256": "89fd7fd7943f00c7a927ba236b1d44b36759f23e48afb640cb5697ebdacb5df5",
+      "roundtrip_verified": true
+    }
+  ]
+}

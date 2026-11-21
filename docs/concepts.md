@@ -178,6 +178,19 @@ The source [timeline and log commands](cli.md#read-complete-recorded-ancestry)
 print those rows as compact NDJSON after existing-locator admission and checked
 API completion. Opening, the API and serialization have separate finite bounds.
 
+## Glob lists and SQL expressions
+
+The prepared `glob` module parses Fossil pattern lists and calls the selected
+libSQL engine for matching. A result is the first matching one-based pattern
+index, or zero. Its finite limits bound bytes and pattern counts, not engine
+matching time or stack use. Matching selects no files and traverses no directories.
+
+`glob_expr` builds SQL from a trusted expression and escaped patterns. Bind
+untrusted candidate values through SQL parameters in a caller-owned connection;
+never put those bytes in the expression argument. The storage API still exposes
+no arbitrary SQL. The [glob guide](glob.md) describes the distinct SQL parser
+advance and the current qualification limits.
+
 ## Recommendations
 
 Choose the smallest module that fits the operation. Next, set resource limits

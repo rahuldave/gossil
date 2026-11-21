@@ -1,11 +1,14 @@
 # CLI reference
 
 The `gossil` executable initializes empty repositories, opens native checkouts
-and has three file diagnostics. This source checkout also has
+and has three delta file diagnostics. The prepared source also has a
+[glob diagnostic](#inspect-a-fossil-glob-list), with a
+[focused source checkpoint](glob.md#current-source-status). This source checkout also has
 [explicit add and tracked status](#add-explicit-paths-and-inspect-pending-additions),
 plus [scope selection and private recording](#select-scopes-and-record-private-files)
 and [complete recorded ancestry](#read-complete-recorded-ancestry).
 `gos` is an alias for `gossil`, and `v` is an alias for `vcs`.
+
 Each diagnostic runs without a repository. Run it from this source checkout with `just gossil`, which builds
 and runs the executable through Cargo. Cargo may print build messages on stderr.
 
@@ -14,6 +17,7 @@ and runs the executable through Cargo. Cargo may print build messages on stderr.
 | `vcs test-delta-create` | `ORIGIN TARGET DELTA` | Writes `DELTA`; no stdout |
 | `vcs test-delta-apply` | `ORIGIN DELTA TARGET` | Writes `TARGET`; no stdout |
 | `vcs test-delta` | `FILE1 FILE2` | Prints `ok` and a newline |
+| `vcs test-glob` | `PATTERN STRING ...` | Prints SQL, patterns and match indices; prepared source |
 
 ```sh
 just gossil vcs test-delta-create ORIGIN TARGET DELTA
@@ -402,7 +406,8 @@ cargo run --locked --bin gos -- v test-delta FILE1 FILE2
 ```
 
 Use either executable with either group name for initialization, native open,
-add/status, scope/commit, info, timeline/log and all three diagnostics.
+add/status, scope/commit, info, timeline/log, the three delta diagnostics and
+the prepared glob diagnostic.
 Usage messages use fixed spellings regardless of the invocation alias.
 Add and status use `gos v`; the other command usage messages use `gossil vcs`.
 
@@ -486,7 +491,8 @@ are outside this qualification.
 
 Broader version-control commands and Gest task commands are planned. They are
 not accepted by `gossil` or `gos`. The short names above apply to initialization and the
-three delta diagnostics, native open, add/status, scope/commit, info and timeline/log. Shared
+three delta diagnostics, the prepared glob diagnostic, native open, add/status,
+scope/commit, info and timeline/log. Shared
 recording, changing scopes, removal, rename, materialization, sync and Gest
 record associations remain unsupported.
 
@@ -551,6 +557,59 @@ no claim that physical database bytes remain identical.
 See [qualification](development-plan.md#recorded-ancestry-cli-qualification)
 before treating this source command as released or installed. General Fossil
 timeline behavior and `cat` remain separate work.
+
+## Inspect a Fossil glob list
+
+The source accepts all four forms:
+
+```text
+gossil vcs test-glob PATTERN STRING ...
+gossil v test-glob PATTERN STRING ...
+gos vcs test-glob PATTERN STRING ...
+gos v test-glob PATTERN STRING ...
+```
+
+Supply one pattern-list argument and at least one candidate argument. Arguments
+are positional; there are no switches, settings lookup or JSON mode. A token
+such as `--help` is a literal pattern or candidate when arity is valid. A pattern
+list beginning with `@` fails with `test-glob setting lookup is not implemented`.
+Missing arguments fail with `Usage: gossil vcs test-glob PATTERN STRING ...`
+for every alias.
+
+For `PATTERN` equal to `*.rs,src/*` and candidates `src/lib.rs` and `notes.md`,
+the source-defined output is:
+
+```text
+SQL expression: (x GLOB '*.rs' OR x GLOB 'src/*')
+pattern[0] = [*.rs]
+pattern[1] = [src/*]
+1 1 src/lib.rs
+0 0 notes.md
+```
+
+Pattern labels start at zero. Match indices start at one; zero means no match.
+Each candidate row prints reusable then one-shot results, followed by the
+original candidate bytes and LF. Pattern and candidate bytes are not escaped.
+The diagnostic constructs SQL with trusted expression `x` but executes no SQL.
+
+The adapter caps list and candidate inputs at 1 MiB each, pattern count at
+65,536 and SQL output at 16 MiB. These bounds do not limit engine matching time
+or stack use. Unix arguments preserve raw bytes. Other platforms accept Unicode
+as UTF-8 and reject unrepresentable arguments with
+`test-glob argument is not valid Unicode`.
+
+Success exits 0. Usage, settings, encoding, budget, allocation and stdout errors
+exit 1. Budget messages use `glob NAME limit exceeded`; capacity overflow uses
+`glob capacity overflow`. Allocation messages begin `glob allocation:`.
+Stdout failures print `unable to open file "<stdout>" for writing`, preserve
+the original I/O cause and may leave partial stdout.
+The command reads no repository, settings or files and changes no tracking state.
+
+The [glob guide](glob.md) defines quotes, first-NUL truncation and the SQL
+parser's extra advance after closing quotes. Historical controls used 0.9.30.
+The [2026-11-21 focused checkpoint](glob.md#current-source-status) exercised all
+four forms with 0.10.0; complete frozen-tree and delivery qualification are
+separate. These source forms make no claim about installed previews.
 
 ## Recommendations
 

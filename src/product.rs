@@ -1,7 +1,7 @@
-//! Route native initialization, checkout open, information, tracking, recording, timeline and delta diagnostics.
+//! Route native initialization, checkout open, information, tracking, recording, timeline, delta and glob diagnostics.
 use crate::delta::{DeltaError, Limits, apply, create};
 use std::collections::TryReserveError;
-use std::ffi::OsString;
+use std::ffi::{OsStr, OsString};
 use std::fs::File;
 use std::io::{Read, Write};
 use std::path::{Path, PathBuf};
@@ -11,6 +11,15 @@ use std::path::{Path, PathBuf};
 enum CommandError {
     /// The argument count or command does not match `vcs test-delta-apply`.
     Usage,
+    /// Invalid glob diagnostic arguments.
+    UsageGlob,
+    /// Glob budget or allocation failure.
+    Glob(crate::glob::GlobError),
+    /// Settings need repository integration.
+    GlobSetting,
+    /// A non-Unix argument cannot be represented as Unicode.
+    #[cfg(any(not(unix), test))]
+    GlobEncoding,
     /// Invalid create arguments.
     UsageCreate,
     /// Invalid round-trip arguments.
@@ -45,6 +54,11 @@ impl std::fmt::Display for CommandError {
     /// Preserve the characterized diagnostic framing and program-name substitution.
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
+            Self::UsageGlob => write!(f, "Usage: gossil vcs test-glob PATTERN STRING ..."),
+            Self::Glob(e) => write!(f, "{e}"),
+            Self::GlobSetting => write!(f, "test-glob setting lookup is not implemented"),
+            #[cfg(any(not(unix), test))]
+            Self::GlobEncoding => write!(f, "test-glob argument is not valid Unicode"),
             Self::UsageCreate => {
                 write!(f, "Usage: gossil vcs test-delta-create ORIGIN TARGET DELTA")
             }
@@ -68,6 +82,10 @@ impl std::error::Error for CommandError {
     /// Return the original error, including typed nested decoder failures.
     fn source(&self) -> Option<&(dyn std::error::Error + 'static)> {
         match self {
+            #[cfg(any(not(unix), test))]
+            Self::GlobEncoding => None,
+            Self::Glob(e) => Some(e),
+            Self::UsageGlob | Self::GlobSetting => None,
             Self::Read { source, .. } | Self::Write { source, .. } => Some(source),
             Self::ReadAllocation { source } => Some(source),
             Self::Decode(source) | Self::Create(source) => Some(source),
@@ -204,6 +222,89 @@ fn round_trip_with(
     Ok(())
 }
 
+/// Accept Unicode without substitution for platforms without Unix byte arguments.
+/// # Errors
+/// Returns the encoding error when the argument is not representable as Unicode.
+#[cfg(any(not(unix), test))]
+fn unicode_glob_argument(arg: &OsStr) -> Result<&[u8], CommandError> {
+    arg.to_str()
+        .map(str::as_bytes)
+        .ok_or(CommandError::GlobEncoding)
+}
+
+/// Preserve Unix argument bytes; elsewhere accept only lossless Unicode as UTF-8.
+/// # Arguments
+/// * `arg` - Operating-system argument to borrow without character substitution.
+/// # Returns
+/// Exact argument bytes on Unix, or UTF-8 bytes of a valid Unicode argument elsewhere.
+/// # Errors
+/// On non-Unix platforms, returns the encoding error for an unrepresentable argument.
+fn glob_argument(arg: &OsStr) -> Result<&[u8], CommandError> {
+    #[cfg(unix)]
+    {
+        use std::os::unix::ffi::OsStrExt;
+        Ok(arg.as_bytes())
+    }
+    #[cfg(not(unix))]
+    {
+        unicode_glob_argument(arg)
+    }
+}
+
+/// Run the repository-free glob diagnostic with a caller-supplied output stream.
+/// Accept one literal pattern list and at least one candidate; all aliases share
+/// fixed usage spelling. Leading `@` lists reject settings lookup. Unix arguments
+/// retain raw bytes, while other platforms require Unicode. Output contains raw
+/// pattern/candidate bytes, zero-based pattern labels and one-based match indices.
+/// The fixed byte/count budgets do not bound engine matching time or stack use.
+///
+/// # Arguments
+/// * `args` - Normalized group, command, pattern list and candidates.
+/// * `out` - Destination for exact diagnostic bytes.
+/// # Returns
+/// Success after writing all pattern and candidate rows.
+/// # Errors
+/// Returns invalid arguments, glob failures or an original output I/O cause.
+fn run_glob(args: &[OsString], mut out: impl Write) -> Result<(), CommandError> {
+    use crate::glob::{glob_create, glob_expr, glob_multi_match};
+    if args.len() < 4 {
+        return Err(CommandError::UsageGlob);
+    }
+    let list = glob_argument(&args[2])?;
+    if list.starts_with(b"@") {
+        return Err(CommandError::GlobSetting);
+    }
+    let limits = crate::glob::Limits {
+        list_bytes: 1_048_576,
+        candidate_bytes: 1_048_576,
+        patterns: 65_536,
+        expression_bytes: 16_777_216,
+    };
+    let glob = glob_create(Some(list), limits).map_err(CommandError::Glob)?;
+    let expr = glob_expr(b"x", Some(list), limits).map_err(CommandError::Glob)?;
+    let write_error = |source| CommandError::Write {
+        path: PathBuf::from("<stdout>"),
+        source,
+    };
+    out.write_all(b"SQL expression: ").map_err(write_error)?;
+    out.write_all(&expr).map_err(write_error)?;
+    out.write_all(b"\n").map_err(write_error)?;
+    for (i, pattern) in glob.patterns().enumerate() {
+        write!(out, "pattern[{i}] = [").map_err(write_error)?;
+        out.write_all(pattern).map_err(write_error)?;
+        out.write_all(b"]\n").map_err(write_error)?;
+    }
+    for value in &args[3..] {
+        let value = glob_argument(value)?;
+        let first = glob.glob_match(value).map_err(CommandError::Glob)?;
+        let second = glob_multi_match(Some(list), value, limits).map_err(CommandError::Glob)?;
+        write!(out, "{first} {second} ").map_err(write_error)?;
+        out.write_all(value).map_err(write_error)?;
+        out.write_all(b"\n").map_err(write_error)?;
+    }
+    Ok(())
+}
+
 /// Dispatch repository-free diagnostics while preserving the existing apply adapter.
 ///
 /// # Arguments
@@ -213,9 +314,13 @@ fn round_trip_with(
 /// Success after the requested diagnostic.
 ///
 /// # Errors
-/// Returns a usage, file or delta error.
+/// Returns a usage, file, delta, glob or output error.
 fn dispatch(args: &[OsString]) -> Result<(), CommandError> {
     if args.first().is_some_and(|arg| arg == "vcs") {
+        if args.get(1).is_some_and(|arg| arg == "test-glob") {
+            return run_glob(args, std::io::stdout().lock());
+        }
+
         if args.get(1).is_some_and(|arg| arg == "test-delta-create") {
             if args.len() != 5 {
                 return Err(CommandError::UsageCreate);
@@ -340,6 +445,106 @@ pub fn entry() -> std::process::ExitCode {
 
 #[cfg(test)]
 mod tests {
+    /// A failed glob output retains the original typed stream error.
+    #[test]
+    fn glob_stdout_error_preserves_cause() {
+        /// Output stream that deterministically returns a broken-pipe cause.
+        struct Denied;
+        impl Write for Denied {
+            /// Reject every write with the original broken-pipe error.
+            /// # Errors
+            /// Always returns the broken-pipe error used by this control.
+            fn write(&mut self, _: &[u8]) -> std::io::Result<usize> {
+                Err(std::io::Error::from(std::io::ErrorKind::BrokenPipe))
+            }
+            /// Complete a flush without changing the deterministic write failure.
+            /// # Errors
+            /// This control returns no flush error.
+            fn flush(&mut self) -> std::io::Result<()> {
+                Ok(())
+            }
+        }
+        let args = ["vcs", "test-glob", "a", "a"].map(OsString::from);
+        let mut out = Denied;
+        assert!(out.flush().is_ok());
+        let error = run_glob(&args, &mut out).unwrap_err();
+        assert_eq!(
+            error.to_string(),
+            "unable to open file \"<stdout>\" for writing"
+        );
+        assert_eq!(
+            error
+                .source()
+                .unwrap()
+                .downcast_ref::<std::io::Error>()
+                .unwrap()
+                .kind(),
+            std::io::ErrorKind::BrokenPipe
+        );
+    }
+
+    /// Unsupported CLI forms carry usage diagnostics without an invented cause.
+    #[test]
+    fn glob_cli_usage_diagnostics() {
+        for (args, expected) in [
+            (
+                vec!["vcs", "test-glob"],
+                "Usage: gossil vcs test-glob PATTERN STRING ...",
+            ),
+            (
+                vec!["vcs", "test-glob", "@ignore-glob", "x"],
+                "test-glob setting lookup is not implemented",
+            ),
+        ] {
+            let args: Vec<OsString> = args.into_iter().map(OsString::from).collect();
+            let error = dispatch(&args).unwrap_err();
+            assert_eq!(error.to_string(), expected);
+            assert!(error.source().is_none());
+        }
+    }
+
+    /// CLI budgets reject oversized lists before writing output and retain the cause.
+    #[test]
+    fn glob_cli_budget_diagnostic() {
+        let args = [
+            OsString::from("vcs"),
+            OsString::from("test-glob"),
+            OsString::from("a".repeat(1_048_577)),
+            OsString::from("a"),
+        ];
+        let error = dispatch(&args).unwrap_err();
+        assert_eq!(error.to_string(), "glob list limit exceeded");
+        let cause = error.source().unwrap();
+        assert!(matches!(
+            cause.downcast_ref::<crate::glob::GlobError>(),
+            Some(crate::glob::GlobError::Limit("list"))
+        ));
+    }
+
+    /// Preserve Unicode UTF-8 exactly and reject unrepresentable portable arguments.
+    #[test]
+    fn glob_argument_encoding_policy() {
+        let unicode = OsStr::new("é😀");
+        assert_eq!(unicode_glob_argument(unicode).unwrap(), "é😀".as_bytes());
+        assert_eq!(glob_argument(unicode).unwrap(), "é😀".as_bytes());
+        #[cfg(unix)]
+        {
+            use std::os::unix::ffi::OsStrExt;
+            let invalid = OsStr::from_bytes(&[0xff, b'a']);
+            assert_eq!(glob_argument(invalid).unwrap(), &[0xff, b'a']);
+            let error = unicode_glob_argument(invalid).unwrap_err();
+            assert_eq!(error.to_string(), "test-glob argument is not valid Unicode");
+            assert!(error.source().is_none());
+        }
+        #[cfg(windows)]
+        {
+            use std::os::windows::ffi::OsStringExt;
+            let invalid = OsString::from_wide(&[0xd800]);
+            assert!(unicode_glob_argument(&invalid).is_err());
+            assert!(glob_argument(&invalid).is_err());
+        }
+    }
+
     use super::*;
     use std::error::Error;
 
