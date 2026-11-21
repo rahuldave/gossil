@@ -13,7 +13,7 @@ entries, including dangling symlinks and directories. Observation failures retai
 the operating-system cause. The checks append literal native filename suffixes.
 They observe the namespace before creation and again before SQLite entry.</p>
 <p>Callers must keep that namespace stable through engine cleanup. The constructors
-observe regular-file identity at separate boundaries; these observations do not
+observe regular-file identity at separate boundaries. These observations do not
 establish atomic binding to an engine handle. Checkout-free initialization retains
 a failed main file if the engine might have opened it or COMMIT was attempted.
 It reports cleanup uncertainty separately from the first operation error.</p>
@@ -58,6 +58,12 @@ when the transaction remains active. Errors retain the original engine cause
 and report a separate cleanup failure when one occurs.
 If commit fails but checked rollback restores an idle connection, the store
 can begin another write. The commit still returns its original error.</p>
+<p><code>commit_checked()</code> returns a <a href="api/storage.html#CommitFailure"><code>CommitFailure</code></a> with the original operation error
+and an optional cleanup error. Both retain their typed source chains through
+<code>StorageError::source()</code> when an underlying cause exists.
+Inspect <code>operation</code> first and <code>cleanup</code> separately.
+<code>commit()</code> keeps its existing <a href="api/storage.html#StorageError"><code>StorageError</code></a> result and stores cleanup diagnostics
+as text.</p>
 <p>A failed BEGIN or cleanup discards the connection and poisons the store.
 A poisoned store requires an explicit new open.</p>
 </section>
@@ -96,7 +102,8 @@ It does not add public SQL access or change the lifecycle guarantees above.</p>
 <section id="recommendations" class="level2">
 <h2 class="anchored" data-anchor-id="recommendations">Recommendations</h2>
 <p>Use <a href="api/storage.html#LocalStore"><code>LocalStore</code></a> to own a transaction, or <a href="api/storage.html#LocalOwnerRepository"><code>LocalOwnerRepository</code></a> for validated
-repository operations. Next, consult the <a href="api/index.html">generated Rust API</a>
+repository operations. Prefer <code>commit_checked()</code> when a caller needs to inspect
+both error causes. Next, consult the <a href="api/index.html">generated Rust API</a>
 for the chosen type’s signatures and errors.</p>
 </section>
 <nav class="page-navigation"><div class="nav-page nav-page-previous"><a href="task-ticket.html" class="pagination-link"><i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">Emit a task creation artifact</span></a></div><div class="nav-page nav-page-next"><a href="native-storage.html" class="pagination-link"><span class="nav-page-text">Native local storage</span> <i class="bi bi-arrow-right-short"></i></a></div></nav></main></div></body></html>
