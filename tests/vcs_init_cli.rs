@@ -1,4 +1,7 @@
 //! Exercise the initializer executables against native repositories.
+#[path = "support/closed_stdout.rs"]
+mod closed_stdout;
+
 use gossil::{
     artifact::ParseLimits,
     storage::{AdmissionLimits, Limits, LocalOwnerRepository},
@@ -472,18 +475,9 @@ fn raw_invalid_values_and_namespace_refusals() {
 async fn closed_stdout_peer_retains_committed_repository() {
     let temp = tempfile::tempdir().unwrap();
     let path = temp.path().join("repo");
-    let mut descriptors = [0; 2];
-    // SAFETY: pipe initializes exactly the two descriptors in this writable array.
-    assert_eq!(unsafe { libc::pipe(descriptors.as_mut_ptr()) }, 0);
-    use std::os::fd::FromRawFd;
-    // SAFETY: each newly allocated descriptor is adopted once and closed by File.
-    let reader = unsafe { std::fs::File::from_raw_fd(descriptors[0]) };
-    let writer = unsafe { std::fs::File::from_raw_fd(descriptors[1]) };
-    drop(reader);
-    let result = command(env!("CARGO_BIN_EXE_gossil"), temp.path())
+    let result = closed_stdout::configure(command(env!("CARGO_BIN_EXE_gossil"), temp.path()))
         .args(["vcs", "init"])
         .arg(&path)
-        .stdout(Stdio::from(writer))
         .stderr(Stdio::piped())
         .spawn()
         .unwrap()
@@ -504,19 +498,10 @@ async fn closed_stdout_peer_retains_committed_repository() {
 fn closed_stdout_peer_rejects_help_without_filesystem_effects() {
     let temp = tempfile::tempdir().unwrap();
     let path = temp.path().join("repo");
-    let mut descriptors = [0; 2];
-    // SAFETY: pipe initializes exactly the two descriptors in this writable array.
-    assert_eq!(unsafe { libc::pipe(descriptors.as_mut_ptr()) }, 0);
-    use std::os::fd::FromRawFd;
-    // SAFETY: each newly allocated descriptor is adopted once and closed by File.
-    let reader = unsafe { std::fs::File::from_raw_fd(descriptors[0]) };
-    let writer = unsafe { std::fs::File::from_raw_fd(descriptors[1]) };
-    drop(reader);
-    let result = command(env!("CARGO_BIN_EXE_gossil"), temp.path())
+    let result = closed_stdout::configure(command(env!("CARGO_BIN_EXE_gossil"), temp.path()))
         .current_dir(temp.path())
         .args(["vcs", "init", "--help"])
         .arg(&path)
-        .stdout(Stdio::from(writer))
         .stderr(Stdio::piped())
         .spawn()
         .unwrap()

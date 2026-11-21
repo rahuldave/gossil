@@ -1,4 +1,7 @@
 //! Native executable registration and locator recovery without Gest project initialization.
+#[path = "support/closed_stdout.rs"]
+mod closed_stdout;
+
 use std::os::unix::fs::PermissionsExt;
 use std::{
     path::Path,
@@ -543,7 +546,6 @@ async fn invocation_cwd_configuration_cannot_be_bypassed_by_explicit_target_root
 /// # Panics
 /// Panics if fixture setup fails or an asserted identity, failure phase, cause or preserved-state result differs.
 async fn output_broken_pipe_preserves_published_registration_and_reopen_state() {
-    use std::os::fd::FromRawFd;
     use std::process::Stdio;
     for reopening in [false, true] {
         let temp = tempfile::tempdir().unwrap();
@@ -571,15 +573,7 @@ async fn output_broken_pipe_preserves_published_registration_and_reopen_state() 
                 .success()
             );
         }
-        let mut descriptors = [0; 2];
-        // SAFETY: pipe initializes exactly two descriptors in this writable array.
-        assert_eq!(unsafe { libc::pipe(descriptors.as_mut_ptr()) }, 0);
-        // SAFETY: each newly allocated descriptor is adopted exactly once and closed by File.
-        let reader = unsafe { std::fs::File::from_raw_fd(descriptors[0]) };
-        // SAFETY: this is the distinct newly allocated write descriptor.
-        let writer = unsafe { std::fs::File::from_raw_fd(descriptors[1]) };
-        drop(reader);
-        let mut attempt = command(temp.path());
+        let mut attempt = closed_stdout::configure(command(temp.path()));
         attempt
             .current_dir(&root)
             .args(["vcs", "open", "--repository"])
@@ -589,7 +583,6 @@ async fn output_broken_pipe_preserves_published_registration_and_reopen_state() 
             attempt.arg("--root").arg(&root);
         }
         let failed = attempt
-            .stdout(Stdio::from(writer))
             .stderr(Stdio::piped())
             .spawn()
             .unwrap()

@@ -2,6 +2,9 @@
 //!
 //! ## Recommendations
 //! Qualify both aliases with the shared locator and complete producer admission.
+#[path = "support/closed_stdout.rs"]
+mod closed_stdout;
+
 use std::{
     path::Path,
     process::{Command, Output},
@@ -331,23 +334,13 @@ fn fresh_process_scope_and_private_recording_lifecycle() {
         repeated_flags[4] = "Second Owner";
         repeated_flags[6] = "updated private child";
         repeated_flags[8] = "2099-01-01T12:00:00";
-        let mut descriptors = [0; 2];
-        // SAFETY: pipe initializes exactly two descriptors in this writable array.
-        assert_eq!(unsafe { libc::pipe(descriptors.as_mut_ptr()) }, 0);
-        use std::os::fd::FromRawFd;
         use std::process::Stdio;
-        // SAFETY: each new read descriptor is adopted once and closed by File.
-        let reader = unsafe { std::fs::File::from_raw_fd(descriptors[0]) };
-        // SAFETY: this distinct new write descriptor is adopted once and closed by File.
-        let writer = unsafe { std::fs::File::from_raw_fd(descriptors[1]) };
-        drop(reader);
-        let failed = command(binary, home)
+        let failed = closed_stdout::configure(command(binary, home))
             .current_dir(&root)
             .args(["v", "commit", "--repository"])
             .arg(&repo)
             .args(["--checkout", "work"])
             .args(repeated_flags)
-            .stdout(Stdio::from(writer))
             .stderr(Stdio::piped())
             .spawn()
             .unwrap()
