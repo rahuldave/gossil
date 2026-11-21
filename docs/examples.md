@@ -96,7 +96,10 @@ recording. A missing checkout or exhausted bound returns an error rather than
 an empty or truncated history.
 
 See [native storage](native-storage.md#read-recorded-checkout-ancestry)
-for admission, transaction and ownership limits. This example adds no CLI command.
+for admission, transaction and ownership limits. To read the same ancestry from
+the source CLI, use [timeline or log](cli.md#read-complete-recorded-ancestry)
+with explicit repository and checkout selectors and an existing matching locator.
+The CLI preserves metadata as JSON strings; the API fields remain byte vectors.
 
 ## Recommendations
 

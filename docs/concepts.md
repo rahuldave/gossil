@@ -174,7 +174,9 @@ through the shared empty root. It authenticates all native history before readin
 original metadata in the same transaction. It reads no working-file contents and
 returns no partial result when a bound fails. See the
 [recorded ancestry contract](native-storage.md#read-recorded-checkout-ancestry).
-CLI `timeline` and `log` remain deferred.
+The source [timeline and log commands](cli.md#read-complete-recorded-ancestry)
+print those rows as compact NDJSON after existing-locator admission and checked
+API completion. Opening, the API and serialization have separate finite bounds.
 
 ## Recommendations
 

@@ -33,8 +33,10 @@ Gest is a task and artifact tracker. The converters in the module table use its 
 
 Use [`vcs info`](cli.md#inspect-current-recorded-checkout-identity) to show the
 current recorded checkout and its shared and private heads. Explicit repository
-and checkout selections and a complete locator are required. CLI timeline and
-historical revision selection remain unsupported. The library can read
+and checkout selections and a complete locator are required. The source
+[`vcs timeline` and `vcs log` commands](cli.md#read-complete-recorded-ancestry)
+print complete recorded ancestry as compact NDJSON. Historical revision selection
+remains unsupported. The library can read
 [complete recorded ancestry](native-storage.md#read-recorded-checkout-ancestry)
 through `recorded_timeline`, with native metadata bytes and the shared root last.
 

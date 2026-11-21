@@ -3,7 +3,8 @@
 The `gossil` executable initializes empty repositories, opens native checkouts
 and has three file diagnostics. This source checkout also has
 [explicit add and tracked status](#add-explicit-paths-and-inspect-pending-additions),
-plus [scope selection and private recording](#select-scopes-and-record-private-files).
+plus [scope selection and private recording](#select-scopes-and-record-private-files)
+and [complete recorded ancestry](#read-complete-recorded-ancestry).
 `gos` is an alias for `gossil`, and `v` is an alias for `vcs`.
 Each diagnostic runs without a repository. Run it from this source checkout with `just gossil`, which builds
 and runs the executable through Cargo. Cargo may print build messages on stderr.
@@ -61,9 +62,9 @@ The command creates an empty native root without a checkout. Templates, project
 display fields and global preference options are unsupported and rejected before
 creation. Use the separate open command below to register or reopen one
 empty-root checkout. The scope and commit commands below record private history.
-Broader history commands remain deferred. The library-only
-[`recorded_timeline` API](native-storage.md#read-recorded-checkout-ancestry)
-does not add CLI `timeline` or `log` commands.
+The bounded `timeline` and `log` commands below expose the
+[`recorded_timeline` API](native-storage.md#read-recorded-checkout-ancestry).
+Revision selection and broader history commands remain deferred.
 
 An already installed mini-VCS preview has a separate
 [command contract](working-with-repositories.md#try-the-installed-development-preview).
@@ -401,7 +402,7 @@ cargo run --locked --bin gos -- v test-delta FILE1 FILE2
 ```
 
 Use either executable with either group name for initialization, native open,
-add/status, scope/commit, info and all three diagnostics.
+add/status, scope/commit, info, timeline/log and all three diagnostics.
 Usage messages use fixed spellings regardless of the invocation alias.
 Add and status use `gos v`; the other command usage messages use `gossil vcs`.
 
@@ -477,7 +478,7 @@ Fossil prints a 40-character checkout prefix, and its `same_uuid` helper accepts
 The inherited test is copyright 2016 D. Richard Hipp under the Simplified BSD License.
 Gossil controls compare complete output IDs against an independently authenticated checkout view.
 
-This bounded subset does not implement Fossil's full info interface, timeline,
+This bounded subset does not implement Fossil's full info interface, general timeline filters,
 parent traversal or historical revision selection. Unrelated inherited suites
 are outside this qualification.
 
@@ -485,9 +486,71 @@ are outside this qualification.
 
 Broader version-control commands and Gest task commands are planned. They are
 not accepted by `gossil` or `gos`. The short names above apply to initialization and the
-three delta diagnostics, native open, add/status, scope/commit and info. Shared
+three delta diagnostics, native open, add/status, scope/commit, info and timeline/log. Shared
 recording, changing scopes, removal, rename, materialization, sync and Gest
 record associations remain unsupported.
+
+## Read complete recorded ancestry
+
+Run from the registered checkout root or a descendant after `vcs open` has
+published a complete matching locator:
+
+```sh
+just gossil vcs timeline --repository REPO --checkout ID
+just gossil v log --checkout ID --repository REPO
+```
+
+Replace `REPO` and `ID` with the existing database and exact checkout identity.
+Both selectors are required, each once, with separate values in either order.
+Repository text is bounded to 4096 UTF-8 bytes and checkout text to 1024 bytes.
+Empty values, NUL, invalid UTF-8, duplicate or unknown options, positional
+arguments and `--name=value` forms fail. There are no filters, revision selectors,
+`--limit` or `--json` options. Output is always complete newline-delimited JSON (NDJSON), with one object per line.
+
+The eight forms are `gossil vcs timeline`, `gossil vcs log`, `gossil v timeline`,
+`gossil v log`, `gos vcs timeline`, `gos vcs log`, `gos v timeline` and `gos v log`.
+They emit identical bytes for the same admitted history. Standalone `--help` or
+`-h` after either command prints usage and exits 0 without opening storage.
+Help combined with selectors fails.
+
+Each compact JSON object has the keys `hash`, `date`, `actor`, `comment` and
+`private`, in exactly that order. The first four values are strings; `private` is a boolean.
+Every object ends with one LF, with no optional whitespace. Hashes are full native
+identities. Strict UTF-8 conversion and standard JSON escaping preserve the exact
+native date and decoded actor and comment, without normalization or date
+reformatting.
+
+The current check-in comes first and the immutable shared root occurs
+exactly once, last. Only the root has `private: false`. Before private recording,
+the root is the sole row.
+
+Opening uses existing-locator admission and publishes or repairs no locator.
+The API then authenticates the complete supported history in its own transaction.
+Neither operation reads working-file contents. Pending additions and dirty or
+deleted working files do not change the recorded output. Missing checkout,
+corrupt or unsupported state and exhausted bounds fail without a partial history.
+
+Opening admission, the API operation and serialization each have a separate
+finite allowance. They do not form one aggregate budget for the whole invocation.
+For serialization, N counts the UTF-8 source bytes of all four string values,
+including each hash once. The checked worst-case bound adds `6*N` to the exact syntax overhead.
+That overhead is 61 bytes per private row or 62 per root row and includes keys,
+quotes, punctuation, boolean and LF. The cumulative bound must fit the
+CLI decoded-content limit and the platform allocation limit.
+
+The adapter reserves
+space once before serializing the complete response.
+
+The API records its result and completes its checked transaction before the
+adapter prepares output. Stdout receives no bytes until complete preflight and
+serialization succeed. Success exits 0. Failures exit 1 with a diagnostic and
+retain the original cause. A stdout write failure can leave partial stdout.
+The read preserves logical database state and working files; this contract makes
+no claim that physical database bytes remain identical.
+
+See [qualification](development-plan.md#recorded-ancestry-cli-qualification)
+before treating this source command as released or installed. General Fossil
+timeline behavior and `cat` remain separate work.
 
 ## Recommendations
 

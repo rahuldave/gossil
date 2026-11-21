@@ -418,9 +418,14 @@ cause and separate cleanup failure retain their existing precedence.
 
 This operation reads no working-file contents, makes no durable mutation and
 publishes no locator. Pending additions and dirty or deleted working files do
-not change its recorded result. The source currently exposes this reader through
-the library only. CLI `timeline` and `log`, revision selection, filters and
-broader Fossil timeline behavior remain deferred.
+not change its recorded result.
+
+The source [timeline and log commands](cli.md#read-complete-recorded-ancestry)
+expose this reader as complete compact NDJSON. Existing-locator opening admission
+is separate from the API operation. Serialization has a third finite allowance
+derived from the unchanged CLI decoded-content limit. No whole-invocation
+aggregate budget is claimed. Revision selection, filters and broader Fossil
+timeline behavior remain deferred.
 
 ## Schema and remaining work
 

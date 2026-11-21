@@ -805,6 +805,8 @@ mod vcs_init;
 mod vcs_open;
 /// Adapt explicit scope selection and private all-tracked recording for product executables.
 mod vcs_recording;
+/// Print complete recorded checkout ancestry as bounded native-metadata NDJSON.
+mod vcs_timeline;
 /// Adapt explicit tracking enrollment and complete tracked status for product executables.
 mod vcs_tracking;
 

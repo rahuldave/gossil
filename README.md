@@ -4,7 +4,8 @@ Gossil aims to keep agent work, issues and file history together alongside Git.
 Fossil is a version-control system. This build exposes a Rust library for Fossil's delta bytes, artifact records
 and local storage. Its `gossil` CLI creates, applies and checks deltas between files.
 It also initializes empty repositories, opens one native checkout,
-adds or lists explicitly tracked files, selects their scopes and records private history.
+adds or lists explicitly tracked files, selects their scopes, records private history
+and reads complete recorded ancestry.
 
 The CLI and library can select immutable
 path scopes and record the complete private tracked tree. A scope assigns a path
@@ -119,8 +120,10 @@ for the remaining qualification work.
 The library can read [complete recorded checkout ancestry](docs/native-storage.md#read-recorded-checkout-ancestry)
 through `LocalOwnerRepository::recorded_timeline` and `RecordedCheckin`.
 It returns full native identities and exact metadata bytes, current first and
-shared root last, within explicit operation limits. CLI `timeline` and `log`
-remain deferred. See the [API checkpoint status](docs/development-plan.md#recorded-ancestry-api-qualification)
+shared root last, within explicit operation limits. The source
+[`vcs timeline` and `vcs log` commands](docs/cli.md#read-complete-recorded-ancestry)
+print that ancestry as compact NDJSON with explicit repository and checkout selections.
+See the [checkpoint status](docs/development-plan.md#recorded-ancestry-api-qualification)
 before treating this source feature as released or installed.
 
 ## Recommendations

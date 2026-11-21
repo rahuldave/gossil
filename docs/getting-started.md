@@ -215,6 +215,27 @@ shared head. After a private recording, checkout equals the private combined hea
 Edits without a commit do not change these recorded IDs. See the
 [exact info contract](cli.md#inspect-current-recorded-checkout-identity) for output and failure rules.
 
+## Read the recorded ancestry
+
+From the source walkthrough checkout, run:
+
+```sh
+recording_gos vcs timeline --repository "$recording_trial/history.gossil" --checkout work
+recording_gos v log --checkout work --repository "$recording_trial/history.gossil"
+```
+
+Both commands print the same three compact JSON rows for the revised private
+check-in, the first private check-in and the shared empty root, in that order. Each row ends
+with LF and contains `hash`, `date`, `actor`, `comment` and `private`, in that
+order. The no-change retry added no row. Hashes are complete, and the original
+metadata is preserved with standard JSON escaping. The root alone has
+`private: false`.
+
+The commands need a complete matching locator. They do not read working-file
+contents, select revisions or accept filters. See the
+[ancestry command contract](cli.md#read-complete-recorded-ancestry) for bounds
+and failures. This walkthrough builds source; it supplies no installation evidence.
+
 ## Recommendations
 
 Use disposable copies for the source private recording walkthrough. Next,
