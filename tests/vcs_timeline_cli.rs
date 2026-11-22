@@ -8,6 +8,8 @@
 //! Preserve the command-absent RED evidence from real init/open before CLI implementation.
 #[path = "support/closed_stdout.rs"]
 mod closed_stdout;
+#[path = "support/shares.rs"]
+mod shares;
 use libsql::Value;
 use std::{
     os::unix::fs::PermissionsExt,
@@ -666,11 +668,15 @@ fn strict_selectors_grammar_and_storage_free_help() {
     }
 }
 
-#[test]
-/// Reject forged original metadata and unsupported display amendments without repair.
+/// The number of tests that split the 24 metadata and authority corruptions.
+const METADATA_PARTS: usize = 6;
+
+/// Reject forged original metadata and unsupported display amendments without repair, for one share.
+/// # Arguments
+/// * `part` - The share of the corruptions, below `METADATA_PARTS`. Each corruption gets its own fixture.
 /// # Panics
 /// Panics if invalid native event columns are displayed, repaired or masked by ownership.
-fn metadata_types_nuls_tampering_amendments_and_authority_refuse() {
+fn metadata_types_nuls_tampering_amendments_and_authority_refuse(part: usize) {
     let mut corruptions = Vec::new();
     for objid in ["objid=1", "objid<>1"] {
         for column in ["user", "comment"] {
@@ -690,7 +696,7 @@ fn metadata_types_nuls_tampering_amendments_and_authority_refuse() {
         "UPDATE plink SET isprim=0".into(),
         "INSERT INTO phantom VALUES(999)".into(),
     ]);
-    for mutation in corruptions {
+    for mutation in shares::share(corruptions, part, METADATA_PARTS) {
         let f = Fixture::new("Owner");
         f.add_private("first", b"recorded bytes");
         f.commit("Owner", "recorded comment", "2026-11-20T00:00:01");
@@ -727,6 +733,54 @@ fn metadata_types_nuls_tampering_amendments_and_authority_refuse() {
             assert_eq!(tree(&f.root), files);
         }
     }
+}
+
+#[test]
+/// Share 0 of the metadata and authority corruptions.
+/// # Panics
+/// Panics as the shared body does.
+fn metadata_types_nuls_tampering_amendments_and_authority_refuse_0() {
+    metadata_types_nuls_tampering_amendments_and_authority_refuse(0);
+}
+
+#[test]
+/// Share 1 of the metadata and authority corruptions.
+/// # Panics
+/// Panics as the shared body does.
+fn metadata_types_nuls_tampering_amendments_and_authority_refuse_1() {
+    metadata_types_nuls_tampering_amendments_and_authority_refuse(1);
+}
+
+#[test]
+/// Share 2 of the metadata and authority corruptions.
+/// # Panics
+/// Panics as the shared body does.
+fn metadata_types_nuls_tampering_amendments_and_authority_refuse_2() {
+    metadata_types_nuls_tampering_amendments_and_authority_refuse(2);
+}
+
+#[test]
+/// Share 3 of the metadata and authority corruptions.
+/// # Panics
+/// Panics as the shared body does.
+fn metadata_types_nuls_tampering_amendments_and_authority_refuse_3() {
+    metadata_types_nuls_tampering_amendments_and_authority_refuse(3);
+}
+
+#[test]
+/// Share 4 of the metadata and authority corruptions.
+/// # Panics
+/// Panics as the shared body does.
+fn metadata_types_nuls_tampering_amendments_and_authority_refuse_4() {
+    metadata_types_nuls_tampering_amendments_and_authority_refuse(4);
+}
+
+#[test]
+/// Share 5 of the metadata and authority corruptions.
+/// # Panics
+/// Panics as the shared body does.
+fn metadata_types_nuls_tampering_amendments_and_authority_refuse_5() {
+    metadata_types_nuls_tampering_amendments_and_authority_refuse(5);
 }
 
 #[test]
