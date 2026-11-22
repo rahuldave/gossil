@@ -5,14 +5,16 @@ The recipes in this folder run it with uv: python steps.py run STEP ARG..., fres
 PATH... and toml. STEP is test or integration. test runs the unit tests, those of the library and the binaries, and
 integration runs the test targets, such as the files of the folder tests. Each writes its own coverage report. The
 run ID JLOG_RUN of the root Justfile and the worktree tree tie each report to its run, so that coverage-check reads a
-report only in the same run. It needs Python 3.11 or later and no package. The step coverage-check also needs
-diff-cover, which it runs with uv.
+report only in the same run. It needs Python 3.11 or later. The recipes pin the tree-sitter runtime and Rust
+grammar for declaration classification. coverage-check also runs pinned diff-cover with uv.
 
 The lists .agents/generated.txt and .agents/coverage-exclude.txt come from the parent commit, through git show
 HEAD:./PATH, so a commit cannot exempt its own code. With no parent, or a parent without the file, the list is empty.
 git matches their patterns, as pathspecs with the magic word glob. Every path is relative to the current folder, the top
 of the project, which can be a subfolder of the git repository.
 """
+import glob
+import hashlib
 import importlib.util
 import json
 import os
@@ -25,6 +27,7 @@ import tempfile
 import threading
 import tomllib
 import urllib.parse
+import uuid
 
 DIFF_COVER = 'diff-cover==11.0.1'
 # The other place of the config of cargo-sort, which reads tomlfmt.toml from the current folder.
@@ -37,8 +40,10 @@ BROKE = re.compile(r'^error: (?:test failed|could not compile|failed to run cust
 # What cargo prints when no test target matches the name or the pattern.
 NO_TARGET = re.compile(r'^error: no test target matches pattern', re.M)
 # The line of cargo for each test binary that it starts, in its exact form, so a line that a test leaks, such as
-# that of a cargo run inside a test, does not match. A binary with harness = false prints no test result.
-RUNNING = re.compile(r'^     Running (?:unittests )?[^`\s].* \(\S*deps[/\\]\S+\)$', re.M)
+# that of a cargo run inside a test, does not match. A binary with harness = false prints no test result. The binary is
+# in target/debug/deps, or, with the build-dir layout of newer cargo, in target/debug/build/<package>/<hash>/out. The
+# folder deps or out is a whole part of the path, and the path may hold a space, as a build-dir under a home folder can.
+RUNNING = re.compile(r'^     Running (?:unittests )?[^`\s].* \((?:[^()\n]*[/\\])?(?:deps|out)[/\\][^/\\()\n]+\)$', re.M)
 # The line of libtest that announces how many tests a binary will run.
 ANNOUNCED = re.compile(r'^running (\d+) tests?$', re.M)
 # The escape codes of terminal colors, which a test may still print.
@@ -425,6 +430,7 @@ def run_tests(step, args):
     target for STEP, no test runs and the report is empty. Returns the exit code of the first cargo that fails.
     """
     out = report(step)
+    (REPORTS / f'{step}.modules.json').unlink(missing_ok=True)
     out.unlink(missing_ok=True)
     REPORTS.mkdir(parents=True, exist_ok=True)
     for old in REPORTS.glob(f'{step}.part*.lcov'):
@@ -443,15 +449,40 @@ def run_tests(step, args):
         out.write_text('')
         return stamp(step)
     parts = []
+    # Cargo's cached dependency files do not prove current compiler participation.
+    # Clean workspace artifacts only, retaining third-party dependency builds.
+    code = subprocess.run(['cargo', 'llvm-cov', 'clean', '--workspace', '--locked']).returncode
+    if code:
+        pending_run(step).unlink(missing_ok=True)
+        return code
+    evidence = (REPORTS / (step + '.compiler-' + uuid.uuid4().hex)).resolve()
+    evidence.mkdir()
+    launcher = evidence / 'rustc-wrapper'
+    helper = Path(__file__).with_name('compiler_evidence.py').resolve()
+    launcher.write_text('#!/bin/sh\nexec ' + shlex.quote(sys.executable) + ' ' + shlex.quote(str(helper)) + ' "$@"\n')
+    launcher.chmod(0o755)
+    env = dict(os.environ, RUSTC_WRAPPER=str(launcher), JNPROFILE_SOURCE_ROOT=str(top()),
+               JNPROFILE_COMPILER_EVIDENCE=str(evidence),
+               JNPROFILE_PRIOR_RUSTC_WRAPPER=os.environ.get('RUSTC_WRAPPER', ''))
     for number, selection in enumerate(runs):
         parts.append(REPORTS / f'{step}.part{number}.lcov')
         command = [*COVERAGE, *selection, '--lcov', '--output-path', parts[-1].as_posix(), *args]
         print(shlex.join(command), flush=True)
-        code = subprocess.run(command).returncode
+        code = subprocess.run(command, env=env).returncode
         if code:
             pending_run(step).unlink(missing_ok=True)
             return code
     out.write_text(merge_lcov([part.read_text() for part in parts]))
+    sources = {}
+    for receipt in evidence.glob('*.json'):
+        try:
+            data = json.loads(receipt.read_text())
+            if data.get('schema') == 1 and isinstance(data.get('sources'), dict):
+                sources.update(data['sources'])
+        except (OSError, ValueError):
+            continue
+    (REPORTS / f'{step}.modules.json').write_text(json.dumps({
+        'schema': 1, 'run': os.environ.get('JLOG_RUN', ''), 'tree': worktree_tree(), 'sources': sources}) + '\n')
     return stamp(step)
 
 
@@ -460,6 +491,28 @@ def changed_code():
     tracked = git('diff', '-z', '--name-only', '--relative', '--diff-filter=d', 'HEAD', '--', '*.rs')
     untracked = git('ls-files', '-z', '--others', '--exclude-standard', '--', '*.rs')
     return sorted(set(filter(None, (tracked.stdout + '\0' + untracked.stdout).split('\0'))))
+
+
+def unreadable_untracked():
+    """The untracked paths that are not regular files, which diff-cover cannot open, in order.
+
+    diff-cover --include-untracked opens each untracked path to count its lines. A link to a folder, such as
+    the one that the jnterfaces installer makes in .claude/skills, a broken link or a nested repository stops
+    it with an error. The names are read as bytes and decoded as the file system does, so a name that is not
+    UTF-8 or that holds a carriage return stays as it is.
+    """
+    listed = subprocess.run(['git', 'ls-files', '-z', '--others', '--exclude-standard'], capture_output=True)
+    paths = (os.fsdecode(name) for name in listed.stdout.split(b'\0') if name)
+    return sorted(path for path in paths if not os.path.isfile(path))
+
+
+def exclude_patterns(paths):
+    """The --exclude patterns of diff-cover for PATHS: each absolute path, with its wildcards escaped.
+
+    diff-cover matches a pattern against the absolute path before it opens the file. Each pattern holds a /, so
+    it never matches a basename.
+    """
+    return [glob.escape(os.path.abspath(path)) for path in paths]
 
 
 def reported(text, root):
@@ -477,14 +530,62 @@ def test_file(path):
     return len(parts) > 1 and parts[0] in ('tests', 'benches')
 
 
-def unreported(changed, lines, excluded):
-    """The files of CHANGED that are not in the report, not excluded and not test files.
+def declaration_category(path):
+    """Load the shipped parser helper by path, without changing unrelated commands' imports."""
+    try:
+        spec = importlib.util.spec_from_file_location('jnprofile_rust_declarations',
+                                                     Path(__file__).with_name('declarations.py'))
+        module = importlib.util.module_from_spec(spec)
+        bytecode = sys.dont_write_bytecode
+        try:
+            sys.dont_write_bytecode = True
+            spec.loader.exec_module(module)
+        finally:
+            sys.dont_write_bytecode = bytecode
+        return module.classify(path)
+    except Exception as exc:
+        return None, f'Rust declaration helper unavailable or failed: {exc}'
 
-    cargo llvm-cov leaves out a file that no test target compiles, such as a file that no mod names or a file in
-    examples. Reporting scope or copied source paths can also omit a file that runs. Absence alone does not
-    prove that no test runs the file.
+
+def compiled_modules():
+    """Current-run, current-tree compiler/module evidence from counting test steps."""
+    found = set()
+    run, tree = os.environ.get('JLOG_RUN', ''), worktree_tree()
+    if not run or not tree:
+        return found
+    for step in COVERED:
+        if not counts(step) or not fresh(step):
+            continue
+        try:
+            data = json.loads((REPORTS / f'{step}.modules.json').read_text())
+            if data.get('schema') != 1 or data.get('run') != run or data.get('tree') != tree:
+                continue
+            for path, value in data['sources'].items():
+                if hashlib.sha256(Path(path).read_bytes()).hexdigest() == value:
+                    found.add(path)
+        except (OSError, ValueError, TypeError, KeyError, AttributeError):
+            continue
+    return found
+
+
+def unreported(changed, lines, excluded):
+    """Changed files absent from LCOV that do not qualify for a syntax-only declaration category.
+
+    Absence may reflect an uncompiled file or reporting scope. Keep that failure
+    unless the whole current source passes the positive declaration check.
     """
-    return [path for path in changed if path not in lines and not excluded(path) and not test_file(path)]
+    missing = []
+    compiled = compiled_modules()
+    for path in changed:
+        if path in lines or excluded(path) or test_file(path):
+            continue
+        category, reason = declaration_category(path)
+        if category and path in compiled:
+            print(f'{path}: absent from LCOV; {category}; current-run compiled module (no authored executable source)')
+        else:
+            print(f'{path}: declaration classification did not qualify: {reason or "no current-run module evidence"}')
+            missing.append(path)
+    return missing
 
 
 def missed_lines(text, root):
@@ -524,12 +625,22 @@ def coverage():
             print('coverage-check: write tests for the lines that no test runs', file=sys.stderr)
             return 1
         return 0
+    skipped = unreadable_untracked()
+    slashed = [path for path in skipped if '\\' in path]
+    for path in slashed:
+        print(f'{path}: an untracked path that is not a file, and its name holds a \\', file=sys.stderr)
+    if slashed:
+        print('coverage-check: diff-cover cannot open these paths, and it reads each \\ as a /, so it cannot skip '
+              'them without skipping other files too. Rename them, remove them or add them to .gitignore',
+              file=sys.stderr)
+        return 1
     excluded = matcher(parent_list(GENERATED) + parent_list(COVERAGE_EXCLUDE))
     WORK.mkdir(parents=True, exist_ok=True)
     kept = WORK / 'lcov.info'
     kept.write_text(filter_lcov(merge_lcov(texts), root, excluded))
     code = subprocess.run([*UV_RUN, '--with', DIFF_COVER, 'diff-cover', str(kept),
-                           '--compare-branch', 'HEAD', '--include-untracked', '--fail-under', '100']).returncode
+                           '--compare-branch', 'HEAD', '--include-untracked', '--fail-under', '100',
+                           *(['--exclude', *exclude_patterns(skipped)] if skipped else [])]).returncode
     lines = set().union(*(reported(text, root) for text in texts))
     missing = unreported(changed_code(), lines, excluded)
     for path in missing:

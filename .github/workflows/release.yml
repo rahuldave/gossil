@@ -1,15 +1,32 @@
 # The tasker role wrote this file once, when the project had none. It is yours from then on.
-# It checks pull requests and pushes to main. After a main push passes, the job release
-# runs just release, which makes the next tag vX.Y.Z by semver, pushes it and checks it. A push that needs no release,
-# such as a change of only the docs, makes no tag. Nobody tags by hand.
-# just release takes the number from the commits since the last tag, or from the version of the manifest that the
-# language profiles give. It fails when that version is lower than the bump that the commits ask for, so a pull
-# request that needs a bump also raises the version of the manifest.
+# Gossil keeps the event pull_request, so each pull request also runs the full just check on Linux. On each push to
+# main, the job check runs just check on the pushed commit. When it passes, the job release runs just release, which
+# makes the next tag vX.Y.Z by semver, pushes it and checks it. A push that needs no release, such as a change of only
+# the docs, makes no tag. Nobody tags by hand.
+# Gossil: the classic protection of main (pull request, checks, admins included) refuses a push by this job to main.
+# So in Gossil a pull request that needs a bump raises the version itself, and this job pushes only the tag. See
+# AGENTS.md. The rest of this paragraph is the starter's flow, for when GitHub Actions may bypass that protection.
+# just release takes the number from the commits since the last tag. In the starter's flow, a pull request does not
+# raise the version of the manifest. When the language profiles give a version below the bump that the commits ask for, just release
+# writes the bump into the version files and lock files, commits it as "chore(release): vX.Y.Z" by
+# github-actions[bot], and pushes that commit to main and its tag together. That commit asks for no bump, so the next
+# run stops at its tag. The commit gate passes it, since its author is a GitHub bot.
+# A push with the GITHUB_TOKEN starts no other workflow, so the version commit gets no CI run of its own. It changes
+# only the version lines. A rule of main that asks for a pull request blocks the push: let GitHub Actions bypass it.
 # No agent runs here. The checkout has fetch-depth: 0, so the script sees each tag and each commit.
-# Only the job release can write to the repository, to push the tag. A tag that the GITHUB_TOKEN pushes starts no
-# other workflow. If a publish job must run on the tag, use a token that can start it.
-# Each job starts with its own tools. Check installs Gest for tools-check; both jobs install jlog for Just.
-# Add the setup of the tools of your languages before the step "Check", if just check needs them.
+# just release needs a clean checkout, so run it in its own job, after no step that changes tracked files.
+# Only the job release can write to the repository, to push the commit and the tag. A tag that the GITHUB_TOKEN
+# pushes starts no other workflow, so put a publish job in this workflow, with needs: release. The tag can be on the
+# version commit, not on the pushed commit, so the job checks out needs.release.outputs.tag, as in:
+#   binaries:
+#     needs: release
+#     if: needs.release.outputs.tag != ''
+#     steps:
+#       - uses: actions/checkout@v4
+#         with:
+#           ref: ${{ needs.release.outputs.tag }}
+# The job check installs the programs that tools-check needs (jlog, gest and jagt; gh is on the runner), the coverage
+# tools, the nightly rustdoc of the API pages and the build prerequisites of the native references.
 name: release
 
 on:
@@ -32,19 +49,21 @@ jobs:
           fetch-depth: 0
       - uses: extractions/setup-just@v3
       - uses: astral-sh/setup-uv@v6
-      - name: Keep the build of jlog
-        id: jlog
-        uses: actions/cache@v4
-        with:
-          path: ~/.cargo/bin/jlog
-          key: jlog-v0.2.0-${{ runner.os }}
       - name: Install jlog
-        # The tag v0.2.0 of jlog is the commit 8febdf1, as in the CI of jnterfaces.
-        if: steps.jlog.outputs.cache-hit != 'true'
-        run: cargo install --locked --git https://github.com/rahuldave/jlog --tag v0.2.0 jlog
-      - name: Install Gest
-        # The tasker role declares this provider in skill-package.json.
-        run: cargo install --locked --git https://github.com/rahuldave/gest gest
+        # The tag v0.3.0 of jlog is the commit d4b712b, as in the CI of jnterfaces. install.sh comes from the tag. It
+        # downloads the release binary, checks its SHA-256 and puts it in ~/.local/bin. setup-uv comes first, so
+        # install.sh makes the environments of the plugins. The step shell bash has pipefail, so a failed download fails.
+        shell: bash
+        run: |
+          curl -fsSL https://raw.githubusercontent.com/rahuldave/jlog/v0.3.0/scripts/install.sh | sh -s -- --tag v0.3.0
+          echo "$HOME/.local/bin" >> "$GITHUB_PATH"
+      - name: Install gest v0.6.0 and jagt v0.6.4, which tools-check needs
+        # install.sh of gest comes from its tag v0.6.0, and install.sh of jagt from its tag v0.6.4, as in the CI of
+        # agent_gest_git_skills. Each one checks the SHA-256.
+        shell: bash
+        run: |
+          curl -fsSL https://raw.githubusercontent.com/rahuldave/gest/v0.6.0/scripts/install.sh | sh -s -- --tag v0.6.0
+          curl -fsSL https://raw.githubusercontent.com/rahuldave/jagt/v0.6.4/scripts/install.sh | sh -s -- --tag v0.6.4
       - name: Install coverage prerequisites
         run: |
           rustup component add llvm-tools-preview --toolchain stable
@@ -63,6 +82,9 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: write
+    # The tag that the run made, or that was already on HEAD, else empty.
+    outputs:
+      tag: ${{ steps.release.outputs.tag }}
     # One release at a time. A run on an older commit after a newer release prints no release.
     concurrency:
       group: release
@@ -73,19 +95,16 @@ jobs:
           fetch-depth: 0
       - uses: extractions/setup-just@v3
       - uses: astral-sh/setup-uv@v6
-      - name: Keep the build of jlog
-        id: jlog
-        uses: actions/cache@v4
-        with:
-          path: ~/.cargo/bin/jlog
-          key: jlog-v0.2.0-${{ runner.os }}
       - name: Install jlog
-        # The tag v0.2.0 of jlog is the commit 8febdf1, as in the CI of jnterfaces.
-        if: steps.jlog.outputs.cache-hit != 'true'
-        run: cargo install --locked --git https://github.com/rahuldave/jlog --tag v0.2.0 jlog
-      - name: Name the author of the tag
+        # The recipes run through the shell jlog that .agents/just/index.just sets, so just release needs jlog too.
+        shell: bash
+        run: |
+          curl -fsSL https://raw.githubusercontent.com/rahuldave/jlog/v0.3.0/scripts/install.sh | sh -s -- --tag v0.3.0
+          echo "$HOME/.local/bin" >> "$GITHUB_PATH"
+      - name: Name the author of the tag and of the version commit
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
       - name: Release
+        id: release
         run: just release

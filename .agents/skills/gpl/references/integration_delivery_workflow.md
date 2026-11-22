@@ -196,11 +196,19 @@ reachable from the pushed head, excluding those reachable from the selected
 base. This includes original feature commits and the local integration merge.
 
 The gate checks that the supplied base resolves to a commit and is an ancestor
-of the pushed head. The operator must verify that it is the PR target's tip;
-the gate does not validate PR acceptance. The hook supplies the pushed head;
-a conflicting `JN_CI_HEAD` fails. Inspect the complete range with
+of the pushed head. It also checks that each commit of the base is already on
+the remote of the push. Fetch the PR target before the push, so that the
+remote-tracking branch holds its tip. A base of the topic, or of a commit that is
+new in this push, stops the push. The gate prints the number of commits that the
+base selects.
+
+Give `JN_CI_BASE` on the command line of the push only, and do not export it in
+the shell. The operator must verify that it is the PR target's tip; the gate
+does not validate PR acceptance. The hook supplies the pushed head, and a
+conflicting `JN_CI_HEAD` fails. Inspect the complete range with
 `git log <verified-PR-target-tip-SHA>..<topic>` before pushing. Do not select a
-topic commit as the base to omit unaccepted feature work.
+topic commit as the base to omit unaccepted feature work. Never give the
+remote-tracking branch of the topic, such as `origin/<topic>`, as the base.
 
 Without an explicit base, the hook checks the ordinary push range, from the
 remote topic's old tip to its pushed head. For a new-history push, the pre-commit
@@ -241,14 +249,49 @@ message, which you make with `git tag -a`. Follow these rules:
 ### Tag with `just release`
 
 Nobody tags by hand. `just release` makes the tag. It runs
-`.agents/skills/gpa/scripts/release_tag.py`, which needs only Python 3.9 and
-Git. The CI starter `.github/workflows/release.yml` runs `just check` on each
-push to `main`. When the check passes, it runs `just release`. The job has
-`contents: write`, to push the tag, and it runs no agent.
+`.agents/skills/gpa/scripts/release_tag.py`, which needs only Python and Git.
+`just release` asks for Python 3.11 or later, because it reads TOML files with
+`tomllib`. The step `release-check` runs on Python 3.9 too.
 
-The step `release-check` of `just check` runs the script with `--check`. So a
-commit or a PR that needs a higher version fails before the merge, and CI
-checks it through `just check`.
+The CI starter `.github/workflows/release.yml` runs `just check` on each push
+to `main`. When the check passes, it runs `just release`. The job has
+`contents: write`, to push the tag and the version commit, and it runs no
+agent.
+
+The step `release-check` of `just check` runs the script with `--check`. CI
+checks it through `just check`. A branch does not raise the version of the
+manifest. A version equal to the last tag passes, because the release writes
+the bump on `main`. If two branches raised the version, they would raise it to
+the same number. Then the second merge would need a new commit and a new pass
+of the gate.
+
+`just check` runs before the commit, so it cannot read the message of that
+commit. So the `commit-msg` hook of the commit gate runs `just release-check`
+again. The check counts the message for the next tag that it prints, and it
+stops a bump that the release cannot write. The variable
+`JN_RELEASE_MESSAGE` names the message file, and the check counts that
+message as one more commit. For an amend, the new message replaces the
+message of HEAD. The hook skips the check for a merge, for an amend of a
+merge, during a rebase, and when the Justfile has no recipe `release-check`.
+
+The check cleans up the message as git does. The gate reads the option
+`--cleanup` of the git command and puts it in `JN_RELEASE_CLEANUP`. Without
+the option, the check reads `commit.cleanup`. In a hook, git sets
+`GIT_EDITOR` to `:` when it runs no editor. So the check knows if git
+strips the comment lines.
+
+A person can set `GIT_EDITOR` to `:` too, so the
+gate sets `JN_RELEASE_EDITOR=1` when the options show an editor. When git
+may clean up the message in more than one way, the reading with the
+biggest bump counts.
+
+The gate sets `JN_RELEASE_AMEND=1` only when `--amend` comes before the
+message in the git command. After the message, the word may be text, so
+HEAD counts too. On HEAD with a release tag, that commit stops too. Give
+such a message with `-F`.
+
+An amend of a commit with a release tag stops, because the tag stays on the
+old commit. Make a new commit instead.
 
 The step needs no network and no remote. It fails on the errors of the
 version that the rules below list. In a shallow checkout, or in a checkout
@@ -272,8 +315,11 @@ merge commits. Each message is a conventional commit, such as
 
 A bullet line of the body with a conventional subject, such as
 `* feat!: drop the flag`, asks for its bump too. A squash commit of GitHub
-lists the commits of its PR that way. The largest bump of the commits gives
-the next number. With no tag yet, the next tag is `v0.1.0`.
+lists the commits of its PR that way. The bullet counts only when its type is
+`feat`, `fix`, `perf`, `refactor`, `docs`, `test`, `chore`, `ci`, `build`,
+`style` or `revert`, in lower case. A labelled bullet, such as
+`- Removed: the old copies`, is not a commit and asks for no bump. The largest
+bump of the commits gives the next number. With no tag yet, the next tag is `v0.1.0`.
 
 A language profile gives the version of its manifest with the recipe
 `<profile>::version`. The recipe prints `X.Y.Z`, or nothing when the manifest
@@ -286,14 +332,76 @@ The script runs the recipe of each profile in the key
 `profiles` of `.agents/stack.json`. A profile without the recipe, such as a
 profile from before the recipe came, gives no version. When a profile gives a version, these rules apply:
 
-- The tag is `v<version>`. The script makes it only when that tag does not exist
-  yet.
 - The script fails when two profiles give different versions.
-- The script fails when the version is lower than the last tag, or lower than
-  the bump that the commits ask for. So a PR that needs a bump also raises the
-  version of the manifest.
-- A version higher than the bump that the commits ask for is allowed.
+- The script fails when the version is lower than the last tag.
+- When the version is at least the bump that the commits ask for, the tag is
+  `v<version>`, on HEAD. The script makes it only when that tag does not exist
+  yet. This case occurs after a person raised the version by hand.
+- When the version is lower than the bump, the release makes a version
+  commit. The section below tells how.
 - With no tag yet, the tag is the version.
+
+### The version commit
+
+When the profiles give a version lower than the bump, `just release` does
+these steps on `main`:
+
+1. It writes the bump into the version file of each profile and into its lock
+   file. The profiles that it can write are these:
+   - Python: `[project]` in `pyproject.toml`, and the package of the project
+     in `uv.lock`.
+   - Rust: `[package]` in `Cargo.toml`, or `[workspace.package]` when the
+     package inherits the version. In `Cargo.lock`, it writes each package of
+     the workspace that has that version. It writes the text, so it needs no
+     `cargo` and no network.
+   - TypeScript: `package.json`, and the version of the project in
+     `package-lock.json`. Each file must be in the form that npm writes.
+2. It reads each file again and checks that only the version changed. Then it
+   checks that each profile gives the new version.
+3. It commits the files as `chore(release): vX.Y.Z`. In the CI starter, the
+   author is `github-actions[bot]`.
+4. It tags that commit, and pushes the commit and the tag to `main` with
+   `git push --atomic`. So the remote gets both or neither.
+
+`release-check` and `just release --dry-run` make the same changes in memory,
+and write nothing. So a file that the release cannot change fails on the
+branch, before the merge. These cases fail, and then you raise the version by
+hand in the pull request:
+
+- A profile other than Python, Rust or TypeScript gives the version.
+- A file is in another form, such as a `package.json` with an array on one
+  line.
+- A version file is not tracked by git. A lock file that git does not track,
+  as in a Rust library, is left as it is.
+- A `Cargo.toml` asks for a version of a crate of the workspace, as in
+  `b = { path = "crates/b", version = "0.4.0" }`. The release does not change
+  that requirement.
+
+The version commit asks for no bump. So a later run finds the tag on it and
+prints `no release`.
+
+The commit gate does not stop the version commit. The
+step `ci-gate` skips a commit whose author is a GitHub bot, and CI installs no
+git hooks. A push that the `GITHUB_TOKEN` makes starts no workflow run. So the
+version commit gets no CI run of its own. It changes only the version lines.
+
+These cases change nothing:
+
+- The branch on the remote is not at HEAD, before or during the push. A later
+  push came, and the run of that push makes the release. The script prints
+  `no release`. When the run of the later push fails, the release waits for
+  the next push to `main`, or for a new run.
+- The checkout has changes, or HEAD is detached. The script stops with an
+  error.
+- The commit or the push fails, for example because a rule of `main` asks for
+  a pull request. The script takes back its commit, its tag and the written
+  files, and stops with an error. Let GitHub Actions bypass that rule.
+
+The tag can be on the version commit, not on the commit of the push. So a
+later job that builds the release, such as a job `binaries`, checks out the
+tag. The release job gives the tag as its output `tag`. In GitHub Actions, the
+script writes `tag=vX.Y.Z` to the file `GITHUB_OUTPUT`. Do not look for the
+tag with `git tag --points-at HEAD`.
 
 These cases stop the script with an error:
 
@@ -318,8 +426,9 @@ just release
 ```
 
 The dry run prints the next tag and the reason, and changes nothing. Without
-it, the script makes an annotated tag on HEAD, pushes it and checks with
-`git ls-remote` that the remote tag points at HEAD.
+it, the script makes an annotated tag on HEAD, or on the version commit. It
+pushes the tag and checks with `git ls-remote` that the remote tag points at
+that commit.
 
 A tag is a release of the source. It is not a published package. If the
 project also publishes a package, follow the delivery policy above for that

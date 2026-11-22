@@ -87,9 +87,10 @@ hosts it checks the existing tools without replacing them.
 
 Use the installed Rust checks through Just, including
 `lint`, `typecheck`, `test`, `integration`, `coverage-check`, `docstring-check`
-and `api-check`. `just docs-check` checks the site and API docs, then runs
-`just rustdoc-check`. That recipe builds the rustdoc with private items and
-fails on each warning, such as a broken intra-doc link.
+and `api-check`. `just docs-check` checks the site and API docs.
+`just typecheck` runs `just rustdoc-check` before its own type check. That recipe builds the
+rustdoc with private items and fails on each warning, such as a broken
+intra-doc link.
 `just docs-build` renders the site. Do not weaken checks to get a pass.
 
 The runner checkpoint is `evidence/runner-checkpoint-2026-11-17.json`.
@@ -123,6 +124,18 @@ The public remote is `https://github.com/rahuldave/gossil`. Create reviewed
 pull requests to `main` for subsequent delivery. The coordinator owns pushes,
 GitHub changes and publication checks. The source-only release workflow checks
 pull requests and tags successful pushes to `main`; it publishes no package.
+
+The release job can commit a version bump as github-actions[bot] and tag that
+commit. The protection of `main` requires a pull request and the checks, with
+admins included, so GitHub refuses that push. Until the owner lets GitHub
+Actions bypass it, a pull request whose commits ask for a bump raises the
+version in `Cargo.toml` and `Cargo.lock` itself. The release job then pushes
+only the tag. The check, release and Pages workflows install jlog
+0.3.0 from its release script. The release workflow also installs gest 0.6.0
+and jagt 0.6.4 that way.
+
+The smalldocs 0.5.12 pin is in the installed docs role and Rust profile, so a
+move to 0.5.13 waits for those packages.
 
 The saved answer `docs-publish=yes` enables `just docs-publish` through
 smalldocs 0.5.12. The main-only workflow also uploads the built site and deploys
