@@ -1,0 +1,152 @@
+[
+  {
+    "id": "simplify-name-100.1",
+    "input": ".",
+    "expected": ".",
+    "keep_trailing_slash": false
+  },
+  {
+    "id": "simplify-name-100.2",
+    "input": ".//",
+    "expected": ".",
+    "keep_trailing_slash": false
+  },
+  {
+    "id": "simplify-name-100.3",
+    "input": "..",
+    "expected": "..",
+    "keep_trailing_slash": false
+  },
+  {
+    "id": "simplify-name-100.4",
+    "input": "../////",
+    "expected": "..",
+    "keep_trailing_slash": false
+  },
+  {
+    "id": "simplify-name-101.1",
+    "input": "",
+    "expected": "",
+    "keep_trailing_slash": false
+  },
+  {
+    "id": "simplify-name-101.2",
+    "input": "/",
+    "expected": "/",
+    "keep_trailing_slash": false
+  },
+  {
+    "id": "simplify-name-101.3",
+    "input": "/////////",
+    "expected": "/",
+    "keep_trailing_slash": false
+  },
+  {
+    "id": "simplify-name-101.4",
+    "input": "././././",
+    "expected": ".",
+    "keep_trailing_slash": false
+  },
+  {
+    "id": "simplify-name-102.1",
+    "input": "x",
+    "expected": "x",
+    "keep_trailing_slash": false
+  },
+  {
+    "id": "simplify-name-102.2",
+    "input": "/x",
+    "expected": "/x",
+    "keep_trailing_slash": false
+  },
+  {
+    "id": "simplify-name-102.3",
+    "input": "///x",
+    "expected": "//x",
+    "keep_trailing_slash": false
+  },
+  {
+    "id": "simplify-name-103.1",
+    "input": "a/b",
+    "expected": "a/b",
+    "keep_trailing_slash": false
+  },
+  {
+    "id": "simplify-name-103.2",
+    "input": "/a/b",
+    "expected": "/a/b",
+    "keep_trailing_slash": false
+  },
+  {
+    "id": "simplify-name-103.3",
+    "input": "a///b",
+    "expected": "a/b",
+    "keep_trailing_slash": false
+  },
+  {
+    "id": "simplify-name-103.4",
+    "input": "///a///b/////",
+    "expected": "//a/b",
+    "keep_trailing_slash": false
+  },
+  {
+    "id": "simplify-name-104.1",
+    "input": "a/b/../c/",
+    "expected": "a/c",
+    "keep_trailing_slash": false
+  },
+  {
+    "id": "simplify-name-104.2",
+    "input": "/a/b/../c",
+    "expected": "/a/c",
+    "keep_trailing_slash": false
+  },
+  {
+    "id": "simplify-name-104.3",
+    "input": "/a/b//../c",
+    "expected": "/a/c",
+    "keep_trailing_slash": false
+  },
+  {
+    "id": "simplify-name-104.4",
+    "input": "/a/b/..///c",
+    "expected": "/a/c",
+    "keep_trailing_slash": false
+  },
+  {
+    "id": "simplify-name-105.1",
+    "input": "a/b/../../x/y",
+    "expected": "x/y",
+    "keep_trailing_slash": false
+  },
+  {
+    "id": "simplify-name-105.2",
+    "input": "/a/b/../../x/y",
+    "expected": "/x/y",
+    "keep_trailing_slash": false
+  },
+  {
+    "id": "simplify-name-106.1",
+    "input": "a/b/../../../x/y",
+    "expected": "../x/y",
+    "keep_trailing_slash": false
+  },
+  {
+    "id": "simplify-name-106.2",
+    "input": "/a/b/../../../x/y",
+    "expected": "/../x/y",
+    "keep_trailing_slash": false
+  },
+  {
+    "id": "simplify-name-107.1",
+    "input": "a/./b/.././../x/y",
+    "expected": "x/y",
+    "keep_trailing_slash": false
+  },
+  {
+    "id": "simplify-name-107.2",
+    "input": "a//.//b//..//.//..//x//y///",
+    "expected": "x/y",
+    "keep_trailing_slash": false
+  }
+]

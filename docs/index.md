@@ -50,6 +50,7 @@ through `recorded_timeline`, with native metadata bytes and the shared root last
 | Compute a legacy artifact checksum | [Artifact checksums](artifact-checksum.md) |
 | Escape bytes in Fossil tokens | [Token codec](token-codec.md) |
 | Match bounded Fossil pattern lists or construct SQL expressions | [Glob matching](glob.md) |
+| Simplify filename bytes by Fossil's lexical rules | [Lexical file paths](file-path.md) |
 | Parse structural artifact records | [Artifact parser](artifact-parser.md) |
 | Compare normalized byte lines | [Line diff](diff.md) |
 | Own a local database transaction | [Local storage](local-storage.md) |

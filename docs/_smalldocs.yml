@@ -45,6 +45,7 @@ website:
           - artifact-checksum.md
           - token-codec.md
           - glob.md
+          - file-path.md
           - artifact-parser.md
           - diff.md
           - task-ticket.md

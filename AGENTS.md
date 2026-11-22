@@ -18,7 +18,7 @@ Read and follow @.agents/instructions/prose.md
 - Local guides: `docs/conformance.md`, `docs/delta-encoder.md`,
   `docs/delta-decoder.md`, `docs/blob-primitives.md`, `docs/token-codec.md`,
   `docs/local-storage.md`, `docs/native-storage.md`, `docs/artifact-parser.md`,
-  `docs/glob.md` and `docs/development-plan.md`.
+  `docs/glob.md`, `docs/file-path.md` and `docs/development-plan.md`.
 - Product specification: `~/Projects/AIProjectInfra/docs/gossil/README.md` and its linked pages.
 - Workflow playbook: `.agents/skills/gtw/references/gest_codex_workflow.md`.
 

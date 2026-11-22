@@ -21,7 +21,7 @@ caller-supplied native identity, actor and date. All three converters operate in
 |---|---|
 | Delta create, apply and two-way file checks | General version-control CLI |
 | Bounded glob API and `test-glob` diagnostic; focused checkpoint | Settings lookup, wildcard tracking and directory traversal |
-| Compression, hashes, token escaping and artifact checksums | Repository traversal and changes to persisted scope choices |
+| Compression, hashes, token escaping, artifact checksums and [lexical filename simplification](file-path.md) | Repository traversal and changes to persisted scope choices |
 | Eight structural artifact types with explicit limits | General crosslinks, migration, rebuild and filesystem recovery |
 | Native initialization/open, tracking, scope/commit CLI and library; catalog1 private content | Shared recording, sync and artifact publication |
 | Explicit inherited-test runner configurations | Gest task CLI, server and user interface |
