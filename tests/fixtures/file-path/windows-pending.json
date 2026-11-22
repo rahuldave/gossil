@@ -1,0 +1,75 @@
+{
+  "authority": "Gossil PORT-02 and SCOPE-05 require Windows source port; general infrastructure OS scope does not waive it",
+  "source_branch": "src/file.c:1201-1216 (Windows/Cygwin conversion branch)",
+  "cases": [
+    {
+      "id": "simplify-name-108.1",
+      "input": "//?/a:/a/b",
+      "expected": "a:/a/b",
+      "source_input_token": "//?/a:/a/b",
+      "source_expected_token": "a:/a/b",
+      "native_condition": "tcl_platform(os) == Windows NT",
+      "port_status": "source-implemented-compiled-tested",
+      "native_platform_qualification": "not-run",
+      "reported_hex": "613a2f612f62"
+    },
+    {
+      "id": "simplify-name-108.2",
+      "input": "//?/UNC/a/b",
+      "expected": "//a/b",
+      "source_input_token": "//?/UNC/a/b",
+      "source_expected_token": "//a/b",
+      "native_condition": "tcl_platform(os) == Windows NT",
+      "port_status": "source-implemented-compiled-tested",
+      "native_platform_qualification": "not-run",
+      "reported_hex": "2f2f612f62"
+    },
+    {
+      "id": "simplify-name-108.3",
+      "input": "//?/",
+      "expected": "",
+      "source_input_token": "//?/",
+      "source_expected_token": "{}",
+      "native_condition": "tcl_platform(os) == Windows NT",
+      "port_status": "source-implemented-compiled-tested",
+      "native_platform_qualification": "not-run",
+      "reported_hex": "00"
+    },
+    {
+      "id": "simplify-name-109.1",
+      "input": "\\\\?\\a:\\a\\b",
+      "expected": "a:/a/b",
+      "source_input_token": "\\\\\\\\?\\\\a:\\\\a\\\\b",
+      "source_expected_token": "a:/a/b",
+      "native_condition": "tcl_platform(os) == Windows NT",
+      "port_status": "source-implemented-compiled-tested",
+      "native_platform_qualification": "not-run",
+      "reported_hex": "613a2f612f62"
+    },
+    {
+      "id": "simplify-name-109.2",
+      "input": "\\\\?\\UNC\\a\\b",
+      "expected": "//a/b",
+      "source_input_token": "\\\\\\\\?\\\\UNC\\\\a\\\\b",
+      "source_expected_token": "//a/b",
+      "native_condition": "tcl_platform(os) == Windows NT",
+      "port_status": "source-implemented-compiled-tested",
+      "native_platform_qualification": "not-run",
+      "reported_hex": "2f2f612f62"
+    },
+    {
+      "id": "simplify-name-109.3",
+      "input": "\\\\?\\",
+      "expected": "",
+      "source_input_token": "\\\\\\\\?\\\\",
+      "source_expected_token": "{}",
+      "native_condition": "tcl_platform(os) == Windows NT",
+      "port_status": "source-implemented-compiled-tested",
+      "native_platform_qualification": "not-run",
+      "reported_hex": "00"
+    }
+  ],
+  "recommendations": [
+    "Obtain real Windows/Cygwin runtime qualification."
+  ]
+}

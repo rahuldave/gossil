@@ -13,12 +13,15 @@ Read and follow @.agents/instructions/prose.md
 
 - Project name: Gossil.
 - Source directories: `src/` contains the inherited-test runner, delta and byte
-  primitives, token codec, structural artifact parser and local storage boundary. `tests/` contains controls,
+  primitives, token codec, structural artifact parser, local storage boundary,
+  Fossil glob matching (`src/glob.rs`), lexical filename simplification
+  (`src/file_path.rs`) and check-in graph paths (`src/history.rs`). `tests/` contains controls,
   portable fixtures and the private storage composition test.
 - Local guides: `docs/conformance.md`, `docs/delta-encoder.md`,
   `docs/delta-decoder.md`, `docs/blob-primitives.md`, `docs/token-codec.md`,
   `docs/local-storage.md`, `docs/native-storage.md`, `docs/artifact-parser.md`,
-  `docs/glob.md` and `docs/development-plan.md`.
+  `docs/glob.md`, `docs/file-path.md`, `docs/history.md` and
+  `docs/development-plan.md`.
 - Product specification: `~/Projects/AIProjectInfra/docs/gossil/README.md` and its linked pages.
 - Workflow playbook: `.agents/skills/gtw/references/gest_codex_workflow.md`.
 
@@ -124,8 +127,9 @@ file and a successful build do not prove that the public site is live.
 
 `src/glob.rs` ports bounded Fossil list parsing, matching and SQL construction.
 The source `test-glob` diagnostic uses the shared product entry for all four
-executable/group combinations. Keep the single selected 0.10.0 engine and the
-vendored provider patch. Only patterns are SQL-escaped; `glob_expr` requires a
+executable/group combinations. Keep the single selected libSQL engine, the
+`libsql` and `libsql-ffi` crates at version 0.10.0, and the vendored provider
+patch. Only patterns are SQL-escaped; `glob_expr` requires a
 trusted SQL expression, with untrusted candidate values bound separately.
 
 The 37 retained glob evidence files describe historical source and 0.9.30
@@ -135,7 +139,10 @@ The 2026-11-21 focused checkpoint built both binaries and passed
 3 CLI tests, 9 glob integration tests, 5 filtered library units (4 glob and one
 existing global-state control), and all 20 unchanged Tcl assertions. Its graph
 comparison retained all 126 nonroot packages and edges/features with one
-0.10.0 FFI provider. Source metadata selects candidate 0.9.0.
+`libsql-ffi` 0.10.0 provider. At that checkpoint the Gossil crate version in
+`Cargo.toml` was 0.9.0, since released as `v0.9.0`. The current Gossil crate
+version is 0.10.0. These two 0.10.0 numbers are separate. One is the libSQL
+provider version, and the other is the Gossil crate version.
 
 The checkpoint
 used a prospective checked-commit prerequisite, with actual parent `4250b873`;

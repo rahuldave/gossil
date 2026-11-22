@@ -1,0 +1,105 @@
+{
+  "status": "source-derived expected values; port implemented, compiled and tested by tests/file_path.rs; no native C adapter run is recorded in the repository",
+  "input_limit_bytes": 1024,
+  "cases": [
+    {
+      "id": "tail-true",
+      "input": "a///./",
+      "slash": 1,
+      "expected_hex": "61",
+      "origin": "new characterization; not an unchanged file1.test assertion"
+    },
+    {
+      "id": "tail-false",
+      "input": "a///./",
+      "slash": 0,
+      "expected_hex": "61",
+      "origin": "new characterization; not an unchanged file1.test assertion"
+    },
+    {
+      "id": "slash-true",
+      "input": "a///",
+      "slash": 1,
+      "expected_hex": "612f",
+      "origin": "new characterization; not an unchanged file1.test assertion"
+    },
+    {
+      "id": "slash-false",
+      "input": "a///",
+      "slash": 0,
+      "expected_hex": "61",
+      "origin": "new characterization; not an unchanged file1.test assertion"
+    },
+    {
+      "id": "root-true",
+      "input": "///",
+      "slash": 1,
+      "expected_hex": "2f2f",
+      "origin": "new characterization; not an unchanged file1.test assertion"
+    },
+    {
+      "id": "root-false",
+      "input": "///",
+      "slash": 0,
+      "expected_hex": "2f",
+      "origin": "new characterization; not an unchanged file1.test assertion"
+    },
+    {
+      "id": "double-root-true",
+      "input": "//",
+      "slash": 1,
+      "expected_hex": "2f2f",
+      "origin": "new characterization; not an unchanged file1.test assertion"
+    },
+    {
+      "id": "double-root-false",
+      "input": "//",
+      "slash": 0,
+      "expected_hex": "2f",
+      "origin": "new characterization; not an unchanged file1.test assertion"
+    },
+    {
+      "id": "dot-true",
+      "input": "./",
+      "slash": 1,
+      "expected_hex": "2f",
+      "origin": "new characterization; not an unchanged file1.test assertion"
+    },
+    {
+      "id": "dot-false",
+      "input": "./",
+      "slash": 0,
+      "expected_hex": "2e",
+      "origin": "new characterization; not an unchanged file1.test assertion"
+    },
+    {
+      "id": "cancel-true",
+      "input": "a/../",
+      "slash": 1,
+      "expected_hex": "2f",
+      "origin": "new characterization; not an unchanged file1.test assertion"
+    },
+    {
+      "id": "absolute-cancel",
+      "input": "/a/..",
+      "slash": 0,
+      "expected_hex": "2f",
+      "origin": "new characterization; not an unchanged file1.test assertion"
+    },
+    {
+      "id": "double-leading",
+      "input": "///a///b/////",
+      "slash": 1,
+      "expected_hex": "2f2f612f622f",
+      "origin": "new characterization; not an unchanged file1.test assertion"
+    },
+    {
+      "id": "unresolved",
+      "input": "/a/b/../../../x/y",
+      "slash": 1,
+      "expected_hex": "2f2e2e2f782f79",
+      "origin": "new characterization; not an unchanged file1.test assertion"
+    }
+  ],
+  "excluded": "No relative terminal cancellation with slash=false or terminal-negative-cursor inputs; the adopted TerminalCancellation contract rejects them and is tested in tests/file_path.rs."
+}
