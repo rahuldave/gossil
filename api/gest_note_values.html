@@ -1,0 +1,185 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="generator" content="smalldocs-0.5.12"><meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes"><meta name="description" content="Convert complete admitted canonical note fields into owned values. Convert 7 explicit decoded note fields into owned validated records."><title>gest_note_values – Gossil</title><link rel="icon" href="../site_libs/themes/atelier/logo.svg"><link rel="stylesheet" href="../site_libs/themes/atelier/atelier.css" data-mode="light" class="quarto-color-scheme" id="quarto-bootstrap-light" media="not all and (prefers-color-scheme: dark)"><link rel="stylesheet" href="../site_libs/themes/atelier/atelier-dark.css" data-mode="dark" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap-dark" media="(prefers-color-scheme: dark)"><link rel="stylesheet" href="../site_libs/bootstrap-icons/bootstrap-icons.min.css"><link rel="stylesheet" href="../site_libs/smalldocs.css"><meta name="smalldocs:offset" content="../"><script src="../site_libs/bootstrap/bootstrap.bundle.min.js"></script><script src="../site_libs/fuse/fuse.min.js"></script><script src="../site_libs/smalldocs.js" defer></script><script>(function(){var d=document.documentElement,s=null;try{s=localStorage.getItem('smalldocs-scheme')}catch(e){}var alt=s?s==='alternate':!!(window.matchMedia&&matchMedia('(prefers-color-scheme: dark)').matches);var ls=document.querySelectorAll('link.quarto-color-scheme');if(alt)d.dataset.scheme='alternate';if(s)ls.forEach(function(l){var on=l.classList.contains('quarto-color-alternate')===alt;if(on)l.setAttribute('blocking','render');l.media=on?'all':'not all'});var on=ls[alt?1:0];if(on&&on.dataset.mode==='dark')d.classList.add('quarto-dark')})();</script></head><body class="nav-sidebar floating nav-fixed"><header id="quarto-header" class="headroom sticky-top"><nav class="navbar navbar-expand-lg sd-navbar-default"><div class="navbar-container container-fluid"><div class="navbar-brand-container mx-auto"><a class="navbar-brand" href="../index.html"><span class="navbar-title">Gossil</span></a></div><button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button><div class="collapse navbar-collapse" id="navbarCollapse"><ul class="navbar-nav navbar-nav-scroll me-auto"><li class="nav-item"><a class="nav-link" href="../getting-started.html"><span class="menu-text">Start</span></a></li><li class="nav-item"><a class="nav-link" href="../concepts.html"><span class="menu-text">Library concepts</span></a></li><li class="nav-item"><a class="nav-link" href="../cli.html"><span class="menu-text">CLI</span></a></li><li class="nav-item"><a class="nav-link" href="index.html"><span class="menu-text">Rust API</span></a></li><li class="nav-item"><a class="nav-link" href="../development-plan.html"><span class="menu-text">Development</span></a></li></ul><ul class="navbar-nav navbar-nav-scroll ms-auto"><li class="nav-item compact"><a class="nav-link" href="https://github.com/rahuldave/gossil" aria-label="github"><i class="bi bi-github" role="img"></i></a></li><li class="nav-item compact"><a class="quarto-color-scheme-toggle nav-link" href="" title="Toggle dark mode" onclick="window.smalldocsToggleScheme(); return false;"><i class="bi"></i></a></li></ul><div class="quarto-navbar-tools"><div class="smalldocs-search" id="quarto-search"><i class="bi bi-search" aria-hidden="true"></i><input type="search" class="form-control form-control-sm" placeholder="Search" aria-label="Search" autocomplete="off"><div class="smalldocs-search-results dropdown-menu"></div></div></div></div></div></nav><nav class="quarto-secondary-nav"><div class="container-fluid d-flex"><button type="button" class="quarto-btn-toggle btn" aria-controls="quarto-sidebar" aria-label="Toggle sidebar navigation"><i class="bi bi-layout-text-sidebar-reverse"></i></button><nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="index.html">Rust API</a></li><li class="breadcrumb-item"><a href="gest_note_values.html">gest_note_values</a></li></ol></nav></div></nav></header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article has-sidebar has-margin"><nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto"><div class="sidebar-menu-container"><ul class="list-unstyled mt-1"><li class="sidebar-item"><div class="sidebar-item-container"><a href="../index.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Gossil</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="../getting-started.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Get started</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="../cli.html" class="sidebar-item-text sidebar-link"><span class="menu-text">CLI reference</span></a></div></li><li class="sidebar-item sidebar-item-section"><div class="sidebar-item-container"><a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true"><span class="menu-text">Guides</span></a><a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section"><i class="bi bi-chevron-right ms-2"></i></a></div><ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show"><li class="sidebar-item"><div class="sidebar-item-container"><a href="../working-with-repositories.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Working with repositories</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="../compare-with-git.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Compare Gossil with Git</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="../concepts.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Library concepts</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="../examples.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Rust library examples</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="../delta-encoder.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Bounded delta encoder</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="../delta-decoder.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Bounded delta decoder</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="../blob-primitives.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Byte digests and packed blobs</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="../artifact-checksum.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Artifact byte checksums</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="../token-codec.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Fossil token bytes</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="../glob.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Bounded Fossil glob port</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="../file-path.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Lexical file paths</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="../history.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Check-in graph paths</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="../artifact-parser.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Artifact parser</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="../diff.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Compare normalized byte lines</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="../task-ticket.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Emit a task creation artifact</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="../local-storage.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Local database ownership</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="../native-storage.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Native local storage</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="../gest-task-values.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Gest task values</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="../gest-project-values.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Gest project values</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="../gest-author-values.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Gest author values</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="../gest-artifact-values.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Gest artifact values</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="../gest-iteration-values.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Gest iteration values</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="../gest-tag-values.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Gest tag values</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="../gest-note-values.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Gest note values</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="../gest-relationship-values.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Gest relationship values</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="../gest-entity-tag-values.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Gest entity tag values</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="../gest-iteration-task-values.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Gest iteration task values</span></a></div></li></ul></li><li class="sidebar-item sidebar-item-section"><div class="sidebar-item-container"><a class="sidebar-item-text sidebar-link" href="index.html"><span class="menu-text">Rust API</span></a><a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Toggle section"><i class="bi bi-chevron-right ms-2"></i></a></div><ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show"><li class="sidebar-item"><div class="sidebar-item-container"><a href="artifact.html" class="sidebar-item-text sidebar-link"><span class="menu-text">artifact</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="artifact_checksum.html" class="sidebar-item-text sidebar-link"><span class="menu-text">artifact_checksum</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="compression.html" class="sidebar-item-text sidebar-link"><span class="menu-text">compression</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="content_hash.html" class="sidebar-item-text sidebar-link"><span class="menu-text">content_hash</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="delta.html" class="sidebar-item-text sidebar-link"><span class="menu-text">delta</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="diff.html" class="sidebar-item-text sidebar-link"><span class="menu-text">diff</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="file_path.html" class="sidebar-item-text sidebar-link"><span class="menu-text">file_path</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="gest_artifact_values.html" class="sidebar-item-text sidebar-link"><span class="menu-text">gest_artifact_values</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="gest_author_values.html" class="sidebar-item-text sidebar-link"><span class="menu-text">gest_author_values</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="gest_entity_tag_values.html" class="sidebar-item-text sidebar-link"><span class="menu-text">gest_entity_tag_values</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="gest_iteration_task_values.html" class="sidebar-item-text sidebar-link"><span class="menu-text">gest_iteration_task_values</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="gest_iteration_values.html" class="sidebar-item-text sidebar-link"><span class="menu-text">gest_iteration_values</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="gest_note_values.html" class="sidebar-item-text sidebar-link active" aria-current="page"><span class="menu-text">gest_note_values</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="gest_project_values.html" class="sidebar-item-text sidebar-link"><span class="menu-text">gest_project_values</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="gest_relationship_values.html" class="sidebar-item-text sidebar-link"><span class="menu-text">gest_relationship_values</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="gest_tag_values.html" class="sidebar-item-text sidebar-link"><span class="menu-text">gest_tag_values</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="gest_task_values.html" class="sidebar-item-text sidebar-link"><span class="menu-text">gest_task_values</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="glob.html" class="sidebar-item-text sidebar-link"><span class="menu-text">glob</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="gossil.html" class="sidebar-item-text sidebar-link"><span class="menu-text">gossil</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="history.html" class="sidebar-item-text sidebar-link"><span class="menu-text">history</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="native_date.html" class="sidebar-item-text sidebar-link"><span class="menu-text">native_date</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="product.html" class="sidebar-item-text sidebar-link"><span class="menu-text">product</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="storage.html" class="sidebar-item-text sidebar-link"><span class="menu-text">storage</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="task_ticket.html" class="sidebar-item-text sidebar-link"><span class="menu-text">task_ticket</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="token_codec.html" class="sidebar-item-text sidebar-link"><span class="menu-text">token_codec</span></a></div></li></ul></li><li class="sidebar-item sidebar-item-section"><div class="sidebar-item-container"><a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true"><span class="menu-text">Development</span></a><a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true" aria-label="Toggle section"><i class="bi bi-chevron-right ms-2"></i></a></div><ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show"><li class="sidebar-item"><div class="sidebar-item-container"><a href="../development-plan.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Development and contributing</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="../conformance.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Inherited-test runner</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="../libsql-wrapper.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Exact libsql TEXT retrieval</span></a></div></li></ul></li></ul></div></nav><div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item"></div><div id="quarto-margin-sidebar" class="sidebar margin-sidebar"><nav id="TOC" role="doc-toc" class="toc-active"><h2 id="toc-title">On this page</h2><ul><li><a href="#NoteValueInputs" id="toc-NoteValueInputs" class="nav-link" data-scroll-target="#NoteValueInputs">struct NoteValueInputs</a></li><li><a href="#NoteValues" id="toc-NoteValues" class="nav-link" data-scroll-target="#NoteValues">struct NoteValues</a></li><li><a href="#NoteValueError" id="toc-NoteValueError" class="nav-link" data-scroll-target="#NoteValueError">struct NoteValueError</a><ul><li><a href="#NoteValueError.parse_cause" id="toc-NoteValueError.parse_cause" class="nav-link" data-scroll-target="#NoteValueError.parse_cause">NoteValueError::parse_cause</a></li></ul></li><li><a href="#note_from_values" id="toc-note_from_values" class="nav-link" data-scroll-target="#note_from_values">fn note_from_values</a></li><li><a href="#note_to_values" id="toc-note_to_values" class="nav-link" data-scroll-target="#note_to_values">fn note_to_values</a></li></ul></nav></div><main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="index.html">Rust API</a></li><li class="breadcrumb-item"><a href="gest_note_values.html">gest_note_values</a></li></ol></nav><div class="quarto-title"><h1 class="title">gest_note_values</h1></div><div><div class="description">Convert complete admitted canonical note fields into owned values. Convert 7 explicit decoded note fields into owned validated records.</div></div><div class="quarto-title-meta"></div></header><p>Callers own raw admission, field presence, unknown fields, budgets and history.
+Callers also check that the entity and the author exist, because that check needs other records.
+This module reads no clock and performs no storage, reference lookup or ID generation.
+<code>chrono</code> parses the two timestamps as RFC3339, and <a href="gest_note_values.html#note_to_values"><code>note_to_values</code></a> returns them in canonical UTC.</p>
+<section id="NoteValueInputs" class="level2">
+<h2 class="anchored" data-anchor-id="NoteValueInputs">struct NoteValueInputs</h2>
+<p><a href="https://github.com/rahuldave/gossil/blob/main/src/gest_note_values.rs#L17" class="source-link">source</a></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span class="kw">pub</span> <span class="kw">struct</span> NoteValueInputs</code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Holds the complete owned input and output fields.</p>
+<p>The caller must give every field explicitly, including a null author.</p>
+<div class="sd-table">
+<table class="caption-top table">
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>gest_id</code></td>
+<td>Value</td>
+<td>Full note ID, called <code>id</code> upstream.</td>
+</tr>
+<tr>
+<td><code>entity_id</code></td>
+<td>Value</td>
+<td>Full ID of the task, artifact or iteration that the note is attached to.</td>
+</tr>
+<tr>
+<td><code>entity_type</code></td>
+<td>Value</td>
+<td>Kind of the entity: <code>artifact</code>, <code>iteration</code> or <code>task</code>, in any case.</td>
+</tr>
+<tr>
+<td><code>author_id</code></td>
+<td>Value</td>
+<td>Full ID of the author, or JSON null when the author is unknown.</td>
+</tr>
+<tr>
+<td><code>body</code></td>
+<td>Value</td>
+<td>Exact body text, including empty strings, Unicode and line endings.</td>
+</tr>
+<tr>
+<td><code>created_at</code></td>
+<td>Value</td>
+<td>RFC3339 creation timestamp with representable canonical UTC output.</td>
+</tr>
+<tr>
+<td><code>updated_at</code></td>
+<td>Value</td>
+<td>RFC3339 modification timestamp with representable canonical UTC output.</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Implements <a href="https://doc.rust-lang.org/nightly/core/clone/trait.Clone.html"><code>Clone</code></a>, <a href="https://doc.rust-lang.org/nightly/core/fmt/trait.Debug.html"><code>Debug</code></a>, <a href="https://doc.rust-lang.org/nightly/core/cmp/trait.PartialEq.html"><code>PartialEq</code></a>.</p>
+</section>
+<section id="NoteValues" class="level2">
+<h2 class="anchored" data-anchor-id="NoteValues">struct NoteValues</h2>
+<p><a href="https://github.com/rahuldave/gossil/blob/main/src/gest_note_values.rs#L38" class="source-link">source</a></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span class="kw">pub</span> <span class="kw">struct</span> NoteValues</code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Holds validated note data in private fields.</p>
+<p>Construct it with <a href="gest_note_values.html#note_from_values"><code>note_from_values</code></a>.</p>
+<p>Implements <a href="https://doc.rust-lang.org/nightly/core/clone/trait.Clone.html"><code>Clone</code></a>, <a href="https://doc.rust-lang.org/nightly/core/fmt/trait.Debug.html"><code>Debug</code></a>, <a href="https://doc.rust-lang.org/nightly/core/cmp/trait.PartialEq.html"><code>PartialEq</code></a>.</p>
+</section>
+<section id="NoteValueError" class="level2">
+<h2 class="anchored" data-anchor-id="NoteValueError">struct NoteValueError</h2>
+<p><a href="https://github.com/rahuldave/gossil/blob/main/src/gest_note_values.rs#L57" class="source-link">source</a></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span class="kw">pub</span> <span class="kw">struct</span> NoteValueError</code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Reports a failed field without its input, with an optional typed <code>chrono</code> parse cause.</p>
+<p>Implements <a href="https://doc.rust-lang.org/nightly/core/clone/trait.Clone.html"><code>Clone</code></a>, <a href="https://doc.rust-lang.org/nightly/core/fmt/trait.Debug.html"><code>Debug</code></a>, <a href="https://doc.rust-lang.org/nightly/core/cmp/trait.Eq.html"><code>Eq</code></a>, <a href="https://doc.rust-lang.org/nightly/core/cmp/trait.PartialEq.html"><code>PartialEq</code></a>, <a href="https://doc.rust-lang.org/nightly/core/fmt/trait.Display.html"><code>Display</code></a>, <a href="https://doc.rust-lang.org/nightly/core/error/trait.Error.html"><code>Error</code></a>.</p>
+<section id="NoteValueError.parse_cause" class="level3">
+<h3 class="anchored" data-anchor-id="NoteValueError.parse_cause">NoteValueError::parse_cause</h3>
+<p><a href="https://github.com/rahuldave/gossil/blob/main/src/gest_note_values.rs#L75" class="source-link">source</a></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span class="kw">pub</span> <span class="kw">fn</span> <span class="fu">parse_cause</span>(<span class="op">&amp;</span><span class="va">self</span>) -&gt; <span class="bu">Option</span><span class="op">&lt;</span><span class="op">&amp;</span>chrono::ParseError<span class="op">&gt;</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Return the <code>chrono</code> parse error of a timestamp, without the supplied data.</p>
+<div class="sd-table">
+<table class="caption-top table">
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>returns</td>
+<td>Option&lt;&amp;chrono::ParseError&gt;</td>
+<td>The initial or canonical-output parse cause, or <code>None</code> for other failures. The alloc-only parser error of <code>chrono</code> does not implement <code>std::error::Error</code>.</td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+</section>
+<section id="note_from_values" class="level2">
+<h2 class="anchored" data-anchor-id="note_from_values">fn note_from_values</h2>
+<p><a href="https://github.com/rahuldave/gossil/blob/main/src/gest_note_values.rs#L128" class="source-link">source</a></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span class="kw">pub</span> <span class="kw">fn</span> <span class="fu">note_from_values</span>(fields: NoteValueInputs) -&gt; <span class="bu">Result</span><span class="op">&lt;</span>NoteValues, NoteValueError<span class="op">&gt;</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Validate every explicit decoded field and preserve the complete note value.</p>
+<section id="errors" class="level4">
+<h4 class="anchored" data-anchor-id="errors">Errors</h4>
+<p>Returns <a href="gest_note_values.html#NoteValueError"><code>NoteValueError</code></a> for wrong types, invalid full IDs, an entity type
+other than artifact, iteration or task, invalid timestamp input or UTC output
+outside the canonical RFC3339 domain.</p>
+</section>
+<section id="examples" class="level4">
+<h4 class="anchored" data-anchor-id="examples">Examples</h4>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span class="kw">use</span> gossil::gest_note_values::{NoteValueInputs, note_from_values, note_to_values};
+<span class="kw">use</span> serde_json::json;
+
+<span class="kw">let</span> fields <span class="op">=</span> NoteValueInputs {
+    gest_id: json<span class="op">!</span>(<span class="st">&quot;</span><span class="st">klmnopqrstuvwxyzklmnopqrstuvwxyz</span><span class="st">&quot;</span>),
+    entity_id: json<span class="op">!</span>(<span class="st">&quot;</span><span class="st">zyxwvutsrqponmlkzyxwvutsrqponmlk</span><span class="st">&quot;</span>),
+    entity_type: json<span class="op">!</span>(<span class="st">&quot;</span><span class="st">Task</span><span class="st">&quot;</span>),
+    author_id: json<span class="op">!</span>(null),
+    body: json<span class="op">!</span>(<span class="st">&quot;</span><span class="st">Checked the *build*.</span><span class="sc">\n</span><span class="st">&quot;</span>),
+    created_at: json<span class="op">!</span>(<span class="st">&quot;</span><span class="st">2026-11-18T07:00:00-05:00</span><span class="st">&quot;</span>),
+    updated_at: json<span class="op">!</span>(<span class="st">&quot;</span><span class="st">2026-11-18T12:00:00Z</span><span class="st">&quot;</span>),
+};
+<span class="kw">let</span> record <span class="op">=</span> note_from_values(fields).unwrap();
+<span class="kw">let</span> output <span class="op">=</span> note_to_values(<span class="op">&amp;</span>record);
+<span class="fu">assert_eq!</span>(output.entity_type, json<span class="op">!</span>(<span class="st">&quot;</span><span class="st">task</span><span class="st">&quot;</span>));
+<span class="fu">assert_eq!</span>(output.author_id, json<span class="op">!</span>(null));
+<span class="fu">assert_eq!</span>(output.created_at, json<span class="op">!</span>(<span class="st">&quot;</span><span class="st">2026-11-18T12:00:00+00:00</span><span class="st">&quot;</span>));
+<span class="fu">assert_eq!</span>(note_from_values(output).unwrap(), record);</code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="sd-table">
+<table class="caption-top table">
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>fields</code></td>
+<td>NoteValueInputs</td>
+<td>Complete fields admitted by the caller before this conversion.</td>
+</tr>
+<tr>
+<td>returns</td>
+<td>Result&lt;NoteValues, NoteValueError&gt;</td>
+<td>An owned validated record with private fields. The body keeps its exact bytes, a null author stays null, and the entity type takes its lowercase spelling. The conversion imposes no order on the timestamps.</td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+</section>
+<section id="note_to_values" class="level2">
+<h2 class="anchored" data-anchor-id="note_to_values">fn note_to_values</h2>
+<p><a href="https://github.com/rahuldave/gossil/blob/main/src/gest_note_values.rs#L160" class="source-link">source</a></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span class="kw">pub</span> <span class="kw">fn</span> <span class="fu">note_to_values</span>(record: <span class="kw">&amp;</span>NoteValues) -&gt; NoteValueInputs</code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Return all 7 fields as independent owned values.</p>
+<div class="sd-table">
+<table class="caption-top table">
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>record</code></td>
+<td>&amp;NoteValues</td>
+<td>A record validated by [<a href="gest_note_values.html#note_from_values"><code>note_from_values</code></a>].</td>
+</tr>
+<tr>
+<td>returns</td>
+<td>NoteValueInputs</td>
+<td>Complete model values with UTC RFC3339 timestamp strings and an explicit JSON null for an unknown author. UTC uses <code>+00:00</code> and at most nine fractional digits. Output can be validated again, and a change to the output does not change the record.</td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<nav class="page-navigation"><div class="nav-page nav-page-previous"><a href="gest_iteration_values.html" class="pagination-link"><i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">gest_iteration_values</span></a></div><div class="nav-page nav-page-next"><a href="gest_project_values.html" class="pagination-link"><span class="nav-page-text">gest_project_values</span> <i class="bi bi-arrow-right-short"></i></a></div></nav></main></div></body></html>
