@@ -1,0 +1,1000 @@
+{
+  "format": 1,
+  "scope": "explicit synthetic graph algorithm only; no persisted Gossil admission",
+  "native_version": "This is fossil version 2.29 [7e8ecf0ce4] 2026-11-16 11:41:54 UTC",
+  "binary_sha256": "75550c754e94a4b7fa0269f40ce8e4918daf67e05ba12b236ed735d424c8e16c",
+  "nodes": [
+    {
+      "rid": 1,
+      "branch": "trunk",
+      "mtime": 2451546.0
+    },
+    {
+      "rid": 2,
+      "branch": "trunk",
+      "mtime": 2451547.0
+    },
+    {
+      "rid": 3,
+      "branch": "trunk",
+      "mtime": 2451548.0
+    },
+    {
+      "rid": 4,
+      "branch": "feature",
+      "mtime": 2451549.0
+    },
+    {
+      "rid": 5,
+      "branch": "trunk",
+      "mtime": 2451550.0
+    },
+    {
+      "rid": 6,
+      "branch": "feature",
+      "mtime": 2451551.0
+    },
+    {
+      "rid": 7,
+      "branch": "other",
+      "mtime": 2451552.0
+    },
+    {
+      "rid": 8,
+      "branch": "other",
+      "mtime": 2451553.0
+    },
+    {
+      "rid": 9,
+      "branch": "trunk",
+      "mtime": 2451554.0
+    },
+    {
+      "rid": 10,
+      "branch": "trunk",
+      "mtime": 2451555.0
+    },
+    {
+      "rid": 11,
+      "branch": "trunk",
+      "mtime": 2451556.0
+    },
+    {
+      "rid": 12,
+      "branch": "trunk",
+      "mtime": 2451557.0
+    }
+  ],
+  "links": [
+    {
+      "parent": 1,
+      "child": 2,
+      "primary": true
+    },
+    {
+      "parent": 1,
+      "child": 7,
+      "primary": true
+    },
+    {
+      "parent": 2,
+      "child": 3,
+      "primary": true
+    },
+    {
+      "parent": 2,
+      "child": 4,
+      "primary": true
+    },
+    {
+      "parent": 3,
+      "child": 5,
+      "primary": true
+    },
+    {
+      "parent": 4,
+      "child": 5,
+      "primary": false
+    },
+    {
+      "parent": 4,
+      "child": 6,
+      "primary": true
+    },
+    {
+      "parent": 7,
+      "child": 8,
+      "primary": true
+    },
+    {
+      "parent": 8,
+      "child": 12,
+      "primary": false
+    },
+    {
+      "parent": 10,
+      "child": 11,
+      "primary": true
+    },
+    {
+      "parent": 11,
+      "child": 12,
+      "primary": true
+    }
+  ],
+  "cherrypicks": [
+    {
+      "parent": 6,
+      "child": 8,
+      "excluded": false
+    },
+    {
+      "parent": 6,
+      "child": 9,
+      "excluded": true
+    }
+  ],
+  "query_rows": {
+    "1": {
+      "children": [
+        [
+          2,
+          1
+        ],
+        [
+          7,
+          1
+        ]
+      ],
+      "parents": []
+    },
+    "2": {
+      "children": [
+        [
+          3,
+          1
+        ],
+        [
+          4,
+          1
+        ]
+      ],
+      "parents": [
+        [
+          1,
+          1
+        ]
+      ]
+    },
+    "3": {
+      "children": [
+        [
+          5,
+          1
+        ]
+      ],
+      "parents": [
+        [
+          2,
+          1
+        ]
+      ]
+    },
+    "4": {
+      "children": [
+        [
+          5,
+          0
+        ],
+        [
+          6,
+          1
+        ]
+      ],
+      "parents": [
+        [
+          2,
+          1
+        ]
+      ]
+    },
+    "5": {
+      "children": [],
+      "parents": [
+        [
+          3,
+          1
+        ],
+        [
+          4,
+          0
+        ]
+      ]
+    },
+    "6": {
+      "children": [],
+      "parents": [
+        [
+          4,
+          1
+        ]
+      ]
+    },
+    "7": {
+      "children": [
+        [
+          8,
+          1
+        ]
+      ],
+      "parents": [
+        [
+          1,
+          1
+        ]
+      ]
+    },
+    "8": {
+      "children": [
+        [
+          12,
+          0
+        ]
+      ],
+      "parents": [
+        [
+          7,
+          1
+        ]
+      ]
+    },
+    "9": {
+      "children": [],
+      "parents": []
+    },
+    "10": {
+      "children": [
+        [
+          11,
+          1
+        ]
+      ],
+      "parents": []
+    },
+    "11": {
+      "children": [
+        [
+          12,
+          1
+        ]
+      ],
+      "parents": [
+        [
+          10,
+          1
+        ]
+      ]
+    },
+    "12": {
+      "children": [],
+      "parents": [
+        [
+          8,
+          0
+        ],
+        [
+          11,
+          1
+        ]
+      ]
+    }
+  },
+  "cases": [
+    {
+      "kind": "shortest",
+      "start": 1,
+      "end": 5,
+      "flags": [],
+      "returncode": 0,
+      "stdout": "   1: 200001021200/trunk\n   2: 200001031200/trunk\n   3: 200001041200/trunk\n   4: 200001061200/trunk\n",
+      "stderr": "",
+      "path": [
+        1,
+        2,
+        3,
+        5
+      ]
+    },
+    {
+      "kind": "shortest",
+      "start": 5,
+      "end": 6,
+      "flags": [],
+      "returncode": 0,
+      "stdout": "   1: 200001061200/trunk\n   2: 200001051200/feature\n   3: 200001071200/feature\n",
+      "stderr": "",
+      "path": [
+        5,
+        4,
+        6
+      ]
+    },
+    {
+      "kind": "shortest",
+      "start": 5,
+      "end": 6,
+      "flags": [
+        "--no-merge"
+      ],
+      "returncode": 0,
+      "stdout": "   1: 200001061200/trunk\n   2: 200001041200/trunk\n   3: 200001031200/trunk\n   4: 200001051200/feature\n   5: 200001071200/feature\n",
+      "stderr": "",
+      "path": [
+        5,
+        3,
+        2,
+        4,
+        6
+      ]
+    },
+    {
+      "kind": "shortest",
+      "start": 3,
+      "end": 8,
+      "flags": [],
+      "returncode": 0,
+      "stdout": "   1: 200001041200/trunk\n   2: 200001031200/trunk\n   3: 200001021200/trunk\n   4: 200001081200/other\n   5: 200001091200/other\n",
+      "stderr": "",
+      "path": [
+        3,
+        2,
+        1,
+        7,
+        8
+      ]
+    },
+    {
+      "kind": "shortest",
+      "start": 8,
+      "end": 3,
+      "flags": [],
+      "returncode": 0,
+      "stdout": "   1: 200001091200/other\n   2: 200001081200/other\n   3: 200001021200/trunk\n   4: 200001031200/trunk\n   5: 200001041200/trunk\n",
+      "stderr": "",
+      "path": [
+        8,
+        7,
+        1,
+        2,
+        3
+      ]
+    },
+    {
+      "kind": "shortest",
+      "start": 5,
+      "end": 6,
+      "flags": [
+        "--one-way"
+      ],
+      "returncode": 1,
+      "stdout": "",
+      "stderr": "no path from test-shortest-path to 730a9812845738a88874b8a949f33c41a8163443\n",
+      "path": []
+    },
+    {
+      "kind": "shortest",
+      "start": 1,
+      "end": 5,
+      "flags": [
+        "--one-way",
+        "--no-merge"
+      ],
+      "returncode": 0,
+      "stdout": "   1: 200001021200/trunk\n   2: 200001031200/trunk\n   3: 200001041200/trunk\n   4: 200001061200/trunk\n",
+      "stderr": "",
+      "path": [
+        1,
+        2,
+        3,
+        5
+      ]
+    },
+    {
+      "kind": "shortest",
+      "start": 6,
+      "end": 8,
+      "flags": [],
+      "returncode": 0,
+      "stdout": "   1: 200001071200/feature\n   2: 200001051200/feature\n   3: 200001031200/trunk\n   4: 200001021200/trunk\n   5: 200001081200/other\n   6: 200001091200/other\n",
+      "stderr": "",
+      "path": [
+        6,
+        4,
+        2,
+        1,
+        7,
+        8
+      ]
+    },
+    {
+      "kind": "shortest",
+      "start": 9,
+      "end": 1,
+      "flags": [],
+      "returncode": 1,
+      "stdout": "",
+      "stderr": "no path from test-shortest-path to 3d90971f50387349463b30cdd4401083c5cb8718\n",
+      "path": []
+    },
+    {
+      "kind": "shortest",
+      "start": 1,
+      "end": 1,
+      "flags": [],
+      "returncode": 0,
+      "stdout": "   1: 200001021200/trunk\n",
+      "stderr": "",
+      "path": [
+        1
+      ]
+    },
+    {
+      "kind": "shortest",
+      "start": 5,
+      "end": 6,
+      "flags": [
+        "--branch-cost",
+        "5"
+      ],
+      "returncode": 0,
+      "stdout": "   1: 200001061200/trunk\n   2: 200001051200/feature\n   3: 200001071200/feature\n",
+      "stderr": "",
+      "path": [
+        5,
+        4,
+        6
+      ]
+    },
+    {
+      "kind": "shortest",
+      "start": 5,
+      "end": 6,
+      "flags": [
+        "--branch-cost",
+        "100"
+      ],
+      "returncode": 0,
+      "stdout": "   1: 200001061200/trunk\n   2: 200001051200/feature\n   3: 200001071200/feature\n",
+      "stderr": "",
+      "path": [
+        5,
+        4,
+        6
+      ]
+    },
+    {
+      "kind": "shortest",
+      "start": 1,
+      "end": 12,
+      "flags": [],
+      "returncode": 0,
+      "stdout": "   1: 200001021200/trunk\n   2: 200001081200/other\n   3: 200001091200/other\n   4: 200001131200/trunk\n",
+      "stderr": "",
+      "path": [
+        1,
+        7,
+        8,
+        12
+      ]
+    },
+    {
+      "kind": "shortest",
+      "start": 12,
+      "end": 3,
+      "flags": [],
+      "returncode": 0,
+      "stdout": "   1: 200001131200/trunk\n   2: 200001091200/other\n   3: 200001081200/other\n   4: 200001021200/trunk\n   5: 200001031200/trunk\n   6: 200001041200/trunk\n",
+      "stderr": "",
+      "path": [
+        12,
+        8,
+        7,
+        1,
+        2,
+        3
+      ]
+    },
+    {
+      "kind": "shortest",
+      "start": 3,
+      "end": 12,
+      "flags": [
+        "--one-way"
+      ],
+      "returncode": 1,
+      "stdout": "",
+      "stderr": "no path from test-shortest-path to 710988f59ed07490b35ca629cf2e7117428c2f98\n",
+      "path": []
+    },
+    {
+      "kind": "shortest",
+      "start": 5,
+      "end": 6,
+      "flags": [
+        "--debug"
+      ],
+      "returncode": 0,
+      "stdout": "PUSH 200001061200/trunk                                 cost = 1\nPULL 200001061200/trunk 1\nPUSH 200001041200/trunk                                 cost = 2\nPUSH 200001051200/feature                               cost = 2\nPULL 200001041200/trunk 2\nPUSH 200001031200/trunk                                 cost = 3\nPULL 200001051200/feature 2\nPUSH 200001071200/feature                               cost = 3\nPUSH 200001031200/trunk                                 cost = 3\nPULL 200001031200/trunk 3\nPUSH 200001021200/trunk                                 cost = 4\nPULL 200001071200/feature 3\n   1: 200001061200/trunk\n   2: 200001051200/feature\n   3: 200001071200/feature\n",
+      "stderr": "",
+      "path": [
+        5,
+        4,
+        6
+      ]
+    },
+    {
+      "kind": "ancestor",
+      "start": 3,
+      "end": 4,
+      "flags": [],
+      "returncode": 0,
+      "stdout": "   1:     4 5f95cd743986 2000-01-05 12:00:00 VERSION2\n   2:     2 805ee08ea860 2000-01-03 12:00:00 PIVOT\n   3:     3 710988f59ed0 2000-01-04 12:00:00 VERSION1\n",
+      "stderr": "",
+      "path": [
+        4,
+        2,
+        3
+      ],
+      "pivot": 2
+    },
+    {
+      "kind": "ancestor",
+      "start": 5,
+      "end": 6,
+      "flags": [],
+      "returncode": 0,
+      "stdout": "   1:     6 76c8b89e87db 2000-01-07 12:00:00 VERSION2\n   2:     4 5f95cd743986 2000-01-05 12:00:00 PIVOT\n   3:     5 730a98128457 2000-01-06 12:00:00 VERSION1\n",
+      "stderr": "",
+      "path": [
+        6,
+        4,
+        5
+      ],
+      "pivot": 4
+    },
+    {
+      "kind": "ancestor",
+      "start": 3,
+      "end": 8,
+      "flags": [],
+      "returncode": 0,
+      "stdout": "   1:     8 09d1d4dff298 2000-01-09 12:00:00 VERSION2\n   2:     7 00c0a8ebf11b 2000-01-08 12:00:00\n   3:     1 b12a06870008 2000-01-02 12:00:00 PIVOT\n   4:     2 805ee08ea860 2000-01-03 12:00:00\n   5:     3 710988f59ed0 2000-01-04 12:00:00 VERSION1\n",
+      "stderr": "",
+      "path": [
+        8,
+        7,
+        1,
+        2,
+        3
+      ],
+      "pivot": 1
+    },
+    {
+      "kind": "ancestor",
+      "start": 8,
+      "end": 3,
+      "flags": [],
+      "returncode": 0,
+      "stdout": "   1:     3 710988f59ed0 2000-01-04 12:00:00 VERSION2\n   2:     2 805ee08ea860 2000-01-03 12:00:00\n   3:     1 b12a06870008 2000-01-02 12:00:00 PIVOT\n   4:     7 00c0a8ebf11b 2000-01-08 12:00:00\n   5:     8 09d1d4dff298 2000-01-09 12:00:00 VERSION1\n",
+      "stderr": "",
+      "path": [
+        3,
+        2,
+        1,
+        7,
+        8
+      ],
+      "pivot": 1
+    },
+    {
+      "kind": "ancestor",
+      "start": 12,
+      "end": 5,
+      "flags": [],
+      "returncode": 0,
+      "stdout": "   1:     5 730a98128457 2000-01-06 12:00:00 VERSION2\n   2:     4 5f95cd743986 2000-01-05 12:00:00\n   3:     2 805ee08ea860 2000-01-03 12:00:00\n   4:     1 b12a06870008 2000-01-02 12:00:00 PIVOT\n   5:     7 00c0a8ebf11b 2000-01-08 12:00:00\n   6:     8 09d1d4dff298 2000-01-09 12:00:00\n   7:    12 63239f30fd8d 2000-01-13 12:00:00 VERSION1\n",
+      "stderr": "",
+      "path": [
+        5,
+        4,
+        2,
+        1,
+        7,
+        8,
+        12
+      ],
+      "pivot": 1
+    },
+    {
+      "kind": "ancestor",
+      "start": 9,
+      "end": 1,
+      "flags": [],
+      "returncode": 0,
+      "stdout": "",
+      "stderr": "",
+      "path": [],
+      "pivot": null
+    },
+    {
+      "kind": "ancestor",
+      "start": 1,
+      "end": 1,
+      "flags": [],
+      "returncode": 0,
+      "stdout": "",
+      "stderr": "",
+      "path": [],
+      "pivot": null
+    },
+    {
+      "kind": "ancestor",
+      "start": 5,
+      "end": 4,
+      "flags": [],
+      "returncode": 0,
+      "stdout": "   1:     5 730a98128457 2000-01-06 12:00:00 VERSION1\n   2:     4 5f95cd743986 2000-01-05 12:00:00 VERSION2 PIVOT\n",
+      "stderr": "",
+      "path": [
+        5,
+        4
+      ],
+      "pivot": 4
+    },
+    {
+      "kind": "ancestor",
+      "start": 4,
+      "end": 5,
+      "flags": [],
+      "returncode": 0,
+      "stdout": "   1:     5 730a98128457 2000-01-06 12:00:00 VERSION2\n   2:     4 5f95cd743986 2000-01-05 12:00:00 VERSION1 PIVOT\n",
+      "stderr": "",
+      "path": [
+        5,
+        4
+      ],
+      "pivot": 4
+    }
+  ],
+  "commands": [
+    {
+      "argv": [
+        "version"
+      ],
+      "returncode": 0,
+      "stdout": "This is fossil version 2.29 [7e8ecf0ce4] 2026-11-16 11:41:54 UTC\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "new",
+        "repo.fossil",
+        "--admin-user",
+        "history-fixture"
+      ],
+      "returncode": 0,
+      "stdout": "project-id: 2ffaa4a8e21bec999a5bf45352e682b09bacafc6\nserver-id:  ca61090813f21ff3d5a4b120ff2cce201e01df1b\nadmin-user: history-fixture (initial remote-access password is \"XZEixuvmew\")\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "test-shortest-path",
+        "-R",
+        "repo.fossil",
+        "b12a06870008dcd490d29fc6d56042a1a43465c8",
+        "730a9812845738a88874b8a949f33c41a8163443"
+      ],
+      "returncode": 0,
+      "stdout": "   1: 200001021200/trunk\n   2: 200001031200/trunk\n   3: 200001041200/trunk\n   4: 200001061200/trunk\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "test-shortest-path",
+        "-R",
+        "repo.fossil",
+        "730a9812845738a88874b8a949f33c41a8163443",
+        "76c8b89e87dbde295b98da61a582180f5d2464ac"
+      ],
+      "returncode": 0,
+      "stdout": "   1: 200001061200/trunk\n   2: 200001051200/feature\n   3: 200001071200/feature\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "test-shortest-path",
+        "-R",
+        "repo.fossil",
+        "--no-merge",
+        "730a9812845738a88874b8a949f33c41a8163443",
+        "76c8b89e87dbde295b98da61a582180f5d2464ac"
+      ],
+      "returncode": 0,
+      "stdout": "   1: 200001061200/trunk\n   2: 200001041200/trunk\n   3: 200001031200/trunk\n   4: 200001051200/feature\n   5: 200001071200/feature\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "test-shortest-path",
+        "-R",
+        "repo.fossil",
+        "710988f59ed07490b35ca629cf2e7117428c2f98",
+        "09d1d4dff298fc0db292bbd895016cb90cd1cca9"
+      ],
+      "returncode": 0,
+      "stdout": "   1: 200001041200/trunk\n   2: 200001031200/trunk\n   3: 200001021200/trunk\n   4: 200001081200/other\n   5: 200001091200/other\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "test-shortest-path",
+        "-R",
+        "repo.fossil",
+        "09d1d4dff298fc0db292bbd895016cb90cd1cca9",
+        "710988f59ed07490b35ca629cf2e7117428c2f98"
+      ],
+      "returncode": 0,
+      "stdout": "   1: 200001091200/other\n   2: 200001081200/other\n   3: 200001021200/trunk\n   4: 200001031200/trunk\n   5: 200001041200/trunk\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "test-shortest-path",
+        "-R",
+        "repo.fossil",
+        "--one-way",
+        "730a9812845738a88874b8a949f33c41a8163443",
+        "76c8b89e87dbde295b98da61a582180f5d2464ac"
+      ],
+      "returncode": 1,
+      "stdout": "",
+      "stderr": "no path from test-shortest-path to 730a9812845738a88874b8a949f33c41a8163443\n"
+    },
+    {
+      "argv": [
+        "test-shortest-path",
+        "-R",
+        "repo.fossil",
+        "--one-way",
+        "--no-merge",
+        "b12a06870008dcd490d29fc6d56042a1a43465c8",
+        "730a9812845738a88874b8a949f33c41a8163443"
+      ],
+      "returncode": 0,
+      "stdout": "   1: 200001021200/trunk\n   2: 200001031200/trunk\n   3: 200001041200/trunk\n   4: 200001061200/trunk\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "test-shortest-path",
+        "-R",
+        "repo.fossil",
+        "76c8b89e87dbde295b98da61a582180f5d2464ac",
+        "09d1d4dff298fc0db292bbd895016cb90cd1cca9"
+      ],
+      "returncode": 0,
+      "stdout": "   1: 200001071200/feature\n   2: 200001051200/feature\n   3: 200001031200/trunk\n   4: 200001021200/trunk\n   5: 200001081200/other\n   6: 200001091200/other\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "test-shortest-path",
+        "-R",
+        "repo.fossil",
+        "3d90971f50387349463b30cdd4401083c5cb8718",
+        "b12a06870008dcd490d29fc6d56042a1a43465c8"
+      ],
+      "returncode": 1,
+      "stdout": "",
+      "stderr": "no path from test-shortest-path to 3d90971f50387349463b30cdd4401083c5cb8718\n"
+    },
+    {
+      "argv": [
+        "test-shortest-path",
+        "-R",
+        "repo.fossil",
+        "b12a06870008dcd490d29fc6d56042a1a43465c8",
+        "b12a06870008dcd490d29fc6d56042a1a43465c8"
+      ],
+      "returncode": 0,
+      "stdout": "   1: 200001021200/trunk\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "test-shortest-path",
+        "-R",
+        "repo.fossil",
+        "--branch-cost",
+        "5",
+        "730a9812845738a88874b8a949f33c41a8163443",
+        "76c8b89e87dbde295b98da61a582180f5d2464ac"
+      ],
+      "returncode": 0,
+      "stdout": "   1: 200001061200/trunk\n   2: 200001051200/feature\n   3: 200001071200/feature\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "test-shortest-path",
+        "-R",
+        "repo.fossil",
+        "--branch-cost",
+        "100",
+        "730a9812845738a88874b8a949f33c41a8163443",
+        "76c8b89e87dbde295b98da61a582180f5d2464ac"
+      ],
+      "returncode": 0,
+      "stdout": "   1: 200001061200/trunk\n   2: 200001051200/feature\n   3: 200001071200/feature\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "test-shortest-path",
+        "-R",
+        "repo.fossil",
+        "b12a06870008dcd490d29fc6d56042a1a43465c8",
+        "63239f30fd8dc26187f884d179b29f2c7b22d32c"
+      ],
+      "returncode": 0,
+      "stdout": "   1: 200001021200/trunk\n   2: 200001081200/other\n   3: 200001091200/other\n   4: 200001131200/trunk\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "test-shortest-path",
+        "-R",
+        "repo.fossil",
+        "63239f30fd8dc26187f884d179b29f2c7b22d32c",
+        "710988f59ed07490b35ca629cf2e7117428c2f98"
+      ],
+      "returncode": 0,
+      "stdout": "   1: 200001131200/trunk\n   2: 200001091200/other\n   3: 200001081200/other\n   4: 200001021200/trunk\n   5: 200001031200/trunk\n   6: 200001041200/trunk\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "test-shortest-path",
+        "-R",
+        "repo.fossil",
+        "--one-way",
+        "710988f59ed07490b35ca629cf2e7117428c2f98",
+        "63239f30fd8dc26187f884d179b29f2c7b22d32c"
+      ],
+      "returncode": 1,
+      "stdout": "",
+      "stderr": "no path from test-shortest-path to 710988f59ed07490b35ca629cf2e7117428c2f98\n"
+    },
+    {
+      "argv": [
+        "test-shortest-path",
+        "-R",
+        "repo.fossil",
+        "--debug",
+        "730a9812845738a88874b8a949f33c41a8163443",
+        "76c8b89e87dbde295b98da61a582180f5d2464ac"
+      ],
+      "returncode": 0,
+      "stdout": "PUSH 200001061200/trunk                                 cost = 1\nPULL 200001061200/trunk 1\nPUSH 200001041200/trunk                                 cost = 2\nPUSH 200001051200/feature                               cost = 2\nPULL 200001041200/trunk 2\nPUSH 200001031200/trunk                                 cost = 3\nPULL 200001051200/feature 2\nPUSH 200001071200/feature                               cost = 3\nPUSH 200001031200/trunk                                 cost = 3\nPULL 200001031200/trunk 3\nPUSH 200001021200/trunk                                 cost = 4\nPULL 200001071200/feature 3\n   1: 200001061200/trunk\n   2: 200001051200/feature\n   3: 200001071200/feature\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "test-ancestor-path",
+        "-R",
+        "repo.fossil",
+        "710988f59ed07490b35ca629cf2e7117428c2f98",
+        "5f95cd7439863c01c72b633f95ced63d51d1900a"
+      ],
+      "returncode": 0,
+      "stdout": "   1:     4 5f95cd743986 2000-01-05 12:00:00 VERSION2\n   2:     2 805ee08ea860 2000-01-03 12:00:00 PIVOT\n   3:     3 710988f59ed0 2000-01-04 12:00:00 VERSION1\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "test-ancestor-path",
+        "-R",
+        "repo.fossil",
+        "730a9812845738a88874b8a949f33c41a8163443",
+        "76c8b89e87dbde295b98da61a582180f5d2464ac"
+      ],
+      "returncode": 0,
+      "stdout": "   1:     6 76c8b89e87db 2000-01-07 12:00:00 VERSION2\n   2:     4 5f95cd743986 2000-01-05 12:00:00 PIVOT\n   3:     5 730a98128457 2000-01-06 12:00:00 VERSION1\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "test-ancestor-path",
+        "-R",
+        "repo.fossil",
+        "710988f59ed07490b35ca629cf2e7117428c2f98",
+        "09d1d4dff298fc0db292bbd895016cb90cd1cca9"
+      ],
+      "returncode": 0,
+      "stdout": "   1:     8 09d1d4dff298 2000-01-09 12:00:00 VERSION2\n   2:     7 00c0a8ebf11b 2000-01-08 12:00:00\n   3:     1 b12a06870008 2000-01-02 12:00:00 PIVOT\n   4:     2 805ee08ea860 2000-01-03 12:00:00\n   5:     3 710988f59ed0 2000-01-04 12:00:00 VERSION1\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "test-ancestor-path",
+        "-R",
+        "repo.fossil",
+        "09d1d4dff298fc0db292bbd895016cb90cd1cca9",
+        "710988f59ed07490b35ca629cf2e7117428c2f98"
+      ],
+      "returncode": 0,
+      "stdout": "   1:     3 710988f59ed0 2000-01-04 12:00:00 VERSION2\n   2:     2 805ee08ea860 2000-01-03 12:00:00\n   3:     1 b12a06870008 2000-01-02 12:00:00 PIVOT\n   4:     7 00c0a8ebf11b 2000-01-08 12:00:00\n   5:     8 09d1d4dff298 2000-01-09 12:00:00 VERSION1\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "test-ancestor-path",
+        "-R",
+        "repo.fossil",
+        "63239f30fd8dc26187f884d179b29f2c7b22d32c",
+        "730a9812845738a88874b8a949f33c41a8163443"
+      ],
+      "returncode": 0,
+      "stdout": "   1:     5 730a98128457 2000-01-06 12:00:00 VERSION2\n   2:     4 5f95cd743986 2000-01-05 12:00:00\n   3:     2 805ee08ea860 2000-01-03 12:00:00\n   4:     1 b12a06870008 2000-01-02 12:00:00 PIVOT\n   5:     7 00c0a8ebf11b 2000-01-08 12:00:00\n   6:     8 09d1d4dff298 2000-01-09 12:00:00\n   7:    12 63239f30fd8d 2000-01-13 12:00:00 VERSION1\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "test-ancestor-path",
+        "-R",
+        "repo.fossil",
+        "3d90971f50387349463b30cdd4401083c5cb8718",
+        "b12a06870008dcd490d29fc6d56042a1a43465c8"
+      ],
+      "returncode": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "test-ancestor-path",
+        "-R",
+        "repo.fossil",
+        "b12a06870008dcd490d29fc6d56042a1a43465c8",
+        "b12a06870008dcd490d29fc6d56042a1a43465c8"
+      ],
+      "returncode": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "test-ancestor-path",
+        "-R",
+        "repo.fossil",
+        "730a9812845738a88874b8a949f33c41a8163443",
+        "5f95cd7439863c01c72b633f95ced63d51d1900a"
+      ],
+      "returncode": 0,
+      "stdout": "   1:     5 730a98128457 2000-01-06 12:00:00 VERSION1\n   2:     4 5f95cd743986 2000-01-05 12:00:00 VERSION2 PIVOT\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "test-ancestor-path",
+        "-R",
+        "repo.fossil",
+        "5f95cd7439863c01c72b633f95ced63d51d1900a",
+        "730a9812845738a88874b8a949f33c41a8163443"
+      ],
+      "returncode": 0,
+      "stdout": "   1:     5 730a98128457 2000-01-06 12:00:00 VERSION2\n   2:     4 5f95cd743986 2000-01-05 12:00:00 VERSION1 PIVOT\n",
+      "stderr": ""
+    }
+  ]
+}

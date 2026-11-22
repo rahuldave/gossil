@@ -22,6 +22,7 @@ caller-supplied native identity, actor and date. All three converters operate in
 | Delta create, apply and two-way file checks | General version-control CLI |
 | Bounded glob API and `test-glob` diagnostic; focused checkpoint | Settings lookup, wildcard tracking and directory traversal |
 | Compression, hashes, token escaping, artifact checksums and [lexical filename simplification](file-path.md) | Repository traversal and changes to persisted scope choices |
+| [Shortest paths and common ancestors](history.md) over caller-supplied check-in rows | Persisted history graphs, bisect, annotation and file history |
 | Eight structural artifact types with explicit limits | General crosslinks, migration, rebuild and filesystem recovery |
 | Native initialization/open, tracking, scope/commit CLI and library; catalog1 private content | Shared recording, sync and artifact publication |
 | Explicit inherited-test runner configurations | Gest task CLI, server and user interface |
@@ -352,7 +353,8 @@ boundaries, budgets and generated SQL through the selected engine. Non-Unix
 argument conversion has source review only, with no cross-compilation or runtime
 qualification.
 
-Source metadata selects candidate 0.9.0. The focused tree
+The checkpoint's source metadata selected candidate 0.9.0, and the current
+source metadata selects 0.10.0. The focused tree
 `a5583c3c6a73dda1a75ad1dd4c168efc06655c40` used a prospective checked-commit
 prerequisite while actual parent remained `4250b873`.
 [PR 47](https://github.com/rahuldave/gossil/pull/47) supplies typed commit and

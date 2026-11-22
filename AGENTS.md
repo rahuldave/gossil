@@ -18,7 +18,8 @@ Read and follow @.agents/instructions/prose.md
 - Local guides: `docs/conformance.md`, `docs/delta-encoder.md`,
   `docs/delta-decoder.md`, `docs/blob-primitives.md`, `docs/token-codec.md`,
   `docs/local-storage.md`, `docs/native-storage.md`, `docs/artifact-parser.md`,
-  `docs/glob.md`, `docs/file-path.md` and `docs/development-plan.md`.
+  `docs/glob.md`, `docs/file-path.md`, `docs/history.md` and
+  `docs/development-plan.md`.
 - Product specification: `~/Projects/AIProjectInfra/docs/gossil/README.md` and its linked pages.
 - Workflow playbook: `.agents/skills/gtw/references/gest_codex_workflow.md`.
 
@@ -135,7 +136,8 @@ The 2026-11-21 focused checkpoint built both binaries and passed
 3 CLI tests, 9 glob integration tests, 5 filtered library units (4 glob and one
 existing global-state control), and all 20 unchanged Tcl assertions. Its graph
 comparison retained all 126 nonroot packages and edges/features with one
-0.10.0 FFI provider. Source metadata selects candidate 0.9.0.
+0.10.0 FFI provider. Its source metadata selected candidate 0.9.0; the current
+source metadata selects 0.10.0.
 
 The checkpoint
 used a prospective checked-commit prerequisite, with actual parent `4250b873`;

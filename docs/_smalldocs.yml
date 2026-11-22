@@ -46,6 +46,7 @@ website:
           - token-codec.md
           - glob.md
           - file-path.md
+          - history.md
           - artifact-parser.md
           - diff.md
           - task-ticket.md

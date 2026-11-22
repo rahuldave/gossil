@@ -1,0 +1,618 @@
+{
+  "format": 1,
+  "status": "port implemented, compiled and tested by tests/history.rs and the unit tests in src/history.rs; native diagnostics captured from the Fossil 2.29 reference binary",
+  "scope": "bounded explicit graph algorithm only; no persisted history admission API and no command",
+  "source_pin": "7e8ecf0ce4a3c05aa39de7ffe2828d23e334efe446ef2387e09f205ef00b2227",
+  "sources": [
+    {
+      "file": "src/path.c",
+      "sha256": "0ae501d3ee023b8f2ea90b8e9a06d4c2b3ab409f73b60de81610979ffaf032cc",
+      "cited": [
+        {
+          "name": "path_new_node",
+          "lines": "106-138"
+        },
+        {
+          "name": "path_reverse_path",
+          "lines": "158-166"
+        },
+        {
+          "name": "path_shortest",
+          "lines": "184-271"
+        },
+        {
+          "name": "path_midpoint",
+          "lines": "277-285"
+        },
+        {
+          "name": "path_search_depth",
+          "lines": "313-317"
+        },
+        {
+          "name": "shortest_path_test_cmd",
+          "lines": "364-390"
+        },
+        {
+          "name": "path_common_ancestor",
+          "lines": "396-447"
+        },
+        {
+          "name": "ancestor_path_test_cmd",
+          "lines": "457-483"
+        }
+      ]
+    },
+    {
+      "file": "src/pqueue.c",
+      "sha256": "a29d5f01a680b4da9e244652e044e8dd8fed22818f3324157d13efbec615f37b",
+      "cited": [
+        {
+          "name": "pqueuex_rebalance",
+          "lines": "99-109"
+        },
+        {
+          "name": "pqueuex_pop",
+          "lines": "131-146"
+        },
+        {
+          "name": "pqueuex_extract_ptr",
+          "lines": "162-170"
+        },
+        {
+          "name": "pqueuex_test_cmd",
+          "lines": "198-232"
+        }
+      ]
+    },
+    {
+      "file": "src/branch.c",
+      "sha256": "240517c2efc74e69cef85332e203df57915eede66cc2c08b3adc4d8da23b7cb7",
+      "cited": [
+        {
+          "name": "branch_of_rid",
+          "lines": "57-73"
+        }
+      ]
+    },
+    {
+      "file": "src/descendants.c",
+      "sha256": "29657f8cb0627767627afaf2cbf9e74be9764cc49555090f9e847ade1ad2470c",
+      "cited": [
+        {
+          "name": "mtime_of_rid",
+          "lines": "166-175"
+        }
+      ]
+    },
+    {
+      "file": "src/schema.c",
+      "sha256": "93aa43f5cb0d07036fa7a1a0f0cd2e55b1d795ee1b71c8f6567440771cddaa5a",
+      "cited": [
+        {
+          "name": "plink table and plink_i2 index",
+          "lines": "284-292"
+        },
+        {
+          "name": "cherrypick table and cherrypick_cid index",
+          "lines": "478-484"
+        }
+      ]
+    }
+  ],
+  "module_inventory": {
+    "path_c_functions": {
+      "path_first": "Path.steps.first(); Ancestor.steps.first()",
+      "path_last": "Path.steps.last(); Ancestor.steps.last()",
+      "path_length": "not exposed: native nStep is never assigned in path.c; no corrected semantics silently substituted",
+      "path_length_not_hidden": "Path::visible_steps",
+      "path_rid_desc": "not ported: SQL/display dependency; raw native diagnostics retained in native.json",
+      "path_new_node": "Search::add; checked arena allocation and nonfinite-cost rejection are new controls",
+      "path_reset": "RAII search-local ownership; no shared globals",
+      "path_reverse_path": "Search::path",
+      "path_shortest": "Graph::shortest",
+      "path_midpoint": "Path::midpoint",
+      "path_next": "Path.steps.get(1)",
+      "path_branch": "Checkin.branch supplied resolved by caller; no database branch resolution",
+      "path_search_depth": "Path::search_depth",
+      "path_shortest_stored_in_ancestor_table": "not ported: SQL temporary-table mutation and annotation/finfo integration",
+      "shortest_path_test_cmd": "captured native diagnostics mapped to algorithm paths; CLI parsing/formatting/name resolution not ported",
+      "path_common_ancestor": "Graph::common_ancestor; equal-endpoint owned path replaces native early-return stale global path",
+      "ancestor_path_test_cmd": "captured native paths/pivots mapped; rendering/name resolution not ported",
+      "find_filename_changes": "not ported: mlink/filename database mechanism",
+      "test_name_change": "not ported",
+      "test_rename_list_page": "not ported: web/login/rendering/SQL dependencies"
+    },
+    "queue_functions": {
+      "pqueuex_rebalance": "Search::add strict parent comparison",
+      "pqueuex_pop": "Search::pop equal-priority swap and left tie preference",
+      "pqueuex_insert_ptr": "Search::add",
+      "pqueuex_extract_ptr": "Search::pop",
+      "allocation_and_clear": "bounded Vec checked growth and RAII"
+    }
+  },
+  "contracts": [
+    "Positive unique known checkin IDs; caller supplies resolved branch_of_rid and mtime_of_rid defaults. Branch bytes reject NUL, times must be finite.",
+    "Input parent rows preserve relative per-node SQL query order; forward rows precede backward rows. Native schema indexes order children by cid and parents by pid in captured query_rows. No canonical ordering is invented.",
+    "Shortest uses pending duplicate nodes and pop-time seen, does not turn backwards after a forward edge, and allows first-hop non-excluded cherrypicks only in direction2.",
+    "Branch cost0 counts nodes including start at cost1. Positive branch cost starts at0, adds absolute Julian-day distance plus branch-change penalty.",
+    "Hidden nodes remain traversable and cost-bearing; initial node never marked hidden. Midpoint and depth use visible steps excluding start.",
+    "Common ancestor uses two sides, first shared parent discovered by native queue order, newest matching arena record and predecessor rewiring. Orientation follows native diagnostics, not caller order.",
+    "New owned equal-endpoint ancestor returns one node; raw native diagnostic is empty because native does not initialize global path for this early return.",
+    "Budget errors distinguish no-path from resource exhaustion; graph constructor does not assert that rows are artifact-validated, authorized, or acyclic. Native seen rules terminate cyclic rows within budgets.",
+    "All graph/search-owned dynamic storage uses checked Vec reservations retaining TryReserveError as Error::Allocation and Error::source. The RID lookup is a sorted (rid,index) vector with in-place unstable sort and logarithmic binary search; only this lookup index is sorted. Native adjacency order and heap tie comparisons remain unchanged.",
+    "Finite work includes O(V log V + E log V + B) graph indexing/metadata validation, O(V) per-search membership initialization, O(log V) endpoint/hidden lookup, O(S log S + R + S) search/heap/path work with at most V checkins, E input links, B branch bytes, S search records and R row visits. Weighted branch byte comparisons add at most O(S * B) work. Bounds constrain these dimensions; row_visits is not advertised as a total CPU-instruction budget."
+  ],
+  "call_site_scope": "entry_point_call_sites holds every line of src/*.c that names path_shortest, path_common_ancestor or path_shortest_stored_in_ancestor_table, including the definitions in src/path.c. other_call_sites holds every line outside src/path.c that names another function of path.c.",
+  "entry_point_call_sites": [
+    {
+      "file": "src/bisect.c",
+      "line": 45,
+      "text": "path_shortest(bisect.good, bisect.good, 0, 0, 0, 0);"
+    },
+    {
+      "file": "src/bisect.c",
+      "line": 47,
+      "text": "path_shortest(bisect.bad, bisect.bad, 0, 0, 0, 0);"
+    },
+    {
+      "file": "src/bisect.c",
+      "line": 63,
+      "text": "p = path_shortest(bisect.good, bisect.bad, bDirect, 0, &skip, 0);"
+    },
+    {
+      "file": "src/bisect.c",
+      "line": 318,
+      "text": "p = path_shortest(lastGood, lastBad, bisect_option(\"direct-only\"),0, 0, 0);"
+    },
+    {
+      "file": "src/diff.c",
+      "line": 3639,
+      "text": "path_shortest_stored_in_ancestor_table(origid, cid);"
+    },
+    {
+      "file": "src/finfo.c",
+      "line": 427,
+      "text": "path_shortest_stored_in_ancestor_table(ridFrom,ridTo);"
+    },
+    {
+      "file": "src/path.c",
+      "line": 184,
+      "text": "PathNode *path_shortest("
+    },
+    {
+      "file": "src/path.c",
+      "line": 324,
+      "text": "void path_shortest_stored_in_ancestor_table("
+    },
+    {
+      "file": "src/path.c",
+      "line": 331,
+      "text": "pPath = path_shortest(cid, origid, 1, 0, 0, 0);"
+    },
+    {
+      "file": "src/path.c",
+      "line": 381,
+      "text": "p = path_shortest(iFrom, iTo, directOnly, oneWay, 0,"
+    },
+    {
+      "file": "src/path.c",
+      "line": 396,
+      "text": "int path_common_ancestor(int iMe, int iYou){"
+    },
+    {
+      "file": "src/path.c",
+      "line": 468,
+      "text": "iPivot = path_common_ancestor(iFrom, iTo);"
+    },
+    {
+      "file": "src/path.c",
+      "line": 538,
+      "text": "p = path_shortest(iFrom, iTo, 1, revOK==0, 0, 0);"
+    },
+    {
+      "file": "src/timeline.c",
+      "line": 2370,
+      "text": "p = path_shortest(from_rid, to_rid, 0, 0, 0, cost);"
+    },
+    {
+      "file": "src/timeline.c",
+      "line": 2372,
+      "text": "p = path_shortest(from_rid, to_rid, 0, 2, 0, cost);"
+    },
+    {
+      "file": "src/timeline.c",
+      "line": 2376,
+      "text": "p = path_shortest(to_rid, from_rid, 0, 1, 0, cost);"
+    },
+    {
+      "file": "src/timeline.c",
+      "line": 2383,
+      "text": "commonAncs = path_common_ancestor(me_rid, you_rid);"
+    }
+  ],
+  "other_call_sites": [
+    {
+      "file": "src/bisect.c",
+      "line": 134,
+      "functions": [
+        "path_length"
+      ],
+      "text": "nStep = path_length();"
+    },
+    {
+      "file": "src/bisect.c",
+      "line": 136,
+      "functions": [
+        "path_last"
+      ],
+      "text": "for(p=path_last(); p; p=p->pFrom) p->isHidden = 1;"
+    },
+    {
+      "file": "src/bisect.c",
+      "line": 137,
+      "functions": [
+        "path_last"
+      ],
+      "text": "for(p=path_last(), n=0; p; p=p->pFrom, n++){"
+    },
+    {
+      "file": "src/bisect.c",
+      "line": 147,
+      "functions": [
+        "path_last"
+      ],
+      "text": "for(p=path_last(); p; p=p->pFrom){"
+    },
+    {
+      "file": "src/bisect.c",
+      "line": 151,
+      "functions": [
+        "path_last"
+      ],
+      "text": "for(p=path_last(), n=0; p; p=p->pFrom, n++){"
+    },
+    {
+      "file": "src/bisect.c",
+      "line": 323,
+      "functions": [
+        "path_reset"
+      ],
+      "text": "path_reset();"
+    },
+    {
+      "file": "src/bisect.c",
+      "line": 694,
+      "functions": [
+        "path_next"
+      ],
+      "text": "pMid = path_next();"
+    },
+    {
+      "file": "src/bisect.c",
+      "line": 697,
+      "functions": [
+        "path_midpoint"
+      ],
+      "text": "pMid = path_midpoint();"
+    },
+    {
+      "file": "src/bisect.c",
+      "line": 703,
+      "functions": [
+        "path_length_not_hidden"
+      ],
+      "text": "int nSpan = path_length_not_hidden();"
+    },
+    {
+      "file": "src/bisect.c",
+      "line": 704,
+      "functions": [
+        "path_search_depth"
+      ],
+      "text": "int nStep = path_search_depth();"
+    },
+    {
+      "file": "src/merge.c",
+      "line": 705,
+      "functions": [
+        "find_filename_changes"
+      ],
+      "text": "find_filename_changes(nid, vid, revOK, &nChng, &aChng, zDebug);"
+    },
+    {
+      "file": "src/timeline.c",
+      "line": 2385,
+      "functions": [
+        "path_first"
+      ],
+      "text": "p = path_first();"
+    },
+    {
+      "file": "src/timeline.c",
+      "line": 2411,
+      "functions": [
+        "path_branch"
+      ],
+      "text": "&& fossil_strcmp(path_branch(p->pFrom),path_branch(p))==0"
+    },
+    {
+      "file": "src/timeline.c",
+      "line": 2412,
+      "functions": [
+        "path_branch"
+      ],
+      "text": "&& fossil_strcmp(path_branch(p),path_branch(p->u.pTo))==0"
+    },
+    {
+      "file": "src/timeline.c",
+      "line": 2425,
+      "functions": [
+        "path_reset"
+      ],
+      "text": "path_reset();"
+    },
+    {
+      "file": "src/update.c",
+      "line": 300,
+      "functions": [
+        "find_filename_changes"
+      ],
+      "text": "find_filename_changes(vid, tid, 1, &nChng, &aChng, debugFlag ? \"V->T\": 0);"
+    }
+  ],
+  "inherited_test_inventory": [
+    {
+      "file": "test/amend.test",
+      "sha256": "fc68a24b7af0cd3ffa90d74ba55443f7e202fd30d534c9a57db8e2c98b602096",
+      "direct_path_diagnostic_references": []
+    },
+    {
+      "file": "test/clean.test",
+      "sha256": "48d7951ecbe2837b16c578f62095cb163af4bef9fe3aa94a36354d539e90ae49",
+      "direct_path_diagnostic_references": []
+    },
+    {
+      "file": "test/cmdline.test",
+      "sha256": "d35650eb4505221d12fcb7dd819853de121272f5a27710cdaaba8ebfcf05313e",
+      "direct_path_diagnostic_references": []
+    },
+    {
+      "file": "test/commit-warning.test",
+      "sha256": "8b27d23ac7024e455b3811afd9208f28685eca3327e05b3c161515a347c0aa58",
+      "direct_path_diagnostic_references": []
+    },
+    {
+      "file": "test/contains-selector.test",
+      "sha256": "873984f7a271ca20118af1e44acf78f2fab127478c5fb92e72b0a271cf8ceb07",
+      "direct_path_diagnostic_references": []
+    },
+    {
+      "file": "test/delta1.test",
+      "sha256": "664def402236f15d707e00aa9900ec9b7fb152aa09dfe0ec9afcf1f58f438a6b",
+      "direct_path_diagnostic_references": []
+    },
+    {
+      "file": "test/diff.test",
+      "sha256": "116a07364d28a2e1e1564569ca9d9f40c367624b5ccb80545457c4c3f01840ea",
+      "direct_path_diagnostic_references": []
+    },
+    {
+      "file": "test/file1.test",
+      "sha256": "67e87d5d4fa2cd75ec65c1b2e8b407092d8b55ee228378ed19203ba729b0debd",
+      "direct_path_diagnostic_references": []
+    },
+    {
+      "file": "test/glob.test",
+      "sha256": "b8cc987104daad63c15c18d176af0b8dd6ae7e625b7ff94f10a0ff8ec45927d3",
+      "direct_path_diagnostic_references": []
+    },
+    {
+      "file": "test/json.test",
+      "sha256": "9320b36c2baab5719d7c22bf6a1037fb27d9a97b373cb4065f14436ad167001a",
+      "direct_path_diagnostic_references": []
+    },
+    {
+      "file": "test/merge1.test",
+      "sha256": "7824d11db87bb451dbc794e99c32aaa3d761480f64308513dbf3e29556a73c2a",
+      "direct_path_diagnostic_references": []
+    },
+    {
+      "file": "test/merge2.test",
+      "sha256": "bae55912f4d8f9a1c09aa22e3398bd90a53ac286717a902b24e2112f7871e0c8",
+      "direct_path_diagnostic_references": []
+    },
+    {
+      "file": "test/merge3.test",
+      "sha256": "402986740786c3de58cd8803e3b3d6f3a4e5b7e634dcfe84a7212e26b30405ba",
+      "direct_path_diagnostic_references": []
+    },
+    {
+      "file": "test/merge4.test",
+      "sha256": "17a4ce4f7a9f0412a15dea2ed385d2b5de4151d40c4df80e998c95dd3161762a",
+      "direct_path_diagnostic_references": []
+    },
+    {
+      "file": "test/merge5.test",
+      "sha256": "7cbba9ee1cbbd1df7f01a783fe3cd92dd3b2b3ebb586fbad1c6c18ff944dcbf8",
+      "direct_path_diagnostic_references": []
+    },
+    {
+      "file": "test/merge6.test",
+      "sha256": "96cdd5d34dd5d8b9a30c3b34f281e4f4d36bb3dc56aadae9c1d455a0e0d9a121",
+      "direct_path_diagnostic_references": []
+    },
+    {
+      "file": "test/merge_exe.test",
+      "sha256": "d88d1979ddb5eb1bc826b58ee21392eeec57dc1009dbf03f65054a57c0180739",
+      "direct_path_diagnostic_references": []
+    },
+    {
+      "file": "test/merge_renames.test",
+      "sha256": "c1042cd76973a4cf36fb1b4f6833d05c223a9e637d6bc6be9db59b39c6b43622",
+      "direct_path_diagnostic_references": []
+    },
+    {
+      "file": "test/merge_renames_2.test",
+      "sha256": "b051d154b618afcf71df61aae5d16469915d3cd92ec187ba51841e02374859e5",
+      "direct_path_diagnostic_references": []
+    },
+    {
+      "file": "test/merge_warn.test",
+      "sha256": "831910563b7c7dd19954a7ce6d956ea4382acfbef2a17d8321f6b29805138611",
+      "direct_path_diagnostic_references": []
+    },
+    {
+      "file": "test/mv-rm.test",
+      "sha256": "9bebd291f3b4b2e738ee6f9a22e177e0b7ae1cbd02456deb1f1c0ab94420ab81",
+      "direct_path_diagnostic_references": []
+    },
+    {
+      "file": "test/reserved-names.test",
+      "sha256": "c87df5e34a3ef1959d5fe6e241da442aa38790ecb5e1f430bf58d3f4db595f10",
+      "direct_path_diagnostic_references": []
+    },
+    {
+      "file": "test/revert.test",
+      "sha256": "561fc789b891a7cf18631a9bae1ea238106b97672bf2382daf8d9d3295a070cb",
+      "direct_path_diagnostic_references": []
+    },
+    {
+      "file": "test/set-manifest.test",
+      "sha256": "aa120563c37bd76eae232d1d61294db7df5995a9364c4fa321eaf0383c7d5008",
+      "direct_path_diagnostic_references": []
+    },
+    {
+      "file": "test/settings-repo.test",
+      "sha256": "5c15c672a4d9fa5224e5feec1450a602805d21ec1fcfbe43812bb3d7acdaf6c1",
+      "direct_path_diagnostic_references": []
+    },
+    {
+      "file": "test/stash.test",
+      "sha256": "8d829250bf6de8cec6978b5799043212bb8fb3c0e049f12953b24f1d360ea30f",
+      "direct_path_diagnostic_references": []
+    },
+    {
+      "file": "test/symlinks.test",
+      "sha256": "b018f8d592b38263d7e045748867f961f5e7acdea79dacc8d1f6bfe6a6c1d354",
+      "direct_path_diagnostic_references": []
+    },
+    {
+      "file": "test/th1-docs.test",
+      "sha256": "5e8ff03dc4d2003f5ad6fd7a49db48d619b129759f219fdfad9af6ebf8ee654f",
+      "direct_path_diagnostic_references": []
+    },
+    {
+      "file": "test/th1-hooks.test",
+      "sha256": "c6915e29874c023b416a97470219a828bfbe3eb6f62578196157e419849c5936",
+      "direct_path_diagnostic_references": []
+    },
+    {
+      "file": "test/th1-repo.test",
+      "sha256": "b35be2ccde279c028e3630052703d3057d14942be8d64e190f5d07a162432056",
+      "direct_path_diagnostic_references": []
+    },
+    {
+      "file": "test/th1-taint.test",
+      "sha256": "a1d6216113ee37d92ce82c594d0cc85a3709c494e44ddf5e47d3d7b4fdab2af8",
+      "direct_path_diagnostic_references": []
+    },
+    {
+      "file": "test/th1-tcl.test",
+      "sha256": "158963935f54011ad73297dbe7d0a33014f8edfe2f35d1355a1d123fbfc5cf94",
+      "direct_path_diagnostic_references": []
+    },
+    {
+      "file": "test/th1.test",
+      "sha256": "cb02010c0b1d0a841a606aba6883117ef1b47e8d942f5af71fe2e46c0c77835f",
+      "direct_path_diagnostic_references": []
+    },
+    {
+      "file": "test/unversioned.test",
+      "sha256": "94f2cb646525fb159f6f2cfa6c28d3c27f5c7968f37d007236603c29ee48126a",
+      "direct_path_diagnostic_references": []
+    },
+    {
+      "file": "test/update.test",
+      "sha256": "934f0152ab71105d1e11b7d3f4e338614dfbec42f9fb423088a30ebcd4cedead",
+      "direct_path_diagnostic_references": []
+    },
+    {
+      "file": "test/utf.test",
+      "sha256": "5fe86f194e6905217e7818c67441daa188ece3536a2fcc4f9124361e4f13cb09",
+      "direct_path_diagnostic_references": []
+    },
+    {
+      "file": "test/wiki.test",
+      "sha256": "1d5bd6325d28e4f35aa3b36be0fb9b42a63bac5e75003a7a0252a068aaed5b05",
+      "direct_path_diagnostic_references": []
+    }
+  ],
+  "inherited_assertions": {
+    "direct_diagnostic_references": 0,
+    "status": "No direct shortest/ancestor diagnostic references found in complete pinned *.test scan. No inherited Tcl assertions rewritten or executed. Caller suites bisect/merge/annotation/finfo/timeline remain unqualified."
+  },
+  "native_experiment": {
+    "status": "executed isolated native diagnostic capture; recaptured with the same binary, identical except the random project-id, server-id and password of the scratch repository",
+    "cases": 25,
+    "fixture": "tests/fixtures/history/native.json",
+    "generator": "tests/fixtures/history/capture-native.py",
+    "native_version": "This is fossil version 2.29 [7e8ecf0ce4] 2026-11-16 11:41:54 UTC",
+    "binary_sha256": "75550c754e94a4b7fa0269f40ce8e4918daf67e05ba12b236ed735d424c8e16c",
+    "scope": "Synthetic native blob/event/tagxref/plink/cherrypick fixture; no artifact crosslinking or Gossil repository admission claim",
+    "path_mapping": "tests/history.rs:captured_native_diagnostics_preserve_paths_and_pivots",
+    "native_commands": "all argv, return codes, stdout and stderr retained in native.json; fixture temporary cwd/HOME removed",
+    "direction_two": "test-shortest-path has no option for oneWayOnly=2, so Direction::ForwardWithCherrypicks has no native capture; tests/history.rs:first_hop_cherrypicks_only_and_exclusions checks it against path.c lines 226-240"
+  },
+  "new_controls": [
+    "cannot_go_backwards_after_a_forward_step",
+    "hidden_nodes_change_bisect_counts_but_remain_on_path",
+    "first_hop_cherrypicks_only_and_exclusions",
+    "branch_cost_uses_time_distance_instead_of_arc_count",
+    "bounds_reject_inputs_and_search_growth",
+    "malformed_graph_and_options_are_errors",
+    "overflowing_finite_time_difference_is_rejected",
+    "duplicate_rows_and_cycles_terminate_under_native_seen_rules",
+    "ancestor_orientation_preserves_the_discovery_side",
+    "history::tests::reservation_capacity_overflow_retains_typed_cause",
+    "history::tests::equal_cost_heap_order_matches_native_pop_and_rebalance",
+    "history::tests::cyclic_predecessor_chain_is_rejected",
+    "malformed_graph_refusal_has_public_diagnostic",
+    "fossil_source_citations",
+    "fixture_status_fields"
+  ],
+  "candidate_runs": {
+    "status": "run by just check on the committed tree",
+    "focused_command": "just test-paths tests/history.rs",
+    "private_unit_controls": "just test runs the three unit tests in src/history.rs"
+  },
+  "storage_seam": {
+    "inspected": "src/storage/repository.rs LocalOwnerRepository, SharedView and check_admission; src/storage.rs private arbitrary SQL",
+    "decision": "No useful general history libsql adapter is currently authorized by root/private-command admission. plink derived rows cannot prove scope, provenance or completeness. Missing private membership is not shared authority.",
+    "gap": "Persisted scoped admitted history graph acquisition, libsql adapter, storage/query work budgets and transaction/admission invalidation tests remain absent."
+  },
+  "remaining_gaps": [
+    "Persisted scoped history and graph completeness validation",
+    "Caller integration: bisect, timeline, annotation, finfo and filename-change tracking",
+    "Native diagnostic CLI parser/name resolution and display formatting",
+    "Negative branch cost is outside this nonnegative bounded API",
+    "No general branches/merge/update/sync or complete Fossil history qualification"
+  ],
+  "recommendations": [
+    "Use this finite graph API for algorithm work over rows the caller supplies.",
+    "Implement any persisted adapter only after an adopted admission/scope contract supplies authoritative complete graph inputs."
+  ],
+  "native_queue_experiment": {
+    "status": "executed isolated native test-pqueue capture",
+    "fixture": "tests/fixtures/history/native-queue.json",
+    "generator": "tests/fixtures/history/capture-native-queue.py",
+    "equal_priority_pop_order": [
+      0,
+      1,
+      3,
+      4,
+      2
+    ],
+    "candidate_mapping": "src/history.rs:history::tests::equal_cost_heap_order_matches_native_pop_and_rebalance",
+    "candidate_status": "run by just test"
+  }
+}

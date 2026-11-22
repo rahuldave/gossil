@@ -82,7 +82,8 @@ supplies typed commit and cleanup causes. Strict Rust 1.100 lint stopped at that
 prerequisite's `commit_checked` large-error lint. The owner's local lint fix is
 synchronized in the source successor; this checkpoint does not qualify it.
 
-Source metadata selects candidate 0.9.0. Complete gates on the final frozen tree,
+The checkpoint's source metadata selected candidate 0.9.0. The current source
+metadata selects 0.10.0. Complete gates on the final frozen tree,
 accepted-parent checks, independent review, release and exact merged installation
 proof remain separate from the focused results.
 
