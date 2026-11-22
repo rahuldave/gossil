@@ -109,6 +109,10 @@ just doctests
 just docstring-check
 just docs-check
 just docs-build</code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><code>just docs-check</code> checks the site and the API pages. It then runs
+<code>just rustdoc-check</code>, which builds the rustdoc with private items and fails on
+each warning. So the check fails on a broken intra-doc link, which is a link in
+a doc comment that rustdoc cannot resolve to an item.</p>
 <p><code>just test</code> first runs nine focused Python installer controls, then runs the Rust
 unit tests through the installed coverage workflow. <code>just integration</code> uses that
 Rust coverage workflow. Its reports do not measure Python installer coverage.
@@ -206,6 +210,11 @@ to the checkout-free native initializer. It accepts administrator, date and SHA1
 options and uses SQLite randomness in a private memory database. Login fallback
 uses environment values without a preference database. Existing delta diagnostics
 retain their dispatcher and argument contracts.</p>
+<p>Before dispatch, the product entry answers help requests with the text of the
+private <code>product::help</code> module, and rejects unknown groups and commands with
+status 2. The
+<a href="cli.html#get-help">help section</a> gives the forms, and <code>tests/cli_help.rs</code> holds
+the CLI controls.</p>
 <p>The focused CLI controls are in <code>tests/vcs_init_cli.rs</code>; parser, environment,
 password and receipt controls are in the private <code>vcs_init</code> module. Source edits
 and authored tests do not establish a passing qualification run. Versioned
@@ -344,7 +353,7 @@ argument conversion has source review only, with no cross-compilation or runtime
 qualification.</p>
 <p>At the checkpoint, <code>Cargo.toml</code> set the version of the Gossil crate to 0.9.0,
 which was later released as <code>v0.9.0</code>. The current version of the crate is
-0.11.0. The <code>libsql-ffi</code> provider is at 0.10.0, and its version is separate
+0.12.0. The <code>libsql-ffi</code> provider is at 0.10.0, and its version is separate
 from the version of the crate.</p>
 <p>The focused tree
 <code>a5583c3c6a73dda1a75ad1dd4c168efc06655c40</code> used a prospective checked-commit

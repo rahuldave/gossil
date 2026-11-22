@@ -2,18 +2,20 @@
 quote retains delimiters until the same closing quote; an unmatched quote
 consumes the remaining prefix. There is no quote escape syntax. Every input
 ends at its first NUL. Matching returns the first one-based index, or zero.</p>
-<p><a href="glob.html#glob_expr"><code>glob_expr</code></a> retains a distinct extra byte advance after a closing quote.
-Its value argument is trusted SQL; bind untrusted candidate values separately.
+<p><a href="glob.html#glob_expr"><code>glob_expr</code></a> retains a distinct extra byte advance
+after a closing quote.
+Its value argument is trusted SQL. Bind untrusted candidate values separately.
 These functions perform no traversal, settings lookup or tracking mutation.</p>
 <section id="recommendations" class="level3">
 <h3 class="anchored" data-anchor-id="recommendations">Recommendations</h3>
-<p>Use <a href="glob.html#glob_create"><code>glob_create</code></a> for repeated matching and <a href="glob.html#glob_multi_match"><code>glob_multi_match</code></a> for one scan.
+<p>Use <a href="glob.html#glob_create"><code>glob_create</code></a> for repeated matching and
+<a href="glob.html#glob_multi_match"><code>glob_multi_match</code></a> for one scan.
 Next, set explicit byte/count budgets and bind candidate values separately
 when executing SQL from <a href="glob.html#glob_expr"><code>glob_expr</code></a>.</p>
 </section>
 <section id="Limits" class="level2">
 <h2 class="anchored" data-anchor-id="Limits">struct Limits</h2>
-<p><a href="https://github.com/rahuldave/gossil/blob/main/src/glob.rs#L26" class="source-link">source</a></p>
+<p><a href="https://github.com/rahuldave/gossil/blob/main/src/glob.rs#L28" class="source-link">source</a></p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span class="kw">pub</span> <span class="kw">struct</span> Limits</code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Supply finite byte/count budgets; input byte lengths stop before the first NUL.
 Prefix detection itself scans the original slice until NUL or its end.
@@ -55,7 +57,7 @@ These budgets do not impose a separate CPU-time or stack limit.</p>
 </section>
 <section id="GlobError" class="level2">
 <h2 class="anchored" data-anchor-id="GlobError">enum GlobError</h2>
-<p><a href="https://github.com/rahuldave/gossil/blob/main/src/glob.rs#L38" class="source-link">source</a></p>
+<p><a href="https://github.com/rahuldave/gossil/blob/main/src/glob.rs#L40" class="source-link">source</a></p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span class="kw">pub</span> <span class="kw">enum</span> GlobError</code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Reports a rejected budget or preserved allocation failure.</p>
 <div class="sd-table">
@@ -86,13 +88,13 @@ These budgets do not impose a separate CPU-time or stack limit.</p>
 </section>
 <section id="Glob" class="level2">
 <h2 class="anchored" data-anchor-id="Glob">struct Glob</h2>
-<p><a href="https://github.com/rahuldave/gossil/blob/main/src/glob.rs#L69" class="source-link">source</a></p>
+<p><a href="https://github.com/rahuldave/gossil/blob/main/src/glob.rs#L71" class="source-link">source</a></p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span class="kw">pub</span> <span class="kw">struct</span> Glob</code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Patterns retain a terminal NUL for <code>sqlite3_strglob</code>.</p>
 <p>Implements <a href="https://doc.rust-lang.org/nightly/core/fmt/trait.Debug.html"><code>Debug</code></a>.</p>
 <section id="Glob.patterns" class="level3">
 <h3 class="anchored" data-anchor-id="Glob.patterns">Glob::patterns</h3>
-<p><a href="https://github.com/rahuldave/gossil/blob/main/src/glob.rs#L194" class="source-link">source</a></p>
+<p><a href="https://github.com/rahuldave/gossil/blob/main/src/glob.rs#L196" class="source-link">source</a></p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span class="kw">pub</span> <span class="kw">fn</span> <span class="fu">patterns</span>(<span class="op">&amp;</span><span class="va">self</span>) -&gt; impl <span class="bu">ExactSizeIterator</span><span class="op">&lt;</span>Item <span class="op">=</span> <span class="op">&amp;</span>[<span class="dt">u8</span>]<span class="op">&gt;</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Returns parsed patterns without their native terminators.</p>
 <div class="sd-table">
@@ -116,7 +118,7 @@ These budgets do not impose a separate CPU-time or stack limit.</p>
 </section>
 <section id="Glob.glob_match" class="level3">
 <h3 class="anchored" data-anchor-id="Glob.glob_match">Glob::glob_match</h3>
-<p><a href="https://github.com/rahuldave/gossil/blob/main/src/glob.rs#L220" class="source-link">source</a></p>
+<p><a href="https://github.com/rahuldave/gossil/blob/main/src/glob.rs#L222" class="source-link">source</a></p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span class="kw">pub</span> <span class="kw">fn</span> <span class="fu">glob_match</span>(<span class="op">&amp;</span><span class="va">self</span>, candidate: <span class="kw">&amp;</span>[<span class="dt">u8</span>]) -&gt; <span class="bu">Result</span><span class="op">&lt;</span><span class="dt">usize</span>, GlobError<span class="op">&gt;</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Return the first matching one-based pattern index, or zero.</p>
 <p>The candidate ends at its first NUL. Matching uses the selected SQLite
@@ -164,7 +166,7 @@ budget, <a href="glob.html#GlobError"><code>GlobError::Overflow</code></a> for t
 </section>
 <section id="glob_create" class="level2">
 <h2 class="anchored" data-anchor-id="glob_create">fn glob_create</h2>
-<p><a href="https://github.com/rahuldave/gossil/blob/main/src/glob.rs#L153" class="source-link">source</a></p>
+<p><a href="https://github.com/rahuldave/gossil/blob/main/src/glob.rs#L155" class="source-link">source</a></p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span class="kw">pub</span> <span class="kw">fn</span> <span class="fu">glob_create</span>(list: <span class="bu">Option</span><span class="op">&lt;</span><span class="op">&amp;</span>[<span class="dt">u8</span>]<span class="op">&gt;</span>, limits: Limits) -&gt; <span class="bu">Result</span><span class="op">&lt;</span>Glob, GlobError<span class="op">&gt;</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Parse a reusable Fossil pattern list; absent or delimiter-only lists match nothing.</p>
 <p>Only an initial quote opens a quoted term. Commas and ASCII whitespace delimit
@@ -216,7 +218,7 @@ budgets, <a href="glob.html#GlobError"><code>GlobError::Overflow</code></a> for 
 </section>
 <section id="glob_multi_match" class="level2">
 <h2 class="anchored" data-anchor-id="glob_multi_match">fn glob_multi_match</h2>
-<p><a href="https://github.com/rahuldave/gossil/blob/main/src/glob.rs#L261" class="source-link">source</a></p>
+<p><a href="https://github.com/rahuldave/gossil/blob/main/src/glob.rs#L263" class="source-link">source</a></p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span class="kw">pub</span> <span class="kw">fn</span> <span class="fu">glob_multi_match</span>(
     list: <span class="bu">Option</span><span class="op">&lt;</span><span class="op">&amp;</span>[<span class="dt">u8</span>]<span class="op">&gt;</span>,
     candidate: <span class="kw">&amp;</span>[<span class="dt">u8</span>],
@@ -277,7 +279,7 @@ capacity arithmetic, or <a href="glob.html#GlobError"><code>GlobError::Allocatio
 </section>
 <section id="glob_expr" class="level2">
 <h2 class="anchored" data-anchor-id="glob_expr">fn glob_expr</h2>
-<p><a href="https://github.com/rahuldave/gossil/blob/main/src/glob.rs#L354" class="source-link">source</a></p>
+<p><a href="https://github.com/rahuldave/gossil/blob/main/src/glob.rs#L356" class="source-link">source</a></p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb11"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span class="kw">pub</span> <span class="kw">fn</span> <span class="fu">glob_expr</span>(value: <span class="kw">&amp;</span>[<span class="dt">u8</span>], list: <span class="bu">Option</span><span class="op">&lt;</span><span class="op">&amp;</span>[<span class="dt">u8</span>]<span class="op">&gt;</span>, limits: Limits) -&gt; <span class="bu">Result</span><span class="op">&lt;</span><span class="bu">Vec</span><span class="op">&lt;</span><span class="dt">u8</span><span class="op">&gt;</span>, GlobError<span class="op">&gt;</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Build a SQL expression from trusted SQL and Fossil patterns, with native quote advancement.
 The caller MUST supply a trusted SQL value expression. Only pattern apostrophes

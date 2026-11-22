@@ -73,7 +73,9 @@ Issue commands, shared recording and sync remain planned.</p>
 <p>A diagnostic exits with status 1 and writes an error to stderr when it fails.
 Check the input paths and argument order first. If applying a delta fails,
 check that you kept the correct origin and an intact delta. The
-<a href="cli.html#exit-status-and-errors">CLI reference</a> lists the exact messages.</p>
+<a href="cli.html#exit-status-and-errors">CLI reference</a> lists the exact messages.
+An unknown command exits with status 2. Run <code>just gossil --help</code> to list
+the commands, or add <code>--help</code> after a command to print its usage.</p>
 <p>Successful create and apply operations replace an existing output file.
 Use a fresh output path until you have checked the result. Validation failures
 preserve the output, but a write failure can leave it truncated.</p>
