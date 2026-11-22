@@ -303,7 +303,7 @@ impl<'a> Graph<'a> {
     }
     /// Resolve a supplied record identifier.
     /// # Errors
-    /// Returns invalid graph for an unknown identifier.
+    /// Returns `Error::InvalidGraph` for an unknown identifier.
     /// # Arguments
     /// * `rid` - Positive native record identifier to resolve in the admitted graph.
     /// # Returns

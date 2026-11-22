@@ -1,0 +1,226 @@
+{
+  "model": "iteration",
+  "classification": "source behavior and adopted owned-value controls, not exact inherited API ports",
+  "source_pin": "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8",
+  "governing_addendum_sha256": "afddd1c2f5e905f72126209605737cc80e63791870d3ce8bd59f26c9589d8454",
+  "exact_inherited_tests_ported": 0,
+  "source": "src/store/model/iteration.rs",
+  "source_sha256": "d03df134c4ecd4ca42577f624f8e5fdf8579886bef5f5a6086c5bb0057f2624b",
+  "production": "src/gest_iteration_values.rs",
+  "fields": [
+    {
+      "name": "id",
+      "sql": "TEXT PRIMARY KEY",
+      "nullable": false,
+      "canonical_field": "gest_id",
+      "sqlite_decl_allows_null": true,
+      "owned_value_rule": "full 32-character [k-z] ID",
+      "control_file": "tests/gest_iteration_values.rs",
+      "controls": [
+        "complete_fields_round_trip_and_output_is_owned",
+        "required_string_type_matrix",
+        "full_identifier_domain"
+      ]
+    },
+    {
+      "name": "project_id",
+      "sql": "TEXT NOT NULL REFERENCES projects(id)",
+      "nullable": false,
+      "canonical_field": "project_id",
+      "sqlite_decl_allows_null": false,
+      "owned_value_rule": "full 32-character [k-z] ID",
+      "control_file": "tests/gest_iteration_values.rs",
+      "controls": [
+        "complete_fields_round_trip_and_output_is_owned",
+        "required_string_type_matrix",
+        "full_identifier_domain"
+      ]
+    },
+    {
+      "name": "title",
+      "sql": "TEXT NOT NULL",
+      "nullable": false,
+      "canonical_field": "title",
+      "sqlite_decl_allows_null": false,
+      "owned_value_rule": "exact string, no content restriction",
+      "control_file": "tests/gest_iteration_values.rs",
+      "controls": [
+        "complete_fields_round_trip_and_output_is_owned",
+        "required_string_type_matrix"
+      ]
+    },
+    {
+      "name": "status",
+      "sql": "TEXT NOT NULL DEFAULT 'active'",
+      "nullable": false,
+      "canonical_field": "status",
+      "sqlite_decl_allows_null": false,
+      "owned_value_rule": "source behavior: IterationStatus::FromStr case-insensitive active/cancelled/completed and Display output; adopted from the Gest contract (gest.md, Typed model invariants), not from upstream source: terminal/completed_at row consistency",
+      "control_file": "tests/gest_iteration_values.rs",
+      "controls": [
+        "complete_fields_round_trip_and_output_is_owned",
+        "required_string_type_matrix",
+        "source_behavior_status_spellings",
+        "adopted_terminal_timestamp_pairing"
+      ]
+    },
+    {
+      "name": "description",
+      "sql": "TEXT NOT NULL DEFAULT ''",
+      "nullable": false,
+      "canonical_field": "description",
+      "sqlite_decl_allows_null": false,
+      "owned_value_rule": "exact string, no content restriction",
+      "control_file": "tests/gest_iteration_values.rs",
+      "controls": [
+        "complete_fields_round_trip_and_output_is_owned",
+        "required_string_type_matrix"
+      ]
+    },
+    {
+      "name": "metadata",
+      "sql": "TEXT NOT NULL DEFAULT '{}'",
+      "nullable": false,
+      "canonical_field": "metadata",
+      "sqlite_decl_allows_null": false,
+      "owned_value_rule": "every serde_json::Value unchanged",
+      "control_file": "tests/gest_iteration_values.rs",
+      "controls": [
+        "complete_fields_round_trip_and_output_is_owned",
+        "arbitrary_metadata_and_empty_strings_survive"
+      ]
+    },
+    {
+      "name": "completed_at",
+      "sql": "TEXT",
+      "nullable": true,
+      "canonical_field": "completed_at",
+      "sqlite_decl_allows_null": true,
+      "owned_value_rule": "null or source chrono 0.4.44 RFC3339 -> UTC; canonical output reparse and <=9 fractional digits, no ordering",
+      "control_file": "tests/gest_iteration_values.rs",
+      "controls": [
+        "complete_fields_round_trip_and_output_is_owned",
+        "business_timestamp_matrix_for_every_timestamp_field",
+        "typed_chrono_causes_and_safe_display",
+        "timestamps_need_not_be_chronologically_ordered",
+        "adopted_terminal_timestamp_pairing"
+      ]
+    },
+    {
+      "name": "created_at",
+      "sql": "TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))",
+      "nullable": false,
+      "canonical_field": "created_at",
+      "sqlite_decl_allows_null": false,
+      "owned_value_rule": "source chrono 0.4.44 RFC3339 -> UTC; canonical output reparse and <=9 fractional digits, no ordering",
+      "control_file": "tests/gest_iteration_values.rs",
+      "controls": [
+        "complete_fields_round_trip_and_output_is_owned",
+        "business_timestamp_matrix_for_every_timestamp_field",
+        "typed_chrono_causes_and_safe_display",
+        "timestamps_need_not_be_chronologically_ordered"
+      ]
+    },
+    {
+      "name": "updated_at",
+      "sql": "TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))",
+      "nullable": false,
+      "canonical_field": "updated_at",
+      "sqlite_decl_allows_null": false,
+      "owned_value_rule": "source chrono 0.4.44 RFC3339 -> UTC; canonical output reparse and <=9 fractional digits, no ordering",
+      "control_file": "tests/gest_iteration_values.rs",
+      "controls": [
+        "complete_fields_round_trip_and_output_is_owned",
+        "business_timestamp_matrix_for_every_timestamp_field",
+        "typed_chrono_causes_and_safe_display",
+        "timestamps_need_not_be_chronologically_ordered"
+      ]
+    }
+  ],
+  "source_field_count": 9,
+  "test_functions": [
+    "complete_fields_round_trip_and_output_is_owned",
+    "arbitrary_metadata_and_empty_strings_survive",
+    "required_string_type_matrix",
+    "full_identifier_domain",
+    "business_timestamp_matrix_for_every_timestamp_field",
+    "typed_chrono_causes_and_safe_display",
+    "source_behavior_status_spellings",
+    "adopted_terminal_timestamp_pairing",
+    "timestamps_need_not_be_chronologically_ordered"
+  ],
+  "later_exact_api_obligations": [
+    {
+      "test_id": "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/model/primitives/iteration_status.rs:67:it_formats_active",
+      "fixture_sha256": "26d00b4f5b5043fc31ed47de62b90d1acd9517612ef8c07fe9f6b1fec52e6cbc",
+      "assertion_ids": [
+        "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/model/primitives/iteration_status.rs:69:assert_eq"
+      ],
+      "subject": "enum Display",
+      "classification": "later exact API/domain-primitive obligation",
+      "exact_port_in_minimal_owned_seam": false,
+      "adopted_replacement": false,
+      "reason": "Canonical string field output is related but does not invoke Primitive variant Display. Preserve at later enum/API seam; string output assertions now are new source-behavior controls."
+    },
+    {
+      "test_id": "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/model/primitives/iteration_status.rs:72:it_formats_cancelled",
+      "fixture_sha256": "517598c6533734929e1899792e670bf8f9d2cf13f4a538c52371bb59cfd210f1",
+      "assertion_ids": [
+        "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/model/primitives/iteration_status.rs:74:assert_eq"
+      ],
+      "subject": "enum Display",
+      "classification": "later exact API/domain-primitive obligation",
+      "exact_port_in_minimal_owned_seam": false,
+      "adopted_replacement": false,
+      "reason": "Canonical string field output is related but does not invoke Primitive variant Display. Preserve at later enum/API seam; string output assertions now are new source-behavior controls."
+    },
+    {
+      "test_id": "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/model/primitives/iteration_status.rs:77:it_formats_completed",
+      "fixture_sha256": "c60b5e8ceb8a3513006da7f778e8ac68865a2f07d73d5c4b990c48a6b6ee9298",
+      "assertion_ids": [
+        "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/model/primitives/iteration_status.rs:79:assert_eq"
+      ],
+      "subject": "enum Display",
+      "classification": "later exact API/domain-primitive obligation",
+      "exact_port_in_minimal_owned_seam": false,
+      "adopted_replacement": false,
+      "reason": "Canonical string field output is related but does not invoke Primitive variant Display. Preserve at later enum/API seam; string output assertions now are new source-behavior controls."
+    },
+    {
+      "test_id": "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/model/primitives/iteration_status.rs:86:it_returns_false_for_active",
+      "fixture_sha256": "306ec4f6a040376c9f49f9a6879b6ad03b7b6e522258e219744b45ed660764f7",
+      "assertion_ids": [
+        "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/model/primitives/iteration_status.rs:88:assert"
+      ],
+      "subject": "terminal predicate",
+      "classification": "later exact API/domain-primitive obligation",
+      "exact_port_in_minimal_owned_seam": false,
+      "adopted_replacement": false,
+      "reason": "Owned converter checks status/completed_at consistency; a free row check is not this enum method assertion. Preserve method fixture at later API/domain primitive seam; add separately labeled Gossil row-pair controls now."
+    },
+    {
+      "test_id": "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/model/primitives/iteration_status.rs:91:it_returns_true_for_cancelled",
+      "fixture_sha256": "91c6e78e7545dcdddf3a0e9b99a7024b60c8f3d834fa10be82c4ca1b1d11a1ae",
+      "assertion_ids": [
+        "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/model/primitives/iteration_status.rs:93:assert"
+      ],
+      "subject": "terminal predicate",
+      "classification": "later exact API/domain-primitive obligation",
+      "exact_port_in_minimal_owned_seam": false,
+      "adopted_replacement": false,
+      "reason": "Owned converter checks status/completed_at consistency; a free row check is not this enum method assertion. Preserve method fixture at later API/domain primitive seam; add separately labeled Gossil row-pair controls now."
+    },
+    {
+      "test_id": "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/model/primitives/iteration_status.rs:96:it_returns_true_for_completed",
+      "fixture_sha256": "6d4818be932a2ae71d9435750116554ba5efca9fbfadc6f52c0cd3505d33932e",
+      "assertion_ids": [
+        "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/model/primitives/iteration_status.rs:98:assert"
+      ],
+      "subject": "terminal predicate",
+      "classification": "later exact API/domain-primitive obligation",
+      "exact_port_in_minimal_owned_seam": false,
+      "adopted_replacement": false,
+      "reason": "Owned converter checks status/completed_at consistency; a free row check is not this enum method assertion. Preserve method fixture at later API/domain primitive seam; add separately labeled Gossil row-pair controls now."
+    }
+  ]
+}

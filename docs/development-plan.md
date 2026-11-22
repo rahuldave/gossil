@@ -12,8 +12,19 @@ The generated [Rust API](api/index.qmd) describes the public library surface.
 The standalone [Gest task values converter](gest-task-values.md) validates eleven decoded fields.
 The [Gest project values converter](gest-project-values.md) validates four canonical project fields.
 The [Gest author values converter](gest-author-values.md) validates six canonical author fields.
+The [Gest artifact values converter](gest-artifact-values.md) validates eight canonical artifact fields.
+The [Gest iteration values converter](gest-iteration-values.md) validates nine canonical iteration fields.
+The [Gest tag values converter](gest-tag-values.md) validates four canonical tag fields.
+
+The [Gest note values converter](gest-note-values.md) validates seven canonical note fields.
+The [Gest relationship values converter](gest-relationship-values.md) validates eight canonical relationship fields.
+The [Gest entity tag values converter](gest-entity-tag-values.md) validates four canonical entity tag fields.
+The [Gest iteration task values converter](gest-iteration-task-values.md) validates four canonical iteration task fields.
+
+All ten converters operate in memory and leave storage integration, raw field admission and the full Gest API to future work.
+
 The [task ticket emitter](task-ticket.md) serializes validated task snapshots with
-caller-supplied native identity, actor and date. All three converters operate in memory. Storage integration, raw field admission and the full Gest API remain future work.
+caller-supplied native identity, actor and date.
 
 ## Current scope
 
@@ -182,7 +193,8 @@ It is not required to use the current CLI or library.
 
 ## Shared value validation
 
-Task, project and author conversion share private field validators. The task ticket emitter
+All ten converters of Gest values share the private field validators of
+`gest_value_validation`. The task ticket emitter
 borrows the status and UTC timestamp forms defined by `gest_task_values`.
 Changes must preserve public conversion behavior and the original parser errors
 returned through the public error accessor.
@@ -356,8 +368,8 @@ qualification.
 
 At the checkpoint, `Cargo.toml` set the version of the Gossil crate to 0.9.0,
 which was later released as `v0.9.0`. The current version of the crate is
-0.10.0. The `libsql-ffi` provider is also at 0.10.0, but its version is
-separate from the version of the crate.
+0.11.0. The `libsql-ffi` provider is at 0.10.0, and its version is separate
+from the version of the crate.
 
 The focused tree
 `a5583c3c6a73dda1a75ad1dd4c168efc06655c40` used a prospective checked-commit

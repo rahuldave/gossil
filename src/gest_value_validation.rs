@@ -59,6 +59,36 @@ pub(crate) fn identifier(value: Value, field: &'static str) -> Result<String, Va
     Ok(s)
 }
 
+/// Parse a Gest entity type as the pinned source enum does.
+///
+/// The source lowercases the whole string with Unicode rules and then matches
+/// it, so `TASK` is accepted, and surrounding whitespace is not.
+///
+/// # Arguments
+/// * `value` - Already admitted decoded entity type value.
+/// * `field` - Safe static field name for validation diagnostics.
+///
+/// # Returns
+/// The canonical lowercase spelling `artifact`, `iteration` or `task`.
+///
+/// # Errors
+/// Returns [`ValidationError`] for a non-string value or any other spelling.
+pub(crate) fn entity_type(
+    value: Value,
+    field: &'static str,
+) -> Result<&'static str, ValidationError> {
+    match string(value, field)?.to_lowercase().as_str() {
+        "artifact" => Ok("artifact"),
+        "iteration" => Ok("iteration"),
+        "task" => Ok("task"),
+        _ => Err(ValidationError {
+            field,
+            reason: "expected entity type artifact, iteration or task",
+            parse_cause: None,
+        }),
+    }
+}
+
 /// Parse a business timestamp and require UTC output that can be parsed again.
 ///
 /// # Arguments
@@ -112,6 +142,31 @@ mod tests {
         assert_eq!(
             identifier(json!("zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz"), "id").unwrap(),
             "zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz"
+        );
+    }
+
+    /// Accept the three source spellings in any case and nothing else.
+    #[test]
+    fn entity_type_follows_the_source_enum() {
+        for (input, expected) in [
+            ("artifact", "artifact"),
+            ("ITERATION", "iteration"),
+            ("Task", "task"),
+        ] {
+            assert_eq!(entity_type(json!(input), "kind").unwrap(), expected);
+        }
+        for input in ["", "project", "note", " task", "task\n", "widget"] {
+            let error = entity_type(json!(input), "kind").unwrap_err();
+            assert_eq!(error.field, "kind");
+            assert_eq!(
+                error.reason,
+                "expected entity type artifact, iteration or task"
+            );
+            assert!(error.parse_cause.is_none());
+        }
+        assert_eq!(
+            entity_type(json!(null), "kind").unwrap_err().reason,
+            "expected a string"
         );
     }
 

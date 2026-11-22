@@ -114,7 +114,7 @@ does not establish parent relationships or resolve references. Sync and team aut
 
 ## Gest record values
 
-Gest is a task and artifact tracker. These converters use its task, project and author record model.
+Gest is a task and artifact tracker. These converters use its record model for tasks, projects, authors, artifacts, iterations, tags, notes, relationships, entity tags and iteration tasks.
 The `gest_task_values` module validates eleven already decoded task fields.
 It returns an owned record with a standardized status and UTC timestamps.
 The [task values guide](gest-task-values.md) defines validation and caller responsibilities.
@@ -131,10 +131,44 @@ an owned record. It preserves names and nullable email exactly, normalizes autho
 types and converts timestamps to UTC. The [author values guide](gest-author-values.md)
 defines this conversion separately from native actors and local principals.
 
+The `gest_artifact_values` module validates eight canonical artifact fields and
+returns an owned record. A Gest artifact is a document such as a spec, not a
+Fossil artifact. The module keeps the title and body exactly, and it accepts a null
+or RFC3339 archive time. The [artifact values guide](gest-artifact-values.md)
+defines the field contract.
+
+The `gest_iteration_values` module validates nine canonical iteration fields and
+returns an owned record with a lowercase status and UTC timestamps. A completed
+or cancelled iteration requires a completion time, and an active one requires
+null. The [iteration values guide](gest-iteration-values.md) defines the field contract.
+
+The `gest_tag_values` module validates four canonical tag fields and returns an
+owned record. It keeps the label exactly as given, including its case, and
+converts timestamps to UTC. The caller checks that labels are unique across records. The
+[tag values guide](gest-tag-values.md) defines the field contract.
+
+The `gest_note_values` module validates seven canonical note fields. It keeps
+the body exactly as given, keeps a null author as null and returns the entity
+type in lowercase. The [note values guide](gest-note-values.md) defines the field contract.
+
+The `gest_relationship_values` module validates eight canonical relationship
+fields. It returns the relationship type and both entity types in lowercase,
+and keeps the direction as given. The caller checks that each directed link is
+unique, and it checks the inverse row. The [relationship values guide](gest-relationship-values.md) defines the field contract.
+
+The `gest_entity_tag_values` and `gest_iteration_task_values` modules validate
+the four canonical fields of each join record. A join record links two other
+records and has no Gest ID of its own. The entity tag converter returns the
+entity type in lowercase. The iteration task converter checks that the phase
+is an unsigned 32-bit integer. The caller builds the key tuple of each join
+record and owns each incarnation, which is the ticket of one attachment or
+membership. The [entity tag values guide](gest-entity-tag-values.md) and the
+[iteration task values guide](gest-iteration-task-values.md) define the field contracts.
+
 The [task ticket emitter](task-ticket.md) produces bounded creation artifact bytes
 from a validated task, a separate native ticket identity, actor bytes and a typed UTC date.
-Before passing decoded task, project or author values to a converter, callers
-must check raw field presence, duplicates and byte limits. Storage integration and task, project or author commands remain separate work.
+Before passing decoded values to a converter, callers
+must check raw field presence, duplicates and byte limits. Storage integration and commands for these records remain separate work.
 
 ## Explicit scope and private recording
 

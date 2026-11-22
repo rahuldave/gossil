@@ -608,7 +608,7 @@ The command reads no repository, settings or files and changes no tracking state
 The [glob guide](glob.md) defines quotes, first-NUL truncation and the SQL
 parser's extra advance after closing quotes. Historical controls used 0.9.30.
 The [2026-11-21 focused checkpoint](glob.md#current-source-status) exercised all
-four forms with 0.10.0; complete frozen-tree and delivery qualification are
+four forms with the libSQL 0.10.0 engine. Complete frozen-tree and delivery qualification are
 separate. These source forms make no claim about installed previews.
 
 ## Recommendations
