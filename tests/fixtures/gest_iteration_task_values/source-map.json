@@ -1,0 +1,104 @@
+{
+  "model": "iteration_task",
+  "classification": "source behavior and adopted owned-value controls, not exact inherited API ports",
+  "source_pin": "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8",
+  "governing_addendum_sha256": "afddd1c2f5e905f72126209605737cc80e63791870d3ce8bd59f26c9589d8454",
+  "exact_inherited_tests_ported": 0,
+  "source": "src/store/repo/iteration.rs",
+  "source_sha256": "aba6044e5bff183d9ea42d616c15df61e5f63562d173997bc4dd554154ba088c",
+  "production": "src/gest_iteration_task_values.rs",
+  "supporting_sources": [
+    {
+      "path": "src/store/migration/m00011_create_iteration_tasks.rs",
+      "role": "table declaration",
+      "sha256": "b22427c910718b0352bb69670875e330a0f0795ac1456c28f01d6e543a4c71fc"
+    },
+    {
+      "path": "src/store/model/primitives/id.rs",
+      "role": "primitive parser",
+      "sha256": "1e257f775bdbdff3922f68af9a64a374ee48c12b2b587ab8c315218e19577bbc"
+    }
+  ],
+  "fields": [
+    {
+      "name": "iteration_id",
+      "sql": "TEXT NOT NULL REFERENCES iterations(id)",
+      "nullable": false,
+      "canonical_field": "iteration_id",
+      "sqlite_decl_allows_null": false,
+      "owned_value_rule": "full 32-character [k-z] ID; key tuple member; existence of the iteration is caller-owned",
+      "control_file": "tests/gest_iteration_task_values.rs",
+      "controls": [
+        "complete_output_round_trips_and_is_independent",
+        "every_field_rejects_wrong_types_without_parser_causes",
+        "full_identifier_domain_for_every_id_field",
+        "join_has_no_gest_id_and_phase_is_not_part_of_the_key"
+      ]
+    },
+    {
+      "name": "task_id",
+      "sql": "TEXT NOT NULL REFERENCES tasks(id)",
+      "nullable": false,
+      "canonical_field": "task_id",
+      "sqlite_decl_allows_null": false,
+      "owned_value_rule": "full 32-character [k-z] ID; key tuple member; existence of the task is caller-owned",
+      "control_file": "tests/gest_iteration_task_values.rs",
+      "controls": [
+        "complete_output_round_trips_and_is_independent",
+        "every_field_rejects_wrong_types_without_parser_causes",
+        "full_identifier_domain_for_every_id_field",
+        "join_has_no_gest_id_and_phase_is_not_part_of_the_key"
+      ]
+    },
+    {
+      "name": "phase",
+      "sql": "INTEGER NOT NULL DEFAULT 1",
+      "nullable": false,
+      "canonical_field": "phase",
+      "sqlite_decl_allows_null": false,
+      "owned_value_rule": "JSON unsigned integer 0..=4294967295 checked into u32 (GEST-02); source reads with a wrapping `as u32` cast; not a key member; repeated add keeps the existing phase (caller-owned)",
+      "control_file": "tests/gest_iteration_task_values.rs",
+      "controls": [
+        "complete_output_round_trips_and_is_independent",
+        "every_field_rejects_wrong_types_without_parser_causes",
+        "phase_is_a_checked_unsigned_32_bit_integer",
+        "join_has_no_gest_id_and_phase_is_not_part_of_the_key"
+      ]
+    },
+    {
+      "name": "created_at",
+      "sql": "TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))",
+      "nullable": false,
+      "canonical_field": "created_at",
+      "sqlite_decl_allows_null": false,
+      "owned_value_rule": "source chrono 0.4.44 RFC3339 -> UTC; canonical output reparse and <=9 fractional digits",
+      "control_file": "tests/gest_iteration_task_values.rs",
+      "controls": [
+        "complete_output_round_trips_and_is_independent",
+        "every_field_rejects_wrong_types_without_parser_causes",
+        "business_timestamp_matrix_for_every_timestamp_field",
+        "every_timestamp_retains_initial_and_canonical_parse_causes"
+      ]
+    }
+  ],
+  "source_field_count": 4,
+  "test_functions": [
+    "complete_output_round_trips_and_is_independent",
+    "every_field_rejects_wrong_types_without_parser_causes",
+    "full_identifier_domain_for_every_id_field",
+    "phase_is_a_checked_unsigned_32_bit_integer",
+    "join_has_no_gest_id_and_phase_is_not_part_of_the_key",
+    "business_timestamp_matrix_for_every_timestamp_field",
+    "every_timestamp_retains_initial_and_canonical_parse_causes"
+  ],
+  "later_exact_api_obligations": [],
+  "key_tuple": [
+    "iteration_id",
+    "task_id"
+  ],
+  "source_anchors": [
+    "src/store/repo/iteration.rs:82:add_task (phase: u32, INSERT OR IGNORE)",
+    "src/store/repo/iteration.rs:567:phase as u32"
+  ],
+  "caller_owned_identity": "No Gest ID. The adapter builds the gossil_key JSON tuple, assigns each incarnation its own K and keeps at most one live incarnation per tuple."
+}

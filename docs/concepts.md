@@ -114,7 +114,7 @@ does not establish parent relationships or resolve references. Sync and team aut
 
 ## Gest record values
 
-Gest is a task and artifact tracker. These converters use its task, project, author, artifact, iteration, tag, note and relationship record model.
+Gest is a task and artifact tracker. These converters use its record model for tasks, projects, authors, artifacts, iterations, tags, notes, relationships, entity tags and iteration tasks.
 The `gest_task_values` module validates eleven already decoded task fields.
 It returns an owned record with a standardized status and UTC timestamps.
 The [task values guide](gest-task-values.md) defines validation and caller responsibilities.
@@ -155,6 +155,15 @@ The `gest_relationship_values` module validates eight canonical relationship
 fields. It returns the relationship type and both entity types in lowercase,
 and keeps the direction as given. The caller checks that each directed link is
 unique, and it checks the inverse row. The [relationship values guide](gest-relationship-values.md) defines the field contract.
+
+The `gest_entity_tag_values` and `gest_iteration_task_values` modules validate
+the four canonical fields of each join record. A join record links two other
+records and has no Gest ID of its own. The entity tag converter returns the
+entity type in lowercase. The iteration task converter checks that the phase
+is an unsigned 32-bit integer. The caller builds the key tuple of each join
+record and owns each incarnation, which is the ticket of one attachment or
+membership. The [entity tag values guide](gest-entity-tag-values.md) and the
+[iteration task values guide](gest-iteration-task-values.md) define the field contracts.
 
 The [task ticket emitter](task-ticket.md) produces bounded creation artifact bytes
 from a validated task, a separate native ticket identity, actor bytes and a typed UTC date.

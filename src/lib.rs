@@ -789,6 +789,10 @@ pub mod gest_task_values;
 pub mod gest_artifact_values;
 /// Convert complete admitted canonical author fields into owned values.
 pub mod gest_author_values;
+/// Convert complete admitted canonical `entity_tag` join fields into owned values.
+pub mod gest_entity_tag_values;
+/// Convert complete admitted canonical `iteration_task` join fields into owned values.
+pub mod gest_iteration_task_values;
 /// Convert complete admitted canonical iteration fields into owned values.
 pub mod gest_iteration_values;
 /// Convert complete admitted canonical note fields into owned values.

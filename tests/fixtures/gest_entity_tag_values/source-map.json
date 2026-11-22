@@ -1,0 +1,168 @@
+{
+  "model": "entity_tag",
+  "classification": "source behavior and adopted owned-value controls, not exact inherited API ports",
+  "source_pin": "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8",
+  "governing_addendum_sha256": "afddd1c2f5e905f72126209605737cc80e63791870d3ce8bd59f26c9589d8454",
+  "exact_inherited_tests_ported": 0,
+  "source": "src/store/model/entity_tag.rs",
+  "source_sha256": "a6cafa3169e9927f102f78b3ebc0aaaa407a95212a5c01b5d7020658459f4d90",
+  "production": "src/gest_entity_tag_values.rs",
+  "supporting_sources": [
+    {
+      "path": "src/store/migration/m00008_create_entity_tags.rs",
+      "role": "table declaration",
+      "sha256": "de0893d54052d816b8e00c75c7cb4581ef9aefc187472195fef851618edf0926"
+    },
+    {
+      "path": "src/store/model/primitives/entity_type.rs",
+      "role": "primitive parser",
+      "sha256": "e44c53c43f299e9d0d1d7e1df45c49c64717c605ce797abd7305690e70be3b92"
+    },
+    {
+      "path": "src/store/model/primitives/id.rs",
+      "role": "primitive parser",
+      "sha256": "1e257f775bdbdff3922f68af9a64a374ee48c12b2b587ab8c315218e19577bbc"
+    }
+  ],
+  "fields": [
+    {
+      "name": "entity_id",
+      "sql": "TEXT NOT NULL",
+      "nullable": false,
+      "canonical_field": "entity_id",
+      "sqlite_decl_allows_null": false,
+      "owned_value_rule": "full 32-character [k-z] ID; key tuple member; existence of the entity is caller-owned",
+      "control_file": "tests/gest_entity_tag_values.rs",
+      "controls": [
+        "complete_output_round_trips_and_is_independent",
+        "every_field_rejects_wrong_types_without_parser_causes",
+        "full_identifier_domain_for_every_id_field",
+        "join_has_no_gest_id_and_one_record_per_tuple"
+      ]
+    },
+    {
+      "name": "entity_type",
+      "sql": "TEXT NOT NULL",
+      "nullable": false,
+      "canonical_field": "entity_type",
+      "sqlite_decl_allows_null": false,
+      "owned_value_rule": "source EntityType FromStr: Unicode to_lowercase, then artifact|iteration|task; output lowercase; key tuple member",
+      "control_file": "tests/gest_entity_tag_values.rs",
+      "controls": [
+        "complete_output_round_trips_and_is_independent",
+        "every_field_rejects_wrong_types_without_parser_causes",
+        "entity_type_follows_source_spellings",
+        "join_has_no_gest_id_and_one_record_per_tuple"
+      ]
+    },
+    {
+      "name": "tag_id",
+      "sql": "TEXT NOT NULL REFERENCES tags(id)",
+      "nullable": false,
+      "canonical_field": "tag_id",
+      "sqlite_decl_allows_null": false,
+      "owned_value_rule": "full 32-character [k-z] ID; key tuple member; existence of the tag is caller-owned",
+      "control_file": "tests/gest_entity_tag_values.rs",
+      "controls": [
+        "complete_output_round_trips_and_is_independent",
+        "every_field_rejects_wrong_types_without_parser_causes",
+        "full_identifier_domain_for_every_id_field",
+        "join_has_no_gest_id_and_one_record_per_tuple"
+      ]
+    },
+    {
+      "name": "created_at",
+      "sql": "TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))",
+      "nullable": false,
+      "canonical_field": "created_at",
+      "sqlite_decl_allows_null": false,
+      "owned_value_rule": "source chrono 0.4.44 RFC3339 -> UTC; canonical output reparse and <=9 fractional digits",
+      "control_file": "tests/gest_entity_tag_values.rs",
+      "controls": [
+        "complete_output_round_trips_and_is_independent",
+        "every_field_rejects_wrong_types_without_parser_causes",
+        "business_timestamp_matrix_for_every_timestamp_field",
+        "every_timestamp_retains_initial_and_canonical_parse_causes"
+      ]
+    }
+  ],
+  "source_field_count": 4,
+  "test_functions": [
+    "complete_output_round_trips_and_is_independent",
+    "every_field_rejects_wrong_types_without_parser_causes",
+    "full_identifier_domain_for_every_id_field",
+    "entity_type_follows_source_spellings",
+    "join_has_no_gest_id_and_one_record_per_tuple",
+    "business_timestamp_matrix_for_every_timestamp_field",
+    "every_timestamp_retains_initial_and_canonical_parse_causes"
+  ],
+  "later_exact_api_obligations": [
+    {
+      "test_id": "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/model/primitives/entity_type.rs:54:it_formats_artifact",
+      "fixture_sha256": "1b2f09a6139b3c816b8f3c832fe6f0fd7cd7e2ca2fe7264d2d525c0c9154cb7f",
+      "assertion_ids": [
+        "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/model/primitives/entity_type.rs:56:assert_eq"
+      ],
+      "subject": "enum Display",
+      "classification": "later exact API/domain-primitive obligation",
+      "exact_port_in_minimal_owned_seam": false,
+      "adopted_replacement": false,
+      "reason": "Canonical string field output is related but does not invoke Primitive variant Display. Preserve at later enum/API seam; string output assertions now are new source-behavior controls."
+    },
+    {
+      "test_id": "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/model/primitives/entity_type.rs:59:it_formats_iteration",
+      "fixture_sha256": "c30f502e014163fbb06dce7dc0623aec044aded75a90d74e2ea88058ff771725",
+      "assertion_ids": [
+        "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/model/primitives/entity_type.rs:61:assert_eq"
+      ],
+      "subject": "enum Display",
+      "classification": "later exact API/domain-primitive obligation",
+      "exact_port_in_minimal_owned_seam": false,
+      "adopted_replacement": false,
+      "reason": "Canonical string field output is related but does not invoke Primitive variant Display. Preserve at later enum/API seam; string output assertions now are new source-behavior controls."
+    },
+    {
+      "test_id": "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/model/primitives/entity_type.rs:64:it_formats_task",
+      "fixture_sha256": "4bd29bc3ab87cfceaa1e4d43145cac3fc0ebd656909ae7fabf4cb76366071c77",
+      "assertion_ids": [
+        "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/model/primitives/entity_type.rs:66:assert_eq"
+      ],
+      "subject": "enum Display",
+      "classification": "later exact API/domain-primitive obligation",
+      "exact_port_in_minimal_owned_seam": false,
+      "adopted_replacement": false,
+      "reason": "Canonical string field output is related but does not invoke Primitive variant Display. Preserve at later enum/API seam; string output assertions now are new source-behavior controls."
+    },
+    {
+      "test_id": "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/model/primitives/entity_type.rs:73:it_parses_case_insensitively",
+      "fixture_sha256": "6afdfe8c2b908a2aec02bcb8b98f995370a99722baf0d219645bb073a0c8afa5",
+      "assertion_ids": [
+        "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/model/primitives/entity_type.rs:75:assert_eq",
+        "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/model/primitives/entity_type.rs:76:assert_eq"
+      ],
+      "subject": "enum FromStr",
+      "classification": "later exact API/domain-primitive obligation",
+      "exact_port_in_minimal_owned_seam": false,
+      "adopted_replacement": false,
+      "reason": "String-field validator accepts/rejects same source spellings but returns validated record/canonical string, not Primitive. Preserve exact .parse::<Primitive>() assertions at later primitive/API seam; conversion case controls are new source-behavior controls."
+    },
+    {
+      "test_id": "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/model/primitives/entity_type.rs:79:it_rejects_invalid",
+      "fixture_sha256": "23a0b2fdb479fa37f027ee7eb1b4dadbf22c26937f89b61982d7e4457fe34740",
+      "assertion_ids": [
+        "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/model/primitives/entity_type.rs:81:assert"
+      ],
+      "subject": "enum FromStr",
+      "classification": "later exact API/domain-primitive obligation",
+      "exact_port_in_minimal_owned_seam": false,
+      "adopted_replacement": false,
+      "reason": "String-field validator accepts/rejects same source spellings but returns validated record/canonical string, not Primitive. Preserve exact .parse::<Primitive>() assertions at later primitive/API seam; conversion case controls are new source-behavior controls."
+    }
+  ],
+  "key_tuple": [
+    "entity_type",
+    "entity_id",
+    "tag_id"
+  ],
+  "caller_owned_identity": "No Gest ID. The adapter builds the gossil_key JSON tuple, assigns each incarnation its own K and keeps at most one live incarnation per tuple."
+}

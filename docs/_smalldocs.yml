@@ -58,6 +58,8 @@ website:
           - gest-tag-values.md
           - gest-note-values.md
           - gest-relationship-values.md
+          - gest-entity-tag-values.md
+          - gest-iteration-task-values.md
       - section: Rust API
         href: api/index.qmd
         contents:
