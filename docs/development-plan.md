@@ -98,6 +98,11 @@ just docs-check
 just docs-build
 ```
 
+`just docs-check` checks the site and the API pages. It then runs
+`just rustdoc-check`, which builds the rustdoc with private items and fails on
+each warning. So the check fails on a broken intra-doc link, which is a link in
+a doc comment that rustdoc cannot resolve to an item.
+
 `just test` first runs nine focused Python installer controls, then runs the Rust
 unit tests through the installed coverage workflow. `just integration` uses that
 Rust coverage workflow. Its reports do not measure Python installer coverage.

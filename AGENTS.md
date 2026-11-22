@@ -84,7 +84,9 @@ hosts it checks the existing tools without replacing them.
 
 Use the installed Rust checks through Just, including
 `lint`, `typecheck`, `test`, `integration`, `coverage-check`, `docstring-check`
-and `api-check`. `just docs-check` checks the site and API docs.
+and `api-check`. `just docs-check` checks the site and API docs, then runs
+`just rustdoc-check`. That recipe builds the rustdoc with private items and
+fails on each warning, such as a broken intra-doc link.
 `just docs-build` renders the site. Do not weaken checks to get a pass.
 
 The runner checkpoint is `evidence/runner-checkpoint-2026-11-17.json`.
