@@ -69,7 +69,7 @@ source review, without cross-compilation or runtime qualification.
 This adaptation preserves the shared product entry and both thin executables.
 It changes no storage, tracking, traversal, settings or selection behavior.
 The 2026-11-21 focused checkpoint built both product binaries with the selected
-0.10.0 engine. It passed 3 CLI tests, 9 glob integration tests and 5 filtered
+libSQL 0.10.0 engine. It passed 3 CLI tests, 9 glob integration tests and 5 filtered
 library units (4 glob units plus an existing global-state control). All 20
 unchanged upstream Tcl assertions passed against the Rust diagnostic. The graph
 comparison retained all 126 nonroot packages and their complete edges/features,
@@ -82,8 +82,10 @@ supplies typed commit and cleanup causes. Strict Rust 1.100 lint stopped at that
 prerequisite's `commit_checked` large-error lint. The owner's local lint fix is
 synchronized in the source successor; this checkpoint does not qualify it.
 
-The checkpoint's source metadata selected candidate 0.9.0. The current source
-metadata selects 0.10.0. Complete gates on the final frozen tree,
+At the checkpoint, `Cargo.toml` set the version of the Gossil crate to 0.9.0,
+which was later released as `v0.9.0`. The current version of the crate is
+0.11.0. The `libsql-ffi` provider is at 0.10.0, and its version is separate
+from the version of the crate. Complete gates on the final frozen tree,
 accepted-parent checks, independent review, release and exact merged installation
 proof remain separate from the focused results.
 

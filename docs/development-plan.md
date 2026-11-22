@@ -32,7 +32,8 @@ caller-supplied native identity, actor and date.
 |---|---|
 | Delta create, apply and two-way file checks | General version-control CLI |
 | Bounded glob API and `test-glob` diagnostic; focused checkpoint | Settings lookup, wildcard tracking and directory traversal |
-| Compression, hashes, token escaping and artifact checksums | Repository traversal and changes to persisted scope choices |
+| Compression, hashes, token escaping, artifact checksums and [lexical filename simplification](file-path.md) | Repository traversal and changes to persisted scope choices |
+| [Shortest paths and common ancestors](history.md) over caller-supplied check-in rows | Persisted history graphs, bisect, annotation and file history |
 | Eight structural artifact types with explicit limits | General crosslinks, migration, rebuild and filesystem recovery |
 | Native initialization/open, tracking, scope/commit CLI and library; catalog1 private content | Shared recording, sync and artifact publication |
 | Explicit inherited-test runner configurations | Gest task CLI, server and user interface |
@@ -348,7 +349,8 @@ matching and SQL construction. See the [module guide](glob.md) and
 [CLI grammar](cli.md#inspect-a-fossil-glob-list). The adaptation uses the existing
 selected libSQL 0.10.0 engine, with an exact direct `libsql-ffi` dependency and
 default features disabled. The 2026-11-21 focused graph comparison retained all
-126 nonroot packages and complete edges/features, with one 0.10.0 FFI provider.
+126 nonroot packages and complete edges/features, with one `libsql-ffi` 0.10.0
+provider.
 
 The 37 files under `evidence/glob/` and `evidence/glob-provider-integration/`
 retain the donor's exact historical bytes. The earlier execution used 0.9.30.
@@ -363,8 +365,12 @@ boundaries, budgets and generated SQL through the selected engine. Non-Unix
 argument conversion has source review only, with no cross-compilation or runtime
 qualification.
 
-The checkpoint's source metadata selected candidate 0.9.0, and the current
-source metadata selects 0.10.0. The focused tree
+At the checkpoint, `Cargo.toml` set the version of the Gossil crate to 0.9.0,
+which was later released as `v0.9.0`. The current version of the crate is
+0.11.0. The `libsql-ffi` provider is at 0.10.0, and its version is separate
+from the version of the crate.
+
+The focused tree
 `a5583c3c6a73dda1a75ad1dd4c168efc06655c40` used a prospective checked-commit
 prerequisite while actual parent remained `4250b873`.
 [PR 47](https://github.com/rahuldave/gossil/pull/47) supplies typed commit and

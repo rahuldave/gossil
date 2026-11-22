@@ -1,5 +1,5 @@
-//! Supply inherited-test tools, bounded byte primitives, Fossil glob matching, local storage
-//! and decoded task values.
+//! Supply inherited-test tools, bounded byte primitives, Fossil glob matching, lexical
+//! filename simplification, check-in graph paths, local storage and decoded task values.
 pub mod diff;
 mod invocation;
 pub use invocation::{InvocationId, InvocationPlan, PlanPin, PlanRow, Position};
@@ -832,3 +832,9 @@ pub mod task_ticket;
 
 /// Bounded Fossil glob parsing, matching and SQL expression construction.
 pub mod glob;
+
+/// Simplify filename bytes by the bounded lexical rules of Fossil.
+pub mod file_path;
+
+/// Find shortest paths and common ancestors in an explicit check-in graph, as Fossil does.
+pub mod history;

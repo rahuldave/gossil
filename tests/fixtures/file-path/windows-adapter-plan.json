@@ -1,0 +1,132 @@
+{
+  "source_branch": "Windows/Cygwin preprocessor source branch; host-built characterization is not native Windows qualification",
+  "input_limit_bytes": 1024,
+  "cases": [
+    {
+      "id": "simplify-name-108.1",
+      "input": "//?/a:/a/b",
+      "slash": 0,
+      "expected_hex": "613a2f612f62",
+      "visible_hex": "613a2f612f62"
+    },
+    {
+      "id": "simplify-name-108.2",
+      "input": "//?/UNC/a/b",
+      "slash": 0,
+      "expected_hex": "2f2f612f62",
+      "visible_hex": "2f2f612f62"
+    },
+    {
+      "id": "simplify-name-108.3",
+      "input": "//?/",
+      "slash": 0,
+      "expected_hex": "00",
+      "visible_hex": ""
+    },
+    {
+      "id": "simplify-name-109.1",
+      "input": "\\\\?\\a:\\a\\b",
+      "slash": 0,
+      "expected_hex": "613a2f612f62",
+      "visible_hex": "613a2f612f62"
+    },
+    {
+      "id": "simplify-name-109.2",
+      "input": "\\\\?\\UNC\\a\\b",
+      "slash": 0,
+      "expected_hex": "2f2f612f62",
+      "visible_hex": "2f2f612f62"
+    },
+    {
+      "id": "simplify-name-109.3",
+      "input": "\\\\?\\",
+      "slash": 0,
+      "expected_hex": "00",
+      "visible_hex": ""
+    },
+    {
+      "id": "lowercase-unc",
+      "input": "//?/unc/a/b",
+      "slash": 0,
+      "expected_hex": "2f2f612f62",
+      "visible_hex": "2f2f612f62"
+    },
+    {
+      "id": "mixed-unc",
+      "input": "//?/uNc/a/b",
+      "slash": 0,
+      "expected_hex": "2f2f612f62",
+      "visible_hex": "2f2f612f62"
+    },
+    {
+      "id": "unc-no-slash",
+      "input": "//?/UNC",
+      "slash": 0,
+      "expected_hex": "2f",
+      "visible_hex": "2f"
+    },
+    {
+      "id": "unc-suffix",
+      "input": "//?/UNCx",
+      "slash": 0,
+      "expected_hex": "2f78",
+      "visible_hex": "2f78"
+    },
+    {
+      "id": "prefix-u",
+      "input": "//?/U",
+      "slash": 0,
+      "expected_hex": "55",
+      "visible_hex": "55"
+    },
+    {
+      "id": "prefix-un",
+      "input": "//?/UN",
+      "slash": 0,
+      "expected_hex": "554e",
+      "visible_hex": "554e"
+    },
+    {
+      "id": "short-prefix",
+      "input": "//?",
+      "slash": 0,
+      "expected_hex": "2f2f3f",
+      "visible_hex": "2f2f3f"
+    },
+    {
+      "id": "one-backslash",
+      "input": "a\\b",
+      "slash": 0,
+      "expected_hex": "612f62",
+      "visible_hex": "612f62"
+    },
+    {
+      "id": "backslash-tail",
+      "input": "a\\\\\\.\\",
+      "slash": 1,
+      "expected_hex": "61",
+      "visible_hex": "61"
+    },
+    {
+      "id": "mixed-separators",
+      "input": "\\\\?\\uNc/a\\b",
+      "slash": 0,
+      "expected_hex": "2f2f612f62",
+      "visible_hex": "2f2f612f62"
+    },
+    {
+      "id": "nonunc",
+      "input": "//?/UNx/a",
+      "slash": 0,
+      "expected_hex": "554e782f61",
+      "visible_hex": "554e782f61"
+    },
+    {
+      "id": "ordinary-unicode",
+      "input": "//?/\u00fcnc/a",
+      "slash": 0,
+      "expected_hex": "c3bc6e632f61",
+      "visible_hex": "c3bc6e632f61"
+    }
+  ]
+}

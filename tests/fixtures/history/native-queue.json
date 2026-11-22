@@ -1,0 +1,23 @@
+{
+  "format": 1,
+  "scope": "queue algorithm only; no repository or storage admission",
+  "argv": [
+    "test-pqueue",
+    "1/0",
+    "1/1",
+    "1/2",
+    "1/3",
+    "1/4"
+  ],
+  "binary_sha256": "75550c754e94a4b7fa0269f40ce8e4918daf67e05ba12b236ed735d424c8e16c",
+  "returncode": 0,
+  "stdout": " 2: INSERT  \"0\"\n 3: INSERT  \"1\"\n 4: INSERT  \"2\"\n 5: INSERT  \"3\"\n 6: INSERT  \"4\"\n... POP     \"0\"\n... POP     \"1\"\n... POP     \"3\"\n... POP     \"4\"\n... POP     \"2\"\n",
+  "stderr": "",
+  "pops": [
+    0,
+    1,
+    3,
+    4,
+    2
+  ]
+}
