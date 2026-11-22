@@ -12,8 +12,12 @@ The generated [Rust API](api/index.qmd) describes the public library surface.
 The standalone [Gest task values converter](gest-task-values.md) validates eleven decoded fields.
 The [Gest project values converter](gest-project-values.md) validates four canonical project fields.
 The [Gest author values converter](gest-author-values.md) validates six canonical author fields.
+The [Gest artifact values converter](gest-artifact-values.md) validates eight canonical artifact fields.
+The [Gest iteration values converter](gest-iteration-values.md) validates nine canonical iteration fields.
+All five converters operate in memory and leave storage integration, raw field admission and the full Gest API to future work.
+
 The [task ticket emitter](task-ticket.md) serializes validated task snapshots with
-caller-supplied native identity, actor and date. All three converters operate in memory. Storage integration, raw field admission and the full Gest API remain future work.
+caller-supplied native identity, actor and date.
 
 ## Current scope
 

@@ -53,6 +53,8 @@ website:
           - gest-task-values.md
           - gest-project-values.md
           - gest-author-values.md
+          - gest-artifact-values.md
+          - gest-iteration-values.md
       - section: Rust API
         href: api/index.qmd
         contents:

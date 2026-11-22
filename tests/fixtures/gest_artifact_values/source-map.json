@@ -1,0 +1,137 @@
+{
+  "model": "artifact",
+  "classification": "source behavior and adopted owned-value controls, not exact inherited API ports",
+  "source_pin": "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8",
+  "governing_addendum_sha256": "afddd1c2f5e905f72126209605737cc80e63791870d3ce8bd59f26c9589d8454",
+  "exact_inherited_tests_ported": 0,
+  "source": "src/store/model/artifact.rs",
+  "source_sha256": "39f56375587cdbb8247275ba1ed7868ab54c06fe0a2faba44787fe5229b4f909",
+  "production": "src/gest_artifact_values.rs",
+  "fields": [
+    {
+      "name": "id",
+      "sql": "TEXT PRIMARY KEY",
+      "nullable": false,
+      "canonical_field": "gest_id",
+      "sqlite_decl_allows_null": true,
+      "owned_value_rule": "full 32-character [k-z] ID",
+      "control_file": "tests/gest_artifact_values.rs",
+      "controls": [
+        "complete_fields_round_trip_and_output_is_owned",
+        "required_string_type_matrix",
+        "full_identifier_domain"
+      ]
+    },
+    {
+      "name": "project_id",
+      "sql": "TEXT NOT NULL REFERENCES projects(id)",
+      "nullable": false,
+      "canonical_field": "project_id",
+      "sqlite_decl_allows_null": false,
+      "owned_value_rule": "full 32-character [k-z] ID",
+      "control_file": "tests/gest_artifact_values.rs",
+      "controls": [
+        "complete_fields_round_trip_and_output_is_owned",
+        "required_string_type_matrix",
+        "full_identifier_domain"
+      ]
+    },
+    {
+      "name": "title",
+      "sql": "TEXT NOT NULL",
+      "nullable": false,
+      "canonical_field": "title",
+      "sqlite_decl_allows_null": false,
+      "owned_value_rule": "exact string, no content restriction",
+      "control_file": "tests/gest_artifact_values.rs",
+      "controls": [
+        "complete_fields_round_trip_and_output_is_owned",
+        "required_string_type_matrix"
+      ]
+    },
+    {
+      "name": "body",
+      "sql": "TEXT NOT NULL DEFAULT ''",
+      "nullable": false,
+      "canonical_field": "body",
+      "sqlite_decl_allows_null": false,
+      "owned_value_rule": "exact string, no content restriction",
+      "control_file": "tests/gest_artifact_values.rs",
+      "controls": [
+        "complete_fields_round_trip_and_output_is_owned",
+        "required_string_type_matrix",
+        "archived_rows_keep_body_and_do_not_imply_tombstones"
+      ]
+    },
+    {
+      "name": "metadata",
+      "sql": "TEXT NOT NULL DEFAULT '{}'",
+      "nullable": false,
+      "canonical_field": "metadata",
+      "sqlite_decl_allows_null": false,
+      "owned_value_rule": "every serde_json::Value unchanged",
+      "control_file": "tests/gest_artifact_values.rs",
+      "controls": [
+        "complete_fields_round_trip_and_output_is_owned",
+        "arbitrary_metadata_and_empty_strings_survive"
+      ]
+    },
+    {
+      "name": "archived_at",
+      "sql": "TEXT",
+      "nullable": true,
+      "canonical_field": "archived_at",
+      "sqlite_decl_allows_null": true,
+      "owned_value_rule": "null or source chrono 0.4.44 RFC3339 -> UTC; canonical output reparse and <=9 fractional digits, no ordering",
+      "control_file": "tests/gest_artifact_values.rs",
+      "controls": [
+        "complete_fields_round_trip_and_output_is_owned",
+        "business_timestamp_matrix_for_every_timestamp_field",
+        "typed_chrono_causes_and_safe_display",
+        "timestamps_need_not_be_chronologically_ordered",
+        "archived_rows_keep_body_and_do_not_imply_tombstones"
+      ]
+    },
+    {
+      "name": "created_at",
+      "sql": "TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))",
+      "nullable": false,
+      "canonical_field": "created_at",
+      "sqlite_decl_allows_null": false,
+      "owned_value_rule": "source chrono 0.4.44 RFC3339 -> UTC; canonical output reparse and <=9 fractional digits, no ordering",
+      "control_file": "tests/gest_artifact_values.rs",
+      "controls": [
+        "complete_fields_round_trip_and_output_is_owned",
+        "business_timestamp_matrix_for_every_timestamp_field",
+        "typed_chrono_causes_and_safe_display",
+        "timestamps_need_not_be_chronologically_ordered"
+      ]
+    },
+    {
+      "name": "updated_at",
+      "sql": "TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))",
+      "nullable": false,
+      "canonical_field": "updated_at",
+      "sqlite_decl_allows_null": false,
+      "owned_value_rule": "source chrono 0.4.44 RFC3339 -> UTC; canonical output reparse and <=9 fractional digits, no ordering",
+      "control_file": "tests/gest_artifact_values.rs",
+      "controls": [
+        "complete_fields_round_trip_and_output_is_owned",
+        "business_timestamp_matrix_for_every_timestamp_field",
+        "typed_chrono_causes_and_safe_display",
+        "timestamps_need_not_be_chronologically_ordered"
+      ]
+    }
+  ],
+  "source_field_count": 8,
+  "test_functions": [
+    "complete_fields_round_trip_and_output_is_owned",
+    "arbitrary_metadata_and_empty_strings_survive",
+    "required_string_type_matrix",
+    "full_identifier_domain",
+    "business_timestamp_matrix_for_every_timestamp_field",
+    "typed_chrono_causes_and_safe_display",
+    "archived_rows_keep_body_and_do_not_imply_tombstones",
+    "timestamps_need_not_be_chronologically_ordered"
+  ]
+}

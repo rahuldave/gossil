@@ -114,7 +114,7 @@ does not establish parent relationships or resolve references. Sync and team aut
 
 ## Gest record values
 
-Gest is a task and artifact tracker. These converters use its task, project and author record model.
+Gest is a task and artifact tracker. These converters use its task, project, author, artifact and iteration record model.
 The `gest_task_values` module validates eleven already decoded task fields.
 It returns an owned record with a standardized status and UTC timestamps.
 The [task values guide](gest-task-values.md) defines validation and caller responsibilities.
@@ -131,10 +131,21 @@ an owned record. It preserves names and nullable email exactly, normalizes autho
 types and converts timestamps to UTC. The [author values guide](gest-author-values.md)
 defines this conversion separately from native actors and local principals.
 
+The `gest_artifact_values` module validates eight canonical artifact fields and
+returns an owned record. A Gest artifact is a document such as a spec, not a
+Fossil artifact. The module keeps the title and body exactly, and it accepts a null
+or RFC3339 archive time. The [artifact values guide](gest-artifact-values.md)
+defines the field contract.
+
+The `gest_iteration_values` module validates nine canonical iteration fields and
+returns an owned record with a lowercase status and UTC timestamps. A completed
+or cancelled iteration requires a completion time, and an active one requires
+null. The [iteration values guide](gest-iteration-values.md) defines the field contract.
+
 The [task ticket emitter](task-ticket.md) produces bounded creation artifact bytes
 from a validated task, a separate native ticket identity, actor bytes and a typed UTC date.
-Before passing decoded task, project or author values to a converter, callers
-must check raw field presence, duplicates and byte limits. Storage integration and task, project or author commands remain separate work.
+Before passing decoded values to a converter, callers
+must check raw field presence, duplicates and byte limits. Storage integration and commands for these records remain separate work.
 
 ## Explicit scope and private recording
 
