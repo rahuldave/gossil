@@ -1,0 +1,307 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="generator" content="smalldocs-0.5.12"><meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes"><meta name="description" content="Simplify filename bytes by the bounded lexical rules of Fossil. Simplify filename bytes in a bounded port of the lexical rules of Fossil `src/file.c`."><title>file_path – Gossil</title><link rel="icon" href="../site_libs/themes/atelier/logo.svg"><link rel="stylesheet" href="../site_libs/themes/atelier/atelier.css" data-mode="light" class="quarto-color-scheme" id="quarto-bootstrap-light" media="not all and (prefers-color-scheme: dark)"><link rel="stylesheet" href="../site_libs/themes/atelier/atelier-dark.css" data-mode="dark" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap-dark" media="(prefers-color-scheme: dark)"><link rel="stylesheet" href="../site_libs/bootstrap-icons/bootstrap-icons.min.css"><link rel="stylesheet" href="../site_libs/smalldocs.css"><meta name="smalldocs:offset" content="../"><script src="../site_libs/bootstrap/bootstrap.bundle.min.js"></script><script src="../site_libs/fuse/fuse.min.js"></script><script src="../site_libs/smalldocs.js" defer></script><script>(function(){var d=document.documentElement,s=null;try{s=localStorage.getItem('smalldocs-scheme')}catch(e){}var alt=s?s==='alternate':!!(window.matchMedia&&matchMedia('(prefers-color-scheme: dark)').matches);var ls=document.querySelectorAll('link.quarto-color-scheme');if(alt)d.dataset.scheme='alternate';if(s)ls.forEach(function(l){var on=l.classList.contains('quarto-color-alternate')===alt;if(on)l.setAttribute('blocking','render');l.media=on?'all':'not all'});var on=ls[alt?1:0];if(on&&on.dataset.mode==='dark')d.classList.add('quarto-dark')})();</script></head><body class="nav-sidebar floating nav-fixed"><header id="quarto-header" class="headroom sticky-top"><nav class="navbar navbar-expand-lg sd-navbar-default"><div class="navbar-container container-fluid"><div class="navbar-brand-container mx-auto"><a class="navbar-brand" href="../index.html"><span class="navbar-title">Gossil</span></a></div><button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button><div class="collapse navbar-collapse" id="navbarCollapse"><ul class="navbar-nav navbar-nav-scroll me-auto"><li class="nav-item"><a class="nav-link" href="../getting-started.html"><span class="menu-text">Start</span></a></li><li class="nav-item"><a class="nav-link" href="../concepts.html"><span class="menu-text">Library concepts</span></a></li><li class="nav-item"><a class="nav-link" href="../cli.html"><span class="menu-text">CLI</span></a></li><li class="nav-item"><a class="nav-link" href="index.html"><span class="menu-text">Rust API</span></a></li><li class="nav-item"><a class="nav-link" href="../development-plan.html"><span class="menu-text">Development</span></a></li></ul><ul class="navbar-nav navbar-nav-scroll ms-auto"><li class="nav-item compact"><a class="nav-link" href="https://github.com/rahuldave/gossil" aria-label="github"><i class="bi bi-github" role="img"></i></a></li><li class="nav-item compact"><a class="quarto-color-scheme-toggle nav-link" href="" title="Toggle dark mode" onclick="window.smalldocsToggleScheme(); return false;"><i class="bi"></i></a></li></ul><div class="quarto-navbar-tools"><div class="smalldocs-search" id="quarto-search"><i class="bi bi-search" aria-hidden="true"></i><input type="search" class="form-control form-control-sm" placeholder="Search" aria-label="Search" autocomplete="off"><div class="smalldocs-search-results dropdown-menu"></div></div></div></div></div></nav><nav class="quarto-secondary-nav"><div class="container-fluid d-flex"><button type="button" class="quarto-btn-toggle btn" aria-controls="quarto-sidebar" aria-label="Toggle sidebar navigation"><i class="bi bi-layout-text-sidebar-reverse"></i></button><nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="index.html">Rust API</a></li><li class="breadcrumb-item"><a href="file_path.html">file_path</a></li></ol></nav></div></nav></header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article has-sidebar has-margin"><nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto"><div class="sidebar-menu-container"><ul class="list-unstyled mt-1"><li class="sidebar-item"><div class="sidebar-item-container"><a href="../index.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Gossil</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="../getting-started.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Get started</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="../cli.html" class="sidebar-item-text sidebar-link"><span class="menu-text">CLI reference</span></a></div></li><li class="sidebar-item sidebar-item-section"><div class="sidebar-item-container"><a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true"><span class="menu-text">Guides</span></a><a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section"><i class="bi bi-chevron-right ms-2"></i></a></div><ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show"><li class="sidebar-item"><div class="sidebar-item-container"><a href="../working-with-repositories.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Working with repositories</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="../compare-with-git.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Compare Gossil with Git</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="../concepts.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Library concepts</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="../examples.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Rust library examples</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="../delta-encoder.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Bounded delta encoder</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="../delta-decoder.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Bounded delta decoder</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="../blob-primitives.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Byte digests and packed blobs</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="../artifact-checksum.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Artifact byte checksums</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="../token-codec.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Fossil token bytes</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="../glob.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Bounded Fossil glob port</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="../file-path.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Lexical file paths</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="../history.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Check-in graph paths</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="../artifact-parser.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Artifact parser</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="../diff.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Compare normalized byte lines</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="../task-ticket.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Emit a task creation artifact</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="../local-storage.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Local database ownership</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="../native-storage.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Native local storage</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="../gest-task-values.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Gest task values</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="../gest-project-values.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Gest project values</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="../gest-author-values.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Gest author values</span></a></div></li></ul></li><li class="sidebar-item sidebar-item-section"><div class="sidebar-item-container"><a class="sidebar-item-text sidebar-link" href="index.html"><span class="menu-text">Rust API</span></a><a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Toggle section"><i class="bi bi-chevron-right ms-2"></i></a></div><ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show"><li class="sidebar-item"><div class="sidebar-item-container"><a href="artifact.html" class="sidebar-item-text sidebar-link"><span class="menu-text">artifact</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="artifact_checksum.html" class="sidebar-item-text sidebar-link"><span class="menu-text">artifact_checksum</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="compression.html" class="sidebar-item-text sidebar-link"><span class="menu-text">compression</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="content_hash.html" class="sidebar-item-text sidebar-link"><span class="menu-text">content_hash</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="delta.html" class="sidebar-item-text sidebar-link"><span class="menu-text">delta</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="diff.html" class="sidebar-item-text sidebar-link"><span class="menu-text">diff</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="file_path.html" class="sidebar-item-text sidebar-link active" aria-current="page"><span class="menu-text">file_path</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="gest_author_values.html" class="sidebar-item-text sidebar-link"><span class="menu-text">gest_author_values</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="gest_project_values.html" class="sidebar-item-text sidebar-link"><span class="menu-text">gest_project_values</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="gest_task_values.html" class="sidebar-item-text sidebar-link"><span class="menu-text">gest_task_values</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="glob.html" class="sidebar-item-text sidebar-link"><span class="menu-text">glob</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="gossil.html" class="sidebar-item-text sidebar-link"><span class="menu-text">gossil</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="history.html" class="sidebar-item-text sidebar-link"><span class="menu-text">history</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="native_date.html" class="sidebar-item-text sidebar-link"><span class="menu-text">native_date</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="product.html" class="sidebar-item-text sidebar-link"><span class="menu-text">product</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="storage.html" class="sidebar-item-text sidebar-link"><span class="menu-text">storage</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="task_ticket.html" class="sidebar-item-text sidebar-link"><span class="menu-text">task_ticket</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="token_codec.html" class="sidebar-item-text sidebar-link"><span class="menu-text">token_codec</span></a></div></li></ul></li><li class="sidebar-item sidebar-item-section"><div class="sidebar-item-container"><a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true"><span class="menu-text">Development</span></a><a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true" aria-label="Toggle section"><i class="bi bi-chevron-right ms-2"></i></a></div><ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show"><li class="sidebar-item"><div class="sidebar-item-container"><a href="../development-plan.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Development and contributing</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="../conformance.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Inherited-test runner</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="../libsql-wrapper.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Exact libsql TEXT retrieval</span></a></div></li></ul></li></ul></div></nav><div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item"></div><div id="quarto-margin-sidebar" class="sidebar margin-sidebar"><nav id="TOC" role="doc-toc" class="toc-active"><h2 id="toc-title">On this page</h2><ul><li><a href="#recommendations" id="toc-recommendations" class="nav-link" data-scroll-target="#recommendations">Recommendations</a></li><li><a href="#Limits" id="toc-Limits" class="nav-link" data-scroll-target="#Limits">struct Limits</a></li><li><a href="#SourcePlatform" id="toc-SourcePlatform" class="nav-link" data-scroll-target="#SourcePlatform">enum SourcePlatform</a></li><li><a href="#SimplifiedName" id="toc-SimplifiedName" class="nav-link" data-scroll-target="#SimplifiedName">struct SimplifiedName</a><ul><li><a href="#SimplifiedName.reported_span" id="toc-SimplifiedName.reported_span" class="nav-link" data-scroll-target="#SimplifiedName.reported_span">SimplifiedName::reported_span</a></li><li><a href="#SimplifiedName.visible_bytes" id="toc-SimplifiedName.visible_bytes" class="nav-link" data-scroll-target="#SimplifiedName.visible_bytes">SimplifiedName::visible_bytes</a></li></ul></li><li><a href="#PathError" id="toc-PathError" class="nav-link" data-scroll-target="#PathError">enum PathError</a></li><li><a href="#simplify_name" id="toc-simplify_name" class="nav-link" data-scroll-target="#simplify_name">fn simplify_name</a></li><li><a href="#simplify_name_for_source" id="toc-simplify_name_for_source" class="nav-link" data-scroll-target="#simplify_name_for_source">fn simplify_name_for_source</a></li></ul></nav></div><main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="index.html">Rust API</a></li><li class="breadcrumb-item"><a href="file_path.html">file_path</a></li></ol></nav><div class="quarto-title"><h1 class="title">file_path</h1></div><div><div class="description">Simplify filename bytes by the bounded lexical rules of Fossil. Simplify filename bytes in a bounded port of the lexical rules of Fossil <code>src/file.c</code>.</div></div><div class="quarto-title-meta"></div></header><p>The original code is copyright 2006 D. Richard Hipp, under the 2-Clause BSD
+license. The license text is in <code>tests/fixtures/file-path/COPYRIGHT-BSD2.txt</code>.</p>
+<p>The module ports the Unix branch and the Windows/Cygwin branch of
+<code>file_simplify_name</code> and <code>backup_dir</code> from Fossil check-in <code>7e8ecf0ce4</code>.
+It does not read the filesystem, resolve symlinks, authorize paths or make
+names absolute. The tests of the source branches do not show that the code runs
+correctly on a native Windows or Cygwin host. No test has run on such a host.
+The input is a complete byte name with no NUL, and an empty input stays empty.</p>
+<section id="recommendations" class="level2">
+<h2 class="anchored" data-anchor-id="recommendations">Recommendations</h2>
+<p>Set explicit limits for the application, and treat the result as lexical bytes.
+Next, apply the filesystem and containment policy of the caller in a separate step.</p>
+</section>
+<section id="Limits" class="level2">
+<h2 class="anchored" data-anchor-id="Limits">struct Limits</h2>
+<p><a href="https://github.com/rahuldave/gossil/blob/main/src/file_path.rs#L22" class="source-link">source</a></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span class="kw">pub</span> <span class="kw">struct</span> Limits</code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><a href="delta.html#Limits"><code>Limits</code></a> holds the bounds of the caller on the input bytes and the returned bytes.</p>
+<p>Neither bound counts a C terminator.</p>
+<div class="sd-table">
+<table class="caption-top table">
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>max_input_bytes</code></td>
+<td>usize</td>
+<td>Sets the largest number of input bytes that a call accepts.</td>
+</tr>
+<tr>
+<td><code>max_output_bytes</code></td>
+<td>usize</td>
+<td>Sets the largest number of bytes that a call returns.</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Implements <a href="https://doc.rust-lang.org/nightly/core/clone/trait.Clone.html"><code>Clone</code></a>, <a href="https://doc.rust-lang.org/nightly/core/marker/trait.Copy.html"><code>Copy</code></a>, <a href="https://doc.rust-lang.org/nightly/core/fmt/trait.Debug.html"><code>Debug</code></a>.</p>
+</section>
+<section id="SourcePlatform" class="level2">
+<h2 class="anchored" data-anchor-id="SourcePlatform">enum SourcePlatform</h2>
+<p><a href="https://github.com/rahuldave/gossil/blob/main/src/file_path.rs#L31" class="source-link">source</a></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span class="kw">pub</span> <span class="kw">enum</span> SourcePlatform</code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><a href="file_path.html#SourcePlatform"><code>SourcePlatform</code></a> names the branch of the native source to apply, whatever the host.</p>
+<div class="sd-table">
+<table class="caption-top table">
+<thead>
+<tr>
+<th>Variant</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Unix</code></td>
+<td>Keeps backslashes and extended prefixes as ordinary bytes.</td>
+</tr>
+<tr>
+<td><code>WindowsCygwin</code></td>
+<td>Converts backslashes and removes extended prefixes, as native C does.</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Implements <a href="https://doc.rust-lang.org/nightly/core/clone/trait.Clone.html"><code>Clone</code></a>, <a href="https://doc.rust-lang.org/nightly/core/marker/trait.Copy.html"><code>Copy</code></a>, <a href="https://doc.rust-lang.org/nightly/core/fmt/trait.Debug.html"><code>Debug</code></a>, <a href="https://doc.rust-lang.org/nightly/core/cmp/trait.Eq.html"><code>Eq</code></a>, <a href="https://doc.rust-lang.org/nightly/core/cmp/trait.PartialEq.html"><code>PartialEq</code></a>.</p>
+</section>
+<section id="SimplifiedName" class="level2">
+<h2 class="anchored" data-anchor-id="SimplifiedName">struct SimplifiedName</h2>
+<p><a href="https://github.com/rahuldave/gossil/blob/main/src/file_path.rs#L42" class="source-link">source</a></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span class="kw">pub</span> <span class="kw">struct</span> SimplifiedName</code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><a href="file_path.html#SimplifiedName"><code>SimplifiedName</code></a> holds the span that the native code reports.</p>
+<p>The span can contain an early C terminator.</p>
+<p>Implements <a href="https://doc.rust-lang.org/nightly/core/clone/trait.Clone.html"><code>Clone</code></a>, <a href="https://doc.rust-lang.org/nightly/core/fmt/trait.Debug.html"><code>Debug</code></a>, <a href="https://doc.rust-lang.org/nightly/core/cmp/trait.Eq.html"><code>Eq</code></a>, <a href="https://doc.rust-lang.org/nightly/core/cmp/trait.PartialEq.html"><code>PartialEq</code></a>.</p>
+<section id="SimplifiedName.reported_span" class="level3">
+<h3 class="anchored" data-anchor-id="SimplifiedName.reported_span">SimplifiedName::reported_span</h3>
+<p><a href="https://github.com/rahuldave/gossil/blob/main/src/file_path.rs#L50" class="source-link">source</a></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span class="kw">pub</span> <span class="kw">fn</span> <span class="fu">reported_span</span>(<span class="op">&amp;</span><span class="va">self</span>) -&gt; <span class="kw">&amp;</span>[<span class="dt">u8</span>]</code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Borrow exactly the bytes that the native return value counts.</p>
+<div class="sd-table">
+<table class="caption-top table">
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>returns</td>
+<td>&amp;[u8]</td>
+<td>The reported span. On Windows/Cygwin, the input <code>//?/</code> gives the one-byte span <code>[0]</code>.</td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="SimplifiedName.visible_bytes" class="level3">
+<h3 class="anchored" data-anchor-id="SimplifiedName.visible_bytes">SimplifiedName::visible_bytes</h3>
+<p><a href="https://github.com/rahuldave/gossil/blob/main/src/file_path.rs#L57" class="source-link">source</a></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span class="kw">pub</span> <span class="kw">fn</span> <span class="fu">visible_bytes</span>(<span class="op">&amp;</span><span class="va">self</span>) -&gt; <span class="kw">&amp;</span>[<span class="dt">u8</span>]</code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Borrow the bytes of the diagnostic C string, which end before the first NUL.</p>
+<div class="sd-table">
+<table class="caption-top table">
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>returns</td>
+<td>&amp;[u8]</td>
+<td>The visible filename bytes, which can be shorter than <a href="file_path.html#SimplifiedName.reported_span"><code>Self::reported_span</code></a>.</td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+</section>
+<section id="PathError" class="level2">
+<h2 class="anchored" data-anchor-id="PathError">enum PathError</h2>
+<p><a href="https://github.com/rahuldave/gossil/blob/main/src/file_path.rs#L69" class="source-link">source</a></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span class="kw">pub</span> <span class="kw">enum</span> PathError</code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><a href="file_path.html#PathError"><code>PathError</code></a> reports a rejected input, an exceeded bound or a failed allocation.</p>
+<div class="sd-table">
+<table class="caption-top table">
+<thead>
+<tr>
+<th>Variant</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>InputLimit</code></td>
+<td>The input exceeds the bound of the caller or the largest buffer that memory can address.</td>
+</tr>
+<tr>
+<td><code>OutputLimit</code></td>
+<td>The simplified output exceeds the bound of the caller.</td>
+</tr>
+<tr>
+<td><code>EmbeddedNul</code></td>
+<td>The input contains a NUL, which has no accepted meaning in a filename.</td>
+</tr>
+<tr>
+<td><code>TerminalCancellation</code></td>
+<td>The native simplification would write its terminator before the start of the buffer.</td>
+</tr>
+<tr>
+<td><code>Allocation(TryReserveError)</code></td>
+<td>The reservation of the buffer failed before the input was copied.</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Implements <a href="https://doc.rust-lang.org/nightly/core/fmt/trait.Debug.html"><code>Debug</code></a>, <a href="https://doc.rust-lang.org/nightly/core/fmt/trait.Display.html"><code>Display</code></a>, <a href="https://doc.rust-lang.org/nightly/core/error/trait.Error.html"><code>Error</code></a>.</p>
+</section>
+<section id="simplify_name" class="level2">
+<h2 class="anchored" data-anchor-id="simplify_name">fn simplify_name</h2>
+<p><a href="https://github.com/rahuldave/gossil/blob/main/src/file_path.rs#L156" class="source-link">source</a></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span class="kw">pub</span> <span class="kw">fn</span> <span class="fu">simplify_name</span>(
+    input: <span class="kw">&amp;</span>[<span class="dt">u8</span>],
+    keep_trailing_slash: <span class="dt">bool</span>,
+    limits: Limits,
+) -&gt; <span class="bu">Result</span><span class="op">&lt;</span><span class="bu">Vec</span><span class="op">&lt;</span><span class="dt">u8</span><span class="op">&gt;</span>, PathError<span class="op">&gt;</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Simplify a filename with no NUL by the Unix lexical rules of Fossil.</p>
+<p>Duplicate separators collapse to one, but an initial double slash stays.
+The function removes a leading <code>./</code>, each internal <code>/./</code> and each
+<code>/component/..</code> that can cancel. Unresolved <code>..</code> components stay, even above
+an absolute root. As in native Fossil, a nonempty name whose simplified bytes
+are empty becomes <code>/</code>.</p>
+<p>A relative name that cancels past its start, such as <code>a/..</code>, is a relative
+terminal cancellation. It leaves native C with a negative cursor and a
+terminator outside the buffer, and this function rejects it.</p>
+<p>The input buffer holds at most <code>max_input_bytes</code> plus one sentinel byte. The
+output bound applies to the actual length of the simplified name.</p>
+<section id="errors" class="level4">
+<h4 class="anchored" data-anchor-id="errors">Errors</h4>
+<p>Returns <a href="file_path.html#PathError"><code>PathError</code></a> for an exceeded bound, a NUL, a failed allocation or a
+relative terminal cancellation.</p>
+</section>
+<section id="examples" class="level4">
+<h4 class="anchored" data-anchor-id="examples">Examples</h4>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span class="kw">use</span> gossil::file_path::{Limits, simplify_name};
+<span class="kw">let</span> bounds <span class="op">=</span> Limits { max_input_bytes: <span class="dv">128</span>, max_output_bytes: <span class="dv">128</span> };
+<span class="fu">assert_eq!</span>(simplify_name(<span class="st">b&quot;</span><span class="st">a/b/../c/</span><span class="st">&quot;</span>, <span class="cn">false</span>, bounds).unwrap(), <span class="st">b&quot;</span><span class="st">a/c</span><span class="st">&quot;</span>);</code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="sd-table">
+<table class="caption-top table">
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>input</code></td>
+<td>&amp;[u8]</td>
+<td>The complete filename bytes, with no embedded NUL.</td>
+</tr>
+<tr>
+<td><code>keep_trailing_slash</code></td>
+<td>bool</td>
+<td>Keep a trailing separator where the native rules keep it.</td>
+</tr>
+<tr>
+<td><code>limits</code></td>
+<td>Limits</td>
+<td>The bounds of the caller on the input bytes and the output bytes.</td>
+</tr>
+<tr>
+<td>returns</td>
+<td>Result&lt;Vec&lt;u8&gt;, PathError&gt;</td>
+<td>The owned simplified bytes, without a terminating NUL.</td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+</section>
+<section id="simplify_name_for_source" class="level2">
+<h2 class="anchored" data-anchor-id="simplify_name_for_source">fn simplify_name_for_source</h2>
+<p><a href="https://github.com/rahuldave/gossil/blob/main/src/file_path.rs#L200" class="source-link">source</a></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span class="kw">pub</span> <span class="kw">fn</span> <span class="fu">simplify_name_for_source</span>(
+    input: <span class="kw">&amp;</span>[<span class="dt">u8</span>],
+    keep_trailing_slash: <span class="dt">bool</span>,
+    limits: Limits,
+    platform: SourcePlatform,
+) -&gt; <span class="bu">Result</span><span class="op">&lt;</span>SimplifiedName, PathError<span class="op">&gt;</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Simplify a filename by the branch of the Fossil source that the caller selects.</p>
+<p>The Windows/Cygwin branch converts every backslash to a slash. Then it
+removes <code>//?/</code> and compares the next three bytes with <code>UNC</code>, by the ASCII
+case map of SQLite. The function does not check drives, the names after the
+<code>UNC</code> prefix or whether a name is valid. For the input <code>//?/</code>, native C copies the terminator of the input
+to byte zero but reports a length of one. So the result keeps that NUL in its
+reported span, and its visible C string is empty.</p>
+<p>The input buffer holds at most the length of the input plus one sentinel
+byte. The output bound counts the reported span, with any NUL inside that
+span. After the loops compact the name, the native lookahead can still read
+the original bytes at the end of the buffer. A relative terminal cancellation
+returns the same error as <a href="file_path.html#simplify_name"><code>simplify_name</code></a>.</p>
+<section id="errors-1" class="level4">
+<h4 class="anchored" data-anchor-id="errors-1">Errors</h4>
+<p>Returns <a href="file_path.html#PathError"><code>PathError</code></a> for an exceeded bound, a NUL, a failed allocation or a
+relative terminal cancellation.</p>
+</section>
+<section id="examples-1" class="level4">
+<h4 class="anchored" data-anchor-id="examples-1">Examples</h4>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span class="kw">use</span> gossil::file_path::{Limits, SourcePlatform, simplify_name_for_source};
+<span class="kw">let</span> bounds <span class="op">=</span> Limits { max_input_bytes: <span class="dv">128</span>, max_output_bytes: <span class="dv">128</span> };
+<span class="kw">let</span> windows <span class="op">=</span> SourcePlatform::WindowsCygwin;
+<span class="kw">let</span> unc <span class="op">=</span> simplify_name_for_source(<span class="st">b&quot;</span><span class="sc">\\</span><span class="sc">\\</span><span class="st">?</span><span class="sc">\\</span><span class="st">UNC</span><span class="sc">\\</span><span class="st">a</span><span class="sc">\\</span><span class="st">b</span><span class="st">&quot;</span>, <span class="cn">false</span>, bounds, windows).unwrap();
+<span class="fu">assert_eq!</span>(unc.visible_bytes(), <span class="st">b&quot;</span><span class="st">//a/b</span><span class="st">&quot;</span>);
+<span class="kw">let</span> prefix <span class="op">=</span> simplify_name_for_source(<span class="st">b&quot;</span><span class="st">//?/</span><span class="st">&quot;</span>, <span class="cn">false</span>, bounds, windows).unwrap();
+<span class="fu">assert_eq!</span>(prefix.reported_span(), <span class="st">b&quot;</span><span class="sc">\0</span><span class="st">&quot;</span>);
+<span class="fu">assert!</span>(prefix.visible_bytes().is_empty());</code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="sd-table">
+<table class="caption-top table">
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>input</code></td>
+<td>&amp;[u8]</td>
+<td>The complete filename bytes, with no NUL.</td>
+</tr>
+<tr>
+<td><code>keep_trailing_slash</code></td>
+<td>bool</td>
+<td>The native option to keep a trailing slash.</td>
+</tr>
+<tr>
+<td><code>limits</code></td>
+<td>Limits</td>
+<td>The bounds on the input and on the reported output span.</td>
+</tr>
+<tr>
+<td><code>platform</code></td>
+<td>SourcePlatform</td>
+<td>The source branch to apply, whatever the host.</td>
+</tr>
+<tr>
+<td>returns</td>
+<td>Result&lt;SimplifiedName, PathError&gt;</td>
+<td>The bytes that the native code reports, with a separate accessor for the visible C string.</td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+</section>
+<nav class="page-navigation"><div class="nav-page nav-page-previous"><a href="diff.html" class="pagination-link"><i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">diff</span></a></div><div class="nav-page nav-page-next"><a href="gest_author_values.html" class="pagination-link"><span class="nav-page-text">gest_author_values</span> <i class="bi bi-arrow-right-short"></i></a></div></nav></main></div></body></html>

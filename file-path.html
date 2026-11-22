@@ -1,0 +1,186 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="generator" content="smalldocs-0.5.12"><meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes"><title>Lexical file paths – Gossil</title><link rel="icon" href="site_libs/themes/atelier/logo.svg"><link rel="stylesheet" href="site_libs/themes/atelier/atelier.css" data-mode="light" class="quarto-color-scheme" id="quarto-bootstrap-light" media="not all and (prefers-color-scheme: dark)"><link rel="stylesheet" href="site_libs/themes/atelier/atelier-dark.css" data-mode="dark" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap-dark" media="(prefers-color-scheme: dark)"><link rel="stylesheet" href="site_libs/bootstrap-icons/bootstrap-icons.min.css"><link rel="stylesheet" href="site_libs/smalldocs.css"><meta name="smalldocs:offset" content="./"><script src="site_libs/bootstrap/bootstrap.bundle.min.js"></script><script src="site_libs/fuse/fuse.min.js"></script><script src="site_libs/smalldocs.js" defer></script><script>(function(){var d=document.documentElement,s=null;try{s=localStorage.getItem('smalldocs-scheme')}catch(e){}var alt=s?s==='alternate':!!(window.matchMedia&&matchMedia('(prefers-color-scheme: dark)').matches);var ls=document.querySelectorAll('link.quarto-color-scheme');if(alt)d.dataset.scheme='alternate';if(s)ls.forEach(function(l){var on=l.classList.contains('quarto-color-alternate')===alt;if(on)l.setAttribute('blocking','render');l.media=on?'all':'not all'});var on=ls[alt?1:0];if(on&&on.dataset.mode==='dark')d.classList.add('quarto-dark')})();</script></head><body class="nav-sidebar floating nav-fixed"><header id="quarto-header" class="headroom sticky-top"><nav class="navbar navbar-expand-lg sd-navbar-default"><div class="navbar-container container-fluid"><div class="navbar-brand-container mx-auto"><a class="navbar-brand" href="index.html"><span class="navbar-title">Gossil</span></a></div><button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button><div class="collapse navbar-collapse" id="navbarCollapse"><ul class="navbar-nav navbar-nav-scroll me-auto"><li class="nav-item"><a class="nav-link" href="getting-started.html"><span class="menu-text">Start</span></a></li><li class="nav-item"><a class="nav-link" href="concepts.html"><span class="menu-text">Library concepts</span></a></li><li class="nav-item"><a class="nav-link" href="cli.html"><span class="menu-text">CLI</span></a></li><li class="nav-item"><a class="nav-link" href="api/index.html"><span class="menu-text">Rust API</span></a></li><li class="nav-item"><a class="nav-link" href="development-plan.html"><span class="menu-text">Development</span></a></li></ul><ul class="navbar-nav navbar-nav-scroll ms-auto"><li class="nav-item compact"><a class="nav-link" href="https://github.com/rahuldave/gossil" aria-label="github"><i class="bi bi-github" role="img"></i></a></li><li class="nav-item compact"><a class="quarto-color-scheme-toggle nav-link" href="" title="Toggle dark mode" onclick="window.smalldocsToggleScheme(); return false;"><i class="bi"></i></a></li></ul><div class="quarto-navbar-tools"><div class="smalldocs-search" id="quarto-search"><i class="bi bi-search" aria-hidden="true"></i><input type="search" class="form-control form-control-sm" placeholder="Search" aria-label="Search" autocomplete="off"><div class="smalldocs-search-results dropdown-menu"></div></div></div></div></div></nav><nav class="quarto-secondary-nav"><div class="container-fluid d-flex"><button type="button" class="quarto-btn-toggle btn" aria-controls="quarto-sidebar" aria-label="Toggle sidebar navigation"><i class="bi bi-layout-text-sidebar-reverse"></i></button><nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="working-with-repositories.html">Guides</a></li><li class="breadcrumb-item"><a href="file-path.html">Lexical file paths</a></li></ol></nav></div></nav></header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article has-sidebar has-margin"><nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto"><div class="sidebar-menu-container"><ul class="list-unstyled mt-1"><li class="sidebar-item"><div class="sidebar-item-container"><a href="index.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Gossil</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="getting-started.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Get started</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="cli.html" class="sidebar-item-text sidebar-link"><span class="menu-text">CLI reference</span></a></div></li><li class="sidebar-item sidebar-item-section"><div class="sidebar-item-container"><a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true"><span class="menu-text">Guides</span></a><a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section"><i class="bi bi-chevron-right ms-2"></i></a></div><ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show"><li class="sidebar-item"><div class="sidebar-item-container"><a href="working-with-repositories.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Working with repositories</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="compare-with-git.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Compare Gossil with Git</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="concepts.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Library concepts</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="examples.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Rust library examples</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="delta-encoder.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Bounded delta encoder</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="delta-decoder.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Bounded delta decoder</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="blob-primitives.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Byte digests and packed blobs</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="artifact-checksum.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Artifact byte checksums</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="token-codec.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Fossil token bytes</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="glob.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Bounded Fossil glob port</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="file-path.html" class="sidebar-item-text sidebar-link active" aria-current="page"><span class="menu-text">Lexical file paths</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="history.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Check-in graph paths</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="artifact-parser.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Artifact parser</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="diff.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Compare normalized byte lines</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="task-ticket.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Emit a task creation artifact</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="local-storage.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Local database ownership</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="native-storage.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Native local storage</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="gest-task-values.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Gest task values</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="gest-project-values.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Gest project values</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="gest-author-values.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Gest author values</span></a></div></li></ul></li><li class="sidebar-item sidebar-item-section"><div class="sidebar-item-container"><a class="sidebar-item-text sidebar-link" href="api/index.html"><span class="menu-text">Rust API</span></a><a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Toggle section"><i class="bi bi-chevron-right ms-2"></i></a></div><ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show"><li class="sidebar-item"><div class="sidebar-item-container"><a href="api/artifact.html" class="sidebar-item-text sidebar-link"><span class="menu-text">artifact</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="api/artifact_checksum.html" class="sidebar-item-text sidebar-link"><span class="menu-text">artifact_checksum</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="api/compression.html" class="sidebar-item-text sidebar-link"><span class="menu-text">compression</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="api/content_hash.html" class="sidebar-item-text sidebar-link"><span class="menu-text">content_hash</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="api/delta.html" class="sidebar-item-text sidebar-link"><span class="menu-text">delta</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="api/diff.html" class="sidebar-item-text sidebar-link"><span class="menu-text">diff</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="api/file_path.html" class="sidebar-item-text sidebar-link"><span class="menu-text">file_path</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="api/gest_author_values.html" class="sidebar-item-text sidebar-link"><span class="menu-text">gest_author_values</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="api/gest_project_values.html" class="sidebar-item-text sidebar-link"><span class="menu-text">gest_project_values</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="api/gest_task_values.html" class="sidebar-item-text sidebar-link"><span class="menu-text">gest_task_values</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="api/glob.html" class="sidebar-item-text sidebar-link"><span class="menu-text">glob</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="api/gossil.html" class="sidebar-item-text sidebar-link"><span class="menu-text">gossil</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="api/history.html" class="sidebar-item-text sidebar-link"><span class="menu-text">history</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="api/native_date.html" class="sidebar-item-text sidebar-link"><span class="menu-text">native_date</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="api/product.html" class="sidebar-item-text sidebar-link"><span class="menu-text">product</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="api/storage.html" class="sidebar-item-text sidebar-link"><span class="menu-text">storage</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="api/task_ticket.html" class="sidebar-item-text sidebar-link"><span class="menu-text">task_ticket</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="api/token_codec.html" class="sidebar-item-text sidebar-link"><span class="menu-text">token_codec</span></a></div></li></ul></li><li class="sidebar-item sidebar-item-section"><div class="sidebar-item-container"><a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true"><span class="menu-text">Development</span></a><a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true" aria-label="Toggle section"><i class="bi bi-chevron-right ms-2"></i></a></div><ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show"><li class="sidebar-item"><div class="sidebar-item-container"><a href="development-plan.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Development and contributing</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="conformance.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Inherited-test runner</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="libsql-wrapper.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Exact libsql TEXT retrieval</span></a></div></li></ul></li></ul></div></nav><div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item"></div><div id="quarto-margin-sidebar" class="sidebar margin-sidebar"><nav id="TOC" role="doc-toc" class="toc-active"><h2 id="toc-title">On this page</h2><ul><li><a href="#simplify-a-name" id="toc-simplify-a-name" class="nav-link" data-scroll-target="#simplify-a-name">Simplify a name</a></li><li><a href="#read-the-result-of-a-source-branch" id="toc-read-the-result-of-a-source-branch" class="nav-link" data-scroll-target="#read-the-result-of-a-source-branch">Read the result of a source branch</a></li><li><a href="#set-the-bounds" id="toc-set-the-bounds" class="nav-link" data-scroll-target="#set-the-bounds">Set the bounds</a></li><li><a href="#the-order-of-the-lexical-rules" id="toc-the-order-of-the-lexical-rules" class="nav-link" data-scroll-target="#the-order-of-the-lexical-rules">The order of the lexical rules</a></li><li><a href="#when-a-relative-name-cancels-past-its-start" id="toc-when-a-relative-name-cancels-past-its-start" class="nav-link" data-scroll-target="#when-a-relative-name-cancels-past-its-start">When a relative name cancels past its start</a></li><li><a href="#provenance-and-tests" id="toc-provenance-and-tests" class="nav-link" data-scroll-target="#provenance-and-tests">Provenance and tests</a></li><li><a href="#recommendations" id="toc-recommendations" class="nav-link" data-scroll-target="#recommendations">Recommendations</a></li></ul></nav></div><main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="working-with-repositories.html">Guides</a></li><li class="breadcrumb-item"><a href="file-path.html">Lexical file paths</a></li></ol></nav><div class="quarto-title"><h1 class="title">Lexical file paths</h1></div><div class="quarto-title-meta"></div></header><p>The <code>gossil::file_path</code> module simplifies filename bytes by the rules of
+Fossil’s <code>file_simplify_name</code> function. Lexical simplification changes only the
+bytes of the name. It does not read the filesystem, resolve symlinks or make a
+name absolute. The native C source has one branch for Unix and one for Windows
+and Cygwin. The module ports both source branches, and the caller selects one
+of them on every host.</p>
+<section id="simplify-a-name" class="level2">
+<h2 class="anchored" data-anchor-id="simplify-a-name">Simplify a name</h2>
+<p><code>simplify_name(input, keep_trailing_slash, limits)</code> uses the Unix branch and
+returns <code>Result&lt;Vec&lt;u8&gt;, PathError&gt;</code>. Give the complete filename as a byte
+slice, which does not have to be UTF-8. An empty input gives an empty output,
+and an input that contains a NUL byte is an error.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span class="kw">use</span> gossil::file_path::{Limits, simplify_name};
+
+<span class="kw">let</span> limits <span class="op">=</span> Limits { max_input_bytes: <span class="dv">128</span>, max_output_bytes: <span class="dv">128</span> };
+<span class="kw">let</span> path <span class="op">=</span> simplify_name(<span class="st">b&quot;</span><span class="st">a/b/../c/</span><span class="st">&quot;</span>, <span class="cn">false</span>, limits).unwrap();
+<span class="fu">assert_eq!</span>(path, <span class="st">b&quot;</span><span class="st">a/c</span><span class="st">&quot;</span>);</code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><code>simplify_name_for_source(input, keep_trailing_slash, limits, platform)</code> takes
+a <a href="api/file_path.html#SourcePlatform"><code>SourcePlatform</code></a> and returns <code>Result&lt;SimplifiedName, PathError&gt;</code>.</p>
+<div class="sd-table">
+<table class="caption-top table">
+<thead>
+<tr>
+<th>Source choice</th>
+<th>Behavior</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>SourcePlatform::Unix</code></td>
+<td>Backslashes and extended prefixes stay ordinary bytes</td>
+</tr>
+<tr>
+<td><code>SourcePlatform::WindowsCygwin</code></td>
+<td>Backslashes become slashes, and the <code>//?/</code> extended prefix is removed</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>The source choice does not depend on the host operating system. A choice of
+<code>WindowsCygwin</code> does not show that Gossil runs correctly on Windows or Cygwin.</p>
+</section>
+<section id="read-the-result-of-a-source-branch" class="level2">
+<h2 class="anchored" data-anchor-id="read-the-result-of-a-source-branch">Read the result of a source branch</h2>
+<p>A <a href="api/file_path.html#SimplifiedName"><code>SimplifiedName</code></a> has two views of its bytes:</p>
+<ul>
+<li><strong><code>reported_span()</code></strong> borrows the bytes that the native return value counts.</li>
+<li><strong><code>visible_bytes()</code></strong> borrows the bytes before the first NUL, as a C string shows them.</li>
+</ul>
+<p>The two views differ for one input. For the Windows/Cygwin input <code>//?/</code>, native
+C copies the terminator of the input to byte zero but reports a length of one.
+So the reported span is <code>[0]</code>, and the visible name is empty.</p>
+</section>
+<section id="set-the-bounds" class="level2">
+<h2 class="anchored" data-anchor-id="set-the-bounds">Set the bounds</h2>
+<p><a href="api/delta.html#Limits"><code>Limits</code></a> has the fields <code>max_input_bytes</code> and <code>max_output_bytes</code>. The input
+must fit its limit. The module reserves one buffer of the input length plus
+one sentinel byte, the C terminator, before it copies the input. The output limit counts the
+reported span, and the span can hold an early NUL. So the input <code>//?/</code> needs an
+output limit of at least one with <code>WindowsCygwin</code>, but its visible name is
+empty.</p>
+<div class="sd-table">
+<table class="caption-top table">
+<thead>
+<tr>
+<th>Error</th>
+<th>Condition</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>InputLimit</code></td>
+<td>The input exceeds its limit, or the buffer exceeds addressable memory</td>
+</tr>
+<tr>
+<td><code>OutputLimit</code></td>
+<td>The reported span exceeds its limit</td>
+</tr>
+<tr>
+<td><code>EmbeddedNul</code></td>
+<td>The input contains NUL</td>
+</tr>
+<tr>
+<td><code>TerminalCancellation</code></td>
+<td>A relative name cancels to before the start of the buffer</td>
+</tr>
+<tr>
+<td><code>Allocation</code></td>
+<td>The buffer reservation fails, and the error keeps the original cause</td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="the-order-of-the-lexical-rules" class="level2">
+<h2 class="anchored" data-anchor-id="the-order-of-the-lexical-rules">The order of the lexical rules</h2>
+<p>The module follows the loops of the native function in their order:</p>
+<ol>
+<li>With <code>WindowsCygwin</code>, it converts each backslash to a slash, then handles an initial <code>//?/</code>.</li>
+<li>If <code>keep_trailing_slash</code> is false, it trims the trailing slashes.</li>
+<li>It collapses duplicate slashes, but keeps an initial double slash.</li>
+<li>It removes leading <code>./</code>, internal <code>/./</code> and each <code>/component/..</code> that can cancel.</li>
+</ol>
+<p>For example, <code>//a</code> stays <code>//a</code>, but <code>//</code> becomes <code>/</code> when <code>keep_trailing_slash</code> is false.
+Unresolved <code>..</code> components stay, even above an absolute root. A nonempty name
+that simplifies to nothing becomes <code>/</code>.</p>
+<p>The trailing slash option does not keep every trailing slash. With the option
+true, <code>a///</code> becomes <code>a/</code>, but <code>a///./</code> becomes <code>a</code>. The second result comes
+from the collapse loop. The loop shortens the logical length but leaves the old
+bytes after it. A later <code>/./</code> test can read those bytes, and the port keeps
+this behavior.</p>
+<p>With <code>WindowsCygwin</code>, the module compares the three bytes after <code>//?/</code> with
+<code>UNC</code>, and it ignores ASCII case, as SQLite’s <code>sqlite3_strnicmp</code> does. A match
+gives an initial slash and skips <code>UNC</code>. So <code>//?/UNC/a/b</code> becomes <code>//a/b</code>.
+Without a match, the byte after the prefix moves to the start, and <code>//?/a:/a/b</code>
+becomes <code>a:/a/b</code>. The port does not check drives, the names after the <code>UNC</code> prefix or
+whether a name is valid.</p>
+</section>
+<section id="when-a-relative-name-cancels-past-its-start" class="level2">
+<h2 class="anchored" data-anchor-id="when-a-relative-name-cancels-past-its-start">When a relative name cancels past its start</h2>
+<p>A relative name such as <code>a/..</code> cancels its last component back past the start
+of the name. The case is a relative terminal cancellation. Native <code>backup_dir</code>
+then leaves the output cursor at minus one, so native C writes the final
+terminator one byte before the buffer. The write is undefined behavior, and
+native Fossil has no defined result for these names.</p>
+<p>The port returns <code>PathError::TerminalCancellation</code> in place of a result.
+Examples are <code>a/..</code>, <code>.../..</code> and <code>a/../</code> with the trailing slash option false.
+The error is a safe policy of the port, and not a native result.</p>
+</section>
+<section id="provenance-and-tests" class="level2">
+<h2 class="anchored" data-anchor-id="provenance-and-tests">Provenance and tests</h2>
+<p>The port follows Fossil check-in <code>7e8ecf0ce4</code>, the same check-in as the
+reference binary of the project. The source is <code>src/file.c</code>, lines 1172 to 1180
+for <code>backup_dir</code> and lines 1195 to 1260 for <code>file_simplify_name</code>. The test
+<code>test/file1.test</code> and its BSD license text are copied unchanged into
+<code>tests/fixtures/file-path/</code>.</p>
+<p>The tests in <code>tests/file_path.rs</code> check these groups of cases:</p>
+<div class="sd-table">
+<table class="caption-top table">
+<thead>
+<tr>
+<th>Group</th>
+<th>Source</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>25 cases of <code>simplify-name</code> 100 to 107</td>
+<td><code>file1.test</code></td>
+</tr>
+<tr>
+<td>6 cases of <code>simplify-name</code> 108 and 109</td>
+<td><code>file1.test</code>, which runs them only on Windows</td>
+</tr>
+<tr>
+<td>14 Unix cases and 18 Windows/Cygwin cases</td>
+<td>adapter plans for a C copy of the native source</td>
+</tr>
+<tr>
+<td>Lexical controls, bounds and errors</td>
+<td>the Rust tests</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>The test of the Windows/Cygwin plan also holds its own copy of the 18 cases. It
+compares the plan with that copy, so a dropped, added or changed case fails.</p>
+<p>An earlier run compiled the C copy on a macOS host, once for each branch. Each
+build passed all of its plan cases. The records of that run are not in the
+repository.</p>
+<p>The <code>test-simplify-name</code> command of the Fossil 2.29 binary gives the same output
+as the fixtures for all 25 inherited cases. It does the same for the Unix adapter
+cases with the option false. The command has no trailing slash option, so it
+cannot check the cases with the option true.</p>
+<p>Relative-name, relative-tree-name and absolute-tree-name operations are not
+part of the module, because they need a working directory and a repository root.
+The Windows and Cygwin branch has not run on a Windows or Cygwin host.</p>
+</section>
+<section id="recommendations" class="level2">
+<h2 class="anchored" data-anchor-id="recommendations">Recommendations</h2>
+<p>Select the source branch when a name needs platform conversion. Set byte
+limits, and keep reported spans apart from visible names. Apply the policy for
+the filesystem and for containment in a separate step. Next, qualify the
+Windows/Cygwin branch on a native host before code depends on it.</p>
+</section>
+<nav class="page-navigation"><div class="nav-page nav-page-previous"><a href="glob.html" class="pagination-link"><i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">Bounded Fossil glob port</span></a></div><div class="nav-page nav-page-next"><a href="history.html" class="pagination-link"><span class="nav-page-text">Check-in graph paths</span> <i class="bi bi-arrow-right-short"></i></a></div></nav></main></div></body></html>

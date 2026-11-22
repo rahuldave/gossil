@@ -1,0 +1,636 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="generator" content="smalldocs-0.5.12"><meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes"><meta name="description" content="Find shortest paths and common ancestors in an explicit check-in graph, as Fossil does. Port the check-in graph searches of Fossil `src/path.c` and `src/pqueue.c`, with finite bounds."><title>history – Gossil</title><link rel="icon" href="../site_libs/themes/atelier/logo.svg"><link rel="stylesheet" href="../site_libs/themes/atelier/atelier.css" data-mode="light" class="quarto-color-scheme" id="quarto-bootstrap-light" media="not all and (prefers-color-scheme: dark)"><link rel="stylesheet" href="../site_libs/themes/atelier/atelier-dark.css" data-mode="dark" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap-dark" media="(prefers-color-scheme: dark)"><link rel="stylesheet" href="../site_libs/bootstrap-icons/bootstrap-icons.min.css"><link rel="stylesheet" href="../site_libs/smalldocs.css"><meta name="smalldocs:offset" content="../"><script src="../site_libs/bootstrap/bootstrap.bundle.min.js"></script><script src="../site_libs/fuse/fuse.min.js"></script><script src="../site_libs/smalldocs.js" defer></script><script>(function(){var d=document.documentElement,s=null;try{s=localStorage.getItem('smalldocs-scheme')}catch(e){}var alt=s?s==='alternate':!!(window.matchMedia&&matchMedia('(prefers-color-scheme: dark)').matches);var ls=document.querySelectorAll('link.quarto-color-scheme');if(alt)d.dataset.scheme='alternate';if(s)ls.forEach(function(l){var on=l.classList.contains('quarto-color-alternate')===alt;if(on)l.setAttribute('blocking','render');l.media=on?'all':'not all'});var on=ls[alt?1:0];if(on&&on.dataset.mode==='dark')d.classList.add('quarto-dark')})();</script></head><body class="nav-sidebar floating nav-fixed"><header id="quarto-header" class="headroom sticky-top"><nav class="navbar navbar-expand-lg sd-navbar-default"><div class="navbar-container container-fluid"><div class="navbar-brand-container mx-auto"><a class="navbar-brand" href="../index.html"><span class="navbar-title">Gossil</span></a></div><button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button><div class="collapse navbar-collapse" id="navbarCollapse"><ul class="navbar-nav navbar-nav-scroll me-auto"><li class="nav-item"><a class="nav-link" href="../getting-started.html"><span class="menu-text">Start</span></a></li><li class="nav-item"><a class="nav-link" href="../concepts.html"><span class="menu-text">Library concepts</span></a></li><li class="nav-item"><a class="nav-link" href="../cli.html"><span class="menu-text">CLI</span></a></li><li class="nav-item"><a class="nav-link" href="index.html"><span class="menu-text">Rust API</span></a></li><li class="nav-item"><a class="nav-link" href="../development-plan.html"><span class="menu-text">Development</span></a></li></ul><ul class="navbar-nav navbar-nav-scroll ms-auto"><li class="nav-item compact"><a class="nav-link" href="https://github.com/rahuldave/gossil" aria-label="github"><i class="bi bi-github" role="img"></i></a></li><li class="nav-item compact"><a class="quarto-color-scheme-toggle nav-link" href="" title="Toggle dark mode" onclick="window.smalldocsToggleScheme(); return false;"><i class="bi"></i></a></li></ul><div class="quarto-navbar-tools"><div class="smalldocs-search" id="quarto-search"><i class="bi bi-search" aria-hidden="true"></i><input type="search" class="form-control form-control-sm" placeholder="Search" aria-label="Search" autocomplete="off"><div class="smalldocs-search-results dropdown-menu"></div></div></div></div></div></nav><nav class="quarto-secondary-nav"><div class="container-fluid d-flex"><button type="button" class="quarto-btn-toggle btn" aria-controls="quarto-sidebar" aria-label="Toggle sidebar navigation"><i class="bi bi-layout-text-sidebar-reverse"></i></button><nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="index.html">Rust API</a></li><li class="breadcrumb-item"><a href="history.html">history</a></li></ol></nav></div></nav></header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article has-sidebar has-margin"><nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto"><div class="sidebar-menu-container"><ul class="list-unstyled mt-1"><li class="sidebar-item"><div class="sidebar-item-container"><a href="../index.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Gossil</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="../getting-started.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Get started</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="../cli.html" class="sidebar-item-text sidebar-link"><span class="menu-text">CLI reference</span></a></div></li><li class="sidebar-item sidebar-item-section"><div class="sidebar-item-container"><a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true"><span class="menu-text">Guides</span></a><a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section"><i class="bi bi-chevron-right ms-2"></i></a></div><ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show"><li class="sidebar-item"><div class="sidebar-item-container"><a href="../working-with-repositories.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Working with repositories</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="../compare-with-git.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Compare Gossil with Git</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="../concepts.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Library concepts</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="../examples.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Rust library examples</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="../delta-encoder.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Bounded delta encoder</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="../delta-decoder.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Bounded delta decoder</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="../blob-primitives.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Byte digests and packed blobs</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="../artifact-checksum.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Artifact byte checksums</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="../token-codec.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Fossil token bytes</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="../glob.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Bounded Fossil glob port</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="../file-path.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Lexical file paths</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="../history.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Check-in graph paths</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="../artifact-parser.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Artifact parser</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="../diff.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Compare normalized byte lines</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="../task-ticket.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Emit a task creation artifact</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="../local-storage.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Local database ownership</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="../native-storage.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Native local storage</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="../gest-task-values.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Gest task values</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="../gest-project-values.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Gest project values</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="../gest-author-values.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Gest author values</span></a></div></li></ul></li><li class="sidebar-item sidebar-item-section"><div class="sidebar-item-container"><a class="sidebar-item-text sidebar-link" href="index.html"><span class="menu-text">Rust API</span></a><a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Toggle section"><i class="bi bi-chevron-right ms-2"></i></a></div><ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show"><li class="sidebar-item"><div class="sidebar-item-container"><a href="artifact.html" class="sidebar-item-text sidebar-link"><span class="menu-text">artifact</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="artifact_checksum.html" class="sidebar-item-text sidebar-link"><span class="menu-text">artifact_checksum</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="compression.html" class="sidebar-item-text sidebar-link"><span class="menu-text">compression</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="content_hash.html" class="sidebar-item-text sidebar-link"><span class="menu-text">content_hash</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="delta.html" class="sidebar-item-text sidebar-link"><span class="menu-text">delta</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="diff.html" class="sidebar-item-text sidebar-link"><span class="menu-text">diff</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="file_path.html" class="sidebar-item-text sidebar-link"><span class="menu-text">file_path</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="gest_author_values.html" class="sidebar-item-text sidebar-link"><span class="menu-text">gest_author_values</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="gest_project_values.html" class="sidebar-item-text sidebar-link"><span class="menu-text">gest_project_values</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="gest_task_values.html" class="sidebar-item-text sidebar-link"><span class="menu-text">gest_task_values</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="glob.html" class="sidebar-item-text sidebar-link"><span class="menu-text">glob</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="gossil.html" class="sidebar-item-text sidebar-link"><span class="menu-text">gossil</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="history.html" class="sidebar-item-text sidebar-link active" aria-current="page"><span class="menu-text">history</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="native_date.html" class="sidebar-item-text sidebar-link"><span class="menu-text">native_date</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="product.html" class="sidebar-item-text sidebar-link"><span class="menu-text">product</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="storage.html" class="sidebar-item-text sidebar-link"><span class="menu-text">storage</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="task_ticket.html" class="sidebar-item-text sidebar-link"><span class="menu-text">task_ticket</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="token_codec.html" class="sidebar-item-text sidebar-link"><span class="menu-text">token_codec</span></a></div></li></ul></li><li class="sidebar-item sidebar-item-section"><div class="sidebar-item-container"><a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true"><span class="menu-text">Development</span></a><a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true" aria-label="Toggle section"><i class="bi bi-chevron-right ms-2"></i></a></div><ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show"><li class="sidebar-item"><div class="sidebar-item-container"><a href="../development-plan.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Development and contributing</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="../conformance.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Inherited-test runner</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="../libsql-wrapper.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Exact libsql TEXT retrieval</span></a></div></li></ul></li></ul></div></nav><div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item"></div><div id="quarto-margin-sidebar" class="sidebar margin-sidebar"><nav id="TOC" role="doc-toc" class="toc-active"><h2 id="toc-title">On this page</h2><ul><li><a href="#recommendations" id="toc-recommendations" class="nav-link" data-scroll-target="#recommendations">Recommendations</a></li><li><a href="#Checkin" id="toc-Checkin" class="nav-link" data-scroll-target="#Checkin">struct Checkin</a></li><li><a href="#ParentLink" id="toc-ParentLink" class="nav-link" data-scroll-target="#ParentLink">struct ParentLink</a></li><li><a href="#Cherrypick" id="toc-Cherrypick" class="nav-link" data-scroll-target="#Cherrypick">struct Cherrypick</a></li><li><a href="#Limits" id="toc-Limits" class="nav-link" data-scroll-target="#Limits">struct Limits</a></li><li><a href="#Direction" id="toc-Direction" class="nav-link" data-scroll-target="#Direction">enum Direction</a></li><li><a href="#Options" id="toc-Options" class="nav-link" data-scroll-target="#Options">struct Options</a></li><li><a href="#Step" id="toc-Step" class="nav-link" data-scroll-target="#Step">struct Step</a></li><li><a href="#Path" id="toc-Path" class="nav-link" data-scroll-target="#Path">struct Path</a><ul><li><a href="#Path.visible_steps" id="toc-Path.visible_steps" class="nav-link" data-scroll-target="#Path.visible_steps">Path::visible_steps</a></li><li><a href="#Path.midpoint" id="toc-Path.midpoint" class="nav-link" data-scroll-target="#Path.midpoint">Path::midpoint</a></li><li><a href="#Path.search_depth" id="toc-Path.search_depth" class="nav-link" data-scroll-target="#Path.search_depth">Path::search_depth</a></li></ul></li><li><a href="#Ancestor" id="toc-Ancestor" class="nav-link" data-scroll-target="#Ancestor">struct Ancestor</a></li><li><a href="#Error" id="toc-Error" class="nav-link" data-scroll-target="#Error">enum Error</a></li><li><a href="#Graph" id="toc-Graph" class="nav-link" data-scroll-target="#Graph">struct Graph</a><ul><li><a href="#Graph.new" id="toc-Graph.new" class="nav-link" data-scroll-target="#Graph.new">Graph::new</a></li><li><a href="#Graph.shortest" id="toc-Graph.shortest" class="nav-link" data-scroll-target="#Graph.shortest">Graph::shortest</a></li><li><a href="#Graph.common_ancestor" id="toc-Graph.common_ancestor" class="nav-link" data-scroll-target="#Graph.common_ancestor">Graph::common_ancestor</a></li></ul></li></ul></nav></div><main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="index.html">Rust API</a></li><li class="breadcrumb-item"><a href="history.html">history</a></li></ol></nav><div class="quarto-title"><h1 class="title">history</h1></div><div><div class="description">Find shortest paths and common ancestors in an explicit check-in graph, as Fossil does. Port the check-in graph searches of Fossil <code>src/path.c</code> and <code>src/pqueue.c</code>, with finite bounds.</div></div><div class="quarto-title-meta"></div></header><p>The original code is copyright 2011 D. Richard Hipp, under the 2-Clause BSD
+license. The license text is in <code>tests/fixtures/history/fossil-license.txt</code>.</p>
+<p>The module ports <code>path_shortest</code>, <code>path_common_ancestor</code> and the queue order of
+<code>pqueue.c</code> from Fossil check-in <code>7e8ecf0ce4</code>, over rows that the caller supplies.
+It neither reads a repository nor grants authority to derived indexes.
+Callers supply the query order of the <code>plink</code> and <code>cherrypick</code> rows, and the
+resolved metadata of branch and time. The algorithms keep the tie order of
+<code>pqueue.c</code>, and the native ban on a backwards step after a forward edge. The
+bounds and the errors for malformed input are new controls.</p>
+<section id="recommendations" class="level2">
+<h2 class="anchored" data-anchor-id="recommendations">Recommendations</h2>
+<p>Use explicit finite limits, and keep the native query order of the rows.
+Next, qualify a separately authorized storage adapter before using persisted rows.</p>
+</section>
+<section id="Checkin" class="level2">
+<h2 class="anchored" data-anchor-id="Checkin">struct Checkin</h2>
+<p><a href="https://github.com/rahuldave/gossil/blob/main/src/history.rs#L24" class="source-link">source</a></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span class="kw">pub</span> <span class="kw">struct</span> Checkin<span class="op">&lt;</span><span class="op">&#x27;</span><span class="at">a</span><span class="op">&gt;</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>A <a href="history.html#Checkin"><code>Checkin</code></a> holds one check-in with resolved metadata.</p>
+<p>The caller resolves the default branch and the default for a missing time.</p>
+<div class="sd-table">
+<table class="caption-top table">
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>rid</code></td>
+<td>i32</td>
+<td>Positive native record identifier.</td>
+</tr>
+<tr>
+<td><code>branch</code></td>
+<td>&amp;'a [u8]</td>
+<td>Resolved <code>branch_of_rid</code> value, without an embedded NUL.</td>
+</tr>
+<tr>
+<td><code>mtime</code></td>
+<td>f64</td>
+<td>Finite Julian-day value of <code>mtime_of_rid</code>. The native default for a missing time is zero.</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Implements <a href="https://doc.rust-lang.org/nightly/core/clone/trait.Clone.html"><code>Clone</code></a>, <a href="https://doc.rust-lang.org/nightly/core/marker/trait.Copy.html"><code>Copy</code></a>, <a href="https://doc.rust-lang.org/nightly/core/fmt/trait.Debug.html"><code>Debug</code></a>.</p>
+</section>
+<section id="ParentLink" class="level2">
+<h2 class="anchored" data-anchor-id="ParentLink">struct ParentLink</h2>
+<p><a href="https://github.com/rahuldave/gossil/blob/main/src/history.rs#L34" class="source-link">source</a></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span class="kw">pub</span> <span class="kw">struct</span> ParentLink</code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>A <a href="history.html#ParentLink"><code>ParentLink</code></a> holds one <code>plink</code> row, in the caller’s native query order.</p>
+<div class="sd-table">
+<table class="caption-top table">
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>parent</code></td>
+<td>i32</td>
+<td>Parent check-in identifier.</td>
+</tr>
+<tr>
+<td><code>child</code></td>
+<td>i32</td>
+<td>Child check-in identifier.</td>
+</tr>
+<tr>
+<td><code>primary</code></td>
+<td>bool</td>
+<td>Native <code>isprim</code> flag.</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Implements <a href="https://doc.rust-lang.org/nightly/core/clone/trait.Clone.html"><code>Clone</code></a>, <a href="https://doc.rust-lang.org/nightly/core/marker/trait.Copy.html"><code>Copy</code></a>, <a href="https://doc.rust-lang.org/nightly/core/fmt/trait.Debug.html"><code>Debug</code></a>.</p>
+</section>
+<section id="Cherrypick" class="level2">
+<h2 class="anchored" data-anchor-id="Cherrypick">struct Cherrypick</h2>
+<p><a href="https://github.com/rahuldave/gossil/blob/main/src/history.rs#L44" class="source-link">source</a></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span class="kw">pub</span> <span class="kw">struct</span> Cherrypick</code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>A <a href="artifact.html#Cherrypick"><code>Cherrypick</code></a> holds one <code>cherrypick</code> row, and excluded rows are kept.</p>
+<div class="sd-table">
+<table class="caption-top table">
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>parent</code></td>
+<td>i32</td>
+<td>Source check-in identifier.</td>
+</tr>
+<tr>
+<td><code>child</code></td>
+<td>i32</td>
+<td>Destination check-in identifier.</td>
+</tr>
+<tr>
+<td><code>excluded</code></td>
+<td>bool</td>
+<td>Native <code>isExclude</code> flag.</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Implements <a href="https://doc.rust-lang.org/nightly/core/clone/trait.Clone.html"><code>Clone</code></a>, <a href="https://doc.rust-lang.org/nightly/core/marker/trait.Copy.html"><code>Copy</code></a>, <a href="https://doc.rust-lang.org/nightly/core/fmt/trait.Debug.html"><code>Debug</code></a>.</p>
+</section>
+<section id="Limits" class="level2">
+<h2 class="anchored" data-anchor-id="Limits">struct Limits</h2>
+<p><a href="https://github.com/rahuldave/gossil/blob/main/src/history.rs#L54" class="source-link">source</a></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span class="kw">pub</span> <span class="kw">struct</span> Limits</code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><a href="delta.html#Limits"><code>Limits</code></a> sets finite bounds on the input and on each search. The type has no unbounded default.</p>
+<div class="sd-table">
+<table class="caption-top table">
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>checkins</code></td>
+<td>usize</td>
+<td>Maximum check-ins.</td>
+</tr>
+<tr>
+<td><code>links</code></td>
+<td>usize</td>
+<td>Maximum combined parent and cherrypick rows.</td>
+</tr>
+<tr>
+<td><code>branch_bytes</code></td>
+<td>usize</td>
+<td>Maximum total bytes of branch metadata.</td>
+</tr>
+<tr>
+<td><code>search_nodes</code></td>
+<td>usize</td>
+<td>Maximum allocated search nodes, including duplicate pending records.</td>
+</tr>
+<tr>
+<td><code>row_visits</code></td>
+<td>usize</td>
+<td>Maximum adjacency rows inspected by one search.</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Implements <a href="https://doc.rust-lang.org/nightly/core/clone/trait.Clone.html"><code>Clone</code></a>, <a href="https://doc.rust-lang.org/nightly/core/marker/trait.Copy.html"><code>Copy</code></a>, <a href="https://doc.rust-lang.org/nightly/core/fmt/trait.Debug.html"><code>Debug</code></a>.</p>
+</section>
+<section id="Direction" class="level2">
+<h2 class="anchored" data-anchor-id="Direction">enum Direction</h2>
+<p><a href="https://github.com/rahuldave/gossil/blob/main/src/history.rs#L68" class="source-link">source</a></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span class="kw">pub</span> <span class="kw">enum</span> Direction</code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>A <a href="history.html#Direction"><code>Direction</code></a> of search matches one of the native <code>oneWayOnly</code> values 0, 1 and 2.</p>
+<div class="sd-table">
+<table class="caption-top table">
+<thead>
+<tr>
+<th>Variant</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Both</code></td>
+<td>Permit backwards steps only until the first forward step.</td>
+</tr>
+<tr>
+<td><code>Forward</code></td>
+<td>Search from parent to child only.</td>
+</tr>
+<tr>
+<td><code>ForwardWithCherrypicks</code></td>
+<td>Search forward, and also follow a non-excluded cherrypick from the initial node only.</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Implements <a href="https://doc.rust-lang.org/nightly/core/clone/trait.Clone.html"><code>Clone</code></a>, <a href="https://doc.rust-lang.org/nightly/core/marker/trait.Copy.html"><code>Copy</code></a>, <a href="https://doc.rust-lang.org/nightly/core/fmt/trait.Debug.html"><code>Debug</code></a>, <a href="https://doc.rust-lang.org/nightly/core/cmp/trait.Eq.html"><code>Eq</code></a>, <a href="https://doc.rust-lang.org/nightly/core/cmp/trait.PartialEq.html"><code>PartialEq</code></a>.</p>
+</section>
+<section id="Options" class="level2">
+<h2 class="anchored" data-anchor-id="Options">struct Options</h2>
+<p><a href="https://github.com/rahuldave/gossil/blob/main/src/history.rs#L78" class="source-link">source</a></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span class="kw">pub</span> <span class="kw">struct</span> Options<span class="op">&lt;</span><span class="op">&#x27;</span><span class="at">a</span><span class="op">&gt;</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><a href="history.html#Options"><code>Options</code></a> sets the flags of the native shortest-path search.</p>
+<div class="sd-table">
+<table class="caption-top table">
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>primary_only</code></td>
+<td>bool</td>
+<td>Ignore non-primary <code>plink</code> rows.</td>
+</tr>
+<tr>
+<td><code>direction</code></td>
+<td>Direction</td>
+<td>Permitted edge direction.</td>
+</tr>
+<tr>
+<td><code>hidden</code></td>
+<td>&amp;'a [i32]</td>
+<td>Hidden nodes remain traversable and count toward cost.</td>
+</tr>
+<tr>
+<td><code>branch_cost</code></td>
+<td>u32</td>
+<td>Nonnegative native cost of a branch change. Zero minimizes the number of edges.</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Implements <a href="https://doc.rust-lang.org/nightly/core/clone/trait.Clone.html"><code>Clone</code></a>, <a href="https://doc.rust-lang.org/nightly/core/marker/trait.Copy.html"><code>Copy</code></a>, <a href="https://doc.rust-lang.org/nightly/core/fmt/trait.Debug.html"><code>Debug</code></a>.</p>
+</section>
+<section id="Step" class="level2">
+<h2 class="anchored" data-anchor-id="Step">struct Step</h2>
+<p><a href="https://github.com/rahuldave/gossil/blob/main/src/history.rs#L90" class="source-link">source</a></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span class="kw">pub</span> <span class="kw">struct</span> Step</code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>A <a href="history.html#Step"><code>Step</code></a> is one element of a returned path.</p>
+<div class="sd-table">
+<table class="caption-top table">
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>rid</code></td>
+<td>i32</td>
+<td>Native record identifier.</td>
+</tr>
+<tr>
+<td><code>from_is_parent</code></td>
+<td>bool</td>
+<td>Native flag that the preceding step is the parent. The rewiring of an ancestor path leaves it false.</td>
+</tr>
+<tr>
+<td><code>hidden</code></td>
+<td>bool</td>
+<td>Whether the element is hidden in the shortest-path result.</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Implements <a href="https://doc.rust-lang.org/nightly/core/clone/trait.Clone.html"><code>Clone</code></a>, <a href="https://doc.rust-lang.org/nightly/core/marker/trait.Copy.html"><code>Copy</code></a>, <a href="https://doc.rust-lang.org/nightly/core/fmt/trait.Debug.html"><code>Debug</code></a>, <a href="https://doc.rust-lang.org/nightly/core/cmp/trait.Eq.html"><code>Eq</code></a>, <a href="https://doc.rust-lang.org/nightly/core/cmp/trait.PartialEq.html"><code>PartialEq</code></a>.</p>
+</section>
+<section id="Path" class="level2">
+<h2 class="anchored" data-anchor-id="Path">struct Path</h2>
+<p><a href="https://github.com/rahuldave/gossil/blob/main/src/history.rs#L102" class="source-link">source</a></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span class="kw">pub</span> <span class="kw">struct</span> Path</code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>A <a href="history.html#Path"><code>Path</code></a> is an owned path, with no native global mutable state.</p>
+<div class="sd-table">
+<table class="caption-top table">
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>steps</code></td>
+<td>Vec&lt;Step&gt;</td>
+<td>Ordered elements, including both endpoints.</td>
+</tr>
+<tr>
+<td><code>cost</code></td>
+<td>f64</td>
+<td>Native cumulative cost, including the initial cost of one when unweighted.</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Implements <a href="https://doc.rust-lang.org/nightly/core/clone/trait.Clone.html"><code>Clone</code></a>, <a href="https://doc.rust-lang.org/nightly/core/fmt/trait.Debug.html"><code>Debug</code></a>, <a href="https://doc.rust-lang.org/nightly/core/cmp/trait.PartialEq.html"><code>PartialEq</code></a>.</p>
+<section id="Path.visible_steps" class="level3">
+<h3 class="anchored" data-anchor-id="Path.visible_steps">Path::visible_steps</h3>
+<p><a href="https://github.com/rahuldave/gossil/blob/main/src/history.rs#L112" class="source-link">source</a></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span class="kw">pub</span> <span class="kw">fn</span> <span class="fu">visible_steps</span>(<span class="op">&amp;</span><span class="va">self</span>) -&gt; <span class="dt">usize</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Count non-hidden elements after the starting element, as native bisect does.</p>
+<div class="sd-table">
+<table class="caption-top table">
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>returns</td>
+<td>usize</td>
+<td>Number of eligible steps.</td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="Path.midpoint" class="level3">
+<h3 class="anchored" data-anchor-id="Path.midpoint">Path::midpoint</h3>
+<p><a href="https://github.com/rahuldave/gossil/blob/main/src/history.rs#L118" class="source-link">source</a></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span class="kw">pub</span> <span class="kw">fn</span> <span class="fu">midpoint</span>(<span class="op">&amp;</span><span class="va">self</span>) -&gt; <span class="bu">Option</span><span class="op">&lt;</span><span class="op">&amp;</span>Step<span class="op">&gt;</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Find the native midpoint, counted backwards, or <code>None</code> with fewer than two visible steps.</p>
+<div class="sd-table">
+<table class="caption-top table">
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>returns</td>
+<td>Option&lt;&amp;Step&gt;</td>
+<td>The selected path element.</td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="Path.search_depth" class="level3">
+<h3 class="anchored" data-anchor-id="Path.search_depth">Path::search_depth</h3>
+<p><a href="https://github.com/rahuldave/gossil/blob/main/src/history.rs#L129" class="source-link">source</a></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb11"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span class="kw">pub</span> <span class="kw">fn</span> <span class="fu">search_depth</span>(<span class="op">&amp;</span><span class="va">self</span>) -&gt; <span class="dt">u32</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Estimate the bisect comparisons that remain, with the native ceiling of log2.</p>
+<div class="sd-table">
+<table class="caption-top table">
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>returns</td>
+<td>u32</td>
+<td>Zero for zero or one visible step.</td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+</section>
+<section id="Ancestor" class="level2">
+<h2 class="anchored" data-anchor-id="Ancestor">struct Ancestor</h2>
+<p><a href="https://github.com/rahuldave/gossil/blob/main/src/history.rs#L141" class="source-link">source</a></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb12"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span class="kw">pub</span> <span class="kw">struct</span> Ancestor</code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>An <a href="history.html#Ancestor"><code>Ancestor</code></a> holds the closest common ancestor and the native diagnostic path through
+that pivot.</p>
+<div class="sd-table">
+<table class="caption-top table">
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>pivot</code></td>
+<td>i32</td>
+<td>Shared ancestor identifier.</td>
+</tr>
+<tr>
+<td><code>steps</code></td>
+<td>Vec&lt;Step&gt;</td>
+<td>Diagnostic path, whose native orientation can begin at either requested endpoint.</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Implements <a href="https://doc.rust-lang.org/nightly/core/clone/trait.Clone.html"><code>Clone</code></a>, <a href="https://doc.rust-lang.org/nightly/core/fmt/trait.Debug.html"><code>Debug</code></a>, <a href="https://doc.rust-lang.org/nightly/core/cmp/trait.PartialEq.html"><code>PartialEq</code></a>.</p>
+</section>
+<section id="Error" class="level2">
+<h2 class="anchored" data-anchor-id="Error">enum Error</h2>
+<p><a href="https://github.com/rahuldave/gossil/blob/main/src/history.rs#L151" class="source-link">source</a></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb13"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span class="kw">pub</span> <span class="kw">enum</span> Error</code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>An <a href="history.html#Error"><code>Error</code></a> reports a failure of the graph, the input or a search.</p>
+<p>A search that finds no path succeeds with <code>None</code>.</p>
+<div class="sd-table">
+<table class="caption-top table">
+<thead>
+<tr>
+<th>Variant</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Limit</code></td>
+<td>A finite input or search budget was exceeded.</td>
+</tr>
+<tr>
+<td><code>InvalidGraph</code></td>
+<td>The input has a duplicate, nonpositive or unknown identifier (also in <code>hidden</code>) or bad metadata, or a search met a cyclic predecessor chain. Cyclic rows are accepted.</td>
+</tr>
+<tr>
+<td><code>NonFiniteCost</code></td>
+<td>A finite time difference or accumulated cost overflowed.</td>
+</tr>
+<tr>
+<td><code>Allocation(TryReserveError)</code></td>
+<td>A checked allocation failed. The variant keeps the original cause of the reservation.</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Implements <a href="https://doc.rust-lang.org/nightly/core/fmt/trait.Debug.html"><code>Debug</code></a>, <a href="https://doc.rust-lang.org/nightly/core/fmt/trait.Display.html"><code>Display</code></a>, <a href="https://doc.rust-lang.org/nightly/core/error/trait.Error.html"><code>Error</code></a>.</p>
+</section>
+<section id="Graph" class="level2">
+<h2 class="anchored" data-anchor-id="Graph">struct Graph</h2>
+<p><a href="https://github.com/rahuldave/gossil/blob/main/src/history.rs#L182" class="source-link">source</a></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb14"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span class="kw">pub</span> <span class="kw">struct</span> Graph<span class="op">&lt;</span><span class="op">&#x27;</span><span class="at">a</span><span class="op">&gt;</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>A <a href="history.html#Graph"><code>Graph</code></a> borrows metadata and indexes graph rows in their query order, with no storage
+authority.</p>
+<section id="Graph.new" class="level3">
+<h3 class="anchored" data-anchor-id="Graph.new">Graph::new</h3>
+<p><a href="https://github.com/rahuldave/gossil/blob/main/src/history.rs#L246" class="source-link">source</a></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb15"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span class="kw">pub</span> <span class="kw">fn</span> <span class="fu">new</span>(
+    nodes: <span class="kw">&amp;</span><span class="op">&#x27;</span><span class="at">a</span> [Checkin<span class="op">&lt;</span><span class="op">&#x27;</span><span class="at">a</span><span class="op">&gt;</span>],
+    links: <span class="kw">&amp;</span>[ParentLink],
+    cherries: <span class="kw">&amp;</span>[Cherrypick],
+    limits: Limits,
+) -&gt; <span class="bu">Result</span><span class="op">&lt;</span><span class="va">Self</span>, Error<span class="op">&gt;</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Validate explicit rows and preserve their relative order per query direction.</p>
+<section id="errors" class="level5">
+<h5 class="anchored" data-anchor-id="errors">Errors</h5>
+<p>Rejects excessive inputs, missing endpoints, invalid metadata or allocation failure.</p>
+<div class="sd-table">
+<table class="caption-top table">
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>nodes</code></td>
+<td>&amp;'a [Checkin&lt;'a&gt;]</td>
+<td>Unique positive IDs with resolved metadata of branch and time.</td>
+</tr>
+<tr>
+<td><code>links</code></td>
+<td>&amp;[ParentLink]</td>
+<td>Ordered native parent rows.</td>
+</tr>
+<tr>
+<td><code>cherries</code></td>
+<td>&amp;[Cherrypick]</td>
+<td>Ordered native cherrypick rows.</td>
+</tr>
+<tr>
+<td><code>limits</code></td>
+<td>Limits</td>
+<td>Finite admission and per-search bounds.</td>
+</tr>
+<tr>
+<td>returns</td>
+<td>Result&lt;Self, Error&gt;</td>
+<td>A graph independent of any database or authorization context.</td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+</section>
+<section id="Graph.shortest" class="level3">
+<h3 class="anchored" data-anchor-id="Graph.shortest">Graph::shortest</h3>
+<p><a href="https://github.com/rahuldave/gossil/blob/main/src/history.rs#L357" class="source-link">source</a></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb16"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span class="kw">pub</span> <span class="kw">fn</span> <span class="fu">shortest</span>(<span class="op">&amp;</span><span class="va">self</span>, from: <span class="dt">i32</span>, to: <span class="dt">i32</span>, options: Options<span class="op">&lt;</span><span class="op">&#x27;</span><span class="bu">_</span><span class="op">&gt;</span>) -&gt; <span class="bu">Result</span><span class="op">&lt;</span><span class="bu">Option</span><span class="op">&lt;</span>Path<span class="op">&gt;</span>, Error<span class="op">&gt;</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Port <code>path_shortest</code>, including hidden-node accounting and first-hop cherrypicks.</p>
+<section id="errors-1" class="level5">
+<h5 class="anchored" data-anchor-id="errors-1">Errors</h5>
+<p>Returns input, finite-cost, allocation or search-budget failures.</p>
+</section>
+<section id="examples" class="level5">
+<h5 class="anchored" data-anchor-id="examples">Examples</h5>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb17"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span class="kw">use</span> gossil::history::{Checkin, Direction, Graph, Limits, Options, ParentLink};
+
+<span class="kw">let</span> nodes: <span class="bu">Vec</span><span class="op">&lt;</span>_<span class="op">&gt;</span> <span class="op">=</span> (<span class="dv">1</span><span class="op">..=</span><span class="dv">3</span>)
+    .map(<span class="op">|</span>rid<span class="op">|</span> Checkin { rid, branch: b<span class="st">&quot;</span><span class="st">trunk</span><span class="st">&quot;</span>, mtime: <span class="fl">0.0</span> })
+    .collect();
+<span class="kw">let</span> links <span class="op">=</span> [
+    ParentLink { parent: <span class="dv">1</span>, child: <span class="dv">2</span>, primary: true },
+    ParentLink { parent: <span class="dv">2</span>, child: <span class="dv">3</span>, primary: true },
+];
+<span class="kw">let</span> limits <span class="op">=</span> Limits {
+    checkins: <span class="dv">3</span>,
+    links: <span class="dv">2</span>,
+    branch_bytes: <span class="dv">15</span>,
+    search_nodes: <span class="dv">16</span>,
+    row_visits: <span class="dv">16</span>,
+};
+<span class="kw">let</span> graph <span class="op">=</span> Graph::new(<span class="op">&amp;</span>nodes, <span class="op">&amp;</span>links, <span class="op">&amp;</span>[], limits)<span class="op">?</span>;
+<span class="kw">let</span> options <span class="op">=</span> Options {
+    primary_only: false,
+    direction: Direction::Both,
+    hidden: <span class="kw">&amp;</span>[],
+    branch_cost: <span class="dv">0</span>,
+};
+<span class="kw">let</span> path <span class="op">=</span> graph.shortest(<span class="dv">3</span>, <span class="dv">1</span>, options)<span class="op">?</span>.expect(<span class="st">&quot;</span><span class="st">a path</span><span class="st">&quot;</span>);
+<span class="kw">let</span> rids: <span class="bu">Vec</span><span class="op">&lt;</span>_<span class="op">&gt;</span> <span class="op">=</span> path.steps.iter().map(<span class="op">|</span>s<span class="op">|</span> s.rid).collect();
+<span class="fu">assert_eq!</span>(rids, [<span class="dv">3</span>, <span class="dv">2</span>, <span class="dv">1</span>]);
+<span class="fu">assert_eq!</span>(path.cost, <span class="fl">3.0</span>);</code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="sd-table">
+<table class="caption-top table">
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>from</code></td>
+<td>i32</td>
+<td>Starting check-in ID.</td>
+</tr>
+<tr>
+<td><code>to</code></td>
+<td>i32</td>
+<td>Destination check-in ID.</td>
+</tr>
+<tr>
+<td><code>options</code></td>
+<td>Options&lt;'_&gt;</td>
+<td>Native path flags and hidden-node set.</td>
+</tr>
+<tr>
+<td>returns</td>
+<td>Result&lt;Option&lt;Path&gt;, Error&gt;</td>
+<td>Ordered path, or none if the native search finds no path.</td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+</section>
+<section id="Graph.common_ancestor" class="level3">
+<h3 class="anchored" data-anchor-id="Graph.common_ancestor">Graph::common_ancestor</h3>
+<p><a href="https://github.com/rahuldave/gossil/blob/main/src/history.rs#L447" class="source-link">source</a></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb18"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span class="kw">pub</span> <span class="kw">fn</span> <span class="fu">common_ancestor</span>(<span class="op">&amp;</span><span class="va">self</span>, me: <span class="dt">i32</span>, you: <span class="dt">i32</span>) -&gt; <span class="bu">Result</span><span class="op">&lt;</span><span class="bu">Option</span><span class="op">&lt;</span>Ancestor<span class="op">&gt;</span>, Error<span class="op">&gt;</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Port the two-front native <code>path_common_ancestor</code> search and path rewiring.</p>
+<section id="errors-2" class="level5">
+<h5 class="anchored" data-anchor-id="errors-2">Errors</h5>
+<p>Returns input, allocation or search-budget failures.</p>
+</section>
+<section id="examples-1" class="level5">
+<h5 class="anchored" data-anchor-id="examples-1">Examples</h5>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb19"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span class="kw">use</span> gossil::history::{Checkin, Graph, Limits, ParentLink};
+
+<span class="kw">let</span> nodes: <span class="bu">Vec</span><span class="op">&lt;</span>_<span class="op">&gt;</span> <span class="op">=</span> (<span class="dv">1</span><span class="op">..=</span><span class="dv">3</span>)
+    .map(<span class="op">|</span>rid<span class="op">|</span> Checkin { rid, branch: b<span class="st">&quot;</span><span class="st">trunk</span><span class="st">&quot;</span>, mtime: <span class="fl">0.0</span> })
+    .collect();
+<span class="co">// Check-ins 2 and 3 are both children of check-in 1.
+</span><span class="kw">let</span> links <span class="op">=</span> [
+    ParentLink { parent: <span class="dv">1</span>, child: <span class="dv">2</span>, primary: true },
+    ParentLink { parent: <span class="dv">1</span>, child: <span class="dv">3</span>, primary: true },
+];
+<span class="kw">let</span> limits <span class="op">=</span> Limits {
+    checkins: <span class="dv">3</span>,
+    links: <span class="dv">2</span>,
+    branch_bytes: <span class="dv">15</span>,
+    search_nodes: <span class="dv">16</span>,
+    row_visits: <span class="dv">16</span>,
+};
+<span class="kw">let</span> graph <span class="op">=</span> Graph::new(<span class="op">&amp;</span>nodes, <span class="op">&amp;</span>links, <span class="op">&amp;</span>[], limits)<span class="op">?</span>;
+<span class="kw">let</span> ancestor <span class="op">=</span> graph.common_ancestor(<span class="dv">2</span>, <span class="dv">3</span>)<span class="op">?</span>.expect(<span class="st">&quot;</span><span class="st">an ancestor</span><span class="st">&quot;</span>);
+<span class="fu">assert_eq!</span>(ancestor.pivot, <span class="dv">1</span>);
+<span class="fu">assert!</span>(graph.common_ancestor(<span class="dv">0</span>, <span class="dv">3</span>)<span class="op">?</span>.is_none());</code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="sd-table">
+<table class="caption-top table">
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>me</code></td>
+<td>i32</td>
+<td>First endpoint. Zero means no ancestor, as in native Fossil.</td>
+</tr>
+<tr>
+<td><code>you</code></td>
+<td>i32</td>
+<td>Second endpoint. Zero means no ancestor.</td>
+</tr>
+<tr>
+<td>returns</td>
+<td>Result&lt;Option&lt;Ancestor&gt;, Error&gt;</td>
+<td>Closest shared ancestor by native queue order, with its diagnostic path. Equal positive endpoints return the one-element path without stale global state.</td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+</section>
+</section>
+<nav class="page-navigation"><div class="nav-page nav-page-previous"><a href="gossil.html" class="pagination-link"><i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">gossil</span></a></div><div class="nav-page nav-page-next"><a href="native_date.html" class="pagination-link"><span class="nav-page-text">native_date</span> <i class="bi bi-arrow-right-short"></i></a></div></nav></main></div></body></html>

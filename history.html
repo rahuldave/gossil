@@ -1,0 +1,266 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="generator" content="smalldocs-0.5.12"><meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes"><title>Check-in graph paths – Gossil</title><link rel="icon" href="site_libs/themes/atelier/logo.svg"><link rel="stylesheet" href="site_libs/themes/atelier/atelier.css" data-mode="light" class="quarto-color-scheme" id="quarto-bootstrap-light" media="not all and (prefers-color-scheme: dark)"><link rel="stylesheet" href="site_libs/themes/atelier/atelier-dark.css" data-mode="dark" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap-dark" media="(prefers-color-scheme: dark)"><link rel="stylesheet" href="site_libs/bootstrap-icons/bootstrap-icons.min.css"><link rel="stylesheet" href="site_libs/smalldocs.css"><meta name="smalldocs:offset" content="./"><script src="site_libs/bootstrap/bootstrap.bundle.min.js"></script><script src="site_libs/fuse/fuse.min.js"></script><script src="site_libs/smalldocs.js" defer></script><script>(function(){var d=document.documentElement,s=null;try{s=localStorage.getItem('smalldocs-scheme')}catch(e){}var alt=s?s==='alternate':!!(window.matchMedia&&matchMedia('(prefers-color-scheme: dark)').matches);var ls=document.querySelectorAll('link.quarto-color-scheme');if(alt)d.dataset.scheme='alternate';if(s)ls.forEach(function(l){var on=l.classList.contains('quarto-color-alternate')===alt;if(on)l.setAttribute('blocking','render');l.media=on?'all':'not all'});var on=ls[alt?1:0];if(on&&on.dataset.mode==='dark')d.classList.add('quarto-dark')})();</script></head><body class="nav-sidebar floating nav-fixed"><header id="quarto-header" class="headroom sticky-top"><nav class="navbar navbar-expand-lg sd-navbar-default"><div class="navbar-container container-fluid"><div class="navbar-brand-container mx-auto"><a class="navbar-brand" href="index.html"><span class="navbar-title">Gossil</span></a></div><button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button><div class="collapse navbar-collapse" id="navbarCollapse"><ul class="navbar-nav navbar-nav-scroll me-auto"><li class="nav-item"><a class="nav-link" href="getting-started.html"><span class="menu-text">Start</span></a></li><li class="nav-item"><a class="nav-link" href="concepts.html"><span class="menu-text">Library concepts</span></a></li><li class="nav-item"><a class="nav-link" href="cli.html"><span class="menu-text">CLI</span></a></li><li class="nav-item"><a class="nav-link" href="api/index.html"><span class="menu-text">Rust API</span></a></li><li class="nav-item"><a class="nav-link" href="development-plan.html"><span class="menu-text">Development</span></a></li></ul><ul class="navbar-nav navbar-nav-scroll ms-auto"><li class="nav-item compact"><a class="nav-link" href="https://github.com/rahuldave/gossil" aria-label="github"><i class="bi bi-github" role="img"></i></a></li><li class="nav-item compact"><a class="quarto-color-scheme-toggle nav-link" href="" title="Toggle dark mode" onclick="window.smalldocsToggleScheme(); return false;"><i class="bi"></i></a></li></ul><div class="quarto-navbar-tools"><div class="smalldocs-search" id="quarto-search"><i class="bi bi-search" aria-hidden="true"></i><input type="search" class="form-control form-control-sm" placeholder="Search" aria-label="Search" autocomplete="off"><div class="smalldocs-search-results dropdown-menu"></div></div></div></div></div></nav><nav class="quarto-secondary-nav"><div class="container-fluid d-flex"><button type="button" class="quarto-btn-toggle btn" aria-controls="quarto-sidebar" aria-label="Toggle sidebar navigation"><i class="bi bi-layout-text-sidebar-reverse"></i></button><nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="working-with-repositories.html">Guides</a></li><li class="breadcrumb-item"><a href="history.html">Check-in graph paths</a></li></ol></nav></div></nav></header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article has-sidebar has-margin"><nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto"><div class="sidebar-menu-container"><ul class="list-unstyled mt-1"><li class="sidebar-item"><div class="sidebar-item-container"><a href="index.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Gossil</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="getting-started.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Get started</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="cli.html" class="sidebar-item-text sidebar-link"><span class="menu-text">CLI reference</span></a></div></li><li class="sidebar-item sidebar-item-section"><div class="sidebar-item-container"><a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true"><span class="menu-text">Guides</span></a><a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section"><i class="bi bi-chevron-right ms-2"></i></a></div><ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show"><li class="sidebar-item"><div class="sidebar-item-container"><a href="working-with-repositories.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Working with repositories</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="compare-with-git.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Compare Gossil with Git</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="concepts.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Library concepts</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="examples.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Rust library examples</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="delta-encoder.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Bounded delta encoder</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="delta-decoder.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Bounded delta decoder</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="blob-primitives.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Byte digests and packed blobs</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="artifact-checksum.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Artifact byte checksums</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="token-codec.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Fossil token bytes</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="glob.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Bounded Fossil glob port</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="file-path.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Lexical file paths</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="history.html" class="sidebar-item-text sidebar-link active" aria-current="page"><span class="menu-text">Check-in graph paths</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="artifact-parser.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Artifact parser</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="diff.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Compare normalized byte lines</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="task-ticket.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Emit a task creation artifact</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="local-storage.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Local database ownership</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="native-storage.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Native local storage</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="gest-task-values.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Gest task values</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="gest-project-values.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Gest project values</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="gest-author-values.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Gest author values</span></a></div></li></ul></li><li class="sidebar-item sidebar-item-section"><div class="sidebar-item-container"><a class="sidebar-item-text sidebar-link" href="api/index.html"><span class="menu-text">Rust API</span></a><a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Toggle section"><i class="bi bi-chevron-right ms-2"></i></a></div><ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show"><li class="sidebar-item"><div class="sidebar-item-container"><a href="api/artifact.html" class="sidebar-item-text sidebar-link"><span class="menu-text">artifact</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="api/artifact_checksum.html" class="sidebar-item-text sidebar-link"><span class="menu-text">artifact_checksum</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="api/compression.html" class="sidebar-item-text sidebar-link"><span class="menu-text">compression</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="api/content_hash.html" class="sidebar-item-text sidebar-link"><span class="menu-text">content_hash</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="api/delta.html" class="sidebar-item-text sidebar-link"><span class="menu-text">delta</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="api/diff.html" class="sidebar-item-text sidebar-link"><span class="menu-text">diff</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="api/file_path.html" class="sidebar-item-text sidebar-link"><span class="menu-text">file_path</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="api/gest_author_values.html" class="sidebar-item-text sidebar-link"><span class="menu-text">gest_author_values</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="api/gest_project_values.html" class="sidebar-item-text sidebar-link"><span class="menu-text">gest_project_values</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="api/gest_task_values.html" class="sidebar-item-text sidebar-link"><span class="menu-text">gest_task_values</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="api/glob.html" class="sidebar-item-text sidebar-link"><span class="menu-text">glob</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="api/gossil.html" class="sidebar-item-text sidebar-link"><span class="menu-text">gossil</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="api/history.html" class="sidebar-item-text sidebar-link"><span class="menu-text">history</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="api/native_date.html" class="sidebar-item-text sidebar-link"><span class="menu-text">native_date</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="api/product.html" class="sidebar-item-text sidebar-link"><span class="menu-text">product</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="api/storage.html" class="sidebar-item-text sidebar-link"><span class="menu-text">storage</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="api/task_ticket.html" class="sidebar-item-text sidebar-link"><span class="menu-text">task_ticket</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="api/token_codec.html" class="sidebar-item-text sidebar-link"><span class="menu-text">token_codec</span></a></div></li></ul></li><li class="sidebar-item sidebar-item-section"><div class="sidebar-item-container"><a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true"><span class="menu-text">Development</span></a><a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true" aria-label="Toggle section"><i class="bi bi-chevron-right ms-2"></i></a></div><ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show"><li class="sidebar-item"><div class="sidebar-item-container"><a href="development-plan.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Development and contributing</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="conformance.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Inherited-test runner</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="libsql-wrapper.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Exact libsql TEXT retrieval</span></a></div></li></ul></li></ul></div></nav><div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item"></div><div id="quarto-margin-sidebar" class="sidebar margin-sidebar"><nav id="TOC" role="doc-toc" class="toc-active"><h2 id="toc-title">On this page</h2><ul><li><a href="#supply-ordered-rows" id="toc-supply-ordered-rows" class="nav-link" data-scroll-target="#supply-ordered-rows">Supply ordered rows</a></li><li><a href="#choose-a-search" id="toc-choose-a-search" class="nav-link" data-scroll-target="#choose-a-search">Choose a search</a></li><li><a href="#read-the-result" id="toc-read-the-result" class="nav-link" data-scroll-target="#read-the-result">Read the result</a></li><li><a href="#bound-inputs-and-searches" id="toc-bound-inputs-and-searches" class="nav-link" data-scroll-target="#bound-inputs-and-searches">Bound inputs and searches</a></li><li><a href="#provenance-and-tests" id="toc-provenance-and-tests" class="nav-link" data-scroll-target="#provenance-and-tests">Provenance and tests</a></li><li><a href="#recommendations" id="toc-recommendations" class="nav-link" data-scroll-target="#recommendations">Recommendations</a></li></ul></nav></div><main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="working-with-repositories.html">Guides</a></li><li class="breadcrumb-item"><a href="history.html">Check-in graph paths</a></li></ol></nav><div class="quarto-title"><h1 class="title">Check-in graph paths</h1></div><div class="quarto-title-meta"></div></header><p>The <code>gossil::history</code> module finds paths and common ancestors in caller-supplied check-in
+rows. Use it to inspect graph behavior in memory with finite input and search
+limits. Its algorithms come from Fossil’s <code>path.c</code> and <code>pqueue.c</code>. On this page,
+“native” means those algorithms and their queue order.</p>
+<p>The caller supplies the graph and resolves its branch and time metadata. This
+module opens no database and grants no permission to read repository history.
+The broader history API remains partial. Persistence, branch management and sync
+remain separate work.</p>
+<section id="supply-ordered-rows" class="level2">
+<h2 class="anchored" data-anchor-id="supply-ordered-rows">Supply ordered rows</h2>
+<p><a href="api/history.html#Graph.new"><code>Graph::new</code></a> borrows a slice of <a href="api/history.html#Checkin"><code>Checkin</code></a> metadata and indexes the supplied links.
+Each check-in needs a unique positive <code>rid</code>, branch bytes without NUL and a finite
+Julian-day time. A Julian day is the numeric count of days that Fossil uses for time.
+The caller resolves native branch defaults and missing times before construction.</p>
+<p><a href="api/history.html#ParentLink"><code>ParentLink</code></a> supplies a parent, child and primary-parent flag for each <code>plink</code>
+row. <a href="api/artifact.html#Cherrypick"><code>Cherrypick</code></a> supplies a source, destination and exclusion flag for each
+<code>cherrypick</code> row. Both endpoints must occur in the check-in slice.</p>
+<p>Keep the native query order of both slices of rows, with their duplicates and
+excluded cherrypicks. Construction keeps the row order of each direction, and it
+sorts only a separate index of identifiers. A new order of the rows can change which
+path of equal cost a search returns. The retained
+<a href="https://github.com/rahuldave/gossil/blob/main/tests/fixtures/history/capture-native.py">native capture script</a>
+queries child and parent <code>plink</code> rows without <code>ORDER BY</code>. The field <code>query_rows</code> in the
+<a href="https://github.com/rahuldave/gossil/blob/main/tests/fixtures/history/native.json">recorded fixture</a>
+retains the observed order. This graph API imposes no database query order.</p>
+</section>
+<section id="choose-a-search" class="level2">
+<h2 class="anchored" data-anchor-id="choose-a-search">Choose a search</h2>
+<div class="sd-table">
+<table class="caption-top table">
+<thead>
+<tr>
+<th>Call</th>
+<th>Result and purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Graph::new(nodes, links, cherries, limits)</code></td>
+<td>Validate metadata and index ordered graph rows.</td>
+</tr>
+<tr>
+<td><code>graph.shortest(from, to, options)</code></td>
+<td>Return an owned <a href="api/history.html#Path"><code>Path</code></a> between two known check-ins, or <code>Ok(None)</code> when the search finds no path.</td>
+</tr>
+<tr>
+<td><code>graph.common_ancestor(me, you)</code></td>
+<td>Return an <a href="api/history.html#Ancestor"><code>Ancestor</code></a> with a shared <code>pivot</code> and a diagnostic path, or <code>Ok(None)</code> when the search finds no ancestor.</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>For <code>shortest</code>, set these <a href="api/history.html#Options"><code>Options</code></a> explicitly:</p>
+<div class="sd-table">
+<table class="caption-top table">
+<thead>
+<tr>
+<th>Option</th>
+<th>Behavior</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>primary_only</code></td>
+<td>Skip non-primary parent links.</td>
+</tr>
+<tr>
+<td><code>direction: Direction::Both</code></td>
+<td>Search backwards until the first forward step, then forwards only.</td>
+</tr>
+<tr>
+<td><code>direction: Direction::Forward</code></td>
+<td>Search from parent to child only.</td>
+</tr>
+<tr>
+<td><code>direction: Direction::ForwardWithCherrypicks</code></td>
+<td>Also permit a non-excluded cherrypick as the first edge only.</td>
+</tr>
+<tr>
+<td><code>hidden</code></td>
+<td>Keep these known identifiers traversable and charge their cost, but exclude hidden steps from bisect counts.</td>
+</tr>
+<tr>
+<td><code>branch_cost: 0</code></td>
+<td>Charge one per node, including the starting node.</td>
+</tr>
+<tr>
+<td><code>branch_cost: positive</code></td>
+<td>Start at zero, then charge absolute time distance plus this penalty for each branch change.</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>The starting node remains visible even when its identifier occurs in <code>hidden</code>.
+A positive branch cost must fit <code>i32</code>. A search with a positive branch cost can
+return a path with more edges than the unweighted path, because it minimizes a
+different cost.</p>
+<p>The native queue does not take equal costs in first-in, first-out (FIFO) order. On
+insertion, a heap parent with an equal cost stays in place. On removal, the queue
+swaps through equal costs and prefers the left child on a tie. A shortest-path
+search visits the child rows before the backwards rows. These rules and the order
+of the input rows decide each tie.</p>
+<p><code>common_ancestor</code> searches backwards from both endpoints. If either endpoint is
+zero, it returns <code>Ok(None)</code>. If the two endpoints are equal, known and positive, it
+returns a path of one element. The returned path can start at either requested
+endpoint, because the native order of discovery sets its orientation.</p>
+</section>
+<section id="read-the-result" class="level2">
+<h2 class="anchored" data-anchor-id="read-the-result">Read the result</h2>
+<p><code>Path.steps</code> includes both endpoints. Each <a href="api/history.html#Step"><code>Step</code></a> contains its identifier, a
+<code>from_is_parent</code> direction flag and its hidden status. <code>Path.cost</code> contains the
+native cumulative cost.</p>
+<p>For a shortest path, <code>from_is_parent</code> is true when the preceding step is the
+parent of this step. The first step has no preceding edge. Ancestor paths keep
+the native rewiring behavior, which can leave a direction flag false. So the flags of an
+ancestor path do not say whether the preceding step is the parent.</p>
+<p><a href="api/history.html#Path.visible_steps"><code>Path::visible_steps</code></a> counts non-hidden elements after the starting element.
+<code>midpoint</code> counts backwards from the destination, and it returns no element when
+the path has fewer than two visible steps. <code>search_depth</code> estimates the number of
+bisect comparisons that remain as the ceiling of log2 of the visible count. It
+returns zero for a count below two.</p>
+<p>These helpers describe the returned path. They do not implement a persisted
+bisect session or authorize access to its elements.</p>
+</section>
+<section id="bound-inputs-and-searches" class="level2">
+<h2 class="anchored" data-anchor-id="bound-inputs-and-searches">Bound inputs and searches</h2>
+<p>There is no default <a href="api/delta.html#Limits"><code>Limits</code></a> value. Choose every bound for the application:</p>
+<div class="sd-table">
+<table class="caption-top table">
+<thead>
+<tr>
+<th>Field</th>
+<th>Bound</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>checkins</code></td>
+<td>Number of supplied check-ins; also limits the length of <code>hidden</code>.</td>
+</tr>
+<tr>
+<td><code>links</code></td>
+<td>Combined number of parent and cherrypick rows, including excluded rows.</td>
+</tr>
+<tr>
+<td><code>branch_bytes</code></td>
+<td>Sum of all supplied branch byte lengths.</td>
+</tr>
+<tr>
+<td><code>search_nodes</code></td>
+<td>Allocated search records, including duplicate pending records.</td>
+</tr>
+<tr>
+<td><code>row_visits</code></td>
+<td>Adjacency rows inspected by each search, including filtered rows.</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>The bounds limit counts and traversal, and not the total bytes on the heap.</p>
+<p><code>Error::Limit</code> reports exhausted bounds. <code>InvalidGraph</code> reports malformed
+metadata, unknown identifiers or a cyclic chain of predecessors inside a search.
+<code>NonFiniteCost</code> reports an overflow in a time difference or in the cumulative cost.
+<code>Allocation</code> keeps the typed error of the failed reservation. A failed search
+returns no partial path. When the search finds no path, it succeeds with <code>None</code>.</p>
+<p>Graph validation checks the shape of the supplied data. Derived <code>plink</code> rows alone
+cannot establish provenance, private membership or complete history. A future
+storage adapter needs its own checks of admission and scope before it supplies rows.</p>
+</section>
+<section id="provenance-and-tests" class="level2">
+<h2 class="anchored" data-anchor-id="provenance-and-tests">Provenance and tests</h2>
+<p>The port follows Fossil check-in <code>7e8ecf0ce4</code>, the same check-in as the
+reference binary of the project. The sources are in <code>src/path.c</code> and
+<code>src/pqueue.c</code>:</p>
+<div class="sd-table">
+<table class="caption-top table">
+<thead>
+<tr>
+<th>Native function</th>
+<th>Lines</th>
+<th>Port</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>path_new_node</code></td>
+<td><code>src/path.c</code> lines 106 to 138</td>
+<td><code>Search::add</code></td>
+</tr>
+<tr>
+<td><code>path_shortest</code></td>
+<td><code>src/path.c</code> lines 184 to 271</td>
+<td><a href="api/history.html#Graph.shortest"><code>Graph::shortest</code></a></td>
+</tr>
+<tr>
+<td><code>path_midpoint</code></td>
+<td><code>src/path.c</code> lines 277 to 285</td>
+<td><a href="api/history.html#Path.midpoint"><code>Path::midpoint</code></a></td>
+</tr>
+<tr>
+<td><code>path_search_depth</code></td>
+<td><code>src/path.c</code> lines 313 to 317</td>
+<td><a href="api/history.html#Path.search_depth"><code>Path::search_depth</code></a></td>
+</tr>
+<tr>
+<td><code>path_common_ancestor</code></td>
+<td><code>src/path.c</code> lines 396 to 447</td>
+<td><a href="api/history.html#Graph.common_ancestor"><code>Graph::common_ancestor</code></a></td>
+</tr>
+<tr>
+<td><code>pqueuex_rebalance</code></td>
+<td><code>src/pqueue.c</code> lines 99 to 109</td>
+<td><code>Search::add</code></td>
+</tr>
+<tr>
+<td><code>pqueuex_pop</code></td>
+<td><code>src/pqueue.c</code> lines 131 to 146</td>
+<td><code>Search::pop</code></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>The caller resolves branches as <code>branch_of_rid</code> does in <code>src/branch.c</code>, lines
+57 to 73, and times as <code>mtime_of_rid</code> does in <code>src/descendants.c</code>, lines 166
+to 175. The record <code>evidence/history/source-correspondence.json</code> maps each
+function of <code>path.c</code> to its port or says why it is not ported. It also lists
+each line of the native source that calls a function of <code>path.c</code>, and the
+SHA256 of each cited source file. The record holds 17 lines for the three
+search functions and 16 lines in other files for the other functions.</p>
+<p>The fixtures under <code>tests/fixtures/history/</code> hold the Fossil license and two
+captures, with the scripts that made them. The Fossil 2.29 reference binary made
+both captures over a synthetic repository:</p>
+<ul>
+<li><code>native.json</code> holds 16 runs of <code>test-shortest-path</code> and 9 runs of
+<code>test-ancestor-path</code>, with their commands, outputs and parsed paths.</li>
+<li><code>native-queue.json</code> holds one run of <code>test-pqueue</code> with five equal costs.</li>
+</ul>
+<p>A fresh capture with the same binary gave the same paths, pivots and queue
+order. Only the random identity of the scratch repository differed. The output
+of <code>fossil new</code> holds that identity and a throwaway admin password of the scratch
+repository. The capture script replaces the project-id, the server-id and the
+password with placeholders, and the field <code>redactions</code> of <code>native.json</code> records
+the replacement. A fresh capture with the redaction gives a file identical to
+the fixture.</p>
+<p>The <code>test-shortest-path</code> command has no option for the first-hop cherrypick
+direction, so <code>Direction::ForwardWithCherrypicks</code> has no native capture. A Rust
+test checks it against <code>src/path.c</code> lines 226 to 240.</p>
+<p>The tests in <code>tests/history.rs</code> replay all 25 captured cases. They also check
+the controls that the port adds for bounds, malformed input, cost overflow,
+cycles and endpoint orientation. A test checks each bound at the last value that
+it accepts and at the next value, which it refuses. Other tests check the midpoint and the search depth at two and four
+visible steps, and that rows in an unsorted order keep their order.</p>
+<p>Three unit tests in <code>src/history.rs</code> check the typed allocation
+error, the native queue order and the error for a cyclic chain of predecessors.
+The doc comments of <a href="api/history.html#Graph.shortest"><code>Graph::shortest</code></a> and <a href="api/history.html#Graph.common_ancestor"><code>Graph::common_ancestor</code></a> hold two
+doctests. The inherited Tcl tests of the pinned
+check-in do not call either diagnostic, so no inherited assertion applies.
+These tests do not qualify Gossil repository access or the native callers in
+bisect, annotation, file history and timeline.</p>
+</section>
+<section id="recommendations" class="level2">
+<h2 class="anchored" data-anchor-id="recommendations">Recommendations</h2>
+<p>Use an explicit graph with finite bounds, and keep the native order of the query rows.
+Next, qualify storage admission separately, before you connect persisted history.</p>
+</section>
+<nav class="page-navigation"><div class="nav-page nav-page-previous"><a href="file-path.html" class="pagination-link"><i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">Lexical file paths</span></a></div><div class="nav-page nav-page-next"><a href="artifact-parser.html" class="pagination-link"><span class="nav-page-text">Artifact parser</span> <i class="bi bi-arrow-right-short"></i></a></div></nav></main></div></body></html>
