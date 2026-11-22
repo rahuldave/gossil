@@ -1,0 +1,355 @@
+{
+  "model": "relationship",
+  "classification": "source behavior and adopted owned-value controls, not exact inherited API ports",
+  "source_pin": "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8",
+  "governing_addendum_sha256": "afddd1c2f5e905f72126209605737cc80e63791870d3ce8bd59f26c9589d8454",
+  "exact_inherited_tests_ported": 0,
+  "source": "src/store/model/relationship.rs",
+  "source_sha256": "268acb2ff02f81c9d378c718c679f0ae9f16c000957b7116216320c751d340a1",
+  "production": "src/gest_relationship_values.rs",
+  "supporting_sources": [
+    {
+      "path": "src/store/migration/m00010_create_relationships.rs",
+      "role": "table declaration",
+      "sha256": "f8ba3ae9497e11042171aee70bb810ba4365baa6122b7a2afc05223c199a7c07"
+    },
+    {
+      "path": "src/store/model/primitives/entity_type.rs",
+      "role": "primitive parser",
+      "sha256": "e44c53c43f299e9d0d1d7e1df45c49c64717c605ce797abd7305690e70be3b92"
+    },
+    {
+      "path": "src/store/model/primitives/relationship_type.rs",
+      "role": "primitive parser",
+      "sha256": "08badb7cc7bd41dbd2458deb07db68ab48c200793c23b4376cb7ebe1742d4556"
+    },
+    {
+      "path": "src/store/model/primitives/id.rs",
+      "role": "primitive parser",
+      "sha256": "1e257f775bdbdff3922f68af9a64a374ee48c12b2b587ab8c315218e19577bbc"
+    }
+  ],
+  "fields": [
+    {
+      "name": "id",
+      "sql": "TEXT PRIMARY KEY",
+      "nullable": false,
+      "canonical_field": "gest_id",
+      "sqlite_decl_allows_null": true,
+      "owned_value_rule": "full 32-character [k-z] ID",
+      "control_file": "tests/gest_relationship_values.rs",
+      "controls": [
+        "complete_output_round_trips_and_is_independent",
+        "every_field_rejects_wrong_types_without_parser_causes",
+        "full_identifier_domain_for_every_id_field"
+      ]
+    },
+    {
+      "name": "rel_type",
+      "sql": "TEXT NOT NULL",
+      "nullable": false,
+      "canonical_field": "rel_type",
+      "sqlite_decl_allows_null": false,
+      "owned_value_rule": "source RelationshipType FromStr: Unicode to_lowercase, then blocked-by|blocks|child-of|parent-of|relates-to; output lowercase; no inverse applied",
+      "control_file": "tests/gest_relationship_values.rs",
+      "controls": [
+        "complete_output_round_trips_and_is_independent",
+        "every_field_rejects_wrong_types_without_parser_causes",
+        "rel_type_follows_source_spellings",
+        "direction_is_kept_without_inverse_or_endpoint_checks"
+      ]
+    },
+    {
+      "name": "source_id",
+      "sql": "TEXT NOT NULL",
+      "nullable": false,
+      "canonical_field": "source_id",
+      "sqlite_decl_allows_null": false,
+      "owned_value_rule": "full 32-character [k-z] ID; endpoint existence is caller-owned",
+      "control_file": "tests/gest_relationship_values.rs",
+      "controls": [
+        "complete_output_round_trips_and_is_independent",
+        "every_field_rejects_wrong_types_without_parser_causes",
+        "full_identifier_domain_for_every_id_field",
+        "direction_is_kept_without_inverse_or_endpoint_checks"
+      ]
+    },
+    {
+      "name": "source_type",
+      "sql": "TEXT NOT NULL",
+      "nullable": false,
+      "canonical_field": "source_type",
+      "sqlite_decl_allows_null": false,
+      "owned_value_rule": "source EntityType FromStr: Unicode to_lowercase, then artifact|iteration|task; output lowercase",
+      "control_file": "tests/gest_relationship_values.rs",
+      "controls": [
+        "complete_output_round_trips_and_is_independent",
+        "every_field_rejects_wrong_types_without_parser_causes",
+        "endpoint_types_follow_source_spellings",
+        "direction_is_kept_without_inverse_or_endpoint_checks"
+      ]
+    },
+    {
+      "name": "target_id",
+      "sql": "TEXT NOT NULL",
+      "nullable": false,
+      "canonical_field": "target_id",
+      "sqlite_decl_allows_null": false,
+      "owned_value_rule": "full 32-character [k-z] ID; endpoint existence is caller-owned",
+      "control_file": "tests/gest_relationship_values.rs",
+      "controls": [
+        "complete_output_round_trips_and_is_independent",
+        "every_field_rejects_wrong_types_without_parser_causes",
+        "full_identifier_domain_for_every_id_field",
+        "direction_is_kept_without_inverse_or_endpoint_checks"
+      ]
+    },
+    {
+      "name": "target_type",
+      "sql": "TEXT NOT NULL",
+      "nullable": false,
+      "canonical_field": "target_type",
+      "sqlite_decl_allows_null": false,
+      "owned_value_rule": "source EntityType FromStr: Unicode to_lowercase, then artifact|iteration|task; output lowercase",
+      "control_file": "tests/gest_relationship_values.rs",
+      "controls": [
+        "complete_output_round_trips_and_is_independent",
+        "every_field_rejects_wrong_types_without_parser_causes",
+        "endpoint_types_follow_source_spellings",
+        "direction_is_kept_without_inverse_or_endpoint_checks"
+      ]
+    },
+    {
+      "name": "created_at",
+      "sql": "TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))",
+      "nullable": false,
+      "canonical_field": "created_at",
+      "sqlite_decl_allows_null": false,
+      "owned_value_rule": "source chrono 0.4.44 RFC3339 -> UTC; canonical output reparse and <=9 fractional digits, no ordering",
+      "control_file": "tests/gest_relationship_values.rs",
+      "controls": [
+        "complete_output_round_trips_and_is_independent",
+        "every_field_rejects_wrong_types_without_parser_causes",
+        "business_timestamp_matrix_for_every_timestamp_field",
+        "every_timestamp_retains_initial_and_canonical_parse_causes",
+        "timestamps_need_not_be_chronologically_ordered"
+      ]
+    },
+    {
+      "name": "updated_at",
+      "sql": "TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))",
+      "nullable": false,
+      "canonical_field": "updated_at",
+      "sqlite_decl_allows_null": false,
+      "owned_value_rule": "source chrono 0.4.44 RFC3339 -> UTC; canonical output reparse and <=9 fractional digits, no ordering",
+      "control_file": "tests/gest_relationship_values.rs",
+      "controls": [
+        "complete_output_round_trips_and_is_independent",
+        "every_field_rejects_wrong_types_without_parser_causes",
+        "business_timestamp_matrix_for_every_timestamp_field",
+        "every_timestamp_retains_initial_and_canonical_parse_causes",
+        "timestamps_need_not_be_chronologically_ordered"
+      ]
+    }
+  ],
+  "source_field_count": 8,
+  "test_functions": [
+    "complete_output_round_trips_and_is_independent",
+    "every_field_rejects_wrong_types_without_parser_causes",
+    "full_identifier_domain_for_every_id_field",
+    "rel_type_follows_source_spellings",
+    "endpoint_types_follow_source_spellings",
+    "direction_is_kept_without_inverse_or_endpoint_checks",
+    "business_timestamp_matrix_for_every_timestamp_field",
+    "every_timestamp_retains_initial_and_canonical_parse_causes",
+    "timestamps_need_not_be_chronologically_ordered"
+  ],
+  "later_exact_api_obligations": [
+    {
+      "test_id": "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/model/primitives/entity_type.rs:54:it_formats_artifact",
+      "fixture_sha256": "1b2f09a6139b3c816b8f3c832fe6f0fd7cd7e2ca2fe7264d2d525c0c9154cb7f",
+      "assertion_ids": [
+        "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/model/primitives/entity_type.rs:56:assert_eq"
+      ],
+      "subject": "enum Display",
+      "classification": "later exact API/domain-primitive obligation",
+      "exact_port_in_minimal_owned_seam": false,
+      "adopted_replacement": false,
+      "reason": "Canonical string field output is related but does not invoke Primitive variant Display. Preserve at later enum/API seam; string output assertions now are new source-behavior controls."
+    },
+    {
+      "test_id": "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/model/primitives/entity_type.rs:59:it_formats_iteration",
+      "fixture_sha256": "c30f502e014163fbb06dce7dc0623aec044aded75a90d74e2ea88058ff771725",
+      "assertion_ids": [
+        "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/model/primitives/entity_type.rs:61:assert_eq"
+      ],
+      "subject": "enum Display",
+      "classification": "later exact API/domain-primitive obligation",
+      "exact_port_in_minimal_owned_seam": false,
+      "adopted_replacement": false,
+      "reason": "Canonical string field output is related but does not invoke Primitive variant Display. Preserve at later enum/API seam; string output assertions now are new source-behavior controls."
+    },
+    {
+      "test_id": "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/model/primitives/entity_type.rs:64:it_formats_task",
+      "fixture_sha256": "4bd29bc3ab87cfceaa1e4d43145cac3fc0ebd656909ae7fabf4cb76366071c77",
+      "assertion_ids": [
+        "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/model/primitives/entity_type.rs:66:assert_eq"
+      ],
+      "subject": "enum Display",
+      "classification": "later exact API/domain-primitive obligation",
+      "exact_port_in_minimal_owned_seam": false,
+      "adopted_replacement": false,
+      "reason": "Canonical string field output is related but does not invoke Primitive variant Display. Preserve at later enum/API seam; string output assertions now are new source-behavior controls."
+    },
+    {
+      "test_id": "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/model/primitives/entity_type.rs:73:it_parses_case_insensitively",
+      "fixture_sha256": "6afdfe8c2b908a2aec02bcb8b98f995370a99722baf0d219645bb073a0c8afa5",
+      "assertion_ids": [
+        "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/model/primitives/entity_type.rs:75:assert_eq",
+        "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/model/primitives/entity_type.rs:76:assert_eq"
+      ],
+      "subject": "enum FromStr",
+      "classification": "later exact API/domain-primitive obligation",
+      "exact_port_in_minimal_owned_seam": false,
+      "adopted_replacement": false,
+      "reason": "String-field validator accepts/rejects same source spellings but returns validated record/canonical string, not Primitive. Preserve exact .parse::<Primitive>() assertions at later primitive/API seam; conversion case controls are new source-behavior controls."
+    },
+    {
+      "test_id": "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/model/primitives/entity_type.rs:79:it_rejects_invalid",
+      "fixture_sha256": "23a0b2fdb479fa37f027ee7eb1b4dadbf22c26937f89b61982d7e4457fe34740",
+      "assertion_ids": [
+        "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/model/primitives/entity_type.rs:81:assert"
+      ],
+      "subject": "enum FromStr",
+      "classification": "later exact API/domain-primitive obligation",
+      "exact_port_in_minimal_owned_seam": false,
+      "adopted_replacement": false,
+      "reason": "String-field validator accepts/rejects same source spellings but returns validated record/canonical string, not Primitive. Preserve exact .parse::<Primitive>() assertions at later primitive/API seam; conversion case controls are new source-behavior controls."
+    },
+    {
+      "test_id": "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/model/primitives/relationship_type.rs:79:it_formats_blocked_by",
+      "fixture_sha256": "3a88ef5e9455614b4b9baecebd85b4ac20edfb747882cd3d3999bab24446443e",
+      "assertion_ids": [
+        "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/model/primitives/relationship_type.rs:81:assert_eq"
+      ],
+      "subject": "enum Display",
+      "classification": "later exact API/domain-primitive obligation",
+      "exact_port_in_minimal_owned_seam": false,
+      "adopted_replacement": false,
+      "reason": "Canonical string field output is related but does not invoke Primitive variant Display. Preserve at later enum/API seam; string output assertions now are new source-behavior controls."
+    },
+    {
+      "test_id": "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/model/primitives/relationship_type.rs:84:it_formats_blocks",
+      "fixture_sha256": "99a5a36aedeca6fae8572ad9dea02b605e87b5b0232057e9c7f0a49a4aee533e",
+      "assertion_ids": [
+        "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/model/primitives/relationship_type.rs:86:assert_eq"
+      ],
+      "subject": "enum Display",
+      "classification": "later exact API/domain-primitive obligation",
+      "exact_port_in_minimal_owned_seam": false,
+      "adopted_replacement": false,
+      "reason": "Canonical string field output is related but does not invoke Primitive variant Display. Preserve at later enum/API seam; string output assertions now are new source-behavior controls."
+    },
+    {
+      "test_id": "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/model/primitives/relationship_type.rs:89:it_formats_child_of",
+      "fixture_sha256": "e556f422e4407d0b02a20ce7a902d77ac92d5bc42bd741b532bb785e1cbc8b86",
+      "assertion_ids": [
+        "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/model/primitives/relationship_type.rs:91:assert_eq"
+      ],
+      "subject": "enum Display",
+      "classification": "later exact API/domain-primitive obligation",
+      "exact_port_in_minimal_owned_seam": false,
+      "adopted_replacement": false,
+      "reason": "Canonical string field output is related but does not invoke Primitive variant Display. Preserve at later enum/API seam; string output assertions now are new source-behavior controls."
+    },
+    {
+      "test_id": "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/model/primitives/relationship_type.rs:94:it_formats_parent_of",
+      "fixture_sha256": "708667fc9aae1960a61d10e5f6d4086a62ba8baada4b039d1fe236afc76e54ff",
+      "assertion_ids": [
+        "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/model/primitives/relationship_type.rs:96:assert_eq"
+      ],
+      "subject": "enum Display",
+      "classification": "later exact API/domain-primitive obligation",
+      "exact_port_in_minimal_owned_seam": false,
+      "adopted_replacement": false,
+      "reason": "Canonical string field output is related but does not invoke Primitive variant Display. Preserve at later enum/API seam; string output assertions now are new source-behavior controls."
+    },
+    {
+      "test_id": "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/model/primitives/relationship_type.rs:99:it_formats_relates_to",
+      "fixture_sha256": "ec5e273e7262e16032e553385db47800ee0487aacb5220fb9993b1388c039349",
+      "assertion_ids": [
+        "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/model/primitives/relationship_type.rs:101:assert_eq"
+      ],
+      "subject": "enum Display",
+      "classification": "later exact API/domain-primitive obligation",
+      "exact_port_in_minimal_owned_seam": false,
+      "adopted_replacement": false,
+      "reason": "Canonical string field output is related but does not invoke Primitive variant Display. Preserve at later enum/API seam; string output assertions now are new source-behavior controls."
+    },
+    {
+      "test_id": "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/model/primitives/relationship_type.rs:110:it_inverts_blocked_by_to_blocks",
+      "fixture_sha256": "78d2553d4250cc1cfb715095fc5888a4310a99bcca29c6adad045c23bf41ba4b",
+      "assertion_ids": [
+        "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/model/primitives/relationship_type.rs:112:assert_eq"
+      ],
+      "subject": "relationship inverse",
+      "classification": "later exact API/domain-primitive obligation",
+      "exact_port_in_minimal_owned_seam": false,
+      "adopted_replacement": false,
+      "reason": "Value conversion validates existing directed rel_type; it never computes inverse relationships. Preserve at later relationship primitive/operation seam."
+    },
+    {
+      "test_id": "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/model/primitives/relationship_type.rs:115:it_inverts_blocks_to_blocked_by",
+      "fixture_sha256": "629273ad3edca8cbdbc3784c6e970af5b51d96631588a3104df6123ddb637f33",
+      "assertion_ids": [
+        "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/model/primitives/relationship_type.rs:117:assert_eq"
+      ],
+      "subject": "relationship inverse",
+      "classification": "later exact API/domain-primitive obligation",
+      "exact_port_in_minimal_owned_seam": false,
+      "adopted_replacement": false,
+      "reason": "Value conversion validates existing directed rel_type; it never computes inverse relationships. Preserve at later relationship primitive/operation seam."
+    },
+    {
+      "test_id": "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/model/primitives/relationship_type.rs:120:it_inverts_child_of_to_parent_of",
+      "fixture_sha256": "51c6d85832991b016a99342abc4ff2f84699cbff36b338cf790f3c66ca1dee08",
+      "assertion_ids": [
+        "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/model/primitives/relationship_type.rs:122:assert_eq"
+      ],
+      "subject": "relationship inverse",
+      "classification": "later exact API/domain-primitive obligation",
+      "exact_port_in_minimal_owned_seam": false,
+      "adopted_replacement": false,
+      "reason": "Value conversion validates existing directed rel_type; it never computes inverse relationships. Preserve at later relationship primitive/operation seam."
+    },
+    {
+      "test_id": "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/model/primitives/relationship_type.rs:125:it_inverts_parent_of_to_child_of",
+      "fixture_sha256": "4886f01a8b68c010b976f5b0776a298c0cfafc51cea7fc10efc5fd853fc837c6",
+      "assertion_ids": [
+        "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/model/primitives/relationship_type.rs:127:assert_eq"
+      ],
+      "subject": "relationship inverse",
+      "classification": "later exact API/domain-primitive obligation",
+      "exact_port_in_minimal_owned_seam": false,
+      "adopted_replacement": false,
+      "reason": "Value conversion validates existing directed rel_type; it never computes inverse relationships. Preserve at later relationship primitive/operation seam."
+    },
+    {
+      "test_id": "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/model/primitives/relationship_type.rs:130:it_keeps_relates_to_symmetric",
+      "fixture_sha256": "741e2fd6ed0487a0c415cc43e83c9cc754187ea2ff9bdd540a8cddd5e2ff388e",
+      "assertion_ids": [
+        "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/model/primitives/relationship_type.rs:132:assert_eq"
+      ],
+      "subject": "relationship inverse",
+      "classification": "later exact API/domain-primitive obligation",
+      "exact_port_in_minimal_owned_seam": false,
+      "adopted_replacement": false,
+      "reason": "Value conversion validates existing directed rel_type; it never computes inverse relationships. Preserve at later relationship primitive/operation seam."
+    }
+  ],
+  "caller_owned_constraints": [
+    "directed tuple uniqueness (rel_type, source_type, source_id, target_type, target_id), GEST-CONSTRAINT-01",
+    "inverse row creation",
+    "endpoint existence and project scope"
+  ]
+}

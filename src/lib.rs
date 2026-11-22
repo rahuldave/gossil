@@ -791,8 +791,12 @@ pub mod gest_artifact_values;
 pub mod gest_author_values;
 /// Convert complete admitted canonical iteration fields into owned values.
 pub mod gest_iteration_values;
+/// Convert complete admitted canonical note fields into owned values.
+pub mod gest_note_values;
 /// Convert complete admitted canonical project fields into owned values.
 pub mod gest_project_values;
+/// Convert complete admitted canonical relationship fields into owned values.
+pub mod gest_relationship_values;
 /// Convert complete admitted canonical tag fields into owned values.
 pub mod gest_tag_values;
 /// Share decoded-value validation without exposing a second public authority.

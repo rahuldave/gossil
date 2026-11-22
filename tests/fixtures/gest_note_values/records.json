@@ -1,0 +1,11 @@
+{
+  "base": {
+    "gest_id": "klmnopqrstuvwxyzklmnopqrstuvwxyz",
+    "entity_id": "zyxwvutsrqponmlkzyxwvutsrqponmlk",
+    "entity_type": "task",
+    "author_id": null,
+    "body": "Checked É\u0000\r\n",
+    "created_at": "2026-11-18T12:00:00+00:00",
+    "updated_at": "2025-01-01T00:00:00+00:00"
+  }
+}

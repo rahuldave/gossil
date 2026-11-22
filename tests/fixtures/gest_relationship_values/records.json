@@ -1,0 +1,12 @@
+{
+  "base": {
+    "gest_id": "klmnopqrstuvwxyzklmnopqrstuvwxyz",
+    "rel_type": "child-of",
+    "source_id": "kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk",
+    "source_type": "task",
+    "target_id": "zyxwvutsrqponmlkzyxwvutsrqponmlk",
+    "target_type": "iteration",
+    "created_at": "2026-11-18T12:00:00+00:00",
+    "updated_at": "2025-01-01T00:00:00+00:00"
+  }
+}

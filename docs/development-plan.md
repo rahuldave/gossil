@@ -16,7 +16,10 @@ The [Gest artifact values converter](gest-artifact-values.md) validates eight ca
 The [Gest iteration values converter](gest-iteration-values.md) validates nine canonical iteration fields.
 The [Gest tag values converter](gest-tag-values.md) validates four canonical tag fields.
 
-All six converters operate in memory and leave storage integration, raw field admission and the full Gest API to future work.
+The [Gest note values converter](gest-note-values.md) validates seven canonical note fields.
+The [Gest relationship values converter](gest-relationship-values.md) validates eight canonical relationship fields.
+
+All eight converters operate in memory and leave storage integration, raw field admission and the full Gest API to future work.
 
 The [task ticket emitter](task-ticket.md) serializes validated task snapshots with
 caller-supplied native identity, actor and date.

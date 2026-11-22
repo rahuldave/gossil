@@ -29,7 +29,7 @@ of file history, exact issue state and versioned links to code.
 The [examples](examples.md) show library calls for deltas, compressed bytes,
 hashes and token escaping.
 
-Gest is a task and artifact tracker. The converters in the module table use its task, project, author, artifact, iteration and tag record model.
+Gest is a task and artifact tracker. The converters in the module table use its task, project, author, artifact, iteration, tag, note and relationship record model.
 
 Use [`vcs info`](cli.md#inspect-current-recorded-checkout-identity) to show the
 current recorded checkout and its shared and private heads. Explicit repository
@@ -61,6 +61,8 @@ through `recorded_timeline`, with native metadata bytes and the shared root last
 | Validate decoded artifact snapshots in memory | [Gest artifact values](gest-artifact-values.md) |
 | Validate decoded iteration snapshots in memory | [Gest iteration values](gest-iteration-values.md) |
 | Validate decoded tag snapshots in memory | [Gest tag values](gest-tag-values.md) |
+| Validate decoded note snapshots in memory | [Gest note values](gest-note-values.md) |
+| Validate decoded relationship snapshots in memory | [Gest relationship values](gest-relationship-values.md) |
 
 The [concepts guide](concepts.md) explains how these modules fit together.
 Gossil is under development. General version-control commands, Gest task
