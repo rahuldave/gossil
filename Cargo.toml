@@ -39,6 +39,13 @@ path = "tests/delta_decoder.rs"
 name = "delta_cli"
 path = "tests/delta_cli.rs"
 
+# The target of tests/glob.rs must not be named glob. cargo-llvm-cov runs `cargo clean -p gossil` before each
+# coverage run, and that clean removes files by target name, so it also deleted the outputs of the registry crate
+# glob, a build dependency of libsql-ffi, and each coverage run rebuilt seven crates and the C code of libSQL.
+[[test]]
+name = "glob_port"
+path = "tests/glob.rs"
+
 [patch.crates-io]
 libsql = { git = "https://github.com/rahuldave/gossil-libsql", rev = "c02db34ae8a7e91ca7ab8faee18fe41515626940" }
 libsql-ffi = { path = "vendor/libsql-ffi" }

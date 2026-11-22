@@ -153,6 +153,10 @@ trusted SQL expression, with untrusted candidate values bound separately.
 
 The 37 retained glob evidence files describe historical source and 0.9.30
 execution. Preserve their bytes.
+The integration target of `tests/glob.rs` is now `glob_port`, so run it with
+`just integration --test glob_port`. The evidence files keep the old command
+`just integration --test glob`. A target named `glob` made each coverage run
+rebuild the registry crate `glob` and libSQL.
 
 The 2026-11-21 focused checkpoint built both binaries and passed
 3 CLI tests, 9 glob integration tests, 5 filtered library units (4 glob and one
