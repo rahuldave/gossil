@@ -8,15 +8,17 @@
 //! consumes the remaining prefix. There is no quote escape syntax. Every input
 //! ends at its first NUL. Matching returns the first one-based index, or zero.
 //!
-//! [`glob_expr`] retains a distinct extra byte advance after a closing quote.
-//! Its value argument is trusted SQL; bind untrusted candidate values separately.
+//! [`glob_expr`](crate::glob::glob_expr) retains a distinct extra byte advance
+//! after a closing quote.
+//! Its value argument is trusted SQL. Bind untrusted candidate values separately.
 //! These functions perform no traversal, settings lookup or tracking mutation.
 //!
 //! ## Recommendations
 //!
-//! Use [`glob_create`] for repeated matching and [`glob_multi_match`] for one scan.
+//! Use [`glob_create`](crate::glob::glob_create) for repeated matching and
+//! [`glob_multi_match`](crate::glob::glob_multi_match) for one scan.
 //! Next, set explicit byte/count budgets and bind candidate values separately
-//! when executing SQL from [`glob_expr`].
+//! when executing SQL from [`glob_expr`](crate::glob::glob_expr).
 use std::collections::TryReserveError;
 
 /// Supply finite byte/count budgets; input byte lengths stop before the first NUL.

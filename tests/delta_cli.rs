@@ -65,8 +65,7 @@ fn cli_pinned_observations() {
 #[test]
 fn cli_paths_and_usage() {
     for args in [
-        vec![],
-        vec!["test-delta-apply"],
+        vec!["vcs", "test-delta-apply"],
         vec!["vcs", "test-delta-apply", "one"],
         vec!["vcs", "test-delta-apply", "one", "two"],
         vec!["vcs", "test-delta-apply", "one", "two", "three", "extra"],
@@ -116,11 +115,12 @@ fn cli_paths_and_usage() {
         delta.as_os_str(),
         target.as_os_str(),
     ]);
-    assert_eq!(rejected_root.status.code(), Some(1));
+    // A bare root diagnostic is an unknown root command, a parser failure.
+    assert_eq!(rejected_root.status.code(), Some(2));
     assert!(rejected_root.stdout.is_empty());
     assert_eq!(
         rejected_root.stderr,
-        b"Usage: gossil vcs test-delta-apply ORIGIN DELTA TARGET\n"
+        b"gossil: unknown command \"test-delta-apply\"\nRun \"gossil --help\" to list the commands.\n"
     );
     assert_eq!(fs::read(&target).unwrap(), b"preserve");
     for alias in [0, 1, 2] {

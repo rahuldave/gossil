@@ -37,6 +37,9 @@ The CLI also exposes `vcs init` and `vcs new` through `gossil` or `gos`, with
 `v` as the group alias. These create an empty repository without a checkout. See
 `docs/cli.md` for the separate native `vcs open` contract.
 
+The private `src/product/help.rs` table gives product, group and command help.
+It must list every command that `src/product.rs` dispatches. Unknown names exit 2.
+
 Native local storage supports checkout-free initialization, then one library
 checkout registration at the empty root. Reopen admits strict catalog4 with zero
 or one registration, explicit tracked scopes and the supported private recording
@@ -84,7 +87,9 @@ hosts it checks the existing tools without replacing them.
 
 Use the installed Rust checks through Just, including
 `lint`, `typecheck`, `test`, `integration`, `coverage-check`, `docstring-check`
-and `api-check`. `just docs-check` checks the site and API docs.
+and `api-check`. `just docs-check` checks the site and API docs, then runs
+`just rustdoc-check`. That recipe builds the rustdoc with private items and
+fails on each warning, such as a broken intra-doc link.
 `just docs-build` renders the site. Do not weaken checks to get a pass.
 
 The runner checkpoint is `evidence/runner-checkpoint-2026-11-17.json`.
@@ -142,9 +147,9 @@ existing global-state control), and all 20 unchanged Tcl assertions. Its graph
 comparison retained all 126 nonroot packages and edges/features with one
 `libsql-ffi` 0.10.0 provider. At that checkpoint the Gossil crate version in
 `Cargo.toml` was 0.9.0, since released as `v0.9.0`. The current Gossil crate
-version is 0.11.0. The libSQL provider version 0.10.0 and the Gossil crate
+version is 0.12.0. The libSQL provider version 0.10.0 and the Gossil crate
 version are separate numbers. Version 0.10.0 of the crate was released as
-`v0.10.0`.
+`v0.10.0`, and version 0.11.0 as `v0.11.0`.
 
 The checkpoint
 used a prospective checked-commit prerequisite, with actual parent `4250b873`;

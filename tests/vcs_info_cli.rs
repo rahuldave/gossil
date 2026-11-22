@@ -421,9 +421,15 @@ fn grammar_locator_configuration_and_corruption_refusals() {
                     .args(args);
                 fixture.refuse(command, "requires");
             }
+            // The group alone prints the group help and reads no checkout.
             let mut parent = command(binary, fixture.temp.path());
             parent.current_dir(&fixture.root).arg(group);
-            fixture.refuse(parent, "Usage:");
+            let before = state(&fixture.repository);
+            let output = parent.output().unwrap();
+            assert!(output.status.success());
+            assert!(output.stderr.is_empty());
+            assert!(output.stdout.starts_with(b"Usage: gossil vcs COMMAND"));
+            assert_eq!(state(&fixture.repository), before);
             for flag in ["--repository", "--checkout"] {
                 let mut invalid = command(binary, fixture.temp.path());
                 invalid

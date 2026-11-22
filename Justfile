@@ -116,3 +116,14 @@ libsql-provider-compile:
 # Run the finite date semantic controls through the actual bundled Rust provider.
 libsql-provider-dates:
     jlog run cargo test --locked --lib storage::date_tests
+
+# Build the rustdoc of the library and binaries, private items too, and fail on each warning, such as a broken intra-doc link.
+rustdoc-check:
+    RUSTDOCFLAGS="-D warnings" jlog run cargo doc --locked --all-features --no-deps --document-private-items
+
+# Check the site and the API pages, then the rustdoc with warnings denied, so a broken intra-doc link fails the step.
+docs-check:
+    {{jn_smalldocs}} check docs
+    just --justfile {{quote(justfile())}} api-check
+    just --justfile {{quote(justfile())}} rustdoc-check
+    jlog step docs-check
