@@ -1,4 +1,6 @@
 //! New decoded-field controls; no exact source primitive tests are ported here.
+#[path = "support/gest_source_map.rs"]
+mod gest_source_map;
 use gossil::gest_tag_values::{TagValueInputs, tag_from_values, tag_to_values};
 use serde_json::{Value, json};
 
@@ -213,7 +215,8 @@ fn timestamps_need_not_be_chronologically_ordered() {
     assert_eq!(output(f.clone()), f);
 }
 
-/// Check that the source map names all 4 fields, existing controls and 1 later obligation.
+/// Check that the source map names all 4 fields, existing controls and 1 later obligation, and that
+/// its pinned hashes and its exact list of fields match the committed expectations.
 #[test]
 fn source_map_names_every_field_and_existing_control() {
     let map: Value =
@@ -263,5 +266,18 @@ fn source_map_names_every_field_and_existing_control() {
     assert_eq!(
         map["governing_addendum_sha256"],
         "afddd1c2f5e905f72126209605737cc80e63791870d3ce8bd59f26c9589d8454"
+    );
+    gest_source_map::assert_rejects_stale_and_malformed(
+        &map,
+        &gest_source_map::Expected {
+            sources: &["src/store/model/tag.rs"],
+            fields: &[
+                ("id", "gest_id"),
+                ("label", "label"),
+                ("created_at", "created_at"),
+                ("updated_at", "updated_at"),
+            ],
+            control_file: "tests/gest_tag_values.rs",
+        },
     );
 }

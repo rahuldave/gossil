@@ -193,7 +193,8 @@ It is not required to use the current CLI or library.
 
 ## Shared value validation
 
-Task, project and author conversion share private field validators. The task ticket emitter
+All ten converters of Gest values share the private field validators of
+`gest_value_validation`. The task ticket emitter
 borrows the status and UTC timestamp forms defined by `gest_task_values`.
 Changes must preserve public conversion behavior and the original parser errors
 returned through the public error accessor.

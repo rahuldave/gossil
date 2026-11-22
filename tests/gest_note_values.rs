@@ -1,4 +1,6 @@
 //! New controls for decoded fields. This file ports none of the exact tests of the source primitives.
+#[path = "support/gest_source_map.rs"]
+mod gest_source_map;
 use gossil::gest_note_values::{NoteValueInputs, note_from_values, note_to_values};
 use serde_json::{Value, json};
 
@@ -253,7 +255,8 @@ fn timestamps_need_not_be_chronologically_ordered() {
     assert_eq!(output(f.clone()), f);
 }
 
-/// Check that the source map names all 7 fields, existing controls and 5 later obligations.
+/// Check that the source map names all 7 fields, existing controls and 5 later obligations, and
+/// that its pinned hashes and its exact list of fields match the committed expectations.
 #[test]
 fn source_map_names_every_field_and_existing_control() {
     let map: Value =
@@ -308,5 +311,26 @@ fn source_map_names_every_field_and_existing_control() {
     assert_eq!(
         map["governing_addendum_sha256"],
         "afddd1c2f5e905f72126209605737cc80e63791870d3ce8bd59f26c9589d8454"
+    );
+    gest_source_map::assert_rejects_stale_and_malformed(
+        &map,
+        &gest_source_map::Expected {
+            sources: &[
+                "src/store/model/note.rs",
+                "src/store/migration/m00009_create_notes.rs",
+                "src/store/model/primitives/entity_type.rs",
+                "src/store/model/primitives/id.rs",
+            ],
+            fields: &[
+                ("id", "gest_id"),
+                ("entity_id", "entity_id"),
+                ("entity_type", "entity_type"),
+                ("author_id", "author_id"),
+                ("body", "body"),
+                ("created_at", "created_at"),
+                ("updated_at", "updated_at"),
+            ],
+            control_file: "tests/gest_note_values.rs",
+        },
     );
 }

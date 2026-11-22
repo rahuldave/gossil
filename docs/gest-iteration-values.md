@@ -85,6 +85,15 @@ The ten converter controls are in `tests/gest_iteration_values.rs`. They check
 complete output, independent ownership, types, identifiers, metadata, status
 spellings, the terminal timestamp pair and timestamp boundaries with typed causes. One
 control checks the source map.
+
+The same control compares the map with the expected values in `tests/support/gest_source_map.rs`.
+These values are the Gest commit, the hash of each cited Gest file and the exact list of fields.
+They also include the hash of the test accounting addendum.
+The control then makes copies of the map, each with one stale or malformed entry,
+and checks that the comparison refuses each copy. The Gest files are not in this
+repository, so the control compares the hashes that the map records with these values.
+It does not hash the files themselves.
+
 These tests cover the converter itself, not the upstream iteration API or
 repository tests. The source map lists the six upstream tests of the status
 display and of the terminal check as later API work.

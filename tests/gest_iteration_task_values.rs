@@ -1,4 +1,6 @@
 //! New controls for decoded fields. This file ports none of the exact tests of the source primitives.
+#[path = "support/gest_source_map.rs"]
+mod gest_source_map;
 use gossil::gest_iteration_task_values::{
     IterationTaskValueInputs, iteration_task_from_values, iteration_task_to_values,
 };
@@ -246,7 +248,8 @@ fn every_timestamp_retains_initial_and_canonical_parse_causes() {
     }
 }
 
-/// Check that the source map names all 4 fields, existing controls and no later obligation.
+/// Check that the source map names all 4 fields, existing controls and no later obligation, and
+/// that its pinned hashes and its exact list of fields match the committed expectations.
 #[test]
 fn source_map_names_every_field_and_existing_control() {
     let map: Value = serde_json::from_str(include_str!(
@@ -285,5 +288,27 @@ fn source_map_names_every_field_and_existing_control() {
     assert_eq!(
         map["governing_addendum_sha256"],
         "afddd1c2f5e905f72126209605737cc80e63791870d3ce8bd59f26c9589d8454"
+    );
+    // The phase range comes from the gest.md field table and GEST-T03, not GEST-02.
+    let phase = fields.iter().find(|f| f["name"] == "phase").unwrap();
+    let rule = phase["owned_value_rule"].as_str().unwrap();
+    assert!(rule.contains("(gest.md field table, iteration_tasks row, and GEST-T03)"));
+    assert!(!rule.contains("GEST-02"));
+    gest_source_map::assert_rejects_stale_and_malformed(
+        &map,
+        &gest_source_map::Expected {
+            sources: &[
+                "src/store/repo/iteration.rs",
+                "src/store/migration/m00011_create_iteration_tasks.rs",
+                "src/store/model/primitives/id.rs",
+            ],
+            fields: &[
+                ("iteration_id", "iteration_id"),
+                ("task_id", "task_id"),
+                ("phase", "phase"),
+                ("created_at", "created_at"),
+            ],
+            control_file: "tests/gest_iteration_task_values.rs",
+        },
     );
 }

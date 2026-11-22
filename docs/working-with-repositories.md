@@ -272,8 +272,13 @@ Exact version references are part of the planned issue and
 annotation model. A Git object reference also does not guarantee that a
 recipient has its bytes.
 
-The current [task](gest-task-values.md), [project](gest-project-values.md) and
-[author](gest-author-values.md) converters validate decoded records in memory. They do not save an issue or
+The current Gest converters validate decoded records in memory. They cover
+[tasks](gest-task-values.md), [projects](gest-project-values.md),
+[authors](gest-author-values.md), [artifacts](gest-artifact-values.md),
+[iterations](gest-iteration-values.md), [tags](gest-tag-values.md),
+[notes](gest-note-values.md), [relationships](gest-relationship-values.md),
+[entity tags](gest-entity-tag-values.md) and
+[iteration tasks](gest-iteration-task-values.md). They do not save an issue or
 create a file reference. Their generated API links give the callable surface.
 
 Notebook support remains planned. A notebook is a selected directory and its

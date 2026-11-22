@@ -77,6 +77,15 @@ The nine converter controls in `tests/gest_artifact_values.rs` check complete ou
 independent ownership, types, identifiers, metadata, archive state and timestamp
 boundaries with typed causes. One control checks that the source map names each
 field, and that it names only controls that exist in the file.
+
+The same control compares the map with the expected values in `tests/support/gest_source_map.rs`.
+These values are the Gest commit, the hash of each cited Gest file and the exact list of fields.
+They also include the hash of the test accounting addendum.
+The control then makes copies of the map, each with one stale or malformed entry,
+and checks that the comparison refuses each copy. The Gest files are not in this
+repository, so the control compares the hashes that the map records with these values.
+It does not hash the files themselves.
+
 These tests cover the converter itself. They do not reproduce the upstream
 artifact API or repository tests, whose behavior and persistence still need separate validation.
 Artifact storage and reads of caller-selected records remain planned

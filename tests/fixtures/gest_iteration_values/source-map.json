@@ -55,7 +55,7 @@
       "nullable": false,
       "canonical_field": "status",
       "sqlite_decl_allows_null": false,
-      "owned_value_rule": "IterationStatus::FromStr case-insensitive active/cancelled/completed; Display output; terminal/completed_at row consistency",
+      "owned_value_rule": "source behavior: IterationStatus::FromStr case-insensitive active/cancelled/completed and Display output; adopted from the Gest contract (gest.md, Typed model invariants), not from upstream source: terminal/completed_at row consistency",
       "control_file": "tests/gest_iteration_values.rs",
       "controls": [
         "complete_fields_round_trip_and_output_is_owned",

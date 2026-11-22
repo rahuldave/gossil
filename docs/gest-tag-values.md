@@ -53,9 +53,12 @@ parsed again. It does not check the order of the two timestamps.
 
 Upstream, each label is unique among all tags. A single record cannot show a
 duplicate, so the converter does not check uniqueness. The Gossil contract
-GEST-CONSTRAINT-01 requires that check across all live tag records. Under it,
-two tags with equal labels and distinct IDs are a conflict, and the check keeps
-both records. Gossil does not implement this check yet.
+GEST-CONSTRAINT-01 requires that check across all live tag records.
+
+Under that contract, two tags with equal labels and distinct IDs are a conflict. The check keeps
+both records, marks them as conflicts and hides the conflicted rows. Gossil does
+not implement the check or the hiding of those rows yet. The converter handles a
+single record and has no conflict state.
 
 `TagValueError` displays the field and a static reason, and does not repeat the input.
 Its `parse_cause()` accessor returns the `chrono` error from the parse of the input
@@ -73,6 +76,15 @@ The nine converter controls in `tests/gest_tag_values.rs` check complete output,
 independent ownership, types, identifiers, exact labels and timestamp boundaries
 with typed causes. One of them checks that the source map names each field, and
 that each control that it names exists in the file.
+
+The same control compares the map with the expected values in `tests/support/gest_source_map.rs`.
+These values are the Gest commit, the hash of each cited Gest file and the exact list of fields.
+They also include the hash of the test accounting addendum.
+The control then makes copies of the map, each with one stale or malformed entry,
+and checks that the comparison refuses each copy. The Gest files are not in this
+repository, so the control compares the hashes that the map records with these values.
+It does not hash the files themselves.
+
 These tests cover the converter itself. They do not reproduce the upstream tag
 API or repository tests. The upstream constructor test calls `Model::new`, which
 generates an ID and reads the clock. The source map lists it as a later API obligation.

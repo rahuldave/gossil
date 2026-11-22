@@ -56,7 +56,7 @@
       "nullable": false,
       "canonical_field": "phase",
       "sqlite_decl_allows_null": false,
-      "owned_value_rule": "JSON unsigned integer 0..=4294967295 checked into u32 (GEST-02); source reads with a wrapping `as u32` cast; not a key member; repeated add keeps the existing phase (caller-owned)",
+      "owned_value_rule": "JSON unsigned integer 0..=4294967295 checked into u32 (gest.md field table, iteration_tasks row, and GEST-T03); source reads with a wrapping `as u32` cast; not a key member; repeated add keeps the existing phase (caller-owned)",
       "control_file": "tests/gest_iteration_task_values.rs",
       "controls": [
         "complete_output_round_trips_and_is_independent",

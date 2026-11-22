@@ -11,8 +11,10 @@ reopens one native checkout and offers three delta diagnostics. It also supports
 [explicit add and status](cli.md#add-explicit-paths-and-inspect-pending-additions)
 without recording file content. Status distinguishes pending and recorded paths
 and shows their actual scope.
-The Rust library has typed task, project and author converters, a task artifact emitter,
-and native storage primitives. It does not yet create or read persisted issues.
+
+The Rust library has typed converters for Gest tasks, projects, authors, artifacts,
+iterations, tags, notes, relationships, entity tags and iteration tasks. It also has a
+task artifact emitter and native storage primitives. It does not yet create or read persisted issues.
 
 [Native checkout open](cli.md#open-a-native-checkout) registers or reopens an
 existing directory and publishes its lookup locator. The library can record

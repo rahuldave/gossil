@@ -1,4 +1,6 @@
 //! New decoded-field controls; no exact source primitive tests are ported here.
+#[path = "support/gest_source_map.rs"]
+mod gest_source_map;
 use gossil::gest_iteration_values::{
     IterationValueInputs, iteration_from_values, iteration_to_values,
 };
@@ -381,7 +383,8 @@ fn timestamps_need_not_be_chronologically_ordered() {
     assert_eq!(output(f.clone()), f);
 }
 
-/// Check that the source map names all 9 fields, existing controls and 6 later obligations.
+/// Check that the source map names all 9 fields, existing controls and 6 later obligations, and
+/// that its pinned hashes and its exact list of fields match the committed expectations.
 #[test]
 fn source_map_names_every_field_and_existing_control() {
     let map: Value = serde_json::from_str(include_str!(
@@ -410,4 +413,29 @@ fn source_map_names_every_field_and_existing_control() {
         assert_eq!(row["exact_port_in_minimal_owned_seam"], false);
         assert!(!row["reason"].as_str().unwrap().is_empty());
     }
+    // The terminal pairing comes from the Gest contract, not from upstream source.
+    let status = fields.iter().find(|f| f["name"] == "status").unwrap();
+    let rule = status["owned_value_rule"].as_str().unwrap();
+    assert!(rule.contains(
+        "adopted from the Gest contract (gest.md, Typed model invariants), \
+         not from upstream source: terminal/completed_at"
+    ));
+    gest_source_map::assert_rejects_stale_and_malformed(
+        &map,
+        &gest_source_map::Expected {
+            sources: &["src/store/model/iteration.rs"],
+            fields: &[
+                ("id", "gest_id"),
+                ("project_id", "project_id"),
+                ("title", "title"),
+                ("status", "status"),
+                ("description", "description"),
+                ("metadata", "metadata"),
+                ("completed_at", "completed_at"),
+                ("created_at", "created_at"),
+                ("updated_at", "updated_at"),
+            ],
+            control_file: "tests/gest_iteration_values.rs",
+        },
+    );
 }

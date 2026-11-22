@@ -1,4 +1,6 @@
 //! New controls for decoded fields. This file ports none of the exact tests of the source primitives.
+#[path = "support/gest_source_map.rs"]
+mod gest_source_map;
 use gossil::gest_relationship_values::{
     RelationshipValueInputs, relationship_from_values, relationship_to_values,
 };
@@ -295,7 +297,8 @@ fn timestamps_need_not_be_chronologically_ordered() {
     assert_eq!(output(f.clone()), f);
 }
 
-/// Check that the source map names all 8 fields, existing controls and 15 later obligations.
+/// Check that the source map names all 8 fields, existing controls and 15 later obligations, and
+/// that its pinned hashes and its exact list of fields match the committed expectations.
 #[test]
 fn source_map_names_every_field_and_existing_control() {
     let map: Value = serde_json::from_str(include_str!(
@@ -368,5 +371,28 @@ fn source_map_names_every_field_and_existing_control() {
     assert_eq!(
         map["governing_addendum_sha256"],
         "afddd1c2f5e905f72126209605737cc80e63791870d3ce8bd59f26c9589d8454"
+    );
+    gest_source_map::assert_rejects_stale_and_malformed(
+        &map,
+        &gest_source_map::Expected {
+            sources: &[
+                "src/store/model/relationship.rs",
+                "src/store/migration/m00010_create_relationships.rs",
+                "src/store/model/primitives/entity_type.rs",
+                "src/store/model/primitives/relationship_type.rs",
+                "src/store/model/primitives/id.rs",
+            ],
+            fields: &[
+                ("id", "gest_id"),
+                ("rel_type", "rel_type"),
+                ("source_id", "source_id"),
+                ("source_type", "source_type"),
+                ("target_id", "target_id"),
+                ("target_type", "target_type"),
+                ("created_at", "created_at"),
+                ("updated_at", "updated_at"),
+            ],
+            control_file: "tests/gest_relationship_values.rs",
+        },
     );
 }

@@ -1,4 +1,6 @@
 //! New decoded-field controls; no exact source primitive tests are ported here.
+#[path = "support/gest_source_map.rs"]
+mod gest_source_map;
 use gossil::gest_artifact_values::{ArtifactValueInputs, artifact_from_values, artifact_to_values};
 use serde_json::{Value, json};
 
@@ -317,7 +319,8 @@ fn timestamps_need_not_be_chronologically_ordered() {
     assert_eq!(output(f.clone()), f);
 }
 
-/// Check that the source map names all 8 fields and only controls that exist here.
+/// Check that the source map names all 8 fields and only controls that exist here, and that its
+/// pinned hashes and its exact list of fields match the committed expectations.
 #[test]
 fn source_map_names_every_field_and_existing_control() {
     let map: Value = serde_json::from_str(include_str!(
@@ -340,4 +343,21 @@ fn source_map_names_every_field_and_existing_control() {
             assert!(this_file.contains(&format!("fn {control}()")), "{control}");
         }
     }
+    gest_source_map::assert_rejects_stale_and_malformed(
+        &map,
+        &gest_source_map::Expected {
+            sources: &["src/store/model/artifact.rs"],
+            fields: &[
+                ("id", "gest_id"),
+                ("project_id", "project_id"),
+                ("title", "title"),
+                ("body", "body"),
+                ("metadata", "metadata"),
+                ("archived_at", "archived_at"),
+                ("created_at", "created_at"),
+                ("updated_at", "updated_at"),
+            ],
+            control_file: "tests/gest_artifact_values.rs",
+        },
+    );
 }
