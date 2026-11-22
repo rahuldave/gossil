@@ -28,7 +28,7 @@ The characterized diagnostics are:
 
 | Failure | Stderr line |
 | --- | --- |
-| Unsupported command or argument count | `Usage: gossil vcs test-delta-apply ORIGIN DELTA TARGET` |
+| Wrong argument count | `Usage: gossil vcs test-delta-apply ORIGIN DELTA TARGET` |
 | Missing input | `no such file: PATH` |
 | Delta rejection or buffer reservation failure | `Delta application failed.` |
 | Target open or write failure | `unable to open file "PATH" for writing` |

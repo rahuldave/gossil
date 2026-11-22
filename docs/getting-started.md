@@ -99,6 +99,8 @@ A diagnostic exits with status 1 and writes an error to stderr when it fails.
 Check the input paths and argument order first. If applying a delta fails,
 check that you kept the correct origin and an intact delta. The
 [CLI reference](cli.md#exit-status-and-errors) lists the exact messages.
+An unknown command exits with status 2. Run `just gossil --help` to list
+the commands, or add `--help` after a command to print its usage.
 
 Successful create and apply operations replace an existing output file.
 Use a fresh output path until you have checked the result. Validation failures
