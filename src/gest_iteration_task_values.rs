@@ -10,6 +10,7 @@
 //! This module reads no clock and performs no storage, reference lookup or ID generation.
 //! `chrono` parses the timestamp as RFC3339, and `iteration_task_to_values` returns it in canonical UTC.
 
+use crate::gest_model::primitives::Id;
 use crate::gest_value_validation::{ValidationError, identifier, timestamp};
 use chrono::{DateTime, Utc};
 use serde_json::Value;
@@ -36,9 +37,9 @@ pub struct IterationTaskValueInputs {
 #[derive(Clone, Debug, PartialEq)]
 pub struct IterationTaskValues {
     /// Full ID of the iteration.
-    iteration_id: String,
+    iteration_id: Id,
     /// Full ID of the task.
-    task_id: String,
+    task_id: Id,
     /// Phase number in the unsigned 32-bit range.
     phase: u32,
     /// RFC3339 membership timestamp with representable canonical UTC output.
@@ -166,8 +167,8 @@ pub fn iteration_task_from_values(
 /// the record.
 pub fn iteration_task_to_values(record: &IterationTaskValues) -> IterationTaskValueInputs {
     IterationTaskValueInputs {
-        iteration_id: Value::from(record.iteration_id.clone()),
-        task_id: Value::from(record.task_id.clone()),
+        iteration_id: Value::from(record.iteration_id.to_string()),
+        task_id: Value::from(record.task_id.to_string()),
         phase: Value::from(record.phase),
         created_at: Value::from(record.created_at.to_rfc3339()),
     }

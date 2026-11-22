@@ -87,7 +87,8 @@ negative integers, larger integers, floating point values and other JSON types.
 The upstream task model uses `Option<u8>`. Its separate named priority enum
 covers only 0 through 4 and is outside this module.
 
-Status parsing follows upstream `FromStr`. The statuses are `open`,
+Status parsing uses the parser of `TaskStatus` in the [Gest model](gest-model.md),
+which is a port of upstream `FromStr`. The statuses are `open`,
 `in-progress`, `done` and `cancelled`. Parsing accepts case differences and the
 `in-progress`, `in_progress` and `inprogress` aliases. Output uses `in-progress`.
 The adopted Gossil contract requires a resolution timestamp for `done` and
@@ -124,8 +125,9 @@ Metadata has no further type restriction.
 
 ## Dependency scope
 
-`Cargo.toml` pins chrono to 0.4.44 with default features disabled and `alloc`
-as its only enabled feature. Clock access and chrono's serde support are disabled.
+`Cargo.toml` pins chrono to 0.4.44 with default features disabled. Its enabled
+features are `alloc` and `serde`. The [Gest model](gest-model.md) needs `serde`
+to read and write its timestamps. The `clock` feature stays off.
 The lockfile includes chrono 0.4.44, num-traits 0.2.19 and autocfg 1.5.1.
 These additions support timestamp conversion in Rust and do not add a native
 Fossil process or a SQL date conversion to this module.

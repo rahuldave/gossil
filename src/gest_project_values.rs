@@ -3,6 +3,7 @@
 //! Callers own raw admission, presence, unknown fields, budgets and history.
 //! Conversion performs no storage, reference lookup, clock read or ID generation.
 
+use crate::gest_model::primitives::Id;
 use crate::gest_value_validation::{ValidationError, identifier, timestamp};
 use chrono::{DateTime, Utc};
 use serde_json::Value;
@@ -25,7 +26,7 @@ pub struct ProjectValueInputs {
 #[derive(Clone, Debug, PartialEq)]
 pub struct ProjectValues {
     /// Full 32-letter identifier, called `id` upstream.
-    gest_id: String,
+    gest_id: Id,
     /// Explicit null or an RFC3339 archive timestamp.
     archived_at: Option<DateTime<Utc>>,
     /// RFC3339 creation timestamp with canonical UTC output.
@@ -110,7 +111,7 @@ pub fn project_from_values(fields: ProjectValueInputs) -> Result<ProjectValues, 
 /// Output validates again; mutating output does not change the record.
 pub fn project_to_values(record: &ProjectValues) -> ProjectValueInputs {
     ProjectValueInputs {
-        gest_id: Value::from(record.gest_id.clone()),
+        gest_id: Value::from(record.gest_id.to_string()),
         archived_at: record
             .archived_at
             .map(|dt| Value::from(dt.to_rfc3339()))

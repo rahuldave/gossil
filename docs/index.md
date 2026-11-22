@@ -67,6 +67,7 @@ through `recorded_timeline`, with native metadata bytes and the shared root last
 | Validate decoded relationship snapshots in memory | [Gest relationship values](gest-relationship-values.md) |
 | Validate decoded entity tag snapshots in memory | [Gest entity tag values](gest-entity-tag-values.md) |
 | Validate decoded iteration task snapshots in memory | [Gest iteration task values](gest-iteration-task-values.md) |
+| Build Gest model records from validated snapshots | [Gest model](gest-model.md) |
 
 The [concepts guide](concepts.md) explains how these modules fit together.
 Gossil is under development. General version-control commands, Gest task

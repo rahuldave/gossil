@@ -88,6 +88,8 @@ It does not hash the files themselves.
 These tests cover the converter itself. They do not reproduce the upstream tag
 API or repository tests. The upstream constructor test calls `Model::new`, which
 generates an ID and reads the clock. The source map lists it as a later API obligation.
+The [Gest model](gest-model.md) ports `Model::new` and runs that test. The converter
+does not call it.
 
 ## Recommendations
 

@@ -165,6 +165,12 @@ record and owns each incarnation, which is the ticket of one attachment or
 membership. The [entity tag values guide](gest-entity-tag-values.md) and the
 [iteration task values guide](gest-iteration-task-values.md) define the field contracts.
 
+The `gest_model` module is a copy of the Gest record types and of their primitive
+values, such as `Id` and `TaskStatus`. The converters parse each identifier and
+each kind of status or type with these primitives, so the converters and the
+model accept the same text. A record that a converter has validated converts into
+its model record through the `From` trait. The [Gest model guide](gest-model.md) describes the module.
+
 The [task ticket emitter](task-ticket.md) produces bounded creation artifact bytes
 from a validated task, a separate native ticket identity, actor bytes and a typed UTC date.
 Before passing decoded values to a converter, callers

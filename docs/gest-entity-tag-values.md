@@ -93,9 +93,10 @@ It does not hash the files themselves.
 
 These tests cover the converter itself. They do not reproduce the tests of the
 upstream tag API or repository. The upstream `EntityType` enum has five tests of its
-`Display` and `FromStr` methods. The converter calls neither method, so the
-source map lists the five tests as later API obligations. The upstream
-constructor `Model::new` reads the clock and has no test.
+`Display` and `FromStr` methods. The source map lists the five tests as later API
+obligations. The converter uses both methods through the port of `EntityType`
+in the [Gest model](gest-model.md), and the tests of that port run the five tests.
+The upstream constructor `Model::new` reads the clock and has no upstream test.
 
 ## Recommendations
 

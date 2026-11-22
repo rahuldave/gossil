@@ -5,6 +5,7 @@
 //! This module reads no clock and performs no storage, reference lookup or ID generation.
 //! `chrono` parses the two timestamps as RFC3339, and `tag_to_values` returns them in canonical UTC.
 
+use crate::gest_model::primitives::Id;
 use crate::gest_value_validation::{ValidationError, identifier, string, timestamp};
 use chrono::{DateTime, Utc};
 use serde_json::Value;
@@ -31,13 +32,13 @@ pub struct TagValueInputs {
 #[derive(Clone, Debug, PartialEq)]
 pub struct TagValues {
     /// Full tag ID, called `id` upstream.
-    gest_id: String,
+    pub(crate) gest_id: Id,
     /// Exact case-sensitive label, including empty strings and Unicode.
-    label: String,
+    pub(crate) label: String,
     /// RFC3339 creation timestamp with representable canonical UTC output.
-    created_at: DateTime<Utc>,
+    pub(crate) created_at: DateTime<Utc>,
     /// RFC3339 modification timestamp with representable canonical UTC output.
-    updated_at: DateTime<Utc>,
+    pub(crate) updated_at: DateTime<Utc>,
 }
 
 /// Reports a failed field without its input, with an optional typed `chrono` parse cause.
@@ -132,7 +133,7 @@ pub fn tag_from_values(fields: TagValueInputs) -> Result<TagValues, TagValueErro
 /// again, and a change to the output does not change the record.
 pub fn tag_to_values(record: &TagValues) -> TagValueInputs {
     TagValueInputs {
-        gest_id: Value::from(record.gest_id.clone()),
+        gest_id: Value::from(record.gest_id.to_string()),
         label: Value::from(record.label.clone()),
         created_at: Value::from(record.created_at.to_rfc3339()),
         updated_at: Value::from(record.updated_at.to_rfc3339()),

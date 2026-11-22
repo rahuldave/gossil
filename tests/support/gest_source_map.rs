@@ -1,5 +1,6 @@
 //! Check a Gest converter source map against expectations committed here, so
-//! that a stale or malformed map fails its test.
+//! that a stale or malformed map fails its test. The model source map of
+//! `tests/gest_model.rs` reads the same pin, addendum and hash table.
 //!
 //! The pinned Gest tree is not in this repository. These checks compare each
 //! recorded hash and field with the values below. They cannot hash the Gest
@@ -8,11 +9,12 @@
 use serde_json::Value;
 use std::collections::BTreeSet;
 
-/// The Gest commit that every converter source map cites.
-const SOURCE_PIN: &str = "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8";
+/// The Gest commit that every converter and model source map cites.
+pub const SOURCE_PIN: &str = "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8";
 
 /// The sha256 of the test-accounting addendum that governs every map.
-const ADDENDUM_SHA256: &str = "afddd1c2f5e905f72126209605737cc80e63791870d3ce8bd59f26c9589d8454";
+pub const ADDENDUM_SHA256: &str =
+    "afddd1c2f5e905f72126209605737cc80e63791870d3ce8bd59f26c9589d8454";
 
 /// The sha256 of each Gest source file at `SOURCE_PIN`, one entry per path.
 ///
@@ -37,8 +39,16 @@ const PINNED_SOURCES: &[(&str, &str)] = &[
         "b22427c910718b0352bb69670875e330a0f0795ac1456c28f01d6e543a4c71fc",
     ),
     (
+        "src/store/model.rs",
+        "6424e0b9791e9f4f2d4d0252200a951a1445bc709cca8e770de0c0ea922e767a",
+    ),
+    (
         "src/store/model/artifact.rs",
         "39f56375587cdbb8247275ba1ed7868ab54c06fe0a2faba44787fe5229b4f909",
+    ),
+    (
+        "src/store/model/author.rs",
+        "fe3fb4a00f27bb7c70a111c1070c3e4107c26459350ad5f7f632d32aead3bba4",
     ),
     (
         "src/store/model/entity_tag.rs",
@@ -53,6 +63,14 @@ const PINNED_SOURCES: &[(&str, &str)] = &[
         "e63bc968d54cbf15d8e5f5f478d507471f6dc760f58e2c1a795eab43a6623877",
     ),
     (
+        "src/store/model/primitives.rs",
+        "f0377d97b40d7564c66c03a630abc7a006861e27151b3507f1d9baca3df890ed",
+    ),
+    (
+        "src/store/model/primitives/author_type.rs",
+        "51933978a31f2470e6de30d9edbdc058e0477a7156d86d6c045780267910cc9a",
+    ),
+    (
         "src/store/model/primitives/entity_type.rs",
         "e44c53c43f299e9d0d1d7e1df45c49c64717c605ce797abd7305690e70be3b92",
     ),
@@ -61,8 +79,28 @@ const PINNED_SOURCES: &[(&str, &str)] = &[
         "1e257f775bdbdff3922f68af9a64a374ee48c12b2b587ab8c315218e19577bbc",
     ),
     (
+        "src/store/model/primitives/iteration_status.rs",
+        "6b4e39ba285b4ab8dd60e300c904960263631bc635718802f2e34322b3d59ed8",
+    ),
+    (
+        "src/store/model/primitives/priority.rs",
+        "fc80070c99ee14fc58575dd7c87fd64ce252d0ee8db9a6791d565db436d87537",
+    ),
+    (
         "src/store/model/primitives/relationship_type.rs",
         "08badb7cc7bd41dbd2458deb07db68ab48c200793c23b4376cb7ebe1742d4556",
+    ),
+    (
+        "src/store/model/primitives/task_status.rs",
+        "4a924e4390ea0dcf3e1fe3e814966274844cc801a2d8f054c70d388ba8d15649",
+    ),
+    (
+        "src/store/model/project.rs",
+        "3a95afe11cf39b88a20af1ceb34a2255441c30bc9849a21d717691961eaf89c8",
+    ),
+    (
+        "src/store/model/project_workspace.rs",
+        "2383f44aa4a9b7463acb9ed4b6cac5aed963ab5e5f56289d77b4c5dae928c6fb",
     ),
     (
         "src/store/model/relationship.rs",
@@ -71,6 +109,14 @@ const PINNED_SOURCES: &[(&str, &str)] = &[
     (
         "src/store/model/tag.rs",
         "40c657ba2dd3695c385e1485ba1e58a57d7f67622665dd736efc10b30f51c6b5",
+    ),
+    (
+        "src/store/model/task.rs",
+        "dd011be45e961b46f5963e8c20429b9afc68395afa9cb9f2e5332e219ec3a0d7",
+    ),
+    (
+        "src/store/model/transaction.rs",
+        "ab193f96d9cb280b7cb5a7b9acfe09c0a9aa50d961662a6cba1320a8626d89b5",
     ),
     (
         "src/store/repo/iteration.rs",
@@ -140,7 +186,7 @@ fn unique_strings<'v>(value: &'v Value, what: &str) -> Result<Vec<&'v str>, Stri
 }
 
 /// Return the pinned hash of `path`, or an error when the table has no entry.
-fn pinned(path: &str) -> Result<&'static str, String> {
+pub fn pinned(path: &str) -> Result<&'static str, String> {
     PINNED_SOURCES
         .iter()
         .find(|(p, _)| *p == path)

@@ -2,6 +2,8 @@
 use chrono::{DateTime, Utc};
 use serde_json::Value;
 
+use crate::gest_model::primitives::{EntityType, Id};
+
 /// A safe field failure with the actual typed timestamp parser cause.
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub(crate) struct ValidationError {
@@ -37,29 +39,28 @@ pub(crate) fn string(value: Value, field: &'static str) -> Result<String, Valida
 
 /// Require the full upstream 32-byte lowercase `k` through `z` ID domain.
 ///
+/// The check is the parser of [`Id`], so the converters and the model accept
+/// the same identifiers.
+///
 /// # Arguments
 /// * `value` - Already admitted decoded model identifier.
 /// * `field` - Safe static field name for validation diagnostics.
 ///
 /// # Returns
-/// The complete owned identifier after checking its alphabet and length.
+/// The identifier that the string encodes.
 ///
 /// # Errors
 /// Returns [`ValidationError`] for a non-string value, a length other than 32 bytes,
 /// or any byte outside the identifier alphabet.
-pub(crate) fn identifier(value: Value, field: &'static str) -> Result<String, ValidationError> {
-    let s = string(value, field)?;
-    if s.len() != 32 || !s.bytes().all(|b| (b'k'..=b'z').contains(&b)) {
-        return Err(ValidationError {
-            field,
-            reason: "expected exactly 32 letters from k through z",
-            parse_cause: None,
-        });
-    }
-    Ok(s)
+pub(crate) fn identifier(value: Value, field: &'static str) -> Result<Id, ValidationError> {
+    string(value, field)?.parse().map_err(|_| ValidationError {
+        field,
+        reason: "expected exactly 32 letters from k through z",
+        parse_cause: None,
+    })
 }
 
-/// Parse a Gest entity type as the pinned source enum does.
+/// Parse a Gest entity type with the parser of [`EntityType`].
 ///
 /// The source lowercases the whole string with Unicode rules and then matches
 /// it, so `TASK` is accepted, and surrounding whitespace is not.
@@ -69,24 +70,19 @@ pub(crate) fn identifier(value: Value, field: &'static str) -> Result<String, Va
 /// * `field` - Safe static field name for validation diagnostics.
 ///
 /// # Returns
-/// The canonical lowercase spelling `artifact`, `iteration` or `task`.
+/// The entity type `artifact`, `iteration` or `task`.
 ///
 /// # Errors
 /// Returns [`ValidationError`] for a non-string value or any other spelling.
 pub(crate) fn entity_type(
     value: Value,
     field: &'static str,
-) -> Result<&'static str, ValidationError> {
-    match string(value, field)?.to_lowercase().as_str() {
-        "artifact" => Ok("artifact"),
-        "iteration" => Ok("iteration"),
-        "task" => Ok("task"),
-        _ => Err(ValidationError {
-            field,
-            reason: "expected entity type artifact, iteration or task",
-            parse_cause: None,
-        }),
-    }
+) -> Result<EntityType, ValidationError> {
+    string(value, field)?.parse().map_err(|_| ValidationError {
+        field,
+        reason: "expected entity type artifact, iteration or task",
+        parse_cause: None,
+    })
 }
 
 /// Parse a business timestamp and require UTC output that can be parsed again.
@@ -136,11 +132,15 @@ mod tests {
     fn string_and_identifier_success_domains() {
         assert_eq!(string(json!("\u{0} é\n"), "text").unwrap(), "\u{0} é\n");
         assert_eq!(
-            identifier(json!("kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk"), "id").unwrap(),
+            identifier(json!("kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk"), "id")
+                .unwrap()
+                .to_string(),
             "kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk"
         );
         assert_eq!(
-            identifier(json!("zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz"), "id").unwrap(),
+            identifier(json!("zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz"), "id")
+                .unwrap()
+                .to_string(),
             "zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz"
         );
     }
@@ -153,7 +153,10 @@ mod tests {
             ("ITERATION", "iteration"),
             ("Task", "task"),
         ] {
-            assert_eq!(entity_type(json!(input), "kind").unwrap(), expected);
+            assert_eq!(
+                entity_type(json!(input), "kind").unwrap().to_string(),
+                expected
+            );
         }
         for input in ["", "project", "note", " task", "task\n", "widget"] {
             let error = entity_type(json!(input), "kind").unwrap_err();

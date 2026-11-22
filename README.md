@@ -86,6 +86,10 @@ A join record links two other records. For the two join records, the converters 
 [entity tag fields](docs/gest-entity-tag-values.md) and all four canonical
 [iteration task fields](docs/gest-iteration-task-values.md).
 
+The [Gest model](docs/gest-model.md) is a copy of the Gest record types and their
+primitive values. A record that a converter has validated converts into its model
+record through the `From` trait.
+
 The [task ticket emitter](docs/task-ticket.md) turns validated task snapshots into bounded
 task creation artifacts in Fossil's ticket format. Callers supply the identity, actor and date.
 These modules do not store records or add commands.

@@ -4,6 +4,7 @@
 //! This module reads no clock and performs no storage, reference lookup or ID generation.
 //! Business timestamps use chrono RFC3339 parsing and canonical UTC output.
 
+use crate::gest_model::primitives::Id;
 use crate::gest_value_validation::{ValidationError, identifier, string, timestamp};
 use chrono::{DateTime, Utc};
 use serde_json::Value;
@@ -38,21 +39,21 @@ pub struct ArtifactValueInputs {
 #[derive(Clone, Debug, PartialEq)]
 pub struct ArtifactValues {
     /// Full artifact ID, called `id` upstream.
-    gest_id: String,
+    pub(crate) gest_id: Id,
     /// Full project ID.
-    project_id: String,
+    pub(crate) project_id: Id,
     /// Exact title string, including empty strings and Unicode.
-    title: String,
+    pub(crate) title: String,
     /// Complete exact body string, including empty strings and Unicode.
-    body: String,
+    pub(crate) body: String,
     /// Any JSON value, including explicit null.
-    metadata: Value,
+    pub(crate) metadata: Value,
     /// Null or an RFC3339 archive timestamp. An archived row is not marked as deleted.
-    archived_at: Option<DateTime<Utc>>,
+    pub(crate) archived_at: Option<DateTime<Utc>>,
     /// RFC3339 creation timestamp with representable canonical UTC output.
-    created_at: DateTime<Utc>,
+    pub(crate) created_at: DateTime<Utc>,
     /// RFC3339 modification timestamp with representable canonical UTC output.
-    updated_at: DateTime<Utc>,
+    pub(crate) updated_at: DateTime<Utc>,
 }
 
 /// Reports a failed field without its input, with an optional typed chrono parse cause.
@@ -162,8 +163,8 @@ pub fn artifact_from_values(
 /// again, and a change to the output does not change the record.
 pub fn artifact_to_values(record: &ArtifactValues) -> ArtifactValueInputs {
     ArtifactValueInputs {
-        gest_id: Value::from(record.gest_id.clone()),
-        project_id: Value::from(record.project_id.clone()),
+        gest_id: Value::from(record.gest_id.to_string()),
+        project_id: Value::from(record.project_id.to_string()),
         title: Value::from(record.title.clone()),
         body: Value::from(record.body.clone()),
         metadata: record.metadata.clone(),
