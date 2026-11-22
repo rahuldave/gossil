@@ -143,14 +143,24 @@ both captures over a synthetic repository:
 - `native-queue.json` holds one run of `test-pqueue` with five equal costs.
 
 A fresh capture with the same binary gave the same paths, pivots and queue
-order. Only the random identity of the scratch repository differed. The
-`test-shortest-path` command has no option for the first-hop cherrypick
+order. Only the random identity of the scratch repository differed. The output
+of `fossil new` holds that identity and a throwaway admin password of the scratch
+repository. The capture script replaces the project-id, the server-id and the
+password with placeholders, and the field `redactions` of `native.json` records
+the replacement. A fresh capture with the redaction gives a file identical to
+the fixture.
+
+The `test-shortest-path` command has no option for the first-hop cherrypick
 direction, so `Direction::ForwardWithCherrypicks` has no native capture. A Rust
 test checks it against `src/path.c` lines 226 to 240.
 
 The tests in `tests/history.rs` replay all 25 captured cases. They also check
 the controls that the port adds for bounds, malformed input, cost overflow,
-cycles and endpoint orientation. Three unit tests in `src/history.rs` check the typed allocation
+cycles and endpoint orientation. A test checks each bound at the last value that
+it accepts and at the next value, which it refuses. Other tests check the midpoint and the search depth at two and four
+visible steps, and that rows in an unsorted order keep their order.
+
+Three unit tests in `src/history.rs` check the typed allocation
 error, the native queue order and the error for a cyclic chain of predecessors.
 The doc comments of `Graph::shortest` and `Graph::common_ancestor` hold two
 doctests. The inherited Tcl tests of the pinned

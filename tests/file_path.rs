@@ -167,12 +167,94 @@ fn inherited_windows_108_through_109() {
     }
 }
 
+/// Each pinned Windows/Cygwin case holds an id, an input, a slash flag, a reported span and
+/// visible bytes in hex.
+const WINDOWS_CASES: [(&str, &str, u64, &str, &str); 18] = [
+    (
+        "simplify-name-108.1",
+        "//?/a:/a/b",
+        0,
+        "613a2f612f62",
+        "613a2f612f62",
+    ),
+    (
+        "simplify-name-108.2",
+        "//?/UNC/a/b",
+        0,
+        "2f2f612f62",
+        "2f2f612f62",
+    ),
+    ("simplify-name-108.3", "//?/", 0, "00", ""),
+    (
+        "simplify-name-109.1",
+        "\\\\?\\a:\\a\\b",
+        0,
+        "613a2f612f62",
+        "613a2f612f62",
+    ),
+    (
+        "simplify-name-109.2",
+        "\\\\?\\UNC\\a\\b",
+        0,
+        "2f2f612f62",
+        "2f2f612f62",
+    ),
+    ("simplify-name-109.3", "\\\\?\\", 0, "00", ""),
+    (
+        "lowercase-unc",
+        "//?/unc/a/b",
+        0,
+        "2f2f612f62",
+        "2f2f612f62",
+    ),
+    ("mixed-unc", "//?/uNc/a/b", 0, "2f2f612f62", "2f2f612f62"),
+    ("unc-no-slash", "//?/UNC", 0, "2f", "2f"),
+    ("unc-suffix", "//?/UNCx", 0, "2f78", "2f78"),
+    ("prefix-u", "//?/U", 0, "55", "55"),
+    ("prefix-un", "//?/UN", 0, "554e", "554e"),
+    ("short-prefix", "//?", 0, "2f2f3f", "2f2f3f"),
+    ("one-backslash", "a\\b", 0, "612f62", "612f62"),
+    ("backslash-tail", "a\\\\\\.\\", 1, "61", "61"),
+    (
+        "mixed-separators",
+        "\\\\?\\uNc/a\\b",
+        0,
+        "2f2f612f62",
+        "2f2f612f62",
+    ),
+    ("nonunc", "//?/UNx/a", 0, "554e782f61", "554e782f61"),
+    (
+        "ordinary-unicode",
+        "//?/\u{fc}nc/a",
+        0,
+        "c3bc6e632f61",
+        "c3bc6e632f61",
+    ),
+];
+
 /// Exercise the source prefixes, the lookahead into the original tail and ordinary backslashes.
+///
+/// The test pins all 18 cases of the plan, so a dropped, added or changed case fails.
 #[test]
 fn windows_source_controls() {
     let plan: Value =
         serde_json::from_str(include_str!("fixtures/file-path/windows-adapter-plan.json")).unwrap();
-    for case in plan["cases"].as_array().unwrap() {
+    let cases = plan["cases"].as_array().unwrap();
+    assert_eq!(cases.len(), 18);
+    let recorded: Vec<_> = cases
+        .iter()
+        .map(|case| {
+            (
+                case["id"].as_str().unwrap(),
+                case["input"].as_str().unwrap(),
+                case["slash"].as_u64().unwrap(),
+                case["expected_hex"].as_str().unwrap(),
+                case["visible_hex"].as_str().unwrap(),
+            )
+        })
+        .collect();
+    assert_eq!(recorded, WINDOWS_CASES);
+    for case in cases {
         let result = simplify_name_for_source(
             case["input"].as_str().unwrap().as_bytes(),
             case["slash"].as_u64().unwrap() != 0,

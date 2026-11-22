@@ -15,6 +15,16 @@ parser = argparse.ArgumentParser(description=__doc__)
 parser.add_argument('--fossil', type=Path, required=True)
 parser.add_argument('--output', type=Path, required=True)
 args = parser.parse_args()
+# Each pattern keeps its prefix and suffix groups, and the placeholder replaces the random value.
+REDACTIONS = [
+    (r'^(project-id: )[0-9a-f]{40}($)', '<redacted: random project-id of the scratch repository>'),
+    (r'^(server-id:  )[0-9a-f]{40}($)', '<redacted: random server-id of the scratch repository>'),
+    (r'(initial remote-access password is ")[^"\n]+(")', '<redacted: throwaway admin password of the scratch repository>'),
+]
+REDACTION_NOTES = [
+    'The stdout of fossil new holds a random project-id, a random server-id and a throwaway initial admin password of the scratch repository.',
+    'capture-native.py replaces each value with a placeholder of the form <redacted: ...>. No test reads these values.',
+]
 fossil = args.fossil.resolve(strict=True)
 nodes = [dict(rid=i, branch=('feature' if i in (4, 6) else 'other' if i in (7, 8) else 'trunk'), mtime=2451545.0+i) for i in range(1, 13)]
 links = [dict(parent=p, child=c, primary=bool(v)) for p,c,v in sorted([(1,2,1),(2,3,1),(2,4,1),(3,5,1),(4,5,0),(4,6,1),(1,7,1),(7,8,1),(10,11,1),(11,12,1),(8,12,0)])]
@@ -36,6 +46,13 @@ with tempfile.TemporaryDirectory(prefix='gossil-native-history-') as temp:
     version=run(['version'])
     result=run(['new','repo.fossil','--admin-user','history-fixture'])
     if result.returncode: raise RuntimeError(result.stderr)
+    # The scratch repository prints a random identity and a throwaway admin password.
+    # Replace each with its placeholder, and stop if any one of them is not found.
+    stdout=commands[-1]['stdout']
+    for pattern,placeholder in REDACTIONS:
+        stdout,count=re.subn(pattern,lambda m:m.group(1)+placeholder+m.group(2),stdout,flags=re.M)
+        if count!=1: raise RuntimeError('fossil new output changed; cannot redact '+placeholder)
+    commands[-1]['stdout']=stdout
     db=sqlite3.connect(temp/'repo.fossil')
     # The native repository is deliberately a synthetic diagnostic fixture,
     # not an admitted Gossil repository or artifact-crosslinking experiment.
@@ -62,7 +79,7 @@ with tempfile.TemporaryDirectory(prefix='gossil-native-history-') as temp:
         else:
             c['path']=[int(m.group(1)) for line in result.stdout.splitlines() if (m:=re.match(r'\s*\d+:\s+(\d+) ',line))]
             c['pivot']=next((int(m.group(1)) for line in result.stdout.splitlines() if ' PIVOT' in line and (m:=re.match(r'\s*\d+:\s+(\d+) ',line))),None)
-    payload=dict(format=1,scope='explicit synthetic graph algorithm only; no persisted Gossil admission',native_version=version.stdout.strip(),binary_sha256=hashlib.sha256(fossil.read_bytes()).hexdigest(),nodes=nodes,links=links,cherrypicks=cherries,query_rows=query_rows,cases=cases,commands=commands)
+    payload=dict(format=1,scope='explicit synthetic graph algorithm only; no persisted Gossil admission',redactions=REDACTION_NOTES,native_version=version.stdout.strip(),binary_sha256=hashlib.sha256(fossil.read_bytes()).hexdigest(),nodes=nodes,links=links,cherrypicks=cherries,query_rows=query_rows,cases=cases,commands=commands)
     args.output.parent.mkdir(parents=True,exist_ok=True)
     args.output.write_text(json.dumps(payload,indent=2)+'\n')
 print(f'Captured {len(cases)} isolated native diagnostic cases to {args.output}')

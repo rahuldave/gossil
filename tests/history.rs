@@ -423,6 +423,241 @@ fn bounds_reject_inputs_and_search_growth() {
 }
 
 #[test]
+/// Each limit accepts its last allowed value and refuses the next one, so an off-by-one bound
+/// fails.
+fn limits_accept_their_exact_value() {
+    let n = small_nodes();
+    let one = [link(1, 2)];
+    let pick = [Cherrypick {
+        parent: 2,
+        child: 3,
+        excluded: false,
+    }];
+    // The six check-ins have six branches of five bytes, 30 bytes in total.
+    let cases = [
+        (
+            Limits {
+                checkins: 6,
+                ..limits()
+            },
+            true,
+        ),
+        (
+            Limits {
+                checkins: 5,
+                ..limits()
+            },
+            false,
+        ),
+        (
+            Limits {
+                links: 1,
+                ..limits()
+            },
+            true,
+        ),
+        (
+            Limits {
+                links: 0,
+                ..limits()
+            },
+            false,
+        ),
+        (
+            Limits {
+                branch_bytes: 30,
+                ..limits()
+            },
+            true,
+        ),
+        // Each branch fits in 29 bytes, so only a total over all check-ins refuses this.
+        (
+            Limits {
+                branch_bytes: 29,
+                ..limits()
+            },
+            false,
+        ),
+    ];
+    for (l, accepted) in cases {
+        let result = Graph::new(&n, &one, &[], l);
+        assert_eq!(result.is_ok(), accepted, "{l:?}");
+        if !accepted {
+            assert!(matches!(result, Err(Error::Limit)), "{l:?}");
+        }
+    }
+    // The link limit counts parent rows and cherrypick rows together.
+    let two = Limits {
+        links: 2,
+        ..limits()
+    };
+    assert!(Graph::new(&n, &one, &pick, two).is_ok());
+    let total_one = Limits {
+        links: 1,
+        ..limits()
+    };
+    assert!(matches!(
+        Graph::new(&n, &one, &pick, total_one),
+        Err(Error::Limit)
+    ));
+    assert!(matches!(
+        Graph::new(&n, &[], &[pick[0], pick[0]], total_one),
+        Err(Error::Limit)
+    ));
+    assert!(Graph::new(&n, &[], &pick, total_one).is_ok());
+    // Each search below allocates two records and inspects one adjacency row.
+    for (l, accepted) in [
+        (
+            Limits {
+                search_nodes: 2,
+                row_visits: 1,
+                ..limits()
+            },
+            true,
+        ),
+        (
+            Limits {
+                search_nodes: 1,
+                row_visits: 1,
+                ..limits()
+            },
+            false,
+        ),
+        (
+            Limits {
+                search_nodes: 2,
+                row_visits: 0,
+                ..limits()
+            },
+            false,
+        ),
+    ] {
+        let graph = Graph::new(&n, &one, &[], l).unwrap();
+        let path = graph.shortest(1, 2, options());
+        let ancestor = graph.common_ancestor(1, 2);
+        if accepted {
+            assert_eq!(ids(&path.unwrap().unwrap()), [1, 2], "{l:?}");
+            assert_eq!(ancestor.unwrap().unwrap().pivot, 1, "{l:?}");
+        } else {
+            assert!(matches!(path, Err(Error::Limit)), "{l:?}");
+            assert!(matches!(ancestor, Err(Error::Limit)), "{l:?}");
+        }
+    }
+    // An equal endpoint allocates exactly one record.
+    let single = Graph::new(
+        &n,
+        &[],
+        &[],
+        Limits {
+            search_nodes: 1,
+            row_visits: 0,
+            ..limits()
+        },
+    )
+    .unwrap();
+    assert_eq!(
+        ids(&single.shortest(1, 1, options()).unwrap().unwrap()),
+        [1]
+    );
+    assert_eq!(single.common_ancestor(1, 1).unwrap().unwrap().pivot, 1);
+    // The branch cost may be at most `i32::MAX`, the largest native int.
+    let graph = Graph::new(&n, &one, &[], limits()).unwrap();
+    let at_max = Options {
+        branch_cost: i32::MAX as u32,
+        ..options()
+    };
+    assert_eq!(ids(&graph.shortest(1, 2, at_max).unwrap().unwrap()), [1, 2]);
+    let past_max = Options {
+        branch_cost: i32::MAX as u32 + 1,
+        ..options()
+    };
+    assert!(matches!(graph.shortest(1, 2, past_max), Err(Error::Limit)));
+}
+
+#[test]
+/// The midpoint and the search depth are checked at two and four visible steps, where a ceiling
+/// of log2 of `n` differs from a bit count of `n`.
+fn bisect_counts_at_two_and_four_visible_steps() {
+    let n = small_nodes();
+    let graph = Graph::new(
+        &n,
+        &[link(1, 2), link(2, 3), link(3, 4), link(4, 5)],
+        &[],
+        limits(),
+    )
+    .unwrap();
+    let p = graph.shortest(1, 3, options()).unwrap().unwrap();
+    assert_eq!(p.visible_steps(), 2);
+    assert_eq!(p.search_depth(), 1);
+    assert_eq!(p.midpoint().unwrap().rid, 2);
+    let p = graph.shortest(1, 5, options()).unwrap().unwrap();
+    assert_eq!(p.visible_steps(), 4);
+    assert_eq!(p.search_depth(), 2);
+    assert_eq!(p.midpoint().unwrap().rid, 3);
+    // The walk back from the end skips a hidden step.
+    let p = graph
+        .shortest(
+            1,
+            5,
+            Options {
+                hidden: &[4],
+                ..options()
+            },
+        )
+        .unwrap()
+        .unwrap();
+    assert_eq!(p.visible_steps(), 3);
+    assert_eq!(p.search_depth(), 2);
+    assert_eq!(p.midpoint().unwrap().rid, 3);
+}
+
+#[test]
+/// Rows in an unsorted query order decide ties, so a graph that sorted its rows would fail.
+fn unsorted_rows_keep_their_query_order() {
+    let n = small_nodes();
+    // Check-ins 3 and 2 both lead to 4 at equal cost. The first child row wins the tie.
+    let graph = Graph::new(
+        &n,
+        &[link(1, 3), link(1, 2), link(3, 4), link(2, 4)],
+        &[],
+        limits(),
+    )
+    .unwrap();
+    assert_eq!(
+        ids(&graph.shortest(1, 4, options()).unwrap().unwrap()),
+        [1, 3, 4]
+    );
+    let graph = Graph::new(
+        &n,
+        &[link(1, 2), link(1, 3), link(2, 4), link(3, 4)],
+        &[],
+        limits(),
+    )
+    .unwrap();
+    assert_eq!(
+        ids(&graph.shortest(1, 4, options()).unwrap().unwrap()),
+        [1, 2, 4]
+    );
+    // Check-ins 3 and 2 are both parents of 4 and 5. The first parent row of 5 is the pivot.
+    let graph = Graph::new(
+        &n,
+        &[link(3, 4), link(2, 4), link(3, 5), link(2, 5)],
+        &[],
+        limits(),
+    )
+    .unwrap();
+    assert_eq!(graph.common_ancestor(4, 5).unwrap().unwrap().pivot, 3);
+    let graph = Graph::new(
+        &n,
+        &[link(3, 4), link(2, 4), link(2, 5), link(3, 5)],
+        &[],
+        limits(),
+    )
+    .unwrap();
+    assert_eq!(graph.common_ancestor(4, 5).unwrap().unwrap().pivot, 2);
+}
+
+#[test]
 /// Malformed graph and options are errors.
 fn malformed_graph_and_options_are_errors() {
     let mut n = small_nodes();
@@ -767,8 +1002,8 @@ fn fixture_status_fields() {
         let function = name.trim_start_matches("history::tests::");
         assert!(file.contains(&format!("fn {function}()")), "{name}");
     }
-    // Every test except the capture replay is a listed control: 12 here and 3 unit tests.
-    assert_eq!(controls.len(), 15);
+    // Every test except the capture replay is a listed control: 15 here and 3 unit tests.
+    assert_eq!(controls.len(), 18);
     assert_eq!(
         record["native_queue_experiment"]["candidate_status"],
         "run by just test"
@@ -792,4 +1027,24 @@ fn fixture_status_fields() {
         assert_eq!(capture["format"], 1);
     }
     assert_eq!(queue["returncode"], 0);
+    // The scratch identity and the throwaway admin password are placeholders, as the
+    // capture script writes them.
+    assert_eq!(native["redactions"].as_array().unwrap().len(), 2);
+    let new = &native["commands"][1];
+    assert_eq!(new["argv"][0], "new");
+    assert_eq!(
+        new["stdout"],
+        "project-id: <redacted: random project-id of the scratch repository>\n\
+         server-id:  <redacted: random server-id of the scratch repository>\n\
+         admin-user: history-fixture (initial remote-access password is \
+         \"<redacted: throwaway admin password of the scratch repository>\")\n"
+    );
+    let script = include_str!("fixtures/history/capture-native.py");
+    for placeholder in [
+        "<redacted: random project-id of the scratch repository>",
+        "<redacted: random server-id of the scratch repository>",
+        "<redacted: throwaway admin password of the scratch repository>",
+    ] {
+        assert!(script.contains(placeholder), "{placeholder}");
+    }
 }

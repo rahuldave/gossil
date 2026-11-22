@@ -1,6 +1,10 @@
 {
   "format": 1,
   "scope": "explicit synthetic graph algorithm only; no persisted Gossil admission",
+  "redactions": [
+    "The stdout of fossil new holds a random project-id, a random server-id and a throwaway initial admin password of the scratch repository.",
+    "capture-native.py replaces each value with a placeholder of the form <redacted: ...>. No test reads these values."
+  ],
   "native_version": "This is fossil version 2.29 [7e8ecf0ce4] 2026-11-16 11:41:54 UTC",
   "binary_sha256": "75550c754e94a4b7fa0269f40ce8e4918daf67e05ba12b236ed735d424c8e16c",
   "nodes": [
@@ -683,7 +687,7 @@
         "history-fixture"
       ],
       "returncode": 0,
-      "stdout": "project-id: 2ffaa4a8e21bec999a5bf45352e682b09bacafc6\nserver-id:  ca61090813f21ff3d5a4b120ff2cce201e01df1b\nadmin-user: history-fixture (initial remote-access password is \"XZEixuvmew\")\n",
+      "stdout": "project-id: <redacted: random project-id of the scratch repository>\nserver-id:  <redacted: random server-id of the scratch repository>\nadmin-user: history-fixture (initial remote-access password is \"<redacted: throwaway admin password of the scratch repository>\")\n",
       "stderr": ""
     },
     {

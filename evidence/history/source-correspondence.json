@@ -552,7 +552,7 @@
     "status": "No direct shortest/ancestor diagnostic references found in complete pinned *.test scan. No inherited Tcl assertions rewritten or executed. Caller suites bisect/merge/annotation/finfo/timeline remain unqualified."
   },
   "native_experiment": {
-    "status": "executed isolated native diagnostic capture; recaptured with the same binary, identical except the random project-id, server-id and password of the scratch repository",
+    "status": "executed isolated native diagnostic capture; recaptured with the same binary, identical except the random project-id, server-id and password of the scratch repository, which the fixture and the generator replace with placeholders",
     "cases": 25,
     "fixture": "tests/fixtures/history/native.json",
     "generator": "tests/fixtures/history/capture-native.py",
@@ -560,7 +560,7 @@
     "binary_sha256": "75550c754e94a4b7fa0269f40ce8e4918daf67e05ba12b236ed735d424c8e16c",
     "scope": "Synthetic native blob/event/tagxref/plink/cherrypick fixture; no artifact crosslinking or Gossil repository admission claim",
     "path_mapping": "tests/history.rs:captured_native_diagnostics_preserve_paths_and_pivots",
-    "native_commands": "all argv, return codes, stdout and stderr retained in native.json; fixture temporary cwd/HOME removed",
+    "native_commands": "all argv, return codes, stdout and stderr retained in native.json; fixture temporary cwd/HOME removed; the random project-id, server-id and admin password that fossil new prints are redacted to placeholders, as the redactions field of native.json records",
     "direction_two": "test-shortest-path has no option for oneWayOnly=2, so Direction::ForwardWithCherrypicks has no native capture; tests/history.rs:first_hop_cherrypicks_only_and_exclusions checks it against path.c lines 226-240"
   },
   "new_controls": [
@@ -569,6 +569,9 @@
     "first_hop_cherrypicks_only_and_exclusions",
     "branch_cost_uses_time_distance_instead_of_arc_count",
     "bounds_reject_inputs_and_search_growth",
+    "limits_accept_their_exact_value",
+    "bisect_counts_at_two_and_four_visible_steps",
+    "unsorted_rows_keep_their_query_order",
     "malformed_graph_and_options_are_errors",
     "overflowing_finite_time_difference_is_rejected",
     "duplicate_rows_and_cycles_terminate_under_native_seen_rules",

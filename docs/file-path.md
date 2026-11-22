@@ -116,6 +116,9 @@ The tests in `tests/file_path.rs` check these groups of cases:
 | 14 Unix cases and 18 Windows/Cygwin cases | adapter plans for a C copy of the native source |
 | Lexical controls, bounds and errors | the Rust tests |
 
+The test of the Windows/Cygwin plan also holds its own copy of the 18 cases. It
+compares the plan with that copy, so a dropped, added or changed case fails.
+
 An earlier run compiled the C copy on a macOS host, once for each branch. Each
 build passed all of its plan cases. The records of that run are not in the
 repository.
