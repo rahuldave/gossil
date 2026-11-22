@@ -58,6 +58,21 @@ blob-reference:
 blob-interop:
     GOSSIL_FOSSIL_REFERENCE="{{justfile_directory()}}/.jlog/bin/fossil" just test --test blob_primitives rust_packed_bytes_decode_with_native_fossil -- --ignored
 
+# Load emitted Gest tickets into a scratch repository of the pinned Fossil reference; exit 5 means not-run.
+gest-ticket-interop:
+    #!/usr/bin/env bash
+    set -euo pipefail
+    fossil="${GOSSIL_FOSSIL_REFERENCE:-{{justfile_directory()}}/.jlog/bin/fossil}"
+    if [ ! -x "$fossil" ]; then
+        echo "not-run: the pinned Fossil reference is absent at $fossil; run just setup" >&2
+        exit 5
+    fi
+    GOSSIL_FOSSIL_REFERENCE="$fossil" just test --test gest_ticket stock_fossil_reads_emitted_gest_tickets -- --ignored --exact
+
+# Respell the Gest ticket creation fixtures from their hand-written cards.
+gest-ticket-reference:
+    jlog run python3 tests/fixtures/gest-ticket/generate.py
+
 # Inspect Rust dependers of the new byte primitive contracts.
 blob-impact:
     jlog run ast-grep run --lang rust --pattern 'pack($$$)' --json=compact src tests

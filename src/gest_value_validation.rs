@@ -1,4 +1,7 @@
 //! Shared decoded-value checks used by the owned Gest model converters.
+//!
+//! It also defines [`CanonicalValue`], the borrowed canonical field value that
+//! the task, artifact and project ticket emitters serialize.
 use chrono::{DateTime, Utc};
 use serde_json::Value;
 
@@ -124,6 +127,37 @@ pub(crate) fn timestamp(
         });
     }
     Ok(utc)
+}
+
+/// One borrowed canonical model value that a ticket emitter serializes as JSON.
+///
+/// Each converter lists its fields with these values, so the emitter writes
+/// the same JSON as the converter's `*_to_values` output without cloning model
+/// strings or metadata.
+#[derive(serde::Serialize)]
+#[serde(untagged)]
+pub(crate) enum CanonicalValue<'a> {
+    /// Exact model string, identifier or canonical status.
+    Text(&'a str),
+    /// Optional identifier, preserving explicit JSON null.
+    OptionalText(Option<&'a str>),
+    /// Numeric priority or explicit JSON null.
+    Priority(Option<u8>),
+    /// Arbitrary metadata, borrowed recursively by serde.
+    Json(&'a Value),
+    /// Bounded canonical business timestamp string or explicit JSON null.
+    Timestamp(Option<String>),
+}
+
+/// Spell a validated optional timestamp as its canonical JSON value.
+///
+/// # Arguments
+/// * `value` - Validated UTC instant, or `None` for an explicit null field.
+///
+/// # Returns
+/// The RFC3339 UTC string that the `*_to_values` converters return, or null.
+pub(crate) fn canonical_timestamp(value: Option<DateTime<Utc>>) -> CanonicalValue<'static> {
+    CanonicalValue::Timestamp(value.map(|dt| dt.to_rfc3339()))
 }
 
 #[cfg(test)]

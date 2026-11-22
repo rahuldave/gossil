@@ -50,6 +50,7 @@ website:
           - artifact-parser.md
           - diff.md
           - task-ticket.md
+          - gest-ticket.md
           - local-storage.md
           - native-storage.md
           - gest-task-values.md

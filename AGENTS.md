@@ -18,10 +18,14 @@ Read and follow @.agents/instructions/prose.md
   (`src/file_path.rs`), check-in graph paths (`src/history.rs`) and the Gest
   domain value converters (`src/gest_*_values.rs`). `tests/` contains controls,
   portable fixtures and the private storage composition test.
+- Gest tickets: `src/gest_ticket.rs` holds the shared emitter of creation
+  tickets and the artifact and project kinds. `src/task_ticket.rs` gives it the
+  task kind.
 - Local guides: `docs/conformance.md`, `docs/delta-encoder.md`,
   `docs/delta-decoder.md`, `docs/blob-primitives.md`, `docs/token-codec.md`,
   `docs/local-storage.md`, `docs/native-storage.md`, `docs/artifact-parser.md`,
-  `docs/glob.md`, `docs/file-path.md`, `docs/history.md`, the ten Gest value
+  `docs/glob.md`, `docs/file-path.md`, `docs/history.md`, `docs/task-ticket.md`,
+  `docs/gest-ticket.md`, the ten Gest value
   guides `docs/gest-*-values.md` and `docs/development-plan.md`.
 - Product specification: `~/Projects/AIProjectInfra/docs/gossil/README.md` and its linked pages.
 - Workflow playbook: `.agents/skills/gtw/references/gest_codex_workflow.md`.

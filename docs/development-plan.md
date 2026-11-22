@@ -24,7 +24,8 @@ The [Gest iteration task values converter](gest-iteration-task-values.md) valida
 All ten converters operate in memory and leave storage integration, raw field admission and the full Gest API to future work.
 
 The [task ticket emitter](task-ticket.md) serializes validated task snapshots with
-caller-supplied native identity, actor and date.
+caller-supplied native identity, actor and date. The [Gest ticket emitter](gest-ticket.md)
+serializes validated artifact and project snapshots in the same way, and the three kinds share one emitter.
 
 ## Current scope
 
@@ -194,7 +195,8 @@ It is not required to use the current CLI or library.
 ## Shared value validation
 
 All ten converters of Gest values share the private field validators of
-`gest_value_validation`. The task ticket emitter
+`gest_value_validation`. That module also defines the borrowed canonical values
+that the task, artifact and project ticket emitters serialize. The task emitter
 borrows the status and UTC timestamp forms defined by `gest_task_values`.
 Changes must preserve public conversion behavior and the original parser errors
 returned through the public error accessor.
