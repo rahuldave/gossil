@@ -26,6 +26,9 @@ All ten converters operate in memory and leave storage integration, raw field ad
 The [task ticket emitter](task-ticket.md) serializes validated task snapshots with
 caller-supplied native identity, actor and date.
 
+The internal modules for [strict local records](local-records.md) decode local
+JSON records and charge queries against fixed limits. No production code calls them yet.
+
 ## Current scope
 
 | Available in source | Planned |

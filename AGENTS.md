@@ -16,13 +16,17 @@ Read and follow @.agents/instructions/prose.md
   primitives, token codec, structural artifact parser, local storage boundary,
   Fossil glob matching (`src/glob.rs`), lexical filename simplification
   (`src/file_path.rs`), check-in graph paths (`src/history.rs`) and the Gest
-  domain value converters (`src/gest_*_values.rs`). `tests/` contains controls,
+  domain value converters (`src/gest_*_values.rs`). `src/storage/` also holds
+  the internal strict record codec, operation limits and metered queries
+  (`command_codec.rs`, `operation_limits.rs`, `metered_query.rs`).
+  `tests/` contains controls,
   portable fixtures and the private storage composition test.
 - Local guides: `docs/conformance.md`, `docs/delta-encoder.md`,
   `docs/delta-decoder.md`, `docs/blob-primitives.md`, `docs/token-codec.md`,
   `docs/local-storage.md`, `docs/native-storage.md`, `docs/artifact-parser.md`,
   `docs/glob.md`, `docs/file-path.md`, `docs/history.md`, the ten Gest value
-  guides `docs/gest-*-values.md` and `docs/development-plan.md`.
+  guides `docs/gest-*-values.md`, `docs/local-records.md` and
+  `docs/development-plan.md`.
 - Product specification: `~/Projects/AIProjectInfra/docs/gossil/README.md` and its linked pages.
 - Workflow playbook: `.agents/skills/gtw/references/gest_codex_workflow.md`.
 

@@ -11,7 +11,31 @@
 //! ## Recommendations
 //! Use one owner for a complete mutation and explicitly commit or roll back.
 //! Use LocalOwnerRepository for admitted native content and explicit finite limits.
+#[cfg_attr(
+    not(test),
+    expect(
+        dead_code,
+        reason = "the local record readers that use the codec are not built yet"
+    )
+)]
+mod command_codec;
 mod content;
+#[cfg_attr(
+    not(test),
+    expect(
+        dead_code,
+        reason = "the local record readers that meter queries are not built yet"
+    )
+)]
+mod metered_query;
+#[cfg_attr(
+    not(test),
+    expect(
+        dead_code,
+        reason = "the file operations that use these limits are not built yet"
+    )
+)]
+mod operation_limits;
 mod policy;
 mod repository;
 mod schema;

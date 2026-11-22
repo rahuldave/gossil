@@ -56,6 +56,7 @@ through `recorded_timeline`, with native metadata bytes and the shared root last
 | Compare normalized byte lines | [Line diff](diff.md) |
 | Own a local database transaction | [Local storage](local-storage.md) |
 | Initialize a root, register a directory, record private files or read recorded ancestry | [Native storage](native-storage.md) |
+| Decode strict local JSON records and charge queries before their rows | [Strict local records](local-records.md) |
 | Validate decoded task snapshots in memory | [Gest task values](gest-task-values.md) |
 | Emit bounded task creation artifact bytes | [Task tickets](task-ticket.md) |
 | Validate decoded project snapshots in memory | [Gest project values](gest-project-values.md) |
