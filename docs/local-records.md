@@ -10,10 +10,12 @@ internal modules of `src/storage/` give the base for such a reader:
 - `operation_limits.rs` joins the ceilings of one file operation and their saved form.
 - `metered_query.rs` charges the size of a query result before it reads the rows.
 
-The modules have no public API and no caller yet. The record readers of catalog 5
-are the first planned callers. Until they exist, an `expect(dead_code)` attribute
-on each module states that no production code calls it. When production code
-calls every item of a module, the lint fails on the attribute, so that someone removes it.
+The modules have no public API and no production caller yet. The metered content
+methods below use `metered_query.rs`, but no production code calls them either.
+The record readers of catalog 5 are the first planned production callers. Until
+they exist, an `expect(dead_code)` attribute on each module states that no
+production code calls it. When production code calls every item of a module,
+the lint fails on the attribute, so that someone removes it.
 
 The modules follow these rules from CHANGE-06 of the planned changes of the
 product specification:
@@ -142,13 +144,71 @@ rollback complete, and a retry with enough work succeeds.
 Do not pass caller-supplied SQL to these methods. The preflight wraps the SQL in
 a common table expression, so only fixed internal SQL is safe.
 
+## Meter content reads and writes
+
+Four more methods of `WriteTransaction` spend one `SqlWork` and one content
+`Budget` for a complete content operation:
+
+- `put_private_file_content_budget_with_sql` stores private file bytes.
+- `read_owner_content_budget_with_sql` reads and reconstructs content as the owner.
+- `validate_principal_with_sql` checks the identity of the repository and the
+  owner, the schema, the policy, the checkout count and the native markers. The
+  two content methods call it before their first content query.
+- `validate_catalog_with_sql` checks the schema. `validate_principal_with_sql`
+  calls it.
+
+Every query of these methods is a metered query, so each method charges each result
+row and each retained cell before it reads the rows. The schema check also
+charges the bytes of the fingerprint encoding of the schema. It builds that
+encoding before it compares the fingerprint.
+
+Do not call the metered put from production code yet. The admission check of
+catalog 4 refuses a nonempty `private` table, so a committed put leaves a
+repository that `LocalOwnerRepository::open` refuses. Production code can use the
+put only after a catalog admits private content. The tests use it only on
+fixture files.
+
+A put charges its input to the content `Budget` as decoded bytes. A put that
+writes also charges the compressed envelope as stored bytes. It charges the
+envelope again as decoded bytes, because the write keeps the bound value until
+the write ends.
+
+The methods keep these rules of the unmetered methods of the content boundary in
+`content.rs`:
+
+- A put verifies the full native name of the bytes before any SQL.
+- Bytes that a public receipt names stay public, and a put adds no private row for them.
+- A put does not store identical bytes again. It reads the stored bytes back and
+  verifies them against their name, which the new bytes already match.
+- A phantom is an artifact whose bytes are missing. Full bytes replace a
+  phantom, and they replace a delta whose baseline is missing. The put removes
+  the old delta row and the phantom row.
+- An orphan, a delta or a required typed record that waits on the phantom stops
+  that replacement.
+- A read verifies the size and the full name of each link of a delta chain.
+- In a read, a missing, phantom or shunned baseline makes the content unavailable.
+
+The constant `NEWEST_CATALOG` in `schema.rs` names the newest catalog, which is
+catalog 4 in this build. The metered methods admit only that catalog. They refuse a
+repository at catalog 1 with the message `repository catalog 1 is not the
+newest catalog 4`. The older unmetered methods still admit catalog 1.
+
+Each failure of these methods latches in the transaction, so an earlier write in
+the same transaction does not survive the rollback. No production code calls
+these methods yet, and the attribute `expect(dead_code)` on the put method states
+that.
+
 ## Tests
 
 The tests live in `tests/support/storage_command_codec.rs`,
-`tests/support/storage_operation_limits.rs` and
-`tests/support/storage_metered_query.rs`. They run as unit tests of the storage
-module, and the metered query tests use a real libSQL file. They check each
-limit at the last value that it accepts and at the next value, which it refuses.
+`tests/support/storage_operation_limits.rs`,
+`tests/support/storage_metered_query.rs` and
+`tests/support/storage_content_metered.rs`. They run as unit tests of the
+storage module. The metered query and metered content tests use a real libSQL
+file, and the content fixtures come from the product initializer at catalog 4.
+The content tests follow the cases CONTENT-01 to CONTENT-08 of the content
+boundary contract of the specification. All the tests check each limit at the
+last value that it accepts and at the next value, which it refuses.
 
 ## Provenance
 
@@ -158,6 +218,11 @@ These parts of that work were left out:
 - strict decoding with a one-time ledger, and the charges for scope arrays and scope names
 - the unmetered query routes and the query that reads its column count
 - the restore of saved limits that only the tests used
+- the content put that takes a caller budget without SQL work, which is an unmetered route
+- the budget accessors that only the tests used, and the getter of the remaining work, with no caller
+- the admission of catalogs 2, 5 and 6, and the routes that only old catalogs need
+- all of `retained_file.rs`, which needs the excluded modules `native_checkout`,
+  `checkout_fs` and `file_command`, and whose history proof is used only for migration
 
 The port also follows these rules from the independent review of that work:
 

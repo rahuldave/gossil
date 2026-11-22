@@ -2,8 +2,9 @@
 //!
 //! ## Recommendations
 //! Supply finite operation budgets and verify every reconstructed intermediate.
-use super::{StorageError, WriteTransaction};
+use super::{StorageError, WriteTransaction, metered_query::SqlWork, policy::Principal};
 use crate::compression::{self, Unpacked};
+use libsql::Value;
 use std::collections::BTreeSet;
 
 /// Finite caller-selected limits; no implicit unbounded fallback exists.
@@ -157,6 +158,17 @@ impl Budget {
             .ok_or_else(|| StorageError::state("total decoded content limit"))?;
         Ok(())
     }
+    /// Bound the output of one delta application by both decoded ceilings.
+    /// # Returns
+    /// The smaller of the per-object output ceiling and the remaining decoded work.
+    fn delta_output_ceiling(&self) -> u32 {
+        let remaining = self
+            .limits
+            .max_total_decoded_bytes
+            .saturating_sub(self.decoded);
+        // The minimum is at most `max_output_bytes`, so it fits `u32`.
+        u32::try_from(u64::from(self.limits.max_output_bytes).min(remaining)).unwrap_or(u32::MAX)
+    }
     /// Preserve native capacity/trailing semantics while rejecting the short no-op.
     /// # Arguments
     /// * `bytes` - Input bytes for this operation.
@@ -192,8 +204,7 @@ impl Budget {
 /// The native row identifier and exact size, if the name exists.
 /// # Errors
 /// Rejects duplicate identity rows or fields with unexpected native storage types.
-fn content_identity(rows: &[Vec<libsql::Value>]) -> Result<Option<(i64, i64)>, StorageError> {
-    use libsql::Value;
+fn content_identity(rows: &[Vec<Value>]) -> Result<Option<(i64, i64)>, StorageError> {
     match rows {
         [] => Ok(None),
         [row] => match row.as_slice() {
@@ -202,6 +213,192 @@ fn content_identity(rows: &[Vec<libsql::Value>]) -> Result<Option<(i64, i64)>, S
         },
         _ => Err(StorageError::state("duplicate native content identity")),
     }
+}
+
+/// Availability, shun state and delta baseline of one RID.
+const AVAILABILITY_ROW: &str = "SELECT b.size,d.srcid,EXISTS(SELECT 1 FROM shun s WHERE s.uuid=b.uuid) FROM blob b LEFT JOIN delta d ON d.rid=b.rid WHERE b.rid=?1";
+/// Identity, size, stored length and delta baseline of one unshunned name.
+const CHAIN_ROW: &str = "SELECT b.rid,b.size,b.uuid,length(b.content),d.srcid FROM blob b LEFT JOIN delta d ON d.rid=b.rid WHERE b.uuid=?1 AND NOT EXISTS(SELECT 1 FROM shun WHERE uuid=b.uuid)";
+/// The stored envelope of one RID.
+const PAYLOAD_ROW: &str = "SELECT content FROM blob WHERE rid=?1";
+/// The native name of one RID.
+const NAME_ROW: &str = "SELECT uuid FROM blob WHERE rid=?1";
+/// A shun row for one name.
+const SHUN_ROW: &str = "SELECT 1 FROM shun WHERE uuid=?1";
+/// The RID and size of one name.
+const IDENTITY_ROW: &str = "SELECT rid,size FROM blob WHERE uuid=?1";
+/// The RID of one name.
+const RID_ROW: &str = "SELECT rid FROM blob WHERE uuid=?1";
+/// Private membership for one RID, unless a public receipt names its content.
+const PRIVATE_INSERT: &str = "INSERT OR IGNORE INTO private(rid) SELECT ?1 WHERE NOT EXISTS(SELECT 1 FROM g_public_receipt WHERE native_hash=?2)";
+/// Every orphan, delta or required typed dependent of one RID and name.
+const DEPENDENT_ROWS: &str = "SELECT 1 FROM orphan WHERE baseline=?1 UNION ALL SELECT 1 FROM delta WHERE srcid=?1 UNION ALL SELECT 1 FROM g_dependency WHERE target_hash=?2 AND required=1";
+
+/// One step of an availability walk along an old delta chain.
+#[derive(Debug, PartialEq, Eq)]
+enum Availability {
+    /// A missing row or a phantom stops reconstruction.
+    Unavailable,
+    /// A full envelope ends the chain.
+    Full,
+    /// A delta continues at this baseline RID.
+    Delta(i64),
+}
+
+/// Decode one row of [`AVAILABILITY_ROW`].
+/// # Arguments
+/// * `rows` - Materialized availability rows of one RID.
+/// # Returns
+/// Whether the RID is unavailable, full or a delta, and its baseline.
+/// # Errors
+/// Rejects a shunned RID, a malformed row and a baseline that is not an integer.
+fn availability(rows: &[Vec<Value>]) -> Result<Availability, StorageError> {
+    let [row] = rows else {
+        return Ok(Availability::Unavailable);
+    };
+    let [Value::Integer(size), source, Value::Integer(shunned)] = row.as_slice() else {
+        return Err(StorageError::state("corrupt native availability row"));
+    };
+    if *shunned != 0 {
+        return Err(StorageError::state("content unavailable"));
+    }
+    if *size < 0 {
+        return Ok(Availability::Unavailable);
+    }
+    match source {
+        Value::Null => Ok(Availability::Full),
+        Value::Integer(source) => Ok(Availability::Delta(*source)),
+        _ => Err(StorageError::state("corrupt delta baseline RID")),
+    }
+}
+
+/// One stored link of a content chain, before reconstruction.
+struct ChainLink {
+    /// Native RID of the link.
+    rid: i64,
+    /// Exact size of the reconstructed bytes of the link.
+    size: i64,
+    /// Full native name of the reconstructed bytes.
+    hash: String,
+    /// Length of the stored envelope.
+    length: u64,
+    /// Delta baseline RID, or `None` for a full envelope.
+    source: Option<i64>,
+}
+
+/// Decode one row of [`CHAIN_ROW`].
+/// # Arguments
+/// * `rows` - Materialized chain rows of one name.
+/// # Returns
+/// The stored link of that name.
+/// # Errors
+/// Rejects an absent name or phantom as unavailable, and a malformed row as corrupt.
+fn chain_link(rows: &[Vec<Value>]) -> Result<ChainLink, StorageError> {
+    let [row] = rows else {
+        return Err(StorageError::state("content unavailable"));
+    };
+    let [
+        Value::Integer(rid),
+        Value::Integer(size),
+        Value::Text(hash),
+        length,
+        source,
+    ] = row.as_slice()
+    else {
+        return Err(StorageError::state("corrupt native content row"));
+    };
+    if *size < 0 {
+        return Err(StorageError::state("content unavailable"));
+    }
+    let Value::Integer(length) = length else {
+        return Err(StorageError::state("corrupt native content row"));
+    };
+    let length = u64::try_from(*length).map_err(|_| StorageError::state("content unavailable"))?;
+    let source = match source {
+        Value::Null => None,
+        Value::Integer(source) => Some(*source),
+        _ => return Err(StorageError::state("corrupt delta baseline RID")),
+    };
+    Ok(ChainLink {
+        rid: *rid,
+        size: *size,
+        hash: hash.clone(),
+        length,
+        source,
+    })
+}
+
+/// Decode one row of [`PAYLOAD_ROW`].
+/// # Arguments
+/// * `rows` - Materialized payload rows of one RID.
+/// # Returns
+/// The stored envelope bytes.
+/// # Errors
+/// Rejects an absent row and a payload that is not a blob.
+fn payload(rows: &[Vec<Value>]) -> Result<&[u8], StorageError> {
+    let [row] = rows else {
+        return Err(StorageError::state("content unavailable"));
+    };
+    let [Value::Blob(packed)] = row.as_slice() else {
+        return Err(StorageError::state("corrupt native content payload"));
+    };
+    Ok(packed)
+}
+
+/// Decode one row of [`NAME_ROW`] for a delta baseline.
+/// # Arguments
+/// * `rows` - Materialized name rows of one RID.
+/// # Returns
+/// The native name of the baseline.
+/// # Errors
+/// Rejects an absent baseline and a name that is not text.
+fn baseline_name(rows: &[Vec<Value>]) -> Result<String, StorageError> {
+    let [row] = rows else {
+        return Err(StorageError::state("content unavailable"));
+    };
+    let [Value::Text(hash)] = row.as_slice() else {
+        return Err(StorageError::state("corrupt native baseline"));
+    };
+    Ok(hash.clone())
+}
+
+/// Decode one row of [`RID_ROW`] after a write.
+/// # Arguments
+/// * `rows` - Materialized RID rows of one name.
+/// # Returns
+/// The RID of the stored name.
+/// # Errors
+/// Rejects an absent row and a RID that is not an integer.
+fn stored_rid(rows: &[Vec<Value>]) -> Result<i64, StorageError> {
+    let [row] = rows else {
+        return Err(StorageError::state("missing stored content identity"));
+    };
+    let [Value::Integer(rid)] = row.as_slice() else {
+        return Err(StorageError::state("corrupt stored content identity"));
+    };
+    Ok(*rid)
+}
+/// Record one RID of an availability walk, before its row is read.
+/// # Arguments
+/// * `seen` - RIDs that the walk has visited.
+/// * `rid` - Next RID of the walk.
+/// * `limits` - Explicit finite bounds for this operation.
+/// # Returns
+/// Unit when the RID is new and the walk is within the chain depth.
+/// # Errors
+/// Rejects a repeated RID as a cycle, and a walk longer than the chain depth.
+fn visit_availability(
+    seen: &mut BTreeSet<i64>,
+    rid: i64,
+    limits: Limits,
+) -> Result<(), StorageError> {
+    if !seen.insert(rid) {
+        return Err(StorageError::state("content delta cycle"));
+    }
+    if seen.len() as u64 > u64::from(limits.max_chain_depth) {
+        return Err(StorageError::state("content chain depth limit"));
+    }
+    Ok(())
 }
 impl WriteTransaction<'_> {
     /// Identify missing/phantom old delta dependencies without treating corruption as recoverable.
@@ -217,33 +414,49 @@ impl WriteTransaction<'_> {
         start: i64,
         limits: Limits,
     ) -> Result<bool, StorageError> {
-        use libsql::Value;
         let mut rid = start;
         let mut seen = BTreeSet::new();
         loop {
-            if !seen.insert(rid) {
-                return Err(StorageError::state("content delta cycle"));
+            visit_availability(&mut seen, rid, limits)?;
+            let rows = self
+                .query_bound(AVAILABILITY_ROW, vec![Value::Integer(rid)])
+                .await?;
+            match availability(&rows)? {
+                Availability::Unavailable => return Ok(true),
+                Availability::Full => return Ok(false),
+                Availability::Delta(source) => rid = source,
             }
-            if seen.len() as u64 > u64::from(limits.max_chain_depth) {
-                return Err(StorageError::state("content chain depth limit"));
-            }
-            let rows = self.query_bound("SELECT b.size,d.srcid,EXISTS(SELECT 1 FROM shun s WHERE s.uuid=b.uuid) FROM blob b LEFT JOIN delta d ON d.rid=b.rid WHERE b.rid=?1",vec![Value::Integer(rid)]).await?;
-            let [row] = rows.as_slice() else {
-                return Ok(true);
-            };
-            let [Value::Integer(size), source, Value::Integer(shunned)] = row.as_slice() else {
-                return Err(StorageError::state("corrupt native availability row"));
-            };
-            if *shunned != 0 {
-                return Err(StorageError::state("content unavailable"));
-            }
-            if *size < 0 {
-                return Ok(true);
-            }
-            match source {
-                Value::Null => return Ok(false),
-                Value::Integer(source) => rid = *source,
-                _ => return Err(StorageError::state("corrupt delta baseline RID")),
+        }
+    }
+    /// Identify missing or phantom old delta dependencies, and charge every result to the
+    /// operation's allowances.
+    /// # Arguments
+    /// * `start` - First native row identifier in the old delta chain.
+    /// * `limits` - Explicit finite bounds for this operation.
+    /// * `sql` - The operation's remaining SQL rows and payload bytes.
+    /// * `budget` - The operation's content budget, with no reset.
+    /// # Returns
+    /// Whether a missing or phantom baseline prevents reconstruction.
+    /// # Errors
+    /// Rejects cycles, excess depth, shunned content, corrupt rows, exhausted work and SQL failures.
+    async fn old_delta_is_unavailable_with_sql(
+        &mut self,
+        start: i64,
+        limits: Limits,
+        sql: &mut SqlWork,
+        budget: &mut Budget,
+    ) -> Result<bool, StorageError> {
+        let mut rid = start;
+        let mut seen = BTreeSet::new();
+        loop {
+            visit_availability(&mut seen, rid, limits)?;
+            let rows = self
+                .query_bound_work(AVAILABILITY_ROW, vec![Value::Integer(rid)], 3, sql, budget)
+                .await?;
+            match availability(&rows)? {
+                Availability::Unavailable => return Ok(true),
+                Availability::Full => return Ok(false),
+                Availability::Delta(source) => rid = source,
             }
         }
     }
@@ -264,7 +477,6 @@ impl WriteTransaction<'_> {
         bytes: &[u8],
         limits: Limits,
     ) -> Result<i64, StorageError> {
-        use libsql::Value;
         if let Some(error) = &self.failure {
             return Err(error.clone());
         }
@@ -273,44 +485,211 @@ impl WriteTransaction<'_> {
             if bytes.len() as u64 > u64::from(limits.max_output_bytes) {
                 return Err(StorageError::state("content output limit"));
             }
-            let remaining_decoded = limits.max_total_decoded_bytes.checked_sub(bytes.len() as u64)
+            let remaining_decoded = limits
+                .max_total_decoded_bytes
+                .checked_sub(bytes.len() as u64)
                 .ok_or_else(|| StorageError::state("total decoded content limit"))?;
             self.verify_content_name(name, bytes)?;
             self.validate_principal(principal).await?;
-            if !self.query_bound("SELECT 1 FROM shun WHERE uuid=?1", vec![Value::Text(name.into())]).await?.is_empty() { return Err(StorageError::state("content unavailable")); }
-            let existing = self.query_bound("SELECT rid,size FROM blob WHERE uuid=?1", vec![Value::Text(name.into())]).await?;
+            let named = || vec![Value::Text(name.into())];
+            if !self.query_bound(SHUN_ROW, named()).await?.is_empty() {
+                return Err(StorageError::state("content unavailable"));
+            }
+            let existing = self.query_bound(IDENTITY_ROW, named()).await?;
             let rid = match content_identity(&existing)? {
-                Some((rid,size)) => {
-                    if size >= 0 && !self.old_delta_is_unavailable(rid,limits).await? {
-                        let original = self.read_owner_content(principal,name,Limits { max_total_decoded_bytes:remaining_decoded,..limits }).await?;
-                        if original != bytes { return Err(StorageError::state("conflicting native content bytes")); }
+                Some((rid, size)) => {
+                    if size >= 0 && !self.old_delta_is_unavailable(rid, limits).await? {
+                        let read = Limits {
+                            max_total_decoded_bytes: remaining_decoded,
+                            ..limits
+                        };
+                        // The read verifies the stored bytes against `name`, which `bytes`
+                        // already matches, so a readable copy equals `bytes`.
+                        self.read_owner_content(principal, name, read).await?;
                         return Ok(rid);
                     }
                     Some(rid)
                 }
                 None => None,
             };
-            let stored_ceiling = usize::try_from(limits.max_stored_bytes.min(limits.max_total_stored_bytes)).unwrap_or(usize::MAX);
-            let packed = compression::pack_bounded(bytes, -1, stored_ceiling).map_err(|e| StorageError::caused(format!("native content compression: {e}"), e))?;
+            let stored_ceiling =
+                usize::try_from(limits.max_stored_bytes.min(limits.max_total_stored_bytes))
+                    .unwrap_or(usize::MAX);
+            let packed = compression::pack_bounded(bytes, -1, stored_ceiling)
+                .map_err(|e| StorageError::caused(format!("native content compression: {e}"), e))?;
             let mut budget = Budget::new(limits)?;
             budget.enter(rid.unwrap_or(1), packed.len() as u64)?;
             budget.charge_decoded(bytes.len())?;
+            let size = Value::Integer(bytes.len() as i64);
             if let Some(rid) = rid {
-                // Dependent artifact/typed semantics must execute before fulfillment can complete.
-                let dependents = self.query_bound("SELECT 1 FROM orphan WHERE baseline=?1 UNION ALL SELECT 1 FROM delta WHERE srcid=?1 UNION ALL SELECT 1 FROM g_dependency WHERE target_hash=?2 AND required=1", vec![Value::Integer(rid), Value::Text(name.into())]).await?;
-                if !dependents.is_empty() { return Err(StorageError::state("required dependent crosslink unavailable")); }
-                self.execute_bound("DELETE FROM delta WHERE rid=?1", vec![Value::Integer(rid)]).await?;
-                self.execute_bound("UPDATE blob SET size=?1,content=?2 WHERE rid=?3", vec![Value::Integer(bytes.len() as i64), Value::Blob(packed), Value::Integer(rid)]).await?;
-                self.execute_bound("DELETE FROM phantom WHERE rid=?1", vec![Value::Integer(rid)]).await?;
+                // An orphan, a delta or a required typed record that waits on this RID needs
+                // a crosslink that this build lacks, so the put refuses to fulfill it.
+                let dependents = self
+                    .query_bound(
+                        DEPENDENT_ROWS,
+                        vec![Value::Integer(rid), Value::Text(name.into())],
+                    )
+                    .await?;
+                if !dependents.is_empty() {
+                    return Err(StorageError::state(
+                        "required dependent crosslink unavailable",
+                    ));
+                }
+                let rid = Value::Integer(rid);
+                self.execute_bound("DELETE FROM delta WHERE rid=?1", vec![rid.clone()])
+                    .await?;
+                self.execute_bound(
+                    "UPDATE blob SET size=?1,content=?2 WHERE rid=?3",
+                    vec![size, Value::Blob(packed), rid.clone()],
+                )
+                .await?;
+                self.execute_bound("DELETE FROM phantom WHERE rid=?1", vec![rid])
+                    .await?;
             } else {
-                self.execute_bound("INSERT INTO blob(size,uuid,content) VALUES(?1,?2,?3)", vec![Value::Integer(bytes.len() as i64), Value::Text(name.into()), Value::Blob(packed)]).await?;
+                self.execute_bound(
+                    "INSERT INTO blob(size,uuid,content) VALUES(?1,?2,?3)",
+                    vec![size, Value::Text(name.into()), Value::Blob(packed)],
+                )
+                .await?;
             }
-            let rows = self.query_bound("SELECT rid FROM blob WHERE uuid=?1", vec![Value::Text(name.into())]).await?;
-            let [row] = rows.as_slice() else { return Err(StorageError::state("missing stored content identity")); };
-            let [Value::Integer(rid)] = row.as_slice() else { return Err(StorageError::state("corrupt stored content identity")); };
-            self.execute_bound("INSERT OR IGNORE INTO private(rid) SELECT ?1 WHERE NOT EXISTS(SELECT 1 FROM g_public_receipt WHERE native_hash=?2)", vec![Value::Integer(*rid), Value::Text(name.into())]).await?;
-            Ok(*rid)
-        }.await;
+            let rows = self.query_bound(RID_ROW, named()).await?;
+            let rid = stored_rid(&rows)?;
+            self.execute_bound(
+                PRIVATE_INSERT,
+                vec![Value::Integer(rid), Value::Text(name.into())],
+            )
+            .await?;
+            Ok(rid)
+        }
+        .await;
+        self.record(result)
+    }
+    /// Store private file bytes with one caller-owned budget, and charge every result to the
+    /// operation's SQL allowance.
+    ///
+    /// The method follows the rules of [`Self::put_private_file_content`]. Public identities
+    /// stay public, identical bytes deduplicate, and full bytes replace a phantom or an
+    /// unavailable delta target unless a required dependent waits on it. The route admits
+    /// only the newest catalog, through [`Self::validate_principal_with_sql`].
+    /// # Arguments
+    /// * `principal` - Sealed local repository and owner binding.
+    /// * `name` - Full native content hash to verify.
+    /// * `bytes` - Complete uncompressed content.
+    /// * `budget` - The operation's content budget, charged for the input, every result
+    ///   and the new envelope, with no reset.
+    /// * `sql` - The operation's remaining SQL rows and payload bytes.
+    /// # Returns
+    /// The RID of the stored or deduplicated content.
+    /// # Errors
+    /// Returns an earlier latched failure, and latches invalid policy, a hash mismatch,
+    /// shunned or corrupt content, required dependents, exhausted allowances, and
+    /// compression and SQL failures.
+    #[cfg_attr(
+        not(test),
+        expect(
+            dead_code,
+            reason = "the catalog and ticket operations that meter content are not built yet"
+        )
+    )]
+    pub(super) async fn put_private_file_content_budget_with_sql(
+        &mut self,
+        principal: &Principal,
+        name: &str,
+        bytes: &[u8],
+        budget: &mut Budget,
+        sql: &mut SqlWork,
+    ) -> Result<i64, StorageError> {
+        if let Some(error) = &self.failure {
+            return Err(error.clone());
+        }
+        let result = async {
+            let limits = budget.limits;
+            if bytes.len() as u64 > u64::from(limits.max_output_bytes) {
+                return Err(StorageError::state("content output limit"));
+            }
+            budget.charge_decoded(bytes.len())?;
+            self.verify_content_name(name, bytes)?;
+            self.validate_principal_with_sql(principal, sql, budget)
+                .await?;
+            let named = || vec![Value::Text(name.into())];
+            let shunned = self
+                .query_bound_work(SHUN_ROW, named(), 1, sql, budget)
+                .await?;
+            if !shunned.is_empty() {
+                return Err(StorageError::state("content unavailable"));
+            }
+            let existing = self
+                .query_bound_work(IDENTITY_ROW, named(), 2, sql, budget)
+                .await?;
+            let rid = match content_identity(&existing)? {
+                Some((rid, size)) => {
+                    let unavailable = size < 0
+                        || self
+                            .old_delta_is_unavailable_with_sql(rid, limits, sql, budget)
+                            .await?;
+                    if !unavailable {
+                        // The read verifies the stored bytes against `name`, which `bytes`
+                        // already matches, so a readable copy equals `bytes`.
+                        self.read_owner_content_budget_with_sql(principal, name, budget, sql)
+                            .await?;
+                        return Ok(rid);
+                    }
+                    Some(rid)
+                }
+                None => None,
+            };
+            let packed = compression::pack_bounded(bytes, -1, budget.packed_output_ceiling())
+                .map_err(|e| StorageError::caused(format!("native content compression: {e}"), e))?;
+            // The envelope is stored, and its bind value is retained until the write ends.
+            budget.charge_stored(packed.len())?;
+            budget.charge_decoded(packed.len())?;
+            let size = Value::Integer(bytes.len() as i64);
+            if let Some(rid) = rid {
+                // An orphan, a delta or a required typed record that waits on this RID needs
+                // a crosslink that this build lacks, so the put refuses to fulfill it.
+                let dependents = self
+                    .query_bound_work(
+                        DEPENDENT_ROWS,
+                        vec![Value::Integer(rid), Value::Text(name.into())],
+                        1,
+                        sql,
+                        budget,
+                    )
+                    .await?;
+                if !dependents.is_empty() {
+                    return Err(StorageError::state(
+                        "required dependent crosslink unavailable",
+                    ));
+                }
+                let rid = Value::Integer(rid);
+                self.execute_bound("DELETE FROM delta WHERE rid=?1", vec![rid.clone()])
+                    .await?;
+                self.execute_bound(
+                    "UPDATE blob SET size=?1,content=?2 WHERE rid=?3",
+                    vec![size, Value::Blob(packed), rid.clone()],
+                )
+                .await?;
+                self.execute_bound("DELETE FROM phantom WHERE rid=?1", vec![rid])
+                    .await?;
+            } else {
+                self.execute_bound(
+                    "INSERT INTO blob(size,uuid,content) VALUES(?1,?2,?3)",
+                    vec![size, Value::Text(name.into()), Value::Blob(packed)],
+                )
+                .await?;
+            }
+            let rows = self
+                .query_bound_work(RID_ROW, named(), 1, sql, budget)
+                .await?;
+            let rid = stored_rid(&rows)?;
+            self.execute_bound(
+                PRIVATE_INSERT,
+                vec![Value::Integer(rid), Value::Text(name.into())],
+            )
+            .await?;
+            Ok(rid)
+        }
+        .await;
         self.record(result)
     }
     /// Reconstruct under the same validated owner and finite operation budget.
@@ -356,47 +735,120 @@ impl WriteTransaction<'_> {
         }
         let result = async {
             budget.visited.clear();
-            let limits = budget.limits;
             self.validate_principal(principal).await?;
             let mut wanted = name.to_owned();
             let mut chain = Vec::new();
             loop {
-                let rows = self.query_bound("SELECT b.rid,b.size,b.uuid,length(b.content),d.srcid FROM blob b LEFT JOIN delta d ON d.rid=b.rid WHERE b.uuid=?1 AND NOT EXISTS(SELECT 1 FROM shun WHERE uuid=b.uuid)", vec![libsql::Value::Text(wanted)]).await?;
-                let [row] = rows.as_slice() else { return Err(StorageError::state("content unavailable")); };
-                let [libsql::Value::Integer(rid), libsql::Value::Integer(size), libsql::Value::Text(hash), libsql::Value::Integer(length), source] = row.as_slice() else { return Err(StorageError::state("corrupt native content row")); };
-                if *size < 0 || *length < 0 { return Err(StorageError::state("content unavailable")); }
-                budget.enter(*rid, *length as u64)?;
-                let data = self.query_bound("SELECT content FROM blob WHERE rid=?1", vec![libsql::Value::Integer(*rid)]).await?;
-                let [data] = data.as_slice() else { return Err(StorageError::state("content unavailable")); };
-                let [libsql::Value::Blob(packed)] = data.as_slice() else { return Err(StorageError::state("corrupt native content payload")); };
-                let bytes = budget.unpack(packed)?;
-                chain.push((hash.clone(), *size, bytes));
-                match source {
-                    libsql::Value::Null => break,
-                    libsql::Value::Integer(source) => {
-                        let rows = self.query_bound("SELECT uuid FROM blob WHERE rid=?1", vec![libsql::Value::Integer(*source)]).await?;
-                        let [row] = rows.as_slice() else { return Err(StorageError::state("content unavailable")); };
-                        let [libsql::Value::Text(hash)] = row.as_slice() else { return Err(StorageError::state("corrupt native baseline")); };
-                        wanted = hash.clone();
-                    }
-                    _ => return Err(StorageError::state("corrupt delta baseline RID")),
-                }
+                let rows = self
+                    .query_bound(CHAIN_ROW, vec![Value::Text(wanted)])
+                    .await?;
+                let link = chain_link(&rows)?;
+                budget.enter(link.rid, link.length)?;
+                let data = self
+                    .query_bound(PAYLOAD_ROW, vec![Value::Integer(link.rid)])
+                    .await?;
+                let bytes = budget.unpack(payload(&data)?)?;
+                let source = link.source;
+                chain.push((link, bytes));
+                let Some(source) = source else { break };
+                let rows = self
+                    .query_bound(NAME_ROW, vec![Value::Integer(source)])
+                    .await?;
+                wanted = baseline_name(&rows)?;
             }
-            let mut output: Option<Vec<u8>> = None;
-            for (hash, size, bytes) in chain.into_iter().rev() {
-                let reconstructed = match output {
-                    None => bytes,
-                    Some(base) => crate::delta::apply(&base, &bytes, crate::delta::Limits { max_output_bytes: u64::from(limits.max_output_bytes).min(budget.limits.max_total_decoded_bytes - budget.decoded) as u32 })
-                        .map_err(|error| StorageError::caused(format!("native content delta: {error}"), error))?,
-                };
-                budget.charge_decoded(reconstructed.len())?;
-                if size as u64 != reconstructed.len() as u64 { return Err(StorageError::state("native content size mismatch")); }
-                self.verify_content_name(&hash, &reconstructed)?;
-                output = Some(reconstructed);
-            }
-            output.ok_or_else(|| StorageError::state("content unavailable"))
-        }.await;
+            self.reconstruct(chain, budget)
+        }
+        .await;
         self.record(result)
+    }
+    /// Read verified content with one caller-owned budget, and charge every result to the
+    /// operation's SQL allowance.
+    ///
+    /// The route admits only the newest catalog, through
+    /// [`Self::validate_principal_with_sql`].
+    /// # Arguments
+    /// * `principal` - Sealed local owner binding.
+    /// * `name` - Native full content identity.
+    /// * `budget` - Aggregate stored and decoded allowances retained by the caller.
+    /// * `sql` - The operation's remaining SQL rows and payload bytes.
+    /// # Returns
+    /// Owned authenticated reconstructed bytes.
+    /// # Errors
+    /// Rejects invalid policy, unavailable content, corrupt chains, exhausted allowances and SQL failures.
+    pub(super) async fn read_owner_content_budget_with_sql(
+        &mut self,
+        principal: &Principal,
+        name: &str,
+        budget: &mut Budget,
+        sql: &mut SqlWork,
+    ) -> Result<Vec<u8>, StorageError> {
+        if let Some(error) = &self.failure {
+            return Err(error.clone());
+        }
+        let result = async {
+            budget.visited.clear();
+            self.validate_principal_with_sql(principal, sql, budget)
+                .await?;
+            let mut wanted = name.to_owned();
+            let mut chain = Vec::new();
+            loop {
+                let rows = self
+                    .query_bound_work(CHAIN_ROW, vec![Value::Text(wanted)], 5, sql, budget)
+                    .await?;
+                let link = chain_link(&rows)?;
+                budget.enter(link.rid, link.length)?;
+                let data = self
+                    .query_bound_work(PAYLOAD_ROW, vec![Value::Integer(link.rid)], 1, sql, budget)
+                    .await?;
+                let bytes = budget.unpack(payload(&data)?)?;
+                let source = link.source;
+                chain.push((link, bytes));
+                let Some(source) = source else { break };
+                let rows = self
+                    .query_bound_work(NAME_ROW, vec![Value::Integer(source)], 1, sql, budget)
+                    .await?;
+                wanted = baseline_name(&rows)?;
+            }
+            self.reconstruct(chain, budget)
+        }
+        .await;
+        self.record(result)
+    }
+    /// Apply a read chain from its full envelope to its first link, and verify each output.
+    /// # Arguments
+    /// * `chain` - Links in read order, each with its unpacked bytes, and the last is full.
+    /// * `budget` - The operation's content budget, charged for each reconstructed output.
+    /// # Returns
+    /// The reconstructed bytes of the first link.
+    /// # Errors
+    /// Rejects an empty chain, a delta failure, exhausted decoded work, and a size or
+    /// hash mismatch of any link.
+    fn reconstruct(
+        &mut self,
+        chain: Vec<(ChainLink, Vec<u8>)>,
+        budget: &mut Budget,
+    ) -> Result<Vec<u8>, StorageError> {
+        let mut output: Option<Vec<u8>> = None;
+        for (link, bytes) in chain.into_iter().rev() {
+            let reconstructed = match output {
+                None => bytes,
+                Some(base) => {
+                    let limits = crate::delta::Limits {
+                        max_output_bytes: budget.delta_output_ceiling(),
+                    };
+                    crate::delta::apply(&base, &bytes, limits).map_err(|error| {
+                        StorageError::caused(format!("native content delta: {error}"), error)
+                    })?
+                }
+            };
+            budget.charge_decoded(reconstructed.len())?;
+            if link.size as u64 != reconstructed.len() as u64 {
+                return Err(StorageError::state("native content size mismatch"));
+            }
+            self.verify_content_name(&link.hash, &reconstructed)?;
+            output = Some(reconstructed);
+        }
+        output.ok_or_else(|| StorageError::state("content unavailable"))
     }
     /// Read a full private-recording envelope under the complete shared ledger.
     /// The bounded recording family produces no deltas; this entry refuses them.
@@ -414,7 +866,6 @@ impl WriteTransaction<'_> {
         name: &str,
         budget: &mut Budget,
     ) -> Result<Vec<u8>, StorageError> {
-        use libsql::Value;
         if let Some(error) = &self.failure {
             return Err(error.clone());
         }
@@ -487,10 +938,9 @@ impl WriteTransaction<'_> {
 /// # Errors
 /// Refuses absent or malformed rows, negative sizes, deltas and oversized envelopes.
 fn recording_content_metadata(
-    rows: &[Vec<libsql::Value>],
+    rows: &[Vec<Value>],
     max_output_bytes: u32,
 ) -> Result<(i64, i64, i64), StorageError> {
-    use libsql::Value;
     let [row] = rows else {
         return Err(StorageError::state("content unavailable"));
     };
@@ -868,3 +1318,7 @@ mod tests {
         }
     }
 }
+
+#[cfg(test)]
+#[path = "../../tests/support/storage_content_metered.rs"]
+mod metered_tests;

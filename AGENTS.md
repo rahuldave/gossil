@@ -18,7 +18,9 @@ Read and follow @.agents/instructions/prose.md
   (`src/file_path.rs`), check-in graph paths (`src/history.rs`) and the Gest
   domain value converters (`src/gest_*_values.rs`). `src/storage/` also holds
   the internal strict record codec, operation limits and metered queries
-  (`command_codec.rs`, `operation_limits.rs`, `metered_query.rs`).
+  (`command_codec.rs`, `operation_limits.rs`, `metered_query.rs`), and the
+  metered content, policy and catalog routes in `content.rs`, `policy.rs` and
+  `schema.rs`, which admit only the newest catalog.
   `tests/` contains controls,
   portable fixtures and the private storage composition test.
 - Local guides: `docs/conformance.md`, `docs/delta-encoder.md`,
@@ -51,7 +53,9 @@ It requires explicit repository and checkout selection, with `--root` for first
 registration. It selects no files.
 
 Bound catalog1 creation and bounded private content operations remain supported.
-Generic private content writes refuse catalog4.
+Generic private content writes refuse catalog4. The metered private put admits
+only catalog4, but has no caller. Admission refuses the private row that it
+writes, so it waits for a catalog that admits private content.
 
 The private recording library requires the complete tracked set, immutable
 private scopes and all seven expected checkout facts. It captures every working file with one borrowed content
@@ -146,9 +150,9 @@ existing global-state control), and all 20 unchanged Tcl assertions. Its graph
 comparison retained all 126 nonroot packages and edges/features with one
 `libsql-ffi` 0.10.0 provider. At that checkpoint the Gossil crate version in
 `Cargo.toml` was 0.9.0, since released as `v0.9.0`. The current Gossil crate
-version is 0.11.0. The libSQL provider version 0.10.0 and the Gossil crate
+version is 0.12.0. The libSQL provider version 0.10.0 and the Gossil crate
 version are separate numbers. Version 0.10.0 of the crate was released as
-`v0.10.0`.
+`v0.10.0`, and version 0.11.0 as `v0.11.0`.
 
 The checkpoint
 used a prospective checked-commit prerequisite, with actual parent `4250b873`;
