@@ -114,7 +114,7 @@ does not establish parent relationships or resolve references. Sync and team aut
 
 ## Gest record values
 
-Gest is a task and artifact tracker. These converters use its task, project, author, artifact and iteration record model.
+Gest is a task and artifact tracker. These converters use its task, project, author, artifact, iteration and tag record model.
 The `gest_task_values` module validates eleven already decoded task fields.
 It returns an owned record with a standardized status and UTC timestamps.
 The [task values guide](gest-task-values.md) defines validation and caller responsibilities.
@@ -141,6 +141,11 @@ The `gest_iteration_values` module validates nine canonical iteration fields and
 returns an owned record with a lowercase status and UTC timestamps. A completed
 or cancelled iteration requires a completion time, and an active one requires
 null. The [iteration values guide](gest-iteration-values.md) defines the field contract.
+
+The `gest_tag_values` module validates four canonical tag fields and returns an
+owned record. It keeps the label exactly as given, including its case, and
+converts timestamps to UTC. The caller checks that labels are unique across records. The
+[tag values guide](gest-tag-values.md) defines the field contract.
 
 The [task ticket emitter](task-ticket.md) produces bounded creation artifact bytes
 from a validated task, a separate native ticket identity, actor bytes and a typed UTC date.

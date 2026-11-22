@@ -55,6 +55,7 @@ website:
           - gest-author-values.md
           - gest-artifact-values.md
           - gest-iteration-values.md
+          - gest-tag-values.md
       - section: Rust API
         href: api/index.qmd
         contents:

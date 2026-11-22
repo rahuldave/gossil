@@ -1,0 +1,99 @@
+{
+  "model": "tag",
+  "classification": "source behavior and adopted owned-value controls, not exact inherited API ports",
+  "source_pin": "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8",
+  "governing_addendum_sha256": "afddd1c2f5e905f72126209605737cc80e63791870d3ce8bd59f26c9589d8454",
+  "exact_inherited_tests_ported": 0,
+  "source": "src/store/model/tag.rs",
+  "source_sha256": "40c657ba2dd3695c385e1485ba1e58a57d7f67622665dd736efc10b30f51c6b5",
+  "production": "src/gest_tag_values.rs",
+  "fields": [
+    {
+      "name": "id",
+      "sql": "TEXT PRIMARY KEY",
+      "nullable": false,
+      "canonical_field": "gest_id",
+      "sqlite_decl_allows_null": true,
+      "owned_value_rule": "full 32-character [k-z] ID",
+      "control_file": "tests/gest_tag_values.rs",
+      "controls": [
+        "complete_output_round_trips_and_is_independent",
+        "every_field_rejects_wrong_types_without_parser_causes",
+        "full_identifier_domain_and_boundaries"
+      ]
+    },
+    {
+      "name": "label",
+      "sql": "TEXT NOT NULL UNIQUE",
+      "nullable": false,
+      "canonical_field": "label",
+      "sqlite_decl_allows_null": false,
+      "owned_value_rule": "exact case-sensitive string, no content restriction; uniqueness across live records is caller-owned (GEST-CONSTRAINT-01)",
+      "control_file": "tests/gest_tag_values.rs",
+      "controls": [
+        "complete_output_round_trips_and_is_independent",
+        "every_field_rejects_wrong_types_without_parser_causes",
+        "labels_remain_exact_without_global_uniqueness_policy"
+      ]
+    },
+    {
+      "name": "created_at",
+      "sql": "TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))",
+      "nullable": false,
+      "canonical_field": "created_at",
+      "sqlite_decl_allows_null": false,
+      "owned_value_rule": "source chrono 0.4.44 RFC3339 -> UTC; canonical output reparse and <=9 fractional digits, no ordering",
+      "control_file": "tests/gest_tag_values.rs",
+      "controls": [
+        "complete_output_round_trips_and_is_independent",
+        "every_field_rejects_wrong_types_without_parser_causes",
+        "business_timestamp_matrix_for_every_timestamp_field",
+        "each_timestamp_normalizes_and_round_trips",
+        "every_timestamp_retains_initial_and_canonical_parse_causes",
+        "timestamps_need_not_be_chronologically_ordered"
+      ]
+    },
+    {
+      "name": "updated_at",
+      "sql": "TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))",
+      "nullable": false,
+      "canonical_field": "updated_at",
+      "sqlite_decl_allows_null": false,
+      "owned_value_rule": "source chrono 0.4.44 RFC3339 -> UTC; canonical output reparse and <=9 fractional digits, no ordering",
+      "control_file": "tests/gest_tag_values.rs",
+      "controls": [
+        "complete_output_round_trips_and_is_independent",
+        "every_field_rejects_wrong_types_without_parser_causes",
+        "business_timestamp_matrix_for_every_timestamp_field",
+        "each_timestamp_normalizes_and_round_trips",
+        "every_timestamp_retains_initial_and_canonical_parse_causes",
+        "timestamps_need_not_be_chronologically_ordered"
+      ]
+    }
+  ],
+  "source_field_count": 4,
+  "test_functions": [
+    "complete_output_round_trips_and_is_independent",
+    "every_field_rejects_wrong_types_without_parser_causes",
+    "full_identifier_domain_and_boundaries",
+    "business_timestamp_matrix_for_every_timestamp_field",
+    "each_timestamp_normalizes_and_round_trips",
+    "every_timestamp_retains_initial_and_canonical_parse_causes",
+    "labels_remain_exact_without_global_uniqueness_policy",
+    "timestamps_need_not_be_chronologically_ordered"
+  ],
+  "later_exact_api_obligations": [
+    {
+      "test_id": "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/model/tag.rs:87:it_creates_a_tag_with_label",
+      "fixture_sha256": "6a5dd6e4fdba81e64a28b814e14d107703b55832622141144114b33fa959b7b9",
+      "assertion_ids": [
+        "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/model/tag.rs:91:assert_eq"
+      ],
+      "subject": "constructor/builder/getter",
+      "classification": "later exact API/domain-primitive obligation",
+      "exact_port_in_minimal_owned_seam": false,
+      "adopted_replacement": false,
+      "reason": "The fixture calls Model::new, which generates an ID and reads the clock, and the label getter. The owned converter exposes neither. Preserve the fixture at the later API seam; explicit label controls here are new source-behavior controls."
+    }
+  ]
+}

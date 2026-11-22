@@ -70,13 +70,14 @@ assert_eq!(restored, b"after");
 See [application setup and examples](docs/examples.md) for the required Cargo
 provider patch, and [library concepts](docs/concepts.md) for module choices.
 
-Gest is a task and artifact tracker. The converters below use its task, project, author, artifact and iteration record model.
+Gest is a task and artifact tracker. The converters below use its task, project, author, artifact, iteration and tag record model.
 The converters validate complete decoded snapshots in memory. They cover
 [task values](docs/gest-task-values.md), all four canonical
 [project fields](docs/gest-project-values.md), all six canonical
 [author fields](docs/gest-author-values.md), all eight canonical
-[artifact fields](docs/gest-artifact-values.md), and all nine canonical
-[iteration fields](docs/gest-iteration-values.md).
+[artifact fields](docs/gest-artifact-values.md), all nine canonical
+[iteration fields](docs/gest-iteration-values.md), and all four canonical
+[tag fields](docs/gest-tag-values.md).
 
 The [task ticket emitter](docs/task-ticket.md) turns validated task snapshots into bounded
 task creation artifacts in Fossil's ticket format. Callers supply the identity, actor and date.

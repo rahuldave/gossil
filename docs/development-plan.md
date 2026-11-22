@@ -14,7 +14,9 @@ The [Gest project values converter](gest-project-values.md) validates four canon
 The [Gest author values converter](gest-author-values.md) validates six canonical author fields.
 The [Gest artifact values converter](gest-artifact-values.md) validates eight canonical artifact fields.
 The [Gest iteration values converter](gest-iteration-values.md) validates nine canonical iteration fields.
-All five converters operate in memory and leave storage integration, raw field admission and the full Gest API to future work.
+The [Gest tag values converter](gest-tag-values.md) validates four canonical tag fields.
+
+All six converters operate in memory and leave storage integration, raw field admission and the full Gest API to future work.
 
 The [task ticket emitter](task-ticket.md) serializes validated task snapshots with
 caller-supplied native identity, actor and date.
@@ -356,7 +358,8 @@ boundaries, budgets and generated SQL through the selected engine. Non-Unix
 argument conversion has source review only, with no cross-compilation or runtime
 qualification.
 
-Source metadata selects candidate 0.9.0. The focused tree
+The checkpoint's source metadata selected candidate 0.9.0, and the current
+source metadata selects 0.10.0. The focused tree
 `a5583c3c6a73dda1a75ad1dd4c168efc06655c40` used a prospective checked-commit
 prerequisite while actual parent remained `4250b873`.
 [PR 47](https://github.com/rahuldave/gossil/pull/47) supplies typed commit and
