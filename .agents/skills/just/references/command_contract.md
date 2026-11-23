@@ -62,6 +62,7 @@ does not ignore.
 |---|---|
 | `tools-check` | That each program of `.agents/stack.json` is there, at its version floor. It installs and downloads nothing. |
 | `release-check` | That the next release tag will be valid. The tasker role (agent_gest_git_skills) gives it, and it needs no network. Without that role, the step logs a skip. |
+| `ci-gate` | That each commit since the base branch has the trailer of the commit gate. The tasker role gives it, and `just ci` runs it too, so CI runs only steps of `just check`. Without that role, the step logs a skip. |
 | `fmt-check` | The format of the code. `fmt` changes the format, and it stays outside `just check`. |
 | `lint` | The rules of the linter. |
 | `typecheck` | The types. |
@@ -87,7 +88,10 @@ does not ignore.
   ```
 
 - **`check`** depends on each step, and its last line is `jlog pass`. jlog
-  then records a pass for the worktree.
+  then records a pass for the worktree. Its first dependency is
+  `worktree-warning`, which is not a step. It prints a warning when the
+  worktree has unstaged changes or untracked files, because then jlog records
+  no pass. The steps still run.
 
 `.agents/stack.json` lists the steps under `steps`, and the steps that an
 installed profile or role provides under `provided_steps`. A skip counts for

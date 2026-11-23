@@ -42,6 +42,7 @@
   "steps": [
     "tools-check",
     "release-check",
+    "ci-gate",
     "fmt-check",
     "lint",
     "typecheck",
@@ -56,6 +57,7 @@
   "provided_steps": [
     "tools-check",
     "release-check",
+    "ci-gate",
     "fmt-check",
     "lint",
     "typecheck",
@@ -68,7 +70,7 @@
     "diff-check"
   ],
   "generated": {
-    ".agents/just/index.just": "d4111ded3c60476d4b795e4ce586a37e78dcc1634604e1d135e646ed14e08d9b",
+    ".agents/just/index.just": "750542c3ee4892d2458ec57182f9cd1d5b7eb6fc382b8cc9c94775a246ac250f",
     ".agents/just/rust.just": "04a1142ada68e3eda4a7a60d51bf2c2ab786138fe32a9c4464bdcf2628f51638"
   },
   "started": true,
@@ -147,6 +149,15 @@
         "holder": "rust:api"
       }
     },
+    "docs/.gitattributes": {
+      "_extensions/** -whitespace": {
+        "state": "added",
+        "needs": [
+          "docs"
+        ],
+        "holder": "docs"
+      }
+    },
     "AGENTS.md": {
       "Read and follow @.agents/instructions/tasker.md": {
         "state": "added",
@@ -167,6 +178,15 @@
         "holder": "tasker",
         "needs": [],
         "hash": "9ecabcd73e948b357a128649f7c952343263cdf8f7082e0f4716c86f4a659026"
+      }
+    },
+    ".agents/skills/docs/assets/.gitattributes": {
+      "_extensions/** -whitespace": {
+        "state": "added",
+        "needs": [
+          "docs"
+        ],
+        "holder": "docs"
       }
     },
     ".claude/settings.json": {
@@ -533,11 +553,19 @@
         "jnprofile-rust": null
       }
     },
+    "commit-hooks": {
+      "check": "uv run --no-project --quiet --no-python-downloads --python '>=3.9' python .agents/skills/gcm/scripts/commit_gate.py --check-hooks",
+      "each_clone": true,
+      "owners": {
+        "the tasker role": null
+      }
+    },
     "gest": {
       "check": "gest --version",
-      "version": ">=0.5.6",
+      "expect": "(rahuldave)",
+      "version": ">=0.6.0",
       "owners": {
-        "agent_gest_git_skills": ">=0.5.6"
+        "agent_gest_git_skills": ">=0.6.0"
       }
     },
     "gh": {
@@ -553,6 +581,13 @@
       "owners": {
         "jnterfaces": ">=2.40",
         "agent_gest_git_skills": null
+      }
+    },
+    "jagt": {
+      "check": "jagt --version",
+      "version": ">=0.6.3",
+      "owners": {
+        "agent_gest_git_skills": ">=0.6.3"
       }
     },
     "jlog": {

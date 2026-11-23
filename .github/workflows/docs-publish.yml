@@ -18,7 +18,7 @@ concurrency:
 
 jobs:
   publish:
-    # A private repository skips the job, and does not build jlog only to skip. just docs-publish checks again.
+    # A private repository skips the job, and does not install jlog only to skip. just docs-publish checks again.
     if: github.event.repository.visibility == 'public' && github.ref == 'refs/heads/main'
     permissions:
       contents: write
@@ -37,9 +37,13 @@ jobs:
       - uses: extractions/setup-just@v3
       - name: Install pinned rustdoc JSON generator
         run: rustup toolchain install nightly-2026-11-12 --profile minimal
-      - name: Build jlog, the shell of the recipes
-        # jlog v0.2.0 is the tested runtime shared with the required CI recipes.
-        run: cargo install --locked --git https://github.com/rahuldave/jlog --rev 8febdf18387974f38047abbe88b7473bc5f27bb9 jlog
+      - name: Install jlog, the shell of the recipes
+        # The tag v0.3.0 of jlog is the commit d4b712b. install.sh comes from the tag. It downloads the release binary,
+        # checks its SHA-256 and puts it in ~/.local/bin. The step shell bash has pipefail, so a failed download fails.
+        shell: bash
+        run: |
+          curl -fsSL https://raw.githubusercontent.com/rahuldave/jlog/v0.3.0/scripts/install.sh | sh -s -- --tag v0.3.0
+          echo "$HOME/.local/bin" >> "$GITHUB_PATH"
       - name: Set the git user for the push to gh-pages
         run: |
           git config user.name "github-actions[bot]"

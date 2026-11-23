@@ -2,6 +2,11 @@
 //!
 //! [`Model`] is one row. [`New`], [`Patch`] and [`Filter`] carry the input of a create, an update and a list.
 //! Ported from `src/store/model/artifact.rs` at the Gest pin.
+//!
+//! [`Model`]: crate::gest_model::artifact::Model
+//! [`New`]: crate::gest_model::artifact::New
+//! [`Patch`]: crate::gest_model::artifact::Patch
+//! [`Filter`]: crate::gest_model::artifact::Filter
 
 use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};

@@ -7,6 +7,9 @@ use gossil::storage::{
     AdmissionLimits, InitializeOptions, Limits, LocalOwnerRepository, TrackingLimits,
 };
 use std::path::{Path, PathBuf};
+
+#[path = "support/shares.rs"]
+mod shares;
 /// Set explicit finite root and registration ceilings.
 fn limits() -> AdmissionLimits {
     AdmissionLimits {
@@ -165,16 +168,21 @@ async fn reject_mutation(sql: &str) {
     assert_eq!(std::fs::read(root.join("first")).unwrap(), b"unchanged");
 }
 
+/// The number of tests that split the 88 tracking mutations.
+const TRACKING_PARTS: usize = 5;
+
 /// Every native scalar, nullable field, binding, path and contiguous row ID is sealed.
+/// # Arguments
+/// * `part` - The share of the 88 mutations, below `TRACKING_PARTS`. Each mutation gets its own fixture.
 /// # Panics
 /// Panics if schema constraints or full reopen admission accept a mutated row.
-#[tokio::test]
-async fn all_native_tracking_fields_refuse_corruption() {
+async fn all_native_tracking_fields_refuse_corruption(part: usize) {
+    let mut mutations: Vec<String> = Vec::new();
     for field in [
         "id", "vid", "chnged", "deleted", "isexe", "islink", "rid", "mrid", "mtime",
     ] {
         for value in ["NULL", "x'00'", "'invalid'", "0.5"] {
-            reject_mutation(&format!("UPDATE g_vfile SET {field}={value}")).await;
+            mutations.push(format!("UPDATE g_vfile SET {field}={value}"));
         }
     }
     for (field, value) in [
@@ -197,7 +205,7 @@ async fn all_native_tracking_fields_refuse_corruption() {
         ("checkout_id", "'other'"),
         ("checkout_id", "x'00'"),
     ] {
-        reject_mutation(&format!("UPDATE g_vfile SET {field}={value}")).await;
+        mutations.push(format!("UPDATE g_vfile SET {field}={value}"));
     }
     for value in [
         "NULL",
@@ -217,7 +225,7 @@ async fn all_native_tracking_fields_refuse_corruption() {
         "CAST(x'c080' AS TEXT)",
         "CAST(x'eda080' AS TEXT)",
     ] {
-        reject_mutation(&format!("UPDATE g_vfile SET pathname={value}")).await;
+        mutations.push(format!("UPDATE g_vfile SET pathname={value}"));
     }
     for assignment in [
         "pending_version=-1",
@@ -228,21 +236,65 @@ async fn all_native_tracking_fields_refuse_corruption() {
         "generation=1",
         "combined_head='unsupported'",
     ] {
-        reject_mutation(&format!("UPDATE g_checkout SET {assignment}")).await;
+        mutations.push(format!("UPDATE g_checkout SET {assignment}"));
     }
-    reject_mutation("UPDATE g_checkout_owner SET owner_id='other'").await;
-    reject_mutation("UPDATE g_checkout SET checkout_id='other'").await;
+    mutations.push("UPDATE g_checkout_owner SET owner_id='other'".into());
+    mutations.push("UPDATE g_checkout SET checkout_id='other'".into());
     for name in ["FIRST", "first/child"] {
-        reject_mutation(&format!("INSERT INTO g_vfile SELECT checkout_id,2,vid,chnged,deleted,isexe,islink,rid,mrid,mtime,'{name}',origname,mhash FROM g_vfile")).await;
+        mutations.push(format!("INSERT INTO g_vfile SELECT checkout_id,2,vid,chnged,deleted,isexe,islink,rid,mrid,mtime,'{name}',origname,mhash FROM g_vfile"));
     }
-    reject_mutation("DELETE FROM g_checkout_owner").await;
-    reject_mutation("DELETE FROM g_vvar").await;
-    reject_mutation("UPDATE g_storage SET storage_version=1").await;
-    reject_mutation("INSERT INTO g_path_scope VALUES('work','first','shared')").await;
-    reject_mutation("INSERT INTO g_path_scope VALUES('work','first','private')").await;
-    reject_mutation("INSERT INTO g_pending_path(checkout_id,path,action,selected_scope) VALUES('work','first','remove','shared')").await;
-    reject_mutation("INSERT INTO g_vmerge(checkout_id,id,merge,mhash) VALUES('work',1,1,'opaque')")
-        .await;
+    mutations.push("DELETE FROM g_checkout_owner".into());
+    mutations.push("DELETE FROM g_vvar".into());
+    mutations.push("UPDATE g_storage SET storage_version=1".into());
+    mutations.push("INSERT INTO g_path_scope VALUES('work','first','shared')".into());
+    mutations.push("INSERT INTO g_path_scope VALUES('work','first','private')".into());
+    mutations.push("INSERT INTO g_pending_path(checkout_id,path,action,selected_scope) VALUES('work','first','remove','shared')".into());
+    mutations.push(
+        "INSERT INTO g_vmerge(checkout_id,id,merge,mhash) VALUES('work',1,1,'opaque')".into(),
+    );
+    for mutation in shares::share(mutations, part, TRACKING_PARTS) {
+        reject_mutation(&mutation).await;
+    }
+}
+
+/// Share 0 of the tracking mutations.
+/// # Panics
+/// Panics as the shared body does.
+#[tokio::test]
+async fn all_native_tracking_fields_refuse_corruption_0() {
+    all_native_tracking_fields_refuse_corruption(0).await;
+}
+
+/// Share 1 of the tracking mutations.
+/// # Panics
+/// Panics as the shared body does.
+#[tokio::test]
+async fn all_native_tracking_fields_refuse_corruption_1() {
+    all_native_tracking_fields_refuse_corruption(1).await;
+}
+
+/// Share 2 of the tracking mutations.
+/// # Panics
+/// Panics as the shared body does.
+#[tokio::test]
+async fn all_native_tracking_fields_refuse_corruption_2() {
+    all_native_tracking_fields_refuse_corruption(2).await;
+}
+
+/// Share 3 of the tracking mutations.
+/// # Panics
+/// Panics as the shared body does.
+#[tokio::test]
+async fn all_native_tracking_fields_refuse_corruption_3() {
+    all_native_tracking_fields_refuse_corruption(3).await;
+}
+
+/// Share 4 of the tracking mutations.
+/// # Panics
+/// Panics as the shared body does.
+#[tokio::test]
+async fn all_native_tracking_fields_refuse_corruption_4() {
+    all_native_tracking_fields_refuse_corruption(4).await;
 }
 
 /// A valid produced inventory is bounded independently at reopen and listing.

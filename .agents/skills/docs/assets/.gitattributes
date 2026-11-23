@@ -1,0 +1,4 @@
+# begin lines of docs, the docs role, from jnterfaces at 27bac4c.
+# Last written to .agents/skills/docs/assets/.gitattributes by `just install --update`. The record is parts.".agents/skills/docs/assets/.gitattributes" in .agents/stack.json.
+_extensions/** -whitespace
+# end lines of docs. `just uninstall docs` removes them.

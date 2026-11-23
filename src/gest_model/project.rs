@@ -4,6 +4,8 @@
 //! project record of [`crate::gest_project_values`] has no root, because the
 //! root is a local checkout binding (GEST-01). So this module has no `From`
 //! for that record. A caller that holds the root uses [`Model::from_synced_parts`].
+//!
+//! [`Model::from_synced_parts`]: crate::gest_model::project::Model::from_synced_parts
 
 use std::path::PathBuf;
 

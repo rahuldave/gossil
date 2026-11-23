@@ -5,13 +5,20 @@
 the packet, with a nonce, and saves the packet file in `packets/` of the shared log folder. The record of the result
 comes later, from the `SubagentStop` hook or from `just record`.
 
-The prompt of the packet has three layers, in this order:
+The prompt of the packet has these parts, in this order:
 
 1. The base task: `references/targets/TARGET.md` in the one installed skill that has it, for example the `grv`
    skill for `review` or the `nossaifd` skill for `prose`.
-2. A language layer for each language of `.agents/stack.json`: `.agents/targets/LANGUAGE/TARGET.md`, when the
-   profile of the language ships it.
-3. The repository text: `.agents/targets/TARGET.md`, when the repository has it.
+2. A language layer, `.agents/targets/LANGUAGE/TARGET.md`, for each key of `code` in `.agents/stack.json` that
+   `profiles` does not name, when the file exists.
+3. The form of the result, with each field that `jagt result lint` needs, such as `follow_up`. A result without
+   one of these fields gives no record.
+4. A language layer for each name in `profiles`, when the profile of the language ships it.
+5. The repository text: `.agents/targets/TARGET.md`, when the repository has it.
+
+The script gives parts 1 to 3. jagt reads parts 4 and 5 itself and adds them after the prompt of the script, so the
+script leaves them out, and each layer is in the packet once. The script compares the layer files and not their
+names, so a second name of a file that jagt reads adds no layer.
 
 The input is the diff of the worktree against HEAD, with the files that git does not track yet and does not
 ignore. The tree of the worktree comes from a copy of the index, as in the gate, so a file that the index holds
@@ -24,9 +31,11 @@ It exits with 0 when it printed the packet, and with 1 when not.
 from __future__ import annotations
 
 import errno
+import hashlib
 import json
 import os
 from pathlib import Path
+import re
 import shutil
 import subprocess
 import sys
@@ -55,7 +64,35 @@ TARGETS: Dict[str, Tuple[str, ...]] = {
     "visualize": ("files",),
 }
 
+# The form of the result, after the layers that the script gives. jagt result lint refuses a block that has no
+# `follow_up`, and a base task can leave it out, so the script adds the form to each packet.
+RESULT_FORM = """## The form of the result
+
+End with one `AGENT_RESULT v1` block, in this form. The block must have each of the fields `target`, `nonce`,
+`status`, `outputs`, `verification` and `follow_up`. `jagt result lint` refuses a block that does not have one of
+these fields, and then the result gives no record. `follow_up` is a list of the work that is left for later, for
+example `- Rename the helper in a later change.` When no work is left, it is `[]`. The rules that follow
+this form, when there are any, add to the task. The result keeps this form.
+
+    <<<AGENT_RESULT v1>>>
+    target: {target}
+    nonce: <the nonce of this packet>
+    status: success
+    outputs:
+{outputs}
+    verification: []
+    notes: none
+    follow_up: []
+    <<<END_AGENT_RESULT>>>
+"""
+
 STACK = ".agents/stack.json"
+# A plain language name, as jagt reads it: a letter or a digit, then letters, digits, `_`, `.` and `-`.
+LANGUAGE_NAME = re.compile(r"[A-Za-z0-9][A-Za-z0-9_.-]*")
+# The install of jagt that the hint gives: the release binary first, the build from source second.
+JAGT_INSTALL = ("`curl -fsSL https://raw.githubusercontent.com/rahuldave/jagt/v0.6.4/scripts/install.sh | sh -s -- --tag v0.6.4`, "
+                "then put ~/.local/bin on PATH. To build it from source instead, run `cargo install --locked --git "
+                "https://github.com/rahuldave/jagt --tag v0.6.4 jagt`")
 
 
 class Stop(Exception):
@@ -103,10 +140,16 @@ def shared_log(root: Path) -> Path:
     return common.parent / ".agents/log"
 
 
-def worktree_diff(root: Path) -> Tuple[str, str, bytes]:
+# The folder of the shared log folder that keeps the tree objects of the packets and the records, and the objects of
+# their links, that `.git/objects` does not have. The gate compares the tree of a record with the commit tree.
+TREES = "objects"
+
+
+def worktree_diff(root: Path, keep: bool = False) -> Tuple[str, str, bytes]:
     """The commit of HEAD, or `none`, the worktree tree, and the diff of the worktree against HEAD, as bytes. They
     come from a copy of the index and a temporary object store, as in the gate, so neither the real index nor
-    `.git/objects` changes. The diff ignores the diff settings of the person and of the repository."""
+    `.git/objects` changes. The diff ignores the diff settings of the person and of the repository. With KEEP, the
+    tree objects stay in the folder `objects` of the shared log folder, for the gate, as keep_trees says."""
     env = plain_env()
     objects = Path(git(["rev-parse", "--git-path", "objects"], root, env).strip())
     real_index = Path(git(["rev-parse", "--git-path", "index"], root, env).strip())
@@ -139,7 +182,98 @@ def worktree_diff(root: Path) -> Tuple[str, str, bytes]:
         diff = git_bytes(["-c", "diff.noprefix=false", "-c", "diff.mnemonicPrefix=false", "diff", "--binary",
                           "--no-color", "--no-ext-diff", "--no-textconv", "--src-prefix=a/", "--dst-prefix=b/",
                           base, tree], root, env)
+        if keep:
+            keep_trees(root, env, tree)
     return head or "none", tree, diff
+
+
+def keep_trees(root: Path, env: Dict[str, str], tree: str) -> None:
+    """Copy the tree objects of TREE, and the objects of its links, that `.git/objects` does not have, into the
+    folder `objects` of the shared log folder. Each file has the ID of its object as its name and the content of the
+    object, and the gate checks the content against the ID. ENV reads the temporary object store. The script writes
+    each file through the descriptor of the folder, follows no link, and writes the files of a tree before the tree,
+    so a kept tree has its subtrees. It goes into no tree that `.git/objects` or the folder has already."""
+    _, fd = prepare_log(root, TREES)
+    algorithm = "sha256" if git(["rev-parse", "--show-object-format"], root, plain_env(),
+                                check=False).strip() == "sha256" else "sha1"
+    size = 20 if algorithm == "sha1" else 32
+    reader = subprocess.Popen(["git", "--no-replace-objects", "cat-file", "--batch"], cwd=root, env=env,
+                              stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.DEVNULL)
+    real = subprocess.Popen(["git", "--no-replace-objects", "cat-file", "--batch-check"], cwd=root,
+                            env=dict(plain_env(), GIT_NO_REPLACE_OBJECTS="1"), stdin=subprocess.PIPE,
+                            stdout=subprocess.PIPE, stderr=subprocess.DEVNULL)
+
+    def ask(process: subprocess.Popen, oid: str) -> List[bytes]:
+        process.stdin.write(oid.encode() + b"\n")
+        process.stdin.flush()
+        return process.stdout.readline().split()
+
+    def has(oid: str, kind: str) -> bool:
+        """True when the folder has a file of OID that hashes to it, or `.git/objects` has OID. A file of the
+        folder that does not hash to its name goes, so the tree is kept again."""
+        try:
+            handle = os.open(oid, os.O_RDONLY | os.O_NOFOLLOW, dir_fd=fd)
+        except FileNotFoundError:
+            return len(ask(real, oid)) == 3
+        with os.fdopen(handle, "rb") as file:
+            data = file.read()
+        if hashlib.new(algorithm, b"%s %d\0" % (kind.encode(), len(data)) + data).hexdigest() == oid:
+            return True
+        os.unlink(oid, dir_fd=fd)
+        return False
+
+    def read(oid: str) -> bytes:
+        header = ask(reader, oid)
+        if len(header) != 3:
+            raise Stop(f"git has no object {oid} of the tree {tree}")
+        data = reader.stdout.read(int(header[2]))
+        reader.stdout.read(1)
+        return data
+
+    def write(oid: str, data: bytes) -> None:
+        temp = f".{oid}.{os.getpid()}"
+        try:
+            os.unlink(temp, dir_fd=fd)
+        except FileNotFoundError:
+            pass
+        out = os.open(temp, os.O_WRONLY | os.O_CREAT | os.O_EXCL | os.O_NOFOLLOW, 0o444, dir_fd=fd)
+        try:
+            with os.fdopen(out, "wb") as handle:
+                handle.write(data)
+            os.rename(temp, oid, src_dir_fd=fd, dst_dir_fd=fd)
+        except BaseException:
+            try:
+                os.unlink(temp, dir_fd=fd)
+            except OSError:
+                pass
+            raise
+
+    def walk(oid: str) -> None:
+        if has(oid, "tree"):
+            return
+        data = read(oid)
+        index = 0
+        while index < len(data):
+            space = data.index(b" ", index)
+            nul = data.index(b"\0", space + 1)
+            mode, child = data[index:space].zfill(6), data[nul + 1:nul + 1 + size].hex()
+            index = nul + 1 + size
+            if mode == b"040000":
+                walk(child)
+            elif mode == b"120000" and not has(child, "blob"):
+                write(child, read(child))
+        write(oid, data)
+
+    try:
+        walk(tree)
+    except OSError as exc:
+        raise Stop(f"cannot write the tree {tree} in {shared_log(root) / TREES}: {exc.strerror}")
+    finally:
+        for process in (reader, real):
+            process.stdin.close()
+            process.wait()
+            process.stdout.close()
+        os.close(fd)
 
 
 def base_task(root: Path, target: str) -> Path:
@@ -153,29 +287,92 @@ def base_task(root: Path, target: str) -> Path:
     return found[0]
 
 
-def languages(root: Path) -> List[str]:
-    """The languages of the project: the keys of `code` in `.agents/stack.json`, in their order."""
+def stack(root: Path) -> Dict[str, object]:
+    """The content of `.agents/stack.json`, or an empty dict when the file is missing or is not a JSON object."""
     try:
-        code = json.loads((root / STACK).read_text()).get("code", {})
-    except (OSError, ValueError, AttributeError):
-        return []
-    return [name for name in code if isinstance(name, str) and "/" not in name] if isinstance(code, dict) else []
+        content = json.loads((root / STACK).read_text())
+    except (OSError, ValueError):
+        return {}
+    return content if isinstance(content, dict) else {}
+
+
+def plain_names(names: object) -> List[str]:
+    """The plain language names of a list or of the keys of a dict, in their order, each name once."""
+    found: List[str] = []
+    for name in names if isinstance(names, (list, dict)) else ():
+        if isinstance(name, str) and LANGUAGE_NAME.fullmatch(name) and name not in found:
+            found.append(name)
+    return found
+
+
+def languages(root: Path) -> Tuple[List[str], List[str]]:
+    """The languages of the project, from `.agents/stack.json`: the names in `profiles`, which jagt reads, and the
+    keys of `code` that `profiles` does not name, which only this script reads."""
+    content = stack(root)
+    profiles = plain_names(content.get("profiles"))
+    code = content.get("code")
+    # A key of code keeps the rule that the script had before: any name that is one folder, such as c++. jagt reads
+    # no key of code, so a stricter rule would drop its layer.
+    keys = [name for name in code if isinstance(name, str) and "/" not in name and "\\" not in name
+            and name not in ("", ".", "..")] if isinstance(code, dict) else plain_names(code)
+    others: List[str] = []
+    for name in keys:
+        if name not in profiles and name not in others:
+            others.append(name)
+    return profiles, others
+
+
+def layer_file(root: Path, relative: str) -> Optional[Path]:
+    """The layer file `root/relative` when it has text, or None when it is missing or holds only blank lines, as jagt
+    reads a layer. A file whose real path is outside `.agents/targets` stops the render, as in jagt, so a link cannot
+    put another file into the packet."""
+    path = root / relative
+    if not path.exists():
+        return None
+    # As in jagt, only the root is a real path, so a link at .agents/targets leads outside it too.
+    targets = root.resolve() / ".agents/targets"
+    try:
+        path.resolve().relative_to(targets)
+    except ValueError:
+        raise Stop(f"{relative} leads outside .agents/targets, so the packet does not hold it")
+    try:
+        text = path.read_text()
+    except (OSError, UnicodeDecodeError) as exc:
+        raise Stop(f"cannot read {path}: {exc}")
+    return path if text.strip() else None
+
+
+def file_id(path: Path) -> Tuple[int, int]:
+    """The device and the inode of the file that path leads to, the same for each name of one file."""
+    info = path.stat()
+    return info.st_dev, info.st_ino
 
 
 def prompt(root: Path, target: str) -> Tuple[str, List[str]]:
-    """The text of the prompt, from the layers, and the paths of the layers, relative to the root."""
+    """The text of the prompt, and the paths of its layers, relative to the root. jagt adds the language layers of
+    `profiles` and the repository text itself, after this text, so the prompt leaves them out."""
+    profiles, others = languages(root)
+    # The files that jagt reads itself. A name that differs only in case, on a disk that ignores case, or a link
+    # can give the same file a second name, so the script compares the files and not the names.
+    seen = set()
+    for relative in [f".agents/targets/{name}/{target}.md" for name in profiles] + [f".agents/targets/{target}.md"]:
+        path = layer_file(root, relative)
+        if path is not None:
+            seen.add(file_id(path))
     layers = [base_task(root, target)]
-    layers += [path for path in (root / f".agents/targets/{name}/{target}.md" for name in languages(root))
-               if path.is_file()]
-    own = root / f".agents/targets/{target}.md"
-    if own.is_file():
-        layers.append(own)
+    for name in others:
+        path = layer_file(root, f".agents/targets/{name}/{target}.md")
+        if path is not None and file_id(path) not in seen:
+            seen.add(file_id(path))
+            layers.append(path)
     parts = []
     for path in layers:
         try:
             parts.append(path.read_text().strip())
         except (OSError, UnicodeDecodeError) as exc:
             raise Stop(f"cannot read {path}: {exc}")
+    outputs = "\n".join(f"      {name}: []" for name in TARGETS[target])
+    parts.append(RESULT_FORM.format(target=target, outputs=outputs).strip())
     return "\n\n".join(parts) + "\n", [str(path.relative_to(root)) for path in layers]
 
 
@@ -246,11 +443,11 @@ def render(root: Path, target: str, args: Sequence[str]) -> int:
     if target not in TARGETS:
         raise Stop(f"{target} is not an agentic target; the targets are " + ", ".join(TARGETS))
     if not shutil.which("jagt"):
-        raise Stop("jagt is not on PATH: cargo install --git https://github.com/rahuldave/jagt")
+        raise Stop(f"jagt is not on PATH. Install it with {JAGT_INSTALL}.")
     text, layers = prompt(root, target)
     log, diffs_fd = prepare_log(root)
     try:
-        head, tree, diff = worktree_diff(root)
+        head, tree, diff = worktree_diff(root, keep=True)
         # The same tree has another diff against another HEAD, so the name holds both.
         name = f"{head}-{tree}.diff"
         diff_file = log / "diffs" / name
@@ -284,6 +481,8 @@ def render(root: Path, target: str, args: Sequence[str]) -> int:
     command += [f"--allowed-action={action}" for action in ALLOWED[target]]
     command += [f"--required-output={output}" for output in TARGETS[target]]
     print("The layers of the prompt: " + ", ".join(layers), file=sys.stderr)
+    print("jagt adds the language layers of profiles and the repository text; the provenance of the packet names "
+          "them", file=sys.stderr)
     run = subprocess.run(command, cwd=root, stdin=subprocess.DEVNULL, stdout=subprocess.PIPE, text=True,
                          errors="replace")
     sys.stdout.write(run.stdout)

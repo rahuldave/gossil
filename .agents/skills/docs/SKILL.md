@@ -17,6 +17,21 @@ smalldocs builds the site. `just install docs` turns the role on, and
   `docs` of the project, when the folder does not have that file. They are
   yours from then on, and `just uninstall docs` keeps them. A project with
   docs of another tool, such as MkDocs, must move them first.
+- **The theme Atelier**, in the folder `_extensions/atelier` of the folder
+  `docs`. The role writes each file of `assets/_extensions/atelier/` that the
+  project does not have. The starter config sets `theme: atelier`. A project
+  with its own config and another theme gets no theme files. To change the
+  theme, see [Themes](https://docs.smallish.dev/guide/themes.html) of
+  smalldocs.
+- **A `.gitattributes` in `docs` and in `assets` of this skill**, each with
+  the line `_extensions/** -whitespace`. Some theme files end their lines
+  with a carriage return, and the line tells `git diff --check` to accept
+  them. The role does not change the `.gitattributes` at the root of the
+  project. A run takes out the lines that older installers wrote there, and
+  leaves the rest of the file as it was. `just uninstall docs` keeps the
+  theme files. While a theme file stays, the installer keeps the line in
+  the `.gitattributes` of the folder `docs`. The file in the skill goes with
+  the skill.
 - **`.github/workflows/docs-publish.yml`**, once. After a push to `main`, it
   runs `just docs-publish`. `just uninstall docs` removes it while you have
   not changed it.

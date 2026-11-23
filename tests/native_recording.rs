@@ -14,6 +14,9 @@ use std::{
     path::{Path, PathBuf},
 };
 
+#[path = "support/shares.rs"]
+mod shares;
+
 /// Supply generous finite cumulative admission and operation ceilings.
 /// # Arguments
 /// No arguments.
@@ -742,39 +745,45 @@ async fn capture_and_cumulative_budget_failures_are_atomic() {
     assert_eq!(snapshot(&f.repo).await, before);
 }
 
-#[tokio::test]
+/// The number of tests that split the 22 projection and bookkeeping corruptions.
+const PROJECTION_PARTS: usize = 4;
+
 /// Enumerate independent projection, provenance, scope and checkout corruptions.
 /// # Arguments
-/// No arguments.
+/// * `part` - The share of the 22 projection and bookkeeping corruptions, below `PROJECTION_PARTS`. Each case gets its own fixture.
 /// # Returns
 /// Unit after each independently produced fixture refuses reopen without repair.
 /// # Panics
 /// Panics if any unsupported exact-state mutation is admitted or repaired.
-async fn every_native_projection_and_bookkeeping_surface_rejects_corruption() {
-    for sql in [
-        "UPDATE plink SET isprim=0",
-        "UPDATE plink SET baseid=pid",
-        "DELETE FROM mlink",
-        "UPDATE mlink SET pid=-1",
-        "UPDATE mlink SET isaux=1",
-        "UPDATE mlink SET mperm=2",
-        "UPDATE filename SET name='wrong' WHERE name='a'",
-        "UPDATE event SET uid=0 WHERE objid<>1",
-        "UPDATE tagxref SET srcid=0 WHERE rid<>1",
-        "DELETE FROM leaf WHERE rid<>1",
-        "INSERT INTO unclustered SELECT rid FROM private LIMIT 1",
-        "DELETE FROM unsent",
-        "DELETE FROM private",
-        "UPDATE blob SET rcvid=1 WHERE rid<>1",
-        "UPDATE rcvfrom SET uid=1 WHERE rcvid>1",
-        "UPDATE rcvfrom SET nonce='unexpected' WHERE rcvid>1",
-        "INSERT INTO rcvfrom(uid,mtime) VALUES(0,julianday('now'))",
-        "UPDATE g_vfile SET mrid=0",
-        "UPDATE g_vfile SET vid=1",
-        "UPDATE g_path_scope SET scope='shared'",
-        "UPDATE g_vvar SET value='1/00000000000000000000000000000000' WHERE name='fingerprint'",
-        "UPDATE g_checkout SET generation=generation+1",
-    ] {
+async fn every_native_projection_and_bookkeeping_surface_rejects_corruption(part: usize) {
+    for sql in shares::share(
+        vec![
+            "UPDATE plink SET isprim=0",
+            "UPDATE plink SET baseid=pid",
+            "DELETE FROM mlink",
+            "UPDATE mlink SET pid=-1",
+            "UPDATE mlink SET isaux=1",
+            "UPDATE mlink SET mperm=2",
+            "UPDATE filename SET name='wrong' WHERE name='a'",
+            "UPDATE event SET uid=0 WHERE objid<>1",
+            "UPDATE tagxref SET srcid=0 WHERE rid<>1",
+            "DELETE FROM leaf WHERE rid<>1",
+            "INSERT INTO unclustered SELECT rid FROM private LIMIT 1",
+            "DELETE FROM unsent",
+            "DELETE FROM private",
+            "UPDATE blob SET rcvid=1 WHERE rid<>1",
+            "UPDATE rcvfrom SET uid=1 WHERE rcvid>1",
+            "UPDATE rcvfrom SET nonce='unexpected' WHERE rcvid>1",
+            "INSERT INTO rcvfrom(uid,mtime) VALUES(0,julianday('now'))",
+            "UPDATE g_vfile SET mrid=0",
+            "UPDATE g_vfile SET vid=1",
+            "UPDATE g_path_scope SET scope='shared'",
+            "UPDATE g_vvar SET value='1/00000000000000000000000000000000' WHERE name='fingerprint'",
+            "UPDATE g_checkout SET generation=generation+1",
+        ],
+        part,
+        PROJECTION_PARTS,
+    ) {
         let mut f = Fixture::new().await;
         f.private(&["a", "b"]).await;
         f.changed(&["a", "b"], b"2026-11-20T00:00:01").await;
@@ -790,6 +799,38 @@ async fn every_native_projection_and_bookkeeping_surface_rejects_corruption() {
         );
         assert_eq!(snapshot(&repo).await, corrupt, "repaired {sql}");
     }
+}
+
+#[tokio::test]
+/// Share 0 of the projection and bookkeeping corruptions.
+/// # Panics
+/// Panics as the shared body does.
+async fn every_native_projection_and_bookkeeping_surface_rejects_corruption_0() {
+    every_native_projection_and_bookkeeping_surface_rejects_corruption(0).await;
+}
+
+#[tokio::test]
+/// Share 1 of the projection and bookkeeping corruptions.
+/// # Panics
+/// Panics as the shared body does.
+async fn every_native_projection_and_bookkeeping_surface_rejects_corruption_1() {
+    every_native_projection_and_bookkeeping_surface_rejects_corruption(1).await;
+}
+
+#[tokio::test]
+/// Share 2 of the projection and bookkeeping corruptions.
+/// # Panics
+/// Panics as the shared body does.
+async fn every_native_projection_and_bookkeeping_surface_rejects_corruption_2() {
+    every_native_projection_and_bookkeeping_surface_rejects_corruption(2).await;
+}
+
+#[tokio::test]
+/// Share 3 of the projection and bookkeeping corruptions.
+/// # Panics
+/// Panics as the shared body does.
+async fn every_native_projection_and_bookkeeping_surface_rejects_corruption_3() {
+    every_native_projection_and_bookkeeping_surface_rejects_corruption(3).await;
 }
 
 /// Borrow the fixture's selected SQL engine for independent parser validation.
@@ -903,29 +944,35 @@ async fn replace_fixture_manifest(repo: &Path, old: &str, body: &str, sha1: bool
     );
 }
 
-#[tokio::test]
+/// The number of tests that split the 9 parser-valid unsupported histories.
+const PARSER_PARTS: usize = 3;
+
 /// Parser-valid native artifacts outside the private family are refused without repair.
 /// # Arguments
-/// No arguments.
+/// * `part` - The share of the 9 parser-valid unsupported histories, below `PARSER_PARTS`. Each case gets its own fixture.
 /// # Returns
 /// Unit after every independent family violation reaches its exact intended guard.
 /// # Panics
 /// Panics on parser failure, an earlier unexpected refusal, admitted history or mutation.
-async fn parser_valid_unsupported_histories_refuse_without_repair() {
-    for (case, expected) in [
-        ("sha1", "recording manifest hash policy"),
-        ("parents", "recording exact paired parents"),
-        ("mode", "recording file mode"),
-        ("rename", "recording rename unsupported"),
-        ("date", "recording SQL parent date ordering"),
-        (
-            "unchanged",
-            "recording unchanged historical commit unsupported",
-        ),
-        ("deletion", "recording deletion unsupported"),
-        ("extra-card", "recording noncanonical full manifest"),
-        ("bracket-comment", "unsupported private manifest grammar"),
-    ] {
+async fn parser_valid_unsupported_histories_refuse_without_repair(part: usize) {
+    for (case, expected) in shares::share(
+        vec![
+            ("sha1", "recording manifest hash policy"),
+            ("parents", "recording exact paired parents"),
+            ("mode", "recording file mode"),
+            ("rename", "recording rename unsupported"),
+            ("date", "recording SQL parent date ordering"),
+            (
+                "unchanged",
+                "recording unchanged historical commit unsupported",
+            ),
+            ("deletion", "recording deletion unsupported"),
+            ("extra-card", "recording noncanonical full manifest"),
+            ("bracket-comment", "unsupported private manifest grammar"),
+        ],
+        part,
+        PARSER_PARTS,
+    ) {
         let mut f = Fixture::new().await;
         f.private(&["a", "b"]).await;
         let previous = f.changed(&["a", "b"], b"2026-11-20T00:00:01").await;
@@ -1041,6 +1088,30 @@ async fn parser_valid_unsupported_histories_refuse_without_repair() {
             "changed modes for {case}"
         );
     }
+}
+
+#[tokio::test]
+/// Share 0 of the parser-valid unsupported histories.
+/// # Panics
+/// Panics as the shared body does.
+async fn parser_valid_unsupported_histories_refuse_without_repair_0() {
+    parser_valid_unsupported_histories_refuse_without_repair(0).await;
+}
+
+#[tokio::test]
+/// Share 1 of the parser-valid unsupported histories.
+/// # Panics
+/// Panics as the shared body does.
+async fn parser_valid_unsupported_histories_refuse_without_repair_1() {
+    parser_valid_unsupported_histories_refuse_without_repair(1).await;
+}
+
+#[tokio::test]
+/// Share 2 of the parser-valid unsupported histories.
+/// # Panics
+/// Panics as the shared body does.
+async fn parser_valid_unsupported_histories_refuse_without_repair_2() {
+    parser_valid_unsupported_histories_refuse_without_repair(2).await;
 }
 
 #[tokio::test]

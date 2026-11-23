@@ -2,6 +2,10 @@
 //!
 //! [`Model`] is one row. [`New`] and [`Patch`] carry the input of a create and an update.
 //! Ported from `src/store/model/note.rs` at the Gest pin.
+//!
+//! [`Model`]: crate::gest_model::note::Model
+//! [`New`]: crate::gest_model::note::New
+//! [`Patch`]: crate::gest_model::note::Patch
 
 use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};

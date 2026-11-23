@@ -97,8 +97,8 @@ libsql-wrapper-metadata:
     mkdir -p target
     jlog run cargo metadata --locked --all-features --format-version 1 > target/libsql-wrapper-metadata.json
 
-# Retain the Rust profile type check after the mandatory vendor identity check.
-typecheck *args: libsql-vendor-check libsql-vendor-test libsql-wrapper-check libsql-wrapper-test
+# Retain the Rust profile type check after the mandatory vendor identity checks and the rustdoc check with warnings denied.
+typecheck *args: libsql-vendor-check libsql-vendor-test libsql-wrapper-check libsql-wrapper-test rustdoc-check
     just --justfile {{quote(justfile())}} rust typecheck "$@"
     jlog step typecheck
 
@@ -116,3 +116,8 @@ libsql-provider-compile:
 # Run the finite date semantic controls through the actual bundled Rust provider.
 libsql-provider-dates:
     jlog run cargo test --locked --lib storage::date_tests
+
+# Build the rustdoc of the library and binaries, private items too, and fail on each warning, such as a broken intra-doc link.
+# The step typecheck depends on it, so just check runs it without a project copy of the docs-check of the docs role.
+rustdoc-check:
+    RUSTDOCFLAGS="-D warnings" jlog run cargo doc --locked --all-features --no-deps --document-private-items
