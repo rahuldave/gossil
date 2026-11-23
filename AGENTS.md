@@ -93,6 +93,12 @@ rustdoc with private items and fails on each warning, such as a broken
 intra-doc link.
 `just docs-build` renders the site. Do not weaken checks to get a pass.
 
+In a fix round, run `just quick`. It runs `cargo fmt --check`, `cargo clippy`,
+`cargo check` and the unit tests, with plain `cargo test` and no coverage
+build. It stops at the first failure. It skips the libSQL vendor and wrapper
+checks and `just rustdoc-check`, which run in `just typecheck` only. Run the
+full `just check` once, on the final staged tree.
+
 The runner checkpoint is `evidence/runner-checkpoint-2026-11-17.json`.
 It records executed macOS checks, not a final gate pass or Linux qualification.
 The baseline archive is `evidence/baselines/`. Keep failed, blocked, skipped
@@ -130,15 +136,20 @@ commit. The protection of `main` requires a pull request and the checks, with
 admins included, so GitHub refuses that push. Until the owner lets GitHub
 Actions bypass it, a pull request whose commits ask for a bump raises the
 version in `Cargo.toml` and `Cargo.lock` itself. The release job then pushes
-only the tag. The check, release and Pages workflows install jlog
-0.3.0 from its release script. The release workflow also installs gest 0.6.0
-and jagt 0.6.4 that way.
+only the tag.
 
-The smalldocs 0.5.12 pin is in the installed docs role and Rust profile, so a
-move to 0.5.13 waits for those packages.
+A run of the release workflow by hand, with the input `tag`, runs `just check`
+on the selected branch, checks that the tag exists and gives it as the output
+of the job `release`. It makes no new tag. Gossil has no publish job, so the
+run builds nothing from the tag. The check, release and Pages
+workflows install jlog 0.3.0 from its release script. The release workflow
+also installs gest 0.6.0 and jagt 0.6.4 that way.
+
+The pre-push hook runs `pre_push.py` of the gate package. It runs `just ci`,
+less each recipe that the pass of `just check` for the pushed tree ran.
 
 The saved answer `docs-publish=yes` enables `just docs-publish` through
-smalldocs 0.5.12. The main-only workflow also uploads the built site and deploys
+smalldocs 0.5.13. The main-only workflow also uploads the built site and deploys
 it through GitHub Pages. Configure Pages to use GitHub Actions. A workflow
 file and a successful build do not prove that the public site is live.
 

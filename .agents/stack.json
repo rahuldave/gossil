@@ -70,7 +70,7 @@
     "diff-check"
   ],
   "generated": {
-    ".agents/just/index.just": "2bbad35b78fb7f90f3991e361ac76695df5f8b698006cced397afe4b886b049e",
+    ".agents/just/index.just": "750542c3ee4892d2458ec57182f9cd1d5b7eb6fc382b8cc9c94775a246ac250f",
     ".agents/just/rust.just": "04a1142ada68e3eda4a7a60d51bf2c2ab786138fe32a9c4464bdcf2628f51638"
   },
   "started": true,

@@ -55,6 +55,11 @@ lint *args:
     just --justfile {{quote(justfile())}} rust lint "$@"
     jlog step lint
 
+# just quick for each language that has it: rust
+[positional-arguments]
+quick *args:
+    just --justfile {{quote(justfile())}} rust quick "$@"
+
 # just test-paths for each language that has it: rust
 [positional-arguments]
 test-paths *args:

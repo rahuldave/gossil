@@ -113,7 +113,7 @@ Complete the required checks and independent review before delivery to `main`.
 
 ## Documentation build
 
-Documentation uses smalldocs 0.5.12 and the installed Atelier extension.
+Documentation uses smalldocs 0.5.13 and the installed Atelier extension.
 The theme comes from [smalldocs-atelier](https://github.com/rahuldave/smalldocs-atelier)
 at commit `b285e162eed9521114745e34ce3b3d3af5474177`.
 Its source receipt, licenses and local fonts ship under `docs/_extensions/atelier/`.
