@@ -1,6 +1,6 @@
 repos:
   # Project-owned extension of the tasker local unit (agent_gest_git_skills 9225e7b).
-  # The commit and trailer hooks are unchanged; the pre-push hook runs pre_push.py of agent_gest_git_skills 0.7.
+  # The commit and trailer hooks are unchanged; the pre-push hook runs pre_push.py of agent_gest_git_skills 0.8.
   - repo: local
     hooks:
       - id: commit-gate

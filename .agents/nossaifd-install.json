@@ -3,7 +3,7 @@
   "package": "nossaifd",
   "source_repository": "git@github.com:rahuldave/nossaifd.git",
   "source_revision": "b127b35e0b497652fc1fbd88e0ef3bb2229d7b59",
-  "source_version": "v0.1.0-2-gb127b35",
+  "source_version": "v0.1.1",
   "source_worktree_dirty": false,
   "source_requested_commit": null,
   "skills": [
