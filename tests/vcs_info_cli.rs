@@ -4,6 +4,8 @@
 //! Compare real authenticated heads and complete logical state before and after info.
 #[path = "support/closed_stdout.rs"]
 mod closed_stdout;
+#[path = "support/shares.rs"]
+mod shares;
 
 use gossil::artifact::ParseLimits;
 use gossil::storage::{AdmissionLimits, CheckoutView, Limits, LocalOwnerRepository};
@@ -307,85 +309,127 @@ impl Fixture {
     }
 }
 
+/// The number of tests that split the four executable and group aliases.
+const ALIAS_PARTS: usize = 4;
+
 /// Repeated recordings change effective checkout; uncommitted edits do not change recorded identity.
-#[test]
-fn recording_reopen_alias_paths_and_output_failure() {
+/// # Arguments
+/// * `part` - The share of the aliases, below `ALIAS_PARTS`. Each alias gets its own fixture.
+/// # Panics
+/// Panics if an identity, a locator or the closed-stdout refusal differs from the recorded state.
+fn recording_reopen_alias_paths_and_output_failure(part: usize) {
+    let mut aliases = Vec::new();
     for binary in [env!("CARGO_BIN_EXE_gossil"), env!("CARGO_BIN_EXE_gos")] {
         for group in ["vcs", "v"] {
-            let fixture = Fixture::new(binary, group);
-            let initial = view(&fixture.repository);
-            fixture.info(binary, group, &fixture.repository);
-            let relative = Path::new("..").join(fixture.repository.file_name().unwrap());
-            fixture.info(binary, group, &relative);
-            let alias = fixture.temp.path().join("alias.db");
-            std::os::unix::fs::symlink(&fixture.repository, &alias).unwrap();
-            fixture.info(binary, group, &alias);
-            std::fs::write(fixture.root.join("ordinary"), b"first\0bytes").unwrap();
-            success(
-                fixture
-                    .operation(binary, group, "add")
-                    .args(["--path", "ordinary"])
-                    .output()
-                    .unwrap(),
-            );
-            success(
-                fixture
-                    .operation(binary, group, "scope")
-                    .args(["--scope", "private", "--path", "ordinary"])
-                    .output()
-                    .unwrap(),
-            );
-            let mut previous = initial.shared_head.clone();
-            for (date, bytes) in [
-                ("2099-01-01T00:00:01", b"first\0bytes".as_slice()),
-                ("2099-01-01T00:00:02", b"second bytes".as_slice()),
-            ] {
-                std::fs::write(fixture.root.join("ordinary"), bytes).unwrap();
-                success(
-                    fixture
-                        .operation(binary, group, "commit")
-                        .args([
-                            "--scope",
-                            "private",
-                            "--all-tracked",
-                            "--user",
-                            "Info Owner",
-                            "--comment",
-                            "identity control",
-                            "--date-override",
-                            date,
-                        ])
-                        .output()
-                        .unwrap(),
-                );
-                let recorded = view(&fixture.repository);
-                assert_eq!(recorded.shared_head, initial.shared_head);
-                assert_ne!(recorded.combined_head.as_ref().unwrap(), &previous);
-                previous = recorded.combined_head.clone().unwrap();
-                fixture.info(binary, group, &fixture.repository);
-                std::fs::write(fixture.root.join("ordinary"), b"uncommitted edit").unwrap();
-                fixture.info(binary, group, &fixture.repository);
-                success(fixture.operation(binary, group, "open").output().unwrap());
-                fixture.info(binary, group, &fixture.repository);
-            }
-            let before = state(&fixture.repository);
-            let locator = std::fs::read(fixture.root.join(".gossil/checkout.json")).unwrap();
-            let output = closed_stdout::configure(fixture.operation(binary, group, "info"))
-                .output()
-                .unwrap();
-            assert!(!output.status.success());
-            assert!(String::from_utf8_lossy(&output.stderr).contains("Broken pipe"));
-            assert_eq!(state(&fixture.repository), before);
-            assert_eq!(
-                std::fs::read(fixture.root.join(".gossil/checkout.json")).unwrap(),
-                locator
-            );
-            assert_eq!(
-                std::fs::read(fixture.root.join("ordinary")).unwrap(),
-                b"uncommitted edit"
-            );
+            aliases.push((binary, group));
         }
     }
+    for (binary, group) in shares::share(aliases, part, ALIAS_PARTS) {
+        let fixture = Fixture::new(binary, group);
+        let initial = view(&fixture.repository);
+        fixture.info(binary, group, &fixture.repository);
+        let relative = Path::new("..").join(fixture.repository.file_name().unwrap());
+        fixture.info(binary, group, &relative);
+        let alias = fixture.temp.path().join("alias.db");
+        std::os::unix::fs::symlink(&fixture.repository, &alias).unwrap();
+        fixture.info(binary, group, &alias);
+        std::fs::write(fixture.root.join("ordinary"), b"first\0bytes").unwrap();
+        success(
+            fixture
+                .operation(binary, group, "add")
+                .args(["--path", "ordinary"])
+                .output()
+                .unwrap(),
+        );
+        success(
+            fixture
+                .operation(binary, group, "scope")
+                .args(["--scope", "private", "--path", "ordinary"])
+                .output()
+                .unwrap(),
+        );
+        let mut previous = initial.shared_head.clone();
+        for (date, bytes) in [
+            ("2099-01-01T00:00:01", b"first\0bytes".as_slice()),
+            ("2099-01-01T00:00:02", b"second bytes".as_slice()),
+        ] {
+            std::fs::write(fixture.root.join("ordinary"), bytes).unwrap();
+            success(
+                fixture
+                    .operation(binary, group, "commit")
+                    .args([
+                        "--scope",
+                        "private",
+                        "--all-tracked",
+                        "--user",
+                        "Info Owner",
+                        "--comment",
+                        "identity control",
+                        "--date-override",
+                        date,
+                    ])
+                    .output()
+                    .unwrap(),
+            );
+            let recorded = view(&fixture.repository);
+            assert_eq!(recorded.shared_head, initial.shared_head);
+            assert_ne!(recorded.combined_head.as_ref().unwrap(), &previous);
+            previous = recorded.combined_head.clone().unwrap();
+            fixture.info(binary, group, &fixture.repository);
+            std::fs::write(fixture.root.join("ordinary"), b"uncommitted edit").unwrap();
+            fixture.info(binary, group, &fixture.repository);
+            success(fixture.operation(binary, group, "open").output().unwrap());
+            fixture.info(binary, group, &fixture.repository);
+        }
+        let before = state(&fixture.repository);
+        let locator = std::fs::read(fixture.root.join(".gossil/checkout.json")).unwrap();
+        let output = closed_stdout::configure(fixture.operation(binary, group, "info"))
+            .output()
+            .unwrap();
+        assert!(!output.status.success());
+        assert!(String::from_utf8_lossy(&output.stderr).contains("Broken pipe"));
+        assert_eq!(state(&fixture.repository), before);
+        assert_eq!(
+            std::fs::read(fixture.root.join(".gossil/checkout.json")).unwrap(),
+            locator
+        );
+        assert_eq!(
+            std::fs::read(fixture.root.join("ordinary")).unwrap(),
+            b"uncommitted edit"
+        );
+    }
+}
+
+/// Share 0 of the aliases, for `gossil vcs`.
+/// # Panics
+/// Panics as the shared body does.
+#[test]
+fn recording_reopen_alias_paths_and_output_failure_0() {
+    recording_reopen_alias_paths_and_output_failure(0);
+}
+
+/// Share 1 of the aliases, for `gossil v`.
+/// # Panics
+/// Panics as the shared body does.
+#[test]
+fn recording_reopen_alias_paths_and_output_failure_1() {
+    recording_reopen_alias_paths_and_output_failure(1);
+}
+
+/// Share 2 of the aliases, for `gos vcs`.
+/// # Panics
+/// Panics as the shared body does.
+#[test]
+fn recording_reopen_alias_paths_and_output_failure_2() {
+    recording_reopen_alias_paths_and_output_failure(2);
+}
+
+/// Share 3 of the aliases, for `gos v`.
+/// # Panics
+/// Panics as the shared body does.
+#[test]
+fn recording_reopen_alias_paths_and_output_failure_3() {
+    recording_reopen_alias_paths_and_output_failure(3);
 }
 
 /// Grammar and admission failures keep stdout empty and preserve real persisted state.
