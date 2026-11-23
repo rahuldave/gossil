@@ -380,10 +380,14 @@ gest task meta set <task-id> github.merged_commit <sha>
      tag. Breaking raises MAJOR, or MINOR below `1.0.0`. `feat` raises MINOR,
      and a fix raises PATCH. A merge of only `docs`, `test`, `ci`, `chore` or
      `style` commits gives no release.
-   - When a language profile gives the version of its manifest, the tag is that
-     version. `just release` fails when the version is lower than the bump that
-     the commits ask for. The step `release-check` of `just check` finds this
-     before the merge, so a PR that needs a bump also raises the version.
+   - A PR does not raise the version of the manifest. When the language
+     profiles give a version lower than the bump, `just release` writes the
+     bump into the version files and lock files, commits it as
+     `chore(release): vX.Y.Z`, and tags that commit. A version at least the
+     bump, as after a raise by hand, is tagged on HEAD with no commit. The step
+     `release-check` of `just check` fails only when the profiles disagree,
+     when the version is lower than the last tag, or when the release cannot
+     write the version file of a profile.
    - Tag only after the merge and after the post-merge CI passes.
    - Never move or delete a pushed tag. Release a new version instead.
 
@@ -398,19 +402,12 @@ gest task meta set <task-id> github.merged_commit <sha>
    just release
    ```
 
-   If the push fails after the local tag was made, run the same commands again
-   from the same commit. The retry checks the annotation and version plan, then
-   pushes the same tag object. It stops if the remote has a different tag.
-
-   A run on a commit that already has its published tag prints `no release`. Write the
-   tag, or `none` and the reason, on the `Release:` line of the Gest note of
-   step 3.
+   A run on a commit that already has its tag prints `already released` and
+   gives the tag again. So does a run on the pushed commit after its version
+   commit got the tag, as in "Re-run all jobs". To build a tag again by hand,
+   run the starter with the input `tag`. Write the tag, or `none` and the
+   reason, on the `Release:` line of the Gest note of step 3.
 
 ## Tag And Dependency Review
 
 PR review should inspect tag/dependency context from `references/tag_dependency_workflow.md`, especially selected semantic tags, `ast-grep` dependers, and follow-up tasks for coupled surfaces. Missing tag classification or missing dependency-impact coverage for changed code contracts is a review finding.
-
-## Recommendations
-
-Use `just release --dry-run` before `just release`. After a failed push, retry
-from the same commit so the command can check and publish the existing tag.

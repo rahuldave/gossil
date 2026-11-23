@@ -18,6 +18,9 @@ use std::{
     path::{Path, PathBuf},
 };
 
+#[path = "support/shares.rs"]
+mod shares;
+
 /// Supply generous finite cumulative admission and operation ceilings.
 /// # Arguments
 /// No arguments.
@@ -675,12 +678,16 @@ fn ceiling(limits: &mut AdmissionLimits, axis: usize, value: u64) {
     }
 }
 
-#[tokio::test]
-/// Find each public cumulative boundary, then prove exact success and one-under refusal.
+/// The number of tests that split the six cumulative ceilings, one ceiling each.
+const CUMULATIVE_PARTS: usize = 6;
+
+/// Find the public cumulative boundary of each ceiling in one share, then prove exact success and one-under refusal.
+/// # Arguments
+/// * `part` - The share of the six ceilings, below `CUMULATIVE_PARTS`, on its own fixture.
 /// # Panics
 /// Panics if limits reset across ancestors, a failed read mutates state, or the
 /// smallest passing complete-history ceiling also accepts its predecessor.
-async fn cumulative_content_and_parser_limits_have_complete_history_boundaries() {
+async fn cumulative_content_and_parser_limits_have_complete_history_boundaries(part: usize) {
     let mut f = Fixture::new().await;
     f.private(&["a", "b"]).await;
     f.changed(&["a", "b"], b"2026-11-20T00:00:01").await;
@@ -707,7 +714,7 @@ async fn cumulative_content_and_parser_limits_have_complete_history_boundaries()
             .filter(|line| !line.is_empty())
             .count() as u64;
     }
-    for axis in 0..6 {
+    for axis in shares::share((0..6).collect(), part, CUMULATIVE_PARTS) {
         let mut low = 0_u64;
         let mut high = 256 << 20;
         while high - low > 1 {
@@ -744,6 +751,54 @@ async fn cumulative_content_and_parser_limits_have_complete_history_boundaries()
         assert_eq!(snapshot(&f.repo).await, before);
         assert_eq!(tree(&f.root), files);
     }
+}
+
+#[tokio::test]
+/// Share 0 of the cumulative ceilings, for total stored bytes.
+/// # Panics
+/// Panics as the shared body does.
+async fn cumulative_content_and_parser_limits_have_complete_history_boundaries_0() {
+    cumulative_content_and_parser_limits_have_complete_history_boundaries(0).await;
+}
+
+#[tokio::test]
+/// Share 1 of the cumulative ceilings, for total decoded bytes.
+/// # Panics
+/// Panics as the shared body does.
+async fn cumulative_content_and_parser_limits_have_complete_history_boundaries_1() {
+    cumulative_content_and_parser_limits_have_complete_history_boundaries(1).await;
+}
+
+#[tokio::test]
+/// Share 2 of the cumulative ceilings, for parser input bytes.
+/// # Panics
+/// Panics as the shared body does.
+async fn cumulative_content_and_parser_limits_have_complete_history_boundaries_2() {
+    cumulative_content_and_parser_limits_have_complete_history_boundaries(2).await;
+}
+
+#[tokio::test]
+/// Share 3 of the cumulative ceilings, for parser cards.
+/// # Panics
+/// Panics as the shared body does.
+async fn cumulative_content_and_parser_limits_have_complete_history_boundaries_3() {
+    cumulative_content_and_parser_limits_have_complete_history_boundaries(3).await;
+}
+
+#[tokio::test]
+/// Share 4 of the cumulative ceilings, for parser owned bytes.
+/// # Panics
+/// Panics as the shared body does.
+async fn cumulative_content_and_parser_limits_have_complete_history_boundaries_4() {
+    cumulative_content_and_parser_limits_have_complete_history_boundaries(4).await;
+}
+
+#[tokio::test]
+/// Share 5 of the cumulative ceilings, for parser entries.
+/// # Panics
+/// Panics as the shared body does.
+async fn cumulative_content_and_parser_limits_have_complete_history_boundaries_5() {
+    cumulative_content_and_parser_limits_have_complete_history_boundaries(5).await;
 }
 
 #[tokio::test]
@@ -791,11 +846,15 @@ async fn unicode_root_actor_and_short_private_comment_remain_exact() {
     assert_eq!(tree(&f.root), files);
 }
 
-#[tokio::test]
-/// Refuse original event NULL/BLOB/NUL/tampering and unsupported amended columns.
+/// The number of tests that split the 20 original event mutations.
+const EVENT_PARTS: usize = 4;
+
+/// Refuse original event NULL/BLOB/NUL/tampering and unsupported amended columns, for one share.
+/// # Arguments
+/// * `part` - The share of the mutations, below `EVENT_PARTS`. Each mutation gets its own fixture.
 /// # Panics
 /// Panics if either root or private metadata bypasses full exact admission guards.
-async fn original_event_metadata_and_amendments_cannot_bypass_native_validation() {
+async fn original_event_metadata_and_amendments_cannot_bypass_native_validation(part: usize) {
     let mut mutations = Vec::new();
     for selection in ["objid=1", "objid<>1"] {
         for column in ["user", "comment"] {
@@ -811,7 +870,7 @@ async fn original_event_metadata_and_amendments_cannot_bypass_native_validation(
             ));
         }
     }
-    for mutation in mutations {
+    for mutation in shares::share(mutations, part, EVENT_PARTS) {
         let mut f = Fixture::new().await;
         f.private(&["a", "b"]).await;
         f.changed(&["a", "b"], b"2026-11-20T00:00:01").await;
@@ -835,4 +894,36 @@ async fn original_event_metadata_and_amendments_cannot_bypass_native_validation(
         );
         assert_eq!(snapshot(&f.repo).await, before);
     }
+}
+
+#[tokio::test]
+/// Share 0 of the original event mutations.
+/// # Panics
+/// Panics as the shared body does.
+async fn original_event_metadata_and_amendments_cannot_bypass_native_validation_0() {
+    original_event_metadata_and_amendments_cannot_bypass_native_validation(0).await;
+}
+
+#[tokio::test]
+/// Share 1 of the original event mutations.
+/// # Panics
+/// Panics as the shared body does.
+async fn original_event_metadata_and_amendments_cannot_bypass_native_validation_1() {
+    original_event_metadata_and_amendments_cannot_bypass_native_validation(1).await;
+}
+
+#[tokio::test]
+/// Share 2 of the original event mutations.
+/// # Panics
+/// Panics as the shared body does.
+async fn original_event_metadata_and_amendments_cannot_bypass_native_validation_2() {
+    original_event_metadata_and_amendments_cannot_bypass_native_validation(2).await;
+}
+
+#[tokio::test]
+/// Share 3 of the original event mutations.
+/// # Panics
+/// Panics as the shared body does.
+async fn original_event_metadata_and_amendments_cannot_bypass_native_validation_3() {
+    original_event_metadata_and_amendments_cannot_bypass_native_validation(3).await;
 }

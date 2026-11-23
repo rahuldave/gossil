@@ -77,11 +77,14 @@ record-skip target +reason:
 jn_gate := "uv run --no-project --quiet --no-python-downloads --python '>=3.9' python .agents/skills/gcm/scripts/commit_gate.py"
 
 # JN_CI_BASE selects the verified PR base for an existing-topic push; the hook keeps its pushed head.
-# Without selection use the push range; new history checks all commits. Outside a push use CI, upstream or origin/HEAD.
+# Without selection use the push range; new history checks all commits. Outside a push use JN_CI_BASE, else the base
+# branch on origin. ci-gate is a step of just check and of just ci, so CI runs only steps of just check. It skips
+# merge commits, commits by GitHub bots, and commits from before the gate, and names each one.
 
-# Check that each commit since BASE has the trailer of the commit gate that names its change
+# Check that each commit since the base branch has the trailer of the commit gate that names its change
 ci-gate:
     @{{jn_gate}} --trailers
+    jlog step ci-gate
 
 # The PR of each branch has the branch below it as its base, and the bottom one has BASE. A branch with no upstream,
 # or ahead of its upstream, is pushed first, never with force.
@@ -91,19 +94,21 @@ ci-gate:
 stack-prs *args:
     @uv run --no-project --quiet --no-python-downloads --python '>=3.9' python .agents/skills/gcm/scripts/stack_prs.py "$@"
 
-# The release tag comes from the commits since the last tag, or from the version that the profiles give. Run it after
-# the post-merge CI passed. The CI starter release.yml runs it on each push to main.
+# The release tag comes from the commits since the last tag. Run it after the post-merge CI passed. The CI starter
+# release.yml runs it on each push to main. When the profiles give a lower version, it writes the bump into their
+# version files, commits it as chore(release): vX.Y.Z, and pushes the commit and the tag together. It reads the TOML
+# files with tomllib, so it asks for Python 3.11 or later.
 
-# Tag HEAD with the next release vX.Y.Z by semver, push the tag and check it. Takes --dry-run first
+# Tag the next release vX.Y.Z by semver, writing the version files first when they are lower. Takes --dry-run first
 [positional-arguments]
 release *args:
-    @uv run --no-project --quiet --no-python-downloads --python '>=3.9' python .agents/skills/gpa/scripts/release_tag.py "$@"
+    @uv run --no-project --quiet --no-python-downloads --python '>=3.11' python .agents/skills/gpa/scripts/release_tag.py "$@"
 
 # The step release-check of just check, so CI checks it through just check. It needs no network and no remote. The
 # index of jnterfaces sets jlog as the shell, and the last line records the step; where the role is not installed,
 # the index has a no-op release-check.
 
-# Fail when the profiles give different versions, or a version below the last tag or the bump that the commits ask for
+# Fail when the profiles give different versions, or a version below the last tag. A branch keeps the version of the tag
 release-check:
     uv run --no-project --quiet --no-python-downloads --python '>=3.9' python .agents/skills/gpa/scripts/release_tag.py --check
     jlog step release-check
