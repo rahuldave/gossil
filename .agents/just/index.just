@@ -55,15 +55,10 @@ lint *args:
     just --justfile {{quote(justfile())}} rust lint "$@"
     jlog step lint
 
-# just setup for each language that has it: rust
-setup:
-    just --justfile {{quote(justfile())}} rust setup
-
-# just test for each language that has it: rust
+# just quick for each language that has it: rust
 [positional-arguments]
-test *args:
-    just --justfile {{quote(justfile())}} rust test "$@"
-    jlog step test
+quick *args:
+    just --justfile {{quote(justfile())}} rust quick "$@"
 
 # just test-paths for each language that has it: rust
 [positional-arguments]
@@ -89,6 +84,11 @@ diff-check:
     git diff --check "$(git rev-parse -q --verify HEAD || git hash-object -t tree /dev/null)"
     jlog step diff-check
 
+# Warn at once when jlog pass cannot record a pass: the worktree has unstaged changes or untracked files
+[private]
+worktree-warning:
+    @git status --porcelain=v1 -z --untracked-files=all 2>/dev/null | tr '\n\000' '?\n' | awk '$0 == "" { next } skip { skip = 0; next } length($0) < 4 { next } { x = substr($0, 1, 1); y = substr($0, 2, 1) } x ~ /[RC]/ || y ~ /[RC]/ { skip = 1 } y != " " { n++; if (n <= 10) shown = shown (n > 1 ? ", " : "") substr($0, 4) } END { if (n) printf "check: warning: this run cannot record a pass, because the worktree has %d %s: %s%s. The steps still run. Stage or commit the changes to get a pass.\n", n, (n == 1 ? "unstaged change or untracked file" : "unstaged changes or untracked files"), shown, (n > 10 ? ", and more" : "") }' >&2 || true
+
 # Everything a commit must pass: each step, then the pass of jlog for the worktree
-check: tools-check release-check fmt-check lint typecheck test integration coverage-check docstring-check docs-check prose-check diff-check
+check: worktree-warning tools-check release-check ci-gate fmt-check lint typecheck test integration coverage-check docstring-check docs-check prose-check diff-check
     jlog pass

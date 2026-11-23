@@ -41,6 +41,9 @@ The CLI also exposes `vcs init` and `vcs new` through `gossil` or `gos`, with
 `v` as the group alias. These create an empty repository without a checkout. See
 `docs/cli.md` for the separate native `vcs open` contract.
 
+The private `src/product/help.rs` table gives product, group and command help.
+It must list every command that `src/product.rs` dispatches. Unknown names exit 2.
+
 Native local storage supports checkout-free initialization, then one library
 checkout registration at the empty root. Reopen admits strict catalog4 with zero
 or one registration, explicit tracked scopes and the supported private recording
@@ -89,7 +92,16 @@ hosts it checks the existing tools without replacing them.
 Use the installed Rust checks through Just, including
 `lint`, `typecheck`, `test`, `integration`, `coverage-check`, `docstring-check`
 and `api-check`. `just docs-check` checks the site and API docs.
+`just typecheck` runs `just rustdoc-check` before its own type check. That recipe builds the
+rustdoc with private items and fails on each warning, such as a broken
+intra-doc link.
 `just docs-build` renders the site. Do not weaken checks to get a pass.
+
+In a fix round, run `just quick`. It runs `cargo fmt --check`, `cargo clippy`,
+`cargo check` and the unit tests, with plain `cargo test` and no coverage
+build. It stops at the first failure. It skips the libSQL vendor and wrapper
+checks and `just rustdoc-check`, which run in `just typecheck` only. Run the
+full `just check` once, on the final staged tree.
 
 The runner checkpoint is `evidence/runner-checkpoint-2026-11-17.json`.
 It records executed macOS checks, not a final gate pass or Linux qualification.
@@ -123,8 +135,25 @@ pull requests to `main` for subsequent delivery. The coordinator owns pushes,
 GitHub changes and publication checks. The source-only release workflow checks
 pull requests and tags successful pushes to `main`; it publishes no package.
 
+The release job can commit a version bump as github-actions[bot] and tag that
+commit. The protection of `main` requires a pull request and the checks, with
+admins included, so GitHub refuses that push. Until the owner lets GitHub
+Actions bypass it, a pull request whose commits ask for a bump raises the
+version in `Cargo.toml` and `Cargo.lock` itself. The release job then pushes
+only the tag.
+
+A run of the release workflow by hand, with the input `tag`, runs `just check`
+on the selected branch, checks that the tag exists and gives it as the output
+of the job `release`. It makes no new tag. Gossil has no publish job, so the
+run builds nothing from the tag. The check, release and Pages
+workflows install jlog 0.3.0 from its release script. The release workflow
+also installs gest 0.6.0 and jagt 0.6.4 that way.
+
+The pre-push hook runs `pre_push.py` of the gate package. It runs `just ci`,
+less each recipe that the pass of `just check` for the pushed tree ran.
+
 The saved answer `docs-publish=yes` enables `just docs-publish` through
-smalldocs 0.5.12. The main-only workflow also uploads the built site and deploys
+smalldocs 0.5.13. The main-only workflow also uploads the built site and deploys
 it through GitHub Pages. Configure Pages to use GitHub Actions. A workflow
 file and a successful build do not prove that the public site is live.
 
@@ -139,6 +168,10 @@ trusted SQL expression, with untrusted candidate values bound separately.
 
 The 37 retained glob evidence files describe historical source and 0.9.30
 execution. Preserve their bytes.
+The integration target of `tests/glob.rs` is now `glob_port`, so run it with
+`just integration --test glob_port`. The evidence files keep the old command
+`just integration --test glob`. A target named `glob` made each coverage run
+rebuild the registry crate `glob` and libSQL.
 
 The 2026-11-21 focused checkpoint built both binaries and passed
 3 CLI tests, 9 glob integration tests, 5 filtered library units (4 glob and one
@@ -146,9 +179,9 @@ existing global-state control), and all 20 unchanged Tcl assertions. Its graph
 comparison retained all 126 nonroot packages and edges/features with one
 `libsql-ffi` 0.10.0 provider. At that checkpoint the Gossil crate version in
 `Cargo.toml` was 0.9.0, since released as `v0.9.0`. The current Gossil crate
-version is 0.11.0. The libSQL provider version 0.10.0 and the Gossil crate
+version is 0.12.0. The libSQL provider version 0.10.0 and the Gossil crate
 version are separate numbers. Version 0.10.0 of the crate was released as
-`v0.10.0`.
+`v0.10.0`, and version 0.11.0 as `v0.11.0`.
 
 The checkpoint
 used a prospective checked-commit prerequisite, with actual parent `4250b873`;

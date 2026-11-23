@@ -1,7 +1,9 @@
 //! Shared decoded-value checks used by the owned Gest model converters.
 //!
-//! It also defines [`CanonicalValue`], the borrowed canonical field value that
-//! the task, artifact and project ticket emitters serialize.
+//! It also defines
+//! [`CanonicalValue`](crate::gest_value_validation::CanonicalValue), the
+//! borrowed canonical field value that the task, artifact and project ticket
+//! emitters serialize.
 use chrono::{DateTime, Utc};
 use serde_json::Value;
 

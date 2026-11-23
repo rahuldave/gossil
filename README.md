@@ -44,6 +44,10 @@ creating and applying deltas in both directions. The
 The `gos` executable and the `v` group name run the same diagnostics as
 `gossil` and `vcs`. See [short names](docs/cli.md#short-names) to run `gos` from this source checkout.
 
+Run `just gossil --help` to list the commands, or `just gossil vcs help COMMAND`
+for the usage of one command. The [help section](docs/cli.md#get-help) gives
+every form.
+
 ## Initialize an empty repository
 
 From this source checkout, run `just gossil vcs init NEW_REPOSITORY`.

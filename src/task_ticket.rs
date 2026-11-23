@@ -5,7 +5,7 @@
 //!
 //! The shared emitter of [`crate::gest_ticket`] writes the bytes. This module
 //! gives it the task's eleven model fields and the kind `task`, and re-exports
-//! its [`TicketError`].
+//! its [`TicketError`](crate::gest_ticket::TicketError).
 //!
 //! Card order and token/checksum construction follow Fossil tkt.c:1837-1874
 //! (b3a1c8efb2731dffbd5cc38c58ac349746de6da6). Fossil is Copyright D. Richard

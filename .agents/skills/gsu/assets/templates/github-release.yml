@@ -2,19 +2,42 @@
 # It runs on each push to main. The job check runs just check on the pushed commit. When it passes, the job release
 # runs just release, which makes the next tag vX.Y.Z by semver, pushes it and checks it. A push that needs no release,
 # such as a change of only the docs, makes no tag. Nobody tags by hand.
-# just release takes the number from the commits since the last tag, or from the version of the manifest that the
-# language profiles give. It fails when that version is lower than the bump that the commits ask for, so a pull
-# request that needs a bump also raises the version of the manifest.
+# just release takes the number from the commits since the last tag. A pull request does not raise the version of
+# the manifest. When the language profiles give a version below the bump that the commits ask for, just release
+# writes the bump into the version files and lock files, commits it as "chore(release): vX.Y.Z" by
+# github-actions[bot], and pushes that commit to main and its tag together. That commit asks for no bump, so the next
+# run stops at its tag. The commit gate passes it, since its author is a GitHub bot.
+# A push with the GITHUB_TOKEN starts no other workflow, so the version commit gets no CI run of its own. It changes
+# only the version lines. A rule of main that asks for a pull request blocks the push: let GitHub Actions bypass it.
 # No agent runs here. The checkout has fetch-depth: 0, so the script sees each tag and each commit.
-# Only the job release can write to the repository, to push the tag. A tag that the GITHUB_TOKEN pushes starts no
-# other workflow. If a publish job must run on the tag, use a token that can start it.
-# Each job starts with its own tools. Check installs Gest for tools-check; both jobs install jlog for Just.
+# just release needs a clean checkout, so run it in its own job, after no step that changes tracked files.
+# Only the job release can write to the repository, to push the commit and the tag. A tag that the GITHUB_TOKEN
+# pushes starts no other workflow, so put a publish job in this workflow, with needs: release. The tag can be on the
+# version commit, not on the pushed commit, so the job checks out needs.release.outputs.tag, as in:
+#   binaries:
+#     needs: release
+#     if: needs.release.outputs.tag != ''
+#     steps:
+#       - uses: actions/checkout@v4
+#         with:
+#           ref: ${{ needs.release.outputs.tag }}
+# When binaries or publish failed, use "Re-run failed jobs", which keeps the tag of the job release. "Re-run all
+# jobs" runs just release again on the pushed commit. It finds the tag on the version commit, prints "already
+# released" and gives the tag again. To build a tag by hand, run this workflow with the tag:
+# gh workflow run release --ref main -f tag=vX.Y.Z. The job release then skips just release, checks that the tag
+# exists and gives it as its output. It makes no new tag.
 # Add the setup of the tools of your languages before the step "Check", if just check needs them.
 name: release
 
 on:
   push:
     branches: [main]
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "The tag vX.Y.Z to build and publish. The run makes no new tag."
+        required: true
+        type: string
 
 permissions:
   contents: read
@@ -29,19 +52,14 @@ jobs:
           fetch-depth: 0
       - uses: extractions/setup-just@v3
       - uses: astral-sh/setup-uv@v6
-      - name: Keep the build of jlog
-        id: jlog
-        uses: actions/cache@v4
-        with:
-          path: ~/.cargo/bin/jlog
-          key: jlog-v0.2.0-${{ runner.os }}
       - name: Install jlog
-        # The tag v0.2.0 of jlog is the commit 8febdf1, as in the CI of jnterfaces.
-        if: steps.jlog.outputs.cache-hit != 'true'
-        run: cargo install --locked --git https://github.com/rahuldave/jlog --tag v0.2.0 jlog
-      - name: Install Gest
-        # The tasker role declares this provider in skill-package.json.
-        run: cargo install --locked --git https://github.com/rahuldave/gest gest
+        # The tag v0.3.0 of jlog is the commit d4b712b, as in the CI of jnterfaces. install.sh comes from the tag. It
+        # downloads the release binary, checks its SHA-256 and puts it in ~/.local/bin. setup-uv comes first, so
+        # install.sh makes the environments of the plugins. The step shell bash has pipefail, so a failed download fails.
+        shell: bash
+        run: |
+          curl -fsSL https://raw.githubusercontent.com/rahuldave/jlog/v0.3.0/scripts/install.sh | sh -s -- --tag v0.3.0
+          echo "$HOME/.local/bin" >> "$GITHUB_PATH"
       - name: Check
         run: just check
   release:
@@ -49,6 +67,9 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: write
+    # The tag that the run made, or that was already released, or the given tag, else empty.
+    outputs:
+      tag: ${{ steps.release.outputs.tag || steps.given.outputs.tag }}
     # One release at a time. A run on an older commit after a newer release prints no release.
     concurrency:
       group: release
@@ -59,19 +80,23 @@ jobs:
           fetch-depth: 0
       - uses: extractions/setup-just@v3
       - uses: astral-sh/setup-uv@v6
-      - name: Keep the build of jlog
-        id: jlog
-        uses: actions/cache@v4
-        with:
-          path: ~/.cargo/bin/jlog
-          key: jlog-v0.2.0-${{ runner.os }}
-      - name: Install jlog
-        # The tag v0.2.0 of jlog is the commit 8febdf1, as in the CI of jnterfaces.
-        if: steps.jlog.outputs.cache-hit != 'true'
-        run: cargo install --locked --git https://github.com/rahuldave/jlog --tag v0.2.0 jlog
-      - name: Name the author of the tag
+      - name: Name the author of the tag and of the version commit
+        if: github.event_name == 'push'
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+      # just release writes tag=vX.Y.Z to GITHUB_OUTPUT.
       - name: Release
+        if: github.event_name == 'push'
+        id: release
         run: just release
+      # A run by hand: the tag must be a release tag that exists.
+      - name: Take the given tag
+        if: github.event_name == 'workflow_dispatch'
+        id: given
+        env:
+          TAG: ${{ inputs.tag }}
+        run: |
+          printf '%s\n' "$TAG" | grep -Eqx 'v(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)' || { echo "not a release tag vX.Y.Z: $TAG" >&2; exit 1; }
+          git rev-parse --verify --quiet "refs/tags/$TAG" >/dev/null || { echo "no tag $TAG" >&2; exit 1; }
+          echo "tag=$TAG" >> "$GITHUB_OUTPUT"

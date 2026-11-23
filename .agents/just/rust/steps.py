@@ -5,14 +5,16 @@ The recipes in this folder run it with uv: python steps.py run STEP ARG..., fres
 PATH... and toml. STEP is test or integration. test runs the unit tests, those of the library and the binaries, and
 integration runs the test targets, such as the files of the folder tests. Each writes its own coverage report. The
 run ID JLOG_RUN of the root Justfile and the worktree tree tie each report to its run, so that coverage-check reads a
-report only in the same run. It needs Python 3.11 or later and no package. The step coverage-check also needs
-diff-cover, which it runs with uv.
+report only in the same run. It needs Python 3.11 or later. The recipes pin the tree-sitter runtime and Rust
+grammar for declaration classification. coverage-check also runs pinned diff-cover with uv.
 
 The lists .agents/generated.txt and .agents/coverage-exclude.txt come from the parent commit, through git show
 HEAD:./PATH, so a commit cannot exempt its own code. With no parent, or a parent without the file, the list is empty.
 git matches their patterns, as pathspecs with the magic word glob. Every path is relative to the current folder, the top
 of the project, which can be a subfolder of the git repository.
 """
+import glob
+import hashlib
 import importlib.util
 import json
 import os
@@ -25,6 +27,7 @@ import tempfile
 import threading
 import tomllib
 import urllib.parse
+import uuid
 
 DIFF_COVER = 'diff-cover==11.0.1'
 # The other place of the config of cargo-sort, which reads tomlfmt.toml from the current folder.
@@ -37,8 +40,10 @@ BROKE = re.compile(r'^error: (?:test failed|could not compile|failed to run cust
 # What cargo prints when no test target matches the name or the pattern.
 NO_TARGET = re.compile(r'^error: no test target matches pattern', re.M)
 # The line of cargo for each test binary that it starts, in its exact form, so a line that a test leaks, such as
-# that of a cargo run inside a test, does not match. A binary with harness = false prints no test result.
-RUNNING = re.compile(r'^     Running (?:unittests )?[^`\s].* \(\S*deps[/\\]\S+\)$', re.M)
+# that of a cargo run inside a test, does not match. A binary with harness = false prints no test result. The binary is
+# in target/debug/deps, or, with the build-dir layout of newer cargo, in target/debug/build/<package>/<hash>/out. The
+# folder deps or out is a whole part of the path, and the path may hold a space, as a build-dir under a home folder can.
+RUNNING = re.compile(r'^     Running (?:unittests )?[^`\s].* \((?:[^()\n]*[/\\])?(?:deps|out)[/\\][^/\\()\n]+\)$', re.M)
 # The line of libtest that announces how many tests a binary will run.
 ANNOUNCED = re.compile(r'^running (\d+) tests?$', re.M)
 # The escape codes of terminal colors, which a test may still print.
@@ -57,7 +62,12 @@ COVERED = ('test', 'integration')
 # The kinds of target of cargo metadata that --lib selects.
 LIBRARY = {'lib', 'rlib', 'dylib', 'cdylib', 'staticlib', 'proc-macro'}
 # The tests with coverage, with every feature. run adds the targets of the step and the path of its report.
-COVERAGE = ['cargo', 'llvm-cov', 'test', '--all-features', '--locked', '--include-build-script']
+COVERAGE = ['cargo', 'llvm-cov', 'test', '--all-features', '--locked', '--include-build-script', '--no-clean']
+VOLATILE = ('CARGO_MAKEFLAGS', 'CARGO_PKG_', 'CARGO_MANIFEST_', 'CARGO_CRATE_', 'CARGO_BIN_', 'CARGO_PRIMARY_PACKAGE',
+            'CARGO_CFG_', 'CARGO_TARGET_TMPDIR')
+# The files whose change can rename the build outputs of cargo, so that an old test binary stays beside the new one.
+BUILD_FILES = ('Cargo.toml', 'Cargo.lock', 'rust-toolchain', 'rust-toolchain.toml', '.cargo/config',
+               '.cargo/config.toml')
 # The file of jnterfaces whose steps list says whether integration runs in just check.
 STACK = Path('.agents/stack.json')
 DOC_LINTS = ('missing_docs', 'clippy::missing_docs_in_private_items')
@@ -65,12 +75,12 @@ WORK = Path('target/jnprofile-rust')
 # The folder of the run of api-prose-check, as .jnprofile-python and .jnprofile-typescript of the other profiles. The
 # tool api adds it to .gitignore and .worktreedisposable.
 API_WORK = Path('.jnprofile-rust')
-SMALLDOCS = 'smalldocs==0.5.12'
+SMALLDOCS = 'smalldocs==0.5.13'
 # The start of each uv run of the steps. smalldocs needs Python 3.11 or later, and uv may pick an older Python when
 # none is named, as on a machine whose python3 is 3.9 or with UV_PYTHON set. The recipes name the same version.
 UV_RUN = ['uv', 'run', '--no-project', '--quiet', '--python', '>=3.11']
 DOCS_CONFIG = Path('docs/_smalldocs.yml')
-# The nightly toolchain that runs rustdoc for smalldocs, which needs -Z unstable-options. smalldocs 0.5.12 reads
+# The nightly toolchain that runs rustdoc for smalldocs, which needs -Z unstable-options. smalldocs 0.5.13 reads
 # only the formats 57 and 61 of the JSON of rustdoc, so the date is fixed. The program nightly of profile.json
 # installs the same toolchain.
 NIGHTLY = 'nightly-2026-11-12'
@@ -395,6 +405,30 @@ def chosen_by(args):
     return found
 
 
+def quick_test(args):
+    """Run the unit tests with a plain cargo test, without coverage, and return the exit code of the first that fails.
+
+    It takes the targets of just test, from selections, so a workspace with no library and a library with
+    test = false work as there. ARGS go to cargo test, and when they select targets or packages, such as -p core,
+    they take the place of the selections. With no library or binary, no test runs.
+    """
+    chosen = chosen_by(args)
+    try:
+        runs = [[]] if chosen == 'packages' else [['--workspace']] if chosen else selections('test')
+    except SystemExit as error:
+        print(error, file=sys.stderr, flush=True)
+        return 1
+    if not runs:
+        print('quick: the workspace has no library or binary, so no unit test runs', flush=True)
+    for selection in runs:
+        command = ['cargo', 'test', '--all-features', '--locked', *selection, *args]
+        print(shlex.join(command), flush=True)
+        code = subprocess.run(command).returncode
+        if code:
+            return code
+    return 0
+
+
 def merge_lcov(texts):
     """One LCOV report from the reports TEXTS: a line runs when one report runs it.
 
@@ -417,6 +451,29 @@ def merge_lcov(texts):
                    + 'end_of_record\n' for path, lines in sorted(counts.items()))
 
 
+def write_launcher(launcher, helper):
+    """Write LAUNCHER, an executable for RUSTC_WRAPPER that runs the Python script HELPER with this Python.
+
+    The launcher is a Python script, so no shell runs between cargo and rustc. A shell can drop a variable whose name
+    is not a name of the shell: dash, the /bin/sh of Ubuntu, drops CARGO_BIN_EXE_my-tool, and env! of a test then
+    fails to compile. The first line names this Python. A path with a space, or one too long for that line, goes
+    through a link in a new temporary folder, and the launcher sets the module path of this Python, since a Python
+    started through a link finds no virtual environment. Returns LAUNCHER.
+    """
+    python = sys.executable
+    if any(c.isspace() for c in python) or len(python) > 120:
+        link = Path(tempfile.mkdtemp(prefix='jnprofile-rust-')) / 'python'
+        link.symlink_to(python)
+        python = str(link)
+    # A Python started through the link finds no virtual environment, so the launcher sets the path of this one.
+    path = [str(helper.parent), *sys.path[1:]]
+    launcher.write_text(f'#!{python}\nimport runpy\nimport sys\n\nsys.path[:] = {path!r}\n'
+                        f'sys.argv[0] = {str(helper)!r}\nrunpy.run_path(sys.argv[0], run_name="__main__")\n',
+                        encoding='utf-8')
+    launcher.chmod(0o755)
+    return launcher
+
+
 def run_tests(step, args):
     """Run the tests of STEP with coverage into target/llvm-cov/STEP.lcov, with ARGS for cargo llvm-cov test.
 
@@ -425,6 +482,7 @@ def run_tests(step, args):
     target for STEP, no test runs and the report is empty. Returns the exit code of the first cargo that fails.
     """
     out = report(step)
+    (REPORTS / f'{step}.modules.json').unlink(missing_ok=True)
     out.unlink(missing_ok=True)
     REPORTS.mkdir(parents=True, exist_ok=True)
     for old in REPORTS.glob(f'{step}.part*.lcov'):
@@ -443,16 +501,186 @@ def run_tests(step, args):
         out.write_text('')
         return stamp(step)
     parts = []
+    code, save = clean_coverage_build()
+    if code:
+        pending_run(step).unlink(missing_ok=True)
+        return code
+    evidence = (REPORTS / (step + '.compiler-' + uuid.uuid4().hex)).resolve()
+    evidence.mkdir()
+    launcher = write_launcher(evidence / 'rustc-wrapper', Path(__file__).with_name('compiler_evidence.py').resolve())
+    env = dict(os.environ, RUSTC_WRAPPER=str(launcher), JNPROFILE_SOURCE_ROOT=str(top()),
+               JNPROFILE_COMPILER_EVIDENCE=str(evidence),
+               JNPROFILE_PRIOR_RUSTC_WRAPPER=os.environ.get('RUSTC_WRAPPER', ''))
     for number, selection in enumerate(runs):
         parts.append(REPORTS / f'{step}.part{number}.lcov')
         command = [*COVERAGE, *selection, '--lcov', '--output-path', parts[-1].as_posix(), *args]
         print(shlex.join(command), flush=True)
-        code = subprocess.run(command).returncode
+        code = subprocess.run(command, env=env).returncode
         if code:
             pending_run(step).unlink(missing_ok=True)
             return code
     out.write_text(merge_lcov([part.read_text() for part in parts]))
+    # Extra arguments, such as --config, can change the build, so only a run without them saves the fingerprint.
+    if not args:
+        save()
+    sources = {}
+    for receipt in evidence.glob('*.json'):
+        try:
+            data = json.loads(receipt.read_text())
+            if data.get('schema') == 1 and isinstance(data.get('sources'), dict):
+                sources.update(data['sources'])
+        except (OSError, ValueError):
+            continue
+    (REPORTS / f'{step}.modules.json').write_text(json.dumps({
+        'schema': 1, 'run': os.environ.get('JLOG_RUN', ''), 'tree': worktree_tree(), 'sources': sources}) + '\n')
     return stamp(step)
+
+
+def build_fingerprint(meta):
+    """What names the build outputs of cargo, as text: the compiler, the flags, and the build files of the project.
+
+    cargo puts a hash of these in the name of each test binary. When one changes, the old binary stays in the target
+    folder, and cargo llvm-cov reads it too. The fingerprint holds rustc -vV, the version of cargo llvm-cov, each
+    variable whose name starts with CARGO or RUST, and the hash of each build file, tracked or ignored, and of the
+    config of cargo in CARGO_HOME.
+    """
+    version = subprocess.run([os.environ.get('RUSTC') or 'rustc', '-vV'], capture_output=True, text=True).stdout
+    tool = subprocess.run(['cargo', 'llvm-cov', '--version'], capture_output=True, text=True).stdout
+    files = git('ls-files', '-z', '--cached', '--others', '--exclude-standard').stdout.split('\0')
+    ignored = git('ls-files', '-z', '--others', '--ignored', '--exclude-standard', '--', '.cargo', '*/.cargo')
+    files += ignored.stdout.split('\0')
+    builds = sorted({name for name in files
+                     if name and any(name == end or name.endswith('/' + end) for end in BUILD_FILES)})
+    homes = [Path(os.environ.get('CARGO_HOME', Path.home() / '.cargo')) / name for name in ('config', 'config.toml')]
+    hashes = {}
+    for path in [*builds, *(str(home) for home in homes)]:
+        try:
+            hashes[path] = hashlib.sha256(Path(path).read_bytes()).hexdigest()
+        except OSError:
+            continue
+    # Cargo sets the variables of VOLATILE for each call of a program that it runs, and they name no build output.
+    flags = {name: value for name, value in os.environ.items()
+             if name.startswith(('CARGO', 'RUST')) and not name.startswith(VOLATILE)}
+    return json.dumps({'rustc': version, 'llvm-cov': tool, 'coverage': COVERAGE, 'env': flags, 'files': hashes,
+                       'members': sorted(meta.get('workspace_members', []))}, sort_keys=True)
+
+
+def dep_info(path):
+    """The source files that the dep-info file PATH of rustc lists for its output, as real paths."""
+    try:
+        first = Path(path).read_text().split('\n\n')[0].replace('\\ ', '\0')
+    except OSError:
+        return set()
+    _, _, deps = first.partition(': ')
+    return {os.path.realpath(name.replace('\0', ' ')) for name in deps.split() if name}
+
+
+def changed_packages(meta, folder):
+    """The names of the workspace packages to clean, or None when only a clean of the whole workspace is sure.
+
+    The packages are each one that holds a changed Rust file, and each that depends on one, directly or not, by any
+    kind of dependency. A test binary of a package holds the code of each package that it depends on. A binary that
+    this step does not build again, such as an integration test in the step test, keeps the old code, and llvm-cov
+    may take its counts for the new lines. The dependencies come from the resolved graph of cargo metadata, so a path
+    crate outside the workspace and a [patch] count too. A crate outside these packages that compiles a changed file,
+    through #[path] or include!, shows in its dep-info file in FOLDER, and then only a full clean is sure. So does a
+    changed file that is not Rust in any dep-info file, and a failed cargo metadata. cargo clean -p takes a name and
+    cleans each package of that name.
+    """
+    # The tests run with every feature, so the graph does too, or an optional dependency would have no edge.
+    done = subprocess.run(['cargo', 'metadata', '--format-version', '1', '--locked', '--all-features'],
+                          capture_output=True, text=True)
+    if done.returncode:
+        return None
+    full = json.loads(done.stdout)
+    members = {package['id']: package for package in meta['packages'] if package['id'] in set(full.get(
+        'workspace_members', []))}
+    folders = {Path(os.path.realpath(package['manifest_path'])).parent: package['id'] for package in members.values()}
+    users = {}
+    for node in (full.get('resolve') or {}).get('nodes', []):
+        for dependency in node.get('deps', []):
+            users.setdefault(dependency['pkg'], set()).add(node['id'])
+    changed = [os.path.realpath(path) for path in changed_code()]
+    found = set()
+    for path in changed:
+        here = Path(path).parent
+        for place in [here, *here.parents]:
+            if place in folders:
+                found.add(folders[place])
+                break
+    todo, seen = list(found), set(found)
+    while todo:
+        for user in users.get(todo.pop(), ()):
+            if user not in seen:
+                seen.add(user)
+                todo.append(user)
+    cleaned = {members[pid]['name'] for pid in seen if pid in members}
+    crates = {target['name'].replace('-', '_') for package in members.values() if package['name'] in cleaned
+              for target in package.get('targets', [])}
+    # A changed file that is not Rust, such as one that include! reads, is in no package of its own, so any crate
+    # that lists it needs a full clean.
+    tracked = git('diff', '-z', '--name-only', '--relative', '--diff-filter=d', 'HEAD').stdout.split('\0')
+    untracked = git('ls-files', '-z', '--others', '--exclude-standard').stdout.split('\0')
+    others = {os.path.realpath(path) for path in tracked + untracked if path and not path.endswith('.rs')}
+    for info in folder.glob('**/deps/*.d'):
+        sources = dep_info(info)
+        if sources & others or (info.stem.rpartition('-')[0] not in crates and sources & set(changed)):
+            return None
+    return sorted(cleaned)
+
+
+def clean_coverage_build():
+    """Clean what the coverage build of the next run needs to build again, and keep the rest warm.
+
+    The tests run with --no-clean, so the profraw files of an earlier run are removed first. The evidence of
+    compiler_evidence.py counts a changed file only when rustc runs on it in this run, so each package that holds a
+    changed Rust file is cleaned, with each package that depends on it, and rustc compiles it again. On the first
+    run, with no parent commit, or when the fingerprint of the build changed, the whole workspace is cleaned, as
+    cargo llvm-cov does by default. So is it on each run with a build folder of its own, from build.build-dir or the
+    variables of cargo llvm-cov. The third party builds stay in each case.
+
+    Returns the exit code and a function that saves the fingerprint, for after the runs pass. cargo llvm-cov clean
+    exits with 0 even when its cargo clean fails, so only a passed run shows that the clean took place.
+    """
+    done = subprocess.run(['cargo', 'metadata', '--no-deps', '--format-version', '1'], capture_output=True, text=True)
+    if done.returncode:
+        sys.stderr.write(done.stderr)
+        return done.returncode, None
+    meta = json.loads(done.stdout)
+    folder = Path(meta.get('target_directory', 'target')) / 'llvm-cov-target'
+    stamp = folder / 'jnprofile-rust-build.txt'
+    fingerprint = build_fingerprint(meta)
+    # With another build folder, or a folder of cargo llvm-cov of its own, cargo clean -p would clean another folder
+    # than the build of coverage. So each run cleans the whole workspace, as before.
+    moved = (meta.get('build_directory', meta.get('target_directory')) != meta.get('target_directory')
+             or os.environ.get('CARGO_LLVM_COV_TARGET_DIR') or os.environ.get('CARGO_LLVM_COV_BUILD_DIR'))
+    try:
+        warm = not moved and has_parent() and stamp.read_text() == fingerprint
+    except OSError:
+        warm = False
+
+    def save():
+        if not moved:
+            folder.mkdir(parents=True, exist_ok=True)
+            stamp.write_text(fingerprint)
+    if not warm:
+        stamp.unlink(missing_ok=True)
+        print('coverage: a full clean of the workspace, for the first run or a new build fingerprint', flush=True)
+        return subprocess.run(['cargo', 'llvm-cov', 'clean', '--workspace', '--locked']).returncode, save
+    packages = changed_packages(meta, folder)
+    if packages is None:
+        stamp.unlink(missing_ok=True)
+        print('coverage: a full clean of the workspace, since no smaller clean is sure', flush=True)
+        return subprocess.run(['cargo', 'llvm-cov', 'clean', '--workspace', '--locked']).returncode, save
+    code = subprocess.run(['cargo', 'llvm-cov', 'clean', '--profraw-only', '--locked']).returncode
+    for package in packages if code == 0 else []:
+        print(f'coverage: clean {package}, which holds a changed Rust file', flush=True)
+        code = subprocess.run(['cargo', 'clean', '--locked', '--target-dir', str(folder), '-p', package]).returncode
+        if code:
+            break
+    if code:
+        stamp.unlink(missing_ok=True)
+    return code, save
 
 
 def changed_code():
@@ -460,6 +688,28 @@ def changed_code():
     tracked = git('diff', '-z', '--name-only', '--relative', '--diff-filter=d', 'HEAD', '--', '*.rs')
     untracked = git('ls-files', '-z', '--others', '--exclude-standard', '--', '*.rs')
     return sorted(set(filter(None, (tracked.stdout + '\0' + untracked.stdout).split('\0'))))
+
+
+def unreadable_untracked():
+    """The untracked paths that are not regular files, which diff-cover cannot open, in order.
+
+    diff-cover --include-untracked opens each untracked path to count its lines. A link to a folder, such as
+    the one that the jnterfaces installer makes in .claude/skills, a broken link or a nested repository stops
+    it with an error. The names are read as bytes and decoded as the file system does, so a name that is not
+    UTF-8 or that holds a carriage return stays as it is.
+    """
+    listed = subprocess.run(['git', 'ls-files', '-z', '--others', '--exclude-standard'], capture_output=True)
+    paths = (os.fsdecode(name) for name in listed.stdout.split(b'\0') if name)
+    return sorted(path for path in paths if not os.path.isfile(path))
+
+
+def exclude_patterns(paths):
+    """The --exclude patterns of diff-cover for PATHS: each absolute path, with its wildcards escaped.
+
+    diff-cover matches a pattern against the absolute path before it opens the file. Each pattern holds a /, so
+    it never matches a basename.
+    """
+    return [glob.escape(os.path.abspath(path)) for path in paths]
 
 
 def reported(text, root):
@@ -477,14 +727,62 @@ def test_file(path):
     return len(parts) > 1 and parts[0] in ('tests', 'benches')
 
 
-def unreported(changed, lines, excluded):
-    """The files of CHANGED that are not in the report, not excluded and not test files.
+def declaration_category(path):
+    """Load the shipped parser helper by path, without changing unrelated commands' imports."""
+    try:
+        spec = importlib.util.spec_from_file_location('jnprofile_rust_declarations',
+                                                     Path(__file__).with_name('declarations.py'))
+        module = importlib.util.module_from_spec(spec)
+        bytecode = sys.dont_write_bytecode
+        try:
+            sys.dont_write_bytecode = True
+            spec.loader.exec_module(module)
+        finally:
+            sys.dont_write_bytecode = bytecode
+        return module.classify(path)
+    except Exception as exc:
+        return None, f'Rust declaration helper unavailable or failed: {exc}'
 
-    cargo llvm-cov leaves out a file that no test target compiles, such as a file that no mod names or a file in
-    examples. Reporting scope or copied source paths can also omit a file that runs. Absence alone does not
-    prove that no test runs the file.
+
+def compiled_modules():
+    """Current-run, current-tree compiler/module evidence from counting test steps."""
+    found = set()
+    run, tree = os.environ.get('JLOG_RUN', ''), worktree_tree()
+    if not run or not tree:
+        return found
+    for step in COVERED:
+        if not counts(step) or not fresh(step):
+            continue
+        try:
+            data = json.loads((REPORTS / f'{step}.modules.json').read_text())
+            if data.get('schema') != 1 or data.get('run') != run or data.get('tree') != tree:
+                continue
+            for path, value in data['sources'].items():
+                if hashlib.sha256(Path(path).read_bytes()).hexdigest() == value:
+                    found.add(path)
+        except (OSError, ValueError, TypeError, KeyError, AttributeError):
+            continue
+    return found
+
+
+def unreported(changed, lines, excluded):
+    """Changed files absent from LCOV that do not qualify for a syntax-only declaration category.
+
+    Absence may reflect an uncompiled file or reporting scope. Keep that failure
+    unless the whole current source passes the positive declaration check.
     """
-    return [path for path in changed if path not in lines and not excluded(path) and not test_file(path)]
+    missing = []
+    compiled = compiled_modules()
+    for path in changed:
+        if path in lines or excluded(path) or test_file(path):
+            continue
+        category, reason = declaration_category(path)
+        if category and path in compiled:
+            print(f'{path}: absent from LCOV; {category}; current-run compiled module (no authored executable source)')
+        else:
+            print(f'{path}: declaration classification did not qualify: {reason or "no current-run module evidence"}')
+            missing.append(path)
+    return missing
 
 
 def missed_lines(text, root):
@@ -524,12 +822,22 @@ def coverage():
             print('coverage-check: write tests for the lines that no test runs', file=sys.stderr)
             return 1
         return 0
+    skipped = unreadable_untracked()
+    slashed = [path for path in skipped if '\\' in path]
+    for path in slashed:
+        print(f'{path}: an untracked path that is not a file, and its name holds a \\', file=sys.stderr)
+    if slashed:
+        print('coverage-check: diff-cover cannot open these paths, and it reads each \\ as a /, so it cannot skip '
+              'them without skipping other files too. Rename them, remove them or add them to .gitignore',
+              file=sys.stderr)
+        return 1
     excluded = matcher(parent_list(GENERATED) + parent_list(COVERAGE_EXCLUDE))
     WORK.mkdir(parents=True, exist_ok=True)
     kept = WORK / 'lcov.info'
     kept.write_text(filter_lcov(merge_lcov(texts), root, excluded))
     code = subprocess.run([*UV_RUN, '--with', DIFF_COVER, 'diff-cover', str(kept),
-                           '--compare-branch', 'HEAD', '--include-untracked', '--fail-under', '100']).returncode
+                           '--compare-branch', 'HEAD', '--include-untracked', '--fail-under', '100',
+                           *(['--exclude', *exclude_patterns(skipped)] if skipped else [])]).returncode
     lines = set().union(*(reported(text, root) for text in texts))
     missing = unreported(changed_code(), lines, excluded)
     for path in missing:
@@ -1264,6 +1572,8 @@ def main(argv):
         return run_tests(argv[1], argv[2:])
     if len(argv) == 2 and argv[0] == 'fresh' and argv[1] in COVERED:
         return 0 if fresh(argv[1]) else 1
+    if argv[:1] == ['quick-test']:
+        return quick_test(argv[1:])
     if argv == ['coverage']:
         return coverage()
     if argv == ['docs']:
@@ -1290,7 +1600,8 @@ def main(argv):
     if argv[:1] == ['config'] and len(argv) == 3:
         own = rust_config(argv[1], argv[2], False)
         return own if isinstance(own, int) else 0
-    print('usage: steps.py run STEP [ARG...] | fresh STEP | coverage | docs | test-paths [PATH...] | toml [--check] | '
+    print('usage: steps.py run STEP [ARG...] | fresh STEP | quick-test [ARG...] | coverage | docs | '
+          'test-paths [PATH...] | toml [--check] | '
           'ran prose [ARG...] | begin prose [ARG...] | stamp prose | api check | api prose [--base REF] | '
           'version | pages DOCS OUT [FILE...] | config DOCS OUT, where STEP is test or integration', file=sys.stderr)
     return 2
