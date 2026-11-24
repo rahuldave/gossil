@@ -1,0 +1,398 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="generator" content="smalldocs-0.5.13"><meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes"><meta name="description" content="Hold the primitive values that the Gest records use."><title>primitives – Gossil</title><link rel="icon" href="../../site_libs/themes/atelier/logo.svg"><link rel="stylesheet" href="../../site_libs/themes/atelier/atelier.css" data-mode="light" class="quarto-color-scheme" id="quarto-bootstrap-light" media="not all and (prefers-color-scheme: dark)"><link rel="stylesheet" href="../../site_libs/themes/atelier/atelier-dark.css" data-mode="dark" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap-dark" media="(prefers-color-scheme: dark)"><link rel="stylesheet" href="../../site_libs/bootstrap-icons/bootstrap-icons.min.css"><link rel="stylesheet" href="../../site_libs/smalldocs.css"><meta name="smalldocs:offset" content="../../"><script src="../../site_libs/bootstrap/bootstrap.bundle.min.js"></script><script src="../../site_libs/fuse/fuse.min.js"></script><script src="../../site_libs/smalldocs.js" defer></script><script>(function(){var d=document.documentElement,s=null;try{s=localStorage.getItem('smalldocs-scheme')}catch(e){}var alt=s?s==='alternate':!!(window.matchMedia&&matchMedia('(prefers-color-scheme: dark)').matches);var ls=document.querySelectorAll('link.quarto-color-scheme');if(alt)d.dataset.scheme='alternate';if(s)ls.forEach(function(l){var on=l.classList.contains('quarto-color-alternate')===alt;if(on)l.setAttribute('blocking','render');l.media=on?'all':'not all'});var on=ls[alt?1:0];if(on&&on.dataset.mode==='dark')d.classList.add('quarto-dark')})();</script></head><body class="nav-sidebar floating nav-fixed"><header id="quarto-header" class="headroom sticky-top"><nav class="navbar navbar-expand-lg sd-navbar-default"><div class="navbar-container container-fluid"><div class="navbar-brand-container mx-auto"><a class="navbar-brand" href="../../index.html"><span class="navbar-title">Gossil</span></a></div><button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button><div class="collapse navbar-collapse" id="navbarCollapse"><ul class="navbar-nav navbar-nav-scroll me-auto"><li class="nav-item"><a class="nav-link" href="../../getting-started.html"><span class="menu-text">Start</span></a></li><li class="nav-item"><a class="nav-link" href="../../concepts.html"><span class="menu-text">Library concepts</span></a></li><li class="nav-item"><a class="nav-link" href="../../cli.html"><span class="menu-text">CLI</span></a></li><li class="nav-item"><a class="nav-link" href="../index.html"><span class="menu-text">Rust API</span></a></li><li class="nav-item"><a class="nav-link" href="../../development-plan.html"><span class="menu-text">Development</span></a></li></ul><ul class="navbar-nav navbar-nav-scroll ms-auto"><li class="nav-item compact"><a class="nav-link" href="https://github.com/rahuldave/gossil" aria-label="github"><i class="bi bi-github" role="img"></i></a></li><li class="nav-item compact"><a class="quarto-color-scheme-toggle nav-link" href="" title="Toggle dark mode" onclick="window.smalldocsToggleScheme(); return false;"><i class="bi"></i></a></li></ul><div class="quarto-navbar-tools"><div class="smalldocs-search" id="quarto-search"><i class="bi bi-search" aria-hidden="true"></i><input type="search" class="form-control form-control-sm" placeholder="Search" aria-label="Search" autocomplete="off"><div class="smalldocs-search-results dropdown-menu"></div></div></div></div></div></nav><nav class="quarto-secondary-nav"><div class="container-fluid d-flex"><button type="button" class="quarto-btn-toggle btn" aria-controls="quarto-sidebar" aria-label="Toggle sidebar navigation"><i class="bi bi-layout-text-sidebar-reverse"></i></button><nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../index.html">Rust API</a></li><li class="breadcrumb-item"><a href="index.html">gest_model</a></li><li class="breadcrumb-item"><a href="primitives.html">primitives</a></li></ol></nav></div></nav></header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article has-sidebar has-margin"><nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto"><div class="sidebar-menu-container"><ul class="list-unstyled mt-1"><li class="sidebar-item"><div class="sidebar-item-container"><a href="../../index.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Gossil</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="../../getting-started.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Get started</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="../../cli.html" class="sidebar-item-text sidebar-link"><span class="menu-text">CLI reference</span></a></div></li><li class="sidebar-item sidebar-item-section"><div class="sidebar-item-container"><a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true"><span class="menu-text">Guides</span></a><a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section"><i class="bi bi-chevron-right ms-2"></i></a></div><ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show"><li class="sidebar-item"><div class="sidebar-item-container"><a href="../../working-with-repositories.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Working with repositories</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="../../compare-with-git.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Compare Gossil with Git</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="../../concepts.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Library concepts</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="../../examples.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Rust library examples</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="../../delta-encoder.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Bounded delta encoder</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="../../delta-decoder.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Bounded delta decoder</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="../../blob-primitives.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Byte digests and packed blobs</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="../../artifact-checksum.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Artifact byte checksums</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="../../token-codec.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Fossil token bytes</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="../../glob.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Bounded Fossil glob port</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="../../file-path.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Lexical file paths</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="../../history.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Check-in graph paths</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="../../artifact-parser.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Artifact parser</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="../../diff.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Compare normalized byte lines</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="../../task-ticket.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Emit a task creation artifact</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="../../gest-ticket.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Emit artifact and project creation tickets</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="../../local-storage.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Local database ownership</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="../../native-storage.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Native local storage</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="../../gest-task-values.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Gest task values</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="../../gest-project-values.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Gest project values</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="../../gest-author-values.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Gest author values</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="../../gest-artifact-values.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Gest artifact values</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="../../gest-iteration-values.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Gest iteration values</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="../../gest-tag-values.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Gest tag values</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="../../gest-note-values.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Gest note values</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="../../gest-relationship-values.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Gest relationship values</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="../../gest-entity-tag-values.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Gest entity tag values</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="../../gest-iteration-task-values.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Gest iteration task values</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="../../gest-model.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Gest model</span></a></div></li></ul></li><li class="sidebar-item sidebar-item-section"><div class="sidebar-item-container"><a class="sidebar-item-text sidebar-link" href="../index.html"><span class="menu-text">Rust API</span></a><a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Toggle section"><i class="bi bi-chevron-right ms-2"></i></a></div><ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show"><li class="sidebar-item"><div class="sidebar-item-container"><a href="../artifact.html" class="sidebar-item-text sidebar-link"><span class="menu-text">artifact</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="../artifact_checksum.html" class="sidebar-item-text sidebar-link"><span class="menu-text">artifact_checksum</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="../compression.html" class="sidebar-item-text sidebar-link"><span class="menu-text">compression</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="../content_hash.html" class="sidebar-item-text sidebar-link"><span class="menu-text">content_hash</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="../delta.html" class="sidebar-item-text sidebar-link"><span class="menu-text">delta</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="../diff.html" class="sidebar-item-text sidebar-link"><span class="menu-text">diff</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="../file_path.html" class="sidebar-item-text sidebar-link"><span class="menu-text">file_path</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="../gest_artifact_values.html" class="sidebar-item-text sidebar-link"><span class="menu-text">gest_artifact_values</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="../gest_author_values.html" class="sidebar-item-text sidebar-link"><span class="menu-text">gest_author_values</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="../gest_entity_tag_values.html" class="sidebar-item-text sidebar-link"><span class="menu-text">gest_entity_tag_values</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="../gest_iteration_task_values.html" class="sidebar-item-text sidebar-link"><span class="menu-text">gest_iteration_task_values</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="../gest_iteration_values.html" class="sidebar-item-text sidebar-link"><span class="menu-text">gest_iteration_values</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="../gest_note_values.html" class="sidebar-item-text sidebar-link"><span class="menu-text">gest_note_values</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="../gest_project_values.html" class="sidebar-item-text sidebar-link"><span class="menu-text">gest_project_values</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="../gest_relationship_values.html" class="sidebar-item-text sidebar-link"><span class="menu-text">gest_relationship_values</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="../gest_tag_values.html" class="sidebar-item-text sidebar-link"><span class="menu-text">gest_tag_values</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="../gest_task_values.html" class="sidebar-item-text sidebar-link"><span class="menu-text">gest_task_values</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="../gest_ticket.html" class="sidebar-item-text sidebar-link"><span class="menu-text">gest_ticket</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="../glob.html" class="sidebar-item-text sidebar-link"><span class="menu-text">glob</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="../gossil.html" class="sidebar-item-text sidebar-link"><span class="menu-text">gossil</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="../history.html" class="sidebar-item-text sidebar-link"><span class="menu-text">history</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="../native_date.html" class="sidebar-item-text sidebar-link"><span class="menu-text">native_date</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="../product.html" class="sidebar-item-text sidebar-link"><span class="menu-text">product</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="../storage.html" class="sidebar-item-text sidebar-link"><span class="menu-text">storage</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="../task_ticket.html" class="sidebar-item-text sidebar-link"><span class="menu-text">task_ticket</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="../token_codec.html" class="sidebar-item-text sidebar-link"><span class="menu-text">token_codec</span></a></div></li><li class="sidebar-item sidebar-item-section"><div class="sidebar-item-container"><a class="sidebar-item-text sidebar-link" href="index.html"><span class="menu-text">gest_model</span></a><a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true" aria-label="Toggle section"><i class="bi bi-chevron-right ms-2"></i></a></div><ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth2 show"><li class="sidebar-item"><div class="sidebar-item-container"><a href="artifact.html" class="sidebar-item-text sidebar-link"><span class="menu-text">artifact</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="author.html" class="sidebar-item-text sidebar-link"><span class="menu-text">author</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="entity_tag.html" class="sidebar-item-text sidebar-link"><span class="menu-text">entity_tag</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="iteration.html" class="sidebar-item-text sidebar-link"><span class="menu-text">iteration</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="note.html" class="sidebar-item-text sidebar-link"><span class="menu-text">note</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="primitives.html" class="sidebar-item-text sidebar-link active" aria-current="page"><span class="menu-text">primitives</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="project.html" class="sidebar-item-text sidebar-link"><span class="menu-text">project</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="relationship.html" class="sidebar-item-text sidebar-link"><span class="menu-text">relationship</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="tag.html" class="sidebar-item-text sidebar-link"><span class="menu-text">tag</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="task.html" class="sidebar-item-text sidebar-link"><span class="menu-text">task</span></a></div></li></ul></li></ul></li><li class="sidebar-item sidebar-item-section"><div class="sidebar-item-container"><a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true"><span class="menu-text">Development</span></a><a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true" aria-label="Toggle section"><i class="bi bi-chevron-right ms-2"></i></a></div><ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show"><li class="sidebar-item"><div class="sidebar-item-container"><a href="../../development-plan.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Development and contributing</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="../../conformance.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Inherited-test runner</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="../../libsql-wrapper.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Exact libsql TEXT retrieval</span></a></div></li></ul></li></ul></div></nav><div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item"></div><div id="quarto-margin-sidebar" class="sidebar margin-sidebar"><nav id="TOC" role="doc-toc" class="toc-active"><h2 id="toc-title">On this page</h2><ul><li><a href="#AuthorType" id="toc-AuthorType" class="nav-link" data-scroll-target="#AuthorType">enum AuthorType</a></li><li><a href="#EntityType" id="toc-EntityType" class="nav-link" data-scroll-target="#EntityType">enum EntityType</a></li><li><a href="#Id" id="toc-Id" class="nav-link" data-scroll-target="#Id">struct Id</a><ul><li><a href="#Id.new" id="toc-Id.new" class="nav-link" data-scroll-target="#Id.new">Id::new</a></li><li><a href="#Id.validate_prefix" id="toc-Id.validate_prefix" class="nav-link" data-scroll-target="#Id.validate_prefix">Id::validate_prefix</a></li><li><a href="#Id.short" id="toc-Id.short" class="nav-link" data-scroll-target="#Id.short">Id::short</a></li></ul></li><li><a href="#IterationStatus" id="toc-IterationStatus" class="nav-link" data-scroll-target="#IterationStatus">enum IterationStatus</a><ul><li><a href="#IterationStatus.is_terminal" id="toc-IterationStatus.is_terminal" class="nav-link" data-scroll-target="#IterationStatus.is_terminal">IterationStatus::is_terminal</a></li></ul></li><li><a href="#Priority" id="toc-Priority" class="nav-link" data-scroll-target="#Priority">enum Priority</a><ul><li><a href="#Priority.ALL" id="toc-Priority.ALL" class="nav-link" data-scroll-target="#Priority.ALL">const Priority::ALL</a></li></ul></li><li><a href="#RelationshipType" id="toc-RelationshipType" class="nav-link" data-scroll-target="#RelationshipType">enum RelationshipType</a><ul><li><a href="#RelationshipType.inverse" id="toc-RelationshipType.inverse" class="nav-link" data-scroll-target="#RelationshipType.inverse">RelationshipType::inverse</a></li></ul></li><li><a href="#TaskStatus" id="toc-TaskStatus" class="nav-link" data-scroll-target="#TaskStatus">enum TaskStatus</a><ul><li><a href="#TaskStatus.is_terminal" id="toc-TaskStatus.is_terminal" class="nav-link" data-scroll-target="#TaskStatus.is_terminal">TaskStatus::is_terminal</a></li></ul></li></ul></nav></div><main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../index.html">Rust API</a></li><li class="breadcrumb-item"><a href="index.html">gest_model</a></li><li class="breadcrumb-item"><a href="primitives.html">primitives</a></li></ol></nav><div class="quarto-title"><h1 class="title">primitives</h1></div><div><div class="description">Hold the primitive values that the Gest records use.</div></div><div class="quarto-title-meta"></div></header><p>Ported from <code>src/store/model/primitives.rs</code> at the Gest pin. Each type is
+named <code>Primitive</code> in its own module and exported here under its domain name.
+The module is inline here, and not in its own file, because a file of
+declarations only has no line that the coverage report can count.</p>
+<section id="AuthorType" class="level2">
+<h2 class="anchored" data-anchor-id="AuthorType">enum AuthorType</h2>
+<p><a href="https://github.com/rahuldave/gossil/blob/main/src/gest_model/primitives/author_type.rs#L15" class="source-link">source</a></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span class="kw">pub</span> <span class="kw">enum</span> AuthorType</code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>The type of author that performed an action.</p>
+<div class="sd-table">
+<table class="caption-top table">
+<thead>
+<tr>
+<th>Variant</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Agent</code></td>
+<td>An automated agent such as an LLM or CI bot.</td>
+</tr>
+<tr>
+<td><code>Human</code></td>
+<td>A human author (the default).</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Implements <a href="https://doc.rust-lang.org/nightly/core/clone/trait.Clone.html"><code>Clone</code></a>, <a href="https://doc.rust-lang.org/nightly/core/marker/trait.Copy.html"><code>Copy</code></a>, <a href="https://doc.rust-lang.org/nightly/core/fmt/trait.Debug.html"><code>Debug</code></a>, <a href="https://doc.rust-lang.org/nightly/core/default/trait.Default.html"><code>Default</code></a>, <a href="https://docs.rs/serde_core/1.0.229/serde_core/de/trait.Deserialize.html"><code>Deserialize&lt;&#x27;de&gt;</code></a>, <a href="https://doc.rust-lang.org/nightly/core/cmp/trait.Eq.html"><code>Eq</code></a>, <a href="https://doc.rust-lang.org/nightly/core/hash/trait.Hash.html"><code>Hash</code></a>, <a href="https://doc.rust-lang.org/nightly/core/cmp/trait.PartialEq.html"><code>PartialEq</code></a>, <a href="https://docs.rs/serde_core/1.0.229/serde_core/ser/trait.Serialize.html"><code>Serialize</code></a>, <a href="https://doc.rust-lang.org/nightly/core/fmt/trait.Display.html"><code>Display</code></a>, <a href="https://doc.rust-lang.org/nightly/core/str/traits/trait.FromStr.html"><code>FromStr</code></a>.</p>
+</section>
+<section id="EntityType" class="level2">
+<h2 class="anchored" data-anchor-id="EntityType">enum EntityType</h2>
+<p><a href="https://github.com/rahuldave/gossil/blob/main/src/gest_model/primitives/entity_type.rs#L18" class="source-link">source</a></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span class="kw">pub</span> <span class="kw">enum</span> EntityType</code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>The type of entity in the system.</p>
+<p>Notes, tags and relationship endpoints use only these three kinds. Other
+Gossil ticket kinds do not enlarge this enum (GEST-02).</p>
+<div class="sd-table">
+<table class="caption-top table">
+<thead>
+<tr>
+<th>Variant</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Artifact</code></td>
+<td>Persistent document such as a spec or ADR.</td>
+</tr>
+<tr>
+<td><code>Iteration</code></td>
+<td>Time-boxed collection of tasks.</td>
+</tr>
+<tr>
+<td><code>Task</code></td>
+<td>Unit of work.</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Implements <a href="https://doc.rust-lang.org/nightly/core/clone/trait.Clone.html"><code>Clone</code></a>, <a href="https://doc.rust-lang.org/nightly/core/marker/trait.Copy.html"><code>Copy</code></a>, <a href="https://doc.rust-lang.org/nightly/core/fmt/trait.Debug.html"><code>Debug</code></a>, <a href="https://docs.rs/serde_core/1.0.229/serde_core/de/trait.Deserialize.html"><code>Deserialize&lt;&#x27;de&gt;</code></a>, <a href="https://doc.rust-lang.org/nightly/core/cmp/trait.Eq.html"><code>Eq</code></a>, <a href="https://doc.rust-lang.org/nightly/core/hash/trait.Hash.html"><code>Hash</code></a>, <a href="https://doc.rust-lang.org/nightly/core/cmp/trait.PartialEq.html"><code>PartialEq</code></a>, <a href="https://docs.rs/serde_core/1.0.229/serde_core/ser/trait.Serialize.html"><code>Serialize</code></a>, <a href="https://doc.rust-lang.org/nightly/core/fmt/trait.Display.html"><code>Display</code></a>, <a href="https://doc.rust-lang.org/nightly/core/str/traits/trait.FromStr.html"><code>FromStr</code></a>.</p>
+</section>
+<section id="Id" class="level2">
+<h2 class="anchored" data-anchor-id="Id">struct Id</h2>
+<p><a href="https://github.com/rahuldave/gossil/blob/main/src/gest_model/primitives/id.rs#L34" class="source-link">source</a></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span class="kw">pub</span> <span class="kw">struct</span> Id(<span class="co">/*</span><span class="co"> private field </span><span class="co">*/</span>);</code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>A 128-bit identifier encoded as a 32-character string using the <code>k</code>-<code>z</code> alphabet.</p>
+<p>Each byte is split into two nibbles and mapped through a reverse-hex alphabet,
+producing a lowercase, URL-safe string that sorts in reverse byte order.
+The encoding is bijective. Every valid 32-character <code>[k-z]</code> string decodes
+to exactly one <code>[u8; 16]</code>, and each <code>[u8; 16]</code> encodes to exactly one such string.</p>
+<section id="examples" class="level4">
+<h4 class="anchored" data-anchor-id="examples">Examples</h4>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span class="kw">let</span> id <span class="op">=</span> Id::new();
+<span class="fu">assert_eq!</span>(id.to_string().len(), <span class="dv">32</span>);
+
+<span class="kw">let</span> parsed: Id <span class="op">=</span> id.to_string().parse().unwrap();
+<span class="fu">assert_eq!</span>(id, parsed);</code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Implements <a href="https://doc.rust-lang.org/nightly/core/clone/trait.Clone.html"><code>Clone</code></a>, <a href="https://doc.rust-lang.org/nightly/core/fmt/trait.Debug.html"><code>Debug</code></a>, <a href="https://doc.rust-lang.org/nightly/core/cmp/trait.Eq.html"><code>Eq</code></a>, <a href="https://doc.rust-lang.org/nightly/core/hash/trait.Hash.html"><code>Hash</code></a>, <a href="https://doc.rust-lang.org/nightly/core/cmp/trait.PartialEq.html"><code>PartialEq</code></a>, <a href="https://docs.rs/serde_core/1.0.229/serde_core/ser/trait.Serialize.html"><code>Serialize</code></a>, <a href="https://docs.rs/serde_core/1.0.229/serde_core/de/trait.Deserialize.html"><code>Deserialize&lt;&#x27;de&gt;</code></a>, <a href="https://doc.rust-lang.org/nightly/core/default/trait.Default.html"><code>Default</code></a>, <a href="https://doc.rust-lang.org/nightly/core/fmt/trait.Display.html"><code>Display</code></a>, <a href="https://doc.rust-lang.org/nightly/core/convert/trait.From.html"><code>From&lt;Primitive&gt;</code></a>, <a href="https://doc.rust-lang.org/nightly/core/str/traits/trait.FromStr.html"><code>FromStr</code></a>, <a href="https://doc.rust-lang.org/nightly/core/convert/trait.From.html"><code>From&lt;String&gt;</code></a>, <a href="https://doc.rust-lang.org/nightly/core/convert/trait.From.html"><code>From&lt;&amp;str&gt;</code></a>.</p>
+</section>
+<section id="Id.new" class="level3">
+<h3 class="anchored" data-anchor-id="Id.new">Id::new</h3>
+<p><a href="https://github.com/rahuldave/gossil/blob/main/src/gest_model/primitives/id.rs#L77" class="source-link">source</a></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span class="kw">pub</span> <span class="kw">fn</span> <span class="fu">new</span>() -&gt; Self</code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Generate a new random <a href="primitives.html#Id"><code>Id</code></a> from the random source of the operating system.</p>
+<section id="panics" class="level5">
+<h5 class="anchored" data-anchor-id="panics">Panics</h5>
+<p>Panics when the operating system gives no random bytes. Upstream <code>rand</code>
+panics in the same case.</p>
+<div class="sd-table">
+<table class="caption-top table">
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>returns</td>
+<td>Self</td>
+<td>An id of 16 random bytes.</td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+</section>
+<section id="Id.validate_prefix" class="level3">
+<h3 class="anchored" data-anchor-id="Id.validate_prefix">Id::validate_prefix</h3>
+<p><a href="https://github.com/rahuldave/gossil/blob/main/src/gest_model/primitives/id.rs#L97" class="source-link">source</a></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span class="kw">pub</span> <span class="kw">fn</span> <span class="fu">validate_prefix</span>(s: <span class="kw">&amp;</span><span class="dt">str</span>) -&gt; <span class="bu">Result</span><span class="op">&lt;</span><span class="op">&amp;</span><span class="dt">str</span>, <span class="bu">String</span><span class="op">&gt;</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Validate that <code>s</code> is a valid ID prefix of 1 to 32 characters, all in <code>[k-z]</code>.</p>
+<section id="errors" class="level5">
+<h5 class="anchored" data-anchor-id="errors">Errors</h5>
+<p>Rejects empty strings, strings longer than 32 bytes, and any character
+outside the ID alphabet. The error message says what is wrong.</p>
+<div class="sd-table">
+<table class="caption-top table">
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>s</code></td>
+<td>&amp;str</td>
+<td>the prefix to check</td>
+</tr>
+<tr>
+<td>returns</td>
+<td>Result&lt;&amp;str, String&gt;</td>
+<td>Returns <code>Ok(s)</code> on success so callers can chain the result.</td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+</section>
+<section id="Id.short" class="level3">
+<h3 class="anchored" data-anchor-id="Id.short">Id::short</h3>
+<p><a href="https://github.com/rahuldave/gossil/blob/main/src/gest_model/primitives/id.rs#L120" class="source-link">source</a></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span class="kw">pub</span> <span class="kw">fn</span> <span class="fu">short</span>(<span class="op">&amp;</span><span class="va">self</span>) -&gt; <span class="bu">String</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Returns the first 8 characters of the encoded ID as a short prefix.</p>
+<div class="sd-table">
+<table class="caption-top table">
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>returns</td>
+<td>String</td>
+<td>The characters that encode the first 4 bytes.</td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+</section>
+<section id="IterationStatus" class="level2">
+<h2 class="anchored" data-anchor-id="IterationStatus">enum IterationStatus</h2>
+<p><a href="https://github.com/rahuldave/gossil/blob/main/src/gest_model/primitives/iteration_status.rs#L15" class="source-link">source</a></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span class="kw">pub</span> <span class="kw">enum</span> IterationStatus</code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>The lifecycle status of an iteration.</p>
+<div class="sd-table">
+<table class="caption-top table">
+<thead>
+<tr>
+<th>Variant</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Active</code></td>
+<td>In-progress iteration accepting work (the default).</td>
+</tr>
+<tr>
+<td><code>Cancelled</code></td>
+<td>Terminal: iteration was abandoned before completion.</td>
+</tr>
+<tr>
+<td><code>Completed</code></td>
+<td>Terminal: iteration finished successfully.</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Implements <a href="https://doc.rust-lang.org/nightly/core/clone/trait.Clone.html"><code>Clone</code></a>, <a href="https://doc.rust-lang.org/nightly/core/marker/trait.Copy.html"><code>Copy</code></a>, <a href="https://doc.rust-lang.org/nightly/core/fmt/trait.Debug.html"><code>Debug</code></a>, <a href="https://doc.rust-lang.org/nightly/core/default/trait.Default.html"><code>Default</code></a>, <a href="https://docs.rs/serde_core/1.0.229/serde_core/de/trait.Deserialize.html"><code>Deserialize&lt;&#x27;de&gt;</code></a>, <a href="https://doc.rust-lang.org/nightly/core/cmp/trait.Eq.html"><code>Eq</code></a>, <a href="https://doc.rust-lang.org/nightly/core/hash/trait.Hash.html"><code>Hash</code></a>, <a href="https://doc.rust-lang.org/nightly/core/cmp/trait.PartialEq.html"><code>PartialEq</code></a>, <a href="https://docs.rs/serde_core/1.0.229/serde_core/ser/trait.Serialize.html"><code>Serialize</code></a>, <a href="https://doc.rust-lang.org/nightly/core/fmt/trait.Display.html"><code>Display</code></a>, <a href="https://doc.rust-lang.org/nightly/core/str/traits/trait.FromStr.html"><code>FromStr</code></a>.</p>
+<section id="IterationStatus.is_terminal" class="level3">
+<h3 class="anchored" data-anchor-id="IterationStatus.is_terminal">IterationStatus::is_terminal</h3>
+<p><a href="https://github.com/rahuldave/gossil/blob/main/src/gest_model/primitives/iteration_status.rs#L31" class="source-link">source</a></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span class="kw">pub</span> <span class="kw">fn</span> <span class="fu">is_terminal</span>(<span class="va">self</span>) -&gt; <span class="dt">bool</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Whether this status represents a terminal (final) state.</p>
+<div class="sd-table">
+<table class="caption-top table">
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>returns</td>
+<td>bool</td>
+<td><code>true</code> for <code>Completed</code> or <code>Cancelled</code>.</td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+</section>
+<section id="Priority" class="level2">
+<h2 class="anchored" data-anchor-id="Priority">enum Priority</h2>
+<p><a href="https://github.com/rahuldave/gossil/blob/main/src/gest_model/primitives/priority.rs#L19" class="source-link">source</a></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span class="kw">pub</span> <span class="kw">enum</span> Priority</code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Relative importance assigned to a task.</p>
+<p>The five named levels map to <code>0..=4</code>. The task model itself stores any
+<code>u8</code> priority, so this enum is the named surface and not the only one (GEST-02).</p>
+<div class="sd-table">
+<table class="caption-top table">
+<thead>
+<tr>
+<th>Variant</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Critical = 0</code></td>
+<td>Must be addressed immediately. It blocks other work.</td>
+</tr>
+<tr>
+<td><code>High = 1</code></td>
+<td>Important but not a blocker.</td>
+</tr>
+<tr>
+<td><code>Low = 3</code></td>
+<td>Should be done eventually.</td>
+</tr>
+<tr>
+<td><code>Lowest = 4</code></td>
+<td>Nice to have. Defer it if needed.</td>
+</tr>
+<tr>
+<td><code>Medium = 2</code></td>
+<td>Default importance for most work.</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Implements <a href="https://doc.rust-lang.org/nightly/core/clone/trait.Clone.html"><code>Clone</code></a>, <a href="https://doc.rust-lang.org/nightly/core/marker/trait.Copy.html"><code>Copy</code></a>, <a href="https://doc.rust-lang.org/nightly/core/fmt/trait.Debug.html"><code>Debug</code></a>, <a href="https://docs.rs/serde_core/1.0.229/serde_core/de/trait.Deserialize.html"><code>Deserialize&lt;&#x27;de&gt;</code></a>, <a href="https://doc.rust-lang.org/nightly/core/cmp/trait.Eq.html"><code>Eq</code></a>, <a href="https://doc.rust-lang.org/nightly/core/hash/trait.Hash.html"><code>Hash</code></a>, <a href="https://doc.rust-lang.org/nightly/core/cmp/trait.Ord.html"><code>Ord</code></a>, <a href="https://doc.rust-lang.org/nightly/core/cmp/trait.PartialEq.html"><code>PartialEq</code></a>, <a href="https://doc.rust-lang.org/nightly/core/cmp/trait.PartialOrd.html"><code>PartialOrd</code></a>, <a href="https://docs.rs/serde_core/1.0.229/serde_core/ser/trait.Serialize.html"><code>Serialize</code></a>, <a href="https://doc.rust-lang.org/nightly/core/fmt/trait.Display.html"><code>Display</code></a>, <a href="https://doc.rust-lang.org/nightly/core/convert/trait.From.html"><code>From&lt;Primitive&gt;</code></a>, <a href="https://doc.rust-lang.org/nightly/core/str/traits/trait.FromStr.html"><code>FromStr</code></a>, <a href="https://doc.rust-lang.org/nightly/core/convert/trait.TryFrom.html"><code>TryFrom&lt;u8&gt;</code></a>.</p>
+<section id="Priority.ALL" class="level3">
+<h3 class="anchored" data-anchor-id="Priority.ALL">const Priority::ALL</h3>
+<p><a href="https://github.com/rahuldave/gossil/blob/main/src/gest_model/primitives/priority.rs#L34" class="source-link">source</a></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb11"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span class="kw">const</span> ALL: <span class="kw">&amp;</span><span class="op">&#x27;</span><span class="bu">static</span> [Primitive] <span class="op">=</span> _;</code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>All priority variants in rank order, from highest to lowest.</p>
+</section>
+</section>
+<section id="RelationshipType" class="level2">
+<h2 class="anchored" data-anchor-id="RelationshipType">enum RelationshipType</h2>
+<p><a href="https://github.com/rahuldave/gossil/blob/main/src/gest_model/primitives/relationship_type.rs#L15" class="source-link">source</a></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb12"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span class="kw">pub</span> <span class="kw">enum</span> RelationshipType</code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>The type of relationship between two entities.</p>
+<div class="sd-table">
+<table class="caption-top table">
+<thead>
+<tr>
+<th>Variant</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>BlockedBy</code></td>
+<td>Source cannot progress until the target is resolved.</td>
+</tr>
+<tr>
+<td><code>Blocks</code></td>
+<td>Source prevents the target from progressing.</td>
+</tr>
+<tr>
+<td><code>ChildOf</code></td>
+<td>Source is a child of the target in a parent/child hierarchy.</td>
+</tr>
+<tr>
+<td><code>ParentOf</code></td>
+<td>Source is a parent of the target in a parent/child hierarchy.</td>
+</tr>
+<tr>
+<td><code>RelatesTo</code></td>
+<td>Symmetric, loose association between source and target.</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Implements <a href="https://doc.rust-lang.org/nightly/core/clone/trait.Clone.html"><code>Clone</code></a>, <a href="https://doc.rust-lang.org/nightly/core/marker/trait.Copy.html"><code>Copy</code></a>, <a href="https://doc.rust-lang.org/nightly/core/fmt/trait.Debug.html"><code>Debug</code></a>, <a href="https://docs.rs/serde_core/1.0.229/serde_core/de/trait.Deserialize.html"><code>Deserialize&lt;&#x27;de&gt;</code></a>, <a href="https://doc.rust-lang.org/nightly/core/cmp/trait.Eq.html"><code>Eq</code></a>, <a href="https://doc.rust-lang.org/nightly/core/hash/trait.Hash.html"><code>Hash</code></a>, <a href="https://doc.rust-lang.org/nightly/core/cmp/trait.PartialEq.html"><code>PartialEq</code></a>, <a href="https://docs.rs/serde_core/1.0.229/serde_core/ser/trait.Serialize.html"><code>Serialize</code></a>, <a href="https://doc.rust-lang.org/nightly/core/fmt/trait.Display.html"><code>Display</code></a>, <a href="https://doc.rust-lang.org/nightly/core/str/traits/trait.FromStr.html"><code>FromStr</code></a>.</p>
+<section id="RelationshipType.inverse" class="level3">
+<h3 class="anchored" data-anchor-id="RelationshipType.inverse">RelationshipType::inverse</h3>
+<p><a href="https://github.com/rahuldave/gossil/blob/main/src/gest_model/primitives/relationship_type.rs#L35" class="source-link">source</a></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb13"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span class="kw">pub</span> <span class="kw">fn</span> <span class="fu">inverse</span>(<span class="va">self</span>) -&gt; Self</code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Returns the inverse relationship type.</p>
+<div class="sd-table">
+<table class="caption-top table">
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>returns</td>
+<td>Self</td>
+<td><code>blocks</code> and <code>blocked-by</code> swap, <code>parent-of</code> and <code>child-of</code> swap, and <code>relates-to</code> stays <code>relates-to</code>.</td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+</section>
+<section id="TaskStatus" class="level2">
+<h2 class="anchored" data-anchor-id="TaskStatus">enum TaskStatus</h2>
+<p><a href="https://github.com/rahuldave/gossil/blob/main/src/gest_model/primitives/task_status.rs#L19" class="source-link">source</a></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb14"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span class="kw">pub</span> <span class="kw">enum</span> TaskStatus</code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>The lifecycle status of a task.</p>
+<p><a href="https://doc.rust-lang.org/nightly/core/fmt/trait.Display.html"><code>Display</code></a> writes <code>in-progress</code>, the stored spelling. Serde writes
+<code>inprogress</code>, the spelling of the Gest API. <a href="https://doc.rust-lang.org/nightly/core/str/traits/trait.FromStr.html"><code>FromStr</code></a> accepts both and
+<code>in_progress</code>, in any case.</p>
+<div class="sd-table">
+<table class="caption-top table">
+<thead>
+<tr>
+<th>Variant</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Cancelled</code></td>
+<td>Terminal: task was abandoned before completion.</td>
+</tr>
+<tr>
+<td><code>Done</code></td>
+<td>Terminal: task was completed successfully.</td>
+</tr>
+<tr>
+<td><code>InProgress</code></td>
+<td>Actively being worked on.</td>
+</tr>
+<tr>
+<td><code>Open</code></td>
+<td>Ready to be picked up (the default).</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Implements <a href="https://doc.rust-lang.org/nightly/core/clone/trait.Clone.html"><code>Clone</code></a>, <a href="https://doc.rust-lang.org/nightly/core/marker/trait.Copy.html"><code>Copy</code></a>, <a href="https://doc.rust-lang.org/nightly/core/fmt/trait.Debug.html"><code>Debug</code></a>, <a href="https://doc.rust-lang.org/nightly/core/default/trait.Default.html"><code>Default</code></a>, <a href="https://docs.rs/serde_core/1.0.229/serde_core/de/trait.Deserialize.html"><code>Deserialize&lt;&#x27;de&gt;</code></a>, <a href="https://doc.rust-lang.org/nightly/core/cmp/trait.Eq.html"><code>Eq</code></a>, <a href="https://doc.rust-lang.org/nightly/core/hash/trait.Hash.html"><code>Hash</code></a>, <a href="https://doc.rust-lang.org/nightly/core/cmp/trait.PartialEq.html"><code>PartialEq</code></a>, <a href="https://docs.rs/serde_core/1.0.229/serde_core/ser/trait.Serialize.html"><code>Serialize</code></a>, <a href="https://doc.rust-lang.org/nightly/core/fmt/trait.Display.html"><code>Display</code></a>, <a href="https://doc.rust-lang.org/nightly/core/str/traits/trait.FromStr.html"><code>FromStr</code></a>.</p>
+<section id="TaskStatus.is_terminal" class="level3">
+<h3 class="anchored" data-anchor-id="TaskStatus.is_terminal">TaskStatus::is_terminal</h3>
+<p><a href="https://github.com/rahuldave/gossil/blob/main/src/gest_model/primitives/task_status.rs#L37" class="source-link">source</a></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb15"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span class="kw">pub</span> <span class="kw">fn</span> <span class="fu">is_terminal</span>(<span class="va">self</span>) -&gt; <span class="dt">bool</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Whether this status represents a terminal (final) state.</p>
+<div class="sd-table">
+<table class="caption-top table">
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>returns</td>
+<td>bool</td>
+<td><code>true</code> for <code>Done</code> or <code>Cancelled</code>.</td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+</section>
+<nav class="page-navigation"><div class="nav-page nav-page-previous"><a href="note.html" class="pagination-link"><i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">note</span></a></div><div class="nav-page nav-page-next"><a href="project.html" class="pagination-link"><span class="nav-page-text">project</span> <i class="bi bi-arrow-right-short"></i></a></div></nav></main></div></body></html>
