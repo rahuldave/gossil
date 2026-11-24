@@ -49,12 +49,6 @@ integration *args:
     just --justfile {{quote(justfile())}} rust integration "$@"
     jlog step integration
 
-# just lint for each language that has it: rust
-[positional-arguments]
-lint *args:
-    just --justfile {{quote(justfile())}} rust lint "$@"
-    jlog step lint
-
 # just quick for each language that has it: rust
 [positional-arguments]
 quick *args:

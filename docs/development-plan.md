@@ -38,6 +38,7 @@ serializes validated artifact and project snapshots in the same way, and the thr
 | Bounded glob API and `test-glob` diagnostic; focused checkpoint | Settings lookup, wildcard tracking and directory traversal |
 | Compression, hashes, token escaping, artifact checksums and [lexical filename simplification](file-path.md) | Repository traversal and changes to persisted scope choices |
 | [Shortest paths and common ancestors](history.md) over caller-supplied check-in rows | Persisted history graphs, bisect, annotation and file history |
+| Read-only [Git reader](git-reader.md) library for a worktree, its refs, commit parents and three configuration keys | Bind command, Git hooks and the source registry |
 | Eight structural artifact types with explicit limits | General crosslinks, migration, rebuild and filesystem recovery |
 | Native initialization/open, tracking, scope/commit CLI and library; catalog1 private content | Shared recording, sync and artifact publication |
 | Explicit inherited-test runner configurations | Gest task CLI, server and user interface |
@@ -390,7 +391,7 @@ qualification.
 
 At the checkpoint, `Cargo.toml` set the version of the Gossil crate to 0.9.0,
 which was later released as `v0.9.0`. The current version of the crate is
-0.14.0, and version 0.13.0 was released as `v0.13.0`. The `libsql-ffi`
+0.15.0, and version 0.14.0 was released as `v0.14.0`. The `libsql-ffi`
 provider is at 0.10.0, and its version is separate
 from the version of the crate.
 

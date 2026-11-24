@@ -47,6 +47,7 @@ website:
           - glob.md
           - file-path.md
           - history.md
+          - git-reader.md
           - artifact-parser.md
           - diff.md
           - task-ticket.md
