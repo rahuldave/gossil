@@ -462,7 +462,6 @@ Known risks:
 
 Follow-ups:
 
-- Give the doc comments of `src/git_reader.rs` a prose pass.
 - Add tests for behavior that is already correct, from the lists of the test
   reviewers.
 

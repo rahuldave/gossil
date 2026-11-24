@@ -94,8 +94,9 @@ It does not hash the files themselves.
 
 These tests cover the converter itself. They do not reproduce the upstream note
 API or repository tests. The upstream `EntityType` enum has five tests of its
-`Display` and `FromStr` methods. The converter calls neither method, so the
-source map lists the five tests as later API obligations.
+`Display` and `FromStr` methods. The source map lists the five tests as later API
+obligations. The converter uses both methods through the port of `EntityType`
+in the [Gest model](gest-model.md), and the tests of that port run the five tests.
 
 ## Recommendations
 

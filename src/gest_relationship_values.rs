@@ -7,6 +7,7 @@
 //! This module reads no clock and performs no storage, reference lookup or ID generation.
 //! `chrono` parses the two timestamps as RFC3339, and `relationship_to_values` returns them in canonical UTC.
 
+use crate::gest_model::primitives::{EntityType, Id, RelationshipType};
 use crate::gest_value_validation::{ValidationError, entity_type, identifier, string, timestamp};
 use chrono::{DateTime, Utc};
 use serde_json::Value;
@@ -41,21 +42,21 @@ pub struct RelationshipValueInputs {
 #[derive(Clone, Debug, PartialEq)]
 pub struct RelationshipValues {
     /// Full relationship ID, called `id` upstream.
-    gest_id: String,
+    pub(crate) gest_id: Id,
     /// Canonical lowercase relationship type.
-    rel_type: &'static str,
+    pub(crate) rel_type: RelationshipType,
     /// Full ID of the source entity.
-    source_id: String,
+    pub(crate) source_id: Id,
     /// Canonical lowercase source entity kind.
-    source_type: &'static str,
+    pub(crate) source_type: EntityType,
     /// Full ID of the target entity.
-    target_id: String,
+    pub(crate) target_id: Id,
     /// Canonical lowercase target entity kind.
-    target_type: &'static str,
+    pub(crate) target_type: EntityType,
     /// RFC3339 creation timestamp with representable canonical UTC output.
-    created_at: DateTime<Utc>,
+    pub(crate) created_at: DateTime<Utc>,
     /// RFC3339 modification timestamp with representable canonical UTC output.
-    updated_at: DateTime<Utc>,
+    pub(crate) updated_at: DateTime<Utc>,
 }
 
 /// Reports a failed field without its input, with an optional typed `chrono` parse cause.
@@ -95,7 +96,7 @@ impl fmt::Display for RelationshipValueError {
 
 impl std::error::Error for RelationshipValueError {}
 
-/// Parse a relationship type as the pinned source enum does.
+/// Parse a relationship type with the parser of [`RelationshipType`].
 ///
 /// The source lowercases the whole string with Unicode rules and then matches
 /// the five hyphenated spellings. Underscore spellings and whitespace fail.
@@ -104,23 +105,18 @@ impl std::error::Error for RelationshipValueError {}
 /// * `value` - Already admitted decoded relationship type value.
 ///
 /// # Returns
-/// The canonical lowercase spelling of the relationship type.
+/// The relationship type.
 ///
 /// # Errors
 /// Returns [`ValidationError`] for a non-string value or any other spelling.
-fn rel_type(value: Value) -> Result<&'static str, ValidationError> {
-    match string(value, "rel_type")?.to_lowercase().as_str() {
-        "blocked-by" => Ok("blocked-by"),
-        "blocks" => Ok("blocks"),
-        "child-of" => Ok("child-of"),
-        "parent-of" => Ok("parent-of"),
-        "relates-to" => Ok("relates-to"),
-        _ => Err(ValidationError {
+fn rel_type(value: Value) -> Result<RelationshipType, ValidationError> {
+    string(value, "rel_type")?
+        .parse()
+        .map_err(|_| ValidationError {
             field: "rel_type",
             reason: "expected blocked-by, blocks, child-of, parent-of or relates-to",
             parse_cause: None,
-        }),
-    }
+        })
 }
 
 /// Validate every explicit decoded field and preserve the complete relationship value.
@@ -198,12 +194,12 @@ pub fn relationship_from_values(
 /// the record.
 pub fn relationship_to_values(record: &RelationshipValues) -> RelationshipValueInputs {
     RelationshipValueInputs {
-        gest_id: Value::from(record.gest_id.clone()),
-        rel_type: Value::from(record.rel_type),
-        source_id: Value::from(record.source_id.clone()),
-        source_type: Value::from(record.source_type),
-        target_id: Value::from(record.target_id.clone()),
-        target_type: Value::from(record.target_type),
+        gest_id: Value::from(record.gest_id.to_string()),
+        rel_type: Value::from(record.rel_type.to_string()),
+        source_id: Value::from(record.source_id.to_string()),
+        source_type: Value::from(record.source_type.to_string()),
+        target_id: Value::from(record.target_id.to_string()),
+        target_type: Value::from(record.target_type.to_string()),
         created_at: Value::from(record.created_at.to_rfc3339()),
         updated_at: Value::from(record.updated_at.to_rfc3339()),
     }

@@ -1,6 +1,6 @@
 //! Supply inherited-test tools, bounded byte primitives, Fossil glob matching, lexical
-//! filename simplification, check-in graph paths, a read-only Git reader, local storage and
-//! decoded task values.
+//! filename simplification, check-in graph paths, a read-only Git reader, local storage,
+//! decoded task values and the Gest domain model.
 pub mod diff;
 mod invocation;
 pub use invocation::{InvocationId, InvocationPlan, PlanPin, PlanRow, Position};
@@ -796,6 +796,8 @@ pub mod gest_entity_tag_values;
 pub mod gest_iteration_task_values;
 /// Convert complete admitted canonical iteration fields into owned values.
 pub mod gest_iteration_values;
+/// Hold the Gest domain model and its primitive values, copied from the pinned Gest source.
+pub mod gest_model;
 /// Convert complete admitted canonical note fields into owned values.
 pub mod gest_note_values;
 /// Convert complete admitted canonical project fields into owned values.

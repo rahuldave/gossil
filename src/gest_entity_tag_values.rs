@@ -9,6 +9,7 @@
 //! This module reads no clock and performs no storage, reference lookup or ID generation.
 //! `chrono` parses the timestamp as RFC3339, and `entity_tag_to_values` returns it in canonical UTC.
 
+use crate::gest_model::primitives::{EntityType, Id};
 use crate::gest_value_validation::{ValidationError, entity_type, identifier, timestamp};
 use chrono::{DateTime, Utc};
 use serde_json::Value;
@@ -35,13 +36,13 @@ pub struct EntityTagValueInputs {
 #[derive(Clone, Debug, PartialEq)]
 pub struct EntityTagValues {
     /// Full ID of the tagged entity.
-    entity_id: String,
+    pub(crate) entity_id: Id,
     /// Canonical lowercase entity kind.
-    entity_type: &'static str,
+    pub(crate) entity_type: EntityType,
     /// Full ID of the attached tag.
-    tag_id: String,
+    pub(crate) tag_id: Id,
     /// RFC3339 attachment timestamp with representable canonical UTC output.
-    created_at: DateTime<Utc>,
+    pub(crate) created_at: DateTime<Utc>,
 }
 
 /// Reports a failed field without its input, with an optional typed `chrono` parse cause.
@@ -142,9 +143,9 @@ pub fn entity_tag_from_values(
 /// the record.
 pub fn entity_tag_to_values(record: &EntityTagValues) -> EntityTagValueInputs {
     EntityTagValueInputs {
-        entity_id: Value::from(record.entity_id.clone()),
-        entity_type: Value::from(record.entity_type),
-        tag_id: Value::from(record.tag_id.clone()),
+        entity_id: Value::from(record.entity_id.to_string()),
+        entity_type: Value::from(record.entity_type.to_string()),
+        tag_id: Value::from(record.tag_id.to_string()),
         created_at: Value::from(record.created_at.to_rfc3339()),
     }
 }

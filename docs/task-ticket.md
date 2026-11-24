@@ -95,7 +95,8 @@ budget. The emitter counts borrowed model values before retaining serialized
 JSON or reserving the output buffer.
 
 Bookkeeping allocations have fixed bounds independent of task string and metadata
-sizes. Timestamp formatting, the fourteen-field list and the checksum still allocate.
+sizes. The identifier, status and timestamp strings, the fourteen-field list and
+the checksum still allocate.
 Even a zero output limit can therefore allocate fixed bookkeeping; the limit does
 not cap all memory use.
 

@@ -1,0 +1,983 @@
+{
+  "module": "gest_model",
+  "classification": "exact inherited model and primitive tests; only imports and the clock reading of the setup are adapted",
+  "source_pin": "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8",
+  "governing_addendum_sha256": "afddd1c2f5e905f72126209605737cc80e63791870d3ce8bd59f26c9589d8454",
+  "sources": [
+    {
+      "path": "src/store/model.rs",
+      "sha256": "6424e0b9791e9f4f2d4d0252200a951a1445bc709cca8e770de0c0ea922e767a",
+      "production": "src/gest_model.rs"
+    },
+    {
+      "path": "src/store/model/primitives.rs",
+      "sha256": "f0377d97b40d7564c66c03a630abc7a006861e27151b3507f1d9baca3df890ed",
+      "production": "src/gest_model.rs"
+    },
+    {
+      "path": "src/store/model/primitives/author_type.rs",
+      "sha256": "51933978a31f2470e6de30d9edbdc058e0477a7156d86d6c045780267910cc9a",
+      "production": "src/gest_model/primitives/author_type.rs"
+    },
+    {
+      "path": "src/store/model/primitives/entity_type.rs",
+      "sha256": "e44c53c43f299e9d0d1d7e1df45c49c64717c605ce797abd7305690e70be3b92",
+      "production": "src/gest_model/primitives/entity_type.rs"
+    },
+    {
+      "path": "src/store/model/primitives/id.rs",
+      "sha256": "1e257f775bdbdff3922f68af9a64a374ee48c12b2b587ab8c315218e19577bbc",
+      "production": "src/gest_model/primitives/id.rs"
+    },
+    {
+      "path": "src/store/model/primitives/iteration_status.rs",
+      "sha256": "6b4e39ba285b4ab8dd60e300c904960263631bc635718802f2e34322b3d59ed8",
+      "production": "src/gest_model/primitives/iteration_status.rs"
+    },
+    {
+      "path": "src/store/model/primitives/priority.rs",
+      "sha256": "fc80070c99ee14fc58575dd7c87fd64ce252d0ee8db9a6791d565db436d87537",
+      "production": "src/gest_model/primitives/priority.rs"
+    },
+    {
+      "path": "src/store/model/primitives/relationship_type.rs",
+      "sha256": "08badb7cc7bd41dbd2458deb07db68ab48c200793c23b4376cb7ebe1742d4556",
+      "production": "src/gest_model/primitives/relationship_type.rs"
+    },
+    {
+      "path": "src/store/model/primitives/task_status.rs",
+      "sha256": "4a924e4390ea0dcf3e1fe3e814966274844cc801a2d8f054c70d388ba8d15649",
+      "production": "src/gest_model/primitives/task_status.rs"
+    },
+    {
+      "path": "src/store/model/artifact.rs",
+      "sha256": "39f56375587cdbb8247275ba1ed7868ab54c06fe0a2faba44787fe5229b4f909",
+      "production": "src/gest_model/artifact.rs"
+    },
+    {
+      "path": "src/store/model/author.rs",
+      "sha256": "fe3fb4a00f27bb7c70a111c1070c3e4107c26459350ad5f7f632d32aead3bba4",
+      "production": "src/gest_model/author.rs"
+    },
+    {
+      "path": "src/store/model/entity_tag.rs",
+      "sha256": "a6cafa3169e9927f102f78b3ebc0aaaa407a95212a5c01b5d7020658459f4d90",
+      "production": "src/gest_model/entity_tag.rs"
+    },
+    {
+      "path": "src/store/model/iteration.rs",
+      "sha256": "d03df134c4ecd4ca42577f624f8e5fdf8579886bef5f5a6086c5bb0057f2624b",
+      "production": "src/gest_model/iteration.rs"
+    },
+    {
+      "path": "src/store/model/note.rs",
+      "sha256": "e63bc968d54cbf15d8e5f5f478d507471f6dc760f58e2c1a795eab43a6623877",
+      "production": "src/gest_model/note.rs"
+    },
+    {
+      "path": "src/store/model/project.rs",
+      "sha256": "3a95afe11cf39b88a20af1ceb34a2255441c30bc9849a21d717691961eaf89c8",
+      "production": "src/gest_model/project.rs"
+    },
+    {
+      "path": "src/store/model/relationship.rs",
+      "sha256": "268acb2ff02f81c9d378c718c679f0ae9f16c000957b7116216320c751d340a1",
+      "production": "src/gest_model/relationship.rs"
+    },
+    {
+      "path": "src/store/model/tag.rs",
+      "sha256": "40c657ba2dd3695c385e1485ba1e58a57d7f67622665dd736efc10b30f51c6b5",
+      "production": "src/gest_model/tag.rs"
+    },
+    {
+      "path": "src/store/model/task.rs",
+      "sha256": "dd011be45e961b46f5963e8c20429b9afc68395afa9cb9f2e5332e219ec3a0d7",
+      "production": "src/gest_model/task.rs"
+    }
+  ],
+  "excluded_sources": [
+    {
+      "path": "src/store/model/project_workspace.rs",
+      "sha256": "2383f44aa4a9b7463acb9ed4b6cac5aed963ab5e5f56289d77b4c5dae928c6fb",
+      "reason": "Local workspace registrations are owner-local bookkeeping (GEST-01 project_workspaces row). The storage tasks own them."
+    },
+    {
+      "path": "src/store/model/transaction.rs",
+      "sha256": "ab193f96d9cb280b7cb5a7b9acfe09c0a9aa50d961662a6cba1320a8626d89b5",
+      "reason": "Transactions are local command undo history, not canonical model rows (GEST-01 transactions row, GEST-04). The undo tasks own them."
+    }
+  ],
+  "exact_inherited_tests_ported": 77,
+  "inherited_tests": [
+    {
+      "test_id": "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/model/author.rs:115:it_creates_a_human_author",
+      "fixture_sha256": "1ba99c58ebd43e6afe4a86a17663c24a4797d554e51867142c8b03a1bf081559",
+      "assertion_ids": [
+        "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/model/author.rs:119:assert_eq",
+        "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/model/author.rs:120:assert_eq",
+        "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/model/author.rs:121:assert_eq"
+      ],
+      "port": {
+        "file": "tests/gest_model.rs",
+        "path": "author::new::it_creates_a_human_author"
+      }
+    },
+    {
+      "test_id": "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/model/author.rs:124:it_creates_an_agent_author",
+      "fixture_sha256": "2f72bedf4587633c311fa37bd8b9b9467eb8a2850aed30006101f2d3f8c6a8db",
+      "assertion_ids": [
+        "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/model/author.rs:128:assert_eq"
+      ],
+      "port": {
+        "file": "tests/gest_model.rs",
+        "path": "author::new::it_creates_an_agent_author"
+      }
+    },
+    {
+      "test_id": "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/model/author.rs:137:it_sets_the_email",
+      "fixture_sha256": "cce7ec4d124b730575452cccd0cf42cdc4359ecf4ad07d4f76859d09be0bfb6e",
+      "assertion_ids": [
+        "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/model/author.rs:141:assert_eq"
+      ],
+      "port": {
+        "file": "tests/gest_model.rs",
+        "path": "author::with_email::it_sets_the_email"
+      }
+    },
+    {
+      "test_id": "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/model/primitives/author_type.rs:52:it_formats_agent",
+      "fixture_sha256": "1a0620a50eeab4f51753b31541146ca68382885fb183c32c42a2a05bc76248a6",
+      "assertion_ids": [
+        "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/model/primitives/author_type.rs:54:assert_eq"
+      ],
+      "port": {
+        "file": "tests/gest_model.rs",
+        "path": "primitives::author_type::display::it_formats_agent"
+      }
+    },
+    {
+      "test_id": "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/model/primitives/author_type.rs:57:it_formats_human",
+      "fixture_sha256": "5a798b0a79d17e36f9993b780025d5044842794974a5e5b51af2577e038e522c",
+      "assertion_ids": [
+        "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/model/primitives/author_type.rs:59:assert_eq"
+      ],
+      "port": {
+        "file": "tests/gest_model.rs",
+        "path": "primitives::author_type::display::it_formats_human"
+      }
+    },
+    {
+      "test_id": "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/model/primitives/author_type.rs:66:it_parses_case_insensitively",
+      "fixture_sha256": "3339af663f44f823b6d5f2686835d5530583bfc85a7bf49fea810d50ef15fbf3",
+      "assertion_ids": [
+        "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/model/primitives/author_type.rs:68:assert_eq",
+        "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/model/primitives/author_type.rs:69:assert_eq"
+      ],
+      "port": {
+        "file": "tests/gest_model.rs",
+        "path": "primitives::author_type::from_str::it_parses_case_insensitively"
+      }
+    },
+    {
+      "test_id": "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/model/primitives/author_type.rs:72:it_rejects_invalid",
+      "fixture_sha256": "9db923388ca89cff960a6d590fcd4b032e3e9bce7bdcbe10ea5f3a0f6e6ab1f4",
+      "assertion_ids": [
+        "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/model/primitives/author_type.rs:74:assert"
+      ],
+      "port": {
+        "file": "tests/gest_model.rs",
+        "path": "primitives::author_type::from_str::it_rejects_invalid"
+      }
+    },
+    {
+      "test_id": "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/model/primitives/entity_type.rs:54:it_formats_artifact",
+      "fixture_sha256": "1b2f09a6139b3c816b8f3c832fe6f0fd7cd7e2ca2fe7264d2d525c0c9154cb7f",
+      "assertion_ids": [
+        "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/model/primitives/entity_type.rs:56:assert_eq"
+      ],
+      "port": {
+        "file": "tests/gest_model.rs",
+        "path": "primitives::entity_type::display::it_formats_artifact"
+      }
+    },
+    {
+      "test_id": "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/model/primitives/entity_type.rs:59:it_formats_iteration",
+      "fixture_sha256": "c30f502e014163fbb06dce7dc0623aec044aded75a90d74e2ea88058ff771725",
+      "assertion_ids": [
+        "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/model/primitives/entity_type.rs:61:assert_eq"
+      ],
+      "port": {
+        "file": "tests/gest_model.rs",
+        "path": "primitives::entity_type::display::it_formats_iteration"
+      }
+    },
+    {
+      "test_id": "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/model/primitives/entity_type.rs:64:it_formats_task",
+      "fixture_sha256": "4bd29bc3ab87cfceaa1e4d43145cac3fc0ebd656909ae7fabf4cb76366071c77",
+      "assertion_ids": [
+        "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/model/primitives/entity_type.rs:66:assert_eq"
+      ],
+      "port": {
+        "file": "tests/gest_model.rs",
+        "path": "primitives::entity_type::display::it_formats_task"
+      }
+    },
+    {
+      "test_id": "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/model/primitives/entity_type.rs:73:it_parses_case_insensitively",
+      "fixture_sha256": "6afdfe8c2b908a2aec02bcb8b98f995370a99722baf0d219645bb073a0c8afa5",
+      "assertion_ids": [
+        "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/model/primitives/entity_type.rs:75:assert_eq",
+        "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/model/primitives/entity_type.rs:76:assert_eq"
+      ],
+      "port": {
+        "file": "tests/gest_model.rs",
+        "path": "primitives::entity_type::from_str::it_parses_case_insensitively"
+      }
+    },
+    {
+      "test_id": "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/model/primitives/entity_type.rs:79:it_rejects_invalid",
+      "fixture_sha256": "23a0b2fdb479fa37f027ee7eb1b4dadbf22c26937f89b61982d7e4457fe34740",
+      "assertion_ids": [
+        "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/model/primitives/entity_type.rs:81:assert"
+      ],
+      "port": {
+        "file": "tests/gest_model.rs",
+        "path": "primitives::entity_type::from_str::it_rejects_invalid"
+      }
+    },
+    {
+      "test_id": "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/model/primitives/id.rs:236:it_encodes_ff_bytes_as_k",
+      "fixture_sha256": "6ce118bc3f07a103103f56dcd4ca303589af6a27fe0641de328ccca7953f234d",
+      "assertion_ids": [
+        "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/model/primitives/id.rs:239:assert_eq"
+      ],
+      "port": {
+        "file": "src/gest_model/primitives/id.rs",
+        "path": "tests::encode_decode::it_encodes_ff_bytes_as_k"
+      }
+    },
+    {
+      "test_id": "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/model/primitives/id.rs:242:it_encodes_zero_bytes_as_z",
+      "fixture_sha256": "facb78443253e97df9857f763e95ebb0e4689f3a6523cd0715fd0f62a1efdf4f",
+      "assertion_ids": [
+        "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/model/primitives/id.rs:245:assert_eq"
+      ],
+      "port": {
+        "file": "src/gest_model/primitives/id.rs",
+        "path": "tests::encode_decode::it_encodes_zero_bytes_as_z"
+      }
+    },
+    {
+      "test_id": "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/model/primitives/id.rs:248:it_roundtrips_encode_decode",
+      "fixture_sha256": "5371f777a8cee61ac6d06ca531255a8ca328718eafc386b6e7734ca5202fb9dd",
+      "assertion_ids": [
+        "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/model/primitives/id.rs:255:assert_eq"
+      ],
+      "port": {
+        "file": "src/gest_model/primitives/id.rs",
+        "path": "tests::encode_decode::it_roundtrips_encode_decode"
+      }
+    },
+    {
+      "test_id": "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/model/primitives/id.rs:264:it_converts_to_text_value",
+      "fixture_sha256": "7f57dd0b8d8e159b389ec7b2f5f0c4563556b4206706537cc40dcc6e17838dc6",
+      "assertion_ids": [
+        "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/model/primitives/id.rs:268:assert_eq"
+      ],
+      "port": {
+        "file": "tests/gest_model.rs",
+        "path": "primitives::id::from_id_for_value::it_converts_to_text_value"
+      }
+    },
+    {
+      "test_id": "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/model/primitives/id.rs:277:it_parses_valid_id",
+      "fixture_sha256": "a0ebf0b433ff9c2a11809abd23616de58779b0aace9db190050f2e66600edc26",
+      "assertion_ids": [
+        "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/model/primitives/id.rs:280:assert_eq"
+      ],
+      "port": {
+        "file": "tests/gest_model.rs",
+        "path": "primitives::id::from_str::it_parses_valid_id"
+      }
+    },
+    {
+      "test_id": "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/model/primitives/id.rs:283:it_rejects_digits",
+      "fixture_sha256": "022594d7014fadeea5bc55e7c01238ab6daf5ac07f5642bc0f16754c26d0a4f0",
+      "assertion_ids": [
+        "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/model/primitives/id.rs:286:assert"
+      ],
+      "port": {
+        "file": "tests/gest_model.rs",
+        "path": "primitives::id::from_str::it_rejects_digits"
+      }
+    },
+    {
+      "test_id": "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/model/primitives/id.rs:289:it_rejects_out_of_range_chars",
+      "fixture_sha256": "2b5db9cf4913f71071a5e5f15ebf8705bc6aa9acd3571eee29bacb823df35997",
+      "assertion_ids": [
+        "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/model/primitives/id.rs:292:assert"
+      ],
+      "port": {
+        "file": "tests/gest_model.rs",
+        "path": "primitives::id::from_str::it_rejects_out_of_range_chars"
+      }
+    },
+    {
+      "test_id": "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/model/primitives/id.rs:295:it_rejects_too_long",
+      "fixture_sha256": "c30f1c732a1713767ca6b4a65bf3dcc9a44dbce464ac08dfd2bc078d0772263b",
+      "assertion_ids": [
+        "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/model/primitives/id.rs:298:assert"
+      ],
+      "port": {
+        "file": "tests/gest_model.rs",
+        "path": "primitives::id::from_str::it_rejects_too_long"
+      }
+    },
+    {
+      "test_id": "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/model/primitives/id.rs:301:it_rejects_too_short",
+      "fixture_sha256": "e6ea9fab19b9879c5e780167c3525a0e2383e8c52e3b7a64014e054441ac6469",
+      "assertion_ids": [
+        "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/model/primitives/id.rs:304:assert"
+      ],
+      "port": {
+        "file": "tests/gest_model.rs",
+        "path": "primitives::id::from_str::it_rejects_too_short"
+      }
+    },
+    {
+      "test_id": "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/model/primitives/id.rs:311:it_generates_valid_ids",
+      "fixture_sha256": "8645d36f6b0e12283cca372a087718f9952e0f49814c40b732691eedbac2f8de",
+      "assertion_ids": [
+        "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/model/primitives/id.rs:315:assert_eq",
+        "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/model/primitives/id.rs:316:assert"
+      ],
+      "port": {
+        "file": "tests/gest_model.rs",
+        "path": "primitives::id::new::it_generates_valid_ids"
+      }
+    },
+    {
+      "test_id": "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/model/primitives/id.rs:323:it_accepts_full_id",
+      "fixture_sha256": "26b2fa647aecc36ece960f1d7e538ba85417a74a5414d656402986b19ed07e6b",
+      "assertion_ids": [
+        "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/model/primitives/id.rs:325:assert"
+      ],
+      "port": {
+        "file": "tests/gest_model.rs",
+        "path": "primitives::id::validate_prefix::it_accepts_full_id"
+      }
+    },
+    {
+      "test_id": "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/model/primitives/id.rs:328:it_accepts_short_prefix",
+      "fixture_sha256": "a51da44f8403eb6060ef800b29109b6ac318f661c5b3323f85827e3339f526be",
+      "assertion_ids": [
+        "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/model/primitives/id.rs:330:assert_eq"
+      ],
+      "port": {
+        "file": "tests/gest_model.rs",
+        "path": "primitives::id::validate_prefix::it_accepts_short_prefix"
+      }
+    },
+    {
+      "test_id": "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/model/primitives/id.rs:333:it_accepts_single_char",
+      "fixture_sha256": "d6f2a965e91610add7fab43a86f33ae273b8b0a4ef8e060b26d64316cbca7c28",
+      "assertion_ids": [
+        "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/model/primitives/id.rs:335:assert"
+      ],
+      "port": {
+        "file": "tests/gest_model.rs",
+        "path": "primitives::id::validate_prefix::it_accepts_single_char"
+      }
+    },
+    {
+      "test_id": "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/model/primitives/id.rs:338:it_rejects_chars_below_range",
+      "fixture_sha256": "e16dfe77e460963fc0da6bc9fd95cc62d23bdbc90ec0d64d0beeed52c29a720d",
+      "assertion_ids": [
+        "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/model/primitives/id.rs:340:assert"
+      ],
+      "port": {
+        "file": "tests/gest_model.rs",
+        "path": "primitives::id::validate_prefix::it_rejects_chars_below_range"
+      }
+    },
+    {
+      "test_id": "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/model/primitives/id.rs:343:it_rejects_digits",
+      "fixture_sha256": "f9c112223ac1a4576f6044c3da5886f5c885a0493d1fc5f2bf88f86599c34440",
+      "assertion_ids": [
+        "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/model/primitives/id.rs:345:assert"
+      ],
+      "port": {
+        "file": "tests/gest_model.rs",
+        "path": "primitives::id::validate_prefix::it_rejects_digits"
+      }
+    },
+    {
+      "test_id": "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/model/primitives/id.rs:348:it_rejects_dots",
+      "fixture_sha256": "342dc1ac9b881f9bbc4beeeced16da13e6a625553abda0d9687155f32fc51ada",
+      "assertion_ids": [
+        "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/model/primitives/id.rs:350:assert"
+      ],
+      "port": {
+        "file": "tests/gest_model.rs",
+        "path": "primitives::id::validate_prefix::it_rejects_dots"
+      }
+    },
+    {
+      "test_id": "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/model/primitives/id.rs:353:it_rejects_empty",
+      "fixture_sha256": "2e173c35b7add306e92d81d62193e81734e7c0f154f6828a536d0d38d8c4b2c0",
+      "assertion_ids": [
+        "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/model/primitives/id.rs:355:assert"
+      ],
+      "port": {
+        "file": "tests/gest_model.rs",
+        "path": "primitives::id::validate_prefix::it_rejects_empty"
+      }
+    },
+    {
+      "test_id": "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/model/primitives/id.rs:358:it_rejects_path_separator",
+      "fixture_sha256": "8085f7f1284c9d1a324f7df8b3265b0e022b449db7b7a8ca247513ec8682e164",
+      "assertion_ids": [
+        "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/model/primitives/id.rs:360:assert"
+      ],
+      "port": {
+        "file": "tests/gest_model.rs",
+        "path": "primitives::id::validate_prefix::it_rejects_path_separator"
+      }
+    },
+    {
+      "test_id": "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/model/primitives/id.rs:363:it_rejects_too_long",
+      "fixture_sha256": "cc516707111e4de7682f944e19b06a8aef6977df17a6967b2aabbd6dfb24f6c5",
+      "assertion_ids": [
+        "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/model/primitives/id.rs:366:assert"
+      ],
+      "port": {
+        "file": "tests/gest_model.rs",
+        "path": "primitives::id::validate_prefix::it_rejects_too_long"
+      }
+    },
+    {
+      "test_id": "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/model/primitives/id.rs:369:it_rejects_uppercase",
+      "fixture_sha256": "440d871810e3c7295866063031b9e0f2b94ea2570f8ce867ffa27a7a532c1ad3",
+      "assertion_ids": [
+        "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/model/primitives/id.rs:371:assert"
+      ],
+      "port": {
+        "file": "tests/gest_model.rs",
+        "path": "primitives::id::validate_prefix::it_rejects_uppercase"
+      }
+    },
+    {
+      "test_id": "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/model/primitives/id.rs:380:it_encodes_all_ff_bytes_as_all_k",
+      "fixture_sha256": "24fd0f7be3a2b649e1582d2bd40495847a36210ee521779df78752f5aa3a00aa",
+      "assertion_ids": [
+        "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/model/primitives/id.rs:383:assert_eq"
+      ],
+      "port": {
+        "file": "src/gest_model/primitives/id.rs",
+        "path": "tests::display::it_encodes_all_ff_bytes_as_all_k"
+      }
+    },
+    {
+      "test_id": "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/model/primitives/id.rs:386:it_formats_as_the_encoded_string",
+      "fixture_sha256": "24f0dde5620b812915055b43c682b132c92643352980c0f5d5a329690fd8845c",
+      "assertion_ids": [
+        "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/model/primitives/id.rs:389:assert_eq"
+      ],
+      "port": {
+        "file": "tests/gest_model.rs",
+        "path": "primitives::id::display::it_formats_as_the_encoded_string"
+      }
+    },
+    {
+      "test_id": "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/model/primitives/id.rs:398:it_roundtrips_through_string",
+      "fixture_sha256": "6f93548206f2cc9d696dd4e2796bd628cf6f743284213a2f2394991fae9a72d4",
+      "assertion_ids": [
+        "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/model/primitives/id.rs:403:assert_eq"
+      ],
+      "port": {
+        "file": "tests/gest_model.rs",
+        "path": "primitives::id::roundtrip::it_roundtrips_through_string"
+      }
+    },
+    {
+      "test_id": "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/model/primitives/id.rs:412:it_returns_first_eight_characters",
+      "fixture_sha256": "8a44a922a76ef1f9a7519886bacd1c7215c25f8ea8099e14de5956889df70eb5",
+      "assertion_ids": [
+        "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/model/primitives/id.rs:415:assert_eq"
+      ],
+      "port": {
+        "file": "tests/gest_model.rs",
+        "path": "primitives::id::short::it_returns_first_eight_characters"
+      }
+    },
+    {
+      "test_id": "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/model/primitives/iteration_status.rs:67:it_formats_active",
+      "fixture_sha256": "26d00b4f5b5043fc31ed47de62b90d1acd9517612ef8c07fe9f6b1fec52e6cbc",
+      "assertion_ids": [
+        "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/model/primitives/iteration_status.rs:69:assert_eq"
+      ],
+      "port": {
+        "file": "tests/gest_model.rs",
+        "path": "primitives::iteration_status::display::it_formats_active"
+      }
+    },
+    {
+      "test_id": "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/model/primitives/iteration_status.rs:72:it_formats_cancelled",
+      "fixture_sha256": "517598c6533734929e1899792e670bf8f9d2cf13f4a538c52371bb59cfd210f1",
+      "assertion_ids": [
+        "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/model/primitives/iteration_status.rs:74:assert_eq"
+      ],
+      "port": {
+        "file": "tests/gest_model.rs",
+        "path": "primitives::iteration_status::display::it_formats_cancelled"
+      }
+    },
+    {
+      "test_id": "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/model/primitives/iteration_status.rs:77:it_formats_completed",
+      "fixture_sha256": "c60b5e8ceb8a3513006da7f778e8ac68865a2f07d73d5c4b990c48a6b6ee9298",
+      "assertion_ids": [
+        "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/model/primitives/iteration_status.rs:79:assert_eq"
+      ],
+      "port": {
+        "file": "tests/gest_model.rs",
+        "path": "primitives::iteration_status::display::it_formats_completed"
+      }
+    },
+    {
+      "test_id": "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/model/primitives/iteration_status.rs:86:it_returns_false_for_active",
+      "fixture_sha256": "306ec4f6a040376c9f49f9a6879b6ad03b7b6e522258e219744b45ed660764f7",
+      "assertion_ids": [
+        "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/model/primitives/iteration_status.rs:88:assert"
+      ],
+      "port": {
+        "file": "tests/gest_model.rs",
+        "path": "primitives::iteration_status::is_terminal::it_returns_false_for_active"
+      }
+    },
+    {
+      "test_id": "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/model/primitives/iteration_status.rs:91:it_returns_true_for_cancelled",
+      "fixture_sha256": "91c6e78e7545dcdddf3a0e9b99a7024b60c8f3d834fa10be82c4ca1b1d11a1ae",
+      "assertion_ids": [
+        "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/model/primitives/iteration_status.rs:93:assert"
+      ],
+      "port": {
+        "file": "tests/gest_model.rs",
+        "path": "primitives::iteration_status::is_terminal::it_returns_true_for_cancelled"
+      }
+    },
+    {
+      "test_id": "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/model/primitives/iteration_status.rs:96:it_returns_true_for_completed",
+      "fixture_sha256": "6d4818be932a2ae71d9435750116554ba5efca9fbfadc6f52c0cd3505d33932e",
+      "assertion_ids": [
+        "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/model/primitives/iteration_status.rs:98:assert"
+      ],
+      "port": {
+        "file": "tests/gest_model.rs",
+        "path": "primitives::iteration_status::is_terminal::it_returns_true_for_completed"
+      }
+    },
+    {
+      "test_id": "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/model/primitives/priority.rs:95:it_contains_every_variant_in_rank_order",
+      "fixture_sha256": "5c5ec98552a60d635364a22260f8af3ed1ec7f6f654657fc2995c286bcf3a24c",
+      "assertion_ids": [
+        "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/model/primitives/priority.rs:97:assert_eq"
+      ],
+      "port": {
+        "file": "tests/gest_model.rs",
+        "path": "primitives::priority::all::it_contains_every_variant_in_rank_order"
+      }
+    },
+    {
+      "test_id": "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/model/primitives/priority.rs:115:it_formats_critical",
+      "fixture_sha256": "c7d03614615ac2febd1c20b8240c329c9477fbfd5937238a2768d07e73e2a03e",
+      "assertion_ids": [
+        "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/model/primitives/priority.rs:117:assert_eq"
+      ],
+      "port": {
+        "file": "tests/gest_model.rs",
+        "path": "primitives::priority::display::it_formats_critical"
+      }
+    },
+    {
+      "test_id": "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/model/primitives/priority.rs:120:it_formats_high",
+      "fixture_sha256": "3203de613ecd2021a48c5d38bd8b49aab9b8e99bbcd0a61f2e88a2300f5dd46b",
+      "assertion_ids": [
+        "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/model/primitives/priority.rs:122:assert_eq"
+      ],
+      "port": {
+        "file": "tests/gest_model.rs",
+        "path": "primitives::priority::display::it_formats_high"
+      }
+    },
+    {
+      "test_id": "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/model/primitives/priority.rs:125:it_formats_low",
+      "fixture_sha256": "47a8b1c1330ee87c0c41f96ae521cdb8a13d5d7f026c45696958e730bd3b51a4",
+      "assertion_ids": [
+        "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/model/primitives/priority.rs:127:assert_eq"
+      ],
+      "port": {
+        "file": "tests/gest_model.rs",
+        "path": "primitives::priority::display::it_formats_low"
+      }
+    },
+    {
+      "test_id": "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/model/primitives/priority.rs:130:it_formats_lowest",
+      "fixture_sha256": "a462bdf26a7d9c73c7d2dff864b4e04eef0b04e0425eeea7f8102da47355bd13",
+      "assertion_ids": [
+        "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/model/primitives/priority.rs:132:assert_eq"
+      ],
+      "port": {
+        "file": "tests/gest_model.rs",
+        "path": "primitives::priority::display::it_formats_lowest"
+      }
+    },
+    {
+      "test_id": "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/model/primitives/priority.rs:135:it_formats_medium",
+      "fixture_sha256": "933ccc3f7080f589c4b1233ba0090e654ca654ce8a4b5f712fdf5ec9124c62f1",
+      "assertion_ids": [
+        "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/model/primitives/priority.rs:137:assert_eq"
+      ],
+      "port": {
+        "file": "tests/gest_model.rs",
+        "path": "primitives::priority::display::it_formats_medium"
+      }
+    },
+    {
+      "test_id": "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/model/primitives/priority.rs:146:it_parses_each_label",
+      "fixture_sha256": "9f172d5f7c7c3a9f9087a79888383e3d1c834d79cfb4de5ef78c63f2cd5ec44b",
+      "assertion_ids": [
+        "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/model/primitives/priority.rs:148:assert_eq",
+        "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/model/primitives/priority.rs:149:assert_eq",
+        "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/model/primitives/priority.rs:150:assert_eq",
+        "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/model/primitives/priority.rs:151:assert_eq",
+        "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/model/primitives/priority.rs:152:assert_eq"
+      ],
+      "port": {
+        "file": "tests/gest_model.rs",
+        "path": "primitives::priority::from_str::it_parses_each_label"
+      }
+    },
+    {
+      "test_id": "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/model/primitives/priority.rs:155:it_parses_case_insensitively",
+      "fixture_sha256": "f4a806c9567caf7e358f9f59c2501a14a5240d2a7616ac50bd51687600093f30",
+      "assertion_ids": [
+        "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/model/primitives/priority.rs:157:assert_eq",
+        "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/model/primitives/priority.rs:158:assert_eq",
+        "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/model/primitives/priority.rs:159:assert_eq"
+      ],
+      "port": {
+        "file": "tests/gest_model.rs",
+        "path": "primitives::priority::from_str::it_parses_case_insensitively"
+      }
+    },
+    {
+      "test_id": "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/model/primitives/priority.rs:162:it_rejects_an_empty_string",
+      "fixture_sha256": "ec3cde8ccb7e24b4e525cf161768b235ced22cbdd453e1853b66af6b1d235988",
+      "assertion_ids": [
+        "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/model/primitives/priority.rs:164:assert"
+      ],
+      "port": {
+        "file": "tests/gest_model.rs",
+        "path": "primitives::priority::from_str::it_rejects_an_empty_string"
+      }
+    },
+    {
+      "test_id": "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/model/primitives/priority.rs:167:it_rejects_unknown_labels",
+      "fixture_sha256": "db0274d55db3630ab15dceb108855ef6da072a2316a7bd2cc4168409ee3a3d0c",
+      "assertion_ids": [
+        "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/model/primitives/priority.rs:170:assert"
+      ],
+      "port": {
+        "file": "tests/gest_model.rs",
+        "path": "primitives::priority::from_str::it_rejects_unknown_labels"
+      }
+    },
+    {
+      "test_id": "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/model/primitives/priority.rs:173:it_round_trips_through_string",
+      "fixture_sha256": "0fe088624c40324585be636af76348375a581ad0b7873839d7aedb433d14751f",
+      "assertion_ids": [
+        "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/model/primitives/priority.rs:177:assert_eq"
+      ],
+      "port": {
+        "file": "tests/gest_model.rs",
+        "path": "primitives::priority::from_str::it_round_trips_through_string"
+      }
+    },
+    {
+      "test_id": "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/model/primitives/priority.rs:187:it_accepts_values_in_range",
+      "fixture_sha256": "e4663a9ff2bf1d3596e1f104d04c55b4edb2b6ba7deef8f3856b1402264dde3c",
+      "assertion_ids": [
+        "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/model/primitives/priority.rs:189:assert_eq",
+        "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/model/primitives/priority.rs:190:assert_eq",
+        "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/model/primitives/priority.rs:191:assert_eq",
+        "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/model/primitives/priority.rs:192:assert_eq",
+        "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/model/primitives/priority.rs:193:assert_eq"
+      ],
+      "port": {
+        "file": "tests/gest_model.rs",
+        "path": "primitives::priority::try_from_u8::it_accepts_values_in_range"
+      }
+    },
+    {
+      "test_id": "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/model/primitives/priority.rs:196:it_rejects_the_max_u8",
+      "fixture_sha256": "cbc06be1271325c28c0f501fdfa9aea1df9255feda5c222aa4c6d2d3d227cb48",
+      "assertion_ids": [
+        "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/model/primitives/priority.rs:198:assert"
+      ],
+      "port": {
+        "file": "tests/gest_model.rs",
+        "path": "primitives::priority::try_from_u8::it_rejects_the_max_u8"
+      }
+    },
+    {
+      "test_id": "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/model/primitives/priority.rs:201:it_rejects_values_just_out_of_range",
+      "fixture_sha256": "3e7290c5b9c8a29502ee93819f5c1c3857653c5762b0770f129f4057db9badd3",
+      "assertion_ids": [
+        "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/model/primitives/priority.rs:203:assert"
+      ],
+      "port": {
+        "file": "tests/gest_model.rs",
+        "path": "primitives::priority::try_from_u8::it_rejects_values_just_out_of_range"
+      }
+    },
+    {
+      "test_id": "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/model/primitives/priority.rs:206:it_round_trips_through_u8",
+      "fixture_sha256": "af3943c02c21ee75cadc021b43bd6b6da268443c1016a8ce00b5086eb44f5da8",
+      "assertion_ids": [
+        "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/model/primitives/priority.rs:210:assert_eq"
+      ],
+      "port": {
+        "file": "tests/gest_model.rs",
+        "path": "primitives::priority::try_from_u8::it_round_trips_through_u8"
+      }
+    },
+    {
+      "test_id": "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/model/primitives/relationship_type.rs:79:it_formats_blocked_by",
+      "fixture_sha256": "3a88ef5e9455614b4b9baecebd85b4ac20edfb747882cd3d3999bab24446443e",
+      "assertion_ids": [
+        "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/model/primitives/relationship_type.rs:81:assert_eq"
+      ],
+      "port": {
+        "file": "tests/gest_model.rs",
+        "path": "primitives::relationship_type::display::it_formats_blocked_by"
+      }
+    },
+    {
+      "test_id": "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/model/primitives/relationship_type.rs:84:it_formats_blocks",
+      "fixture_sha256": "99a5a36aedeca6fae8572ad9dea02b605e87b5b0232057e9c7f0a49a4aee533e",
+      "assertion_ids": [
+        "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/model/primitives/relationship_type.rs:86:assert_eq"
+      ],
+      "port": {
+        "file": "tests/gest_model.rs",
+        "path": "primitives::relationship_type::display::it_formats_blocks"
+      }
+    },
+    {
+      "test_id": "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/model/primitives/relationship_type.rs:89:it_formats_child_of",
+      "fixture_sha256": "e556f422e4407d0b02a20ce7a902d77ac92d5bc42bd741b532bb785e1cbc8b86",
+      "assertion_ids": [
+        "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/model/primitives/relationship_type.rs:91:assert_eq"
+      ],
+      "port": {
+        "file": "tests/gest_model.rs",
+        "path": "primitives::relationship_type::display::it_formats_child_of"
+      }
+    },
+    {
+      "test_id": "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/model/primitives/relationship_type.rs:94:it_formats_parent_of",
+      "fixture_sha256": "708667fc9aae1960a61d10e5f6d4086a62ba8baada4b039d1fe236afc76e54ff",
+      "assertion_ids": [
+        "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/model/primitives/relationship_type.rs:96:assert_eq"
+      ],
+      "port": {
+        "file": "tests/gest_model.rs",
+        "path": "primitives::relationship_type::display::it_formats_parent_of"
+      }
+    },
+    {
+      "test_id": "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/model/primitives/relationship_type.rs:99:it_formats_relates_to",
+      "fixture_sha256": "ec5e273e7262e16032e553385db47800ee0487aacb5220fb9993b1388c039349",
+      "assertion_ids": [
+        "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/model/primitives/relationship_type.rs:101:assert_eq"
+      ],
+      "port": {
+        "file": "tests/gest_model.rs",
+        "path": "primitives::relationship_type::display::it_formats_relates_to"
+      }
+    },
+    {
+      "test_id": "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/model/primitives/relationship_type.rs:110:it_inverts_blocked_by_to_blocks",
+      "fixture_sha256": "78d2553d4250cc1cfb715095fc5888a4310a99bcca29c6adad045c23bf41ba4b",
+      "assertion_ids": [
+        "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/model/primitives/relationship_type.rs:112:assert_eq"
+      ],
+      "port": {
+        "file": "tests/gest_model.rs",
+        "path": "primitives::relationship_type::inverse::it_inverts_blocked_by_to_blocks"
+      }
+    },
+    {
+      "test_id": "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/model/primitives/relationship_type.rs:115:it_inverts_blocks_to_blocked_by",
+      "fixture_sha256": "629273ad3edca8cbdbc3784c6e970af5b51d96631588a3104df6123ddb637f33",
+      "assertion_ids": [
+        "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/model/primitives/relationship_type.rs:117:assert_eq"
+      ],
+      "port": {
+        "file": "tests/gest_model.rs",
+        "path": "primitives::relationship_type::inverse::it_inverts_blocks_to_blocked_by"
+      }
+    },
+    {
+      "test_id": "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/model/primitives/relationship_type.rs:120:it_inverts_child_of_to_parent_of",
+      "fixture_sha256": "51c6d85832991b016a99342abc4ff2f84699cbff36b338cf790f3c66ca1dee08",
+      "assertion_ids": [
+        "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/model/primitives/relationship_type.rs:122:assert_eq"
+      ],
+      "port": {
+        "file": "tests/gest_model.rs",
+        "path": "primitives::relationship_type::inverse::it_inverts_child_of_to_parent_of"
+      }
+    },
+    {
+      "test_id": "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/model/primitives/relationship_type.rs:125:it_inverts_parent_of_to_child_of",
+      "fixture_sha256": "4886f01a8b68c010b976f5b0776a298c0cfafc51cea7fc10efc5fd853fc837c6",
+      "assertion_ids": [
+        "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/model/primitives/relationship_type.rs:127:assert_eq"
+      ],
+      "port": {
+        "file": "tests/gest_model.rs",
+        "path": "primitives::relationship_type::inverse::it_inverts_parent_of_to_child_of"
+      }
+    },
+    {
+      "test_id": "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/model/primitives/relationship_type.rs:130:it_keeps_relates_to_symmetric",
+      "fixture_sha256": "741e2fd6ed0487a0c415cc43e83c9cc754187ea2ff9bdd540a8cddd5e2ff388e",
+      "assertion_ids": [
+        "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/model/primitives/relationship_type.rs:132:assert_eq"
+      ],
+      "port": {
+        "file": "tests/gest_model.rs",
+        "path": "primitives::relationship_type::inverse::it_keeps_relates_to_symmetric"
+      }
+    },
+    {
+      "test_id": "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/model/primitives/task_status.rs:70:it_formats_cancelled",
+      "fixture_sha256": "517598c6533734929e1899792e670bf8f9d2cf13f4a538c52371bb59cfd210f1",
+      "assertion_ids": [
+        "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/model/primitives/task_status.rs:72:assert_eq"
+      ],
+      "port": {
+        "file": "tests/gest_model.rs",
+        "path": "primitives::task_status::display::it_formats_cancelled"
+      }
+    },
+    {
+      "test_id": "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/model/primitives/task_status.rs:75:it_formats_done",
+      "fixture_sha256": "ea1ae6fe8d4e66c75febed0fddb478681f48253c991f978785c18a8215f96c83",
+      "assertion_ids": [
+        "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/model/primitives/task_status.rs:77:assert_eq"
+      ],
+      "port": {
+        "file": "tests/gest_model.rs",
+        "path": "primitives::task_status::display::it_formats_done"
+      }
+    },
+    {
+      "test_id": "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/model/primitives/task_status.rs:80:it_formats_in_progress",
+      "fixture_sha256": "2d21a8a81219f0bbf0d943fc98e8dd87645afcaa54bfd4039785f4f66382942b",
+      "assertion_ids": [
+        "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/model/primitives/task_status.rs:82:assert_eq"
+      ],
+      "port": {
+        "file": "tests/gest_model.rs",
+        "path": "primitives::task_status::display::it_formats_in_progress"
+      }
+    },
+    {
+      "test_id": "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/model/primitives/task_status.rs:85:it_formats_open",
+      "fixture_sha256": "751f0c9c67769e2dec3fa3092569b4cf239e46806b4220d10502b384f3b127b7",
+      "assertion_ids": [
+        "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/model/primitives/task_status.rs:87:assert_eq"
+      ],
+      "port": {
+        "file": "tests/gest_model.rs",
+        "path": "primitives::task_status::display::it_formats_open"
+      }
+    },
+    {
+      "test_id": "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/model/primitives/task_status.rs:94:it_returns_false_for_in_progress",
+      "fixture_sha256": "de9be2039e2d12474bfd1e225251c6ea86f37bbd84d9b92d90cab9798e1477ff",
+      "assertion_ids": [
+        "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/model/primitives/task_status.rs:96:assert"
+      ],
+      "port": {
+        "file": "tests/gest_model.rs",
+        "path": "primitives::task_status::is_terminal::it_returns_false_for_in_progress"
+      }
+    },
+    {
+      "test_id": "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/model/primitives/task_status.rs:99:it_returns_false_for_open",
+      "fixture_sha256": "b6ea2cb3906e06ea4096a3a734433959880cba6c329a7656700c786e16cfb470",
+      "assertion_ids": [
+        "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/model/primitives/task_status.rs:101:assert"
+      ],
+      "port": {
+        "file": "tests/gest_model.rs",
+        "path": "primitives::task_status::is_terminal::it_returns_false_for_open"
+      }
+    },
+    {
+      "test_id": "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/model/primitives/task_status.rs:104:it_returns_true_for_cancelled",
+      "fixture_sha256": "91c6e78e7545dcdddf3a0e9b99a7024b60c8f3d834fa10be82c4ca1b1d11a1ae",
+      "assertion_ids": [
+        "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/model/primitives/task_status.rs:106:assert"
+      ],
+      "port": {
+        "file": "tests/gest_model.rs",
+        "path": "primitives::task_status::is_terminal::it_returns_true_for_cancelled"
+      }
+    },
+    {
+      "test_id": "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/model/primitives/task_status.rs:109:it_returns_true_for_done",
+      "fixture_sha256": "86670b9fbaba70203f6bbdffb108eb34c78e642dd7ef2a8563bd03e47dd8b46c",
+      "assertion_ids": [
+        "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/model/primitives/task_status.rs:111:assert"
+      ],
+      "port": {
+        "file": "tests/gest_model.rs",
+        "path": "primitives::task_status::is_terminal::it_returns_true_for_done"
+      }
+    },
+    {
+      "test_id": "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/model/project.rs:137:it_sets_timestamps_to_now",
+      "fixture_sha256": "131450377ee1e6f92f8f4e06da84674fd66462907ac83643071e5553e4b1c588",
+      "assertion_ids": [
+        "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/model/project.rs:143:assert",
+        "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/model/project.rs:144:assert_eq"
+      ],
+      "port": {
+        "file": "tests/gest_model.rs",
+        "path": "project::new::it_sets_timestamps_to_now"
+      }
+    },
+    {
+      "test_id": "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/model/tag.rs:87:it_creates_a_tag_with_label",
+      "fixture_sha256": "6a5dd6e4fdba81e64a28b814e14d107703b55832622141144114b33fa959b7b9",
+      "assertion_ids": [
+        "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/model/tag.rs:91:assert_eq"
+      ],
+      "port": {
+        "file": "tests/gest_model.rs",
+        "path": "tag::new::it_creates_a_tag_with_label"
+      }
+    }
+  ],
+  "excluded_tests": [
+    {
+      "test_id": "eaf821b19c3cf75b99d22e1cc70e0eff4a3562a8:src/store/model/project_workspace.rs:101:it_sets_timestamps_to_now",
+      "fixture_sha256": "fa45cd2c75783a2caa3a046c84f3bac212fa242e89b337ecd05b29b16385b2d7",
+      "reason": "Its model is excluded with project_workspace.rs."
+    }
+  ]
+}
