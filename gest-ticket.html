@@ -1,0 +1,164 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="generator" content="smalldocs-0.5.13"><meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes"><title>Emit artifact and project creation tickets – Gossil</title><link rel="icon" href="site_libs/themes/atelier/logo.svg"><link rel="stylesheet" href="site_libs/themes/atelier/atelier.css" data-mode="light" class="quarto-color-scheme" id="quarto-bootstrap-light" media="not all and (prefers-color-scheme: dark)"><link rel="stylesheet" href="site_libs/themes/atelier/atelier-dark.css" data-mode="dark" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap-dark" media="(prefers-color-scheme: dark)"><link rel="stylesheet" href="site_libs/bootstrap-icons/bootstrap-icons.min.css"><link rel="stylesheet" href="site_libs/smalldocs.css"><meta name="smalldocs:offset" content="./"><script src="site_libs/bootstrap/bootstrap.bundle.min.js"></script><script src="site_libs/fuse/fuse.min.js"></script><script src="site_libs/smalldocs.js" defer></script><script>(function(){var d=document.documentElement,s=null;try{s=localStorage.getItem('smalldocs-scheme')}catch(e){}var alt=s?s==='alternate':!!(window.matchMedia&&matchMedia('(prefers-color-scheme: dark)').matches);var ls=document.querySelectorAll('link.quarto-color-scheme');if(alt)d.dataset.scheme='alternate';if(s)ls.forEach(function(l){var on=l.classList.contains('quarto-color-alternate')===alt;if(on)l.setAttribute('blocking','render');l.media=on?'all':'not all'});var on=ls[alt?1:0];if(on&&on.dataset.mode==='dark')d.classList.add('quarto-dark')})();</script></head><body class="nav-sidebar floating nav-fixed"><header id="quarto-header" class="headroom sticky-top"><nav class="navbar navbar-expand-lg sd-navbar-default"><div class="navbar-container container-fluid"><div class="navbar-brand-container mx-auto"><a class="navbar-brand" href="index.html"><span class="navbar-title">Gossil</span></a></div><button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button><div class="collapse navbar-collapse" id="navbarCollapse"><ul class="navbar-nav navbar-nav-scroll me-auto"><li class="nav-item"><a class="nav-link" href="getting-started.html"><span class="menu-text">Start</span></a></li><li class="nav-item"><a class="nav-link" href="concepts.html"><span class="menu-text">Library concepts</span></a></li><li class="nav-item"><a class="nav-link" href="cli.html"><span class="menu-text">CLI</span></a></li><li class="nav-item"><a class="nav-link" href="api/index.html"><span class="menu-text">Rust API</span></a></li><li class="nav-item"><a class="nav-link" href="development-plan.html"><span class="menu-text">Development</span></a></li></ul><ul class="navbar-nav navbar-nav-scroll ms-auto"><li class="nav-item compact"><a class="nav-link" href="https://github.com/rahuldave/gossil" aria-label="github"><i class="bi bi-github" role="img"></i></a></li><li class="nav-item compact"><a class="quarto-color-scheme-toggle nav-link" href="" title="Toggle dark mode" onclick="window.smalldocsToggleScheme(); return false;"><i class="bi"></i></a></li></ul><div class="quarto-navbar-tools"><div class="smalldocs-search" id="quarto-search"><i class="bi bi-search" aria-hidden="true"></i><input type="search" class="form-control form-control-sm" placeholder="Search" aria-label="Search" autocomplete="off"><div class="smalldocs-search-results dropdown-menu"></div></div></div></div></div></nav><nav class="quarto-secondary-nav"><div class="container-fluid d-flex"><button type="button" class="quarto-btn-toggle btn" aria-controls="quarto-sidebar" aria-label="Toggle sidebar navigation"><i class="bi bi-layout-text-sidebar-reverse"></i></button><nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="working-with-repositories.html">Guides</a></li><li class="breadcrumb-item"><a href="gest-ticket.html">Emit artifact and project creation tickets</a></li></ol></nav></div></nav></header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article has-sidebar has-margin"><nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto"><div class="sidebar-menu-container"><ul class="list-unstyled mt-1"><li class="sidebar-item"><div class="sidebar-item-container"><a href="index.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Gossil</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="getting-started.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Get started</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="cli.html" class="sidebar-item-text sidebar-link"><span class="menu-text">CLI reference</span></a></div></li><li class="sidebar-item sidebar-item-section"><div class="sidebar-item-container"><a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true"><span class="menu-text">Guides</span></a><a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section"><i class="bi bi-chevron-right ms-2"></i></a></div><ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show"><li class="sidebar-item"><div class="sidebar-item-container"><a href="working-with-repositories.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Working with repositories</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="compare-with-git.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Compare Gossil with Git</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="concepts.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Library concepts</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="examples.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Rust library examples</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="delta-encoder.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Bounded delta encoder</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="delta-decoder.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Bounded delta decoder</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="blob-primitives.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Byte digests and packed blobs</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="artifact-checksum.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Artifact byte checksums</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="token-codec.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Fossil token bytes</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="glob.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Bounded Fossil glob port</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="file-path.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Lexical file paths</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="history.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Check-in graph paths</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="artifact-parser.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Artifact parser</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="diff.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Compare normalized byte lines</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="task-ticket.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Emit a task creation artifact</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="gest-ticket.html" class="sidebar-item-text sidebar-link active" aria-current="page"><span class="menu-text">Emit artifact and project creation tickets</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="local-storage.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Local database ownership</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="native-storage.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Native local storage</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="gest-task-values.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Gest task values</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="gest-project-values.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Gest project values</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="gest-author-values.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Gest author values</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="gest-artifact-values.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Gest artifact values</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="gest-iteration-values.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Gest iteration values</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="gest-tag-values.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Gest tag values</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="gest-note-values.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Gest note values</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="gest-relationship-values.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Gest relationship values</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="gest-entity-tag-values.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Gest entity tag values</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="gest-iteration-task-values.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Gest iteration task values</span></a></div></li></ul></li><li class="sidebar-item sidebar-item-section"><div class="sidebar-item-container"><a class="sidebar-item-text sidebar-link" href="api/index.html"><span class="menu-text">Rust API</span></a><a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Toggle section"><i class="bi bi-chevron-right ms-2"></i></a></div><ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show"><li class="sidebar-item"><div class="sidebar-item-container"><a href="api/artifact.html" class="sidebar-item-text sidebar-link"><span class="menu-text">artifact</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="api/artifact_checksum.html" class="sidebar-item-text sidebar-link"><span class="menu-text">artifact_checksum</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="api/compression.html" class="sidebar-item-text sidebar-link"><span class="menu-text">compression</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="api/content_hash.html" class="sidebar-item-text sidebar-link"><span class="menu-text">content_hash</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="api/delta.html" class="sidebar-item-text sidebar-link"><span class="menu-text">delta</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="api/diff.html" class="sidebar-item-text sidebar-link"><span class="menu-text">diff</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="api/file_path.html" class="sidebar-item-text sidebar-link"><span class="menu-text">file_path</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="api/gest_artifact_values.html" class="sidebar-item-text sidebar-link"><span class="menu-text">gest_artifact_values</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="api/gest_author_values.html" class="sidebar-item-text sidebar-link"><span class="menu-text">gest_author_values</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="api/gest_entity_tag_values.html" class="sidebar-item-text sidebar-link"><span class="menu-text">gest_entity_tag_values</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="api/gest_iteration_task_values.html" class="sidebar-item-text sidebar-link"><span class="menu-text">gest_iteration_task_values</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="api/gest_iteration_values.html" class="sidebar-item-text sidebar-link"><span class="menu-text">gest_iteration_values</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="api/gest_note_values.html" class="sidebar-item-text sidebar-link"><span class="menu-text">gest_note_values</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="api/gest_project_values.html" class="sidebar-item-text sidebar-link"><span class="menu-text">gest_project_values</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="api/gest_relationship_values.html" class="sidebar-item-text sidebar-link"><span class="menu-text">gest_relationship_values</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="api/gest_tag_values.html" class="sidebar-item-text sidebar-link"><span class="menu-text">gest_tag_values</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="api/gest_task_values.html" class="sidebar-item-text sidebar-link"><span class="menu-text">gest_task_values</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="api/gest_ticket.html" class="sidebar-item-text sidebar-link"><span class="menu-text">gest_ticket</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="api/glob.html" class="sidebar-item-text sidebar-link"><span class="menu-text">glob</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="api/gossil.html" class="sidebar-item-text sidebar-link"><span class="menu-text">gossil</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="api/history.html" class="sidebar-item-text sidebar-link"><span class="menu-text">history</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="api/native_date.html" class="sidebar-item-text sidebar-link"><span class="menu-text">native_date</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="api/product.html" class="sidebar-item-text sidebar-link"><span class="menu-text">product</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="api/storage.html" class="sidebar-item-text sidebar-link"><span class="menu-text">storage</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="api/task_ticket.html" class="sidebar-item-text sidebar-link"><span class="menu-text">task_ticket</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="api/token_codec.html" class="sidebar-item-text sidebar-link"><span class="menu-text">token_codec</span></a></div></li></ul></li><li class="sidebar-item sidebar-item-section"><div class="sidebar-item-container"><a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true"><span class="menu-text">Development</span></a><a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true" aria-label="Toggle section"><i class="bi bi-chevron-right ms-2"></i></a></div><ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show"><li class="sidebar-item"><div class="sidebar-item-container"><a href="development-plan.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Development and contributing</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="conformance.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Inherited-test runner</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="libsql-wrapper.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Exact libsql TEXT retrieval</span></a></div></li></ul></li></ul></div></nav><div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item"></div><div id="quarto-margin-sidebar" class="sidebar margin-sidebar"><nav id="TOC" role="doc-toc" class="toc-active"><h2 id="toc-title">On this page</h2><ul><li><a href="#use-the-library" id="toc-use-the-library" class="nav-link" data-scroll-target="#use-the-library">Use the library</a></li><li><a href="#artifact-cards" id="toc-artifact-cards" class="nav-link" data-scroll-target="#artifact-cards">Artifact cards</a></li><li><a href="#fields-of-each-kind" id="toc-fields-of-each-kind" class="nav-link" data-scroll-target="#fields-of-each-kind">Fields of each kind</a></li><li><a href="#one-shared-emitter" id="toc-one-shared-emitter" class="nav-link" data-scroll-target="#one-shared-emitter">One shared emitter</a></li><li><a href="#tests-and-the-fossil-check" id="toc-tests-and-the-fossil-check" class="nav-link" data-scroll-target="#tests-and-the-fossil-check">Tests and the Fossil check</a></li><li><a href="#caller-responsibilities" id="toc-caller-responsibilities" class="nav-link" data-scroll-target="#caller-responsibilities">Caller responsibilities</a></li><li><a href="#recommendations" id="toc-recommendations" class="nav-link" data-scroll-target="#recommendations">Recommendations</a></li></ul></nav></div><main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="working-with-repositories.html">Guides</a></li><li class="breadcrumb-item"><a href="gest-ticket.html">Emit artifact and project creation tickets</a></li></ol></nav><div class="quarto-title"><h1 class="title">Emit artifact and project creation tickets</h1></div><div class="quarto-title-meta"></div></header><p>The <code>gest_ticket</code> module turns a validated Gest artifact or project record into
+complete, uncompressed bytes in Fossil’s ticket artifact format. Gest is the
+issue tracker that Gossil ports. Each Gest record becomes an ordinary Fossil
+ticket, so stock Fossil can store, rebuild and show it.</p>
+<p>A Gest artifact is a document record, for example a spec or a plan. It is not
+a Fossil blob. A Gest project groups the tasks, artifacts and iterations of one
+piece of work. Planned work also uses the artifact ticket. A logical change is
+a stable name for future work on an issue. The planned-changes contract
+CHANGE-01 uses an artifact ticket to carry each logical change.</p>
+<p>Use the library to inspect or test these creation artifacts in memory. No
+current Gossil repository API stores them. Storage, the attachment that
+declares a logical change, history replay and issue commands remain separate work.</p>
+<section id="use-the-library" class="level2">
+<h2 class="anchored" data-anchor-id="use-the-library">Use the library</h2>
+<p>Validate the decoded fields first, with <a href="api/gest_artifact_values.html#artifact_from_values"><code>artifact_from_values</code></a> or
+<a href="api/gest_project_values.html#project_from_values"><code>project_from_values</code></a>. The <a href="gest-artifact-values.html">artifact values guide</a> and
+the <a href="gest-project-values.html">project values guide</a> show that step. Then emit
+the artifact with an explicit byte limit:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span class="kw">use</span> gossil::gest_artifact_values::{ArtifactValueInputs, artifact_from_values};
+<span class="kw">use</span> gossil::gest_ticket::artifact_creation_bytes;
+<span class="kw">use</span> gossil::native_date::NativeDate;
+<span class="kw">use</span> serde_json::json;
+
+<span class="kw">let</span> artifact <span class="op">=</span> artifact_from_values(ArtifactValueInputs {
+    gest_id: json<span class="op">!</span>(<span class="st">&quot;</span><span class="st">zyxwvutsrqponmlkzyxwvutsrqponmlk</span><span class="st">&quot;</span>),
+    project_id: json<span class="op">!</span>(<span class="st">&quot;</span><span class="st">kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk</span><span class="st">&quot;</span>),
+    title: json<span class="op">!</span>(<span class="st">&quot;</span><span class="st">Plan</span><span class="st">&quot;</span>),
+    body: json<span class="op">!</span>(<span class="st">&quot;</span><span class="st">Complete body</span><span class="st">&quot;</span>),
+    metadata: json<span class="op">!</span>({}),
+    archived_at: json<span class="op">!</span>(null),
+    created_at: json<span class="op">!</span>(<span class="st">&quot;</span><span class="st">2026-11-18T12:00:00Z</span><span class="st">&quot;</span>),
+    updated_at: json<span class="op">!</span>(<span class="st">&quot;</span><span class="st">2026-11-18T12:00:00Z</span><span class="st">&quot;</span>),
+})
+.unwrap();
+<span class="kw">let</span> date <span class="op">=</span> NativeDate::parse(<span class="st">b&quot;</span><span class="st">2026-11-18T12:00:00Z</span><span class="st">&quot;</span>).unwrap();
+<span class="kw">let</span> ticket_id <span class="op">=</span> <span class="st">b&quot;</span><span class="st">0123456789abcdef0123456789abcdef01234567</span><span class="st">&quot;</span>;
+<span class="kw">let</span> bytes <span class="op">=</span> artifact_creation_bytes(<span class="op">&amp;</span>artifact, ticket_id, <span class="st">b&quot;</span><span class="st">native actor</span><span class="st">&quot;</span>, date, <span class="dv">65_536</span>).unwrap();
+<span class="fu">assert!</span>(bytes.len() <span class="op">&lt;</span><span class="op">=</span> <span class="dv">65_536</span>);</code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><a href="api/gest_ticket.html#project_creation_bytes"><code>project_creation_bytes</code></a> takes a <a href="api/gest_project_values.html#ProjectValues"><code>ProjectValues</code></a> record and the same four other
+arguments. In an application, handle <a href="api/gest_ticket.html#TicketError"><code>TicketError</code></a> and do not unwrap the
+result.</p>
+</section>
+<section id="artifact-cards" class="level2">
+<h2 class="anchored" data-anchor-id="artifact-cards">Artifact cards</h2>
+<p>A ticket artifact is a sequence of newline-terminated records called cards.
+Each emitted artifact has a D card, the sorted J cards, a K card, a U card and
+a final Z card:</p>
+<ul>
+<li><strong>D</strong> holds the creation date in the <a href="task-ticket.html#date-domain">native date grammar</a>.</li>
+<li><strong>J</strong> assigns one named field to its encoded value.</li>
+<li><strong>K</strong> holds the ticket identity, exactly forty lowercase ASCII hexadecimal bytes.</li>
+<li><strong>U</strong> holds the actor bytes, escaped with the <a href="token-codec.html">token codec</a>.</li>
+<li><strong>Z</strong> holds the lowercase MD5 checksum of all the bytes before it.</li>
+</ul>
+<p>The caller supplies K independently of the record’s <code>gest_id</code>. A Gest ID has
+32 lowercase letters from <code>k</code> through <code>z</code> and stays a J field. The emitter
+neither generates identities nor derives one identity from the other.</p>
+</section>
+<section id="fields-of-each-kind" class="level2">
+<h2 class="anchored" data-anchor-id="fields-of-each-kind">Fields of each kind</h2>
+<p>The J value of each model field is the compact <code>serde_json</code> encoding of the converter output,
+followed by native token escaping. The converter output is the value of
+<a href="api/gest_artifact_values.html#artifact_to_values"><code>artifact_to_values</code></a> or <a href="api/gest_project_values.html#project_to_values"><code>project_to_values</code></a>. Strings keep their JSON quotes,
+metadata keeps its JSON value, and null values stay present. Timestamps use
+the UTC form <code>+00:00</code>.</p>
+<div class="sd-table">
+<table class="caption-top table">
+<thead>
+<tr>
+<th>Kind</th>
+<th>Model fields</th>
+<th>J cards</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>artifact</td>
+<td><code>archived_at</code>, <code>body</code>, <code>created_at</code>, <code>gest_id</code>, <code>metadata</code>, <code>project_id</code>, <code>title</code>, <code>updated_at</code></td>
+<td>11</td>
+</tr>
+<tr>
+<td>project</td>
+<td><code>archived_at</code>, <code>created_at</code>, <code>gest_id</code>, <code>updated_at</code></td>
+<td>7</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Each artifact also has the three fixed fields of the task ticket.
+<code>gossil_deleted</code> is JSON <code>false</code>. <code>gossil_kind</code> is the raw kind name, <code>artifact</code>
+or <code>project</code>, and <code>gossil_schema</code> is raw <code>1</code>. The J cards are sorted by name.</p>
+<p>The field names are the Gest table columns, with <code>id</code> renamed to <code>gest_id</code>. The
+artifact body keeps its exact text. A non-null <code>archived_at</code> does not mark a
+record as deleted. The project’s local checkout root is not a canonical field,
+so a project ticket does not include the path of the local checkout.</p>
+</section>
+<section id="one-shared-emitter" class="level2">
+<h2 class="anchored" data-anchor-id="one-shared-emitter">One shared emitter</h2>
+<p>The task, artifact and project emitters call one crate-private function. Each
+kind gives only its sorted list of fields and its kind name. So the three kinds
+share the card syntax, the size plan, the limit checks and the
+checksum. The <a href="task-ticket.html">task ticket guide</a> describes the same rules for
+tasks. It also describes <code>max_output</code>.</p>
+<p>The shared emitter does not change the task bytes, and two task fixtures hold
+the expected bytes. The first fixture was spelled by hand before the shared
+emitter existed, and the second fills every task field.</p>
+<p><code>max_output</code> bounds the complete encoded artifact. An exact-size limit
+succeeds, and a smaller limit returns <code>TicketError::Size</code>. The emitter counts
+the encoded size of the borrowed title, body and metadata before it copies
+them. A test checks that a 256 KiB body over the limit causes no allocation of
+4096 bytes or more.</p>
+<p>This module defines <a href="api/gest_ticket.html#TicketError"><code>TicketError</code></a>, and <code>task_ticket</code> re-exports it. Its <code>Size</code>
+message is <code>ticket output limit</code>, because all three kinds return the error.</p>
+</section>
+<section id="tests-and-the-fossil-check" class="level2">
+<h2 class="anchored" data-anchor-id="tests-and-the-fossil-check">Tests and the Fossil check</h2>
+<p><code>tests/gest_ticket.rs</code> covers both kinds:</p>
+<ul>
+<li><strong>Golden bytes.</strong> Each kind matches a fixture that
+<code>tests/fixtures/gest-ticket/generate.py</code> spells by hand. The same script
+also writes both task fixtures of <code>tests/task_ticket.rs</code>.</li>
+<li><strong>Round trips.</strong> Each record survives the structural parser, then the
+converter again, for row GEST-T01 of the Gest contract.</li>
+<li><strong>Field mapping.</strong> The J names equal the canonical field names in the
+committed converter source maps. Each J value equals the JSON bytes of the
+converter output.</li>
+<li><strong>Limits.</strong> An oversized title, body or metadata value fails before a large
+allocation.</li>
+</ul>
+<p><code>just gest-ticket-interop</code> runs the stock Fossil check. It loads one artifact,
+one project and one task ticket into a scratch repository of the pinned Fossil
+2.29 at <code>7e8ecf0ce4</code>. The repository has one ticket column for each Gest field. After a full
+rebuild, the test checks these results:</p>
+<ul>
+<li><code>test-integrity --parse</code> finds no error.</li>
+<li><code>ticket show</code> returns each J value byte for byte.</li>
+<li><code>ticket history</code> lists each field change.</li>
+<li><code>artifact</code> returns the emitted bytes.</li>
+</ul>
+<p>If the Fossil reference binary is absent, the recipe prints <code>not-run</code> and exits with status
+5. A <code>not-run</code> result is not a pass. The test never calls <code>fossil ticket add</code>,
+because that command can crash in Fossil 2.29 at tkt.c:1862.</p>
+</section>
+<section id="caller-responsibilities" class="level2">
+<h2 class="anchored" data-anchor-id="caller-responsibilities">Caller responsibilities</h2>
+<p>Check raw field presence, duplicate keys and input byte limits before you
+construct a record. Choose the ticket identity, actor, D instant and output
+limit independently of the model fields.</p>
+<p>The emitter reads no clock, generates no identity and writes no database. It
+does not replay history, check references or decide who may write a record. A
+future repository operation must enforce these rules, including any rule that
+artifact dates increase.</p>
+<p>This page follows the nossaifd writing guide, including principles credited to
+Rosalind Reid, Shreya Shankar and Oskar Austegard.</p>
+</section>
+<section id="recommendations" class="level2">
+<h2 class="anchored" data-anchor-id="recommendations">Recommendations</h2>
+<p>Validate a record with its converter, then call <a href="api/gest_ticket.html#artifact_creation_bytes"><code>artifact_creation_bytes</code></a> or
+<a href="api/gest_ticket.html#project_creation_bytes"><code>project_creation_bytes</code></a> with an explicit output limit. Run
+<code>just gest-ticket-interop</code> after a change to the emitter, and report <code>not-run</code>
+apart from a pass. Storage of these tickets and the declaration of a logical
+change remain planned.</p>
+</section>
+<nav class="page-navigation"><div class="nav-page nav-page-previous"><a href="task-ticket.html" class="pagination-link"><i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">Emit a task creation artifact</span></a></div><div class="nav-page nav-page-next"><a href="local-storage.html" class="pagination-link"><span class="nav-page-text">Local database ownership</span> <i class="bi bi-arrow-right-short"></i></a></div></nav></main></div></body></html>
