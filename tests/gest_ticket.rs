@@ -473,7 +473,9 @@ fn stock_fossil_reads_emitted_gest_tickets() {
     ))
     .unwrap();
     assert!(
-        integrity.contains("0 control artifacts failed to parse"),
+        integrity
+            .lines()
+            .any(|line| line.trim() == "0 control artifacts failed to parse"),
         "{integrity}"
     );
     assert!(integrity.contains("  3 tickets\n"), "{integrity}");
