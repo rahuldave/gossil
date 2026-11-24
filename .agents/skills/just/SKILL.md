@@ -84,9 +84,15 @@ each stage as an ordinary line of the recipe.
 Besides Git, a project assumes three programs only, `just`, `uv` and `jlog`.
 Every other tool comes through a recipe. `just install` is that recipe. It is
 in `.agents/install.just`, and the Justfile imports it with the line
-`import? '.agents/install.just'`. To install jlog, clone
-https://github.com/rahuldave/jlog, run `git checkout v0.2.0` in the clone,
-then run `just install`.
+`import? '.agents/install.just'`. To install the release binary of jlog,
+run this line. It puts jlog in `~/.local/bin`, so put that folder on PATH.
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/rahuldave/jlog/v0.3.0/scripts/install.sh | sh -s -- --tag v0.3.0
+```
+
+To build jlog from source instead, clone https://github.com/rahuldave/jlog,
+run `git checkout v0.3.0` in the clone, then run `just install`.
 
 - **`just install lint`** adds a tool. A tool is a set of packages for the
   project, and the profile of the project names them. For Python, the recipe
@@ -122,7 +128,7 @@ the Justfile.
 this order, in every project:
 
 ```text
-tools-check release-check fmt-check lint typecheck test integration coverage-check docstring-check docs-check prose-check diff-check
+tools-check release-check ci-gate fmt-check lint typecheck test integration coverage-check docstring-check docs-check prose-check diff-check
 ```
 
 `references/command_contract.md` gives the meaning of each step. The rules
@@ -139,7 +145,10 @@ for steps are these:
   has, for example `jlog skip typecheck "no type checker in this
   repository"`.
 - **`check` ends with `jlog pass`.** `jlog pass` records a pass for the
-  worktree when each step passed or logged a skip.
+  worktree when each step passed or logged a skip. It records no pass when
+  the worktree has unstaged changes or untracked files. So `check` first runs
+  `worktree-warning`, which prints a warning before the first step. The
+  warning is not a step, and the steps still run.
 - **A step of your own replaces the step of the index.** Give it the name of
   the step, and end it with `jlog step NAME`. Then run `just install`.
 - **A step never hides its lines.** A step has no shebang line and no line

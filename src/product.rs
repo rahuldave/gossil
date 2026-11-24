@@ -6,10 +6,14 @@ use std::fs::File;
 use std::io::{Read, Write};
 use std::path::{Path, PathBuf};
 
+mod help;
+
 /// Adapter failures retain their original I/O or allocation cause.
 #[derive(Debug)]
 enum CommandError {
-    /// The argument count or command does not match `vcs test-delta-apply`.
+    /// The argument count does not match `vcs test-delta-apply`.
+    ///
+    /// The `route` function rejects unknown commands before this check.
     Usage,
     /// Invalid glob diagnostic arguments.
     UsageGlob,
@@ -350,20 +354,111 @@ fn dispatch(args: &[OsString]) -> Result<(), CommandError> {
     run_with(args, apply)
 }
 
+/// Holds the first decision of the product entry, which is to print help, refuse
+/// the arguments or run a command.
+#[derive(Debug, PartialEq)]
+enum Route {
+    /// Write this help text to stdout and exit 0.
+    Print(String),
+    /// Write this diagnostic to stderr and exit 2, as a parser failure.
+    Fail(String),
+    /// Run the command, with the group normalized to `vcs`.
+    Dispatch(Vec<OsString>),
+}
+
+/// Answer help requests and unknown names before any command runs.
+///
+/// A help word is `--help`, `-h` or `help`. Help words before the group, or
+/// between the group and a command name, ask for help, and several of them in a
+/// row count as one. So no arguments, `help` and `help help` give the product
+/// help, `vcs` and `vcs --help` give the group help, and `help vcs open`,
+/// `vcs help open` and `vcs --help -h open` give the help of `open`. A lone
+/// `--help` or `-h` after a command also gives its help.
+///
+/// A command module that prints its own help gets the request as
+/// `vcs COMMAND --help`, or as `vcs COMMAND -h` when a lone `-h` follows the
+/// command.
+///
+/// A help request with an argument after the command name is a parser
+/// failure. So is a name that is
+/// neither a group nor a command of this build. Each diagnostic points to the help.
+///
+/// # Arguments
+/// * `args` - The arguments after the executable name.
+///
+/// # Returns
+/// The help to print, the diagnostic to fail with, or the arguments to dispatch.
+fn route(args: Vec<OsString>) -> Route {
+    let vcs = || OsString::from("vcs");
+    let skip = |words: &[OsString]| words.iter().take_while(|arg| help::is_help(arg)).count();
+    let leading = skip(&args);
+    let Some(group) = args.get(leading) else {
+        return Route::Print(help::root());
+    };
+    if group != "vcs" && group != "v" {
+        return Route::Fail(help::unknown_group(group));
+    }
+    let after = &args[leading + 1..];
+    let between = skip(after);
+    let command = &after[between..];
+    let Some(name) = command.first() else {
+        return Route::Print(help::vcs());
+    };
+    if !help::is_vcs_command(name) {
+        return Route::Fail(help::unknown_vcs(name));
+    }
+    let asked = leading + between > 0;
+    if asked && command.len() > 1 {
+        return Route::Fail(
+            "Usage: gossil vcs help COMMAND\nRun \"gossil vcs --help\" to list the vcs commands."
+                .into(),
+        );
+    }
+    let flagged = command.len() == 2 && help::is_help_flag(&command[1]);
+    if !asked && !flagged {
+        return Route::Dispatch([vcs()].into_iter().chain(command.iter().cloned()).collect());
+    }
+    match help::command(name) {
+        Some(text) if !help::owns_help(name) => Route::Print(text),
+        _ => Route::Dispatch(vec![
+            vcs(),
+            name.clone(),
+            if flagged {
+                command[1].clone()
+            } else {
+                OsString::from("--help")
+            },
+        ]),
+    }
+}
+
 /// Print the adapter error once, with the native newline and exit status.
 ///
 /// # Returns
 /// The success exit code after initialization, native checkout open, tracking,
 /// scope selection, private recording, checkout timeline/information or a completed diagnostic. Returns the failure exit code
 /// after printing an adapter error to standard error. The first argument `v` is accepted
-/// as an alias for `vcs`.
+/// as an alias for `vcs`. A help request prints the help on stdout and returns 0.
+/// If the write of the help fails, the entry returns 1. An unknown group or command
+/// returns 2, as a parser failure, with a pointer to the help on stderr.
 /// # Panics
 /// Panics if writing an error diagnostic to standard error fails.
 pub fn entry() -> std::process::ExitCode {
-    let mut args = std::env::args_os().skip(1).collect::<Vec<_>>();
-    if args.first().is_some_and(|arg| arg == "v") {
-        args[0] = OsString::from("vcs");
-    }
+    let args = match route(std::env::args_os().skip(1).collect()) {
+        Route::Dispatch(args) => args,
+        Route::Print(text) => {
+            return if std::io::stdout().lock().write_all(text.as_bytes()).is_ok() {
+                std::process::ExitCode::SUCCESS
+            } else {
+                eprintln!("gossil: unable to write the help");
+                std::process::ExitCode::FAILURE
+            };
+        }
+        Route::Fail(message) => {
+            eprintln!("{message}");
+            return std::process::ExitCode::from(2);
+        }
+    };
     if args.first().is_some_and(|arg| arg == "vcs")
         && args.get(1).is_some_and(|arg| arg == "init" || arg == "new")
     {
@@ -445,6 +540,141 @@ pub fn entry() -> std::process::ExitCode {
 
 #[cfg(test)]
 mod tests {
+    /// Turn string slices into the argument vector that `route` receives.
+    fn os(args: &[&str]) -> Vec<OsString> {
+        args.iter().map(OsString::from).collect()
+    }
+
+    /// Help forms route to the matching help, and every other form keeps its dispatch.
+    #[test]
+    fn route_answers_help_and_rejects_unknown_names() {
+        for args in [
+            &[][..],
+            &["help"],
+            &["--help"],
+            &["-h"],
+            &["help", "help"],
+            &["help", "--help"],
+            &["help", "-h", "help"],
+        ] {
+            assert_eq!(route(os(args)), Route::Print(help::root()));
+        }
+        for args in [
+            &["v"][..],
+            &["vcs", "help"],
+            &["help", "v"],
+            &["v", "-h"],
+            &["vcs", "help", "help"],
+            &["help", "vcs", "help"],
+            &["help", "v", "--help"],
+            &["v", "--help", "-h"],
+        ] {
+            assert_eq!(route(os(args)), Route::Print(help::vcs()));
+        }
+        let open = help::command(OsStr::new("open")).unwrap();
+        for args in [
+            &["v", "open", "--help"][..],
+            &["v", "help", "open"],
+            &["help", "vcs", "open"],
+            &["help", "help", "vcs", "open"],
+            &["v", "--help", "open"],
+            &["v", "-h", "open"],
+            &["--help", "v", "open"],
+        ] {
+            assert_eq!(route(os(args)), Route::Print(open.clone()));
+        }
+        assert_eq!(
+            route(os(&["help", "v", "init"])),
+            Route::Dispatch(os(&["vcs", "init", "--help"]))
+        );
+        assert_eq!(
+            route(os(&["v", "init", "help"])),
+            Route::Dispatch(os(&["vcs", "init", "help"]))
+        );
+        assert_eq!(
+            route(os(&["v", "open", "--help", "x"])),
+            Route::Dispatch(os(&["vcs", "open", "--help", "x"]))
+        );
+        assert_eq!(
+            route(os(&["v", "help", "open", "extra"])),
+            Route::Fail(
+                "Usage: gossil vcs help COMMAND\nRun \"gossil vcs --help\" to list the vcs commands."
+                    .into()
+            )
+        );
+        assert_eq!(
+            route(os(&["help", "issue"])),
+            Route::Fail(help::unknown_group(OsStr::new("issue")))
+        );
+        assert_eq!(
+            route(vec![OsString::from("help"); 100_000]),
+            Route::Print(help::root())
+        );
+        let mut deep = vec![OsString::from("v")];
+        deep.extend(vec![OsString::from("-h"); 100_000]);
+        deep.push(OsString::from("open"));
+        assert_eq!(route(deep), Route::Print(open.clone()));
+        for args in [
+            &["vcs", "help", "help", "open"][..],
+            &["v", "--help", "-h", "open"],
+            &["help", "vcs", "help", "open"],
+            &["help", "v", "--help", "open"],
+        ] {
+            assert_eq!(route(os(args)), Route::Print(open.clone()), "{args:?}");
+        }
+        assert_eq!(
+            route(os(&["v", "init", "-h"])),
+            Route::Dispatch(os(&["vcs", "init", "-h"]))
+        );
+        assert_eq!(
+            route(os(&["v", "test-delta", "a", "b"])),
+            Route::Dispatch(os(&["vcs", "test-delta", "a", "b"]))
+        );
+        assert_eq!(
+            route(os(&["vcs", "--help", "extra"])),
+            Route::Fail(help::unknown_vcs(OsStr::new("extra")))
+        );
+        assert_eq!(
+            route(os(&["vcs", "frob"])),
+            Route::Fail(help::unknown_vcs(OsStr::new("frob")))
+        );
+    }
+
+    /// The help table names every command that the entry dispatches, and rejects
+    /// other names such as `help` and `frob`.
+    #[test]
+    fn help_table_matches_dispatch() {
+        for name in [
+            "init",
+            "new",
+            "open",
+            "info",
+            "add",
+            "status",
+            "scope",
+            "commit",
+            "timeline",
+            "log",
+            "test-delta-create",
+            "test-delta-apply",
+            "test-delta",
+            "test-glob",
+        ] {
+            assert!(help::is_vcs_command(OsStr::new(name)), "{name}");
+            let text = help::command(OsStr::new(name)).unwrap();
+            assert!(text.starts_with("Usage: gossil vcs "), "{name}");
+        }
+        for name in ["help", "frob", "diff", "push", "-h", ""] {
+            assert!(!help::is_vcs_command(OsStr::new(name)), "{name}");
+            assert!(help::command(OsStr::new(name)).is_none());
+        }
+        assert_eq!(
+            help::command(OsStr::new("log")).unwrap(),
+            "Usage: gossil vcs timeline|log --repository REPO --checkout ID\n\n\
+             Print the complete recorded ancestry as NDJSON.\nNames: timeline, log.\n"
+        );
+    }
+
     /// A failed glob output retains the original typed stream error.
     #[test]
     fn glob_stdout_error_preserves_cause() {

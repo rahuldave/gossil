@@ -6,6 +6,9 @@ track, and its artifact is a sequence of newline-terminated records called cards
 Gossil uses those cards to carry task fields. Here, native means the Fossil
 artifact format.
 
+The task emitter shares its card syntax, size plan and checksum with the
+artifact and project emitters, which the [Gest ticket guide](gest-ticket.md) describes.
+
 Use the library to inspect or test
 task creation artifacts in memory. No current Gossil repository
 API consumes these bytes. Raw input admission, storage integration and issue
@@ -99,6 +102,9 @@ not cap all memory use.
 `TicketError::TicketId` rejects malformed K bytes. `Allocation` retains a
 fallible reservation error, `Token` retains a token codec error, and `Json`
 retains a serialization error. The generated API documents these variants.
+The `gest_ticket` module defines `TicketError`, and `task_ticket` re-exports it.
+Its `Size` message is `ticket output limit`, because the task, artifact and
+project emitters all return it.
 
 ## Caller responsibilities
 

@@ -59,6 +59,7 @@ through `recorded_timeline`, with native metadata bytes and the shared root last
 | Initialize a root, register a directory, record private files or read recorded ancestry | [Native storage](native-storage.md) |
 | Validate decoded task snapshots in memory | [Gest task values](gest-task-values.md) |
 | Emit bounded task creation artifact bytes | [Task tickets](task-ticket.md) |
+| Emit bounded artifact and project creation artifact bytes | [Gest tickets](gest-ticket.md) |
 | Validate decoded project snapshots in memory | [Gest project values](gest-project-values.md) |
 | Validate decoded author snapshots in memory | [Gest author values](gest-author-values.md) |
 | Validate decoded artifact snapshots in memory | [Gest artifact values](gest-artifact-values.md) |

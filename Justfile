@@ -58,6 +58,21 @@ blob-reference:
 blob-interop:
     GOSSIL_FOSSIL_REFERENCE="{{justfile_directory()}}/.jlog/bin/fossil" just test --test blob_primitives rust_packed_bytes_decode_with_native_fossil -- --ignored
 
+# Load emitted Gest tickets into a scratch repository of the pinned Fossil reference; exit 5 means not-run.
+gest-ticket-interop:
+    #!/usr/bin/env bash
+    set -euo pipefail
+    fossil="${GOSSIL_FOSSIL_REFERENCE:-{{justfile_directory()}}/.jlog/bin/fossil}"
+    if [ ! -x "$fossil" ]; then
+        echo "not-run: the pinned Fossil reference is absent at $fossil; run just setup" >&2
+        exit 5
+    fi
+    GOSSIL_FOSSIL_REFERENCE="$fossil" just test --test gest_ticket stock_fossil_reads_emitted_gest_tickets -- --ignored --exact
+
+# Respell the Gest ticket creation fixtures from their hand-written cards.
+gest-ticket-reference:
+    jlog run python3 tests/fixtures/gest-ticket/generate.py
+
 # Inspect Rust dependers of the new byte primitive contracts.
 blob-impact:
     jlog run ast-grep run --lang rust --pattern 'pack($$$)' --json=compact src tests
@@ -97,8 +112,8 @@ libsql-wrapper-metadata:
     mkdir -p target
     jlog run cargo metadata --locked --all-features --format-version 1 > target/libsql-wrapper-metadata.json
 
-# Retain the Rust profile type check after the mandatory vendor identity check.
-typecheck *args: libsql-vendor-check libsql-vendor-test libsql-wrapper-check libsql-wrapper-test
+# Retain the Rust profile type check after the mandatory vendor identity checks and the rustdoc check with warnings denied.
+typecheck *args: libsql-vendor-check libsql-vendor-test libsql-wrapper-check libsql-wrapper-test rustdoc-check
     just --justfile {{quote(justfile())}} rust typecheck "$@"
     jlog step typecheck
 
@@ -125,3 +140,8 @@ libsql-provider-compile:
 # Run the finite date semantic controls through the actual bundled Rust provider.
 libsql-provider-dates:
     jlog run cargo test --locked --lib storage::date_tests
+
+# Build the rustdoc of the library and binaries, private items too, and fail on each warning, such as a broken intra-doc link.
+# The step typecheck depends on it, so just check runs it without a project copy of the docs-check of the docs role.
+rustdoc-check:
+    RUSTDOCFLAGS="-D warnings" jlog run cargo doc --locked --all-features --no-deps --document-private-items

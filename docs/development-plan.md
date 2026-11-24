@@ -24,7 +24,8 @@ The [Gest iteration task values converter](gest-iteration-task-values.md) valida
 All ten converters operate in memory and leave storage integration, raw field admission and the full Gest API to future work.
 
 The [task ticket emitter](task-ticket.md) serializes validated task snapshots with
-caller-supplied native identity, actor and date.
+caller-supplied native identity, actor and date. The [Gest ticket emitter](gest-ticket.md)
+serializes validated artifact and project snapshots in the same way, and the three kinds share one emitter.
 
 ## Current scope
 
@@ -99,6 +100,12 @@ just docs-check
 just docs-build
 ```
 
+`just docs-check` checks the site and the API pages. `just typecheck` runs
+`just rustdoc-check` before its own type check. `just rustdoc-check` builds the
+rustdoc with private items and fails on each warning. So `just typecheck`, and
+`just check` with it, fails on a broken intra-doc link. A broken intra-doc link is
+a link in a doc comment that rustdoc cannot resolve to an item.
+
 `just test` first runs nine focused Python installer controls, then runs the Rust
 unit tests through the installed coverage workflow. `just integration` uses that
 Rust coverage workflow. Its reports do not measure Python installer coverage.
@@ -108,7 +115,7 @@ Complete the required checks and independent review before delivery to `main`.
 
 ## Documentation build
 
-Documentation uses smalldocs 0.5.12 and the installed Atelier extension.
+Documentation uses smalldocs 0.5.13 and the installed Atelier extension.
 The theme comes from [smalldocs-atelier](https://github.com/rahuldave/smalldocs-atelier)
 at commit `b285e162eed9521114745e34ce3b3d3af5474177`.
 Its source receipt, licenses and local fonts ship under `docs/_extensions/atelier/`.
@@ -195,8 +202,10 @@ It is not required to use the current CLI or library.
 ## Shared value validation
 
 All ten converters of Gest values share the private field validators of
-`gest_value_validation`. The task ticket emitter
-borrows the status and UTC timestamp forms defined by `gest_task_values`.
+`gest_value_validation`. That module also defines the borrowed canonical values
+that the task, artifact and project ticket emitters serialize. The task emitter
+borrows the status form defined by `gest_task_values` and the UTC timestamp
+form defined by `canonical_timestamp` in `gest_value_validation`.
 Changes must preserve public conversion behavior and the original parser errors
 returned through the public error accessor.
 Only timestamp strings with a fixed maximum length are allocated before output
@@ -212,6 +221,12 @@ to the checkout-free native initializer. It accepts administrator, date and SHA1
 options and uses SQLite randomness in a private memory database. Login fallback
 uses environment values without a preference database. Existing delta diagnostics
 retain their dispatcher and argument contracts.
+
+Before dispatch, the product entry answers help requests with the text of the
+private `product::help` module, and rejects unknown groups and commands with
+status 2. The
+[help section](cli.md#get-help) gives the forms, and `tests/cli_help.rs` holds
+the CLI controls.
 
 The focused CLI controls are in `tests/vcs_init_cli.rs`; parser, environment,
 password and receipt controls are in the private `vcs_init` module. Source edits
@@ -369,7 +384,8 @@ qualification.
 
 At the checkpoint, `Cargo.toml` set the version of the Gossil crate to 0.9.0,
 which was later released as `v0.9.0`. The current version of the crate is
-0.11.0. The `libsql-ffi` provider is at 0.10.0, and its version is separate
+0.13.0, and version 0.12.0 was released as `v0.12.0`. The `libsql-ffi`
+provider is at 0.10.0, and its version is separate
 from the version of the crate.
 
 The focused tree

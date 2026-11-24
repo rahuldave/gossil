@@ -99,6 +99,8 @@ A diagnostic exits with status 1 and writes an error to stderr when it fails.
 Check the input paths and argument order first. If applying a delta fails,
 check that you kept the correct origin and an intact delta. The
 [CLI reference](cli.md#exit-status-and-errors) lists the exact messages.
+An unknown command exits with status 2. Run `just gossil --help` to list
+the commands, or add `--help` after a command to print its usage.
 
 Successful create and apply operations replace an existing output file.
 Use a fresh output path until you have checked the result. Validation failures
@@ -123,9 +125,10 @@ The receipt gives the project and server identifiers and the initial administrat
 password. Save the password privately. This command creates the empty root without
 a checkout or tracked files. It reads no preference file. See the
 [initialization reference](cli.md#initialize-a-repository) for date, hash and login options.
+
 An already installed mini-VCS preview has a separate
-[command contract](working-with-repositories.md#try-the-installed-development-preview);
-these commands build the current source.
+[command contract](working-with-repositories.md#try-the-installed-development-preview).
+These commands build the current source.
 
 ## Register an existing directory
 
@@ -190,13 +193,13 @@ The final commit prints `No changes`. Each output ends with a newline.
 Status lists both paths as `R` with private scope. It does not report live edits.
 
 The second commit captures the edit without re-adding the file. Reopen preserves
-the files and private history; the shared head still names the empty root.
+the files and private history, and the shared head still names the empty root.
 These dates follow the deterministic root and each previous parent. Use later
 valid dates for subsequent commits, including no-change checks. Comments must
 not contain `[`, even when the tree is unchanged.
 
 A nonzero exit after an output failure can leave a durable commit. Retry the
-same binding with unchanged files and valid later metadata; a previously recorded
+same binding with unchanged files and valid later metadata. A previously recorded
 tree yields `No changes`. See the [failure contract](cli.md#grammar-limits-and-failures).
 This walkthrough describes current source and does not install a default executable.
 
@@ -234,7 +237,7 @@ metadata is preserved with standard JSON escaping. The root alone has
 The commands need a complete matching locator. They do not read working-file
 contents, select revisions or accept filters. See the
 [ancestry command contract](cli.md#read-complete-recorded-ancestry) for bounds
-and failures. This walkthrough builds source; it supplies no installation evidence.
+and failures. This walkthrough builds source and supplies no installation evidence.
 
 ## Inspect a glob list from source
 
@@ -253,7 +256,7 @@ The shell quotes keep the pattern list in one argument. The diagnostic prints
 SQL, parsed patterns and both match indices. It selects no tracked files.
 Read the [CLI grammar](cli.md#inspect-a-fossil-glob-list) and
 [glob contract](glob.md) before using it. The default installed development
-preview is a separate build; this source example does not update it.
+preview is a separate build, and this source example does not update it.
 
 ## Recommendations
 

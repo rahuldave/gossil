@@ -826,6 +826,8 @@ mod vcs_timeline;
 /// Adapt explicit tracking enrollment and complete tracked status for product executables.
 mod vcs_tracking;
 
+/// Emit the bounded bytes of artifact and project creation tickets through the shared Gest ticket emitter.
+pub mod gest_ticket;
 /// Represent validated native dates as integer nanoseconds.
 pub mod native_date;
 /// Emit bounded task creation ticket bytes.
