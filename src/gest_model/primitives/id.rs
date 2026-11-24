@@ -144,10 +144,12 @@ impl Primitive {
             ));
         }
 
+        // The length check above leaves 32 bytes, so `as_chunks` leaves no remainder.
+        let (pairs, _) = chars.as_chunks::<2>();
         let mut bytes = [0u8; 16];
-        for (byte, pair) in bytes.iter_mut().zip(chars.chunks_exact(2)) {
-            let high = Self::nibble_from_char(pair[0])?;
-            let low = Self::nibble_from_char(pair[1])?;
+        for (byte, &[high, low]) in bytes.iter_mut().zip(pairs) {
+            let high = Self::nibble_from_char(high)?;
+            let low = Self::nibble_from_char(low)?;
             *byte = (high << 4) | low;
         }
         Ok(bytes)
@@ -365,6 +367,16 @@ mod tests {
         assert_eq!(
             Primitive::decode("zzz").unwrap_err(),
             "Id must be exactly 32 characters, got 3"
+        );
+    }
+
+    /// `Primitive::decode` refuses a bad character in the high nibble of a pair, as it does
+    /// in the low nibble.
+    #[test]
+    fn decode_refuses_a_bad_high_nibble() {
+        assert_eq!(
+            Primitive::decode("zzjzzzzzzzzzzzzzzzzzzzzzzzzzzzzz").unwrap_err(),
+            "Id must contain only characters k-z, found 'j'"
         );
     }
 }
