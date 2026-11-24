@@ -24,7 +24,8 @@ The [Gest iteration task values converter](gest-iteration-task-values.md) valida
 All ten converters operate in memory and leave storage integration, raw field admission and the full Gest API to future work.
 
 The [task ticket emitter](task-ticket.md) serializes validated task snapshots with
-caller-supplied native identity, actor and date.
+caller-supplied native identity, actor and date. The [Gest ticket emitter](gest-ticket.md)
+serializes validated artifact and project snapshots in the same way, and the three kinds share one emitter.
 
 ## Current scope
 
@@ -200,8 +201,10 @@ It is not required to use the current CLI or library.
 ## Shared value validation
 
 All ten converters of Gest values share the private field validators of
-`gest_value_validation`. The task ticket emitter
-borrows the status and UTC timestamp forms defined by `gest_task_values`.
+`gest_value_validation`. That module also defines the borrowed canonical values
+that the task, artifact and project ticket emitters serialize. The task emitter
+borrows the status form defined by `gest_task_values` and the UTC timestamp
+form defined by `canonical_timestamp` in `gest_value_validation`.
 Changes must preserve public conversion behavior and the original parser errors
 returned through the public error accessor.
 Only timestamp strings with a fixed maximum length are allocated before output
@@ -380,7 +383,8 @@ qualification.
 
 At the checkpoint, `Cargo.toml` set the version of the Gossil crate to 0.9.0,
 which was later released as `v0.9.0`. The current version of the crate is
-0.12.0. The `libsql-ffi` provider is at 0.10.0, and its version is separate
+0.13.0, and version 0.12.0 was released as `v0.12.0`. The `libsql-ffi`
+provider is at 0.10.0, and its version is separate
 from the version of the crate.
 
 The focused tree

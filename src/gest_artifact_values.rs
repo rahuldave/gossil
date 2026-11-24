@@ -4,7 +4,9 @@
 //! This module reads no clock and performs no storage, reference lookup or ID generation.
 //! Business timestamps use chrono RFC3339 parsing and canonical UTC output.
 
-use crate::gest_value_validation::{ValidationError, identifier, string, timestamp};
+use crate::gest_value_validation::{
+    CanonicalValue, ValidationError, canonical_timestamp, identifier, string, timestamp,
+};
 use chrono::{DateTime, Utc};
 use serde_json::Value;
 use std::fmt;
@@ -174,4 +176,31 @@ pub fn artifact_to_values(record: &ArtifactValues) -> ArtifactValueInputs {
         created_at: Value::from(record.created_at.to_rfc3339()),
         updated_at: Value::from(record.updated_at.to_rfc3339()),
     }
+}
+
+/// List the same 8 fields as [`artifact_to_values`], sorted by name, for bounded serialization.
+///
+/// Only the bounded timestamp strings are allocated. The title, body and
+/// metadata stay borrowed, so the ticket emitter can count their encoded size
+/// before it copies them.
+///
+/// # Arguments
+/// * `record` - A record validated by [`artifact_from_values`].
+///
+/// # Returns
+/// All 8 field names, in byte order, with their borrowed canonical values.
+pub(crate) fn canonical_artifact_fields(
+    record: &ArtifactValues,
+) -> [(&'static str, CanonicalValue<'_>); 8] {
+    use CanonicalValue::{Json, Text};
+    [
+        ("archived_at", canonical_timestamp(record.archived_at)),
+        ("body", Text(&record.body)),
+        ("created_at", canonical_timestamp(Some(record.created_at))),
+        ("gest_id", Text(&record.gest_id)),
+        ("metadata", Json(&record.metadata)),
+        ("project_id", Text(&record.project_id)),
+        ("title", Text(&record.title)),
+        ("updated_at", canonical_timestamp(Some(record.updated_at))),
+    ]
 }
