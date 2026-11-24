@@ -1,0 +1,1011 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="generator" content="smalldocs-0.5.13"><meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes"><meta name="description" content="Read Git commits, refs and settings beside Git, read-only, through pinned gix crates. Read Git commits, refs and repository settings beside Git, and never write to Git."><title>git_reader – Gossil</title><link rel="icon" href="../site_libs/themes/atelier/logo.svg"><link rel="stylesheet" href="../site_libs/themes/atelier/atelier.css" data-mode="light" class="quarto-color-scheme" id="quarto-bootstrap-light" media="not all and (prefers-color-scheme: dark)"><link rel="stylesheet" href="../site_libs/themes/atelier/atelier-dark.css" data-mode="dark" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap-dark" media="(prefers-color-scheme: dark)"><link rel="stylesheet" href="../site_libs/bootstrap-icons/bootstrap-icons.min.css"><link rel="stylesheet" href="../site_libs/smalldocs.css"><meta name="smalldocs:offset" content="../"><script src="../site_libs/bootstrap/bootstrap.bundle.min.js"></script><script src="../site_libs/fuse/fuse.min.js"></script><script src="../site_libs/smalldocs.js" defer></script><script>(function(){var d=document.documentElement,s=null;try{s=localStorage.getItem('smalldocs-scheme')}catch(e){}var alt=s?s==='alternate':!!(window.matchMedia&&matchMedia('(prefers-color-scheme: dark)').matches);var ls=document.querySelectorAll('link.quarto-color-scheme');if(alt)d.dataset.scheme='alternate';if(s)ls.forEach(function(l){var on=l.classList.contains('quarto-color-alternate')===alt;if(on)l.setAttribute('blocking','render');l.media=on?'all':'not all'});var on=ls[alt?1:0];if(on&&on.dataset.mode==='dark')d.classList.add('quarto-dark')})();</script></head><body class="nav-sidebar floating nav-fixed"><header id="quarto-header" class="headroom sticky-top"><nav class="navbar navbar-expand-lg sd-navbar-default"><div class="navbar-container container-fluid"><div class="navbar-brand-container mx-auto"><a class="navbar-brand" href="../index.html"><span class="navbar-title">Gossil</span></a></div><button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button><div class="collapse navbar-collapse" id="navbarCollapse"><ul class="navbar-nav navbar-nav-scroll me-auto"><li class="nav-item"><a class="nav-link" href="../getting-started.html"><span class="menu-text">Start</span></a></li><li class="nav-item"><a class="nav-link" href="../concepts.html"><span class="menu-text">Library concepts</span></a></li><li class="nav-item"><a class="nav-link" href="../cli.html"><span class="menu-text">CLI</span></a></li><li class="nav-item"><a class="nav-link" href="index.html"><span class="menu-text">Rust API</span></a></li><li class="nav-item"><a class="nav-link" href="../development-plan.html"><span class="menu-text">Development</span></a></li></ul><ul class="navbar-nav navbar-nav-scroll ms-auto"><li class="nav-item compact"><a class="nav-link" href="https://github.com/rahuldave/gossil" aria-label="github"><i class="bi bi-github" role="img"></i></a></li><li class="nav-item compact"><a class="quarto-color-scheme-toggle nav-link" href="" title="Toggle dark mode" onclick="window.smalldocsToggleScheme(); return false;"><i class="bi"></i></a></li></ul><div class="quarto-navbar-tools"><div class="smalldocs-search" id="quarto-search"><i class="bi bi-search" aria-hidden="true"></i><input type="search" class="form-control form-control-sm" placeholder="Search" aria-label="Search" autocomplete="off"><div class="smalldocs-search-results dropdown-menu"></div></div></div></div></div></nav><nav class="quarto-secondary-nav"><div class="container-fluid d-flex"><button type="button" class="quarto-btn-toggle btn" aria-controls="quarto-sidebar" aria-label="Toggle sidebar navigation"><i class="bi bi-layout-text-sidebar-reverse"></i></button><nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="index.html">Rust API</a></li><li class="breadcrumb-item"><a href="git_reader.html">git_reader</a></li></ol></nav></div></nav></header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article has-sidebar has-margin"><nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto"><div class="sidebar-menu-container"><ul class="list-unstyled mt-1"><li class="sidebar-item"><div class="sidebar-item-container"><a href="../index.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Gossil</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="../getting-started.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Get started</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="../cli.html" class="sidebar-item-text sidebar-link"><span class="menu-text">CLI reference</span></a></div></li><li class="sidebar-item sidebar-item-section"><div class="sidebar-item-container"><a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true"><span class="menu-text">Guides</span></a><a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section"><i class="bi bi-chevron-right ms-2"></i></a></div><ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show"><li class="sidebar-item"><div class="sidebar-item-container"><a href="../working-with-repositories.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Working with repositories</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="../compare-with-git.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Compare Gossil with Git</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="../concepts.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Library concepts</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="../examples.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Rust library examples</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="../delta-encoder.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Bounded delta encoder</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="../delta-decoder.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Bounded delta decoder</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="../blob-primitives.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Byte digests and packed blobs</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="../artifact-checksum.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Artifact byte checksums</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="../token-codec.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Fossil token bytes</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="../glob.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Bounded Fossil glob port</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="../file-path.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Lexical file paths</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="../history.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Check-in graph paths</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="../git-reader.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Git reader</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="../artifact-parser.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Artifact parser</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="../diff.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Compare normalized byte lines</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="../task-ticket.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Emit a task creation artifact</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="../gest-ticket.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Emit artifact and project creation tickets</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="../local-storage.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Local database ownership</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="../native-storage.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Native local storage</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="../gest-task-values.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Gest task values</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="../gest-project-values.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Gest project values</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="../gest-author-values.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Gest author values</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="../gest-artifact-values.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Gest artifact values</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="../gest-iteration-values.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Gest iteration values</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="../gest-tag-values.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Gest tag values</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="../gest-note-values.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Gest note values</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="../gest-relationship-values.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Gest relationship values</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="../gest-entity-tag-values.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Gest entity tag values</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="../gest-iteration-task-values.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Gest iteration task values</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="../gest-model.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Gest model</span></a></div></li></ul></li><li class="sidebar-item sidebar-item-section"><div class="sidebar-item-container"><a class="sidebar-item-text sidebar-link" href="index.html"><span class="menu-text">Rust API</span></a><a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Toggle section"><i class="bi bi-chevron-right ms-2"></i></a></div><ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show"><li class="sidebar-item"><div class="sidebar-item-container"><a href="artifact.html" class="sidebar-item-text sidebar-link"><span class="menu-text">artifact</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="artifact_checksum.html" class="sidebar-item-text sidebar-link"><span class="menu-text">artifact_checksum</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="compression.html" class="sidebar-item-text sidebar-link"><span class="menu-text">compression</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="content_hash.html" class="sidebar-item-text sidebar-link"><span class="menu-text">content_hash</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="delta.html" class="sidebar-item-text sidebar-link"><span class="menu-text">delta</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="diff.html" class="sidebar-item-text sidebar-link"><span class="menu-text">diff</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="file_path.html" class="sidebar-item-text sidebar-link"><span class="menu-text">file_path</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="gest_artifact_values.html" class="sidebar-item-text sidebar-link"><span class="menu-text">gest_artifact_values</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="gest_author_values.html" class="sidebar-item-text sidebar-link"><span class="menu-text">gest_author_values</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="gest_entity_tag_values.html" class="sidebar-item-text sidebar-link"><span class="menu-text">gest_entity_tag_values</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="gest_iteration_task_values.html" class="sidebar-item-text sidebar-link"><span class="menu-text">gest_iteration_task_values</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="gest_iteration_values.html" class="sidebar-item-text sidebar-link"><span class="menu-text">gest_iteration_values</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="gest_note_values.html" class="sidebar-item-text sidebar-link"><span class="menu-text">gest_note_values</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="gest_project_values.html" class="sidebar-item-text sidebar-link"><span class="menu-text">gest_project_values</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="gest_relationship_values.html" class="sidebar-item-text sidebar-link"><span class="menu-text">gest_relationship_values</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="gest_tag_values.html" class="sidebar-item-text sidebar-link"><span class="menu-text">gest_tag_values</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="gest_task_values.html" class="sidebar-item-text sidebar-link"><span class="menu-text">gest_task_values</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="gest_ticket.html" class="sidebar-item-text sidebar-link"><span class="menu-text">gest_ticket</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="git_reader.html" class="sidebar-item-text sidebar-link active" aria-current="page"><span class="menu-text">git_reader</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="glob.html" class="sidebar-item-text sidebar-link"><span class="menu-text">glob</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="gossil.html" class="sidebar-item-text sidebar-link"><span class="menu-text">gossil</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="history.html" class="sidebar-item-text sidebar-link"><span class="menu-text">history</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="native_date.html" class="sidebar-item-text sidebar-link"><span class="menu-text">native_date</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="product.html" class="sidebar-item-text sidebar-link"><span class="menu-text">product</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="storage.html" class="sidebar-item-text sidebar-link"><span class="menu-text">storage</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="task_ticket.html" class="sidebar-item-text sidebar-link"><span class="menu-text">task_ticket</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="token_codec.html" class="sidebar-item-text sidebar-link"><span class="menu-text">token_codec</span></a></div></li><li class="sidebar-item sidebar-item-section"><div class="sidebar-item-container"><a class="sidebar-item-text sidebar-link" href="gest_model/index.html"><span class="menu-text">gest_model</span></a><a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="false" aria-label="Toggle section"><i class="bi bi-chevron-right ms-2"></i></a></div><ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth2"><li class="sidebar-item"><div class="sidebar-item-container"><a href="gest_model/artifact.html" class="sidebar-item-text sidebar-link"><span class="menu-text">artifact</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="gest_model/author.html" class="sidebar-item-text sidebar-link"><span class="menu-text">author</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="gest_model/entity_tag.html" class="sidebar-item-text sidebar-link"><span class="menu-text">entity_tag</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="gest_model/iteration.html" class="sidebar-item-text sidebar-link"><span class="menu-text">iteration</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="gest_model/note.html" class="sidebar-item-text sidebar-link"><span class="menu-text">note</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="gest_model/primitives.html" class="sidebar-item-text sidebar-link"><span class="menu-text">primitives</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="gest_model/project.html" class="sidebar-item-text sidebar-link"><span class="menu-text">project</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="gest_model/relationship.html" class="sidebar-item-text sidebar-link"><span class="menu-text">relationship</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="gest_model/tag.html" class="sidebar-item-text sidebar-link"><span class="menu-text">tag</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="gest_model/task.html" class="sidebar-item-text sidebar-link"><span class="menu-text">task</span></a></div></li></ul></li></ul></li><li class="sidebar-item sidebar-item-section"><div class="sidebar-item-container"><a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true"><span class="menu-text">Development</span></a><a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true" aria-label="Toggle section"><i class="bi bi-chevron-right ms-2"></i></a></div><ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show"><li class="sidebar-item"><div class="sidebar-item-container"><a href="../development-plan.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Development and contributing</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="../conformance.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Inherited-test runner</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="../libsql-wrapper.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Exact libsql TEXT retrieval</span></a></div></li></ul></li></ul></div></nav><div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item"></div><div id="quarto-margin-sidebar" class="sidebar margin-sidebar"><nav id="TOC" role="doc-toc" class="toc-active"><h2 id="toc-title">On this page</h2><ul><li><a href="#recommendations" id="toc-recommendations" class="nav-link" data-scroll-target="#recommendations">Recommendations</a></li><li><a href="#Limits" id="toc-Limits" class="nav-link" data-scroll-target="#Limits">struct Limits</a><ul><li><a href="#Limits.STANDARD" id="toc-Limits.STANDARD" class="nav-link" data-scroll-target="#Limits.STANDARD">const Limits::STANDARD</a></li></ul></li><li><a href="#ObjectFormat" id="toc-ObjectFormat" class="nav-link" data-scroll-target="#ObjectFormat">enum ObjectFormat</a><ul><li><a href="#ObjectFormat.name" id="toc-ObjectFormat.name" class="nav-link" data-scroll-target="#ObjectFormat.name">ObjectFormat::name</a></li><li><a href="#ObjectFormat.id_bytes" id="toc-ObjectFormat.id_bytes" class="nav-link" data-scroll-target="#ObjectFormat.id_bytes">ObjectFormat::id_bytes</a></li></ul></li><li><a href="#GitObjectId" id="toc-GitObjectId" class="nav-link" data-scroll-target="#GitObjectId">struct GitObjectId</a><ul><li><a href="#GitObjectId.from_hex" id="toc-GitObjectId.from_hex" class="nav-link" data-scroll-target="#GitObjectId.from_hex">GitObjectId::from_hex</a></li><li><a href="#GitObjectId.format" id="toc-GitObjectId.format" class="nav-link" data-scroll-target="#GitObjectId.format">GitObjectId::format</a></li><li><a href="#GitObjectId.as_bytes" id="toc-GitObjectId.as_bytes" class="nav-link" data-scroll-target="#GitObjectId.as_bytes">GitObjectId::as_bytes</a></li><li><a href="#GitObjectId.to_hex" id="toc-GitObjectId.to_hex" class="nav-link" data-scroll-target="#GitObjectId.to_hex">GitObjectId::to_hex</a></li></ul></li><li><a href="#ObjectKind" id="toc-ObjectKind" class="nav-link" data-scroll-target="#ObjectKind">enum ObjectKind</a><ul><li><a href="#ObjectKind.name" id="toc-ObjectKind.name" class="nav-link" data-scroll-target="#ObjectKind.name">ObjectKind::name</a></li></ul></li><li><a href="#Head" id="toc-Head" class="nav-link" data-scroll-target="#Head">enum Head</a></li><li><a href="#GitCommit" id="toc-GitCommit" class="nav-link" data-scroll-target="#GitCommit">struct GitCommit</a><ul><li><a href="#GitCommit.id" id="toc-GitCommit.id" class="nav-link" data-scroll-target="#GitCommit.id">GitCommit::id</a></li><li><a href="#GitCommit.parents" id="toc-GitCommit.parents" class="nav-link" data-scroll-target="#GitCommit.parents">GitCommit::parents</a></li></ul></li><li><a href="#Cause" id="toc-Cause" class="nav-link" data-scroll-target="#Cause">struct Cause</a><ul><li><a href="#Cause.error" id="toc-Cause.error" class="nav-link" data-scroll-target="#Cause.error">Cause::error</a></li></ul></li><li><a href="#RepositoryConfig" id="toc-RepositoryConfig" class="nav-link" data-scroll-target="#RepositoryConfig">struct RepositoryConfig</a></li><li><a href="#GitReadError" id="toc-GitReadError" class="nav-link" data-scroll-target="#GitReadError">enum GitReadError</a></li><li><a href="#GitRepository" id="toc-GitRepository" class="nav-link" data-scroll-target="#GitRepository">struct GitRepository</a><ul><li><a href="#GitRepository.open" id="toc-GitRepository.open" class="nav-link" data-scroll-target="#GitRepository.open">GitRepository::open</a></li><li><a href="#GitRepository.worktree" id="toc-GitRepository.worktree" class="nav-link" data-scroll-target="#GitRepository.worktree">GitRepository::worktree</a></li><li><a href="#GitRepository.git_dir" id="toc-GitRepository.git_dir" class="nav-link" data-scroll-target="#GitRepository.git_dir">GitRepository::git_dir</a></li><li><a href="#GitRepository.common_dir" id="toc-GitRepository.common_dir" class="nav-link" data-scroll-target="#GitRepository.common_dir">GitRepository::common_dir</a></li><li><a href="#GitRepository.is_linked_worktree" id="toc-GitRepository.is_linked_worktree" class="nav-link" data-scroll-target="#GitRepository.is_linked_worktree">GitRepository::is_linked_worktree</a></li><li><a href="#GitRepository.object_format" id="toc-GitRepository.object_format" class="nav-link" data-scroll-target="#GitRepository.object_format">GitRepository::object_format</a></li><li><a href="#GitRepository.config" id="toc-GitRepository.config" class="nav-link" data-scroll-target="#GitRepository.config">GitRepository::config</a></li><li><a href="#GitRepository.head" id="toc-GitRepository.head" class="nav-link" data-scroll-target="#GitRepository.head">GitRepository::head</a></li><li><a href="#GitRepository.branch_tip" id="toc-GitRepository.branch_tip" class="nav-link" data-scroll-target="#GitRepository.branch_tip">GitRepository::branch_tip</a></li><li><a href="#GitRepository.object_kind" id="toc-GitRepository.object_kind" class="nav-link" data-scroll-target="#GitRepository.object_kind">GitRepository::object_kind</a></li><li><a href="#GitRepository.read_commit" id="toc-GitRepository.read_commit" class="nav-link" data-scroll-target="#GitRepository.read_commit">GitRepository::read_commit</a></li></ul></li></ul></nav></div><main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="index.html">Rust API</a></li><li class="breadcrumb-item"><a href="git_reader.html">git_reader</a></li></ol></nav><div class="quarto-title"><h1 class="title">git_reader</h1></div><div><div class="description">Read Git commits, refs and settings beside Git, read-only, through pinned gix crates. Read Git commits, refs and repository settings beside Git, and never write to Git.</div></div><div class="quarto-title-meta"></div></header><p>This module is the only place in Gossil that uses the gix crates. It opens one
+Git worktree and reads what binding needs, by GIT-01 of the Git access contract.
+Binding is the step that ties a Gossil change to a Git commit. The module reads
+the Git directory and the common directory, <code>HEAD</code> and a branch tip. It also
+reads a commit with its ordered parents, the object format and three configuration keys.</p>
+<p>The reader reads raw objects. It opens the object store with <code>gix_odb::at_opts</code>,
+with no replacement table and without <code>multi-pack-index</code>. So <code>refs/replace</code> never
+changes a result. It recomputes the hash of each commit that it reads, and it returns
+an error for a mismatch.</p>
+<p>Each read has a finite limit from <a href="git_reader.html#Limits"><code>Limits</code></a>.
+The reader itself reads <code>HEAD</code>, each ref, a <code>.git</code> file, <code>commondir</code>, each
+configuration file and each <code>alternates</code> file. It reads each one without blocking
+and within its limit. It parses a loose ref, <code>HEAD</code> and <code>packed-refs</code> itself, as Git
+does, and gives the bytes of the configuration and of a <code>.git</code> file to the gix parsers.</p>
+<p>The reader refuses what the first release does not support, by GIT-04. It refuses
+a shallow clone, a reftable repository, an unknown object format, an unknown
+version-1 extension and a bare repository. It reads <code>core.bare</code> and
+<code>core.worktree</code> from the files that Git reads for the worktree. So a linked
+worktree of a bare repository opens, except when <code>extensions.worktreeConfig</code> makes the
+common <code>core.bare</code> apply to it. The reader makes these checks each time it opens a
+worktree.</p>
+<p>The lint <code>just lint</code> bans the write paths of the gix crates (GIT-03).
+<code>tests/git_reader.rs</code> checks that a run of every call leaves the Git
+directories unchanged. <code>tests/git_write_lint.rs</code> checks that no other source
+file names a gix path.</p>
+<section id="recommendations" class="level2">
+<h2 class="anchored" data-anchor-id="recommendations">Recommendations</h2>
+<p>Open a worktree for each registration, each locate and each bind, because a repository
+can change its format between two runs. Keep every new gix call in this module.</p>
+</section>
+<section id="Limits" class="level2">
+<h2 class="anchored" data-anchor-id="Limits">struct Limits</h2>
+<p><a href="https://github.com/rahuldave/gossil/blob/main/src/git_reader.rs#L44" class="source-link">source</a></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span class="kw">pub</span> <span class="kw">struct</span> Limits</code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><a href="delta.html#Limits"><code>Limits</code></a> sets the finite bound of each read. The type has no unbounded default.</p>
+<div class="sd-table">
+<table class="caption-top table">
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>config_bytes</code></td>
+<td>u64</td>
+<td>Maximum bytes of each configuration file, <code>config</code> or <code>config.worktree</code>.</td>
+</tr>
+<tr>
+<td><code>small_file_bytes</code></td>
+<td>u64</td>
+<td>Maximum bytes of <code>HEAD</code>, each loose ref, a <code>.git</code> file and <code>commondir</code>.</td>
+</tr>
+<tr>
+<td><code>packed_refs_bytes</code></td>
+<td>u64</td>
+<td>Maximum bytes of the <code>packed-refs</code> file.</td>
+</tr>
+<tr>
+<td><code>symbolic_depth</code></td>
+<td>usize</td>
+<td>Maximum number of refs that one lookup reads, <code>HEAD</code> included. Git’s <code>SYMREF_MAXDEPTH</code> is five.</td>
+</tr>
+<tr>
+<td><code>commit_bytes</code></td>
+<td>u64</td>
+<td>Maximum bytes of one commit object, after decompression.</td>
+</tr>
+<tr>
+<td><code>parents</code></td>
+<td>usize</td>
+<td>Maximum number of parents of one commit.</td>
+</tr>
+<tr>
+<td><code>alternates_bytes</code></td>
+<td>u64</td>
+<td>Maximum bytes of each <code>objects/info/alternates</code> file.</td>
+</tr>
+<tr>
+<td><code>alternates</code></td>
+<td>usize</td>
+<td>Maximum number of alternate object directories, over all nested <code>alternates</code> files.</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Implements <a href="https://doc.rust-lang.org/nightly/core/clone/trait.Clone.html"><code>Clone</code></a>, <a href="https://doc.rust-lang.org/nightly/core/marker/trait.Copy.html"><code>Copy</code></a>, <a href="https://doc.rust-lang.org/nightly/core/fmt/trait.Debug.html"><code>Debug</code></a>, <a href="https://doc.rust-lang.org/nightly/core/cmp/trait.PartialEq.html"><code>PartialEq</code></a>, <a href="https://doc.rust-lang.org/nightly/core/cmp/trait.Eq.html"><code>Eq</code></a>.</p>
+<section id="Limits.STANDARD" class="level3">
+<h3 class="anchored" data-anchor-id="Limits.STANDARD">const Limits::STANDARD</h3>
+<p><a href="https://github.com/rahuldave/gossil/blob/main/src/git_reader.rs#L67" class="source-link">source</a></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span class="kw">const</span> STANDARD: Limits <span class="op">=</span> _;</code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><code>STANDARD</code> holds finite limits that fit ordinary repositories. They are 1 MiB of
+configuration, 4 KiB small files, 256 MiB of packed refs, depth 5 and 16 MiB commits.
+They also allow 1024 parents, and 64 KiB of <code>alternates</code> with 16 alternate directories.</p>
+</section>
+</section>
+<section id="ObjectFormat" class="level2">
+<h2 class="anchored" data-anchor-id="ObjectFormat">enum ObjectFormat</h2>
+<p><a href="https://github.com/rahuldave/gossil/blob/main/src/git_reader.rs#L81" class="source-link">source</a></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span class="kw">pub</span> <span class="kw">enum</span> ObjectFormat</code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>The hash algorithm of a Git repository, from <code>extensions.objectFormat</code>.</p>
+<div class="sd-table">
+<table class="caption-top table">
+<thead>
+<tr>
+<th>Variant</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Sha1</code></td>
+<td>SHA-1 with 20-byte IDs, the default when the key is absent.</td>
+</tr>
+<tr>
+<td><code>Sha256</code></td>
+<td>SHA-256 with 32-byte IDs.</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Implements <a href="https://doc.rust-lang.org/nightly/core/clone/trait.Clone.html"><code>Clone</code></a>, <a href="https://doc.rust-lang.org/nightly/core/marker/trait.Copy.html"><code>Copy</code></a>, <a href="https://doc.rust-lang.org/nightly/core/fmt/trait.Debug.html"><code>Debug</code></a>, <a href="https://doc.rust-lang.org/nightly/core/cmp/trait.PartialEq.html"><code>PartialEq</code></a>, <a href="https://doc.rust-lang.org/nightly/core/cmp/trait.Eq.html"><code>Eq</code></a>, <a href="https://doc.rust-lang.org/nightly/core/hash/trait.Hash.html"><code>Hash</code></a>, <a href="https://doc.rust-lang.org/nightly/core/cmp/trait.PartialOrd.html"><code>PartialOrd</code></a>, <a href="https://doc.rust-lang.org/nightly/core/cmp/trait.Ord.html"><code>Ord</code></a>.</p>
+<section id="ObjectFormat.name" class="level3">
+<h3 class="anchored" data-anchor-id="ObjectFormat.name">ObjectFormat::name</h3>
+<p><a href="https://github.com/rahuldave/gossil/blob/main/src/git_reader.rs#L93" class="source-link">source</a></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span class="kw">pub</span> <span class="kw">fn</span> <span class="fu">name</span>(<span class="va">self</span>) -&gt; <span class="kw">&amp;</span><span class="op">&#x27;</span><span class="bu">static</span> <span class="dt">str</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Return the name that Git uses for the format in configuration.</p>
+<div class="sd-table">
+<table class="caption-top table">
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>returns</td>
+<td>&amp;'static str</td>
+<td><a href="content_hash.html#sha1"><code>sha1</code></a> or <code>sha256</code>.</td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="ObjectFormat.id_bytes" class="level3">
+<h3 class="anchored" data-anchor-id="ObjectFormat.id_bytes">ObjectFormat::id_bytes</h3>
+<p><a href="https://github.com/rahuldave/gossil/blob/main/src/git_reader.rs#L104" class="source-link">source</a></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span class="kw">pub</span> <span class="kw">fn</span> <span class="fu">id_bytes</span>(<span class="va">self</span>) -&gt; <span class="dt">usize</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Return the number of bytes in one full object ID of this format.</p>
+<div class="sd-table">
+<table class="caption-top table">
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>returns</td>
+<td>usize</td>
+<td>20 for SHA-1, 32 for SHA-256.</td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+</section>
+<section id="GitObjectId" class="level2">
+<h2 class="anchored" data-anchor-id="GitObjectId">struct GitObjectId</h2>
+<p><a href="https://github.com/rahuldave/gossil/blob/main/src/git_reader.rs#L125" class="source-link">source</a></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span class="kw">pub</span> <span class="kw">struct</span> GitObjectId</code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>A full, immutable Git object ID with its hash algorithm.</p>
+<p>Implements <a href="https://doc.rust-lang.org/nightly/core/clone/trait.Clone.html"><code>Clone</code></a>, <a href="https://doc.rust-lang.org/nightly/core/fmt/trait.Debug.html"><code>Debug</code></a>, <a href="https://doc.rust-lang.org/nightly/core/cmp/trait.PartialEq.html"><code>PartialEq</code></a>, <a href="https://doc.rust-lang.org/nightly/core/cmp/trait.Eq.html"><code>Eq</code></a>, <a href="https://doc.rust-lang.org/nightly/core/hash/trait.Hash.html"><code>Hash</code></a>, <a href="https://doc.rust-lang.org/nightly/core/cmp/trait.PartialOrd.html"><code>PartialOrd</code></a>, <a href="https://doc.rust-lang.org/nightly/core/cmp/trait.Ord.html"><code>Ord</code></a>, <a href="https://doc.rust-lang.org/nightly/core/fmt/trait.Display.html"><code>Display</code></a>.</p>
+<section id="GitObjectId.from_hex" class="level3">
+<h3 class="anchored" data-anchor-id="GitObjectId.from_hex">GitObjectId::from_hex</h3>
+<p><a href="https://github.com/rahuldave/gossil/blob/main/src/git_reader.rs#L160" class="source-link">source</a></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span class="kw">pub</span> <span class="kw">fn</span> <span class="fu">from_hex</span>(format: ObjectFormat, hex: <span class="kw">&amp;</span><span class="dt">str</span>) -&gt; <span class="bu">Result</span><span class="op">&lt;</span><span class="va">Self</span>, GitReadError<span class="op">&gt;</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Parse a full hexadecimal object ID of <code>format</code>, and refuse an abbreviated ID.</p>
+<section id="errors" class="level5">
+<h5 class="anchored" data-anchor-id="errors">Errors</h5>
+<p>Returns <a href="git_reader.html#GitReadError"><code>GitReadError::InvalidObjectId</code></a> for a wrong length or a non-hex digit.</p>
+</section>
+<section id="examples" class="level5">
+<h5 class="anchored" data-anchor-id="examples">Examples</h5>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span class="kw">use</span> gossil::git_reader::{GitObjectId, GitReadError, ObjectFormat};
+
+<span class="kw">let</span> hex <span class="op">=</span> <span class="st">&quot;</span><span class="st">4B825DC642CB6EB9A060E54BF8D69288FBEE4904</span><span class="st">&quot;</span>;
+<span class="kw">let</span> id <span class="op">=</span> GitObjectId::from_hex(ObjectFormat::Sha1, hex).unwrap();
+<span class="fu">assert_eq!</span>(id.as_bytes().len(), <span class="dv">20</span>);
+<span class="fu">assert_eq!</span>(id.to_string(), hex.to_ascii_lowercase());
+
+<span class="co">// An abbreviated ID, or a SHA-1 ID read as SHA-256, is refused.
+</span><span class="kw">let</span> short <span class="op">=</span> GitObjectId::from_hex(ObjectFormat::Sha1, <span class="st">&quot;</span><span class="st">4b825dc</span><span class="st">&quot;</span>);
+<span class="fu">assert!</span>(<span class="fu">matches!</span>(short, <span class="bu">Err</span>(GitReadError::InvalidObjectId { <span class="op">..</span> })));
+<span class="kw">let</span> other <span class="op">=</span> GitObjectId::from_hex(ObjectFormat::Sha256, hex);
+<span class="fu">assert!</span>(<span class="fu">matches!</span>(other, <span class="bu">Err</span>(GitReadError::InvalidObjectId { <span class="op">..</span> })));</code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="sd-table">
+<table class="caption-top table">
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>format</code></td>
+<td>ObjectFormat</td>
+<td>Hash algorithm that the ID must have.</td>
+</tr>
+<tr>
+<td><a href="content_hash.html#hex"><code>hex</code></a></td>
+<td>&amp;str</td>
+<td>Exactly 40 or 64 hexadecimal digits, by <code>format</code>, in upper or lower case.</td>
+</tr>
+<tr>
+<td>returns</td>
+<td>Result&lt;Self, GitReadError&gt;</td>
+<td>The parsed ID.</td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+</section>
+<section id="GitObjectId.format" class="level3">
+<h3 class="anchored" data-anchor-id="GitObjectId.format">GitObjectId::format</h3>
+<p><a href="https://github.com/rahuldave/gossil/blob/main/src/git_reader.rs#L176" class="source-link">source</a></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span class="kw">pub</span> <span class="kw">fn</span> <span class="fu">format</span>(<span class="op">&amp;</span><span class="va">self</span>) -&gt; ObjectFormat</code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Return the hash algorithm of the ID.</p>
+<div class="sd-table">
+<table class="caption-top table">
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>returns</td>
+<td>ObjectFormat</td>
+<td>The object format.</td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="GitObjectId.as_bytes" class="level3">
+<h3 class="anchored" data-anchor-id="GitObjectId.as_bytes">GitObjectId::as_bytes</h3>
+<p><a href="https://github.com/rahuldave/gossil/blob/main/src/git_reader.rs#L184" class="source-link">source</a></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span class="kw">pub</span> <span class="kw">fn</span> <span class="fu">as_bytes</span>(<span class="op">&amp;</span><span class="va">self</span>) -&gt; <span class="kw">&amp;</span>[<span class="dt">u8</span>]</code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Return the digest bytes of the ID.</p>
+<div class="sd-table">
+<table class="caption-top table">
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>returns</td>
+<td>&amp;[u8]</td>
+<td>20 or 32 bytes, by the format.</td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="GitObjectId.to_hex" class="level3">
+<h3 class="anchored" data-anchor-id="GitObjectId.to_hex">GitObjectId::to_hex</h3>
+<p><a href="https://github.com/rahuldave/gossil/blob/main/src/git_reader.rs#L192" class="source-link">source</a></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb11"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span class="kw">pub</span> <span class="kw">fn</span> <span class="fu">to_hex</span>(<span class="op">&amp;</span><span class="va">self</span>) -&gt; <span class="bu">String</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Return the ID as lowercase hexadecimal digits, as Git prints it.</p>
+<div class="sd-table">
+<table class="caption-top table">
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>returns</td>
+<td>String</td>
+<td>40 or 64 digits, by the format.</td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+</section>
+<section id="ObjectKind" class="level2">
+<h2 class="anchored" data-anchor-id="ObjectKind">enum ObjectKind</h2>
+<p><a href="https://github.com/rahuldave/gossil/blob/main/src/git_reader.rs#L240" class="source-link">source</a></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb12"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span class="kw">pub</span> <span class="kw">enum</span> ObjectKind</code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>The type of a Git object.</p>
+<div class="sd-table">
+<table class="caption-top table">
+<thead>
+<tr>
+<th>Variant</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Commit</code></td>
+<td>A commit object.</td>
+</tr>
+<tr>
+<td><code>Tree</code></td>
+<td>A tree object.</td>
+</tr>
+<tr>
+<td><code>Blob</code></td>
+<td>A blob object.</td>
+</tr>
+<tr>
+<td><a href="artifact.html#Tag"><code>Tag</code></a></td>
+<td>An annotated tag object.</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Implements <a href="https://doc.rust-lang.org/nightly/core/clone/trait.Clone.html"><code>Clone</code></a>, <a href="https://doc.rust-lang.org/nightly/core/marker/trait.Copy.html"><code>Copy</code></a>, <a href="https://doc.rust-lang.org/nightly/core/fmt/trait.Debug.html"><code>Debug</code></a>, <a href="https://doc.rust-lang.org/nightly/core/cmp/trait.PartialEq.html"><code>PartialEq</code></a>, <a href="https://doc.rust-lang.org/nightly/core/cmp/trait.Eq.html"><code>Eq</code></a>, <a href="https://doc.rust-lang.org/nightly/core/hash/trait.Hash.html"><code>Hash</code></a>.</p>
+<section id="ObjectKind.name" class="level3">
+<h3 class="anchored" data-anchor-id="ObjectKind.name">ObjectKind::name</h3>
+<p><a href="https://github.com/rahuldave/gossil/blob/main/src/git_reader.rs#L256" class="source-link">source</a></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb13"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span class="kw">pub</span> <span class="kw">fn</span> <span class="fu">name</span>(<span class="va">self</span>) -&gt; <span class="kw">&amp;</span><span class="op">&#x27;</span><span class="bu">static</span> <span class="dt">str</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Return the name that Git uses for the type.</p>
+<div class="sd-table">
+<table class="caption-top table">
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>returns</td>
+<td>&amp;'static str</td>
+<td><code>commit</code>, <code>tree</code>, <code>blob</code> or <code>tag</code>.</td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+</section>
+<section id="Head" class="level2">
+<h2 class="anchored" data-anchor-id="Head">enum Head</h2>
+<p><a href="https://github.com/rahuldave/gossil/blob/main/src/git_reader.rs#L284" class="source-link">source</a></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb14"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span class="kw">pub</span> <span class="kw">enum</span> Head</code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>The state of <code>HEAD</code> in one worktree.</p>
+<div class="sd-table">
+<table class="caption-top table">
+<thead>
+<tr>
+<th>Variant</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Branch { name: Vec&lt;u8&gt;, tip: Option&lt;GitObjectId&gt; }</code></td>
+<td><code>HEAD</code> names a ref, normally a branch. <code>tip</code> is <code>None</code> for an unborn branch.</td>
+</tr>
+<tr>
+<td><code>Detached(GitObjectId)</code></td>
+<td><code>HEAD</code> holds an object ID directly.</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Implements <a href="https://doc.rust-lang.org/nightly/core/clone/trait.Clone.html"><code>Clone</code></a>, <a href="https://doc.rust-lang.org/nightly/core/fmt/trait.Debug.html"><code>Debug</code></a>, <a href="https://doc.rust-lang.org/nightly/core/cmp/trait.PartialEq.html"><code>PartialEq</code></a>, <a href="https://doc.rust-lang.org/nightly/core/cmp/trait.Eq.html"><code>Eq</code></a>.</p>
+</section>
+<section id="GitCommit" class="level2">
+<h2 class="anchored" data-anchor-id="GitCommit">struct GitCommit</h2>
+<p><a href="https://github.com/rahuldave/gossil/blob/main/src/git_reader.rs#L299" class="source-link">source</a></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb15"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span class="kw">pub</span> <span class="kw">struct</span> GitCommit</code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>A commit object that the reader checked, with its raw parents in order.</p>
+<p>Implements <a href="https://doc.rust-lang.org/nightly/core/clone/trait.Clone.html"><code>Clone</code></a>, <a href="https://doc.rust-lang.org/nightly/core/fmt/trait.Debug.html"><code>Debug</code></a>, <a href="https://doc.rust-lang.org/nightly/core/cmp/trait.PartialEq.html"><code>PartialEq</code></a>, <a href="https://doc.rust-lang.org/nightly/core/cmp/trait.Eq.html"><code>Eq</code></a>.</p>
+<section id="GitCommit.id" class="level3">
+<h3 class="anchored" data-anchor-id="GitCommit.id">GitCommit::id</h3>
+<p><a href="https://github.com/rahuldave/gossil/blob/main/src/git_reader.rs#L311" class="source-link">source</a></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb16"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span class="kw">pub</span> <span class="kw">fn</span> <span class="fu">id</span>(<span class="op">&amp;</span><span class="va">self</span>) -&gt; <span class="kw">&amp;</span>GitObjectId</code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Return the ID of the commit, whose recomputed hash the reader checked.</p>
+<div class="sd-table">
+<table class="caption-top table">
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>returns</td>
+<td>&amp;GitObjectId</td>
+<td>The full commit ID.</td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="GitCommit.parents" class="level3">
+<h3 class="anchored" data-anchor-id="GitCommit.parents">GitCommit::parents</h3>
+<p><a href="https://github.com/rahuldave/gossil/blob/main/src/git_reader.rs#L319" class="source-link">source</a></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb17"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span class="kw">pub</span> <span class="kw">fn</span> <span class="fu">parents</span>(<span class="op">&amp;</span><span class="va">self</span>) -&gt; <span class="kw">&amp;</span>[GitObjectId]</code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Return the raw parents of the commit, in the order of its <code>parent</code> lines.</p>
+<div class="sd-table">
+<table class="caption-top table">
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>returns</td>
+<td>&amp;[GitObjectId]</td>
+<td>The parent IDs, or an empty list for a root commit.</td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+</section>
+<section id="Cause" class="level2">
+<h2 class="anchored" data-anchor-id="Cause">struct Cause</h2>
+<p><a href="https://github.com/rahuldave/gossil/blob/main/src/git_reader.rs#L328" class="source-link">source</a></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb18"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span class="kw">pub</span> <span class="kw">struct</span> Cause(<span class="co">/*</span><span class="co"> private field </span><span class="co">*/</span>);</code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>The underlying error of a failed read, kept as the source of a <a href="git_reader.html#GitReadError"><code>GitReadError</code></a>.</p>
+<p>Two causes compare equal when their messages are equal, so the error type can derive <code>PartialEq</code>.</p>
+<p>Implements <a href="https://doc.rust-lang.org/nightly/core/clone/trait.Clone.html"><code>Clone</code></a>, <a href="https://doc.rust-lang.org/nightly/core/fmt/trait.Debug.html"><code>Debug</code></a>, <a href="https://doc.rust-lang.org/nightly/core/fmt/trait.Display.html"><code>Display</code></a>, <a href="https://doc.rust-lang.org/nightly/core/cmp/trait.PartialEq.html"><code>PartialEq</code></a>, <a href="https://doc.rust-lang.org/nightly/core/cmp/trait.Eq.html"><code>Eq</code></a>.</p>
+<section id="Cause.error" class="level3">
+<h3 class="anchored" data-anchor-id="Cause.error">Cause::error</h3>
+<p><a href="https://github.com/rahuldave/gossil/blob/main/src/git_reader.rs#L359" class="source-link">source</a></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb19"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span class="kw">pub</span> <span class="kw">fn</span> <span class="fu">error</span>(<span class="op">&amp;</span><span class="va">self</span>) -&gt; <span class="kw">&amp;</span>dyn std::error::Error <span class="op">+</span> <span class="bu">Send</span> <span class="op">+</span> <span class="bu">Sync</span> <span class="op">+</span> <span class="op">&#x27;</span><span class="bu">static</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Return the underlying error.</p>
+<div class="sd-table">
+<table class="caption-top table">
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>returns</td>
+<td>&amp;dyn std::error::Error + Send + Sync + 'static</td>
+<td>The error that the cause holds.</td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+</section>
+<section id="RepositoryConfig" class="level2">
+<h2 class="anchored" data-anchor-id="RepositoryConfig">struct RepositoryConfig</h2>
+<p><a href="https://github.com/rahuldave/gossil/blob/main/src/git_reader.rs#L382" class="source-link">source</a></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb20"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span class="kw">pub</span> <span class="kw">struct</span> RepositoryConfig</code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>The three configuration keys of the repository’s own files, after the support checks.</p>
+<div class="sd-table">
+<table class="caption-top table">
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>object_format</code></td>
+<td>ObjectFormat</td>
+<td><code>extensions.objectFormat</code>, or SHA-1 when the key is absent.</td>
+</tr>
+<tr>
+<td><code>ref_storage</code></td>
+<td>Option&lt;Vec&lt;u8&gt;&gt;</td>
+<td>Raw <code>extensions.refStorage</code>. An opened repository has <code>None</code> or <code>files</code>.</td>
+</tr>
+<tr>
+<td><code>hooks_path</code></td>
+<td>Option&lt;Vec&lt;u8&gt;&gt;</td>
+<td>Raw <code>core.hooksPath</code> of <code>config</code>, or of <code>config.worktree</code> when that file applies.</td>
+</tr>
+<tr>
+<td><code>unread_includes</code></td>
+<td>bool</td>
+<td>True when a read file has an <code>include</code> or <code>includeIf</code> section, which the reader does not follow.</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Implements <a href="https://doc.rust-lang.org/nightly/core/clone/trait.Clone.html"><code>Clone</code></a>, <a href="https://doc.rust-lang.org/nightly/core/fmt/trait.Debug.html"><code>Debug</code></a>, <a href="https://doc.rust-lang.org/nightly/core/cmp/trait.PartialEq.html"><code>PartialEq</code></a>, <a href="https://doc.rust-lang.org/nightly/core/cmp/trait.Eq.html"><code>Eq</code></a>.</p>
+</section>
+<section id="GitReadError" class="level2">
+<h2 class="anchored" data-anchor-id="GitReadError">enum GitReadError</h2>
+<p><a href="https://github.com/rahuldave/gossil/blob/main/src/git_reader.rs#L395" class="source-link">source</a></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb21"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span class="kw">pub</span> <span class="kw">enum</span> GitReadError</code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><a href="git_reader.html#GitReadError"><code>GitReadError</code></a> names each reason why the reader refuses or fails, with what the user must know.</p>
+<div class="sd-table">
+<table class="caption-top table">
+<thead>
+<tr>
+<th>Variant</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Io { path: PathBuf, cause: Cause }</code></td>
+<td>A file system call failed.</td>
+</tr>
+<tr>
+<td><code>NotAWorktree { path: PathBuf }</code></td>
+<td>The folder has no <code>.git</code> entry and is not a Git directory.</td>
+</tr>
+<tr>
+<td><code>NotARepository { path: PathBuf, cause: Cause }</code></td>
+<td>The <code>.git</code> entry does not lead to a valid Git directory.</td>
+</tr>
+<tr>
+<td><code>Bare { path: PathBuf }</code></td>
+<td>The folder is a bare repository, which is not a location (SRC-09).</td>
+</tr>
+<tr>
+<td><code>Shallow { common_dir: PathBuf }</code></td>
+<td>The repository is a shallow clone, which the first release refuses (P10).</td>
+</tr>
+<tr>
+<td><code>Reftable { common_dir: PathBuf }</code></td>
+<td>The repository uses the reftable ref backend, which the first release refuses.</td>
+</tr>
+<tr>
+<td><code>UnsupportedObjectFormat { value: Vec&lt;u8&gt; }</code></td>
+<td><code>extensions.objectFormat</code> names a format other than <a href="content_hash.html#sha1"><code>sha1</code></a> or <code>sha256</code>.</td>
+</tr>
+<tr>
+<td><code>UnsupportedRefStorage { value: Vec&lt;u8&gt; }</code></td>
+<td><code>extensions.refStorage</code> names a backend other than <code>files</code> or <code>reftable</code>.</td>
+</tr>
+<tr>
+<td><code>UnsupportedRepositoryVersion { version: i64 }</code></td>
+<td><code>core.repositoryformatversion</code> is not 0 or 1, or is 0 with a version-1 extension.</td>
+</tr>
+<tr>
+<td><code>ForeignWorktree { worktree: PathBuf, configured: PathBuf }</code></td>
+<td><code>core.worktree</code> names a folder other than the opened one, so Git’s worktree is elsewhere.</td>
+</tr>
+<tr>
+<td><code>UnsupportedExtension { name: String }</code></td>
+<td>Version 1 names an extension that the reader does not understand, which Git also refuses.</td>
+</tr>
+<tr>
+<td><code>Config { path: PathBuf, cause: Cause }</code></td>
+<td>A configuration file or value could not be parsed.</td>
+</tr>
+<tr>
+<td><code>TooLarge { what: String, size: u64, limit: u64 }</code></td>
+<td>A file or object is larger than its limit.</td>
+</tr>
+<tr>
+<td><code>NotAFile { path: PathBuf, kind: &amp;&#x27;static str }</code></td>
+<td>An entry that must be a regular file is a FIFO, a device, a socket, a folder, or a symbolic link that the reader does not follow.</td>
+</tr>
+<tr>
+<td><code>Alternate { path: PathBuf, cause: Cause }</code></td>
+<td>An <code>objects/info/alternates</code> file names an alternate that the reader does not use, or the alternates changed after the open.</td>
+</tr>
+<tr>
+<td><code>InvalidObjectId { text: String, format: ObjectFormat }</code></td>
+<td>A text is not a full object ID of the format.</td>
+</tr>
+<tr>
+<td><code>FormatMismatch { id: GitObjectId, repository: ObjectFormat }</code></td>
+<td>An object ID has a format other than the format of the repository.</td>
+</tr>
+<tr>
+<td><code>InvalidBranchName { name: String }</code></td>
+<td>A branch name does not make a valid full ref name.</td>
+</tr>
+<tr>
+<td><code>Ref { name: Vec&lt;u8&gt;, cause: Cause }</code></td>
+<td>A ref could not be read or parsed.</td>
+</tr>
+<tr>
+<td><code>SymbolicDepth { name: Vec&lt;u8&gt;, limit: usize }</code></td>
+<td>A chain of symbolic refs is deeper than the limit.</td>
+</tr>
+<tr>
+<td><code>ObjectRead { id: GitObjectId, cause: Cause }</code></td>
+<td>The object store failed to read an object.</td>
+</tr>
+<tr>
+<td><code>ObjectMissing { id: GitObjectId }</code></td>
+<td>No object with the ID is present, not even in an alternate (COMP-T06).</td>
+</tr>
+<tr>
+<td><code>NotACommit { id: GitObjectId, kind: ObjectKind }</code></td>
+<td>The object exists, but it is not a commit.</td>
+</tr>
+<tr>
+<td><code>HashMismatch { id: GitObjectId, computed: GitObjectId }</code></td>
+<td>The recomputed hash of the object differs from its ID.</td>
+</tr>
+<tr>
+<td><code>MalformedCommit { id: GitObjectId, cause: Cause }</code></td>
+<td>The commit body could not be parsed up to its parents.</td>
+</tr>
+<tr>
+<td><code>TooManyParents { id: GitObjectId, limit: usize }</code></td>
+<td>The commit has more parents than the limit.</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Implements <a href="https://doc.rust-lang.org/nightly/core/clone/trait.Clone.html"><code>Clone</code></a>, <a href="https://doc.rust-lang.org/nightly/core/fmt/trait.Debug.html"><code>Debug</code></a>, <a href="https://doc.rust-lang.org/nightly/core/cmp/trait.PartialEq.html"><code>PartialEq</code></a>, <a href="https://doc.rust-lang.org/nightly/core/cmp/trait.Eq.html"><code>Eq</code></a>, <a href="https://doc.rust-lang.org/nightly/core/fmt/trait.Display.html"><code>Display</code></a>, <a href="https://doc.rust-lang.org/nightly/core/error/trait.Error.html"><code>Error</code></a>.</p>
+</section>
+<section id="GitRepository" class="level2">
+<h2 class="anchored" data-anchor-id="GitRepository">struct GitRepository</h2>
+<p><a href="https://github.com/rahuldave/gossil/blob/main/src/git_reader.rs#L1245" class="source-link">source</a></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb22"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span class="kw">pub</span> <span class="kw">struct</span> GitRepository</code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>One opened Git worktree, after the support checks, with a read-only object store.</p>
+<p>Implements <a href="https://doc.rust-lang.org/nightly/core/fmt/trait.Debug.html"><code>Debug</code></a>.</p>
+<section id="GitRepository.open" class="level3">
+<h3 class="anchored" data-anchor-id="GitRepository.open">GitRepository::open</h3>
+<p><a href="https://github.com/rahuldave/gossil/blob/main/src/git_reader.rs#L1330" class="source-link">source</a></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb23"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span class="kw">pub</span> <span class="kw">fn</span> <span class="fu">open</span>(worktree: <span class="kw">&amp;</span>Path, limits: Limits) -&gt; <span class="bu">Result</span><span class="op">&lt;</span><span class="va">Self</span>, GitReadError<span class="op">&gt;</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Open the Git worktree whose top folder is <code>worktree</code>, and check that the first release supports it.</p>
+<p>The folder must hold the <code>.git</code> entry itself. The reader searches no parent
+folder and reads no Git environment variable.</p>
+<section id="errors-1" class="level5">
+<h5 class="anchored" data-anchor-id="errors-1">Errors</h5>
+<p>Returns one of these errors:</p>
+<ul>
+<li><a href="git_reader.html#GitReadError"><code>GitReadError::NotAWorktree</code></a> for a folder without a <code>.git</code> entry.</li>
+<li><a href="git_reader.html#GitReadError"><code>GitReadError::NotARepository</code></a> for a <code>.git</code> entry that leads to no valid Git directory,
+a <code>.git</code> file whose path ends in whitespace, or a <code>.git</code> file that names no folder.</li>
+<li><a href="git_reader.html#GitReadError"><code>GitReadError::Shallow</code></a>, <a href="git_reader.html#GitReadError"><code>GitReadError::Reftable</code></a>, <a href="git_reader.html#GitReadError"><code>GitReadError::Bare</code></a>,
+<a href="git_reader.html#GitReadError"><code>GitReadError::ForeignWorktree</code></a> or <a href="git_reader.html#GitReadError"><code>GitReadError::UnsupportedExtension</code></a>.</li>
+<li><a href="git_reader.html#GitReadError"><code>GitReadError::TooLarge</code></a> for a <code>HEAD</code>, a <code>.git</code> file or <code>commondir</code> over
+<code>small_file_bytes</code>, for a configuration file over <code>config_bytes</code>, or for an
+<code>alternates</code> file over <code>alternates_bytes</code>.</li>
+<li><a href="git_reader.html#GitReadError"><code>GitReadError::NotAFile</code></a> for one of those entries that is a FIFO, a device,
+a socket, a dangling or refused symbolic link, or a folder other than <code>.git</code>.</li>
+<li><a href="git_reader.html#GitReadError"><code>GitReadError::Ref</code></a> for a <code>HEAD</code> that cannot be parsed.</li>
+<li><a href="git_reader.html#GitReadError"><code>GitReadError::NotARepository</code></a> also for a <code>HEAD</code> that names a ref outside <code>refs/</code>,
+or a <code>commondir</code> that is empty after its line ends.</li>
+<li><a href="git_reader.html#GitReadError"><code>GitReadError::Alternate</code></a> for alternates over the count or the depth, an
+alternate that is not a folder, a quoted path, a relative path in a nested
+<code>alternates</code> file, or a folder that appears twice.</li>
+<li><a href="git_reader.html#GitReadError"><code>GitReadError::Config</code></a> for a configuration that cannot be parsed.</li>
+<li>An error for an unsupported format or version, or for a read error.</li>
+</ul>
+</section>
+<section id="examples-1" class="level5">
+<h5 class="anchored" data-anchor-id="examples-1">Examples</h5>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb24"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span class="kw">use</span> gossil::git_reader::{GitReadError, GitRepository, Head, Limits};
+<span class="kw">use</span> std::path::Path;
+
+<span class="st">/// Return the parents of the commit at `HEAD`, or `None` for an unborn branch.
+</span><span class="kw">fn</span> <span class="fu">head_parents</span>(worktree: <span class="kw">&amp;</span>Path) -&gt; <span class="bu">Result</span><span class="op">&lt;</span><span class="bu">Option</span><span class="op">&lt;</span><span class="bu">Vec</span><span class="op">&lt;</span><span class="bu">String</span><span class="op">&gt;</span><span class="op">&gt;</span>, GitReadError<span class="op">&gt;</span> {
+    <span class="kw">let</span> repo <span class="op">=</span> GitRepository::open(worktree, Limits::STANDARD)<span class="op">?</span>;
+    <span class="kw">let</span> tip <span class="op">=</span> <span class="cf">match</span> repo.head()<span class="op">?</span> {
+        Head::Branch { tip, <span class="op">..</span> } <span class="op">=</span><span class="op">&gt;</span> tip,
+        Head::Detached(id) <span class="op">=</span><span class="op">&gt;</span> <span class="bu">Some</span>(id),
+    };
+    <span class="kw">let</span> <span class="bu">Some</span>(tip) <span class="op">=</span> tip <span class="cf">else</span> { <span class="cf">return</span> <span class="bu">Ok</span>(<span class="bu">None</span>) };
+    <span class="kw">let</span> commit <span class="op">=</span> repo.read_commit(<span class="op">&amp;</span>tip)<span class="op">?</span>;
+    <span class="bu">Ok</span>(<span class="bu">Some</span>(commit.parents().iter().map(<span class="op">|</span>id<span class="op">|</span> id.to_hex()).collect()))
+}
+
+<span class="co">// A folder without a `.git` entry is not a worktree. The open searches no parent folder.
+</span><span class="kw">let</span> folder <span class="op">=</span> tempfile::tempdir().unwrap();
+<span class="kw">let</span> error <span class="op">=</span> head_parents(folder.path()).unwrap_err();
+<span class="fu">assert!</span>(<span class="fu">matches!</span>(error, GitReadError::NotAWorktree { <span class="op">..</span> }));</code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="sd-table">
+<table class="caption-top table">
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>worktree</code></td>
+<td>&amp;Path</td>
+<td>Top folder of a main or linked worktree.</td>
+</tr>
+<tr>
+<td><code>limits</code></td>
+<td>Limits</td>
+<td>Bounds of this call and of every later call.</td>
+</tr>
+<tr>
+<td>returns</td>
+<td>Result&lt;Self, GitReadError&gt;</td>
+<td>The opened repository.</td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+</section>
+<section id="GitRepository.worktree" class="level3">
+<h3 class="anchored" data-anchor-id="GitRepository.worktree">GitRepository::worktree</h3>
+<p><a href="https://github.com/rahuldave/gossil/blob/main/src/git_reader.rs#L1463" class="source-link">source</a></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb25"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span class="kw">pub</span> <span class="kw">fn</span> <span class="fu">worktree</span>(<span class="op">&amp;</span><span class="va">self</span>) -&gt; <span class="kw">&amp;</span>Path</code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Return the canonical top folder of the worktree.</p>
+<div class="sd-table">
+<table class="caption-top table">
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>returns</td>
+<td>&amp;Path</td>
+<td>The folder that holds <code>.git</code>.</td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="GitRepository.git_dir" class="level3">
+<h3 class="anchored" data-anchor-id="GitRepository.git_dir">GitRepository::git_dir</h3>
+<p><a href="https://github.com/rahuldave/gossil/blob/main/src/git_reader.rs#L1471" class="source-link">source</a></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb26"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span class="kw">pub</span> <span class="kw">fn</span> <span class="fu">git_dir</span>(<span class="op">&amp;</span><span class="va">self</span>) -&gt; <span class="kw">&amp;</span>Path</code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Return the canonical Git directory of the worktree, which holds its <code>HEAD</code>.</p>
+<div class="sd-table">
+<table class="caption-top table">
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>returns</td>
+<td>&amp;Path</td>
+<td><code>.git</code> of a main worktree, or <code>.git/worktrees/&lt;name&gt;</code> of the main repository for a linked one.</td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="GitRepository.common_dir" class="level3">
+<h3 class="anchored" data-anchor-id="GitRepository.common_dir">GitRepository::common_dir</h3>
+<p><a href="https://github.com/rahuldave/gossil/blob/main/src/git_reader.rs#L1479" class="source-link">source</a></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb27"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span class="kw">pub</span> <span class="kw">fn</span> <span class="fu">common_dir</span>(<span class="op">&amp;</span><span class="va">self</span>) -&gt; <span class="kw">&amp;</span>Path</code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Return the canonical common Git directory, which holds the objects, the shared refs and <code>config</code>.</p>
+<div class="sd-table">
+<table class="caption-top table">
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>returns</td>
+<td>&amp;Path</td>
+<td>The common directory, which equals <a href="git_reader.html#GitRepository.git_dir"><code>Self::git_dir</code></a> in a main worktree.</td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="GitRepository.is_linked_worktree" class="level3">
+<h3 class="anchored" data-anchor-id="GitRepository.is_linked_worktree">GitRepository::is_linked_worktree</h3>
+<p><a href="https://github.com/rahuldave/gossil/blob/main/src/git_reader.rs#L1487" class="source-link">source</a></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb28"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span class="kw">pub</span> <span class="kw">fn</span> <span class="fu">is_linked_worktree</span>(<span class="op">&amp;</span><span class="va">self</span>) -&gt; <span class="dt">bool</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Report whether the worktree is a linked worktree.</p>
+<div class="sd-table">
+<table class="caption-top table">
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>returns</td>
+<td>bool</td>
+<td>True when the Git directory differs from the common directory.</td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="GitRepository.object_format" class="level3">
+<h3 class="anchored" data-anchor-id="GitRepository.object_format">GitRepository::object_format</h3>
+<p><a href="https://github.com/rahuldave/gossil/blob/main/src/git_reader.rs#L1495" class="source-link">source</a></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb29"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span class="kw">pub</span> <span class="kw">fn</span> <span class="fu">object_format</span>(<span class="op">&amp;</span><span class="va">self</span>) -&gt; ObjectFormat</code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Return the object format of the repository.</p>
+<div class="sd-table">
+<table class="caption-top table">
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>returns</td>
+<td>ObjectFormat</td>
+<td>SHA-1 or SHA-256.</td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="GitRepository.config" class="level3">
+<h3 class="anchored" data-anchor-id="GitRepository.config">GitRepository::config</h3>
+<p><a href="https://github.com/rahuldave/gossil/blob/main/src/git_reader.rs#L1503" class="source-link">source</a></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb30"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span class="kw">pub</span> <span class="kw">fn</span> <span class="fu">config</span>(<span class="op">&amp;</span><span class="va">self</span>) -&gt; <span class="kw">&amp;</span>RepositoryConfig</code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Return the configuration keys that the open read.</p>
+<div class="sd-table">
+<table class="caption-top table">
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>returns</td>
+<td>&amp;RepositoryConfig</td>
+<td>The keys of the repository’s own configuration files.</td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="GitRepository.head" class="level3">
+<h3 class="anchored" data-anchor-id="GitRepository.head">GitRepository::head</h3>
+<p><a href="https://github.com/rahuldave/gossil/blob/main/src/git_reader.rs#L1516" class="source-link">source</a></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb31"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span class="kw">pub</span> <span class="kw">fn</span> <span class="fu">head</span>(<span class="op">&amp;</span><span class="va">self</span>) -&gt; <span class="bu">Result</span><span class="op">&lt;</span>Head, GitReadError<span class="op">&gt;</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Read <code>HEAD</code> of this worktree and resolve the ref that it names.</p>
+<section id="errors-2" class="level5">
+<h5 class="anchored" data-anchor-id="errors-2">Errors</h5>
+<p>Returns <a href="git_reader.html#GitReadError"><code>GitReadError::Ref</code></a> for a <code>HEAD</code> that is missing, cannot be parsed or names a
+ref outside <code>refs/</code>, and <a href="git_reader.html#GitReadError"><code>GitReadError::TooLarge</code></a>, <a href="git_reader.html#GitReadError"><code>GitReadError::NotAFile</code></a> or
+<a href="git_reader.html#GitReadError"><code>GitReadError::SymbolicDepth</code></a>.</p>
+<div class="sd-table">
+<table class="caption-top table">
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>returns</td>
+<td>Result&lt;Head, GitReadError&gt;</td>
+<td>The branch and its tip, or the detached object ID.</td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+</section>
+<section id="GitRepository.branch_tip" class="level3">
+<h3 class="anchored" data-anchor-id="GitRepository.branch_tip">GitRepository::branch_tip</h3>
+<p><a href="https://github.com/rahuldave/gossil/blob/main/src/git_reader.rs#L1556" class="source-link">source</a></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb32"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span class="kw">pub</span> <span class="kw">fn</span> <span class="fu">branch_tip</span>(<span class="op">&amp;</span><span class="va">self</span>, name: <span class="kw">&amp;</span><span class="dt">str</span>) -&gt; <span class="bu">Result</span><span class="op">&lt;</span><span class="bu">Option</span><span class="op">&lt;</span>GitObjectId<span class="op">&gt;</span>, GitReadError<span class="op">&gt;</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Read the tip of the branch <code>refs/heads/&lt;name&gt;</code>, from a loose ref or <code>packed-refs</code>.</p>
+<section id="errors-3" class="level5">
+<h5 class="anchored" data-anchor-id="errors-3">Errors</h5>
+<p>Returns <a href="git_reader.html#GitReadError"><code>GitReadError::InvalidBranchName</code></a>, <a href="git_reader.html#GitReadError"><code>GitReadError::Ref</code></a>,
+<a href="git_reader.html#GitReadError"><code>GitReadError::TooLarge</code></a>, <a href="git_reader.html#GitReadError"><code>GitReadError::NotAFile</code></a> or <a href="git_reader.html#GitReadError"><code>GitReadError::SymbolicDepth</code></a>.</p>
+<div class="sd-table">
+<table class="caption-top table">
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>name</code></td>
+<td>&amp;str</td>
+<td>Short branch name, such as <code>main</code>.</td>
+</tr>
+<tr>
+<td>returns</td>
+<td>Result&lt;Option&lt;GitObjectId&gt;, GitReadError&gt;</td>
+<td>The object ID of the tip, or <code>None</code> when the branch does not exist.</td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+</section>
+<section id="GitRepository.object_kind" class="level3">
+<h3 class="anchored" data-anchor-id="GitRepository.object_kind">GitRepository::object_kind</h3>
+<p><a href="https://github.com/rahuldave/gossil/blob/main/src/git_reader.rs#L1739" class="source-link">source</a></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb33"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span class="kw">pub</span> <span class="kw">fn</span> <span class="fu">object_kind</span>(<span class="op">&amp;</span><span class="va">self</span>, id: <span class="kw">&amp;</span>GitObjectId) -&gt; <span class="bu">Result</span><span class="op">&lt;</span>ObjectKind, GitReadError<span class="op">&gt;</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Read the type of the object <code>id</code> from its header.</p>
+<section id="errors-4" class="level5">
+<h5 class="anchored" data-anchor-id="errors-4">Errors</h5>
+<p>Returns <a href="git_reader.html#GitReadError"><code>GitReadError::FormatMismatch</code></a>, <a href="git_reader.html#GitReadError"><code>GitReadError::ObjectMissing</code></a>,
+<a href="git_reader.html#GitReadError"><code>GitReadError::ObjectRead</code></a>, or <a href="git_reader.html#GitReadError"><code>GitReadError::NotAFile</code></a> for a loose file of the object
+that is a FIFO, a device or a socket. Returns <a href="git_reader.html#GitReadError"><code>GitReadError::Alternate</code></a> when the
+<code>alternates</code> files changed after the open, and <a href="git_reader.html#GitReadError"><code>GitReadError::NotAFile</code></a> or
+<a href="git_reader.html#GitReadError"><code>GitReadError::TooLarge</code></a> when an <code>alternates</code> file is now a special file or too large.</p>
+<div class="sd-table">
+<table class="caption-top table">
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>id</code></td>
+<td>&amp;GitObjectId</td>
+<td>Full ID in the format of the repository.</td>
+</tr>
+<tr>
+<td>returns</td>
+<td>Result&lt;ObjectKind, GitReadError&gt;</td>
+<td>The type of the object.</td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+</section>
+<section id="GitRepository.read_commit" class="level3">
+<h3 class="anchored" data-anchor-id="GitRepository.read_commit">GitRepository::read_commit</h3>
+<p><a href="https://github.com/rahuldave/gossil/blob/main/src/git_reader.rs#L1791" class="source-link">source</a></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb34"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span class="kw">pub</span> <span class="kw">fn</span> <span class="fu">read_commit</span>(<span class="op">&amp;</span><span class="va">self</span>, id: <span class="kw">&amp;</span>GitObjectId) -&gt; <span class="bu">Result</span><span class="op">&lt;</span>GitCommit, GitReadError<span class="op">&gt;</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Read the commit <code>id</code>, check its type and its hash, and return its raw parents in order.</p>
+<section id="errors-5" class="level5">
+<h5 class="anchored" data-anchor-id="errors-5">Errors</h5>
+<p>Returns <a href="git_reader.html#GitReadError"><code>GitReadError::NotACommit</code></a>, <a href="git_reader.html#GitReadError"><code>GitReadError::HashMismatch</code></a>,
+<a href="git_reader.html#GitReadError"><code>GitReadError::TooLarge</code></a>, <a href="git_reader.html#GitReadError"><code>GitReadError::TooManyParents</code></a>,
+<a href="git_reader.html#GitReadError"><code>GitReadError::MalformedCommit</code></a> and the errors of <a href="git_reader.html#GitRepository.object_kind"><code>Self::object_kind</code></a>.</p>
+<div class="sd-table">
+<table class="caption-top table">
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>id</code></td>
+<td>&amp;GitObjectId</td>
+<td>Full ID in the format of the repository.</td>
+</tr>
+<tr>
+<td>returns</td>
+<td>Result&lt;GitCommit, GitReadError&gt;</td>
+<td>The checked commit.</td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+</section>
+</section>
+<nav class="page-navigation"><div class="nav-page nav-page-previous"><a href="gest_ticket.html" class="pagination-link"><i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">gest_ticket</span></a></div><div class="nav-page nav-page-next"><a href="glob.html" class="pagination-link"><span class="nav-page-text">glob</span> <i class="bi bi-arrow-right-short"></i></a></div></nav></main></div></body></html>
