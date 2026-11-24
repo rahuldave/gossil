@@ -19,8 +19,12 @@ Read and follow @.agents/instructions/prose.md
   holds the Gest domain value converters (`src/gest_*_values.rs`), the Gest
   model port (`src/gest_model.rs`, `src/gest_model/`) and the read-only Git
   reader (`src/git_reader.rs`). The Git reader is the only module that uses gix,
-  and its guide is `docs/git-reader.md`. `tests/` contains controls, portable
-  fixtures and the private storage composition test.
+  and its guide is `docs/git-reader.md`. `src/storage/` also holds
+  the internal strict record codec, operation limits and metered queries
+  (`command_codec.rs`, `operation_limits.rs`, `metered_query.rs`), and the
+  metered content, policy and catalog routes in `content.rs`, `policy.rs` and
+  `schema.rs`, which admit only the newest catalog. `tests/` contains controls,
+  portable fixtures and the private storage composition test.
 - Gest tickets: `src/gest_ticket.rs` holds the shared emitter of creation
   tickets and the artifact and project kinds. `src/task_ticket.rs` holds the
   task kind.
@@ -32,7 +36,8 @@ Read and follow @.agents/instructions/prose.md
   `docs/local-storage.md`, `docs/native-storage.md`, `docs/artifact-parser.md`,
   `docs/glob.md`, `docs/file-path.md`, `docs/history.md`, `docs/git-reader.md`,
   `docs/task-ticket.md`, `docs/gest-ticket.md`, the ten Gest value guides
-  `docs/gest-*-values.md`, `docs/gest-model.md` and `docs/development-plan.md`.
+  `docs/gest-*-values.md`, `docs/gest-model.md`, `docs/local-records.md` and
+  `docs/development-plan.md`.
 - Product specification: `~/Projects/AIProjectInfra/docs/gossil/README.md` and its linked pages.
 - Workflow playbook: `.agents/skills/gtw/references/gest_codex_workflow.md`.
 
@@ -60,7 +65,9 @@ It requires explicit repository and checkout selection, with `--root` for first
 registration. It selects no files.
 
 Bound catalog1 creation and bounded private content operations remain supported.
-Generic private content writes refuse catalog4.
+Generic private content writes refuse catalog4. The metered private put admits
+only catalog4, but has no caller. Admission refuses the private row that it
+writes, so it waits for a catalog that admits private content.
 
 The private recording library requires the complete tracked set, immutable
 private scopes and all seven expected checkout facts. It captures every working file with one borrowed content
@@ -185,10 +192,11 @@ existing global-state control), and all 20 unchanged Tcl assertions. Its graph
 comparison retained all 126 nonroot packages and edges/features with one
 `libsql-ffi` 0.10.0 provider. At that checkpoint the Gossil crate version in
 `Cargo.toml` was 0.9.0, since released as `v0.9.0`. The current Gossil crate
-version is 0.15.0. The libSQL provider version 0.10.0 and the Gossil crate
+version is 0.16.0. The libSQL provider version 0.10.0 and the Gossil crate
 version are separate numbers. Version 0.10.0 of the crate was released as
 `v0.10.0`, version 0.11.0 as `v0.11.0`, version 0.12.0 as `v0.12.0`,
-version 0.13.0 as `v0.13.0` and version 0.14.0 as `v0.14.0`.
+version 0.13.0 as `v0.13.0`, version 0.14.0 as `v0.14.0` and version 0.15.0
+as `v0.15.0`.
 
 The checkpoint
 used a prospective checked-commit prerequisite, with actual parent `4250b873`;

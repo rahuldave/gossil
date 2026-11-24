@@ -54,6 +54,7 @@ website:
           - gest-ticket.md
           - local-storage.md
           - native-storage.md
+          - local-records.md
           - gest-task-values.md
           - gest-project-values.md
           - gest-author-values.md

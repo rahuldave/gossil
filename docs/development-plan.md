@@ -30,6 +30,11 @@ The [task ticket emitter](task-ticket.md) serializes validated task snapshots wi
 caller-supplied native identity, actor and date. The [Gest ticket emitter](gest-ticket.md)
 serializes validated artifact and project snapshots in the same way, and the three kinds share one emitter.
 
+The internal modules for [strict local records](local-records.md) decode local
+JSON records and charge queries against fixed limits. The metered content methods
+read and write content through the metered queries, and they admit only the newest
+catalog. No production code calls the modules or those methods yet.
+
 ## Current scope
 
 | Available in source | Planned |
@@ -391,7 +396,7 @@ qualification.
 
 At the checkpoint, `Cargo.toml` set the version of the Gossil crate to 0.9.0,
 which was later released as `v0.9.0`. The current version of the crate is
-0.15.0, and version 0.14.0 was released as `v0.14.0`. The `libsql-ffi`
+0.16.0, and version 0.15.0 was released as `v0.15.0`. The `libsql-ffi`
 provider is at 0.10.0, and its version is separate
 from the version of the crate.
 

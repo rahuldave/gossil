@@ -439,6 +439,8 @@ Dynamic ticket templates, extension schemas and their registry transitions
 remain unimplemented. General public receipts, publication, native and typed
 rebuild, retained-dependency administration and filesystem journals also remain
 unimplemented. The public APIs do not offer those operations.
+The internal modules for [strict local records](local-records.md) are the base
+for the record readers of catalog 5, which are not built yet.
 
 ## Recommendations
 
