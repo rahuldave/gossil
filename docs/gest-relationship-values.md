@@ -107,8 +107,11 @@ It does not hash the files themselves.
 These tests cover the converter itself. They do not reproduce the upstream
 relationship API or repository tests. The source map lists 15 upstream enum
 tests as later API obligations. Five test the `EntityType` enum, and ten test
-the `RelationshipType` enum, including its five inverse tests. The converter
-calls none of those enum methods.
+the `RelationshipType` enum, including its five inverse tests.
+
+The converter uses the `Display` and `FromStr` methods of both enums, through their ports
+in the [Gest model](gest-model.md). It does not use `inverse`. The tests of the
+model port run the 15 tests.
 
 ## Recommendations
 

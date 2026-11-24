@@ -96,7 +96,9 @@ It does not hash the files themselves.
 
 These tests cover the converter itself, not the upstream iteration API or
 repository tests. The source map lists the six upstream tests of the status
-display and of the terminal check as later API work.
+display and of the terminal check as later API work. The converter uses that
+display and that check through the port of `IterationStatus` in the
+[Gest model](gest-model.md). The tests of that port run the six tests.
 Iteration storage and reads of caller-selected records remain planned
 through the repository transaction API.
 

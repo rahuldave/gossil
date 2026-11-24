@@ -15,18 +15,19 @@ Read and follow @.agents/instructions/prose.md
 - Source directories: `src/` contains the inherited-test runner, delta and byte
   primitives, token codec, structural artifact parser, local storage boundary,
   Fossil glob matching (`src/glob.rs`), lexical filename simplification
-  (`src/file_path.rs`), check-in graph paths (`src/history.rs`) and the Gest
-  domain value converters (`src/gest_*_values.rs`). `tests/` contains controls,
+  (`src/file_path.rs`) and check-in graph paths (`src/history.rs`). It also
+  holds the Gest domain value converters (`src/gest_*_values.rs`) and the Gest model port
+  (`src/gest_model.rs`, `src/gest_model/`). `tests/` contains controls,
   portable fixtures and the private storage composition test.
 - Gest tickets: `src/gest_ticket.rs` holds the shared emitter of creation
-  tickets and the artifact and project kinds. `src/task_ticket.rs` gives it the
+  tickets and the artifact and project kinds. `src/task_ticket.rs` holds the
   task kind.
 - Local guides: `docs/conformance.md`, `docs/delta-encoder.md`,
   `docs/delta-decoder.md`, `docs/blob-primitives.md`, `docs/token-codec.md`,
   `docs/local-storage.md`, `docs/native-storage.md`, `docs/artifact-parser.md`,
   `docs/glob.md`, `docs/file-path.md`, `docs/history.md`, `docs/task-ticket.md`,
-  `docs/gest-ticket.md`, the ten Gest value
-  guides `docs/gest-*-values.md` and `docs/development-plan.md`.
+  `docs/gest-ticket.md`, the ten Gest value guides `docs/gest-*-values.md`,
+  `docs/gest-model.md` and `docs/development-plan.md`.
 - Product specification: `~/Projects/AIProjectInfra/docs/gossil/README.md` and its linked pages.
 - Workflow playbook: `.agents/skills/gtw/references/gest_codex_workflow.md`.
 
@@ -179,9 +180,10 @@ existing global-state control), and all 20 unchanged Tcl assertions. Its graph
 comparison retained all 126 nonroot packages and edges/features with one
 `libsql-ffi` 0.10.0 provider. At that checkpoint the Gossil crate version in
 `Cargo.toml` was 0.9.0, since released as `v0.9.0`. The current Gossil crate
-version is 0.13.0. The libSQL provider version 0.10.0 and the Gossil crate
+version is 0.14.0. The libSQL provider version 0.10.0 and the Gossil crate
 version are separate numbers. Version 0.10.0 of the crate was released as
-`v0.10.0`, version 0.11.0 as `v0.11.0` and version 0.12.0 as `v0.12.0`.
+`v0.10.0`, version 0.11.0 as `v0.11.0`, version 0.12.0 as `v0.12.0` and
+version 0.13.0 as `v0.13.0`.
 
 The checkpoint
 used a prospective checked-commit prerequisite, with actual parent `4250b873`;
