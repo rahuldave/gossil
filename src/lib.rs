@@ -1,5 +1,6 @@
 //! Supply inherited-test tools, bounded byte primitives, Fossil glob matching, lexical
-//! filename simplification, check-in graph paths, local storage and decoded task values.
+//! filename simplification, check-in graph paths, a read-only Git reader, local storage,
+//! decoded task values and the Gest domain model.
 pub mod diff;
 mod invocation;
 pub use invocation::{InvocationId, InvocationPlan, PlanPin, PlanRow, Position};
@@ -795,6 +796,8 @@ pub mod gest_entity_tag_values;
 pub mod gest_iteration_task_values;
 /// Convert complete admitted canonical iteration fields into owned values.
 pub mod gest_iteration_values;
+/// Hold the Gest domain model and its primitive values, copied from the pinned Gest source.
+pub mod gest_model;
 /// Convert complete admitted canonical note fields into owned values.
 pub mod gest_note_values;
 /// Convert complete admitted canonical project fields into owned values.
@@ -825,6 +828,8 @@ mod vcs_timeline;
 /// Adapt explicit tracking enrollment and complete tracked status for product executables.
 mod vcs_tracking;
 
+/// Emit the bounded bytes of artifact and project creation tickets through the shared Gest ticket emitter.
+pub mod gest_ticket;
 /// Represent validated native dates as integer nanoseconds.
 pub mod native_date;
 /// Emit bounded task creation ticket bytes.
@@ -838,3 +843,6 @@ pub mod file_path;
 
 /// Find shortest paths and common ancestors in an explicit check-in graph, as Fossil does.
 pub mod history;
+
+/// Read Git commits, refs and settings beside Git, read-only, through pinned gix crates.
+pub mod git_reader;

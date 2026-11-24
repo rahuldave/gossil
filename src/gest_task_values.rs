@@ -16,7 +16,11 @@ use chrono::{DateTime, Utc};
 use serde_json::Value;
 use std::fmt;
 
-use crate::gest_value_validation::{ValidationError, identifier, string, timestamp};
+use crate::gest_model::primitives::{Id, TaskStatus};
+use crate::gest_value_validation::{
+    CanonicalValue, ValidationError, canonical_id, canonical_timestamp, identifier, string,
+    timestamp,
+};
 
 /// All eleven owned model fields, with explicit nulls for nullable fields.
 ///
@@ -56,27 +60,27 @@ pub struct TaskValueInputs {
 #[derive(Clone, Debug, PartialEq)]
 pub struct TaskValues {
     /// Validated full task identifier.
-    gest_id: String,
+    pub(crate) gest_id: Id,
     /// Validated full project identifier.
-    project_id: String,
+    pub(crate) project_id: Id,
     /// Unmodified title.
-    title: String,
+    pub(crate) title: String,
     /// Checked numeric priority.
-    priority: Option<u8>,
-    /// Canonical spelling from upstream `Display`.
-    status: &'static str,
+    pub(crate) priority: Option<u8>,
+    /// Status, written with the spelling of upstream `Display`.
+    pub(crate) status: TaskStatus,
     /// Unmodified description.
-    description: String,
+    pub(crate) description: String,
     /// Validated optional author identifier.
-    assigned_to: Option<String>,
+    pub(crate) assigned_to: Option<Id>,
     /// Unmodified JSON model value.
-    metadata: Value,
+    pub(crate) metadata: Value,
     /// UTC terminal timestamp.
-    resolved_at: Option<DateTime<Utc>>,
+    pub(crate) resolved_at: Option<DateTime<Utc>>,
     /// UTC creation timestamp.
-    created_at: DateTime<Utc>,
+    pub(crate) created_at: DateTime<Utc>,
     /// UTC modification timestamp.
-    updated_at: DateTime<Utc>,
+    pub(crate) updated_at: DateTime<Utc>,
 }
 
 /// Report one field's type, value or terminal-status validation failure.
@@ -199,19 +203,11 @@ pub fn task_from_values(fields: TaskValueInputs) -> Result<TaskValues, TaskValue
         )
     };
     let status_text = string(fields.status, "status")?;
-    let status = match status_text.to_lowercase().as_str() {
-        "cancelled" => "cancelled",
-        "done" => "done",
-        "in-progress" | "in_progress" | "inprogress" => "in-progress",
-        "open" => "open",
-        _ => {
-            return Err(TaskValueError {
-                field: "status",
-                reason: "invalid task status",
-                parse_cause: None,
-            });
-        }
-    };
+    let status: TaskStatus = status_text.parse().map_err(|_| TaskValueError {
+        field: "status",
+        reason: "invalid task status",
+        parse_cause: None,
+    })?;
     let description = string(fields.description, "description")?;
     let assigned_to = if fields.assigned_to.is_null() {
         None
@@ -223,7 +219,7 @@ pub fn task_from_values(fields: TaskValueInputs) -> Result<TaskValues, TaskValue
     } else {
         Some(timestamp(fields.resolved_at, "resolved_at")?)
     };
-    if matches!(status, "done" | "cancelled") != resolved_at.is_some() {
+    if status.is_terminal() != resolved_at.is_some() {
         return Err(TaskValueError {
             field: "resolved_at",
             reason: "terminal status requires a timestamp; nonterminal status requires null",
@@ -258,16 +254,16 @@ pub fn task_from_values(fields: TaskValueInputs) -> Result<TaskValues, TaskValue
 /// independently without changing the validated record.
 pub fn task_to_values(task: &TaskValues) -> TaskValueInputs {
     TaskValueInputs {
-        gest_id: Value::from(task.gest_id.clone()),
-        project_id: Value::from(task.project_id.clone()),
+        gest_id: Value::from(task.gest_id.to_string()),
+        project_id: Value::from(task.project_id.to_string()),
         title: Value::from(task.title.clone()),
         priority: task.priority.map(Value::from).unwrap_or(Value::Null),
-        status: Value::from(task.status),
+        status: Value::from(task.status.to_string()),
         description: Value::from(task.description.clone()),
         assigned_to: task
             .assigned_to
-            .clone()
-            .map(Value::from)
+            .as_ref()
+            .map(|id| Value::from(id.to_string()))
             .unwrap_or(Value::Null),
         metadata: task.metadata.clone(),
         resolved_at: task
@@ -279,47 +275,30 @@ pub fn task_to_values(task: &TaskValues) -> TaskValueInputs {
     }
 }
 
-/// Borrowed canonical JSON values for the task ticket emitter, without model clones.
-#[derive(serde::Serialize)]
-#[serde(untagged)]
-pub(crate) enum CanonicalTaskValue<'a> {
-    /// Exact model string or canonical status.
-    Text(&'a str),
-    /// Optional identifier, preserving explicit JSON null.
-    OptionalText(Option<&'a str>),
-    /// Numeric priority or explicit JSON null.
-    Priority(Option<u8>),
-    /// Arbitrary metadata, borrowed recursively by serde.
-    Json(&'a Value),
-    /// Bounded canonical business timestamp string or explicit JSON null.
-    Timestamp(Option<String>),
-}
-
-/// Enumerate the same eleven fields as `task_to_values` for bounded serialization.
-/// Only the bounded timestamp representations are allocated. Arbitrary model
-/// strings and metadata remain borrowed. This module owns validation and status conversion.
+/// List the same eleven fields as `task_to_values` for bounded serialization.
+///
+/// The function allocates only the short identifier, status and timestamp strings.
+/// The title, description and metadata, which have no size bound, remain borrowed.
+/// This module owns validation and status conversion.
+///
 /// # Arguments
 /// * `task` - Validated task whose canonical fields are borrowed.
+///
 /// # Returns
 /// All eleven field names and borrowed canonical values.
-pub(crate) fn canonical_task_fields(
-    task: &TaskValues,
-) -> [(&'static str, CanonicalTaskValue<'_>); 11] {
-    use CanonicalTaskValue::{Json, OptionalText, Priority, Text, Timestamp};
+pub(crate) fn canonical_task_fields(task: &TaskValues) -> [(&'static str, CanonicalValue<'_>); 11] {
+    use CanonicalValue::{Bounded, Json, Priority, Text};
     [
-        ("assigned_to", OptionalText(task.assigned_to.as_deref())),
-        ("created_at", Timestamp(Some(task.created_at.to_rfc3339()))),
+        ("assigned_to", canonical_id(task.assigned_to.as_ref())),
+        ("created_at", canonical_timestamp(Some(task.created_at))),
         ("description", Text(&task.description)),
-        ("gest_id", Text(&task.gest_id)),
+        ("gest_id", canonical_id(Some(&task.gest_id))),
         ("metadata", Json(&task.metadata)),
         ("priority", Priority(task.priority)),
-        ("project_id", Text(&task.project_id)),
-        (
-            "resolved_at",
-            Timestamp(task.resolved_at.map(|dt| dt.to_rfc3339())),
-        ),
-        ("status", Text(task.status)),
+        ("project_id", canonical_id(Some(&task.project_id))),
+        ("resolved_at", canonical_timestamp(task.resolved_at)),
+        ("status", Bounded(Some(task.status.to_string()))),
         ("title", Text(&task.title)),
-        ("updated_at", Timestamp(Some(task.updated_at.to_rfc3339()))),
+        ("updated_at", canonical_timestamp(Some(task.updated_at))),
     ]
 }

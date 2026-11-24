@@ -47,9 +47,11 @@ website:
           - glob.md
           - file-path.md
           - history.md
+          - git-reader.md
           - artifact-parser.md
           - diff.md
           - task-ticket.md
+          - gest-ticket.md
           - local-storage.md
           - native-storage.md
           - local-records.md
@@ -63,6 +65,7 @@ website:
           - gest-relationship-values.md
           - gest-entity-tag-values.md
           - gest-iteration-task-values.md
+          - gest-model.md
       - section: Rust API
         href: api/index.qmd
         contents:

@@ -1,6 +1,13 @@
-//! Shared decoded-value checks used by the owned Gest model converters.
+//! The owned Gest model converters use the shared checks of decoded values in this module.
+//!
+//! The module also defines
+//! [`CanonicalValue`](crate::gest_value_validation::CanonicalValue), the
+//! borrowed canonical field value that the task, artifact and project ticket
+//! emitters serialize.
 use chrono::{DateTime, Utc};
 use serde_json::Value;
+
+use crate::gest_model::primitives::{EntityType, Id};
 
 /// A safe field failure with the actual typed timestamp parser cause.
 #[derive(Clone, Debug, Eq, PartialEq)]
@@ -37,29 +44,28 @@ pub(crate) fn string(value: Value, field: &'static str) -> Result<String, Valida
 
 /// Require the full upstream 32-byte lowercase `k` through `z` ID domain.
 ///
+/// The check is the parser of [`Id`], so the converters and the model accept
+/// the same identifiers.
+///
 /// # Arguments
 /// * `value` - Already admitted decoded model identifier.
 /// * `field` - Safe static field name for validation diagnostics.
 ///
 /// # Returns
-/// The complete owned identifier after checking its alphabet and length.
+/// The identifier that the string encodes.
 ///
 /// # Errors
 /// Returns [`ValidationError`] for a non-string value, a length other than 32 bytes,
 /// or any byte outside the identifier alphabet.
-pub(crate) fn identifier(value: Value, field: &'static str) -> Result<String, ValidationError> {
-    let s = string(value, field)?;
-    if s.len() != 32 || !s.bytes().all(|b| (b'k'..=b'z').contains(&b)) {
-        return Err(ValidationError {
-            field,
-            reason: "expected exactly 32 letters from k through z",
-            parse_cause: None,
-        });
-    }
-    Ok(s)
+pub(crate) fn identifier(value: Value, field: &'static str) -> Result<Id, ValidationError> {
+    string(value, field)?.parse().map_err(|_| ValidationError {
+        field,
+        reason: "expected exactly 32 letters from k through z",
+        parse_cause: None,
+    })
 }
 
-/// Parse a Gest entity type as the pinned source enum does.
+/// Parse a Gest entity type with the parser of [`EntityType`].
 ///
 /// The source lowercases the whole string with Unicode rules and then matches
 /// it, so `TASK` is accepted, and surrounding whitespace is not.
@@ -69,24 +75,19 @@ pub(crate) fn identifier(value: Value, field: &'static str) -> Result<String, Va
 /// * `field` - Safe static field name for validation diagnostics.
 ///
 /// # Returns
-/// The canonical lowercase spelling `artifact`, `iteration` or `task`.
+/// The entity type `artifact`, `iteration` or `task`.
 ///
 /// # Errors
 /// Returns [`ValidationError`] for a non-string value or any other spelling.
 pub(crate) fn entity_type(
     value: Value,
     field: &'static str,
-) -> Result<&'static str, ValidationError> {
-    match string(value, field)?.to_lowercase().as_str() {
-        "artifact" => Ok("artifact"),
-        "iteration" => Ok("iteration"),
-        "task" => Ok("task"),
-        _ => Err(ValidationError {
-            field,
-            reason: "expected entity type artifact, iteration or task",
-            parse_cause: None,
-        }),
-    }
+) -> Result<EntityType, ValidationError> {
+    string(value, field)?.parse().map_err(|_| ValidationError {
+        field,
+        reason: "expected entity type artifact, iteration or task",
+        parse_cause: None,
+    })
 }
 
 /// Parse a business timestamp and require UTC output that can be parsed again.
@@ -126,6 +127,47 @@ pub(crate) fn timestamp(
     Ok(utc)
 }
 
+/// One borrowed canonical model value that a ticket emitter serializes as JSON.
+///
+/// Each converter lists its fields with these values, so the emitter writes
+/// the same JSON as the converter's `*_to_values` output without cloning model
+/// strings or metadata.
+#[derive(serde::Serialize)]
+#[serde(untagged)]
+pub(crate) enum CanonicalValue<'a> {
+    /// Exact model string without a size bound, borrowed.
+    Text(&'a str),
+    /// Numeric priority or explicit JSON null.
+    Priority(Option<u8>),
+    /// Arbitrary metadata, borrowed recursively by serde.
+    Json(&'a Value),
+    /// A short owned string, or explicit JSON null. The string is an
+    /// identifier of 32 letters, a task status or a business timestamp.
+    Bounded(Option<String>),
+}
+
+/// Spell an optional identifier as its canonical JSON value.
+///
+/// # Arguments
+/// * `value` - Validated identifier, or `None` for an explicit null field.
+///
+/// # Returns
+/// The 32-letter string that the `*_to_values` converters return, or null.
+pub(crate) fn canonical_id(value: Option<&Id>) -> CanonicalValue<'static> {
+    CanonicalValue::Bounded(value.map(Id::to_string))
+}
+
+/// Spell a validated optional timestamp as its canonical JSON value.
+///
+/// # Arguments
+/// * `value` - Validated UTC instant, or `None` for an explicit null field.
+///
+/// # Returns
+/// The RFC3339 UTC string that the `*_to_values` converters return, or null.
+pub(crate) fn canonical_timestamp(value: Option<DateTime<Utc>>) -> CanonicalValue<'static> {
+    CanonicalValue::Bounded(value.map(|dt| dt.to_rfc3339()))
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -136,11 +178,15 @@ mod tests {
     fn string_and_identifier_success_domains() {
         assert_eq!(string(json!("\u{0} é\n"), "text").unwrap(), "\u{0} é\n");
         assert_eq!(
-            identifier(json!("kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk"), "id").unwrap(),
+            identifier(json!("kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk"), "id")
+                .unwrap()
+                .to_string(),
             "kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk"
         );
         assert_eq!(
-            identifier(json!("zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz"), "id").unwrap(),
+            identifier(json!("zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz"), "id")
+                .unwrap()
+                .to_string(),
             "zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz"
         );
     }
@@ -153,7 +199,10 @@ mod tests {
             ("ITERATION", "iteration"),
             ("Task", "task"),
         ] {
-            assert_eq!(entity_type(json!(input), "kind").unwrap(), expected);
+            assert_eq!(
+                entity_type(json!(input), "kind").unwrap().to_string(),
+                expected
+            );
         }
         for input in ["", "project", "note", " task", "task\n", "widget"] {
             let error = entity_type(json!(input), "kind").unwrap_err();

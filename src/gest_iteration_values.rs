@@ -4,6 +4,7 @@
 //! This module reads no clock and performs no storage, reference lookup or ID generation.
 //! Business timestamps use chrono RFC3339 parsing and canonical UTC output.
 
+use crate::gest_model::primitives::{Id, IterationStatus};
 use crate::gest_value_validation::{ValidationError, identifier, string, timestamp};
 use chrono::{DateTime, Utc};
 use serde_json::Value;
@@ -40,23 +41,23 @@ pub struct IterationValueInputs {
 #[derive(Clone, Debug, PartialEq)]
 pub struct IterationValues {
     /// Full iteration ID, called `id` upstream.
-    gest_id: String,
+    pub(crate) gest_id: Id,
     /// Full project ID.
-    project_id: String,
+    pub(crate) project_id: Id,
     /// Exact title string, including empty strings and Unicode.
-    title: String,
+    pub(crate) title: String,
     /// Case-insensitive `active`, `completed` or `cancelled`.
-    status: &'static str,
+    pub(crate) status: IterationStatus,
     /// Exact description string, including empty strings and Unicode.
-    description: String,
+    pub(crate) description: String,
     /// Any JSON value, including explicit null.
-    metadata: Value,
+    pub(crate) metadata: Value,
     /// RFC3339 timestamp for terminal status, otherwise null.
-    completed_at: Option<DateTime<Utc>>,
+    pub(crate) completed_at: Option<DateTime<Utc>>,
     /// RFC3339 creation timestamp with representable canonical UTC output.
-    created_at: DateTime<Utc>,
+    pub(crate) created_at: DateTime<Utc>,
     /// RFC3339 modification timestamp with representable canonical UTC output.
-    updated_at: DateTime<Utc>,
+    pub(crate) updated_at: DateTime<Utc>,
 }
 
 /// Reports a failed field without its input, with an optional typed chrono parse cause.
@@ -139,26 +140,18 @@ pub fn iteration_from_values(
     let project_id = identifier(fields.project_id, "project_id")?;
     let title = string(fields.title, "title")?;
     let status_text = string(fields.status, "status")?;
-    let status = match status_text.to_lowercase().as_str() {
-        "active" => "active",
-        "completed" => "completed",
-        "cancelled" => "cancelled",
-        _ => {
-            return Err(ValidationError {
-                field: "status",
-                reason: "invalid iteration status",
-                parse_cause: None,
-            }
-            .into());
-        }
-    };
+    let status: IterationStatus = status_text.parse().map_err(|_| ValidationError {
+        field: "status",
+        reason: "invalid iteration status",
+        parse_cause: None,
+    })?;
     let description = string(fields.description, "description")?;
     let completed_at = if fields.completed_at.is_null() {
         None
     } else {
         Some(timestamp(fields.completed_at, "completed_at")?)
     };
-    if matches!(status, "completed" | "cancelled") != completed_at.is_some() {
+    if status.is_terminal() != completed_at.is_some() {
         return Err(ValidationError {
             field: "completed_at",
             reason: "terminal status requires a timestamp; nonterminal status requires null",
@@ -192,10 +185,10 @@ pub fn iteration_from_values(
 /// again, and a change to the output does not change the record.
 pub fn iteration_to_values(record: &IterationValues) -> IterationValueInputs {
     IterationValueInputs {
-        gest_id: Value::from(record.gest_id.clone()),
-        project_id: Value::from(record.project_id.clone()),
+        gest_id: Value::from(record.gest_id.to_string()),
+        project_id: Value::from(record.project_id.to_string()),
         title: Value::from(record.title.clone()),
-        status: Value::from(record.status),
+        status: Value::from(record.status.to_string()),
         description: Value::from(record.description.clone()),
         metadata: record.metadata.clone(),
         completed_at: record

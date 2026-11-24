@@ -3,6 +3,9 @@ use gossil::gest_task_values::{TaskValueInputs, task_from_values};
 use gossil::native_date::NativeDate;
 use gossil::task_ticket::{TicketError, task_creation_bytes};
 use serde_json::{Value, json};
+#[path = "support/observed_allocator.rs"]
+mod observed_allocator;
+use observed_allocator::largest_allocation;
 /// Valid independent native ticket identity shared by emission controls.
 const K: &[u8] = b"0123456789abcdef0123456789abcdef01234567";
 /// Build all eleven decoded task fields with nullable optional values.
@@ -47,6 +50,36 @@ fn golden_and_exact_bound() {
             Err(TicketError::TicketId)
         ));
     }
+}
+/// Keep the task bytes of the shared emitter equal to the bytes of the task emitter before it.
+///
+/// The test is a characterization control. It passes on the parent commit, and
+/// the shared emitter must keep it passing. Every field has a non-null value here,
+/// so the control covers priority, assignee, resolution time, metadata and
+/// escaping that the null-heavy fixture above does not reach.
+#[test]
+fn shared_emitter_keeps_full_task_bytes() {
+    // Spelled by tests/fixtures/gest-ticket/generate.py, which also writes creation.artifact.
+    let expected = include_bytes!("fixtures/gest-ticket/task-creation-full.artifact");
+    let task = task_from_values(TaskValueInputs {
+        gest_id: json!("k".repeat(32)),
+        project_id: json!("z".repeat(32)),
+        title: json!("Fix é bug"),
+        priority: json!(3),
+        status: json!("done"),
+        description: json!("a\\b"),
+        assigned_to: json!("l".repeat(32)),
+        metadata: json!({"labels": ["x"], "n": 1}),
+        resolved_at: json!("2024-02-01T00:00:00Z"),
+        created_at: json!("2024-01-01T00:00:00Z"),
+        updated_at: json!("2024-02-01T00:00:00Z"),
+    })
+    .unwrap();
+    let d = NativeDate::parse(b"2024-03-01T00:00:00").unwrap();
+    assert_eq!(
+        task_creation_bytes(&task, K, b"native actor", d, expected.len()).unwrap(),
+        expected
+    );
 }
 /// Preserve nanosecond instants across the supported range and reject alternate grammar.
 #[test]
@@ -220,59 +253,6 @@ fn empty_actor_and_model_strings_remain_distinct() {
     assert!(text.contains("\nU \nZ "));
 }
 
-/// Observe allocation requests on the enabled test thread while forwarding to System.
-struct ObservedAllocator;
-thread_local! {
-    /// Largest allocation request while this thread enables observation, otherwise disabled.
-    static ALLOCATION_MAX: std::cell::Cell<Option<usize>> = const { std::cell::Cell::new(None) };
-}
-unsafe impl std::alloc::GlobalAlloc for ObservedAllocator {
-    /// Record the requested size and allocate through the system allocator.
-    ///
-    /// # Safety
-    /// The caller must supply the valid nonzero layout required by `GlobalAlloc::alloc`.
-    unsafe fn alloc(&self, layout: std::alloc::Layout) -> *mut u8 {
-        ALLOCATION_MAX.with(|max| {
-            if let Some(previous) = max.get() {
-                max.set(Some(previous.max(layout.size())));
-            }
-        });
-        // SAFETY: The GlobalAlloc caller supplies a valid layout, forwarded unchanged.
-        // Observation uses a const, no-Drop thread-local Cell and only get/set/max;
-        // it neither allocates nor unwinds before forwarding to System.
-        unsafe { std::alloc::System.alloc(layout) }
-    }
-    /// Release a forwarded system allocation without changing its layout.
-    ///
-    /// # Safety
-    /// The pointer must be live from this allocator and match the supplied layout.
-    unsafe fn dealloc(&self, pointer: *mut u8, layout: std::alloc::Layout) {
-        // SAFETY: All allocations are forwarded to System. The GlobalAlloc caller
-        // supplies its live allocation pointer and matching layout, unchanged here.
-        unsafe { std::alloc::System.dealloc(pointer, layout) }
-    }
-    /// Record the replacement size and resize a forwarded system allocation.
-    ///
-    /// # Safety
-    /// The pointer and layout must describe a live allocation; size must satisfy
-    /// the nonzero and layout bounds required by `GlobalAlloc::realloc`.
-    unsafe fn realloc(&self, pointer: *mut u8, layout: std::alloc::Layout, size: usize) -> *mut u8 {
-        ALLOCATION_MAX.with(|max| {
-            if let Some(previous) = max.get() {
-                max.set(Some(previous.max(size)));
-            }
-        });
-        // SAFETY: The GlobalAlloc caller supplies a live System allocation, its
-        // matching layout and a valid new size; all are forwarded unchanged.
-        // Observation uses a const, no-Drop thread-local Cell and only get/set/max;
-        // it neither allocates nor unwinds before forwarding to System.
-        unsafe { std::alloc::System.realloc(pointer, layout, size) }
-    }
-}
-/// System-backed allocator that observes only explicitly enabled test threads.
-#[global_allocator]
-static ALLOCATOR: ObservedAllocator = ObservedAllocator;
-
 /// Reject oversized strings or metadata before making model-sized allocation requests.
 #[test]
 fn insufficient_budget_does_not_copy_unbounded_model_data() {
@@ -288,9 +268,8 @@ fn insufficient_budget_does_not_copy_unbounded_model_data() {
         }
         let task = task_from_values(input).unwrap();
         for budget in [0, 1024, 128 * 1024] {
-            ALLOCATION_MAX.with(|max| max.set(Some(0)));
-            let result = task_creation_bytes(&task, K, b"actor", date, budget);
-            let largest = ALLOCATION_MAX.with(|max| max.replace(None).unwrap());
+            let (result, largest) =
+                largest_allocation(|| task_creation_bytes(&task, K, b"actor", date, budget));
             assert!(matches!(result, Err(TicketError::Size)));
             assert!(
                 largest < 4096,

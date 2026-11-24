@@ -1,0 +1,15 @@
+D 2026-11-20T01:02:03.000000004
+J archived_at null
+J body "Step\s1\\n\\tC:\\\\path"
+J created_at "2026-11-18T12:00:00+00:00"
+J gest_id "zyxwvutsrqponmlkzyxwvutsrqponmlk"
+J gossil_deleted false
+J gossil_kind artifact
+J gossil_schema 1
+J metadata {"a":[null,false],"b":"x\sy"}
+J project_id "kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk"
+J title "Plan\sé"
+J updated_at "2026-11-18T12:30:00+00:00"
+K fedcba9876543210fedcba9876543210fedcba98
+U gest\sagent
+Z 0dff46c35caf84ee83b52ddbed294db6

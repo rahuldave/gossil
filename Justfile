@@ -58,6 +58,21 @@ blob-reference:
 blob-interop:
     GOSSIL_FOSSIL_REFERENCE="{{justfile_directory()}}/.jlog/bin/fossil" just test --test blob_primitives rust_packed_bytes_decode_with_native_fossil -- --ignored
 
+# Load emitted Gest tickets into a scratch repository of the pinned Fossil reference; exit 5 means not-run.
+gest-ticket-interop:
+    #!/usr/bin/env bash
+    set -euo pipefail
+    fossil="${GOSSIL_FOSSIL_REFERENCE:-{{justfile_directory()}}/.jlog/bin/fossil}"
+    if [ ! -x "$fossil" ]; then
+        echo "not-run: the pinned Fossil reference is absent at $fossil; run just setup" >&2
+        exit 5
+    fi
+    GOSSIL_FOSSIL_REFERENCE="$fossil" just test --test gest_ticket stock_fossil_reads_emitted_gest_tickets -- --ignored --exact
+
+# Respell the Gest ticket creation fixtures from their hand-written cards.
+gest-ticket-reference:
+    jlog run python3 tests/fixtures/gest-ticket/generate.py
+
 # Inspect Rust dependers of the new byte primitive contracts.
 blob-impact:
     jlog run ast-grep run --lang rust --pattern 'pack($$$)' --json=compact src tests
@@ -101,6 +116,15 @@ libsql-wrapper-metadata:
 typecheck *args: libsql-vendor-check libsql-vendor-test libsql-wrapper-check libsql-wrapper-test rustdoc-check
     just --justfile {{quote(justfile())}} rust typecheck "$@"
     jlog step typecheck
+
+# Run clippy on every target and fail on each warning; forbid the Git write paths of clippy.toml (GIT-03). Extra arguments go to cargo: just lint -p gossil
+lint *args:
+    jlog run cargo clippy --workspace --all-targets --all-features --locked "$@" -- -D warnings -F clippy::disallowed_methods -F clippy::disallowed_types
+    jlog step lint
+
+# Count the packages that the six gix crates of the Git reader add, from cargo tree on this host.
+git-reader-packages:
+    jlog run uv run --no-project --quiet python scripts/git-reader-packages.py
 
 # Required CI verifies vendor bytes as well as the existing commit evidence gate.
 ci: libsql-vendor-check libsql-vendor-test libsql-wrapper-check libsql-wrapper-test ci-gate

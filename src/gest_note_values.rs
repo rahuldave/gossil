@@ -5,6 +5,7 @@
 //! This module reads no clock and performs no storage, reference lookup or ID generation.
 //! `chrono` parses the two timestamps as RFC3339, and `note_to_values` returns them in canonical UTC.
 
+use crate::gest_model::primitives::{EntityType, Id};
 use crate::gest_value_validation::{ValidationError, entity_type, identifier, string, timestamp};
 use chrono::{DateTime, Utc};
 use serde_json::Value;
@@ -37,19 +38,19 @@ pub struct NoteValueInputs {
 #[derive(Clone, Debug, PartialEq)]
 pub struct NoteValues {
     /// Full note ID, called `id` upstream.
-    gest_id: String,
+    pub(crate) gest_id: Id,
     /// Full ID of the entity that the note is attached to.
-    entity_id: String,
+    pub(crate) entity_id: Id,
     /// Canonical lowercase entity kind.
-    entity_type: &'static str,
+    pub(crate) entity_type: EntityType,
     /// Full author ID, or `None` when the author is unknown.
-    author_id: Option<String>,
+    pub(crate) author_id: Option<Id>,
     /// Exact body text.
-    body: String,
+    pub(crate) body: String,
     /// RFC3339 creation timestamp with representable canonical UTC output.
-    created_at: DateTime<Utc>,
+    pub(crate) created_at: DateTime<Utc>,
     /// RFC3339 modification timestamp with representable canonical UTC output.
-    updated_at: DateTime<Utc>,
+    pub(crate) updated_at: DateTime<Utc>,
 }
 
 /// Reports a failed field without its input, with an optional typed `chrono` parse cause.
@@ -159,10 +160,13 @@ pub fn note_from_values(fields: NoteValueInputs) -> Result<NoteValues, NoteValue
 /// does not change the record.
 pub fn note_to_values(record: &NoteValues) -> NoteValueInputs {
     NoteValueInputs {
-        gest_id: Value::from(record.gest_id.clone()),
-        entity_id: Value::from(record.entity_id.clone()),
-        entity_type: Value::from(record.entity_type),
-        author_id: record.author_id.clone().map_or(Value::Null, Value::from),
+        gest_id: Value::from(record.gest_id.to_string()),
+        entity_id: Value::from(record.entity_id.to_string()),
+        entity_type: Value::from(record.entity_type.to_string()),
+        author_id: record
+            .author_id
+            .as_ref()
+            .map_or(Value::Null, |id| Value::from(id.to_string())),
         body: Value::from(record.body.clone()),
         created_at: Value::from(record.created_at.to_rfc3339()),
         updated_at: Value::from(record.updated_at.to_rfc3339()),

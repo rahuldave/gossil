@@ -85,8 +85,8 @@ just gossil vcs new --sha1 ANOTHER_NEW_REPOSITORY
 ```
 
 Initialization accepts exactly one destination. Both executable names and both
-group names support `init` and its `new` alias. The destination must be new;
-existing files, symlinks and SQLite recovery sidecars are refused.
+group names support `init` and its `new` alias. The destination must be new.
+The command refuses existing files, symlinks and SQLite recovery sidecars.
 
 | Option | Behavior |
 |---|---|
@@ -101,7 +101,7 @@ the command selects the first nonempty value from `GOSSIL_USER`, `USER`,
 `LOGNAME` and `USERNAME`, in that order. If all are absent or empty, it uses `root`.
 No preference file is read or created.
 
-Administrator bytes reach native validation unchanged; the storage API requires valid UTF-8.
+Administrator bytes reach native validation unchanged. The storage API requires valid UTF-8.
 Repository filenames retain native bytes, including names beginning with `file:`.
 Dates must be UTF-8 and accepted by the native date provider.
 
@@ -287,8 +287,8 @@ Then run these commands from the registered checkout root or one of its descenda
 /path/to/gos v status --repository /absolute/history.gossil --checkout work
 ```
 
-Both `--repository` and `--checkout` are required exactly once. Repeat `--path PATH` for each file;
-there are no positional path lists. Paths are exact UTF-8 names relative to the
+Both `--repository` and `--checkout` are required exactly once. Repeat `--path PATH` for each file.
+There are no positional path lists. Paths are exact UTF-8 names relative to the
 registered root, regardless of the invocation directory. Status accepts no paths.
 
 Neither command accepts `--json`, `--root`, scope switches or recursive selection.
@@ -303,7 +303,7 @@ paths because their filesystem name comparisons have not been qualified.
 The `.gossil` namespace, selected database, SQLite sidecars and
 known hard-link aliases are protected. Parent directories and leaves are opened
 without following symlinks, and their identities are rechecked before commit.
-Keep the filesystem namespace stable during the command; these checks do not
+Keep the filesystem namespace stable during the command. These checks do not
 promise protection against hostile concurrent replacement.
 
 The CLI bounds the complete tracked inventory and each batch to 4096 paths.
@@ -318,8 +318,9 @@ exceeded, the command returns an error.
 
 Add persists tracking metadata only. Earlier additions remain tracked across
 batches and reopen. A successful batch with new paths advances `pending_version`
-once; an existing-only batch validates and rereads its inputs without changing
+once. An existing-only batch validates and rereads its inputs without changing
 rows or counters. A failed batch rolls back its metadata changes.
+
 Working files are never written. Temporary reads do not create a stored content
 snapshot, a check-in or a recording receipt.
 
@@ -333,7 +334,8 @@ A	unselected	"notes/review.md"
 
 Each row starts with `A` for a pending addition or `R` for a recorded path.
 A tab separates the state, scope and path. Scope is `unselected`, `shared` or
-`private`; the path uses Rust debug-string syntax with quotes and escapes.
+`private`. The path uses Rust debug-string syntax with quotes and escapes.
+
 A selected scope assigns a path to shared or owner-local private history.
 `unselected` means that no choice has been stored.
 Empty status prints only the heading.
@@ -368,7 +370,7 @@ registered root. The one chosen scope applies to every path in this request.
 Paths must already be tracked. Duplicate paths, conflicting choices and unsupported
 path spellings fail without persisting a partial batch.
 
-The choice is immutable. Repeating the same choice is a checked no-op; changing
+The choice is immutable. Repeating the same choice is a checked no-op, but changing
 it is refused. New choices advance the pending version once.
 
 A checkout can reopen with some scopes unselected or with both shared and private
@@ -395,16 +397,16 @@ requested paths, including choices already stored unchanged.
 
 Commit requires a nonempty tracked set with a stored private scope for every
 path. An unselected, shared or mixed set is refused before mutation. The command
-reads the complete tracked inventory and current checkout view; the library
+reads the complete tracked inventory and current checkout view. The library
 checks all seven view fields and reauthenticates owner, root, provider and scope.
 No caller-supplied replacement authority is accepted.
 
 Every commit rereads current bytes and executable modes. An edit needs no second
-add. Saving a file alone creates no history. Mode-only changes count as changes;
-mtime-only changes do not. Working files remain unchanged.
+add. Saving a file alone creates no history. Mode-only changes count as changes,
+but mtime-only changes do not. Working files remain unchanged.
 
 The first private
-check-in names the empty shared root as its parent; later check-ins name both
+check-in names the empty shared root as its parent. Later check-ins name both
 the previous private check-in and that shared root. The shared head stays unchanged.
 
 Dates must satisfy the [native date grammar](task-ticket.md#date-domain) and be
@@ -421,7 +423,7 @@ No changes
 
 `HASH` is the new native check-in hash. An unchanged tree returns `No changes`
 without a new receipt or any changed head, counter, content or classification.
-A later add creates unselected paths again; select their private scope before
+A later add creates unselected paths again. Select their private scope before
 recording the expanded tree.
 
 ### Grammar, limits and failures
@@ -430,7 +432,7 @@ Both commands accept separate option values only. They reject positional
 arguments, unknown or duplicate options, `--name=value`, `--root` and
 `--json`. A lone `--help` or `-h` prints the usage of the command. Only
 `--path` may repeat, and only for scope selection. Commit accepts
-no `--path`; scope accepts no recording metadata or `--all-tracked`.
+no `--path`, and scope accepts no recording metadata or `--all-tracked`.
 Both executable names and both group names use the same grammar.
 
 Checkout IDs are nonempty UTF-8, bounded to 1024 bytes. Scope selection and
@@ -461,7 +463,7 @@ Use either executable with either group name for initialization, native open,
 add/status, scope/commit, info, timeline/log, the three delta diagnostics and
 the prepared glob diagnostic.
 Usage messages use fixed spellings regardless of the invocation alias.
-Add and status use `gos v`; the other command usage messages use `gossil vcs`.
+Add and status use `gos v`, and the other command usage messages use `gossil vcs`.
 The usage lines of the help all use `gossil vcs`.
 
 ## Exit status and errors
@@ -578,7 +580,7 @@ They emit identical bytes for the same admitted history. Standalone `--help` or
 Help combined with selectors fails.
 
 Each compact JSON object has the keys `hash`, `date`, `actor`, `comment` and
-`private`, in exactly that order. The first four values are strings; `private` is a boolean.
+`private`, in exactly that order. The first four values are strings, and `private` is a boolean.
 Every object ends with one LF, with no optional whitespace. Hashes are full native
 identities. Strict UTF-8 conversion and standard JSON escaping preserve the exact
 native date and decoded actor and comment, without normalization or date
@@ -609,7 +611,8 @@ The API records its result and completes its checked transaction before the
 adapter prepares output. Stdout receives no bytes until complete preflight and
 serialization succeed. Success exits 0. Failures exit 1 with a diagnostic and
 retain the original cause. A stdout write failure can leave partial stdout.
-The read preserves logical database state and working files; this contract makes
+
+The read preserves logical database state and working files. This contract makes
 no claim that physical database bytes remain identical.
 
 See [qualification](development-plan.md#recorded-ancestry-cli-qualification)
@@ -628,9 +631,11 @@ gos v test-glob PATTERN STRING ...
 ```
 
 Supply one pattern-list argument and at least one candidate argument. Arguments
-are positional; there are no switches, settings lookup or JSON mode. A token
+are positional. There are no switches, settings lookup or JSON mode. A token
 such as `--help` is a literal pattern or candidate when arity is valid. A lone
-`--help` or `-h` after `test-glob` prints its usage. A pattern
+`--help` or `-h` after `test-glob` prints its usage.
+
+A pattern
 list beginning with `@` fails with `test-glob setting lookup is not implemented`.
 Missing arguments fail with `Usage: gossil vcs test-glob PATTERN STRING ...`
 for every alias.
@@ -646,7 +651,7 @@ pattern[1] = [src/*]
 0 0 notes.md
 ```
 
-Pattern labels start at zero. Match indices start at one; zero means no match.
+Pattern labels start at zero. Match indices start at one, and zero means no match.
 Each candidate row prints reusable then one-shot results, followed by the
 original candidate bytes and LF. Pattern and candidate bytes are not escaped.
 The diagnostic constructs SQL with trusted expression `x` but executes no SQL.
@@ -658,7 +663,7 @@ as UTF-8 and reject unrepresentable arguments with
 `test-glob argument is not valid Unicode`.
 
 Success exits 0. Usage, settings, encoding, budget, allocation and stdout errors
-exit 1. Budget messages use `glob NAME limit exceeded`; capacity overflow uses
+exit 1. Budget messages use `glob NAME limit exceeded`, and capacity overflow uses
 `glob capacity overflow`. Allocation messages begin `glob allocation:`.
 Stdout failures print `unable to open file "<stdout>" for writing`, preserve
 the original I/O cause and may leave partial stdout.

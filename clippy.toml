@@ -1,0 +1,48 @@
+# Gossil never writes to Git (GIT-03, docs/git-reader.md). `just lint` makes each entry an error, and
+# tests/git_write_lint.rs proves that a call of each one fails the lint.
+disallowed-methods = [
+  { path = "gix_object::Write::write", reason = "Gossil never writes a Git object" },
+  { path = "gix_object::Write::write_buf", reason = "Gossil never writes a Git object" },
+  { path = "gix_object::Write::write_buf_with_known_id", reason = "Gossil never writes a Git object" },
+  { path = "gix_object::Write::write_stream", reason = "Gossil never writes a Git object" },
+  { path = "gix_object::Write::write_stream_with_known_id", reason = "Gossil never writes a Git object" },
+  { path = "gix_odb::sink", reason = "Gossil never writes a Git object" },
+  # gix-odb builds gix-pack without `streaming-input`, so these three writers do not exist in this build.
+  # The entries stay, so that a later feature change cannot bring them in unbanned.
+  { path = "gix_odb::pack::Bundle::write_to_directory", reason = "Gossil never writes a Git pack", allow-invalid = true },
+  { path = "gix_odb::pack::Bundle::write_to_directory_eagerly", reason = "Gossil never writes a Git pack", allow-invalid = true },
+  { path = "gix_odb::pack::index::write_data_iter_to_stream", reason = "Gossil never writes a Git pack index", allow-invalid = true },
+  { path = "gix_odb::pack::multi_index::write_from_index_paths", reason = "Gossil never writes a Git multi-pack index" },
+  # gix-ref keeps `packed::Transaction` private to the crate; only `file::Transaction` reaches it.
+  { path = "gix_ref::file::Store::transaction", reason = "Gossil never writes a Git ref" },
+  { path = "gix_ref::file::Transaction::prepare", reason = "Gossil never writes a Git ref" },
+  { path = "gix_ref::file::Transaction::commit", reason = "Gossil never writes a Git ref" },
+  { path = "gix_lock::File::acquire_to_update_resource", reason = "Gossil never locks a Git file" },
+  { path = "gix_lock::Marker::acquire_to_hold_resource", reason = "Gossil never locks a Git file" },
+  { path = "gix_config::File::write_to", reason = "Gossil never writes Git configuration" },
+  { path = "gix_config::File::write_to_filter", reason = "Gossil never writes Git configuration" },
+  { path = "gix_config::file::SectionRef::write_to", reason = "Gossil never writes Git configuration" },
+  { path = "gix_config::parse::EventRef::write_to", reason = "Gossil never writes Git configuration" },
+  # Serializers of Git formats and file persistence. tests/git_write_lint.rs requires a ban or a stated
+  # reason for each public `write*`, `commit` and `persist*` function of the gix crates of Cargo.lock.
+  { path = "gix_object::WriteTo::write_to", reason = "Gossil never serializes a Git object" },
+  { path = "gix_object::tree::Editor::write", reason = "Gossil never writes a Git tree" },
+  { path = "gix_object::tree::editor::Cursor::write", reason = "Gossil never writes a Git tree" },
+  { path = "gix_ref::log::Line::write_to", reason = "Gossil never writes a Git reflog" },
+  { path = "gix_odb::pack::multi_index::chunk::index_names::write", reason = "Gossil never writes a Git multi-pack index" },
+  { path = "gix_odb::pack::data::entry::Header::write_to", reason = "Gossil never writes a Git pack" },
+  { path = "gix_actor::Signature::write_to", reason = "Gossil never serializes a Git signature" },
+  { path = "gix_actor::SignatureRef::write_to", reason = "Gossil never serializes a Git signature" },
+  { path = "gix_actor::Identity::write_to", reason = "Gossil never serializes a Git signature" },
+  { path = "gix_actor::IdentityRef::write_to", reason = "Gossil never serializes a Git signature" },
+  { path = "gix_date::Time::write_to", reason = "Gossil never serializes a Git time" },
+  { path = "gix_tempfile::Handle::persist", reason = "Gossil never writes a Git file" },
+  { path = "gix_lock::File::commit", reason = "Gossil never locks a Git file" },
+  { path = "gix_lock::Marker::commit", reason = "Gossil never locks a Git file" },
+]
+disallowed-types = [
+  { path = "gix_odb::Sink", reason = "Gossil never writes a Git object" },
+  { path = "gix_ref::file::Transaction", reason = "Gossil never writes a Git ref" },
+  { path = "gix_lock::File", reason = "Gossil never locks a Git file" },
+  { path = "gix_lock::Marker", reason = "Gossil never locks a Git file" },
+]

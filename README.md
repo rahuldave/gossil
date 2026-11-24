@@ -13,7 +13,8 @@ to shared or owner-local private history; recording shared history remains plann
 
 The library includes bounded compression, content hashes, token escaping,
 artifact checksums, [lexical filename simplification](docs/file-path.md),
-[check-in graph paths](docs/history.md) and owned local database transactions. The
+[check-in graph paths](docs/history.md), a read-only [Git reader](docs/git-reader.md)
+and owned local database transactions. The
 [glob module](docs/glob.md) parses and matches bounded Fossil pattern lists and
 constructs SQL expressions with the same selected libSQL 0.10.0 engine. Its
 repository-free `vcs test-glob` diagnostic passed the
@@ -90,8 +91,14 @@ A join record links two other records. For the two join records, the converters 
 [entity tag fields](docs/gest-entity-tag-values.md) and all four canonical
 [iteration task fields](docs/gest-iteration-task-values.md).
 
+The [Gest model](docs/gest-model.md) is a copy of the Gest record types and their
+primitive values. A record that a converter has validated converts into its model
+record through the `From` trait.
+
 The [task ticket emitter](docs/task-ticket.md) turns validated task snapshots into bounded
-task creation artifacts in Fossil's ticket format. Callers supply the identity, actor and date.
+task creation artifacts in Fossil's ticket format. The [Gest ticket emitter](docs/gest-ticket.md)
+does the same for artifact and project records, and the three kinds share one emitter.
+Callers supply the identity, actor and date.
 These modules do not store records or add commands.
 
 Native storage initializes an empty public root without a checkout through the

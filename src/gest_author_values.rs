@@ -5,6 +5,7 @@
 //!
 //! ## Recommendations
 //! Validate complete author inputs before native integration. Keep names and nullable email exact.
+use crate::gest_model::primitives::{AuthorType, Id};
 use crate::gest_value_validation::{ValidationError, identifier, string, timestamp};
 use chrono::{DateTime, Utc};
 use serde_json::Value;
@@ -30,17 +31,17 @@ pub struct AuthorValueInputs {
 #[derive(Clone, Debug, PartialEq)]
 pub struct AuthorValues {
     /// Hold the complete validated canonical identity.
-    gest_id: String,
+    pub(crate) gest_id: Id,
     /// Hold the lowercase `human` or `agent` kind.
-    author_type: &'static str,
+    pub(crate) author_type: AuthorType,
     /// Preserve the exact display name, including empty strings.
-    name: String,
+    pub(crate) name: String,
     /// Preserve the exact email, with null distinct from an empty string.
-    email: Option<String>,
+    pub(crate) email: Option<String>,
     /// Hold the explicit creation instant normalized to UTC.
-    created_at: DateTime<Utc>,
+    pub(crate) created_at: DateTime<Utc>,
     /// Hold the explicit modification instant without ordering constraints.
-    updated_at: DateTime<Utc>,
+    pub(crate) updated_at: DateTime<Utc>,
 }
 /// Report a field failure and retain its timestamp parser cause when present.
 #[derive(Clone, Debug, Eq, PartialEq)]
@@ -103,18 +104,11 @@ impl std::error::Error for AuthorValueError {}
 pub fn author_from_values(fields: AuthorValueInputs) -> Result<AuthorValues, AuthorValueError> {
     let gest_id = identifier(fields.gest_id, "gest_id")?;
     let kind = string(fields.author_type, "author_type")?;
-    let author_type = match kind.to_lowercase().as_str() {
-        "human" => "human",
-        "agent" => "agent",
-        _ => {
-            return Err(ValidationError {
-                field: "author_type",
-                reason: "expected human or agent",
-                parse_cause: None,
-            }
-            .into());
-        }
-    };
+    let author_type: AuthorType = kind.parse().map_err(|_| ValidationError {
+        field: "author_type",
+        reason: "expected human or agent",
+        parse_cause: None,
+    })?;
     let name = string(fields.name, "name")?;
     let email = if fields.email.is_null() {
         None
@@ -140,8 +134,8 @@ pub fn author_from_values(fields: AuthorValueInputs) -> Result<AuthorValues, Aut
 /// See [`author_from_values`] for a complete round-trip example.
 pub fn author_to_values(record: &AuthorValues) -> AuthorValueInputs {
     AuthorValueInputs {
-        gest_id: Value::String(record.gest_id.clone()),
-        author_type: Value::String(record.author_type.into()),
+        gest_id: Value::String(record.gest_id.to_string()),
+        author_type: Value::String(record.author_type.to_string()),
         name: Value::String(record.name.clone()),
         email: record
             .email

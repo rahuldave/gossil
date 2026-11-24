@@ -52,6 +52,7 @@ through `recorded_timeline`, with native metadata bytes and the shared root last
 | Match bounded Fossil pattern lists or construct SQL expressions | [Glob matching](glob.md) |
 | Simplify filename bytes by Fossil's lexical rules | [Lexical file paths](file-path.md) |
 | Find a shortest path or common ancestor in a check-in graph | [Check-in graph paths](history.md) |
+| Read `HEAD`, a branch tip or the parents of a commit from a Git worktree, read-only | [Git reader](git-reader.md) |
 | Parse structural artifact records | [Artifact parser](artifact-parser.md) |
 | Compare normalized byte lines | [Line diff](diff.md) |
 | Own a local database transaction | [Local storage](local-storage.md) |
@@ -59,6 +60,7 @@ through `recorded_timeline`, with native metadata bytes and the shared root last
 | Decode strict local JSON records and charge queries before their rows | [Strict local records](local-records.md) |
 | Validate decoded task snapshots in memory | [Gest task values](gest-task-values.md) |
 | Emit bounded task creation artifact bytes | [Task tickets](task-ticket.md) |
+| Emit bounded artifact and project creation artifact bytes | [Gest tickets](gest-ticket.md) |
 | Validate decoded project snapshots in memory | [Gest project values](gest-project-values.md) |
 | Validate decoded author snapshots in memory | [Gest author values](gest-author-values.md) |
 | Validate decoded artifact snapshots in memory | [Gest artifact values](gest-artifact-values.md) |
@@ -68,6 +70,7 @@ through `recorded_timeline`, with native metadata bytes and the shared root last
 | Validate decoded relationship snapshots in memory | [Gest relationship values](gest-relationship-values.md) |
 | Validate decoded entity tag snapshots in memory | [Gest entity tag values](gest-entity-tag-values.md) |
 | Validate decoded iteration task snapshots in memory | [Gest iteration task values](gest-iteration-task-values.md) |
+| Build Gest model records from validated snapshots | [Gest model](gest-model.md) |
 
 The [concepts guide](concepts.md) explains how these modules fit together.
 Gossil is under development. General version-control commands, Gest task
