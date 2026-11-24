@@ -17,7 +17,10 @@ use serde_json::Value;
 use std::fmt;
 
 use crate::gest_model::primitives::{Id, TaskStatus};
-use crate::gest_value_validation::{ValidationError, identifier, string, timestamp};
+use crate::gest_value_validation::{
+    CanonicalValue, ValidationError, canonical_id, canonical_timestamp, identifier, string,
+    timestamp,
+};
 
 /// All eleven owned model fields, with explicit nulls for nullable fields.
 ///
@@ -272,50 +275,30 @@ pub fn task_to_values(task: &TaskValues) -> TaskValueInputs {
     }
 }
 
-/// Borrowed canonical JSON values for the task ticket emitter, without model clones.
-#[derive(serde::Serialize)]
-#[serde(untagged)]
-pub(crate) enum CanonicalTaskValue<'a> {
-    /// Exact model string, borrowed.
-    Text(&'a str),
-    /// Numeric priority or explicit JSON null.
-    Priority(Option<u8>),
-    /// Arbitrary metadata, borrowed recursively by serde.
-    Json(&'a Value),
-    /// A short owned string, or explicit JSON null. The string is an identifier
-    /// of 32 letters, the status or a business timestamp.
-    Bounded(Option<String>),
-}
-
-/// Enumerate the same eleven fields as `task_to_values` for bounded serialization.
-/// The function allocates only the short identifier, status and timestamp spellings.
+/// List the same eleven fields as `task_to_values` for bounded serialization.
+///
+/// The function allocates only the short identifier, status and timestamp strings.
 /// The title, description and metadata, which have no size bound, remain borrowed.
 /// This module owns validation and status conversion.
+///
 /// # Arguments
 /// * `task` - Validated task whose canonical fields are borrowed.
+///
 /// # Returns
 /// All eleven field names and borrowed canonical values.
-pub(crate) fn canonical_task_fields(
-    task: &TaskValues,
-) -> [(&'static str, CanonicalTaskValue<'_>); 11] {
-    use CanonicalTaskValue::{Bounded, Json, Priority, Text};
+pub(crate) fn canonical_task_fields(task: &TaskValues) -> [(&'static str, CanonicalValue<'_>); 11] {
+    use CanonicalValue::{Bounded, Json, Priority, Text};
     [
-        (
-            "assigned_to",
-            Bounded(task.assigned_to.as_ref().map(Id::to_string)),
-        ),
-        ("created_at", Bounded(Some(task.created_at.to_rfc3339()))),
+        ("assigned_to", canonical_id(task.assigned_to.as_ref())),
+        ("created_at", canonical_timestamp(Some(task.created_at))),
         ("description", Text(&task.description)),
-        ("gest_id", Bounded(Some(task.gest_id.to_string()))),
+        ("gest_id", canonical_id(Some(&task.gest_id))),
         ("metadata", Json(&task.metadata)),
         ("priority", Priority(task.priority)),
-        ("project_id", Bounded(Some(task.project_id.to_string()))),
-        (
-            "resolved_at",
-            Bounded(task.resolved_at.map(|dt| dt.to_rfc3339())),
-        ),
+        ("project_id", canonical_id(Some(&task.project_id))),
+        ("resolved_at", canonical_timestamp(task.resolved_at)),
         ("status", Bounded(Some(task.status.to_string()))),
         ("title", Text(&task.title)),
-        ("updated_at", Bounded(Some(task.updated_at.to_rfc3339()))),
+        ("updated_at", canonical_timestamp(Some(task.updated_at))),
     ]
 }

@@ -68,8 +68,10 @@ project API or repository tests, whose behavior and persistence still need separ
 The project fixtures retain the reviewed field map and
 frozen catalog source provenance in `tests/fixtures/gest_catalog_values/source-map.json`.
 The broader map does not imply that other catalog models ship here.
+
 Project storage and reads of caller-selected records remain planned
-through the repository transaction API.
+through the repository transaction API. The [Gest ticket emitter](gest-ticket.md)
+turns a validated record into bounded creation artifact bytes in memory.
 
 ## Recommendations
 

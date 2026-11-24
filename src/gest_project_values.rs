@@ -4,7 +4,9 @@
 //! Conversion performs no storage, reference lookup, clock read or ID generation.
 
 use crate::gest_model::primitives::Id;
-use crate::gest_value_validation::{ValidationError, identifier, timestamp};
+use crate::gest_value_validation::{
+    CanonicalValue, ValidationError, canonical_id, canonical_timestamp, identifier, timestamp,
+};
 use chrono::{DateTime, Utc};
 use serde_json::Value;
 use std::fmt;
@@ -119,4 +121,24 @@ pub fn project_to_values(record: &ProjectValues) -> ProjectValueInputs {
         created_at: Value::from(record.created_at.to_rfc3339()),
         updated_at: Value::from(record.updated_at.to_rfc3339()),
     }
+}
+
+/// List the same 4 fields as [`project_to_values`], sorted by name, for bounded serialization.
+///
+/// The local checkout root is not a field, so the ticket does not include its path.
+///
+/// # Arguments
+/// * `record` - A record validated by [`project_from_values`].
+///
+/// # Returns
+/// All 4 field names, in byte order, with their canonical values.
+pub(crate) fn canonical_project_fields(
+    record: &ProjectValues,
+) -> [(&'static str, CanonicalValue<'_>); 4] {
+    [
+        ("archived_at", canonical_timestamp(record.archived_at)),
+        ("created_at", canonical_timestamp(Some(record.created_at))),
+        ("gest_id", canonical_id(Some(&record.gest_id))),
+        ("updated_at", canonical_timestamp(Some(record.updated_at))),
+    ]
 }

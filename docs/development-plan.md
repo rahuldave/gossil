@@ -27,7 +27,8 @@ The [Gest model](gest-model.md) is a copy of the Gest record types and their pri
 A record that a converter has validated converts into its model record through the `From` trait.
 
 The [task ticket emitter](task-ticket.md) serializes validated task snapshots with
-caller-supplied native identity, actor and date.
+caller-supplied native identity, actor and date. The [Gest ticket emitter](gest-ticket.md)
+serializes validated artifact and project snapshots in the same way, and the three kinds share one emitter.
 
 ## Current scope
 
@@ -205,13 +206,16 @@ It is not required to use the current CLI or library.
 All ten converters of Gest values share the private field validators of
 `gest_value_validation`. The validators parse identifiers and entity types with the
 primitives of the Gest model, and the converters parse each status and type the
-same way. The task ticket emitter
-borrows the status and UTC timestamp forms defined by `gest_task_values`.
-Changes must preserve public conversion behavior and the original parser errors
-returned through the public error accessor.
-Before the converters plan the size of the output, they allocate only the short
-identifier, status and timestamp strings. The title, description and metadata of a
-task remain borrowed.
+same way. Changes must preserve public conversion behavior and the original
+parser errors returned through the public error accessor. Before the converters
+plan the size of the output, they allocate only the short identifier, status and
+timestamp strings. The title, description and metadata of a task remain borrowed.
+
+The `gest_value_validation` module also defines the borrowed canonical values
+that the task, artifact and project ticket emitters serialize. The task emitter
+writes the status form that `gest_task_values` defines. It writes the identifiers
+and the UTC timestamps in the forms that `canonical_id` and `canonical_timestamp`
+define in `gest_value_validation`.
 
 Historical task-value source mappings and run accounting are preserved in
 [the task value evidence archive](https://github.com/rahuldave/gossil/blob/main/docs/_history/task-value-evidence.md).
@@ -386,7 +390,8 @@ qualification.
 
 At the checkpoint, `Cargo.toml` set the version of the Gossil crate to 0.9.0,
 which was later released as `v0.9.0`. The current version of the crate is
-0.12.0. The `libsql-ffi` provider is at 0.10.0, and its version is separate
+0.14.0, and version 0.13.0 was released as `v0.13.0`. The `libsql-ffi`
+provider is at 0.10.0, and its version is separate
 from the version of the crate.
 
 The focused tree

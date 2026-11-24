@@ -1,4 +1,9 @@
-//! Shared decoded-value checks used by the owned Gest model converters.
+//! The owned Gest model converters use the shared checks of decoded values in this module.
+//!
+//! The module also defines
+//! [`CanonicalValue`](crate::gest_value_validation::CanonicalValue), the
+//! borrowed canonical field value that the task, artifact and project ticket
+//! emitters serialize.
 use chrono::{DateTime, Utc};
 use serde_json::Value;
 
@@ -120,6 +125,47 @@ pub(crate) fn timestamp(
         });
     }
     Ok(utc)
+}
+
+/// One borrowed canonical model value that a ticket emitter serializes as JSON.
+///
+/// Each converter lists its fields with these values, so the emitter writes
+/// the same JSON as the converter's `*_to_values` output without cloning model
+/// strings or metadata.
+#[derive(serde::Serialize)]
+#[serde(untagged)]
+pub(crate) enum CanonicalValue<'a> {
+    /// Exact model string without a size bound, borrowed.
+    Text(&'a str),
+    /// Numeric priority or explicit JSON null.
+    Priority(Option<u8>),
+    /// Arbitrary metadata, borrowed recursively by serde.
+    Json(&'a Value),
+    /// A short owned string, or explicit JSON null. The string is an
+    /// identifier of 32 letters, a task status or a business timestamp.
+    Bounded(Option<String>),
+}
+
+/// Spell an optional identifier as its canonical JSON value.
+///
+/// # Arguments
+/// * `value` - Validated identifier, or `None` for an explicit null field.
+///
+/// # Returns
+/// The 32-letter string that the `*_to_values` converters return, or null.
+pub(crate) fn canonical_id(value: Option<&Id>) -> CanonicalValue<'static> {
+    CanonicalValue::Bounded(value.map(Id::to_string))
+}
+
+/// Spell a validated optional timestamp as its canonical JSON value.
+///
+/// # Arguments
+/// * `value` - Validated UTC instant, or `None` for an explicit null field.
+///
+/// # Returns
+/// The RFC3339 UTC string that the `*_to_values` converters return, or null.
+pub(crate) fn canonical_timestamp(value: Option<DateTime<Utc>>) -> CanonicalValue<'static> {
+    CanonicalValue::Bounded(value.map(|dt| dt.to_rfc3339()))
 }
 
 #[cfg(test)]

@@ -89,7 +89,8 @@ It does not hash the files themselves.
 These tests cover the converter itself. They do not reproduce the upstream
 artifact API or repository tests, whose behavior and persistence still need separate validation.
 Artifact storage and reads of caller-selected records remain planned
-through the repository transaction API.
+through the repository transaction API. The [Gest ticket emitter](gest-ticket.md)
+turns a validated record into bounded creation artifact bytes in memory.
 
 ## Recommendations
 

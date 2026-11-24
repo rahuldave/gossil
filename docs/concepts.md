@@ -173,6 +173,8 @@ its model record through the `From` trait. The [Gest model guide](gest-model.md)
 
 The [task ticket emitter](task-ticket.md) produces bounded creation artifact bytes
 from a validated task, a separate native ticket identity, actor bytes and a typed UTC date.
+The [Gest ticket emitter](gest-ticket.md) takes the same inputs for a validated artifact
+or project, and the three kinds share one emitter.
 Before passing decoded values to a converter, callers
 must check raw field presence, duplicates and byte limits. Storage integration and commands for these records remain separate work.
 

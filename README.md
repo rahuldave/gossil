@@ -95,7 +95,9 @@ primitive values. A record that a converter has validated converts into its mode
 record through the `From` trait.
 
 The [task ticket emitter](docs/task-ticket.md) turns validated task snapshots into bounded
-task creation artifacts in Fossil's ticket format. Callers supply the identity, actor and date.
+task creation artifacts in Fossil's ticket format. The [Gest ticket emitter](docs/gest-ticket.md)
+does the same for artifact and project records, and the three kinds share one emitter.
+Callers supply the identity, actor and date.
 These modules do not store records or add commands.
 
 Native storage initializes an empty public root without a checkout through the

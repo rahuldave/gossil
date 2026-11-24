@@ -155,7 +155,9 @@ specified above. Source mappings, test counts and historical run qualifications
 are preserved in the [task value evidence archive](https://github.com/rahuldave/gossil/blob/main/docs/_history/task-value-evidence.md).
 Those runs qualify their recorded trees and do not establish full Gest or Fossil compatibility.
 
-The task ticket emitter borrows canonical values from this module.
+The task ticket emitter takes its list of canonical fields from this module.
+The list borrows the title, description and metadata, and it holds short owned
+strings for the identifiers, the status and the timestamps.
 Storage and commands do not call this module. Database schemas do not
 integrate its task record format.
 

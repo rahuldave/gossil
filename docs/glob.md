@@ -14,8 +14,9 @@ longer patterns. Rust owns the buffers instead of calling `glob_free`.
 The list grammar uses commas and ASCII whitespace (bytes 9 through 13 and
 space). Single and double quotes retain commas and whitespace in a pattern.
 An unmatched opening quote consumes the rest of the list. Only a quote at
-the start of a term opens quoted parsing. There is no escape syntax. Empty
-quoted terms remain real empty patterns; absent, empty and delimiter-only lists
+the start of a term opens quoted parsing. There is no escape syntax.
+
+Empty quoted terms remain real empty patterns. Absent, empty and delimiter-only lists
 have no patterns.
 
 Lists, candidates and SQL value expressions end at the first
@@ -24,25 +25,25 @@ NUL byte, as in C.
 `glob_expr` produces SQL bytes and doubles apostrophes in patterns. The value
 argument must be a trusted SQL expression. The function does not quote or
 sanitize that argument. Use a trusted column expression or parameter expression
-such as `?1`; bind an untrusted candidate separately through a caller-owned SQL
+such as `?1`. Bind an untrusted candidate separately through a caller-owned SQL
 interface. The function returns bytes and executes no SQL.
 
 After a closing quote, SQL construction skips one more byte, as the source
 does. For example, `'a'bc` gives matching patterns `a` and `bc`, but SQL terms
 `a` and `c`. Do not normalize this distinction. SQL output joins terms with
-` OR ` inside parentheses; a list with no patterns returns `0`. A quoted
+` OR ` inside parentheses. A list with no patterns returns `0`. A quoted
 empty pattern produces a real `GLOB ''` term.
 
 Callers supply finite `Limits` for list bytes, candidate bytes, pattern count
-and expression bytes; reusable matching retains its candidate limit. Byte
+and expression bytes. Reusable matching retains its candidate limit. Byte
 limits apply to the prefix before the first NUL. Finding that prefix scans
 until the first NUL or the end of the original slice. Reservations are fallible and
 capacity additions are checked. Typed errors retain allocation failures.
 
-The one-shot matcher returns as soon as a pattern matches; it need not inspect
+The one-shot matcher returns as soon as a pattern matches. It need not inspect
 later terms against the pattern-count budget. SQLite owns wildcard syntax,
 Unicode character handling and matching recursion. These byte budgets bound
-accepted prefixes and allocations; they do not bound SQLite matching CPU time
+accepted prefixes and allocations, but they do not bound SQLite matching CPU time
 or stack use. SQL execution can
 impose further engine limits on patterns and expressions.
 
@@ -56,7 +57,7 @@ Both `gossil` and `gos` accept `vcs` or its alias `v`.
 `gossil vcs test-glob PATTERN STRING ...` prints the SQL expression, parsed
 patterns and the indices returned by `glob_match` and `glob_multi_match`. The adapter uses fixed finite budgets of
 1 MiB per list or candidate, 65,536 patterns and 16 MiB per expression.
-It rejects setting names beginning with `@`; repository settings remain a
+It rejects setting names beginning with `@`. Repository settings remain a
 follow-up. JSON rendering also remains a follow-up.
 
 Unix arguments retain their exact bytes. On other platforms, the adapter
@@ -80,11 +81,12 @@ parent `4250b873`. It included a prospective checked-commit prerequisite rather
 than accepted prerequisite ancestry. [PR 47](https://github.com/rahuldave/gossil/pull/47)
 supplies typed commit and cleanup causes. Strict Rust 1.100 lint stopped at that
 prerequisite's `commit_checked` large-error lint. The owner's local lint fix is
-synchronized in the source successor; this checkpoint does not qualify it.
+synchronized in the source successor, but this checkpoint does not qualify it.
 
 At the checkpoint, `Cargo.toml` set the version of the Gossil crate to 0.9.0,
 which was later released as `v0.9.0`. The current version of the crate is
-0.12.0. The `libsql-ffi` provider is at 0.10.0, and its version is separate
+0.14.0, and version 0.13.0 was released as `v0.13.0`. The `libsql-ffi`
+provider is at 0.10.0, and its version is separate
 from the version of the crate. Complete gates on the final frozen tree,
 accepted-parent checks, independent review, release and exact merged installation
 proof remain separate from the focused results.
@@ -129,7 +131,7 @@ native Fossil run.
 `historical-log-packaging.json` maps the two compressed historical raw logs
 to their original paths and records their lossless gzip packaging.
 
-The source is copyright 2011 D. Richard Hipp; the tests are copyright 2013
+The source is copyright 2011 D. Richard Hipp, and the tests are copyright 2013
 D. Richard Hipp, both under the 2-Clause BSD license retained in
 `evidence/glob/fossil-license.txt`. This port does not implement file tracking,
 directory traversal, path boundaries or persistent file selection.
