@@ -102,6 +102,15 @@ typecheck *args: libsql-vendor-check libsql-vendor-test libsql-wrapper-check lib
     just --justfile {{quote(justfile())}} rust typecheck "$@"
     jlog step typecheck
 
+# Run clippy on every target and fail on each warning; forbid the Git write paths of clippy.toml (GIT-03). Extra arguments go to cargo: just lint -p gossil
+lint *args:
+    jlog run cargo clippy --workspace --all-targets --all-features --locked "$@" -- -D warnings -F clippy::disallowed_methods -F clippy::disallowed_types
+    jlog step lint
+
+# Count the packages that the six gix crates of the Git reader add, from cargo tree on this host.
+git-reader-packages:
+    jlog run uv run --no-project --quiet python scripts/git-reader-packages.py
+
 # Required CI verifies vendor bytes as well as the existing commit evidence gate.
 ci: libsql-vendor-check libsql-vendor-test libsql-wrapper-check libsql-wrapper-test ci-gate
 

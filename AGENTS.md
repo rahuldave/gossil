@@ -16,12 +16,17 @@ Read and follow @.agents/instructions/prose.md
   primitives, token codec, structural artifact parser, local storage boundary,
   Fossil glob matching (`src/glob.rs`), lexical filename simplification
   (`src/file_path.rs`), check-in graph paths (`src/history.rs`) and the Gest
-  domain value converters (`src/gest_*_values.rs`). `tests/` contains controls,
-  portable fixtures and the private storage composition test.
+  domain value converters (`src/gest_*_values.rs`). It also contains the
+  read-only Git reader (`src/git_reader.rs`). The Git reader is the only module
+  that uses gix, and its guide is `docs/git-reader.md`. `tests/` contains
+  controls, portable fixtures and the private storage composition test.
+- Git reader guard: `clippy.toml` bans the gix write paths, and `just lint`
+  forbids them with `-F clippy::disallowed_methods -F clippy::disallowed_types`.
+  `tests/git_write_lint.rs` proves each ban. Add a probe line for each new entry.
 - Local guides: `docs/conformance.md`, `docs/delta-encoder.md`,
   `docs/delta-decoder.md`, `docs/blob-primitives.md`, `docs/token-codec.md`,
   `docs/local-storage.md`, `docs/native-storage.md`, `docs/artifact-parser.md`,
-  `docs/glob.md`, `docs/file-path.md`, `docs/history.md`, the ten Gest value
+  `docs/glob.md`, `docs/file-path.md`, `docs/history.md`, `docs/git-reader.md`, the ten Gest value
   guides `docs/gest-*-values.md` and `docs/development-plan.md`.
 - Product specification: `~/Projects/AIProjectInfra/docs/gossil/README.md` and its linked pages.
 - Workflow playbook: `.agents/skills/gtw/references/gest_codex_workflow.md`.

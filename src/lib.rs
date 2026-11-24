@@ -1,5 +1,6 @@
 //! Supply inherited-test tools, bounded byte primitives, Fossil glob matching, lexical
-//! filename simplification, check-in graph paths, local storage and decoded task values.
+//! filename simplification, check-in graph paths, a read-only Git reader, local storage and
+//! decoded task values.
 pub mod diff;
 mod invocation;
 pub use invocation::{InvocationId, InvocationPlan, PlanPin, PlanRow, Position};
@@ -838,3 +839,6 @@ pub mod file_path;
 
 /// Find shortest paths and common ancestors in an explicit check-in graph, as Fossil does.
 pub mod history;
+
+/// Read Git commits, refs and settings beside Git, read-only, through pinned gix crates.
+pub mod git_reader;

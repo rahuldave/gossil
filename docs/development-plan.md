@@ -34,6 +34,7 @@ caller-supplied native identity, actor and date.
 | Bounded glob API and `test-glob` diagnostic; focused checkpoint | Settings lookup, wildcard tracking and directory traversal |
 | Compression, hashes, token escaping, artifact checksums and [lexical filename simplification](file-path.md) | Repository traversal and changes to persisted scope choices |
 | [Shortest paths and common ancestors](history.md) over caller-supplied check-in rows | Persisted history graphs, bisect, annotation and file history |
+| Read-only [Git reader](git-reader.md) library for a worktree, its refs, commit parents and three configuration keys | Bind command, Git hooks and the source registry |
 | Eight structural artifact types with explicit limits | General crosslinks, migration, rebuild and filesystem recovery |
 | Native initialization/open, tracking, scope/commit CLI and library; catalog1 private content | Shared recording, sync and artifact publication |
 | Explicit inherited-test runner configurations | Gest task CLI, server and user interface |

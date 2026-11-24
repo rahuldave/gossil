@@ -13,7 +13,8 @@ to shared or owner-local private history; recording shared history remains plann
 
 The library includes bounded compression, content hashes, token escaping,
 artifact checksums, [lexical filename simplification](docs/file-path.md),
-[check-in graph paths](docs/history.md) and owned local database transactions. The
+[check-in graph paths](docs/history.md), a read-only [Git reader](docs/git-reader.md)
+and owned local database transactions. The
 [glob module](docs/glob.md) parses and matches bounded Fossil pattern lists and
 constructs SQL expressions with the same selected libSQL 0.10.0 engine. Its
 repository-free `vcs test-glob` diagnostic passed the
