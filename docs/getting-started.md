@@ -91,9 +91,11 @@ just gossil v test-delta "$example_dir/origin" "$example_dir/target"
 The source also builds a `gos` executable with the same diagnostics. See
 [short executable names](cli.md#short-names) for its source invocation.
 The same aliases support [native checkout open](cli.md#open-a-native-checkout).
+
 The [`issue` group](cli.md#issue-commands), or `i`, recognises the Gest command
-names and refuses each command with status 69. Issue commands, shared
-recording and sync remain planned.
+names. It runs [`init`](cli.md#create-the-gest-project-of-a-checkout), which creates the
+Gest project of an open checkout. It refuses each other command with status 69. The
+other issue commands, shared recording and sync remain planned.
 
 ## Handle failures and choose the next step
 

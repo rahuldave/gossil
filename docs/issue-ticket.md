@@ -6,8 +6,10 @@ Gossil writes each Gest task and project as a ticket, and the [task ticket](task
 [Gest ticket](gest-ticket.md) emitters make its creation artifact. A creation artifact is the first and
 only artifact of a ticket in this build.
 
-The writer is a library method of `LocalOwnerRepository` in `src/storage/issue_ticket.rs`. No CLI command
-calls it yet. The repository must be at catalog 6, the newest catalog of Gossil storage.
+The writer is a library method of `LocalOwnerRepository` in `src/storage/issue_ticket.rs`. A second
+method, `init_private_project`, writes a project and binds it to the registered checkout. The command
+[`gos i init`](cli.md#create-the-gest-project-of-a-checkout) calls that method. No command stores a
+task yet. The repository must be at catalog 6, the newest catalog of Gossil storage.
 
 ## Write and read a ticket
 
@@ -32,6 +34,39 @@ the K card, and the native name of the artifact. It also holds the validated `Ta
 `read_private_issue` runs the full admission of `LocalOwnerRepository::open`, then parses the artifact of
 the ticket ID and returns its record. It writes nothing. `create_private_issue` runs the same admission
 before its write and again after it, in the same transaction and under the same limits.
+
+## Bind a project to a checkout
+
+`init_private_project` stores one project creation and binds it to the registered checkout, in one
+exclusive transaction:
+
+```rust
+use gossil::storage::ProjectInitRequest;
+
+let request = ProjectInitRequest { artifact: &bytes, checkout_id: "work" };
+let stored = owner.init_private_project(request, limits).await?;
+let project = owner.bound_project("work", limits).await?;
+assert!(project.is_some());
+```
+
+The method writes the rows that `create_private_issue` writes for a project, as the section
+[rows that one write adds](#rows-that-one-write-adds) lists them. It also writes two binding rows:
+
+- **g_project_binding** gets the checkout ID, the Gest ID of the project and the exact root of the
+  checkout.
+- **g_checkout_project** gets the checkout ID and the Gest ID of the project.
+
+Like `create_private_issue`, the method runs the full admission before and after its write. Before it
+changes anything, it refuses an artifact that is not one project creation, a checkout that is not registered and
+a checkout that already has a project. It also refuses a repository that already holds a project
+ticket, for example one that `create_private_issue` wrote. The refusal for these cases is
+`issue init needs one project creation, a registered checkout with no bound project, and a repository
+with no project; binding an existing project is not available in this build`. A failure before the
+commit leaves every byte of the repository files unchanged.
+
+`bound_project` returns the Gest ID of the project bound to a checkout, or `None` when the checkout has
+no binding. It runs the full admission of `LocalOwnerRepository::open` first, and it writes nothing.
+`bound_project` does not use the SQL limits in `limits`.
 
 ## How admission checks issues
 
@@ -92,8 +127,18 @@ refreshes the change counter of the proof, so the failed write does not lock out
 write that the admission check refuses as stale leaves the proof stale, so the check refuses the next call
 of that owner too.
 
-The binding tables `g_project_binding`, `g_checkout_project`, `g_identity` and `g_contributor` stay empty,
-and admission refuses a row in any of them. The writer writes no audit row and no undo history.
+Admission accepts the binding tables `g_project_binding` and `g_checkout_project` in two states only.
+In the first, both tables are empty. In the second, each table holds the one row that
+`init_private_project` writes. Both rows then name the registered checkout and the Gest ID of one
+admitted project that is not archived. The row of `g_project_binding` also holds the exact root of the
+checkout. Admission refuses every other state with `unsupported project binding state`.
+
+In a repository without a checkout registration, admission refuses every binding row. The admission proof also holds
+the rows of both tables, so a later change to them makes the proof stale.
+
+The tables `g_identity` and `g_contributor` stay empty, and admission refuses a row in either of them.
+The writer writes no audit row and no undo history. `init_private_project` does not bind a project that
+the repository already holds.
 
 The writer writes no selectors, tags of Gest or links. The scope key is the literal `combined`, and not
 the full key of the specification, because the full key needs selectors.
@@ -111,6 +156,16 @@ the ticket reader, the next write and a new open each refuse, and leave the repo
 
 A change to the `ticket`, `ticketchng`, `g_gest_tasks` or `g_gest_projects` table also makes the saved
 admission proof stale. The admission check of the next write then refuses that write.
+
+Further unit controls cover `init_private_project`. A failure injected after each write step, the
+binding step included, leaves every byte unchanged and the checkout unbound. The method refuses a task,
+an unknown checkout, a bound checkout, a repository that holds an unbound project and a repository
+without a registration. Admission refuses each changed, missing or extra binding row, a binding to a
+task or to an archived project, and a value that is not text. A change to a binding row also makes the
+admission proof stale.
+
+`tests/issue_init_cli.rs` checks the command `gos i init` in all four forms, its second run, its
+refusals and the `vcs` commands before and after it.
 
 Admission parses every artifact under one parser ledger, so the entry ceiling of that ledger limits the
 count of issues. A unit control sets a ceiling that admits two tasks, and checks that admission refuses a
@@ -135,6 +190,11 @@ It then writes check-ins with `gos` and an issue between them. On that repositor
 report 0 errors from `fossil test-integrity --parse`. It must list both check-ins and the new ticket in
 `fossil timeline`, and show the ticket in `fossil ticket show`. `just catalog-interop` runs this check too.
 
+Last, the recipe runs the ignored test `stock_fossil_reads_a_repository_after_issue_init` in
+`tests/issue_init_cli.rs`. The test runs `gos v init`, `gos v open`, `gos i init` and one commit. Stock
+Fossil must then report 0 errors from `fossil test-integrity --parse`, and `fossil ticket show` must show
+the private project.
+
 The comparison counts event times in whole milliseconds. Fossil formats `event.mtime` with its own
 conversion, which adds noise after the ninth decimal place of the Julian day. The comment bytes must be
 equal. If the reference is absent, the recipe exits 5, which means `not-run` and not a pass.
@@ -142,5 +202,5 @@ equal. If the reference is absent, the recipe exits 5, which means `not-run` and
 ## Recommendations
 
 Validate a record with its converter, emit its creation artifact, and store it with
-`create_private_issue`. Run `just issue-ticket-interop` after a change to the writer, and report
-`not-run` apart from a pass.
+`create_private_issue`. Bind a project to a checkout only with `init_private_project`. Run
+`just issue-ticket-interop` after a change to the writer, and report `not-run` apart from a pass.

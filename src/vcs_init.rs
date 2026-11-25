@@ -112,7 +112,7 @@ fn password_draws(value: Value) -> Result<String, Error> {
 /// Select the first nonempty environment login without accessing preferences.
 /// # Returns
 /// Raw environment bytes in `GOSSIL_USER`, `USER`, `LOGNAME`, `USERNAME` order, or `root`.
-fn default_administrator() -> Vec<u8> {
+pub(crate) fn default_administrator() -> Vec<u8> {
     administrator_from(|key| std::env::var_os(key))
 }
 /// Keep environment precedence deterministic without process environment mutation.

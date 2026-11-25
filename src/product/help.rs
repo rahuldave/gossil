@@ -2,7 +2,9 @@
 //!
 //! The help lists the groups and commands that this build dispatches. It also
 //! names the planned groups, and marks them as not available. Each command of
-//! the `issue` group is recognised and marked as not available in this build.
+//! the `issue` group is recognised. The help says which commands this build runs,
+//! and marks every other one as not available in this build. This build runs only `init`.
+//!
 //! Usage lines keep the fixed `gossil vcs` spelling for every executable and
 //! group alias. Most usage errors of the commands use the same spelling. The
 //! usage error of `add` and `status` uses `gos v` instead.
@@ -98,9 +100,9 @@ const VCS_COMMANDS: &[VcsCommand] = &[
 
 /// Names the code that runs a recognised issue command.
 ///
-/// In this build, every handler refuses its command. The variants other than
-/// [`IssueHandler::Unavailable`] mark the commands whose handlers come next, so
-/// that a later commit changes only the match arm of its command in `issue::run`.
+/// [`IssueHandler::Init`] runs `issue init`. Each task variant marks a command whose
+/// handler is planned, and this build refuses that command. A later commit then
+/// changes only the match arm of the command in `issue::run`.
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(super) enum IssueHandler {
     /// `issue init`.
@@ -129,7 +131,32 @@ pub(super) struct IssueCommand {
     pub(super) handler: Option<IssueHandler>,
     /// Holds the subcommands, in help order.
     pub(super) children: &'static [IssueCommand],
+    /// Holds the help text after the summary of a command that this build runs, or
+    /// `None` for a command that this build does not run.
+    details: Option<&'static str>,
 }
+
+impl IssueCommand {
+    /// Say whether this build runs the command.
+    ///
+    /// # Returns
+    /// True when the command has the help text of a command that runs.
+    pub(super) const fn runs(&self) -> bool {
+        self.details.is_some()
+    }
+}
+
+/// The help text of `issue init` after its summary.
+const INIT_DETAILS: &str = "\nCreate the Gest project of the open checkout that holds the current directory,\n\
+     as a private project ticket, and bind the checkout to it in one transaction.\n\
+     Run gos v init and gos v open first. When the checkout already has a project,\n\
+     init prints that project and changes nothing.\n\n\
+     Options:\n\
+     \x20 --local           Accepted; the checkout locator already selects the repository\n\
+     \x20 --no-color        Accepted; the output has no color\n\
+     \x20 --no-pager        Accepted; the output is not paged\n\
+     \x20 -v, --verbose...  Accepted; it changes no output\n\
+     \x20 -h, --help        Print help\n";
 
 /// Build a command without subcommands, which this build refuses.
 ///
@@ -152,6 +179,7 @@ const fn leaf(
         summary,
         handler: Some(IssueHandler::Unavailable),
         children: &[],
+        details: None,
     }
 }
 
@@ -178,6 +206,7 @@ const fn group(
         summary,
         handler: None,
         children,
+        details: None,
     }
 }
 
@@ -298,6 +327,7 @@ pub(super) const ISSUE_COMMANDS: &[IssueCommand] = &[
     ),
     IssueCommand {
         handler: Some(IssueHandler::Init),
+        details: Some(INIT_DETAILS),
         ..leaf(
             &["init"],
             "[OPTIONS]",
@@ -634,7 +664,7 @@ pub(super) fn root() -> String {
          gos is a short name for gossil. Both run the same program.\n\n\
          Groups:\n\
          \x20 vcs, v              Repositories, checkouts, private history and diagnostics\n\
-         \x20 issue, i            Gest commands, recognised and not available in this build\n\n\
+         \x20 issue, i            Gest commands; init runs, and the others are not available in this build\n\n\
          Planned groups, not available in this build:\n",
         env!("CARGO_PKG_VERSION")
     );
@@ -649,7 +679,10 @@ pub(super) fn root() -> String {
     out.push_str(
         "\nRun \"gossil vcs help COMMAND\" or \"gossil vcs COMMAND --help\" for the usage of one command.\n",
     );
-    out.push_str(&format!("\nCommands of the issue group, {UNAVAILABLE}:\n"));
+    out.push_str(&format!(
+        "\nCommands of the issue group. This build runs {}; every other command is {UNAVAILABLE}:\n",
+        runnable()
+    ));
     issue_tree(&mut out, ISSUE_COMMANDS, 0);
     out.push_str(ISSUE_FOOTER);
     out
@@ -659,8 +692,28 @@ pub(super) fn root() -> String {
 pub(super) const UNAVAILABLE: &str = "not available in this build";
 
 /// The last lines of the issue help, which say how to get the help of one command.
-const ISSUE_FOOTER: &str = "\nEach command refuses to run, and exits with status 69.\n\
+const ISSUE_FOOTER: &str = "\nEach other command refuses to run, and exits with status 69.\n\
      Run \"gossil issue help COMMAND\" or \"gossil issue COMMAND --help\" for the usage of one command.\n";
+
+/// Name the issue commands that this build runs, by their canonical paths.
+///
+/// # Returns
+/// The paths, joined by commas, in help order.
+fn runnable() -> String {
+    /// Add the paths of the runnable commands of one level and every level below.
+    fn walk(commands: &[IssueCommand], prefix: &str, out: &mut Vec<String>) {
+        for command in commands {
+            let path = format!("{prefix}{}", command.names[0]);
+            if command.runs() {
+                out.push(path.clone());
+            }
+            walk(command.children, &format!("{path} "), out);
+        }
+    }
+    let mut out = Vec::new();
+    walk(ISSUE_COMMANDS, "", &mut out);
+    out.join(", ")
+}
 
 /// Find an issue command among the subcommands of one level, by a name or an alias.
 ///
@@ -709,9 +762,10 @@ pub(super) fn issue() -> String {
     let mut out = format!(
         "Usage: gossil issue COMMAND [ARGUMENTS]\n\
          \x20      gos i COMMAND [ARGUMENTS]\n\n\
-         i is a short name for issue. This build recognises each Gest command below,\n\
-         and runs none of them: each is {UNAVAILABLE}.\n\n\
-         Commands, {UNAVAILABLE}:\n"
+         i is a short name for issue. This build recognises each Gest command below.\n\
+         It runs {}; every other command is {UNAVAILABLE}.\n\n\
+         Commands:\n",
+        runnable()
     );
     issue_tree(&mut out, ISSUE_COMMANDS, 0);
     out.push_str(ISSUE_FOOTER);
@@ -736,9 +790,12 @@ pub(super) fn issue_command(path: &str, command: &IssueCommand) -> String {
     if command.names.len() > 1 {
         out.push_str(&format!("Names: {}.\n", command.names.join(", ")));
     }
-    out.push_str(&format!(
-        "This build recognises the command and does not run it: it is {UNAVAILABLE}.\n"
-    ));
+    match command.details {
+        Some(details) => out.push_str(details),
+        None => out.push_str(&format!(
+            "This build recognises the command and does not run it: it is {UNAVAILABLE}.\n"
+        )),
+    }
     if !command.children.is_empty() {
         out.push_str("\nCommands:\n");
         issue_tree(&mut out, command.children, 0);
@@ -869,6 +926,7 @@ mod tests {
         assert!(built.hidden.is_empty() && built.children.is_empty());
         assert_eq!((built.arguments, built.summary), ("[A]", "Do x"));
         assert_eq!(built.handler, Some(IssueHandler::Unavailable));
+        assert!(!built.runs());
         let parent = group(std::hint::black_box(&["g"]), &["h"], "Group", META.children);
         assert_eq!((parent.names, parent.hidden), (&["g"][..], &["h"][..]));
         assert_eq!((parent.arguments, parent.summary), ("COMMAND", "Group"));

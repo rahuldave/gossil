@@ -14,13 +14,17 @@ and shows their actual scope.
 
 The Rust library has typed converters for Gest tasks, projects, authors, artifacts,
 iterations, tags, notes, relationships, entity tags and iteration tasks. It also has a
-task artifact emitter and native storage primitives. It does not yet create or read persisted issues.
+task artifact emitter and native storage primitives. It stores and reads private task and project
+tickets, as the [issue ticket guide](issue-ticket.md) says.
 
 [Native checkout open](cli.md#open-a-native-checkout) registers or reopens an
 existing directory and publishes its lookup locator. The library can record
 the complete private tracked tree. The source [scope and commit commands](cli.md#select-scopes-and-record-private-files)
-expose that operation with explicit selections and metadata. Issue commands remain planned.
-The [`issue` group](cli.md#issue-commands) recognises their names and runs none of them.
+expose that operation with explicit selections and metadata.
+
+The [`issue` group](cli.md#issue-commands) recognises the names of the Gest commands. It runs
+[`gos i init`](cli.md#create-the-gest-project-of-a-checkout), which creates the Gest project of an
+open checkout. The other issue commands remain planned.
 See the [current limits](development-plan.md) and
 [CLI reference](cli.md) before trying a command.
 

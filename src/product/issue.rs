@@ -1,11 +1,159 @@
-//! Route the commands of the `issue` group, and refuse each one.
+//! Route the commands of the `issue` group, open the repository of an issue command,
+//! and refuse each command that this build does not run.
 //!
 //! The parser walks the command names of the table in `help.rs`, with the
 //! aliases of the pinned Gest source. It checks the names only. The arguments
-//! after the last name go to the handler unchecked. Every handler of this build
-//! refuses with status 69 before it reads or writes a file.
+//! after the last name go to the handler unchecked. The handler of `init` runs.
+//! Every other handler of this build refuses with status 69 before it reads or
+//! writes a file.
+//!
+//! [`open_issue_repository`] finds the repository of an issue command through the
+//! checkout locator that `gos v open` published, as GEST-ROOT-01 asks. Each
+//! handler that reads or writes issues calls it.
 use super::help::{self, IssueCommand, IssueHandler};
+use crate::storage::{CheckoutView, IssueLimits, LocalOwnerRepository};
 use std::ffi::OsString;
+
+/// Run `issue init`. The file is `src/product/issue_init.rs`.
+#[path = "issue_init.rs"]
+mod init;
+
+/// The refusal of an issue command outside an open checkout.
+pub(crate) const NOT_OPEN: &str =
+    "gossil: no open checkout holds this directory; run gos v init and gos v open first";
+
+/// The refusal of an issue command on a checkout that has no bound project.
+pub(crate) const NOT_BOUND: &str =
+    "gossil: this checkout has no Gest project; run gos i init first";
+
+/// A failed issue command, with its diagnostic and its exit status.
+#[derive(Debug, PartialEq, Eq)]
+pub(crate) struct IssueFailure {
+    /// The sysexits status of CLI-05, such as 78 for an uninitialized project.
+    pub(crate) status: u8,
+    /// The diagnostic for stderr, without a final newline.
+    pub(crate) message: String,
+}
+
+impl IssueFailure {
+    /// Build a failure from a status and a diagnostic.
+    /// # Arguments
+    /// * `status` - The exit status.
+    /// * `message` - The diagnostic.
+    /// # Returns
+    /// The failure.
+    pub(crate) fn new(status: u8, message: impl Into<String>) -> Self {
+        Self {
+            status,
+            message: message.into(),
+        }
+    }
+
+    /// Map an error of the locator, the storage boundary or the file system to a CLI-05 status.
+    ///
+    /// An older Gossil catalog anywhere in the chain gives 78 (CAT-07). A locator
+    /// error gives its own category, 78 or 74. A storage or I/O error in the chain
+    /// gives 74. Every other error is a refusal of the selection policy, such as a
+    /// configured data directory that conflicts with the locator, and gives 78.
+    /// # Arguments
+    /// * `error` - The failure.
+    /// # Returns
+    /// The failure with the error's text and its status.
+    pub(crate) fn from_error(error: &(dyn std::error::Error + 'static)) -> Self {
+        let chain = || std::iter::successors(Some(error), |current| current.source());
+        let status = if chain().any(|e| e.is::<crate::storage::OlderCatalog>()) {
+            78
+        } else if let Some(locator) = error.downcast_ref::<crate::checkout_locator::Error>() {
+            locator.code()
+        } else if chain()
+            .any(|e| e.is::<crate::storage::StorageError>() || e.is::<std::io::Error>())
+        {
+            74
+        } else {
+            78
+        };
+        Self::new(status, error.to_string())
+    }
+
+    /// Write the diagnostic to stderr and return the exit status.
+    /// # Returns
+    /// The exit status of the failure.
+    pub(crate) fn exit(&self) -> std::process::ExitCode {
+        eprintln!("{}", self.message);
+        std::process::ExitCode::from(self.status)
+    }
+}
+
+/// The repository, checkout and bound project of one issue command, after full admission.
+pub(crate) struct IssueRepository {
+    /// The admitted owner of the repository.
+    pub(crate) owner: LocalOwnerRepository,
+    /// The registered checkout that holds the current directory.
+    pub(crate) view: CheckoutView,
+    /// The Gest ID of the project bound to the checkout, or `None` before `issue init`.
+    pub(crate) project: Option<String>,
+}
+
+impl IssueRepository {
+    /// Return the Gest ID of the bound project, for a command that needs one.
+    /// # Returns
+    /// The 32-letter Gest ID of the project.
+    /// # Errors
+    /// Refuses a checkout without a bound project with status 78 and [`NOT_BOUND`].
+    pub(crate) fn project_id(&self) -> Result<&str, IssueFailure> {
+        self.project
+            .as_deref()
+            .ok_or_else(|| IssueFailure::new(78, NOT_BOUND))
+    }
+}
+
+/// Give the finite ceilings of one issue command.
+/// # Returns
+/// The admission ceilings of the `vcs` commands, and SQL ceilings for the call.
+pub(crate) fn limits() -> IssueLimits {
+    IssueLimits {
+        admission: crate::vcs_open::limits(),
+        sql_rows: 100_000,
+        sql_bytes: 64 << 20,
+    }
+}
+
+/// Open the repository of an issue command through the checkout locator.
+///
+/// The command takes no repository or checkout selection. The nearest `.gossil`
+/// marker at or above the current directory must hold the locator that
+/// `gos v open` published. The locator pins the repository and the checkout, and
+/// [`crate::vcs_open::admit_existing`] then checks them with the same rules as the
+/// `vcs` commands, configuration included. The repository passes full admission,
+/// and the call reads the project bound to the checkout. It writes nothing.
+/// # Returns
+/// The admitted owner, the checkout view and the bound project, if any.
+/// # Errors
+/// Refuses a directory outside an open checkout with status 78 and [`NOT_OPEN`].
+/// Maps every other failure with [`IssueFailure::from_error`].
+pub(crate) async fn open_issue_repository() -> Result<IssueRepository, IssueFailure> {
+    let fail = |error: Box<dyn std::error::Error>| IssueFailure::from_error(&*error);
+    let cwd = std::env::current_dir()
+        .and_then(std::fs::canonicalize)
+        .map_err(|error| fail(error.into()))?;
+    let Some((_, Some(locator))) = crate::vcs_open::marker(&cwd).map_err(fail)? else {
+        return Err(IssueFailure::new(78, NOT_OPEN));
+    };
+    let repository = locator.path().map_err(|error| fail(error.into()))?;
+    let (mut owner, view) =
+        crate::vcs_open::admit_existing(repository, locator.checkout_id.clone())
+            .await
+            .map_err(fail)?;
+    let project = owner
+        .bound_project(&view.checkout_id, limits())
+        .await
+        .map_err(|error| fail(error.into()))?;
+    Ok(IssueRepository {
+        owner,
+        view,
+        project,
+    })
+}
 
 /// Holds the decision of the issue parser.
 #[derive(Debug, PartialEq)]
@@ -96,20 +244,21 @@ pub(super) fn route(args: &[OsString], asked: bool) -> IssueRoute {
 
 /// Run the handler of a recognised issue command.
 ///
-/// A later commit gives `init`, `task create`, `task list` and `task show` their
-/// own handlers, each by a change of its arm here.
+/// `init` runs, and each other handler refuses with status 69. A later commit
+/// gives `task create`, `task list` and `task show` their own handlers, each by a
+/// change of its arm here.
 ///
 /// # Arguments
 /// * `handler` - The handler that the table names.
 /// * `path` - The canonical command path, for the diagnostic.
-/// * `_args` - The arguments after the last command name, which no handler reads yet.
+/// * `args` - The arguments after the last command name.
 ///
 /// # Returns
-/// Status 69 after the refusal on stderr.
-pub(super) fn run(handler: IssueHandler, path: &str, _args: &[OsString]) -> std::process::ExitCode {
+/// The status of `init`, or status 69 after the refusal on stderr.
+pub(super) fn run(handler: IssueHandler, path: &str, args: &[OsString]) -> std::process::ExitCode {
     match handler {
-        IssueHandler::Init
-        | IssueHandler::TaskCreate
+        IssueHandler::Init => init::run(args),
+        IssueHandler::TaskCreate
         | IssueHandler::TaskList
         | IssueHandler::TaskShow
         | IssueHandler::Unavailable => refuse(path),
@@ -327,7 +476,11 @@ mod tests {
                     assert_eq!(route(&os(&args), false), expected, "{args:?}");
                     let text = help::issue_command(&joined, command);
                     assert!(text.starts_with(&format!("Usage: gossil issue {joined}")));
-                    assert!(text.contains(help::UNAVAILABLE));
+                    assert_eq!(
+                        text.contains(help::UNAVAILABLE),
+                        !command.runs(),
+                        "{joined}"
+                    );
                 }
                 assert!(help::issue().contains(&format!(" {}", command.names.join(", "))));
                 *count += 1;
@@ -371,11 +524,79 @@ mod tests {
         ));
     }
 
-    /// The refusal of each handler exits 69.
+    /// Each kind of error maps to its CLI-05 status, with its text as the message.
+    #[tokio::test]
+    async fn errors_map_to_their_cli_05_status() {
+        let io = || std::io::Error::other("disk");
+        let storage = LocalOwnerRepository::open(
+            std::path::Path::new("/nonexistent/gossil-test/repo"),
+            crate::vcs_open::limits(),
+        )
+        .await
+        .err()
+        .unwrap();
+        let cases: [(Box<dyn std::error::Error>, u8); 6] = [
+            (
+                Box::new(crate::checkout_locator::Error::config_source("bad", io())),
+                78,
+            ),
+            (Box::new(crate::checkout_locator::Error::from(io())), 74),
+            (Box::new(storage), 74),
+            (Box::new(io()), 74),
+            ("a selection conflict".into(), 78),
+            (Box::new(crate::storage::OlderCatalog { found: 4 }), 78),
+        ];
+        for (error, status) in cases {
+            let failure = IssueFailure::from_error(&*error);
+            assert_eq!(
+                failure,
+                IssueFailure::new(status, error.to_string()),
+                "{error}"
+            );
+        }
+    }
+
+    /// A command that needs the bound project gets it, and refuses with status 78
+    /// and [`NOT_BOUND`] before `init`.
+    #[tokio::test]
+    async fn a_task_command_needs_the_bound_project() {
+        let temp = tempfile::tempdir().unwrap();
+        let root = temp.path().join("root");
+        std::fs::create_dir(&root).unwrap();
+        let bounds = crate::vcs_open::limits();
+        let mut owner = LocalOwnerRepository::initialize(
+            &temp.path().join("repo"),
+            crate::storage::InitializeOptions {
+                repository_id: "0123456789abcdef0123456789abcdef01234567",
+                owner_id: "owner",
+                date: "2026-11-20 12:34:56",
+                user: b"owner",
+                password: "secret",
+                sha1: false,
+                content_limits: bounds.content,
+                parse_limits: bounds.parser,
+            },
+        )
+        .await
+        .unwrap();
+        let view = owner
+            .register_checkout("work", &root.canonicalize().unwrap(), bounds)
+            .await
+            .unwrap();
+        let mut found = IssueRepository {
+            owner,
+            view,
+            project: None,
+        };
+        assert_eq!(found.project_id(), Err(IssueFailure::new(78, NOT_BOUND)));
+        found.project = Some("k".repeat(32));
+        assert_eq!(found.project_id(), Ok("k".repeat(32).as_str()));
+    }
+
+    /// The refusal of each handler that does not run exits 69.
     #[test]
     fn every_handler_refuses() {
         for handler in [
-            IssueHandler::Init,
             IssueHandler::TaskCreate,
             IssueHandler::TaskList,
             IssueHandler::TaskShow,

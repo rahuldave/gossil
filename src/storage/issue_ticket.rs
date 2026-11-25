@@ -27,6 +27,13 @@
 //! every creation again. The writer runs that full admission before and after its
 //! write, and the reader runs it before its read.
 //!
+//! [`LocalOwnerRepository::init_private_project`], which `gos i init` calls, also
+//! binds the new project to the registered checkout, with one `g_project_binding`
+//! row and one `g_checkout_project` row in the same transaction.
+//! [`LocalOwnerRepository::bound_project`] reads that binding. Admission accepts
+//! both tables empty, or with exactly that one binding to an admitted project
+//! that is not archived.
+//!
 //! ## Recommendations
 //! Keep the ticket shapes that this module writes and the rows that admission expects
 //! in this one module, so the writer and the validator cannot drift apart.
@@ -63,6 +70,33 @@ pub struct PrivateIssueRequest<'a> {
     /// The requested scope. This build writes [`PathScope::Private`] only.
     pub scope: PathScope,
 }
+
+/// Ask for the project of `issue init`, which is one private project creation bound to a checkout.
+///
+/// No field grants owner authority. The checkout must be the registered checkout of
+/// the repository, with no project bound to it yet.
+pub struct ProjectInitRequest<'a> {
+    /// The complete project creation artifact, as the project emitter writes it.
+    pub artifact: &'a [u8],
+    /// The ID of the registered checkout that the project is bound to.
+    pub checkout_id: &'a str,
+}
+
+/// Check the binding of a project to a checkout. The result is 1 when the two tables
+/// are empty. It is also 1 when each table holds one row, and both rows name the
+/// registered checkout and the Gest ID of one admitted project that is not archived.
+/// The `g_project_binding` row must then hold the exact root of the checkout.
+/// Every other state gives 0. The checkout IDs need no type check here. The
+/// foreign key check of admission runs first and refuses an ID that is not the
+/// text ID of the registered checkout.
+const BINDING: &str = "SELECT CASE (SELECT count(*) FROM g_project_binding)+(SELECT count(*) FROM g_checkout_project) WHEN 0 THEN 1 WHEN 2 THEN (SELECT count(*) FROM g_project_binding b JOIN g_checkout_project p ON CAST(p.checkout_id AS BLOB)=CAST(b.checkout_id AS BLOB) AND CAST(p.project_id AS BLOB)=CAST(b.project_id AS BLOB) JOIN g_checkout c ON CAST(c.checkout_id AS BLOB)=CAST(b.checkout_id AS BLOB) AND CAST(c.root AS BLOB)=CAST(b.root AS BLOB) JOIN g_gest_projects g ON g.scope_key='combined' AND CAST(g.id AS BLOB)=CAST(b.project_id AS BLOB) AND g.archived_at IS NULL WHERE typeof(b.project_id)='text' AND typeof(b.root)='text' AND typeof(p.project_id)='text') ELSE 0 END";
+
+/// The refusal of an `issue init` write whose project, checkout or repository does not fit.
+///
+/// Gest binds the one live project of a repository when one exists. This build
+/// creates a project only in a repository that holds none, and does not bind an
+/// existing project.
+const INIT_REFUSED: &str = "issue init needs one project creation, a registered checkout with no bound project, and a repository with no project; binding an existing project is not available in this build";
 
 /// Every finite ceiling of one issue ticket call.
 #[derive(Clone, Copy)]
@@ -359,6 +393,8 @@ enum IssuePhase {
     Event,
     /// The typed row exists.
     Typed,
+    /// The project binding and the checkout project rows exist.
+    Binding,
     /// The new admission proof is captured, and only COMMIT is left.
     Admission,
 }
@@ -577,6 +613,29 @@ impl WriteTransaction<'_> {
         }
         Ok(issues)
     }
+
+    /// Admit the binding of a project to the registered checkout, as `issue init` writes it.
+    ///
+    /// The `g_project_binding` and `g_checkout_project` tables are both empty, or each
+    /// holds one row. Both rows then name the registered checkout and the Gest ID of an
+    /// admitted project that is not archived, and the `g_project_binding` row holds
+    /// the exact root of the checkout. The caller admits the issues first.
+    /// # Arguments
+    /// * `work` - The operation's content ledger.
+    /// # Returns
+    /// Success for an empty or exact binding.
+    /// # Errors
+    /// Refuses every other row in the two tables, exhausted ceilings and SQL failures.
+    pub(super) async fn admit_project_binding(
+        &mut self,
+        work: &mut Budget,
+    ) -> Result<(), StorageError> {
+        if bounded_rows(self, BINDING, vec![], 1, 64, work).await? != vec![vec![Value::Integer(1)]]
+        {
+            return Err(StorageError::state("unsupported project binding state"));
+        }
+        Ok(())
+    }
 }
 
 impl LocalOwnerRepository {
@@ -615,13 +674,120 @@ impl LocalOwnerRepository {
                 "issue tickets are private only in this build",
             ));
         }
+        self.write_private_issue(request.artifact, None, limits)
+            .await
+    }
+
+    /// Store one private project creation and bind it to the registered checkout, in one transaction.
+    ///
+    /// `issue init` makes this write. The call writes the rows of
+    /// [`Self::create_private_issue`], one `g_project_binding` row with the root of the
+    /// checkout, and one `g_checkout_project` row. It runs the full admission of
+    /// [`Self::open`] before and after the write, and then commits.
+    /// # Arguments
+    /// * `request` - The project creation artifact and the checkout ID.
+    /// * `limits` - Finite content, parser and SQL ceilings for the whole call.
+    /// # Returns
+    /// The stored ticket ID, native name and project record.
+    /// # Errors
+    /// Refuses an artifact that is not one canonical project creation, a checkout that
+    /// is not registered or already has a bound project, a repository that already
+    /// holds a project, and each refusal of
+    /// [`Self::create_private_issue`]. The refusal writes nothing.
+    /// # Examples
+    /// ```no_run
+    /// use gossil::storage::{IssueLimits, IssueTicket, LocalOwnerRepository,
+    ///     ProjectInitRequest, StorageError};
+    /// async fn init(owner: &mut LocalOwnerRepository, artifact: &[u8], limits: IssueLimits)
+    ///     -> Result<IssueTicket, StorageError> {
+    ///     owner.init_private_project(ProjectInitRequest { artifact, checkout_id: "work" },
+    ///         limits).await
+    /// }
+    /// ```
+    pub async fn init_private_project(
+        &mut self,
+        request: ProjectInitRequest<'_>,
+        limits: IssueLimits,
+    ) -> Result<IssueTicket, StorageError> {
+        self.write_private_issue(request.artifact, Some(request.checkout_id), limits)
+            .await
+    }
+
+    /// Return the Gest ID of the project bound to a checkout, after the full admission of [`Self::open`].
+    ///
+    /// It changes nothing.
+    /// # Arguments
+    /// * `checkout_id` - The ID of the checkout.
+    /// * `limits` - Finite content and parser ceilings for the whole call. The SQL
+    ///   ceilings are not used.
+    /// # Returns
+    /// The Gest ID of the bound project, or `None` when the checkout has no binding.
+    /// # Errors
+    /// Refuses stale or failed admission, exhausted ceilings and SQL failures.
+    /// # Examples
+    /// ```no_run
+    /// use gossil::storage::{IssueLimits, LocalOwnerRepository, StorageError};
+    /// async fn project(owner: &mut LocalOwnerRepository, limits: IssueLimits)
+    ///     -> Result<Option<String>, StorageError> {
+    ///     owner.bound_project("work", limits).await
+    /// }
+    /// ```
+    pub async fn bound_project(
+        &mut self,
+        checkout_id: &str,
+        limits: IssueLimits,
+    ) -> Result<Option<String>, StorageError> {
+        let mut budget = Budget::new(limits.admission.content)?;
+        let mut parse = ParseWork::new(limits.admission.parser)?;
+        let mut tx = self.store.begin_write().await?;
+        let result = async {
+            tx.check_admission_budgeted(&self.principal, &self.admission, &mut budget)
+                .await?;
+            tx.validate_recording_repository(
+                &self.principal,
+                limits.admission,
+                &mut budget,
+                &mut parse,
+            )
+            .await?;
+            let rows = bounded_rows(
+                &mut tx,
+                "SELECT project_id FROM g_checkout_project WHERE checkout_id=?1",
+                vec![Value::Text(checkout_id.into())],
+                1,
+                128,
+                &mut budget,
+            )
+            .await?;
+            Ok(rows.first().and_then(|row| row[0].as_text().cloned()))
+        }
+        .await;
+        let result = tx.record(result);
+        tx.rollback().await?;
+        result
+    }
+
+    /// Store one creation artifact, and bind a project to a checkout when one is named.
+    /// # Arguments
+    /// * `bytes` - The complete creation artifact.
+    /// * `checkout` - The checkout to bind the project to, for `issue init` only.
+    /// * `limits` - Finite content, parser and SQL ceilings for the whole call.
+    /// # Returns
+    /// The stored ticket ID, native name and record.
+    /// # Errors
+    /// Each refusal of [`Self::create_private_issue`] and [`Self::init_private_project`].
+    async fn write_private_issue(
+        &mut self,
+        bytes: &[u8],
+        checkout: Option<&str>,
+        limits: IssueLimits,
+    ) -> Result<IssueTicket, StorageError> {
         let mut budget = Budget::new(limits.admission.content)?;
         let mut parse = ParseWork::new(limits.admission.parser)?;
         let mut sql = SqlWork {
             rows: limits.sql_rows,
             bytes: limits.sql_bytes,
         };
-        let bytes = request.artifact;
         let mut tx = self.store.begin_write().await?;
         let mut admitted = false;
         let result = async {
@@ -629,6 +795,12 @@ impl LocalOwnerRepository {
             admitted = true;
             tx.validate_recording_repository(&self.principal, limits.admission, &mut budget, &mut parse).await?;
             let creation = derive_creation(&mut tx, bytes, &mut parse, &mut budget).await?;
+            if let Some(checkout) = checkout {
+                let free = tx.query_bound_work("SELECT (SELECT count(*) FROM g_checkout WHERE checkout_id=?1),(SELECT count(*) FROM g_checkout_project),(SELECT count(*) FROM g_gest_projects)", vec![Value::Text(checkout.into())], 3, &mut sql, &mut budget).await?;
+                if !matches!(creation.record, IssueRecord::Project(_)) || free != vec![vec![Value::Integer(1), Value::Integer(0), Value::Integer(0)]] {
+                    return Err(StorageError::state(INIT_REFUSED));
+                }
+            }
             let name = native_name(bytes, &mut budget)?;
             let tag = format!("tkt-{}", creation.ticket_id);
             let gest_id = creation.typed_values().remove(0);
@@ -654,6 +826,12 @@ impl LocalOwnerRepository {
             issue_boundary(IssuePhase::Event)?;
             tx.execute_bound(creation.kind.typed, creation.typed_values()).await?;
             issue_boundary(IssuePhase::Typed)?;
+            if let Some(checkout) = checkout {
+                let project = vec![Value::Text(checkout.into()), creation.typed_values().remove(0)];
+                tx.execute_bound("INSERT INTO g_project_binding(checkout_id,project_id,root) SELECT checkout_id,?2,root FROM g_checkout WHERE checkout_id=?1", project.clone()).await?;
+                tx.execute_bound("INSERT INTO g_checkout_project(checkout_id,project_id) VALUES(?1,?2)", project).await?;
+                issue_boundary(IssuePhase::Binding)?;
+            }
             tx.validate_recording_repository(&self.principal, limits.admission, &mut budget, &mut parse).await?;
             let proof = tx.capture_admission_budgeted(&mut budget).await?;
             issue_boundary(IssuePhase::Admission)?;

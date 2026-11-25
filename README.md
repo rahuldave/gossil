@@ -100,7 +100,9 @@ task creation artifacts in Fossil's ticket format. The [Gest ticket emitter](doc
 does the same for artifact and project records, and the three kinds share one emitter.
 Callers supply the identity, actor and date.
 The [issue ticket writer](docs/issue-ticket.md) stores a task or project creation
-privately in a native repository. No command calls it yet.
+privately in a native repository. The command
+[`gos i init`](docs/cli.md#create-the-gest-project-of-a-checkout) stores a project this way and binds
+it to the open checkout. No command stores a task yet.
 
 Native storage initializes an empty public root without a checkout through the
 library API. It can then register one existing directory and authenticate that
