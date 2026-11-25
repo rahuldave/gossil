@@ -256,6 +256,11 @@ its controls. The handlers of `task list` and `task show` are in `product::issue
 and `tests/issue_read_cli.rs` holds the controls of the two commands. The
 [issue read guide](issue-read.md) gives their output.
 
+`tests/issue_demo.rs` runs the walk-through of the [issue guide](issues.md) on the
+real `gos` binary. Its ignored test reads the demo repository with stock Fossil
+and checks that Gossil refuses a copy after `fossil rebuild`. `just issue-demo`
+runs that part with the pinned Fossil 2.29.
+
 The focused CLI controls are in `tests/vcs_init_cli.rs`; parser, environment,
 password and receipt controls are in the private `vcs_init` module. Source edits
 and authored tests do not establish a passing qualification run. Versioned

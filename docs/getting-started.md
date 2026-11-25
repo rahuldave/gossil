@@ -99,6 +99,9 @@ private task to that project. It runs [`task list` and `task show`](cli.md#list-
 which read the tasks. It refuses each other command with status 69. The
 other issue commands, shared recording and sync remain planned.
 
+The [issue guide](issues.md) walks through these commands beside check-ins, and reads the
+result with stock Fossil.
+
 ## Handle failures and choose the next step
 
 A diagnostic exits with status 1 and writes an error to stderr when it fails.

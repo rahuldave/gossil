@@ -93,6 +93,17 @@ issue-ticket-interop:
     GOSSIL_FOSSIL_REFERENCE="$fossil" just test --test issue_ticket stock_fossil_reads -- --ignored
     GOSSIL_FOSSIL_REFERENCE="$fossil" just test --test issue_init_cli stock_fossil_reads -- --ignored
 
+# Run the demo of docs/issues.md, then read its repository with the pinned Fossil reference: test-integrity, timeline, ticket show, and a refused rebuilt copy; exit 5 means not-run.
+issue-demo:
+    #!/usr/bin/env bash
+    set -euo pipefail
+    fossil="${GOSSIL_FOSSIL_REFERENCE:-{{justfile_directory()}}/.jlog/bin/fossil}"
+    if [ ! -x "$fossil" ]; then
+        echo "not-run: the pinned Fossil reference is absent at $fossil; run just setup" >&2
+        exit 5
+    fi
+    GOSSIL_FOSSIL_REFERENCE="$fossil" just test --test issue_demo stock_fossil_reads_the_demo_repository -- --ignored --exact
+
 # Compare the JSON of task list and task show with a reference gest for the same two tasks; exit 5 means not-run.
 issue-read-oracle:
     #!/usr/bin/env bash

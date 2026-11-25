@@ -106,7 +106,7 @@ privately in a native repository. The command
 it to the open checkout. [`gos i task create`](docs/cli.md#create-a-task) stores a private task in
 that project. The commands
 [`gos i task list` and `gos i task show`](docs/cli.md#list-the-tasks-of-the-project) read the tasks that
-the writer stores.
+the writer stores. The [issue guide](docs/issues.md) walks through these commands beside check-ins.
 
 Native storage initializes an empty public root without a checkout through the
 library API. It can then register one existing directory and authenticate that

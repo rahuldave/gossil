@@ -105,7 +105,8 @@ Help shows the aliases that Gest shows, and hides `a`, `i`, `t`, `u`, `grep`
 and `delete` under `meta`, as Gest does.
 
 This build runs `init`, `task create`, `task list` and `task show`, which the
-[sections below](#create-the-gest-project-of-a-checkout) describe. It recognises
+[sections below](#create-the-gest-project-of-a-checkout) describe. The
+[issue guide](issues.md) runs them in one session beside check-ins. The build recognises
 each other command and refuses it:
 
 ```text

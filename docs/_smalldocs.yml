@@ -35,6 +35,7 @@ website:
       - cli.md
       - section: Guides
         contents:
+          - issues.md
           - working-with-repositories.md
           - compare-with-git.md
           - concepts.md

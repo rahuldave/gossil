@@ -38,6 +38,10 @@ Read and follow @.agents/instructions/prose.md
 - Issue reads: `src/product/issue_read.rs` parses, selects and prints `task list` and
   `task show` over `list_private_issues`, with provisional text and Gest JSON. Its guide is
   `docs/issue-read.md`, and `just issue-read-oracle` compares the JSON with a reference `gest`.
+- Issue demo: `tests/issue_demo.rs` runs the walk-through of the user guide
+  `docs/issues.md` on the real binaries. `just issue-demo` runs its ignored part,
+  which reads the demo repository with stock Fossil and checks that Gossil refuses
+  a copy after `fossil rebuild`.
 - Git reader guard: `clippy.toml` bans the gix write paths, and `just lint`
   forbids them with `-F clippy::disallowed_methods -F clippy::disallowed_types`.
   `tests/git_write_lint.rs` proves each ban. Add a probe line for each new entry.
@@ -45,7 +49,7 @@ Read and follow @.agents/instructions/prose.md
   `docs/delta-decoder.md`, `docs/blob-primitives.md`, `docs/token-codec.md`,
   `docs/local-storage.md`, `docs/native-storage.md`, `docs/artifact-parser.md`,
   `docs/glob.md`, `docs/file-path.md`, `docs/history.md`, `docs/git-reader.md`,
-  `docs/task-ticket.md`, `docs/gest-ticket.md`, `docs/issue-ticket.md`, `docs/issue-read.md`, the ten Gest value guides
+  `docs/task-ticket.md`, `docs/gest-ticket.md`, `docs/issue-ticket.md`, `docs/issue-read.md`, `docs/issues.md`, the ten Gest value guides
   `docs/gest-*-values.md`, `docs/gest-model.md`, `docs/local-records.md` and
   `docs/development-plan.md`.
 - Product specification: `~/Projects/AIProjectInfra/docs/gossil/README.md` and its linked pages.
