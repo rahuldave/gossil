@@ -176,7 +176,8 @@ from a validated task, a separate native ticket identity, actor bytes and a type
 The [Gest ticket emitter](gest-ticket.md) takes the same inputs for a validated artifact
 or project, and the three kinds share one emitter.
 Before passing decoded values to a converter, callers
-must check raw field presence, duplicates and byte limits. Storage integration and commands for these records remain separate work.
+must check raw field presence, duplicates and byte limits. The [issue ticket writer](issue-ticket.md)
+stores a task or project creation privately. Commands for these records remain separate work.
 
 ## Explicit scope and private recording
 

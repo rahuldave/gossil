@@ -42,9 +42,10 @@ mod repository;
 mod schema;
 pub use content::Limits;
 pub use repository::{
-    AdmissionLimits, CheckoutView, CreateOptions, InitializeOptions, LocalOwnerRepository,
-    PathScope, PathScopeSelection, PendingAdd, PrivateRecordingOutcome, PrivateRecordingRequest,
-    RecordedCheckin, SharedView, TrackingLimits,
+    AdmissionLimits, CheckoutView, CreateOptions, InitializeOptions, IssueLimits, IssueRecord,
+    IssueTicket, LocalOwnerRepository, PathScope, PathScopeSelection, PendingAdd,
+    PrivateIssueRequest, PrivateRecordingOutcome, PrivateRecordingRequest, RecordedCheckin,
+    SharedView, TrackingLimits,
 };
 mod lifecycle;
 use lifecycle::FileIdentity;

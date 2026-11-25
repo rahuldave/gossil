@@ -584,13 +584,6 @@ impl WriteTransaction<'_> {
     /// Returns an earlier latched failure, and latches invalid policy, a hash mismatch,
     /// shunned or corrupt content, required dependents, exhausted allowances, and
     /// compression and SQL failures.
-    #[cfg_attr(
-        not(test),
-        expect(
-            dead_code,
-            reason = "the catalog and ticket operations that meter content are not built yet"
-        )
-    )]
     pub(super) async fn put_private_file_content_budget_with_sql(
         &mut self,
         principal: &Principal,

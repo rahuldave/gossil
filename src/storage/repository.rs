@@ -26,8 +26,13 @@ pub use path_scope::{PathScope, PathScopeSelection};
 pub use recording::{PrivateRecordingOutcome, PrivateRecordingRequest};
 pub use tracking::{PendingAdd, TrackingLimits};
 mod initialization;
+/// Store and replay private issue tickets. The file is `src/storage/issue_ticket.rs`.
+/// The module is a child of this one so that it shares the owner's admission.
+#[path = "issue_ticket.rs"]
+mod issue_ticket;
 pub use checkout::CheckoutView;
 pub use initialization::InitializeOptions;
+pub use issue_ticket::{IssueLimits, IssueRecord, IssueTicket, PrivateIssueRequest};
 
 /// Fixed scalar predicates bound returned data, not total SQLite scan work.
 /// The admitted root cannot produce other artifact types or a current file/merge selection.

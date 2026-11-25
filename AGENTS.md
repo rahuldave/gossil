@@ -27,7 +27,10 @@ Read and follow @.agents/instructions/prose.md
   portable fixtures and the private storage composition test.
 - Gest tickets: `src/gest_ticket.rs` holds the shared emitter of creation
   tickets and the artifact and project kinds. `src/task_ticket.rs` holds the
-  task kind.
+  task kind. `src/storage/issue_ticket.rs` stores one private task or project
+  creation in a catalog 6 repository and reads it again; its guide is
+  `docs/issue-ticket.md`, and `just issue-ticket-interop` checks it with stock
+  Fossil. `LocalOwnerRepository::open` still refuses a repository with a ticket.
 - Git reader guard: `clippy.toml` bans the gix write paths, and `just lint`
   forbids them with `-F clippy::disallowed_methods -F clippy::disallowed_types`.
   `tests/git_write_lint.rs` proves each ban. Add a probe line for each new entry.
@@ -35,7 +38,7 @@ Read and follow @.agents/instructions/prose.md
   `docs/delta-decoder.md`, `docs/blob-primitives.md`, `docs/token-codec.md`,
   `docs/local-storage.md`, `docs/native-storage.md`, `docs/artifact-parser.md`,
   `docs/glob.md`, `docs/file-path.md`, `docs/history.md`, `docs/git-reader.md`,
-  `docs/task-ticket.md`, `docs/gest-ticket.md`, the ten Gest value guides
+  `docs/task-ticket.md`, `docs/gest-ticket.md`, `docs/issue-ticket.md`, the ten Gest value guides
   `docs/gest-*-values.md`, `docs/gest-model.md`, `docs/local-records.md` and
   `docs/development-plan.md`.
 - Product specification: `~/Projects/AIProjectInfra/docs/gossil/README.md` and its linked pages.
@@ -71,8 +74,8 @@ config row, so a stock `fossil rebuild` keeps the Gest ticket columns.
 
 Bound catalog1 creation and bounded private content operations remain supported.
 Generic private content writes refuse catalog6. The metered private put admits
-only catalog6, but has no caller. Admission refuses the private row that it
-writes, so it waits for a catalog that admits private content.
+only catalog6, and the issue ticket writer is its one caller. A fresh open
+still refuses the private ticket row that it writes, until the validators admit it.
 
 The private recording library requires the complete tracked set, immutable
 private scopes and all seven expected checkout facts. It captures every working file with one borrowed content

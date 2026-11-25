@@ -447,6 +447,10 @@ their Gest columns.
 It runs `fossil test-integrity`, then `fossil rebuild` on a copy, and compares the
 ticket columns. When the reference is absent, it exits 5, the status for not-run.
 
+The [issue ticket writer](issue-ticket.md) stores one private task or project
+ticket in a catalog 6 repository, and its reader checks the stored rows again.
+`open` still refuses a repository that holds such a ticket.
+
 The required object
 inventory and complete stored definitions are
 checked before mutation. Known optional schema families return an unsupported

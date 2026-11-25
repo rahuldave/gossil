@@ -2,7 +2,8 @@
 
 The `gossil::gest_project_values` module converts all four canonical project
 fields into an owned, validated record. Use it for complete decoded snapshots
-before storage integration. Project persistence and CLI commands remain planned.
+before storage. The [issue ticket writer](issue-ticket.md) stores a project
+privately. CLI commands remain planned.
 
 Gest is a task and artifact tracker. These converters use its task and project record model. A Gest project represents a tracked repository or directory. Here, canonical
 means the four project fields in the reviewed field map.
@@ -69,8 +70,9 @@ The project fixtures retain the reviewed field map and
 frozen catalog source provenance in `tests/fixtures/gest_catalog_values/source-map.json`.
 The broader map does not imply that other catalog models ship here.
 
-Project storage and reads of caller-selected records remain planned
-through the repository transaction API. The [Gest ticket emitter](gest-ticket.md)
+The [issue ticket writer](issue-ticket.md) stores one private project creation
+and reads it again. Shared project storage and changes to a stored project remain
+planned. The [Gest ticket emitter](gest-ticket.md)
 turns a validated record into bounded creation artifact bytes in memory.
 
 ## Recommendations

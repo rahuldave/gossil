@@ -10,9 +10,10 @@ internal modules of `src/storage/` give the base for such a reader:
 - `operation_limits.rs` joins the ceilings of one file operation and their saved form.
 - `metered_query.rs` charges the size of a query result before it reads the rows.
 
-The modules have no public API and no production caller yet. The metered content
-methods below use `metered_query.rs`, but no production code calls them either.
-The record readers of catalog 6 are the first planned production callers. Until
+The modules have no public API. The metered content methods below use
+`metered_query.rs`. The [issue ticket writer](issue-ticket.md) calls the put method
+and `metered_query.rs`, and no production code calls the other modules yet.
+The record readers of catalog 6 are the first planned production callers of the other modules. Until
 they exist, an `expect(dead_code)` attribute on each module states that no
 production code calls it. When production code calls every item of a module,
 the lint fails on the attribute, so that someone removes it.
@@ -162,11 +163,12 @@ row and each retained cell before it reads the rows. The schema check also
 charges the bytes of the fingerprint encoding of the schema. It builds that
 encoding before it compares the fingerprint.
 
-Do not call the metered put from production code yet. The admission check of
-catalog 6 refuses a nonempty `private` table, so a committed put leaves a
-repository that `LocalOwnerRepository::open` refuses. Production code can use the
-put only after a catalog admits private content. The tests use it only on
-fixture files.
+The [issue ticket writer](issue-ticket.md) is the one production caller of the
+metered put. The admission check of catalog 6 refuses a nonempty `private` table,
+so a committed put leaves a repository that `LocalOwnerRepository::open` refuses.
+The writer keeps the admission proof of its open owner current, so that owner
+can still read the ticket. A later change teaches the admission to accept the
+ticket rows. The unit tests of the put use it only on fixture files.
 
 A put charges its input to the content `Budget` as decoded bytes. A put that
 writes also charges the compressed envelope as stored bytes. It charges the
@@ -194,9 +196,8 @@ repository at catalog 1 with the message `repository catalog 1 is not the
 newest catalog 6`. The older unmetered methods still admit catalog 1.
 
 Each failure of these methods latches in the transaction, so an earlier write in
-the same transaction does not survive the rollback. No production code calls
-these methods yet, and the attribute `expect(dead_code)` on the put method states
-that.
+the same transaction does not survive the rollback. The issue ticket writer
+calls the put method and the read method.
 
 ## Tests
 

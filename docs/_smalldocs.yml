@@ -52,6 +52,7 @@ website:
           - diff.md
           - task-ticket.md
           - gest-ticket.md
+          - issue-ticket.md
           - local-storage.md
           - native-storage.md
           - local-records.md

@@ -33,7 +33,8 @@ serializes validated artifact and project snapshots in the same way, and the thr
 The internal modules for [strict local records](local-records.md) decode local
 JSON records and charge queries against fixed limits. The metered content methods
 read and write content through the metered queries, and they admit only the newest
-catalog. No production code calls the modules or those methods yet.
+catalog. The [issue ticket writer](issue-ticket.md) is the first production caller
+of the metered queries and of those methods.
 
 ## Current scope
 
@@ -47,6 +48,7 @@ catalog. No production code calls the modules or those methods yet.
 | Eight structural artifact types with explicit limits | General crosslinks, migration, rebuild and filesystem recovery |
 | Native initialization/open, tracking, scope/commit CLI and library; catalog1 private content | Shared recording, sync and artifact publication |
 | Explicit inherited-test runner configurations | Gest task CLI, server and user interface |
+| Library [writer and reader](issue-ticket.md) of private task and project tickets | Shared tickets, ticket changes and the `issue` commands |
 
 Initialization creates catalog6 without a checkout. The library can register
 one existing directory and authenticate its registration by ID or exact root.

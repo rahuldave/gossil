@@ -99,7 +99,8 @@ The [task ticket emitter](docs/task-ticket.md) turns validated task snapshots in
 task creation artifacts in Fossil's ticket format. The [Gest ticket emitter](docs/gest-ticket.md)
 does the same for artifact and project records, and the three kinds share one emitter.
 Callers supply the identity, actor and date.
-These modules do not store records or add commands.
+The [issue ticket writer](docs/issue-ticket.md) stores a task or project creation
+privately in a native repository. No command calls it yet.
 
 Native storage initializes an empty public root without a checkout through the
 library API. It can then register one existing directory and authenticate that
