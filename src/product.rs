@@ -1,4 +1,5 @@
-//! Route native initialization, checkout open, information, tracking, recording, timeline, delta and glob diagnostics.
+//! Route native initialization, checkout open, information, tracking, recording, timeline, delta and glob diagnostics,
+//! and the recognised commands of the `issue` group.
 use crate::delta::{DeltaError, Limits, apply, create};
 use std::collections::TryReserveError;
 use std::ffi::{OsStr, OsString};
@@ -7,6 +8,7 @@ use std::io::{Read, Write};
 use std::path::{Path, PathBuf};
 
 mod help;
+mod issue;
 
 /// Adapter failures retain their original I/O or allocation cause.
 #[derive(Debug)]
@@ -364,6 +366,9 @@ enum Route {
     Fail(String),
     /// Run the command, with the group normalized to `vcs`.
     Dispatch(Vec<OsString>),
+    /// Run the handler of a recognised issue command, with its canonical path
+    /// and the arguments after its last name.
+    Issue(help::IssueHandler, String, Vec<OsString>),
 }
 
 /// Answer help requests and unknown names before any command runs.
@@ -383,6 +388,9 @@ enum Route {
 /// failure. So is a name that is
 /// neither a group nor a command of this build. Each diagnostic points to the help.
 ///
+/// The group `issue`, or its alias `i`, hands the rest to the issue parser,
+/// which applies the same help rules at each level of its command tree.
+///
 /// # Arguments
 /// * `args` - The arguments after the executable name.
 ///
@@ -395,6 +403,17 @@ fn route(args: Vec<OsString>) -> Route {
     let Some(group) = args.get(leading) else {
         return Route::Print(help::root());
     };
+    if group == "issue" || group == "i" {
+        return match issue::route(&args[leading + 1..], leading > 0) {
+            issue::IssueRoute::Print(text) => Route::Print(text),
+            issue::IssueRoute::Fail(message) => Route::Fail(message),
+            issue::IssueRoute::Run {
+                handler,
+                path,
+                args,
+            } => Route::Issue(handler, path, args),
+        };
+    }
     if group != "vcs" && group != "v" {
         return Route::Fail(help::unknown_group(group));
     }
@@ -459,7 +478,9 @@ fn failed(error: &(dyn std::error::Error + 'static)) -> std::process::ExitCode {
 /// scope selection, private recording, checkout timeline/information or a completed diagnostic. Returns the failure exit code
 /// after printing an adapter error to standard error. A repository at an older Gossil catalog
 /// returns 78. The first argument `v` is accepted
-/// as an alias for `vcs`. A help request prints the help on stdout and returns 0.
+/// as an alias for `vcs`. A recognised command of the `issue` group, or its
+/// alias `i`, writes a refusal to stderr and returns 69, because this build
+/// runs none of the issue commands. A help request prints the help on stdout and returns 0.
 /// If the write of the help fails, the entry returns 1. An unknown group or command
 /// returns 2, as a parser failure, with a pointer to the help on stderr.
 /// # Panics
@@ -479,6 +500,7 @@ pub fn entry() -> std::process::ExitCode {
             eprintln!("{message}");
             return std::process::ExitCode::from(2);
         }
+        Route::Issue(handler, path, args) => return issue::run(handler, &path, &args),
     };
     if args.first().is_some_and(|arg| arg == "vcs")
         && args.get(1).is_some_and(|arg| arg == "init" || arg == "new")
@@ -605,9 +627,21 @@ mod tests {
                     .into()
             )
         );
+        for args in [
+            &["help", "issue"][..],
+            &["i"],
+            &["issue", "--help"],
+            &["-h", "i"],
+        ] {
+            assert_eq!(route(os(args)), Route::Print(help::issue()), "{args:?}");
+        }
         assert_eq!(
-            route(os(&["help", "issue"])),
-            Route::Fail(help::unknown_group(OsStr::new("issue")))
+            route(os(&["help", "i", "frob"])),
+            Route::Fail(help::unknown_issue("", OsStr::new("frob")))
+        );
+        assert_eq!(
+            route(os(&["help", "ui"])),
+            Route::Fail(help::unknown_group(OsStr::new("ui")))
         );
         assert_eq!(
             route(vec![OsString::from("help"); 100_000]),
@@ -670,6 +704,38 @@ mod tests {
         for name in ["help", "frob", "diff", "push", "-h", ""] {
             assert!(!help::is_vcs_command(OsStr::new(name)), "{name}");
             assert!(help::command(OsStr::new(name)).is_none());
+        }
+        let root = help::root();
+        for command in help::ISSUE_COMMANDS {
+            assert!(root.contains(&format!("\n  {} ", command.names.join(", "))));
+            for group in ["issue", "i"] {
+                let routed = route(os(&[group, command.names[0], "--help"]));
+                assert!(
+                    matches!(routed, Route::Print(ref text) if text.lines().next()
+                        .is_some_and(|line| line.split(' ').nth(3) == Some(command.names[0]))),
+                    "{routed:?}"
+                );
+            }
+        }
+        for (args, handler, path) in [
+            (&["i", "init"][..], help::IssueHandler::Init, "init"),
+            (
+                &["issue", "task", "create"],
+                help::IssueHandler::TaskCreate,
+                "task create",
+            ),
+            (&["i", "t", "ls"], help::IssueHandler::TaskList, "task list"),
+            (
+                &["issue", "task", "show"],
+                help::IssueHandler::TaskShow,
+                "task show",
+            ),
+            (&["i", "u"], help::IssueHandler::Unavailable, "undo"),
+        ] {
+            assert_eq!(
+                route(os(args)),
+                Route::Issue(handler, path.into(), Vec::new())
+            );
         }
         assert_eq!(
             help::command(OsStr::new("log")).unwrap(),

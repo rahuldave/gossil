@@ -240,6 +240,13 @@ status 2. The
 [help section](cli.md#get-help) gives the forms, and `tests/cli_help.rs` holds
 the CLI controls.
 
+The `issue` group, or `i`, routes the Gest command tree from the issue table
+of `product::help`. The parser in `product::issue` checks the command names
+and their aliases. It refuses each recognised command with status 69 and runs
+none of them. The [issue section](cli.md#issue-commands) gives the forms and
+errors, and `tests/issue_cli.rs` holds the controls. The handlers of `init`,
+`task create`, `task list` and `task show` remain planned.
+
 The focused CLI controls are in `tests/vcs_init_cli.rs`; parser, environment,
 password and receipt controls are in the private `vcs_init` module. Source edits
 and authored tests do not establish a passing qualification run. Versioned

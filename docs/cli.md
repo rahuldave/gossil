@@ -8,6 +8,8 @@ and has three delta file diagnostics. The prepared source also has a
 plus [scope selection and private recording](#select-scopes-and-record-private-files)
 and [complete recorded ancestry](#read-complete-recorded-ancestry).
 `gos` is an alias for `gossil`, and `v` is an alias for `vcs`.
+The [`issue` group](#issue-commands), or `i`, recognises each Gest command
+and runs none of them in this build.
 
 Each diagnostic runs without a repository. Run it from this source checkout with `just gossil`, which builds
 and runs the executable through Cargo. Cargo may print build messages on stderr.
@@ -37,17 +39,19 @@ build runs. It also names the planned groups, and marks them as not available.
 
 | Command | Output |
 |---|---|
-| `gossil`, `gossil --help`, `gossil -h`, `gossil help` | Product help: the groups and the commands of `vcs` |
+| `gossil`, `gossil --help`, `gossil -h`, `gossil help` | Product help: the groups and the commands of `vcs` and `issue` |
 | `gossil vcs`, `gossil vcs --help`, `gossil vcs -h`, `gossil vcs help` | Help of the `vcs` group |
 | `gossil vcs COMMAND --help`, `gossil vcs COMMAND -h` | Usage of one command |
 | `gossil vcs help COMMAND`, `gossil help vcs COMMAND` | The same usage of one command |
+| `gossil issue`, `gossil issue --help`, `gossil issue help` | Help of the `issue` group |
+| `gossil issue task create --help`, `gossil issue help task create` | Usage of one issue command |
 
-Each form works with `gos` in place of `gossil` and `v` in place of `vcs`. Help
-goes to stdout, and the executable exits with status 0. A help request reads and
-writes no file.
+Each form works with `gos` in place of `gossil`, `v` in place of `vcs` and `i`
+in place of `issue`. Help goes to stdout, and the executable exits with status 0.
+A help request reads and writes no file.
 
-The product help also names the planned groups `issue` (`i`), `ui` (`u`) and
-`serve` (`s`). This build does not run them.
+The product help also names the planned groups `ui` (`u`) and `serve` (`s`).
+This build does not run them.
 
 Before a group or a command name, `--help`, `-h` and `help` mean the same.
 Several of them in a row count as one. So `gossil help help` prints the product help, and
@@ -71,11 +75,60 @@ Run "gossil --help" to list the commands.
 
 An unknown command after `vcs` gives `gossil: unknown vcs command "NAME"`, then
 `Run "gossil vcs --help" to list the vcs commands.` A planned group gives
-`gossil: the group "NAME" is planned and not available in this build`. A diagnostic
+`gossil: the group "NAME" is planned and not available in this build`. The
+[issue section](#issue-commands) gives the errors of the `issue` group. A diagnostic
 without its group, such as `gossil test-delta-apply`, is an unknown command too.
 A help request with an argument after the command name, such as
 `vcs help open extra` or `help vcs open status`, fails with status 2. The first
 line on stderr is then `Usage: gossil vcs help COMMAND`.
+
+## Issue commands
+
+The `issue` group, or `i`, recognises every Gest command that the Gossil CLI
+specification lists (CLI-02).
+The top-level commands are `artifact`, `config`, `generate`, `init`, `iteration`, `migrate`, `project`,
+`purge`, `search`, `self-update`, `tag`, `task`, `undo` and `version`, with
+their subcommands. They keep the aliases of the Gest source:
+
+- `a`, `i`, `p`, `t` and `u` stand for `artifact`, `iteration`, `project`, `task` and `undo`.
+- `grep` stands for `search`.
+- `new`, `rm`, `ls`, `view` and `edit` stand for `create`, `delete`, `list`, `show` and `update`.
+  Under `iteration`, `rm` stands for `remove`.
+- `delete` stands for `unset` under `meta`.
+
+Help shows the aliases that Gest shows, and hides `a`, `i`, `t`, `u`, `grep`
+and `delete` under `meta`, as Gest does.
+
+This build recognises each command and refuses it:
+
+```text
+$ gos i task create "First task"
+gossil: issue task create is not available in this build
+```
+
+The command then exits with status 69, the code of an invalid state. It reads and
+writes no file, and it does not open or create a database. The parser checks
+the command names only. Arguments after the last name, such as `"First task"`,
+are not checked. A `--help` or `-h` among them prints the help of the command.
+After `--`, it is an ordinary argument, so the build refuses
+`gos i task create -- -h` like any other task creation.
+
+| Input | Status | Message on stderr |
+|---|---|---|
+| A recognised command, such as `i undo` or `i t ls` | 69 | `gossil: issue PATH is not available in this build` |
+| `artifact`, `config`, `generate`, `iteration`, `task` or a `note` group without a subcommand | 2 | `gossil: issue PATH needs a command` |
+| An unknown name, such as `i frob` or `i task frob` | 2 | `gossil: unknown issue command "NAME"` |
+| `i serve` or `i s` | 2 | The unknown-name message, because the root groups `ui` and `serve` replace Gest's server command |
+
+`PATH` is the canonical command path, such as `task create`, even when the
+user typed an alias. In the unknown-name message, `NAME` starts with the
+canonical path of its group, so `i t frob` gives `"task frob"`. Each status 2
+message has a second line that points to the help.
+
+Gest runs `project`, `tag` and each `meta` without a subcommand, so each of
+them gives status 69 when it stands alone. The global options `-v`, `--no-color` and `--no-pager`, and
+`--version` at the group root, are not recognised yet. Before a command name
+they fail as unknown names.
 
 ## Initialize a repository
 
@@ -473,7 +526,8 @@ The usage lines of the help all use `gossil vcs`.
 ## Exit status and errors
 
 Success and help return status 0. Usage, input, delta and output failures return status 1
-with one diagnostic line on stderr. An unknown group or command returns status 2,
+with one diagnostic line on stderr. A recognised issue command returns status 69,
+as the [issue section](#issue-commands) says. An unknown group or command returns status 2,
 as the [help section](#get-help) says. A help request with an argument after
 the command name also returns status 2, with two lines on stderr.
 
@@ -558,9 +612,10 @@ are outside this qualification.
 
 ## Planned commands
 
-Broader version-control commands and Gest task commands are planned. Neither
-`gossil` nor `gos` accepts them, and each fails with status 2, as the
-[help section](#get-help) says. The short names above apply to initialization and the
+Broader version-control commands are planned. Neither `gossil` nor `gos`
+accepts them, and each fails with status 2, as the [help section](#get-help)
+says. The Gest commands are recognised and refused with status 69, as the
+[issue section](#issue-commands) says. The short names above apply to initialization and the
 three delta diagnostics, the prepared glob diagnostic, native open, add/status,
 scope/commit, info and timeline/log. Shared
 recording, changing scopes, removal, rename, materialization, sync and Gest

@@ -64,7 +64,9 @@ fn root_help_lists_groups_and_commands() {
         assert!(help.contains("Usage: gossil GROUP COMMAND"));
         assert!(help.contains("gos GROUP COMMAND"));
         assert!(help.contains("\n  vcs, v "));
-        for planned in ["issue, i", "ui, u", "serve, s"] {
+        assert!(help.contains("\n  issue, i "));
+        assert!(help.contains("Commands of the issue group, not available in this build:"));
+        for planned in ["ui, u", "serve, s"] {
             assert!(help.contains(&format!("\n  {planned} ")), "{planned}");
         }
         assert!(help.contains("Planned groups, not available in this build:"));
@@ -254,9 +256,9 @@ fn unknown_commands_point_to_help() {
                 format!("gossil: unknown command \"frob\"\n{root}"),
             ),
             (
-                vec!["issue", "task", "list"],
+                vec!["serve", "--port", "1"],
                 format!(
-                    "gossil: the group \"issue\" is planned and not available in this build\n{root}"
+                    "gossil: the group \"serve\" is planned and not available in this build\n{root}"
                 ),
             ),
             (
