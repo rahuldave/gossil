@@ -182,15 +182,20 @@ fn file_bytes(path: &Path) -> (Vec<u8>, Vec<u8>) {
 type Fixture = (&'static str, String, &'static str, u32);
 
 /// Store tasks through the library, in the given order.
+///
+/// A task needs its project, so each project that the repository does not hold is
+/// stored first.
 /// # Arguments
 /// * `repo` - The repository file, with no open owner.
 /// * `tasks` - The tasks. Each title is `Task` and the last letter of the ID, and
 ///   each priority is 1.
 fn store_tasks(repo: &Path, tasks: &[Fixture]) {
+    use gossil::gest_project_values::{ProjectValueInputs, project_from_values};
     use gossil::gest_task_values::{TaskValueInputs, task_from_values};
     use gossil::storage::{LocalOwnerRepository, PathScope, PrivateIssueRequest};
     use serde_json::json;
     let limits = limits();
+    let held = texts(repo, "SELECT id FROM g_gest_projects");
     tokio::runtime::Builder::new_current_thread()
         .build()
         .unwrap()
@@ -198,6 +203,33 @@ fn store_tasks(repo: &Path, tasks: &[Fixture]) {
             let mut owner = LocalOwnerRepository::open(repo, limits.admission)
                 .await
                 .unwrap();
+            let date = gossil::native_date::NativeDate::parse(b"2026-11-18T12:00:00Z").unwrap();
+            let mut missing: Vec<&String> = tasks.iter().map(|task| &task.1).collect();
+            missing.retain(|project| !held.contains(project));
+            missing.dedup();
+            for (n, project) in missing.into_iter().enumerate() {
+                let project = project_from_values(ProjectValueInputs {
+                    gest_id: json!(project),
+                    archived_at: json!(null),
+                    created_at: json!("2026-11-18T12:00:00Z"),
+                    updated_at: json!("2026-11-18T12:00:00Z"),
+                })
+                .unwrap();
+                let k = format!("{:040x}", 1000 + n);
+                let artifact = gossil::gest_ticket::project_creation_bytes(
+                    &project,
+                    k.as_bytes(),
+                    b"tester",
+                    date,
+                    65_536,
+                )
+                .unwrap();
+                let request = PrivateIssueRequest {
+                    artifact: &artifact,
+                    scope: PathScope::Private,
+                };
+                owner.create_private_issue(request, limits).await.unwrap();
+            }
             for (n, (id, project, status, second)) in tasks.iter().enumerate() {
                 let created = format!("2026-11-18T12:00:{second:02}Z");
                 let resolved = if matches!(*status, "done" | "cancelled") {
@@ -219,7 +251,6 @@ fn store_tasks(repo: &Path, tasks: &[Fixture]) {
                     updated_at: json!(created),
                 })
                 .unwrap();
-                let date = gossil::native_date::NativeDate::parse(b"2026-11-18T12:00:00Z").unwrap();
                 let k = format!("{:040x}", n + 1);
                 let artifact = gossil::task_ticket::task_creation_bytes(
                     &task,

@@ -37,6 +37,8 @@ pub use issue_ticket::{
 };
 #[cfg(test)]
 pub(crate) use issue_ticket::{IssuePhase, inject_issue_failure};
+/// Read tasks and projects from their typed rows, without a replay.
+mod issue_rows;
 /// Run the full proof of the repository, or of one issue, on demand.
 mod verification;
 pub use verification::{IssueMatch, VerifySummary};
@@ -79,16 +81,37 @@ pub struct AdmissionLimits {
     /// Structural parser bounds, shared across root and private manifest validation in catalog6.
     pub parser: crate::artifact::ParseLimits,
 }
-/// Sealed authority snapshot and mutation counters from successful admission.
+/// What a later command checks against the admission of the open.
+///
+/// For catalog6, only `content_limits` is set. Each catalog6 command checks the facts
+/// that it reads in its own transaction, so it needs no snapshot. Catalog1 keeps the
+/// snapshot and the counters. Its private content operations check only the
+/// principal, so the snapshot refuses a repository that changed after the open.
 struct AdmissionProof {
-    /// Connection-local observation of external commits.
+    /// Connection-local observation of external commits, for catalog1.
     data_version: Vec<Vec<Value>>,
-    /// Same-connection mutation count at the last checked boundary.
+    /// Same-connection mutation count at the last checked boundary, for catalog1.
     total_changes: u64,
-    /// Exact durable policy, checkout and supported root authority rows.
+    /// Exact durable policy, checkout and supported root authority rows, for catalog1.
     authority: Vec<Vec<Vec<Value>>>,
-    /// Explicit C4 caller limits retained for checked compatibility entry points.
+    /// The caller's content limits, set only for catalog6.
     content_limits: Option<Limits>,
+}
+
+impl AdmissionProof {
+    /// Give the admission of a catalog6 repository.
+    /// # Arguments
+    /// * `limits` - The caller's content limits.
+    /// # Returns
+    /// An admission with no snapshot and these limits.
+    fn newest(limits: Limits) -> Self {
+        Self {
+            data_version: Vec::new(),
+            total_changes: 0,
+            authority: Vec::new(),
+            content_limits: Some(limits),
+        }
+    }
 }
 
 /// Explicit local identities and bounds for a new catalog1 repository with a checkout.
@@ -160,7 +183,7 @@ impl SharedView<'_> {
             None
         };
         let result = async {
-            if let Some(work)=&mut c4_work {tx.check_admission_budgeted(&self.repository.principal,&self.repository.admission,work).await?;} else {tx.check_admission(&self.repository.principal,&self.repository.admission).await?;}
+            if let Some(work)=&mut c4_work {tx.check_admission_budgeted(&self.repository.principal, work).await?;} else {tx.check_admission(&self.repository.principal,&self.repository.admission).await?;}
             let rows = tx.query_bound("SELECT b.uuid FROM blob b JOIN g_public_receipt p ON p.native_hash=b.uuid AND p.supporting_root=b.uuid WHERE b.uuid=?1 AND NOT EXISTS(SELECT 1 FROM private x WHERE x.rid=b.rid) AND NOT EXISTS(SELECT 1 FROM delta d WHERE d.rid=b.rid)",vec![Value::Text(native_name.into())]).await?;
             if rows.is_empty() { return Err(StorageError::state("shared content unavailable")); }
             if let Some(work)=&mut c4_work {tx.read_recording_content_budget(&self.repository.principal,native_name,work).await} else {tx.read_owner_content(&self.repository.principal,native_name,limits).await}
@@ -405,9 +428,9 @@ impl LocalOwnerRepository {
             let limits=AdmissionLimits {content:options.content_limits,parser:options.parse_limits};
             if native.is_some() {
                 let mut budget=super::content::Budget::new(limits.content)?;
-                let mut parse=ParseWork::new(limits.parser)?;
-                tx.validate_recording_repository(&principal,limits,&mut budget,&mut parse).await?;
-                tx.capture_admission_budgeted(&mut budget).await
+                ParseWork::new(limits.parser)?;
+                tx.check_recording_state(&principal, limits, &mut budget).await?;
+                Ok(AdmissionProof::newest(limits.content))
             } else {
                 tx.validate_initial_repository(&principal,limits).await?;
                 tx.capture_admission(limits).await
@@ -476,13 +499,17 @@ impl LocalOwnerRepository {
         let mut store = LocalStore::open_observed(path, true, Some(identity.clone())).await?;
         let mut tx = store.begin_write().await?;
         let result = async {
+            // A stock `fossil rebuild` keeps the Fossil tables and drops every `g_` table.
+            if tx.query_bound("SELECT (SELECT count(*) FROM sqlite_schema WHERE type='table' AND name='g_storage'),(SELECT count(*) FROM sqlite_schema WHERE type='table' AND name='blob')", vec![]).await? == vec![vec![Value::Integer(0), Value::Integer(1)]] {
+                return Err(StorageError::lost_tables());
+            }
             if tx.supported_catalog_version().await? == NEWEST_CATALOG {
                 let mut budget=super::content::Budget::new(admission_limits.content)?;
-                let mut parse=ParseWork::new(admission_limits.parser)?;
+                ParseWork::new(admission_limits.parser)?;
                 let principal=tx.read_recording_principal_budgeted(&mut budget).await?;
-                tx.validate_recording_repository(&principal,admission_limits,&mut budget,&mut parse).await?;
-                let admission=tx.capture_admission_budgeted(&mut budget).await?;
-                return Ok((principal,admission));
+                tx.check_admission_budgeted(&principal,&mut budget).await?;
+                tx.check_recording_state(&principal, admission_limits, &mut budget).await?;
+                return Ok((principal,AdmissionProof::newest(admission_limits.content)));
             }
             let rows = tx.query_bound("SELECT s.repository_id,o.owner_id FROM g_storage s CROSS JOIN g_local_owner o WHERE s.singleton=1 AND o.singleton=1", vec![]).await?;
             let [row] = rows.as_slice() else { return Err(StorageError::state("local repository binding unavailable")); };
@@ -585,7 +612,7 @@ impl LocalOwnerRepository {
         if self.admission.content_limits.is_some() {
             let mut work = super::content::Budget::new(limits)?;
             let result = async {
-                tx.check_admission_budgeted(&self.principal, &self.admission, &mut work)
+                tx.check_admission_budgeted(&self.principal, &mut work)
                     .await?;
                 tx.read_recording_content_budget(&self.principal, native_name, &mut work)
                     .await
@@ -717,8 +744,8 @@ impl super::WriteTransaction<'_> {
         limits: AdmissionLimits,
     ) -> Result<AdmissionProof, StorageError> {
         if self.supported_catalog_version().await? == NEWEST_CATALOG {
-            let mut budget = super::content::Budget::new(limits.content)?;
-            return self.capture_admission_budgeted(&mut budget).await;
+            super::content::Budget::new(limits.content)?;
+            return Ok(AdmissionProof::newest(limits.content));
         }
         let authority = self.authority_snapshot().await?;
         let data_version = self.query_bound("PRAGMA data_version", vec![]).await?;
@@ -729,7 +756,12 @@ impl super::WriteTransaction<'_> {
             content_limits: None,
         })
     }
-    /// Any unaccounted connection mutation or external commit requires explicit readmission.
+    /// Check the owner before each operation, by the rule of its catalog.
+    ///
+    /// Catalog 6 runs the checks of each command, which read nothing that grows with
+    /// the history. Catalog 1 keeps its snapshot of the authority rows and the change
+    /// counters. Its operations do not check what they read, so they rely on the
+    /// full proof at open, and any later change requires explicit readmission.
     /// # Arguments
     /// * `principal` - Sealed local repository and owner binding.
     /// * `proof` - Previously admitted authority and connection counters.
@@ -744,9 +776,7 @@ impl super::WriteTransaction<'_> {
     ) -> Result<(), StorageError> {
         if let Some(limits) = proof.content_limits {
             let mut budget = super::content::Budget::new(limits)?;
-            return self
-                .check_admission_budgeted(principal, proof, &mut budget)
-                .await;
+            return self.check_admission_budgeted(principal, &mut budget).await;
         }
         let result = async {
             if self.connection().total_changes() != proof.total_changes {
@@ -1056,9 +1086,9 @@ impl super::WriteTransaction<'_> {
         // Catalog1 retains its original validator and all original conflict guards.
         if self.supported_catalog_version().await? == NEWEST_CATALOG {
             let mut budget = super::content::Budget::new(limits.content)?;
-            let mut parse = ParseWork::new(limits.parser)?;
+            ParseWork::new(limits.parser)?;
             return self
-                .validate_recording_repository(principal, limits, &mut budget, &mut parse)
+                .check_recording_state(principal, limits, &mut budget)
                 .await;
         }
         let result = async {
@@ -3649,30 +3679,17 @@ mod tests {
         tx.validate_initial_repository(&owner.principal, limits)
             .await
             .unwrap();
-        let mut proof = tx.capture_admission(limits).await.unwrap();
+        // A catalog6 admission keeps no snapshot, only the caller's limits.
+        let proof = tx.capture_admission(limits).await.unwrap();
         assert!(proof.content_limits.is_some());
+        assert!(proof.authority.is_empty() && proof.data_version.is_empty());
         tx.check_admission_budgeted(
             &owner.principal,
-            &proof,
             &mut super::super::content::Budget::new(limits.content).unwrap(),
         )
         .await
         .unwrap();
-        // A proof with missing authority rows is stale even when connection counters still agree.
-        proof.authority.clear();
-        let first = tx
-            .check_admission_budgeted(
-                &owner.principal,
-                &proof,
-                &mut super::super::content::Budget::new(limits.content).unwrap(),
-            )
-            .await
-            .unwrap_err();
-        assert_eq!(
-            first.operation,
-            "repository authority changed; explicit readmission required"
-        );
-        assert_eq!(tx.commit().await.unwrap_err().operation, first.operation);
+        tx.commit().await.unwrap();
     }
 
     /// Real malformed blob metadata is refused before payload ownership and the failure rolls back.

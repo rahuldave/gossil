@@ -13,8 +13,7 @@
 //! `gos i task show`. They parse the arguments, open the repository of the checkout
 //! through [`open_issue_repository`], require its bound project, run the handler on
 //! stdout and print each failure on stderr. They do the open and the read inside
-//! [`retry_stale`], so they try once more after `database is locked` or a stale
-//! admission.
+//! [`retry_locked`], so they try once more after `database is locked`.
 //!
 //! The JSON output follows the envelopes of the pinned Gest source. The text output
 //! is provisional. It is plain and stable, but it is not Gest's styled table.
@@ -22,11 +21,13 @@
 //! ## Recommendations
 //! Keep the selection rules here equal to Gest `repo::task::all` and
 //! `repo::resolve::resolve_id`, so that the IDs and filters mean the same thing.
-use super::issue::{IssueFailure, limits, open_issue_repository, retry_stale};
+use super::issue::{IssueFailure, limits, open_issue_repository, retry_locked};
 use crate::gest_model::primitives::{Id, TaskStatus};
 use crate::gest_model::task::Model;
 use crate::gest_task_values::TaskValues;
-use crate::storage::{IssueLimits, IssueRecord, IssueTicket, LocalOwnerRepository, StorageError};
+use crate::storage::{
+    IssueLimits, IssueMatch, IssueRecord, IssueTicket, LocalOwnerRepository, StorageError,
+};
 use chrono::{DateTime, SecondsFormat, Utc};
 use serde::Serialize;
 use std::ffi::OsString;
@@ -222,39 +223,6 @@ pub(crate) fn select<'a>(
             .then(b.order.cmp(&a.order))
     });
     kept
-}
-
-/// Find the one task that a full ID or a prefix names, as Gest `resolve_id` does.
-///
-/// The prefix must have 1 to 32 characters, each from `k` to `z`, so the match is
-/// case-sensitive. The tasks in a status that is not terminal are searched first. When
-/// none of them matches, every task is searched. Projects are never matched.
-/// # Arguments
-/// * `tasks` - Every task.
-/// * `prefix` - The ID or prefix that the user typed.
-/// # Returns
-/// The one matching task.
-/// # Errors
-/// Refuses an invalid prefix, a prefix that matches no task, and a prefix that matches
-/// more than one task in the first set where it has a match.
-pub(crate) fn find_task<'a>(tasks: &[Task<'a>], prefix: &str) -> Result<Task<'a>, LookupError> {
-    Id::validate_prefix(prefix).map_err(LookupError::InvalidPrefix)?;
-    let matching = |active: bool| -> Vec<Task<'a>> {
-        tasks
-            .iter()
-            .filter(|task| !active || !task.values.status.is_terminal())
-            .filter(|task| task.values.gest_id.to_string().starts_with(prefix))
-            .copied()
-            .collect()
-    };
-    for active in [true, false] {
-        match matching(active).as_slice() {
-            [] => {}
-            [task] => return Ok(*task),
-            many => return Err(LookupError::Ambiguous(prefix.into(), many.len())),
-        }
-    }
-    Err(LookupError::NotFound(prefix.into()))
 }
 
 /// Read the next value of an option that takes one.
@@ -825,27 +793,55 @@ pub(crate) async fn task_list(
 
 /// Run `task show` on an open repository.
 ///
-/// As in Gest, the ID or prefix is looked up among the tasks of every project.
+/// As in Gest, the ID or prefix is looked up among the tasks of every project. The
+/// lookup reads only the task rows whose ID starts with the prefix. The command then
+/// proves the one task, as `gos v verify --issue` does, and prints it from its
+/// artifact.
 /// # Arguments
 /// * `repo` - The admitted owner repository.
 /// * `options` - The parsed options.
-/// * `limits` - The ceilings of the list call.
+/// * `limits` - The ceilings of the lookup and the proof.
 /// * `out` - Where the output goes.
 /// # Returns
 /// Success after the whole output is written.
 /// # Errors
-/// Refuses a failed list call, an invalid, missing or ambiguous ID, and a failed write.
+/// Refuses an invalid, missing or ambiguous ID, a failed lookup or proof, and a failed
+/// write.
 pub(crate) async fn task_show(
     repo: &mut LocalOwnerRepository,
     options: &TaskShowOptions,
     limits: IssueLimits,
     out: &mut impl Write,
 ) -> Result<(), ReadError> {
-    let tickets = repo
-        .list_private_issues(limits)
+    Id::validate_prefix(&options.id)
+        .map_err(|text| ReadError::Lookup(LookupError::InvalidPrefix(text)))?;
+    let id = match repo
+        .find_task(&options.id, limits.admission)
+        .await
+        .map_err(ReadError::Storage)?
+    {
+        IssueMatch::None => {
+            return Err(ReadError::Lookup(LookupError::NotFound(options.id.clone())));
+        }
+        IssueMatch::One(id) => id,
+        IssueMatch::Many(count) => {
+            let count = usize::try_from(count).unwrap_or(usize::MAX);
+            return Err(ReadError::Lookup(LookupError::Ambiguous(
+                options.id.clone(),
+                count,
+            )));
+        }
+    };
+    let ticket = repo
+        .verify_issue(&id, limits.admission)
         .await
         .map_err(ReadError::Storage)?;
-    let task = find_task(&tasks(&tickets), &options.id).map_err(ReadError::Lookup)?;
+    let tickets = [ticket];
+    let found = tasks(&tickets);
+    let task = found
+        .first()
+        .copied()
+        .ok_or(ReadError::Lookup(LookupError::NotFound(options.id.clone())))?;
     let bytes = if options.json {
         task_show_json(&task)
     } else {
@@ -857,19 +853,19 @@ pub(crate) async fn task_show(
 /// Run `issue task list` with the arguments after its name.
 ///
 /// The command lists the tasks of the project bound to the open checkout. It opens and
-/// reads the repository once more after a refusal that [`retry_stale`] retries.
+/// reads the repository once more after a refusal that [`retry_locked`] retries.
 /// # Arguments
 /// * `args` - The arguments after `task list`.
 /// # Returns
 /// Status 0 after the output on stdout. Otherwise the status of the failure after its
 /// diagnostic on stderr: 2 or 69 for the arguments, 78 outside an open checkout or
 /// before `issue init`, and 74 for a storage failure or a failed write to stdout. A
-/// lock timeout or a stale admission gives 74 only when the second attempt refuses too.
+/// lock timeout gives 74 only when the second attempt refuses too.
 pub(super) fn run_list(args: &[OsString]) -> ExitCode {
     let result = parse_task_list_args(args)
         .map_err(usage_failure)
         .and_then(|options| {
-            block_on(retry_stale(|| async {
+            block_on(retry_locked(|| async {
                 let mut found = open_issue_repository().await?;
                 let project = Id::from(found.project_id()?);
                 let mut out = std::io::stdout().lock();
@@ -891,20 +887,20 @@ pub(super) fn run_list(args: &[OsString]) -> ExitCode {
 ///
 /// As in Gest, the command needs a bound project, and it finds the task among the
 /// tasks of every project. It opens and reads the repository once more after a
-/// refusal that [`retry_stale`] retries.
+/// refusal that [`retry_locked`] retries.
 /// # Arguments
 /// * `args` - The arguments after `task show`.
 /// # Returns
 /// Status 0 after the output on stdout. Otherwise the status of the failure after its
 /// diagnostic on stderr: 2 or 69 for the arguments, 64 for an invalid prefix, 66 for
 /// a missing or ambiguous task, 78 outside an open checkout or before `issue init`,
-/// and 74 for a storage failure or a failed write to stdout. A lock timeout or a
-/// stale admission gives 74 only when the second attempt refuses too.
+/// and 74 for a storage failure or a failed write to stdout. A lock timeout gives 74
+/// only when the second attempt refuses too.
 pub(super) fn run_show(args: &[OsString]) -> ExitCode {
     let result = parse_task_show_args(args)
         .map_err(usage_failure)
         .and_then(|options| {
-            block_on(retry_stale(|| async {
+            block_on(retry_locked(|| async {
                 let mut found = open_issue_repository().await?;
                 found.project_id()?;
                 let mut out = std::io::stdout().lock();

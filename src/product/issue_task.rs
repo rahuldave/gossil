@@ -485,11 +485,9 @@ fn refuse_brackets(request: &Request, metadata: &Value) -> Result<(), IssueFailu
 
 /// The largest size, in bytes, of a task artifact that `task create` stores.
 ///
-/// Each later write parses every stored ticket twice against one parser budget. A
-/// task of about 300 KB passes its own write and then makes every later write
-/// refuse, so this build refuses a task well below that size. The cap does not
-/// bound the number of tasks. Each write parses every stored task twice under one
-/// parser ledger of 4096 cards, so writes refuse after about 113 small tasks.
+/// The cap keeps each task well below the parser ceilings of the one artifact that
+/// a write parses, and of the proof of `task show` and `gos v verify`. A write
+/// parses only its own artifact, so the cap does not bound the number of tasks.
 const TASK_BYTES: usize = 65_536;
 
 /// Refuse a task that is larger than [`TASK_BYTES`].
@@ -658,7 +656,7 @@ fn json_failure(error: impl std::fmt::Display) -> IssueFailure {
 }
 
 /// Open the repository and create the task of one request, and do both once more
-/// after a refusal that [`super::retry_stale`] retries.
+/// after a refusal that [`super::retry_locked`] retries.
 /// # Arguments
 /// * `open` - Opens and admits the repository, each time it is called.
 /// * `request` - The parsed request.
@@ -671,7 +669,7 @@ where
     O: FnMut() -> F,
     F: std::future::Future<Output = Result<IssueRepository, IssueFailure>>,
 {
-    super::retry_stale(|| {
+    super::retry_locked(|| {
         let opening = open();
         async move {
             let mut found = opening.await?;

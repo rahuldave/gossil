@@ -4,6 +4,9 @@ use gossil::storage::{AdmissionLimits, InitializeOptions, Limits, LocalOwnerRepo
 use libsql::{Connection, Value};
 use std::path::{Path, PathBuf};
 
+#[path = "support/proof.rs"]
+mod proof;
+
 /// Set explicit finite root and registration ceilings.
 fn limits() -> AdmissionLimits {
     AdmissionLimits {
@@ -259,44 +262,101 @@ async fn invalid_inputs_leave_zero_checkout_reopenable() {
 }
 
 #[tokio::test]
-/// Each independently tampered registration/native authority category must fail public reopen.
+/// Each independently tampered registration/native authority category fails `gos v verify`.
+///
+/// Open refuses each change to the registration, the counter, the checkout keys and
+/// the root receipt. It admits the heads, the generation and the pending version of
+/// the registration, and changes to other history. The checkout view refuses the
+/// heads and the generation too.
 /// # Panics
 /// Panics if fixture setup fails or an asserted registration or admission result differs.
 async fn registration_tamper_inventory_is_rejected() {
     let mutations = [
-        "DELETE FROM g_checkout",
-        "DELETE FROM g_checkout_owner",
-        "DELETE FROM g_vvar WHERE name='fingerprint'",
-        "INSERT INTO g_checkout SELECT 'extra',root||'/extra',shared_head,NULL,0,0,'ready' FROM g_checkout",
-        "INSERT INTO g_checkout_owner SELECT 'extra',owner_id,root_device,root_inode FROM g_checkout_owner",
-        "INSERT INTO g_vvar SELECT checkout_id,'extra','value' FROM g_checkout",
-        "UPDATE g_storage SET checkout_count=0",
-        "UPDATE g_storage SET checkout_count=2",
-        "PRAGMA ignore_check_constraints=ON; UPDATE g_storage SET checkout_count='bad'",
-        "PRAGMA ignore_check_constraints=ON; UPDATE g_storage SET checkout_count=-1",
-        "UPDATE g_checkout SET shared_head='bad'",
-        "UPDATE g_checkout SET combined_head=shared_head",
-        "UPDATE g_checkout SET generation=1",
-        "UPDATE g_checkout SET pending_version=1",
-        "UPDATE g_checkout SET availability='blocked'",
-        "UPDATE g_checkout_owner SET owner_id='other'",
-        "UPDATE g_checkout_owner SET root_device='0'",
-        "UPDATE g_checkout_owner SET root_inode='0'",
-        "UPDATE g_checkout SET root=root||'/.'",
-        "UPDATE g_checkout SET checkout_id=char(0)",
-        "UPDATE g_vvar SET value='bad' WHERE name='checkout'",
-        "UPDATE g_vvar SET value='bad' WHERE name='checkout-hash'",
-        "UPDATE g_vvar SET value='bad' WHERE name='fingerprint'",
-        "UPDATE g_vvar SET value=x'31' WHERE name='checkout'",
-        "UPDATE rcvfrom SET nonce='changed'",
-        "UPDATE rcvfrom SET uid=1",
-        "UPDATE event SET comment='changed'",
-        "INSERT INTO filename(name) VALUES('unsupported')",
-        "INSERT INTO g_vfile(checkout_id,id,pathname) VALUES('work',1,'unsupported')",
-        "UPDATE g_checkout SET root=zeroblob(4097)",
-        "UPDATE g_checkout_owner SET root_device=zeroblob(65536)",
+        ("DELETE FROM g_checkout", false, true),
+        ("DELETE FROM g_checkout_owner", false, true),
+        ("DELETE FROM g_vvar WHERE name='fingerprint'", false, true),
+        (
+            "INSERT INTO g_checkout SELECT 'extra',root||'/extra',shared_head,NULL,0,0,'ready' FROM g_checkout",
+            false,
+            true,
+        ),
+        (
+            "INSERT INTO g_checkout_owner SELECT 'extra',owner_id,root_device,root_inode FROM g_checkout_owner",
+            false,
+            true,
+        ),
+        (
+            "INSERT INTO g_vvar SELECT checkout_id,'extra','value' FROM g_checkout",
+            false,
+            true,
+        ),
+        ("UPDATE g_storage SET checkout_count=0", false, true),
+        ("UPDATE g_storage SET checkout_count=2", false, true),
+        (
+            "PRAGMA ignore_check_constraints=ON; UPDATE g_storage SET checkout_count='bad'",
+            false,
+            true,
+        ),
+        (
+            "PRAGMA ignore_check_constraints=ON; UPDATE g_storage SET checkout_count=-1",
+            false,
+            true,
+        ),
+        ("UPDATE g_checkout SET shared_head='bad'", false, true),
+        (
+            "UPDATE g_checkout SET combined_head=shared_head",
+            true,
+            true,
+        ),
+        ("UPDATE g_checkout SET generation=1", false, true),
+        ("UPDATE g_checkout SET pending_version=1", false, true),
+        ("UPDATE g_checkout SET availability='blocked'", false, true),
+        ("UPDATE g_checkout_owner SET owner_id='other'", false, true),
+        ("UPDATE g_checkout_owner SET root_device='0'", false, true),
+        ("UPDATE g_checkout_owner SET root_inode='0'", false, true),
+        ("UPDATE g_checkout SET root=root||'/.'", false, true),
+        ("UPDATE g_checkout SET checkout_id=char(0)", false, true),
+        (
+            "UPDATE g_vvar SET value='bad' WHERE name='checkout'",
+            false,
+            true,
+        ),
+        (
+            "UPDATE g_vvar SET value='bad' WHERE name='checkout-hash'",
+            false,
+            true,
+        ),
+        (
+            "UPDATE g_vvar SET value='bad' WHERE name='fingerprint'",
+            false,
+            true,
+        ),
+        (
+            "UPDATE g_vvar SET value=x'31' WHERE name='checkout'",
+            false,
+            true,
+        ),
+        ("UPDATE rcvfrom SET nonce='changed'", false, true),
+        ("UPDATE rcvfrom SET uid=1", false, true),
+        ("UPDATE event SET comment='changed'", true, false),
+        (
+            "INSERT INTO filename(name) VALUES('unsupported')",
+            true,
+            false,
+        ),
+        (
+            "INSERT INTO g_vfile(checkout_id,id,pathname) VALUES('work',1,'unsupported')",
+            false,
+            true,
+        ),
+        ("UPDATE g_checkout SET root=zeroblob(4097)", false, true),
+        (
+            "UPDATE g_checkout_owner SET root_device=zeroblob(65536)",
+            false,
+            true,
+        ),
     ];
-    for sql in mutations {
+    for (sql, opened, view_refuses) in mutations {
         let temp = tempfile::tempdir().unwrap();
         let path = temp.path().join("repo");
         let root = checkout_root(temp.path());
@@ -310,10 +370,29 @@ async fn registration_tamper_inventory_is_rejected() {
         c.execute_batch("PRAGMA foreign_keys=OFF").await.unwrap();
         c.execute_batch(sql).await.unwrap();
         drop(c);
-        assert!(
-            LocalOwnerRepository::open(&path, limits()).await.is_err(),
-            "admitted {sql}"
-        );
+        let (proof_opened, proof) = proof::verify_refusal(&path, limits()).await;
+        assert_eq!(proof_opened, opened, "{sql}");
+        // The view reads the registration and the checkout keys, and no other history.
+        let view = match LocalOwnerRepository::open(&path, limits()).await {
+            Ok(mut owner) => owner
+                .checkout_view("work", limits())
+                .await
+                .err()
+                .map(|e| e.to_string()),
+            Err(e) => Some(e.to_string()),
+        };
+        assert_eq!(view.is_some(), view_refuses, "{sql}");
+        // A view that refuses gives the refusal of the full proof. A combined head
+        // equal to the shared head is the one exception, since the view checks the
+        // head before the proof walks the history.
+        if view_refuses {
+            let expected = if sql == "UPDATE g_checkout SET combined_head=shared_head" {
+                "invalid checkout view"
+            } else {
+                proof.as_str()
+            };
+            assert_eq!(view.as_deref(), Some(expected), "{sql}");
+        }
     }
 }
 
@@ -346,10 +425,11 @@ async fn root_replacement_and_symlink_are_rejected() {
 }
 
 #[tokio::test]
-/// Another handle's successful registration invalidates the original owner's admission proof.
+/// An owner opened before another handle registers a checkout sees that registration,
+/// and its own second registration refuses.
 /// # Panics
 /// Panics if fixture setup fails or an asserted registration or admission result differs.
-async fn stale_owner_requires_reopen_after_registration() {
+async fn an_earlier_owner_sees_another_registration() {
     let temp = tempfile::tempdir().unwrap();
     let path = temp.path().join("repo");
     let root = checkout_root(temp.path());
@@ -359,13 +439,20 @@ async fn stale_owner_requires_reopen_after_registration() {
         .register_checkout("work", &root, limits())
         .await
         .unwrap();
-    assert!(
+    assert_eq!(
         stale
             .register_checkout("other", &root, limits())
             .await
-            .is_err()
+            .err()
+            .map(|error| error.to_string())
+            .as_deref(),
+        Some("checkout already registered; only one registration supported")
     );
-    assert!(stale.checkout_view("work", limits()).await.is_err());
+    // The first owner reads the registration that the other handle committed.
+    assert_eq!(
+        stale.checkout_view("work", limits()).await.unwrap(),
+        other.checkout_view("work", limits()).await.unwrap()
+    );
     drop(stale);
     assert!(
         LocalOwnerRepository::open(&path, limits())
@@ -503,7 +590,7 @@ async fn caller_aliases_resolve_to_the_canonical_registration() {
 }
 
 #[tokio::test]
-/// Register the actual SHA1 root and refuse smaller admission ceilings without durable effects.
+/// Register the actual SHA1 root, and let the full proof refuse smaller ceilings without effect.
 /// # Panics
 /// Panics if fixture setup fails or an asserted registration or admission result differs.
 async fn sha1_head_and_finite_registration_limits_are_preserved() {
@@ -526,12 +613,20 @@ async fn sha1_head_and_finite_registration_limits_are_preserved() {
     )
     .await
     .unwrap();
+    // Registration reads no artifact, so only the full proof needs the bytes and the
+    // cards of the root.
     let mut tight = bounds;
     tight.parser.input_bytes = 1;
-    assert!(owner.register_checkout("work", &root, tight).await.is_err());
+    assert_eq!(
+        owner.verify(tight).await.unwrap_err().to_string(),
+        "recording native artifact validation"
+    );
     tight = bounds;
     tight.content.max_output_bytes = 1;
-    assert!(owner.register_checkout("work", &root, tight).await.is_err());
+    assert_eq!(
+        owner.verify(tight).await.unwrap_err().to_string(),
+        "unsupported recording content envelope"
+    );
     drop(owner);
     let mut owner = LocalOwnerRepository::open(&path, bounds).await.unwrap();
     let view = owner

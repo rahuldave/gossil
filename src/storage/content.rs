@@ -57,13 +57,6 @@ pub(super) struct Budget {
     compared: usize,
 }
 impl Budget {
-    /// Return the unchanged finite ceilings used to create this ledger.
-    /// # Returns
-    /// Caller-selected content limits, without resetting consumed work.
-    pub(super) fn limits(&self) -> Limits {
-        self.limits
-    }
-
     /// Bound a new compression result by both remaining work ledgers.
     /// # Returns
     /// Largest packed output that fits the envelope, stored and ownership ceilings.
@@ -1193,7 +1186,7 @@ mod tests {
         assert!(budget.charge_stored(1).is_err());
         assert_eq!(budget.stored, 10);
         assert!(budget.enter(1, 0).is_err());
-        assert_eq!(budget.limits().max_total_stored_bytes, 10);
+        assert_eq!(budget.limits.max_total_stored_bytes, 10);
     }
 
     /// Repeated verified reads reset traversal identity while retaining both aggregate byte counters.

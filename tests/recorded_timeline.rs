@@ -5,7 +5,7 @@
 //! These controls cover the new reader; they do not qualify the inherited Fossil suite.
 //!
 //! ## Recommendations
-//! Run compile-absence and semantic controls separately; retain full admission guards.
+//! Run compile-absence and semantic controls separately; retain the checks of open and of the timeline.
 use gossil::artifact::ParseLimits;
 use gossil::storage::{
     AdmissionLimits, CheckoutView, InitializeOptions, Limits, LocalOwnerRepository, PathScope,
@@ -18,6 +18,8 @@ use std::{
     path::{Path, PathBuf},
 };
 
+#[path = "support/proof.rs"]
+mod proof;
 #[path = "support/shares.rs"]
 mod shares;
 
@@ -623,16 +625,32 @@ async fn equal_and_backward_dates_are_refusals_not_sorting_fixtures() {
 }
 
 #[tokio::test]
-/// Refuse external authority/projection changes and never repair corruption on a read.
+/// Refuse projection changes in the full proof and never repair corruption on a read.
+///
+/// Another connection makes each change while the owner is open. Open admits each
+/// change but the generation. The timeline refuses a changed generation and a forged
+/// comment, and the full proof refuses every change.
 /// # Panics
-/// Panics if stale authority is trusted, corruption is repaired or reopen admits it.
-async fn stale_authority_and_corrupt_surfaces_refuse_without_repair() {
-    for sql in [
-        "UPDATE event SET comment='forged' WHERE objid=1",
-        "UPDATE g_checkout SET generation=generation+1",
-        "DELETE FROM private",
-        "UPDATE plink SET isprim=0",
-        "INSERT INTO phantom VALUES(999)",
+/// Panics if corruption is repaired or the full proof admits it.
+async fn corrupt_surfaces_refuse_verify_without_repair() {
+    for (sql, expected) in [
+        (
+            "UPDATE event SET comment='forged' WHERE objid=1",
+            "root event differs from canonical bytes",
+        ),
+        (
+            "UPDATE g_checkout SET generation=generation+1",
+            "unsupported recording checkout state",
+        ),
+        ("DELETE FROM private", "recording native projection differs"),
+        (
+            "UPDATE plink SET isprim=0",
+            "recording native projection differs",
+        ),
+        (
+            "INSERT INTO phantom VALUES(999)",
+            "unsupported nonempty catalog6 table: phantom",
+        ),
     ] {
         let mut f = Fixture::new().await;
         f.private(&["a", "b"]).await;
@@ -644,17 +662,22 @@ async fn stale_authority_and_corrupt_surfaces_refuse_without_repair() {
         mutate(&f.repo, sql).await;
         let before = snapshot(&f.repo).await;
         let files = tree(&f.root);
-        assert!(
-            f.owner.recorded_timeline("work", limits()).await.is_err(),
-            "{sql}"
-        );
+        let timeline = f.owner.recorded_timeline("work", limits()).await;
+        // Every command reads the generation and the pending version of the checkout,
+        // so open and the timeline refuse a generation that the pending version cannot
+        // follow.
+        if sql.contains("generation") {
+            assert_eq!(timeline.unwrap_err().operation, expected, "{sql}");
+        } else if sql.contains("comment") {
+            let refused = timeline.unwrap_err().operation;
+            assert_eq!(refused, "recorded event metadata differs from its manifest");
+        }
         assert_eq!(snapshot(&f.repo).await, before, "{sql}");
         assert_eq!(tree(&f.root), files);
         drop(f.owner);
-        assert!(
-            LocalOwnerRepository::open(&f.repo, limits()).await.is_err(),
-            "{sql}"
-        );
+        let (opened, refusal) = proof::verify_refusal(&f.repo, limits()).await;
+        let admitted = !sql.contains("generation");
+        assert_eq!((opened, refusal.as_str()), (admitted, expected), "{sql}");
         assert_eq!(snapshot(&f.repo).await, before);
     }
 }
@@ -850,10 +873,13 @@ async fn unicode_root_actor_and_short_private_comment_remain_exact() {
 const EVENT_PARTS: usize = 4;
 
 /// Refuse original event NULL/BLOB/NUL/tampering and unsupported amended columns, for one share.
+///
+/// Open admits each mutation, and the full proof of `gos v verify` refuses it. The
+/// timeline refuses a user or comment that is not text.
 /// # Arguments
 /// * `part` - The share of the mutations, below `EVENT_PARTS`. Each mutation gets its own fixture.
 /// # Panics
-/// Panics if either root or private metadata bypasses full exact admission guards.
+/// Panics if the full proof admits root or private metadata, or if a refusal changes a byte.
 async fn original_event_metadata_and_amendments_cannot_bypass_native_validation(part: usize) {
     let mut mutations = Vec::new();
     for selection in ["objid=1", "objid<>1"] {
@@ -881,17 +907,31 @@ async fn original_event_metadata_and_amendments_cannot_bypass_native_validation(
         mutate(&f.repo, &mutation).await;
         let before = snapshot(&f.repo).await;
         let files = tree(&f.root);
-        assert!(
-            f.owner.recorded_timeline("work", limits()).await.is_err(),
-            "{mutation}"
-        );
+        let timeline = f.owner.recorded_timeline("work", limits()).await;
+        // The timeline prints the user and the comment, so it refuses a value that is
+        // not text, and text that is not the card of the manifest. It prints no
+        // amendment, so it trusts `euser` and `ecomment`, which only the full proof checks.
+        let printed = if mutation.contains("NULL") || mutation.contains("x'ff'") {
+            Some("recorded event metadata must be original text")
+        } else if mutation.contains("SET user=") || mutation.contains("SET comment=") {
+            Some("recorded event metadata differs from its manifest")
+        } else {
+            None
+        };
+        match printed {
+            Some(message) => assert_eq!(timeline.unwrap_err().operation, message, "{mutation}"),
+            None => assert!(timeline.is_ok(), "{mutation}"),
+        }
         assert_eq!(snapshot(&f.repo).await, before);
         assert_eq!(tree(&f.root), files);
         drop(f.owner);
-        assert!(
-            LocalOwnerRepository::open(&f.repo, limits()).await.is_err(),
-            "{mutation}"
-        );
+        let (opened, refusal) = proof::verify_refusal(&f.repo, limits()).await;
+        let expected = if mutation.ends_with("objid=1") {
+            "root event differs from canonical bytes"
+        } else {
+            "recording native projection differs"
+        };
+        assert_eq!((opened, refusal.as_str()), (true, expected), "{mutation}");
         assert_eq!(snapshot(&f.repo).await, before);
     }
 }

@@ -392,8 +392,8 @@ fn every_command_prints_its_help() {
          first. This build never reads stdin and never opens an editor, so a missing\n\
          description is empty. A [ in the title, the description or the metadata exits\n\
          with status 64, and so does a task over 65,536 bytes. Tasks of this build have no\n\
-         undo history. In this build, task create exits 74 after about 113 small\n\
-         tasks, and nothing stored is lost; see docs/cli.md.\n\n\
+         undo history. The cost of task create does not grow with the count of tasks;\n\
+         see docs/cli.md.\n\n\
          Options:\n\
          \x20 -d, --description <DESCRIPTION>  The task description\n\
          \x20 -m, --metadata <KEY=VALUE>       Set a metadata key=value pair (repeatable; supports dot-paths and scalar inference)\n\

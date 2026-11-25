@@ -254,13 +254,17 @@ async fn a_private_put_reads_back_after_reopen_and_opens_no_shared_view() {
         content: limits(),
         parser: parser(),
     };
-    // Catalog 6 admission refuses private content that no check-in or issue owns, so
-    // no shared view of this file exists. A shared reader cannot learn that the name
-    // is present.
-    let refused = LocalOwnerRepository::open(&path, admission)
+    // Open trusts the repository, but the shared view still refuses the private name
+    // with the same refusal as a missing one. The full proof refuses private content
+    // that no check-in or issue owns.
+    let mut owner = LocalOwnerRepository::open(&path, admission).await.unwrap();
+    let hidden = owner
+        .shared_view()
+        .read_content(&name(BASE), limits())
         .await
-        .err()
-        .unwrap();
+        .unwrap_err();
+    assert_eq!(hidden.operation, "shared content unavailable");
+    let refused = owner.verify(admission).await.unwrap_err();
     assert_eq!(refused.operation, "recording native projection differs");
 }
 

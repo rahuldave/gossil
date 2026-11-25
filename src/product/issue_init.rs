@@ -74,7 +74,7 @@ pub(super) fn run(args: &[OsString]) -> std::process::ExitCode {
 }
 
 /// Open the repository, and find or create the project of its checkout. Do both
-/// once more after a refusal that [`super::retry_stale`] retries.
+/// once more after a refusal that [`super::retry_locked`] retries.
 /// # Arguments
 /// * `open` - Opens and admits the repository, each time it is called.
 /// # Returns
@@ -87,7 +87,7 @@ where
     O: FnMut() -> F,
     F: std::future::Future<Output = Result<IssueRepository, IssueFailure>>,
 {
-    super::retry_stale(|| {
+    super::retry_locked(|| {
         let opening = open();
         async move { init(opening.await?).await }
     })
@@ -95,6 +95,9 @@ where
 }
 
 /// Find or create the project of one opened checkout.
+///
+/// When the write refuses, the binding is read again, since another command may
+/// have bound a project after the open. That project is then the result.
 /// # Arguments
 /// * `found` - The opened repository.
 /// # Returns
@@ -109,7 +112,7 @@ async fn init(mut found: IssueRepository) -> Result<String, IssueFailure> {
     let login = super::login()?;
     let id = crate::gest_model::primitives::Id::new().to_string();
     let artifact = project_artifact(&id, &login)?;
-    found
+    let written = found
         .owner
         .init_private_project(
             ProjectInitRequest {
@@ -118,9 +121,19 @@ async fn init(mut found: IssueRepository) -> Result<String, IssueFailure> {
             },
             super::limits(),
         )
-        .await
-        .map_err(|error| IssueFailure::from_error(&error))?;
-    Ok(message(&id, &root))
+        .await;
+    let Err(error) = written else {
+        return Ok(message(&id, &root));
+    };
+    // Another command may have bound a project since this one opened the repository.
+    let bound = found
+        .owner
+        .bound_project(&found.view.checkout_id, super::limits())
+        .await;
+    match bound {
+        Ok(Some(project)) => Ok(message(&project, &root)),
+        _ => Err(IssueFailure::from_error(&error)),
+    }
 }
 
 /// Emit the creation artifact of a new project, dated now.

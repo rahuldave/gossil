@@ -83,19 +83,18 @@ fn fail(status: u8, message: String) -> Failure {
 }
 
 impl From<StorageError> for Failure {
-    /// Map a storage refusal to status 74, or to 78 for an older catalog.
+    /// Map a storage refusal to status 74, or to 78 for an older catalog or lost tables.
     /// # Arguments
     /// * `error` - The refusal.
     /// # Returns
     /// The failure with the refusal as its message.
     fn from(error: StorageError) -> Self {
-        let older =
-            std::iter::successors(Some(&error as &(dyn std::error::Error + 'static)), |e| {
-                e.source()
-            })
-            .any(|e| e.is::<crate::storage::OlderCatalog>());
         Self {
-            status: if older { 78 } else { 74 },
+            status: if crate::storage::unusable(&error) {
+                78
+            } else {
+                74
+            },
             message: error.to_string(),
         }
     }

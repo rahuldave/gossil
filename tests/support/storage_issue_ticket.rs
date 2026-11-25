@@ -38,6 +38,9 @@ const OTHER_K: &str = "ffffffffffffffffffffffffffffffffffffffff";
 /// The K card of the fixture project.
 const PROJECT_K: &str = "0000000000000000000000000000000000000001";
 
+/// The K card of a second fixture project.
+const P_K: &str = "0000000000000000000000000000000000000003";
+
 /// Emit the creation artifact of a fixture project.
 /// # Arguments
 /// * `k` - The K card.
@@ -86,10 +89,7 @@ async fn copy_rows(
         let sql: &'static str = Box::leak(format!("INSERT INTO {table} VALUES({marks})").into());
         tx.execute_bound(sql, row).await.unwrap();
     }
-    let mut budget = Budget::new(limits().admission.content).unwrap();
-    let proof = tx.capture_admission_budgeted(&mut budget).await.unwrap();
     tx.commit().await.unwrap();
-    to.admission = proof;
 }
 
 /// Emit the creation artifact of the fixture task.
@@ -147,6 +147,16 @@ async fn repository(path: &std::path::Path) -> LocalOwnerRepository {
     )
     .await
     .unwrap()
+}
+
+/// Write the project of the fixture tasks, then the fixture task, through the writer.
+/// # Arguments
+/// * `owner` - The admitted owner of an empty repository.
+async fn create_both(owner: &mut LocalOwnerRepository) {
+    create_with(owner, &project_for(PROJECT_K, "k"), limits())
+        .await
+        .unwrap();
+    create(owner).await.unwrap();
 }
 
 /// Write the fixture task through the writer.
@@ -227,19 +237,16 @@ async fn prove(
     result
 }
 
-/// Change the stored rows with fixture SQL, then admit the changed state again.
+/// Change the stored rows with fixture SQL.
 /// # Arguments
-/// * `owner` - The owner whose admission proof the change would make stale.
+/// * `owner` - The owner whose repository changes.
 /// * `sql` - Fixture statements, separated by semicolons.
 async fn tamper(owner: &mut LocalOwnerRepository, sql: &str) {
     let mut tx = owner.store.begin_write().await.unwrap();
     for statement in sql.split(';') {
         tx.execute(statement).await.unwrap();
     }
-    let mut budget = Budget::new(limits().admission.content).unwrap();
-    let proof = tx.capture_admission_budgeted(&mut budget).await.unwrap();
     tx.commit().await.unwrap();
-    owner.admission = proof;
 }
 
 /// Read the bytes of the repository file and its write-ahead log.
@@ -264,7 +271,7 @@ async fn a_failure_before_commit_leaves_every_byte_unchanged() {
     let temp = tempfile::tempdir().unwrap();
     let path = temp.path().join("repo");
     let mut owner = repository(&path).await;
-    create(&mut owner).await.unwrap();
+    create_both(&mut owner).await;
     let second = artifact_for(OTHER_K, "n");
     for phase in [
         IssuePhase::Receipt,
@@ -336,7 +343,7 @@ async fn an_exhausted_ceiling_refuses_without_effect() {
     for (case, tight, refuses_read) in cases {
         let temp = tempfile::tempdir().unwrap();
         let mut owner = repository(&temp.path().join("repo")).await;
-        create(&mut owner).await.unwrap();
+        create_both(&mut owner).await;
         let before = snapshot(&mut owner).await;
         assert!(
             create_with(&mut owner, &second, tight).await.is_err(),
@@ -370,11 +377,12 @@ async fn an_exhausted_ceiling_refuses_without_effect() {
 }
 
 #[tokio::test]
-/// Admission refuses each stored row that is not exactly what replay of the issue
-/// artifacts gives, in every admitted table. The reader and a new open both refuse,
-/// and nothing changes. The proof of the task or of the project refuses each change
-/// to the rows of that issue, and admits the changes that only the full proof sees.
-async fn admission_refuses_each_changed_issue_row() {
+/// The full proof refuses each stored row that is not exactly what replay of the
+/// issue artifacts gives, in every admitted table, and changes nothing. The proof of
+/// the task or of the project refuses each change to the rows of that issue. The
+/// read, the list and a write refuse only a change to a fact that each one reads.
+/// A new open admits each change, since none is a fact that open reads.
+async fn verify_refuses_each_changed_issue_row() {
     let tag = format!("(SELECT tagid FROM tag WHERE tagname='tkt-{K}')");
     let last = "(SELECT max(rcvid) FROM rcvfrom)";
     const PROJECTION: &str = "recording native projection differs";
@@ -397,7 +405,7 @@ async fn admission_refuses_each_changed_issue_row() {
         ("an unsent row", format!("INSERT INTO unsent(rid) SELECT rid FROM tagxref WHERE tagid={tag}"), "unsupported nonempty catalog6 table: unsent"),
         ("a leaf row", format!("INSERT INTO leaf(rid) SELECT rid FROM tagxref WHERE tagid={tag}"), PROJECTION),
         ("a blob without a receipt", format!("UPDATE blob SET rcvid=NULL WHERE rid=(SELECT rid FROM tagxref WHERE tagid={tag})"), DIFFERS),
-        ("a blob under the root receipt", format!("UPDATE blob SET rcvid=1 WHERE rid=(SELECT rid FROM tagxref WHERE tagid={tag})"), "recording unexplained receipt"),
+        ("a blob under the root receipt", format!("UPDATE blob SET rcvid=1 WHERE rid=(SELECT rid FROM tagxref WHERE tagid={tag})"), DIFFERS),
         ("a receipt from another user", format!("UPDATE rcvfrom SET uid=1 WHERE rcvid={last}"), "recording local receipt policy"),
         ("a receipt with a nonce", format!("UPDATE rcvfrom SET nonce='n' WHERE rcvid={last}"), "recording local receipt policy"),
         ("a receipt from an address", format!("UPDATE rcvfrom SET ipaddr='127.0.0.1' WHERE rcvid={last}"), "recording local receipt policy"),
@@ -439,9 +447,9 @@ async fn admission_refuses_each_changed_issue_row() {
         ("a leaf row", Err(DIFFERS), Ok(())),
         ("a blob without a receipt", Err(DIFFERS), Ok(())),
         ("a blob under the root receipt", Err(DIFFERS), Ok(())),
-        ("a receipt from another user", Ok(()), Err(DIFFERS)),
-        ("a receipt with a nonce", Ok(()), Err(DIFFERS)),
-        ("a receipt from an address", Ok(()), Err(DIFFERS)),
+        ("a receipt from another user", Err(DIFFERS), Ok(())),
+        ("a receipt with a nonce", Err(DIFFERS), Ok(())),
+        ("a receipt from an address", Err(DIFFERS), Ok(())),
         ("a receipt that no artifact owns", Ok(()), Ok(())),
         (
             "a backlink from the ticket",
@@ -466,10 +474,7 @@ async fn admission_refuses_each_changed_issue_row() {
         let temp = tempfile::tempdir().unwrap();
         let path = temp.path().join("repo");
         let mut owner = repository(&path).await;
-        create(&mut owner).await.unwrap();
-        create_with(&mut owner, &project_for(PROJECT_K, "k"), limits())
-            .await
-            .unwrap();
+        create_both(&mut owner).await;
         prove(&mut owner, K).await.unwrap();
         tamper(&mut owner, &sql).await;
         let before = snapshot(&mut owner).await;
@@ -489,193 +494,138 @@ async fn admission_refuses_each_changed_issue_row() {
             let renamed = result(prove(&mut owner, OTHER_K).await);
             assert_eq!(renamed, Err(DIFFERS.to_owned()), "{case}");
         }
-        let error = owner.read_private_issue(K, limits()).await.unwrap_err();
+        let verified = owner.verify(limits().admission).await.unwrap_err();
+        assert_eq!(verified.to_string(), message, "{case}");
         assert_eq!(snapshot(&mut owner).await, before, "{case}");
-        assert_eq!(error.to_string(), message, "{case}");
-        let list = owner.list_private_issues(limits()).await.unwrap_err();
-        assert_eq!(list.to_string(), message, "{case}");
-        assert_eq!(snapshot(&mut owner).await, before, "{case}");
-        let write = create_with(&mut owner, &artifact_for(OTHER_K, "n"), limits())
-            .await
-            .unwrap_err();
-        assert_eq!(write.to_string(), message, "{case}");
-        assert_eq!(snapshot(&mut owner).await, before, "{case}");
+        // The read parses the one artifact that the tag names, and compares no row.
+        let read = result(owner.read_private_issue(K, limits()).await);
+        let expected = match case {
+            "a second artifact" => Err("recording SQL count limit"),
+            "an artifact that is not a ticket" => Err(UNSUPPORTED),
+            "a renamed tag" | "an artifact whose K is not its tag" => Err("issue ticket not found"),
+            "a blob without a receipt" => Err("recording full content unavailable"),
+            _ => Ok(()),
+        };
+        assert_eq!(read, expected.map_err(str::to_owned), "{case}: read");
+        // The list prints the typed rows that join a ticket, a tag and a blob.
+        let list = owner.list_private_issues(limits()).await.unwrap();
+        let expected = match case {
+            "a second artifact" => 3,
+            "a renamed tag" | "a missing project row" => 1,
+            _ => 2,
+        };
+        assert_eq!(list.len(), expected, "{case}: list");
+        // A write refuses only a change to a fact that it reads.
+        let write = result(create_with(&mut owner, &artifact_for(OTHER_K, "n"), limits()).await);
+        let expected = match case {
+            "a changed project row" | "a missing project row" => Err(TASK_PROJECT),
+            "an artifact whose K is not its tag" => Err(UNSUPPORTED),
+            _ => Ok(()),
+        };
+        assert_eq!(write, expected.map_err(str::to_owned), "{case}: write");
         drop(owner);
-        let refused = LocalOwnerRepository::open(&path, limits().admission)
-            .await
-            .err()
-            .unwrap();
-        assert_eq!(refused.to_string(), error.to_string(), "{case}");
+        assert!(
+            LocalOwnerRepository::open(&path, limits().admission)
+                .await
+                .is_ok(),
+            "{case}"
+        );
     }
 }
 
 #[tokio::test]
-/// One parser ledger serves every artifact that admission parses, so its entry ceiling
-/// bounds the count of issues. In this fixture each task takes 14 entries, so 30
-/// entries admit two tasks, and refuse one entry fewer or a third task.
-async fn the_entry_ceiling_bounds_the_issue_count() {
-    let temp = tempfile::tempdir().unwrap();
-    let path = temp.path().join("repo");
-    let bounded = |entries| {
-        let mut limits = limits().admission;
-        limits.parser.entries = entries;
-        limits
-    };
-    let refused = "recording native artifact validation";
-    let mut owner = repository(&path).await;
-    for (k, letter) in [(K, "m"), (OTHER_K, "n")] {
-        create_with(&mut owner, &artifact_for(k, letter), limits())
-            .await
-            .unwrap();
-    }
-    drop(owner);
-    assert!(LocalOwnerRepository::open(&path, bounded(30)).await.is_ok());
-    let error = LocalOwnerRepository::open(&path, bounded(29))
-        .await
-        .err()
-        .unwrap();
-    assert_eq!(error.to_string(), refused);
-    let mut owner = LocalOwnerRepository::open(&path, limits().admission)
-        .await
-        .unwrap();
-    create_with(&mut owner, &artifact_for(PROJECT_K, "p"), limits())
-        .await
-        .unwrap();
-    drop(owner);
-    let error = LocalOwnerRepository::open(&path, bounded(30))
-        .await
-        .err()
-        .unwrap();
-    assert_eq!(error.to_string(), refused);
-}
-
-#[tokio::test]
-/// The list call admits the repository and then replays every issue under the same
-/// parser ledger, so it needs the entries of each artifact twice. It returns the
-/// tasks and projects in receipt order and changes nothing.
-async fn the_list_replays_every_issue_in_receipt_order() {
+/// The list call reads the typed rows and replays no artifact, so it passes under a
+/// parser entry ceiling of one. It returns the tasks and projects in receipt order
+/// and changes nothing. Its row ceiling bounds the count of issues, and a bad task
+/// prefix refuses before any read.
+async fn the_list_reads_every_issue_in_receipt_order() {
     let temp = tempfile::tempdir().unwrap();
     let path = temp.path().join("repo");
     let mut owner = repository(&path).await;
     assert_eq!(owner.list_private_issues(limits()).await.unwrap(), vec![]);
     let mut stored = Vec::new();
     for bytes in [
+        project_for(PROJECT_K, "k"),
         artifact_for(OTHER_K, "n"),
-        project_for(PROJECT_K, "p"),
+        project_for(P_K, "p"),
         artifact_for(K, "m"),
     ] {
         stored.push(create_with(&mut owner, &bytes, limits()).await.unwrap());
     }
     let before = snapshot(&mut owner).await;
     assert_eq!(owner.list_private_issues(limits()).await.unwrap(), stored);
+    let mut one = limits();
+    one.admission.parser.entries = 1;
+    assert_eq!(owner.list_private_issues(one).await.unwrap(), stored);
+    // The row ceiling bounds the count of typed rows that the list reads. Find the
+    // least ceiling that passes. Each smaller one refuses, and changes nothing.
+    let mut few = limits();
+    few.sql_rows = 1;
+    let listed = loop {
+        match owner.list_private_issues(few).await {
+            Ok(listed) => break listed,
+            Err(error) => assert_eq!(error.to_string(), "recording SQL count limit"),
+        }
+        few.sql_rows += 1;
+    };
+    assert_eq!(listed, stored);
     assert_eq!(snapshot(&mut owner).await, before);
-    let bounded = |entries| {
-        let mut bounded = limits();
-        bounded.admission.parser.entries = entries;
-        bounded
-    };
-    let mut needed = 1;
-    while owner.list_private_issues(bounded(needed)).await.is_err() {
-        needed += 1;
+    // A prefix that is empty, too long or not in the k to z alphabet refuses before
+    // any read.
+    for prefix in ["", "a", "kK", &"k".repeat(33)] {
+        assert_eq!(
+            owner
+                .find_task(prefix, limits().admission)
+                .await
+                .err()
+                .map(|error| error.to_string())
+                .as_deref(),
+            Some("invalid issue ID prefix"),
+            "{prefix}"
+        );
     }
-    drop(owner);
-    // Opening needs one pass of the three artifacts, and the list needs two.
-    let mut opened = 1;
-    while LocalOwnerRepository::open(&path, bounded(opened).admission)
-        .await
-        .is_err()
-    {
-        opened += 1;
-    }
-    assert_eq!(needed, LIST_ENTRIES);
-    assert_eq!(opened, OPEN_ENTRIES);
-    // The content ledger is shared too. The smallest decoded-byte ceiling of a list
-    // is larger than that of an open, and a list at the open's ceiling refuses and
-    // changes no row.
-    let decoded = |bytes| {
-        let mut bounded = limits();
-        bounded.admission.content.max_total_decoded_bytes = bytes;
-        bounded
-    };
-    let mut owner = LocalOwnerRepository::open(&path, limits().admission)
-        .await
-        .unwrap();
-    let (mut low, mut high) = (1, limits().admission.content.max_total_decoded_bytes);
-    while low < high {
-        let middle = low + (high - low) / 2;
-        if owner.list_private_issues(decoded(middle)).await.is_ok() {
-            high = middle;
-        } else {
-            low = middle + 1;
-        }
-    }
-    let list_bytes = low;
-    drop(owner);
-    let (mut low, mut high) = (1, limits().admission.content.max_total_decoded_bytes);
-    while low < high {
-        let middle = low + (high - low) / 2;
-        if LocalOwnerRepository::open(&path, decoded(middle).admission)
-            .await
-            .is_ok()
-        {
-            high = middle;
-        } else {
-            low = middle + 1;
-        }
-    }
-    let open_bytes = low;
-    assert!(list_bytes > open_bytes, "{list_bytes} {open_bytes}");
-    let mut owner = LocalOwnerRepository::open(&path, decoded(open_bytes).admission)
-        .await
-        .unwrap();
-    let before = snapshot(&mut owner).await;
-    assert!(
+    assert_eq!(snapshot(&mut owner).await, before);
+    // One more task needs more rows, so the least ceiling of four issues refuses it.
+    create_with(
+        &mut owner,
+        &artifact_for("0000000000000000000000000000000000000004", "o"),
+        limits(),
+    )
+    .await
+    .unwrap();
+    assert_eq!(
         owner
-            .list_private_issues(decoded(open_bytes))
+            .list_private_issues(few)
             .await
-            .is_err()
+            .unwrap_err()
+            .to_string(),
+        "recording SQL count limit"
     );
-    assert_eq!(snapshot(&mut owner).await, before);
 }
 
-/// The parser entries that the list call of the three fixture issues needs.
-const LIST_ENTRIES: usize = 72;
-
-/// The parser entries that an open of the three fixture issues needs.
-const OPEN_ENTRIES: usize = 37;
-
 #[tokio::test]
-/// The admission proof holds every row of the four issue tables, so a change that the
-/// owner's own connection makes, with the change counter refreshed, is still refused
-/// before the next write.
-async fn the_admission_proof_covers_the_issue_tables() {
-    for sql in [
-        "UPDATE ticket SET title='\"other\"'",
-        "UPDATE ticketchng SET tkt_user='other'",
-        "UPDATE g_gest_tasks SET title='other'",
-        "UPDATE g_gest_projects SET archived_at='2026-11-19T00:00:00Z'",
-    ] {
-        let temp = tempfile::tempdir().unwrap();
-        let mut owner = repository(&temp.path().join("repo")).await;
-        create(&mut owner).await.unwrap();
-        create_with(&mut owner, &project_for(PROJECT_K, "p"), limits())
+/// Task show trusts the type of no typed row. A task ID stored as a blob still
+/// matches its prefix, and then the lookup refuses it and changes nothing.
+async fn the_lookup_refuses_a_task_id_that_is_not_text() {
+    let temp = tempfile::tempdir().unwrap();
+    let mut owner = repository(&temp.path().join("repo")).await;
+    create_both(&mut owner).await;
+    tamper(
+        &mut owner,
+        "PRAGMA ignore_check_constraints=ON;UPDATE g_gest_tasks SET id=CAST(id AS BLOB)",
+    )
+    .await;
+    let before = snapshot(&mut owner).await;
+    assert_eq!(
+        owner
+            .find_task("m", limits().admission)
             .await
-            .unwrap();
-        let mut tx = owner.store.begin_write().await.unwrap();
-        tx.execute(sql).await.unwrap();
-        tx.commit().await.unwrap();
-        owner.admission.total_changes = owner.store.connection.as_ref().unwrap().total_changes();
-        let before = snapshot(&mut owner).await;
-        let error = create_with(&mut owner, &artifact_for(OTHER_K, "n"), limits())
-            .await
-            .unwrap_err();
-        assert_eq!(
-            error.to_string(),
-            "repository authority changed; explicit readmission required",
-            "{sql}"
-        );
-        assert_eq!(snapshot(&mut owner).await, before, "{sql}");
-    }
+            .err()
+            .map(|error| error.to_string())
+            .as_deref(),
+        Some("a stored typed row does not hold a valid task or project")
+    );
+    assert_eq!(snapshot(&mut owner).await, before);
 }
 
 #[tokio::test]
@@ -684,8 +634,8 @@ async fn the_admission_proof_covers_the_issue_tables() {
 async fn the_writer_refuses_a_gest_id_of_the_other_kind() {
     let temp = tempfile::tempdir().unwrap();
     let mut owner = repository(&temp.path().join("repo")).await;
-    create(&mut owner).await.unwrap();
-    create_with(&mut owner, &project_for(PROJECT_K, "p"), limits())
+    create_both(&mut owner).await;
+    create_with(&mut owner, &project_for(P_K, "p"), limits())
         .await
         .unwrap();
     for bytes in [
@@ -700,72 +650,60 @@ async fn the_writer_refuses_a_gest_id_of_the_other_kind() {
 }
 
 #[tokio::test]
-/// Admission refuses a project whose artifact reuses the Gest ID of a task, though its
-/// own rows are exact. Admission accepts the same copy with its own Gest ID.
-async fn admission_refuses_a_project_that_reuses_a_task_gest_id() {
+/// The full proof refuses a project whose artifact reuses the Gest ID of a task, though
+/// its own rows are exact. Open and the read of the project admit it, since neither
+/// compares the rows of other issues. The full proof accepts the same copy with its
+/// own Gest ID.
+async fn verify_refuses_a_project_that_reuses_a_task_gest_id() {
     for (letter, admitted) in [("m", false), ("p", true)] {
         let temp = tempfile::tempdir().unwrap();
         let path = temp.path().join("repo");
         let mut owner = repository(&path).await;
-        create(&mut owner).await.unwrap();
+        create_both(&mut owner).await;
         // A second repository holds the project at the RID, receipt, tag and ticket ID
         // that it would take in the first, so its rows can be copied unchanged.
         let mut donor = repository(&temp.path().join("donor")).await;
+        create_with(&mut donor, &project_for(PROJECT_K, "k"), limits())
+            .await
+            .unwrap();
         create_with(&mut donor, &artifact_for(OTHER_K, "z"), limits())
             .await
             .unwrap();
-        let project = create_with(&mut donor, &project_for(PROJECT_K, letter), limits())
+        let project = create_with(&mut donor, &project_for(P_K, letter), limits())
             .await
             .unwrap();
+        let tag = format!("tagname='tkt-{P_K}'");
+        let typed = format!("id='{}'", letter.repeat(32));
         for (table, filter) in [
-            ("rcvfrom", "rcvid=3"),
-            ("blob", "rid=3"),
-            ("private", "rid=3"),
-            ("tag", "tagid=14"),
-            ("tagxref", "rid=3"),
-            ("ticket", "tkt_id=2"),
-            ("ticketchng", "tkt_rid=3"),
-            ("event", "objid=3"),
-            ("g_gest_projects", "1"),
+            ("rcvfrom", "rcvid=4"),
+            ("blob", "rid=4"),
+            ("private", "rid=4"),
+            ("tag", tag.as_str()),
+            ("tagxref", "rid=4"),
+            ("ticket", "tkt_id=3"),
+            ("ticketchng", "tkt_rid=4"),
+            ("event", "objid=4"),
+            ("g_gest_projects", typed.as_str()),
         ] {
             copy_rows(&mut donor, &mut owner, table, filter).await;
         }
-        let read = owner.read_private_issue(PROJECT_K, limits()).await;
+        assert_eq!(
+            owner.read_private_issue(P_K, limits()).await.unwrap(),
+            project
+        );
+        let verified = owner.verify(limits().admission).await;
         drop(owner);
-        let opened = LocalOwnerRepository::open(&path, limits().admission).await;
+        assert!(
+            LocalOwnerRepository::open(&path, limits().admission)
+                .await
+                .is_ok()
+        );
         if admitted {
-            assert_eq!(read.unwrap(), project);
-            assert!(opened.is_ok());
+            assert_eq!(verified.unwrap().issues, 3);
         } else {
-            let error = read.unwrap_err().to_string();
-            assert_eq!(error, "stored issue rows differ from the ticket artifact");
-            assert_eq!(opened.err().unwrap().to_string(), error);
+            assert_eq!(verified.unwrap_err().to_string(), DIFFERS);
         }
     }
-}
-
-#[tokio::test]
-/// A write that the admission check refuses as stale does not admit the change that
-/// made it stale, so the next call of the same owner is refused too.
-async fn a_stale_refusal_does_not_admit_the_change() {
-    let temp = tempfile::tempdir().unwrap();
-    let mut owner = repository(&temp.path().join("repo")).await;
-    create(&mut owner).await.unwrap();
-    let mut tx = owner.store.begin_write().await.unwrap();
-    tx.execute(
-        "INSERT INTO ticketchng(tkt_id,tkt_rid,tkt_mtime,tkt_user) VALUES(999,999,0,'hidden')",
-    )
-    .await
-    .unwrap();
-    tx.commit().await.unwrap();
-    let stale = "repository admission stale; reopen with explicit admission limits";
-    let second = artifact_for(OTHER_K, "n");
-    let error = create_with(&mut owner, &second, limits())
-        .await
-        .unwrap_err();
-    assert_eq!(error.to_string(), stale);
-    let error = owner.read_private_issue(K, limits()).await.unwrap_err();
-    assert_eq!(error.to_string(), stale);
 }
 
 #[tokio::test]
@@ -866,7 +804,6 @@ async fn an_init_failure_before_commit_leaves_every_byte_unchanged() {
     let temp = tempfile::tempdir().unwrap();
     let path = temp.path().join("repo");
     let mut owner = registered(temp.path()).await;
-    create(&mut owner).await.unwrap();
     let project = project_for(PROJECT_K, "p");
     for phase in [
         IssuePhase::Receipt,
@@ -1012,17 +949,17 @@ async fn admission_refuses_each_changed_binding_row() {
         let temp = tempfile::tempdir().unwrap();
         let path = temp.path().join("repo");
         let mut owner = registered(temp.path()).await;
-        create(&mut owner).await.unwrap();
-        init_with(&mut owner, &project_for(PROJECT_K, "p"), "work")
+        init_with(&mut owner, &project_for(PROJECT_K, "k"), "work")
             .await
             .unwrap();
+        create(&mut owner).await.unwrap();
         create_with(&mut owner, &archived_project(OTHER_K, "r"), limits())
             .await
             .unwrap();
         let listed = owner.list_private_issues(limits()).await.unwrap();
         assert_eq!(listed.len(), 3, "{case}");
         assert!(
-            matches!(listed[1].record, IssueRecord::Project(_)),
+            matches!(listed[0].record, IssueRecord::Project(_)),
             "{case}"
         );
         tamper(&mut owner, &sql).await;
@@ -1044,8 +981,8 @@ async fn admission_refuses_each_changed_binding_row() {
 #[tokio::test]
 /// A checkout ID in a binding table that is not the text ID of the registered
 /// checkout breaks a foreign key. The writer cannot store it. When a write with the
-/// foreign keys off stores it, the foreign key check of admission refuses it, before
-/// the binding check.
+/// foreign keys off stores it, the check of the binding at open refuses it, without
+/// the foreign key check, and changes no byte.
 async fn admission_refuses_a_binding_of_another_checkout() {
     for sql in [
         "UPDATE g_project_binding SET checkout_id=CAST(checkout_id AS BLOB)",
@@ -1070,42 +1007,15 @@ async fn admission_refuses_a_binding_of_another_checkout() {
             .await
             .unwrap();
         drop(connection);
+        // Open does not run the foreign key check, whose cost grows with the history,
+        // but its check of the binding refuses a checkout ID that is not text.
+        let files = file_bytes(&path);
         let refused = LocalOwnerRepository::open(&path, limits().admission)
             .await
             .err()
             .unwrap();
-        assert_eq!(
-            refused.to_string(),
-            "repository foreign key integrity failure",
-            "{sql}"
-        );
-    }
-}
-
-#[tokio::test]
-/// The admission proof holds the rows of both binding tables. So the next read
-/// refuses a change that the owner's own connection makes, with the change counter
-/// refreshed.
-async fn the_admission_proof_covers_the_binding_tables() {
-    for sql in [
-        "UPDATE g_project_binding SET root=root||'/x'",
-        "UPDATE g_checkout_project SET project_id='q'",
-    ] {
-        let temp = tempfile::tempdir().unwrap();
-        let mut owner = registered(temp.path()).await;
-        init_with(&mut owner, &project_for(PROJECT_K, "p"), "work")
-            .await
-            .unwrap();
-        let mut tx = owner.store.begin_write().await.unwrap();
-        tx.execute(sql).await.unwrap();
-        tx.commit().await.unwrap();
-        owner.admission.total_changes = owner.store.connection.as_ref().unwrap().total_changes();
-        let error = owner.bound_project("work", limits()).await.unwrap_err();
-        assert_eq!(
-            error.to_string(),
-            "repository authority changed; explicit readmission required",
-            "{sql}"
-        );
+        assert_eq!(refused.to_string(), BINDING_STATE, "{sql}");
+        assert_eq!(file_bytes(&path), files, "{sql}");
     }
 }
 
@@ -1130,10 +1040,6 @@ async fn the_proof_has_no_total_ceiling() {
     small.content.max_total_stored_bytes = 64;
     small.content.max_total_decoded_bytes = 64;
     small.parser.entries = 20;
-    assert!(
-        LocalOwnerRepository::open(&path, small).await.is_err(),
-        "the fixture must need more than the small totals"
-    );
     let before = snapshot(&mut owner).await;
     let summary = owner.verify(small).await.unwrap();
     assert_eq!((summary.checkins, summary.issues), (0, 3));
@@ -1325,16 +1231,30 @@ async fn only_the_full_proof_refuses_rows_that_no_index_reaches() {
 }
 
 #[tokio::test]
-/// The full proof admits a task whose project the repository does not hold, and the
-/// proof of that one task refuses it with its own message. Neither changes a byte.
-async fn only_the_issue_proof_refuses_a_task_without_its_project() {
+/// The writer refuses a task whose project the repository does not hold, or whose
+/// project is archived, and changes no byte. When the typed row of the project goes,
+/// the proof of the task refuses it with its own message. The proof of an ID that no
+/// task holds refuses too.
+async fn a_task_needs_its_project() {
     let temp = tempfile::tempdir().unwrap();
     let mut owner = repository(&temp.path().join("repo")).await;
-    create(&mut owner).await.unwrap();
+    let before = snapshot(&mut owner).await;
+    let refused = create(&mut owner).await.unwrap_err();
+    assert_eq!(refused.to_string(), TASK_PROJECT);
+    assert_eq!(snapshot(&mut owner).await, before);
+    create_with(&mut owner, &archived_project(PROJECT_K, "k"), limits())
+        .await
+        .unwrap();
+    let before = snapshot(&mut owner).await;
+    let refused = create(&mut owner).await.unwrap_err();
+    assert_eq!(refused.to_string(), TASK_PROJECT);
+    assert_eq!(snapshot(&mut owner).await, before);
+    let temp = tempfile::tempdir().unwrap();
+    let mut owner = repository(&temp.path().join("repo")).await;
+    create_both(&mut owner).await;
+    tamper(&mut owner, "DELETE FROM g_gest_projects").await;
     let before = snapshot(&mut owner).await;
     let limits = limits().admission;
-    let summary = owner.verify(limits).await.unwrap();
-    assert_eq!((summary.checkins, summary.issues), (0, 1));
     assert_eq!(
         prove(&mut owner, K).await.unwrap_err().to_string(),
         NO_PROJECT

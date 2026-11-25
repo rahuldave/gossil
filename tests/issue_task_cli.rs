@@ -219,7 +219,7 @@ fn task_ids(repo: &Path) -> Vec<String> {
         .collect()
 }
 
-/// Read one task back through the library reader, after full admission.
+/// Read one task back through the library reader, after the checks of open.
 /// # Arguments
 /// * `repo` - The repository file, with no open owner.
 /// * `id` - The Gest ID of the task.
@@ -795,8 +795,8 @@ fn a_closed_stdout_keeps_the_task_and_exits_74() {
 }
 
 #[test]
-/// Two commands at once both succeed. A write that another commit made stale, or that
-/// waited for the write lock past its timeout, runs once more on a fresh admission.
+/// Two commands at once both succeed. A write that waited for the write lock past its
+/// timeout runs once more.
 fn two_commands_at_once_both_succeed() {
     let temp = tempfile::tempdir().unwrap();
     let home = temp.path();

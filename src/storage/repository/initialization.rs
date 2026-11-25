@@ -406,7 +406,7 @@ impl LocalOwnerRepository {
     /// }
     /// ```
     /// # Errors
-    /// Rejects stale admission, missing or malformed native identities and transaction errors.
+    /// Rejects a changed owner, missing or malformed native identities and transaction errors.
     pub async fn initialization_identity(&mut self) -> Result<(String, String), StorageError> {
         let mut tx = self.store.begin_write().await?;
         let result = async {

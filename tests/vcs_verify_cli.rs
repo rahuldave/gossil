@@ -300,9 +300,7 @@ fn verify_refuses_bad_selections() {
 
 #[test]
 /// A changed typed row makes `verify` and `verify --issue` exit 74 with the fixed
-/// message, and changes no byte. In this build the admission of open refuses the row
-/// before the proof runs, so this checks the message and the status, and the unit
-/// tests of `prove_issue` check the proof itself.
+/// message, and changes no byte. Open admits the row, so the proof itself refuses it.
 fn verify_refuses_a_changed_row() {
     let temp = tempfile::tempdir().unwrap();
     let home = temp.path();
@@ -388,6 +386,110 @@ fn verify_counts_no_check_in_and_refuses_an_older_catalog() {
         assert!(out.stdout.is_empty());
     }
     assert_eq!(std::fs::read(&repo).unwrap(), before);
+}
+
+#[test]
+/// Open refuses each changed fact that it reads, before the work of the command.
+/// `verify` and `status` each exit with their own status and print the same message,
+/// and neither changes a byte. The cases are a wrong marker, a wrong fingerprint, a
+/// missing config row, a missing owner row, a wrong checkout count, and lost Gossil
+/// tables. The issue commands give lost tables exit 78 and the same message too.
+fn open_refuses_each_fact_that_it_reads() {
+    let temp = tempfile::tempdir().unwrap();
+    let home = temp.path();
+    fixture(home, 1, true);
+    let repo = home.join("repo");
+    let image = std::fs::read(&repo).unwrap();
+    let tables = sql(
+        &repo,
+        "SELECT name FROM sqlite_schema WHERE type='table' AND name GLOB 'g_*'",
+        false,
+    );
+    let mut lost = String::from("PRAGMA foreign_keys=OFF;");
+    for row in tables {
+        let Value::Text(name) = &row[0] else { panic!() };
+        lost.push_str(&format!("DROP TABLE {name};"));
+    }
+    let lost_message = "this repository has lost its Gossil tables (was `fossil rebuild` run on it?); restore it from a backup";
+    // Each case, with the exit status of `verify` and of `status`, and their message.
+    let cases = [
+        (
+            "PRAGMA ignore_check_constraints=ON; UPDATE g_storage SET storage_version=7".to_owned(),
+            74,
+            1,
+            "unsupported storage version",
+        ),
+        (
+            "UPDATE g_vvar SET value='1/00000000000000000000000000000000' WHERE name='fingerprint'"
+                .to_owned(),
+            74,
+            1,
+            "recording fingerprint checksum",
+        ),
+        (
+            "DELETE FROM config WHERE name='server-code'".to_owned(),
+            74,
+            1,
+            "native server identity unavailable",
+        ),
+        (
+            "DELETE FROM config WHERE name='project-code'".to_owned(),
+            74,
+            1,
+            "unsupported or missing native repository markers",
+        ),
+        (
+            "PRAGMA foreign_keys=OFF; DELETE FROM g_local_owner".to_owned(),
+            74,
+            1,
+            "local repository binding unavailable",
+        ),
+        (
+            "PRAGMA ignore_check_constraints=ON; UPDATE g_storage SET checkout_count=0".to_owned(),
+            74,
+            1,
+            "unsupported populated catalog6 checkout scope",
+        ),
+        (lost, 78, 78, lost_message),
+    ];
+    let repo_text = repo.to_str().unwrap();
+    for (case, verify, status, message) in cases {
+        std::fs::write(&repo, &image).unwrap();
+        sql(&repo, &case, true);
+        let before = std::fs::read(&repo).unwrap();
+        for (args, code) in [
+            (vec!["v", "verify", "--repository", repo_text], verify),
+            (
+                vec![
+                    "v",
+                    "status",
+                    "--repository",
+                    repo_text,
+                    "--checkout",
+                    "work",
+                ],
+                status,
+            ),
+        ] {
+            let out = run(env!("CARGO_BIN_EXE_gos"), home, &args);
+            assert!(out.stdout.is_empty(), "{case}");
+            assert_eq!(out.status.code(), Some(code), "{args:?} {case}");
+            let stderr = String::from_utf8(out.stderr).unwrap();
+            assert_eq!(stderr, format!("{message}\n"), "{args:?} {case}");
+        }
+        // The issue commands open the repository with the same checks, so they give
+        // the lost tables the same exit status and message.
+        if verify == 78 {
+            for args in [&["i", "task", "list"][..], &["i", "task", "show", "a"]] {
+                let out = run(env!("CARGO_BIN_EXE_gos"), home, args);
+                assert!(out.stdout.is_empty(), "{args:?}");
+                assert_eq!(out.status.code(), Some(78), "{args:?}");
+                let stderr = String::from_utf8(out.stderr).unwrap();
+                assert_eq!(stderr, format!("{message}\n"), "{args:?}");
+            }
+        }
+        assert_eq!(std::fs::read(&repo).unwrap(), before, "{case}");
+    }
 }
 
 #[path = "support/closed_stdout.rs"]

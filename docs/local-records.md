@@ -164,9 +164,9 @@ charges the bytes of the fingerprint encoding of the schema. It builds that
 encoding before it compares the fingerprint.
 
 The [issue ticket writer](issue-ticket.md) is the one production caller of the
-metered put. The admission check of catalog 6 accepts a `private` row only for a
+metered put. The full proof of catalog 6 accepts a `private` row only for a
 check-in, a file of a check-in or an issue artifact. So a put that no issue owns
-leaves a repository that `LocalOwnerRepository::open` refuses. The unit tests of
+leaves a repository that `gos v verify` refuses. The unit tests of
 the put use it only on fixture files.
 
 A put charges its input to the content `Budget` as decoded bytes. A put that

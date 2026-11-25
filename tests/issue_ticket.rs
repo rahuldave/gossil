@@ -6,8 +6,9 @@
 //! check that stock Fossil 2.29 reads the stored tickets, alone and beside check-ins.
 //!
 //! ## Recommendations
-//! `LocalOwnerRepository::open` admits issue rows, so a test may open a new owner
-//! for each step.
+//! A task needs its project, so each test stores the project first. Open checks
+//! only what does not grow with the history, and `verify` gives the full proof, so
+//! a tamper case asserts the refusal of `verify`.
 use gossil::gest_project_values::{ProjectValueInputs, project_from_values};
 use gossil::gest_task_values::{TaskValueInputs, task_from_values};
 use gossil::native_date::NativeDate;
@@ -18,6 +19,9 @@ use gossil::storage::{
 use libsql::Value;
 use serde_json::{Value as Json, json};
 use std::path::Path;
+
+#[path = "support/proof.rs"]
+mod proof;
 
 /// The K card of the task fixture.
 const TASK_K: &str = "a1b2c3d4e5f60718293a4b5c6d7e8f9012345678";
@@ -81,7 +85,7 @@ async fn repository(path: &Path) -> LocalOwnerRepository {
 fn task_inputs() -> TaskValueInputs {
     TaskValueInputs {
         gest_id: json!("mmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmm"),
-        project_id: json!("klmnopqrstuvwxyzklmnopqrstuvwxyz"),
+        project_id: json!("kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk"),
         title: json!("Task <é> & \"quoted\" 'single'"),
         priority: json!(2),
         status: json!("open"),
@@ -230,6 +234,7 @@ async fn a_task_round_trips_through_its_artifact() {
     let temp = tempfile::tempdir().unwrap();
     let path = temp.path().join("repo");
     let mut owner = repository(&path).await;
+    create(&mut owner, &project_artifact()).await.unwrap();
     let bytes = task_artifact(task_inputs(), TASK_K);
     let stored = create(&mut owner, &bytes).await.unwrap();
     let task = task_from_values(task_inputs()).unwrap();
@@ -249,7 +254,7 @@ async fn a_task_round_trips_through_its_artifact() {
         vec![vec![
             text("combined"),
             text("mmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmm"),
-            text("klmnopqrstuvwxyzklmnopqrstuvwxyz"),
+            text("kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk"),
             text("Task <é> & \"quoted\" 'single'"),
             Value::Integer(2),
             text("open"),
@@ -262,7 +267,7 @@ async fn a_task_round_trips_through_its_artifact() {
         ]]
     );
     assert_eq!(
-        rows(&path, "SELECT title,status,priority,metadata,assigned_to,gossil_kind,gossil_deleted,type,comment FROM ticket").await,
+        rows(&path, &format!("SELECT title,status,priority,metadata,assigned_to,gossil_kind,gossil_deleted,type,comment FROM ticket WHERE tkt_uuid='{TASK_K}'")).await,
         vec![vec![
             text("\"Task <é> & \\\"quoted\\\" 'single'\""),
             text("\"open\""),
@@ -280,7 +285,7 @@ async fn a_task_round_trips_through_its_artifact() {
     assert_eq!(
         rows(
             &path,
-            "SELECT type,user,comment,brief,mtime FROM event WHERE type='t'"
+            &format!("SELECT e.type,e.user,e.comment,e.brief,e.mtime FROM event e JOIN tag t ON t.tagid=e.tagid WHERE t.tagname='tkt-{TASK_K}'")
         )
         .await,
         vec![vec![
@@ -295,7 +300,7 @@ async fn a_task_round_trips_through_its_artifact() {
     );
     assert_eq!(
         rows(&path, "SELECT (SELECT count(*) FROM private),(SELECT count(*) FROM unclustered WHERE rid>1),(SELECT count(*) FROM unsent),(SELECT count(*) FROM rcvfrom),(SELECT count(*) FROM transactions)+(SELECT count(*) FROM transaction_events)+(SELECT count(*) FROM g_command_audit)+(SELECT count(*) FROM g_selector)+(SELECT count(*) FROM backlink)").await,
-        vec![[1, 0, 0, 2, 0].map(Value::Integer).to_vec()]
+        vec![[2, 0, 0, 3, 0].map(Value::Integer).to_vec()]
     );
 }
 
@@ -419,11 +424,12 @@ async fn metadata_priority_and_status_values_round_trip() {
     let temp = tempfile::tempdir().unwrap();
     let path = temp.path().join("repo");
     let mut owner = repository(&path).await;
+    create(&mut owner, &project_artifact()).await.unwrap();
     let mut expected = Vec::new();
     for (index, (metadata, priority, status, resolved, stored, spelled)) in cases.iter().enumerate()
     {
         let k = format!("{index:040x}");
-        let gest = ["k", "l", "m", "n", "o", "p"][index].repeat(32);
+        let gest = ["l", "m", "n", "o", "p", "q"][index].repeat(32);
         let inputs = TaskValueInputs {
             gest_id: json!(gest),
             metadata: metadata.clone(),
@@ -483,6 +489,7 @@ async fn other_ticket_shapes_are_refused_without_effect() {
     let temp = tempfile::tempdir().unwrap();
     let path = temp.path().join("repo");
     let mut owner = repository(&path).await;
+    create(&mut owner, &project_artifact()).await.unwrap();
     let task = task_artifact(task_inputs(), TASK_K);
     create(&mut owner, &task).await.unwrap();
     let before = snapshot(&path).await;
@@ -628,7 +635,8 @@ async fn other_ticket_shapes_are_refused_without_effect() {
 
 #[tokio::test]
 /// A repository whose marker another connection changed to catalog 4 is refused
-/// before any effect, and so is a repository changed in any other way.
+/// before any effect. The write of an owner opened before the change checks the
+/// marker in its own transaction, and a new open refuses the older catalog.
 async fn a_changed_or_older_repository_is_refused() {
     let temp = tempfile::tempdir().unwrap();
     let path = temp.path().join("repo");
@@ -644,9 +652,9 @@ async fn a_changed_or_older_repository_is_refused() {
     let error = create(&mut owner, &task_artifact(task_inputs(), TASK_K))
         .await
         .unwrap_err();
-    assert!(
-        error.to_string().contains("repository admission stale"),
-        "{error}"
+    assert_eq!(
+        error.to_string(),
+        "storage marker differs from exact repository catalog"
     );
     assert_eq!(snapshot(&path).await, before);
     drop(owner);
@@ -732,8 +740,8 @@ fn stock_fossil_reads_the_stored_issue_tickets() {
     let project = project_artifact();
     let stored = runtime.block_on(async {
         let mut owner = repository(&path).await;
-        create(&mut owner, &task).await.unwrap();
         create(&mut owner, &project).await.unwrap();
+        create(&mut owner, &task).await.unwrap();
         drop(owner);
         native_ticket_state(&path).await
     });
@@ -879,11 +887,12 @@ async fn run_order(home: &Path, steps: &[Step]) -> (Vec<IssueTicket>, usize, Vec
     );
     let (mut issues, mut commits, mut registered) = (Vec::new(), 0, false);
     let mut tags = Vec::new();
+    let mut project = false;
     for (index, step) in steps.iter().enumerate() {
         match step {
             Step::Issue => {
                 let k = format!("{:040x}", index + 1);
-                let gest_id = char::from(b'k' + index as u8).to_string().repeat(32);
+                let gest_id = char::from(b'l' + index as u8).to_string().repeat(32);
                 let inputs = TaskValueInputs {
                     gest_id: json!(gest_id),
                     ..task_inputs()
@@ -891,6 +900,12 @@ async fn run_order(home: &Path, steps: &[Step]) -> (Vec<IssueTicket>, usize, Vec
                 let mut owner = LocalOwnerRepository::open(&repo, limits().admission)
                     .await
                     .unwrap();
+                if !project {
+                    // The first issue step stores the project of the tasks too.
+                    project = true;
+                    issues.push(create(&mut owner, &project_artifact()).await.unwrap());
+                    tags.push(format!("tkt-{PROJECT_K}"));
+                }
                 issues.push(
                     create(&mut owner, &task_artifact(inputs, &k))
                         .await
@@ -961,7 +976,8 @@ async fn check_ins_and_issues_share_one_repository_in_any_order() {
     ] {
         let temp = tempfile::tempdir().unwrap();
         let (issues, commits, names) = run_order(temp.path(), steps).await;
-        let expected = steps.iter().filter(|step| matches!(step, Issue)).count();
+        // The first issue step stores the project of the tasks too.
+        let expected = steps.iter().filter(|step| matches!(step, Issue)).count() + 1;
         assert_eq!(issues.len(), expected, "{steps:?}");
         assert!(commits > 0, "{steps:?}");
         // Tag IDs above the 12 built-in tags follow the order of creation.
@@ -983,23 +999,26 @@ async fn check_ins_and_issues_share_one_repository_in_any_order() {
 }
 
 #[tokio::test]
-/// With a registered checkout and check-ins between issues, admission still refuses
-/// each changed issue, tag or receipt row, so the check-in path checks issues too.
+/// With a registered checkout and check-ins between issues, the full proof still
+/// refuses each changed issue, tag or receipt row, so it checks check-ins and issues
+/// together. Open admits each change but one, since only the swapped receipt of the
+/// selected check-in is a fact that open reads.
 async fn admission_refuses_changed_issue_rows_beside_check_ins() {
     use Step::{Commit, Issue, Open};
-    let (differs, projection) = (
+    let (differs, projection, receipt) = (
         "stored issue rows differ from the ticket artifact",
         "recording native projection differs",
+        "recording current receipt relation",
     );
     let cases = [
         (
             "swapped tag IDs",
-            "UPDATE tag SET tagid=-1 WHERE tagid=13; UPDATE tag SET tagid=13 WHERE tagid=14; UPDATE tag SET tagid=14 WHERE tagid=-1; UPDATE tagxref SET tagid=CASE tagid WHEN 13 THEN 14 WHEN 14 THEN 13 ELSE tagid END; UPDATE event SET tagid=CASE tagid WHEN 13 THEN 14 WHEN 14 THEN 13 ELSE tagid END",
+            "UPDATE tag SET tagid=-1 WHERE tagid=14; UPDATE tag SET tagid=14 WHERE tagid=15; UPDATE tag SET tagid=15 WHERE tagid=-1; UPDATE tagxref SET tagid=CASE tagid WHEN 14 THEN 15 WHEN 15 THEN 14 ELSE tagid END; UPDATE event SET tagid=CASE tagid WHEN 14 THEN 15 WHEN 15 THEN 14 ELSE tagid END",
             projection,
         ),
         (
             "a change row that names the check-in",
-            "UPDATE ticketchng SET tkt_rid=(SELECT max(objid) FROM event WHERE type='ci') WHERE tkt_id=1",
+            "UPDATE ticketchng SET tkt_rid=(SELECT max(objid) FROM event WHERE type='ci') WHERE tkt_id=2",
             differs,
         ),
         (
@@ -1019,8 +1038,8 @@ async fn admission_refuses_changed_issue_rows_beside_check_ins() {
         ),
         (
             "swapped receipts of an issue and a check-in",
-            "UPDATE blob SET rcvid=CASE rcvid WHEN 2 THEN 3 WHEN 3 THEN 2 ELSE rcvid END",
-            projection,
+            "UPDATE blob SET rcvid=CASE rcvid WHEN 3 THEN 4 WHEN 4 THEN 3 ELSE rcvid END",
+            receipt,
         ),
         (
             "an issue event of type ci",
@@ -1049,11 +1068,10 @@ async fn admission_refuses_changed_issue_rows_beside_check_ins() {
             .execute_batch(sql)
             .await
             .unwrap();
-        let error = LocalOwnerRepository::open(&repo, limits().admission)
-            .await
-            .err()
-            .unwrap();
-        assert_eq!(error.to_string(), message, "{case}");
+        let (opened, error) = proof::verify_refusal(&repo, limits().admission).await;
+        assert_eq!(error, message, "{case}");
+        // Open checks that the fingerprint names the receipt of the selected check-in.
+        assert_eq!(opened, message != receipt, "{case}");
     }
 }
 
@@ -1063,7 +1081,7 @@ async fn admission_refuses_changed_issue_rows_beside_check_ins() {
 /// an issue. An older fingerprint, of the root or of an issue, is refused after a check-in.
 async fn the_fingerprint_must_name_the_selected_receipt() {
     use Step::{Issue, Open};
-    for (steps, receipt) in [(&[Open, Issue][..], "1/"), (&[Issue, Open][..], "2/")] {
+    for (steps, receipt) in [(&[Open, Issue][..], "1/"), (&[Issue, Open][..], "3/")] {
         let temp = tempfile::tempdir().unwrap();
         run_order(temp.path(), steps).await;
         let repo = temp.path().join("repo");
@@ -1153,7 +1171,8 @@ fn stock_fossil_reads_check_ins_and_issues_together() {
             path.as_os_str(),
         ],
     );
-    let k = &issues[0].ticket_id;
+    // The first issue step stores the project, and then the task.
+    let k = &issues[1].ticket_id;
     for expected in [
         "commit 1",
         "commit 2",
@@ -1173,6 +1192,7 @@ fn stock_fossil_reads_check_ins_and_issues_together() {
             path.as_os_str(),
         ],
     );
-    assert!(shown.contains(&"m".repeat(32)), "{shown}");
+    // The task of step 2 has the Gest ID of 32 letters `n`.
+    assert!(shown.contains(&"n".repeat(32)), "{shown}");
     assert!(shown.contains(k.as_str()), "{shown}");
 }

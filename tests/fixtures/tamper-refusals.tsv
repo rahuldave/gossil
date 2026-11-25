@@ -1,0 +1,138 @@
+DELETE FROM blob WHERE uuid=(SELECT combined_head FROM g_checkout)	recording native checkout selection
+DELETE FROM config WHERE name='server-code'	native server identity unavailable
+DELETE FROM g_checkout_owner	unsupported native checkout inventory
+DELETE FROM g_local_owner	local repository binding unavailable
+DELETE FROM g_vvar	recording native checkout keys
+DELETE FROM leaf WHERE rid<>1	recording native projection differs
+DELETE FROM mlink	recording native projection differs
+DELETE FROM private	recording native projection differs
+DELETE FROM tagxref WHERE tagid=8	root branch crosslinks differ from canonical bytes
+DELETE FROM unsent	recording native projection differs
+DROP INDEX delta_i1	missing required repository catalog object
+INSERT INTO event(type,mtime,objid) VALUES('ci',2461363.5,2)	recording native projection differs
+INSERT INTO filename(name) VALUES('real-file')	unsupported nonempty catalog6 table: filename
+INSERT INTO g_admission VALUES('hash','owner_unclassified','test')	unsupported nonempty catalog6 table: g_admission
+INSERT INTO g_checkout VALUES('checkout','/tmp','root',NULL,0,0,'ready')	unsupported populated catalog6 checkout scope
+INSERT INTO g_diagnostic VALUES('scope','ticket','hash','field','code','detail')	unsupported nonempty catalog6 table: g_diagnostic
+INSERT INTO g_gest_tags VALUES('scope','tag','tag','2026','2026')	unsupported nonempty catalog6 table: g_gest_tags
+INSERT INTO g_path_scope VALUES('work','first','private')	recording pending counter unreachable
+INSERT INTO g_path_scope VALUES('work','first','shared')	recording pending counter unreachable
+INSERT INTO g_pending_path(checkout_id,path,action,selected_scope) VALUES('work','first','remove','shared')	unsupported nonempty catalog6 table: g_pending_path
+INSERT INTO g_vfile SELECT checkout_id,2,vid,chnged,deleted,isexe,islink,rid,mrid,mtime,'FIRST',origname,mhash FROM g_vfile	recording tracked alias
+INSERT INTO g_vfile SELECT checkout_id,2,vid,chnged,deleted,isexe,islink,rid,mrid,mtime,'first/child',origname,mhash FROM g_vfile	recording tracked alias
+INSERT INTO g_vmerge(checkout_id,id,merge,mhash) VALUES('work',1,1,'opaque')	unsupported nonempty catalog6 table: g_vmerge
+INSERT INTO leaf VALUES(2)	recording native projection differs
+INSERT INTO plink(pid,cid,isprim,mtime) VALUES(1,2,1,2461363.5)	unsupported nonempty catalog6 table: plink
+INSERT INTO rcvfrom(rcvid,uid,mtime) VALUES(2,0,2461363.5)	recording unexplained receipt
+INSERT INTO rcvfrom(uid,mtime) VALUES(0,julianday('now'))	recording unexplained receipt
+INSERT INTO tag(tagname) VALUES('extra')	recording native projection differs
+INSERT INTO tagxref(tagid,tagtype,srcid,origid,mtime,rid) VALUES(1,1,2,2,2461363.5,2)	recording native projection differs
+INSERT INTO unclustered SELECT rid FROM private LIMIT 1	recording SQL count limit
+INSERT INTO unclustered VALUES(2)	recording SQL count limit
+PRAGMA ignore_check_constraints=ON; UPDATE g_storage SET storage_version=4	gossil: repository REPO is at catalog 4, and this build needs catalog 6.
+PRAGMA ignore_check_constraints=ON; UPDATE g_storage SET storage_version=5	gossil: repository REPO is at catalog 5, and this build needs catalog 6.
+PRAGMA ignore_check_constraints=ON; UPDATE g_storage SET storage_version=7	unsupported storage version
+UPDATE blob SET content=x'00000000'	native content envelope has no payload
+UPDATE blob SET rcvid=1 WHERE rid<>1	recording current receipt relation
+UPDATE blob SET uuid=printf('%064d',0)	immutable shared root provenance differs
+UPDATE config SET value='invalid' WHERE name='server-code'	native server identity unavailable
+UPDATE config SET value='wrong' WHERE name='project-code'	unsupported or missing native repository markers
+UPDATE config SET value=40 WHERE name='server-code'	native server identity unavailable
+UPDATE event SET euser='override'	root event differs from canonical bytes
+UPDATE event SET mtime=mtime+1	root event differs from canonical bytes
+UPDATE event SET uid=0 WHERE objid<>1	recording native projection differs
+UPDATE filename SET name='wrong' WHERE name='a'	recording native projection differs
+UPDATE g_checkout SET checkout_id='other'	unsupported recording checkout state
+UPDATE g_checkout SET combined_head='unsupported'	unsupported recording checkout state
+UPDATE g_checkout SET generation=1	unsupported recording checkout state
+UPDATE g_checkout SET generation=generation+1	unsupported recording checkout state
+UPDATE g_checkout SET pending_version='invalid'	unsupported recording checkout state
+UPDATE g_checkout SET pending_version=0	unsupported recording checkout state
+UPDATE g_checkout SET pending_version=0.5	unsupported recording checkout state
+UPDATE g_checkout_owner SET owner_id='other'	unsupported recording checkout state
+UPDATE g_path_scope SET scope='shared'	recording historical private scope missing
+UPDATE g_public_receipt SET native_hash=CAST(native_hash AS BLOB)	corrupt public root binding
+UPDATE g_public_receipt SET validation_class='independent-public-receipt'	unsupported required public graph closure
+UPDATE g_storage SET checkout_count=1	unsupported populated catalog6 checkout scope
+UPDATE g_storage SET policy_complete=0	repository principal or complete policy unavailable
+UPDATE g_vfile SET checkout_id='other'	repository foreign key integrity failure
+UPDATE g_vfile SET checkout_id=x'00'	repository foreign key integrity failure
+UPDATE g_vfile SET chnged='invalid'	recording unsupported tracked state
+UPDATE g_vfile SET chnged=0.5	recording unsupported tracked state
+UPDATE g_vfile SET chnged=1	recording unsupported tracked state
+UPDATE g_vfile SET chnged=NULL	recording unsupported tracked state
+UPDATE g_vfile SET chnged=x'00'	recording unsupported tracked state
+UPDATE g_vfile SET deleted='invalid'	recording unsupported tracked state
+UPDATE g_vfile SET deleted=0.5	recording unsupported tracked state
+UPDATE g_vfile SET deleted=1	recording unsupported tracked state
+UPDATE g_vfile SET deleted=NULL	recording unsupported tracked state
+UPDATE g_vfile SET deleted=x'00'	recording unsupported tracked state
+UPDATE g_vfile SET id='invalid'	recording unsupported tracked state
+UPDATE g_vfile SET id=0	recording unsupported tracked state
+UPDATE g_vfile SET id=0.5	recording unsupported tracked state
+UPDATE g_vfile SET id=2	recording tracked row identity
+UPDATE g_vfile SET id=x'00'	recording unsupported tracked state
+UPDATE g_vfile SET isexe='invalid'	recording unsupported tracked state
+UPDATE g_vfile SET isexe=-1	recording unsupported tracked state
+UPDATE g_vfile SET isexe=0.5	recording unsupported tracked state
+UPDATE g_vfile SET isexe=2	recording unsupported tracked state
+UPDATE g_vfile SET isexe=NULL	recording unsupported tracked state
+UPDATE g_vfile SET isexe=x'00'	recording unsupported tracked state
+UPDATE g_vfile SET islink='invalid'	recording unsupported tracked state
+UPDATE g_vfile SET islink=0.5	recording unsupported tracked state
+UPDATE g_vfile SET islink=1	recording unsupported tracked state
+UPDATE g_vfile SET islink=NULL	recording unsupported tracked state
+UPDATE g_vfile SET islink=x'00'	recording unsupported tracked state
+UPDATE g_vfile SET mhash=''	recording unsupported tracked state
+UPDATE g_vfile SET mhash=x'00'	recording unsupported tracked state
+UPDATE g_vfile SET mrid='invalid'	recording unsupported tracked state
+UPDATE g_vfile SET mrid=0	recording unsupported tracked state
+UPDATE g_vfile SET mrid=0.5	recording unsupported tracked state
+UPDATE g_vfile SET mrid=1	recording unsupported tracked state
+UPDATE g_vfile SET mrid=NULL	recording unsupported tracked state
+UPDATE g_vfile SET mrid=x'00'	recording unsupported tracked state
+UPDATE g_vfile SET mtime='invalid'	recording unsupported tracked state
+UPDATE g_vfile SET mtime=0.5	recording unsupported tracked state
+UPDATE g_vfile SET mtime=NULL	recording unsupported tracked state
+UPDATE g_vfile SET mtime=x'00'	recording unsupported tracked state
+UPDATE g_vfile SET origname=''	recording unsupported tracked state
+UPDATE g_vfile SET origname=x'00'	recording unsupported tracked state
+UPDATE g_vfile SET pathname=''	invalid tracking path
+UPDATE g_vfile SET pathname='../outside'	invalid tracking path
+UPDATE g_vfile SET pathname='.gossil/checkout.json'	invalid tracking path
+UPDATE g_vfile SET pathname='/absolute'	invalid tracking path
+UPDATE g_vfile SET pathname='a/./b'	invalid tracking path
+UPDATE g_vfile SET pathname='a//b'	invalid tracking path
+UPDATE g_vfile SET pathname='a\b'	invalid tracking path
+UPDATE g_vfile SET pathname=CAST(x'006162' AS TEXT)	invalid tracking path
+UPDATE g_vfile SET pathname=CAST(x'610062' AS TEXT)	invalid tracking path
+UPDATE g_vfile SET pathname=CAST(x'616200' AS TEXT)	invalid tracking path
+UPDATE g_vfile SET pathname=CAST(x'61ff62' AS TEXT)	invalid column type
+UPDATE g_vfile SET pathname=CAST(x'80' AS TEXT)	invalid column type
+UPDATE g_vfile SET pathname=CAST(x'c080' AS TEXT)	invalid column type
+UPDATE g_vfile SET pathname=CAST(x'eda080' AS TEXT)	invalid column type
+UPDATE g_vfile SET pathname=NULL	recording unsupported tracked state
+UPDATE g_vfile SET pathname=x'00'	recording unsupported tracked state
+UPDATE g_vfile SET rid='invalid'	recording unsupported tracked state
+UPDATE g_vfile SET rid=0.5	recording unsupported tracked state
+UPDATE g_vfile SET rid=1	recording unsupported tracked state
+UPDATE g_vfile SET rid=NULL	recording unsupported tracked state
+UPDATE g_vfile SET rid=x'00'	recording unsupported tracked state
+UPDATE g_vfile SET vid='invalid'	recording unsupported tracked state
+UPDATE g_vfile SET vid=0	recording unsupported tracked state
+UPDATE g_vfile SET vid=0.5	recording unsupported tracked state
+UPDATE g_vfile SET vid=1	recording unsupported tracked state
+UPDATE g_vfile SET vid=2	recording unsupported tracked state
+UPDATE g_vfile SET vid=NULL	recording unsupported tracked state
+UPDATE g_vfile SET vid=x'00'	recording unsupported tracked state
+UPDATE g_vvar SET value='1/00000000000000000000000000000000' WHERE name='fingerprint'	recording fingerprint checksum
+UPDATE mlink SET isaux=1	recording native projection differs
+UPDATE mlink SET mperm=2	recording native projection differs
+UPDATE mlink SET pid=-1	recording native projection differs
+UPDATE plink SET baseid=pid	recording native projection differs
+UPDATE plink SET isprim=0	recording native projection differs
+UPDATE rcvfrom SET mtime=mtime+1	native root receive facts differ
+UPDATE rcvfrom SET nonce='unexpected' WHERE rcvid>1	recording fingerprint checksum
+UPDATE rcvfrom SET uid=1 WHERE rcvid>1	recording fingerprint checksum
+UPDATE tagxref SET srcid=0 WHERE rid<>1	recording native projection differs
+UPDATE tagxref SET value='wrong' WHERE tagid=8	root branch crosslinks differ from canonical bytes

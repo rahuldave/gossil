@@ -23,15 +23,18 @@
 //! the ticket is private, and no text field contains `[`. It writes no selector,
 //! tag, link, audit or undo row.
 //!
-//! The admission of [`LocalOwnerRepository::open`] accepts these rows, and it derives
-//! every creation again. The writer runs that full admission before and after its
-//! write, and the reader runs it before its read.
+//! The writer and the readers run the checks of each command in their own
+//! transaction. The cost of those checks does not grow with the history. The
+//! writer then checks the facts of its one write, which are the artifact, the
+//! unused IDs and, for a task, its project.
+//! [`LocalOwnerRepository::list_private_issues`] reads the typed rows. The
+//! full proof of `gos v verify` derives every creation again and compares each row.
 //!
 //! [`LocalOwnerRepository::init_private_project`], which `gos i init` calls, also
 //! binds the new project to the registered checkout, with one `g_project_binding`
 //! row and one `g_checkout_project` row in the same transaction.
-//! [`LocalOwnerRepository::bound_project`] reads that binding. Admission accepts
-//! both tables empty, or with exactly that one binding to an admitted project
+//! [`LocalOwnerRepository::bound_project`] reads that binding. The checks of each
+//! command accept both tables empty, or with exactly that one binding to a project
 //! that is not archived.
 //!
 //! ## Recommendations
@@ -56,13 +59,21 @@ const DIFFERS: &str = "stored issue rows differ from the ticket artifact";
 /// Count the rows that hold the ticket ID, its tag, its artifact or its Gest ID.
 ///
 /// The count is zero only when no row holds any of them. A Gest ID names one task or
-/// one project, never both.
-const HELD: &str = "SELECT (SELECT count(*) FROM ticket WHERE tkt_uuid=?1)+(SELECT count(*) FROM tag WHERE tagname=?2)+(SELECT count(*) FROM blob WHERE uuid=?3)+(SELECT count(*) FROM g_gest_tasks WHERE id=?4)+(SELECT count(*) FROM g_gest_projects WHERE id=?4)";
+/// one project, never both. Each count uses an index or a primary key. The typed rows
+/// are counted in the `combined` scope only, which is the scope of the key.
+const HELD: &str = "SELECT (SELECT count(*) FROM ticket WHERE tkt_uuid=?1)+(SELECT count(*) FROM tag WHERE tagname=?2)+(SELECT count(*) FROM blob WHERE uuid=?3)+(SELECT count(*) FROM g_gest_tasks WHERE scope_key='combined' AND id=?4)+(SELECT count(*) FROM g_gest_projects WHERE scope_key='combined' AND id=?4)";
+
+/// Count the `combined` projects with an ID that are not archived. A new task needs one.
+const OPEN_PROJECT: &str = "SELECT count(*) FROM g_gest_projects WHERE scope_key='combined' AND id=?1 AND archived_at IS NULL";
+
+/// The refusal of a new task whose project the repository does not hold, or holds archived.
+pub(crate) const TASK_PROJECT: &str =
+    "a new task needs a project that the repository holds and that is not archived";
 
 /// The refusal of the proof of one task whose project the repository does not hold.
 ///
-/// The full proof admits such a task, because the library writer may store a task
-/// before its project.
+/// The writer refuses a new task without its project. The full proof still admits
+/// such a task, since only a change to the file can make one.
 const NO_PROJECT: &str = "a stored task names a project that the repository does not hold";
 
 /// Counts the rows of one issue that its proof reads by index, and the rows that may not name it.
@@ -105,10 +116,9 @@ pub struct ProjectInitRequest<'a> {
 /// are empty. It is also 1 when each table holds one row, and both rows name the
 /// registered checkout and the Gest ID of one admitted project that is not archived.
 /// The `g_project_binding` row must then hold the exact root of the checkout.
-/// Every other state gives 0. The checkout IDs need no type check here. The
-/// foreign key check of admission runs first and refuses an ID that is not the
-/// text ID of the registered checkout.
-const BINDING: &str = "SELECT CASE (SELECT count(*) FROM g_project_binding)+(SELECT count(*) FROM g_checkout_project) WHEN 0 THEN 1 WHEN 2 THEN (SELECT count(*) FROM g_project_binding b JOIN g_checkout_project p ON CAST(p.checkout_id AS BLOB)=CAST(b.checkout_id AS BLOB) AND CAST(p.project_id AS BLOB)=CAST(b.project_id AS BLOB) JOIN g_checkout c ON CAST(c.checkout_id AS BLOB)=CAST(b.checkout_id AS BLOB) AND CAST(c.root AS BLOB)=CAST(b.root AS BLOB) JOIN g_gest_projects g ON g.scope_key='combined' AND CAST(g.id AS BLOB)=CAST(b.project_id AS BLOB) AND g.archived_at IS NULL WHERE typeof(b.project_id)='text' AND typeof(b.root)='text' AND typeof(p.project_id)='text') ELSE 0 END";
+/// Every other state gives 0. Each ID and the root must be text. Open does not run
+/// the foreign key check, so this check refuses a checkout ID of another type too.
+const BINDING: &str = "SELECT CASE (SELECT count(*) FROM g_project_binding)+(SELECT count(*) FROM g_checkout_project) WHEN 0 THEN 1 WHEN 2 THEN (SELECT count(*) FROM g_project_binding b JOIN g_checkout_project p ON CAST(p.checkout_id AS BLOB)=CAST(b.checkout_id AS BLOB) AND CAST(p.project_id AS BLOB)=CAST(b.project_id AS BLOB) JOIN g_checkout c ON CAST(c.checkout_id AS BLOB)=CAST(b.checkout_id AS BLOB) AND CAST(c.root AS BLOB)=CAST(b.root AS BLOB) JOIN g_gest_projects g ON g.scope_key='combined' AND CAST(g.id AS BLOB)=CAST(b.project_id AS BLOB) AND g.archived_at IS NULL WHERE typeof(b.project_id)='text' AND typeof(b.root)='text' AND typeof(p.project_id)='text' AND typeof(b.checkout_id)='text' AND typeof(p.checkout_id)='text') ELSE 0 END";
 
 /// The refusal of an `issue init` write whose project, checkout or repository does not fit.
 ///
@@ -418,7 +428,7 @@ pub(crate) enum IssuePhase {
     Typed,
     /// The project binding and the checkout project rows exist.
     Binding,
-    /// The new admission proof is captured, and only COMMIT is left.
+    /// The checks of each command ran again on the new rows, and only COMMIT is left.
     Admission,
 }
 
@@ -627,7 +637,7 @@ impl WriteTransaction<'_> {
 
     /// Prove one issue by replaying its one artifact and comparing every row that it gives.
     ///
-    /// The proof checks that each table that admission keeps empty in every repository has no
+    /// The proof checks that each table that the full proof keeps empty in every repository has no
     /// row, with one fixed query per table. The `tkt-K` tag must have one `tagxref` row, whose RID names a private blob
     /// with a local receive record. The artifact must be one canonical
     /// creation with this K. No row that [`ISSUE_ROWS`] counts may name the artifact,
@@ -638,9 +648,8 @@ impl WriteTransaction<'_> {
     /// [`NO_PROJECT`]. The full proof admits such a task.
     ///
     /// The proof replays only this one artifact, and reads the rows of this issue by
-    /// an index or a primary key. Each row read still measures the size of the text of
-    /// the whole repository, as every read of admission does, so that part of the cost
-    /// grows with the repository. The proof does not see a row that no index of the
+    /// an index or a primary key, so its cost does not grow with the repository. The
+    /// proof does not see a row that no index of the
     /// issue reaches, such as a second blob with the same receipt, an `mlink` row
     /// whose `pmid` is the artifact, a `plink` row whose `baseid` is the artifact, or a
     /// typed row in another scope. Only the full proof refuses those.
@@ -819,19 +828,23 @@ impl WriteTransaction<'_> {
 impl LocalOwnerRepository {
     /// Store one private task or project creation artifact in one transaction.
     ///
-    /// The call runs the full admission of [`Self::open`], writes the native rows of a
-    /// private Fossil ticket and one typed row, runs the full admission again, and
-    /// then commits. A later [`Self::open`] admits the stored ticket.
+    /// The call runs the checks of each command. It parses the artifact and checks that
+    /// it is one canonical creation. It checks that no row holds its ticket ID, tag,
+    /// artifact or Gest ID, and that the project of a task exists and is not archived.
+    /// It then writes the native rows of a private Fossil ticket and one typed row,
+    /// runs the checks of each command again, and commits. Each check uses an index,
+    /// so the cost of the call does not grow with the repository.
     /// # Arguments
     /// * `request` - The creation artifact and the requested scope.
     /// * `limits` - Finite content, parser and SQL ceilings for the whole call.
     /// # Returns
     /// The stored ticket ID, native name and record.
     /// # Errors
-    /// Refuses a shared scope, stale or failed admission and an artifact that is not one
-    /// canonical creation. Also refuses a `[` in a J value, a ticket ID, tag, artifact
-    /// or Gest ID that a row already holds, exhausted ceilings and SQL failures. The
-    /// refusal writes nothing.
+    /// Refuses a shared scope, the refusals of the checks of each command and an
+    /// artifact that is not one canonical creation. Also refuses a `[` in a J value, a
+    /// ticket ID, tag, artifact or Gest ID that a row already holds, a task whose project
+    /// is missing or archived, exhausted ceilings and SQL failures. The refusal writes
+    /// nothing.
     /// # Examples
     /// ```no_run
     /// use gossil::storage::{IssueLimits, IssueTicket, LocalOwnerRepository, PathScope,
@@ -860,8 +873,8 @@ impl LocalOwnerRepository {
     ///
     /// `issue init` makes this write. The call writes the rows of
     /// [`Self::create_private_issue`], one `g_project_binding` row with the root of the
-    /// checkout, and one `g_checkout_project` row. It runs the full admission of
-    /// [`Self::open`] before and after the write, and then commits.
+    /// checkout, and one `g_checkout_project` row. It runs the checks of each command
+    /// before and after the write, and then commits.
     /// # Arguments
     /// * `request` - The project creation artifact and the checkout ID.
     /// * `limits` - Finite content, parser and SQL ceilings for the whole call.
@@ -891,7 +904,7 @@ impl LocalOwnerRepository {
             .await
     }
 
-    /// Return the Gest ID of the project bound to a checkout, after the full admission of [`Self::open`].
+    /// Return the Gest ID of the project bound to a checkout, after the checks of each command.
     ///
     /// It changes nothing.
     /// # Arguments
@@ -901,7 +914,8 @@ impl LocalOwnerRepository {
     /// # Returns
     /// The Gest ID of the bound project, or `None` when the checkout has no binding.
     /// # Errors
-    /// Refuses stale or failed admission, exhausted ceilings and SQL failures.
+    /// Fails with the refusals of the checks of each command, exhausted ceilings and
+    /// SQL failures.
     /// # Examples
     /// ```no_run
     /// use gossil::storage::{IssueLimits, LocalOwnerRepository, StorageError};
@@ -916,18 +930,13 @@ impl LocalOwnerRepository {
         limits: IssueLimits,
     ) -> Result<Option<String>, StorageError> {
         let mut budget = Budget::new(limits.admission.content)?;
-        let mut parse = ParseWork::new(limits.admission.parser)?;
+        ParseWork::new(limits.admission.parser)?;
         let mut tx = self.store.begin_write().await?;
         let result = async {
-            tx.check_admission_budgeted(&self.principal, &self.admission, &mut budget)
+            tx.check_admission_budgeted(&self.principal, &mut budget)
                 .await?;
-            tx.validate_recording_repository(
-                &self.principal,
-                limits.admission,
-                &mut budget,
-                &mut parse,
-            )
-            .await?;
+            tx.check_recording_state(&self.principal, limits.admission, &mut budget)
+                .await?;
             let rows = bounded_rows(
                 &mut tx,
                 "SELECT project_id FROM g_checkout_project WHERE checkout_id=?1",
@@ -967,11 +976,9 @@ impl LocalOwnerRepository {
             bytes: limits.sql_bytes,
         };
         let mut tx = self.store.begin_write().await?;
-        let mut admitted = false;
         let result = async {
-            tx.check_admission_budgeted(&self.principal, &self.admission, &mut budget).await?;
-            admitted = true;
-            tx.validate_recording_repository(&self.principal, limits.admission, &mut budget, &mut parse).await?;
+            tx.check_admission_budgeted(&self.principal, &mut budget).await?;
+            tx.check_recording_state(&self.principal, limits.admission, &mut budget).await?;
             let creation = derive_creation(&mut tx, bytes, &mut parse, &mut budget).await?;
             if let Some(checkout) = checkout {
                 let free = tx.query_bound_work("SELECT (SELECT count(*) FROM g_checkout WHERE checkout_id=?1),(SELECT count(*) FROM g_checkout_project),(SELECT count(*) FROM g_gest_projects)", vec![Value::Text(checkout.into())], 3, &mut sql, &mut budget).await?;
@@ -986,6 +993,13 @@ impl LocalOwnerRepository {
             let held = tx.query_bound_work(HELD, vec![k(), Value::Text(tag.clone()), Value::Text(name.clone()), gest_id], 1, &mut sql, &mut budget).await?;
             if held != vec![vec![Value::Integer(0)]] {
                 return Err(StorageError::state(UNSUPPORTED));
+            }
+            if let IssueRecord::Task(_) = creation.record {
+                let project = creation.typed_values().remove(1);
+                let open = tx.query_bound_work(OPEN_PROJECT, vec![project], 1, &mut sql, &mut budget).await?;
+                if open != vec![vec![Value::Integer(1)]] {
+                    return Err(StorageError::state(TASK_PROJECT));
+                }
             }
             tx.execute_bound("INSERT INTO rcvfrom(uid,mtime,nonce,ipaddr) VALUES(0,julianday('now'),NULL,NULL)", vec![]).await?;
             issue_boundary(IssuePhase::Receipt)?;
@@ -1010,44 +1024,30 @@ impl LocalOwnerRepository {
                 tx.execute_bound("INSERT INTO g_checkout_project(checkout_id,project_id) VALUES(?1,?2)", project).await?;
                 issue_boundary(IssuePhase::Binding)?;
             }
-            tx.validate_recording_repository(&self.principal, limits.admission, &mut budget, &mut parse).await?;
-            let proof = tx.capture_admission_budgeted(&mut budget).await?;
+            tx.check_recording_state(&self.principal, limits.admission, &mut budget).await?;
             issue_boundary(IssuePhase::Admission)?;
-            Ok((IssueTicket { ticket_id: creation.ticket_id, native_name: name, record: creation.record }, proof))
+            Ok(IssueTicket { ticket_id: creation.ticket_id, native_name: name, record: creation.record })
         }
         .await;
         let result = tx.record(result);
-        let termination = tx.commit().await;
-        match termination.and(result) {
-            Ok((ticket, proof)) => {
-                self.admission = proof;
-                Ok(ticket)
-            }
-            Err(error) => {
-                // A rolled-back insert still counts in the connection's change counter. The
-                // admitted state is unchanged after the rollback, so keep the owner usable.
-                if admitted && let Some(connection) = &self.store.connection {
-                    self.admission.total_changes = connection.total_changes();
-                }
-                Err(error)
-            }
-        }
+        tx.commit().await.and(result)
     }
 
-    /// List every private task and project ticket after the full admission of [`Self::open`].
+    /// List every private task and project from its typed row.
     ///
-    /// Admission derives every stored ticket again from its artifact and checks every
-    /// row. The call then replays the issues once more, with the same ledgers and the
-    /// same queries, and returns them. It changes nothing and reads no other rows.
+    /// The call runs the checks of each command, and then reads each `combined` typed
+    /// row with its ticket ID and artifact name. It replays no artifact and changes
+    /// nothing. Its cost grows with the number of issues, and not with the rest of the
+    /// repository. `gos v verify` compares the typed rows with the artifacts.
     /// # Arguments
-    /// * `limits` - Finite content and parser ceilings for the whole call. Both passes
-    ///   charge the same ledgers, so the ceilings must cover each issue artifact twice.
-    ///   The call does not use the SQL ceilings.
+    /// * `limits` - The content ceilings, the SQL row ceiling for the number of
+    ///   issues, and the parser input ceiling for the width of one row.
     /// # Returns
     /// Each task and project, in the order of the receipts that stored them. The list is
     /// empty when the repository holds no issue.
     /// # Errors
-    /// Refuses stale or failed admission, exhausted ceilings and SQL failures.
+    /// Fails with the refusals of the checks of each command, a typed row that holds
+    /// no valid task or project, exhausted ceilings and SQL failures.
     /// # Examples
     /// ```no_run
     /// use gossil::storage::{IssueLimits, IssueTicket, LocalOwnerRepository, StorageError};
@@ -1061,22 +1061,14 @@ impl LocalOwnerRepository {
         limits: IssueLimits,
     ) -> Result<Vec<IssueTicket>, StorageError> {
         let mut budget = Budget::new(limits.admission.content)?;
-        let mut parse = ParseWork::new(limits.admission.parser)?;
+        ParseWork::new(limits.admission.parser)?;
         let mut tx = self.store.begin_write().await?;
         let result = async {
-            tx.check_admission_budgeted(&self.principal, &self.admission, &mut budget)
+            tx.check_admission_budgeted(&self.principal, &mut budget)
                 .await?;
-            tx.validate_recording_repository(
-                &self.principal,
-                limits.admission,
-                &mut budget,
-                &mut parse,
-            )
-            .await?;
-            let issues = tx
-                .admit_issues(&self.principal, limits.admission, &mut budget, &mut parse)
+            tx.check_recording_state(&self.principal, limits.admission, &mut budget)
                 .await?;
-            Ok(issues.into_iter().map(|issue| issue.ticket).collect())
+            tx.read_typed_issues(limits, &mut budget).await
         }
         .await;
         let result = tx.record(result);
@@ -1084,10 +1076,10 @@ impl LocalOwnerRepository {
         result
     }
 
-    /// Read one private issue ticket after the full admission of [`Self::open`].
+    /// Read one private issue ticket after the checks of each command.
     ///
-    /// Admission derives every stored ticket again from its artifact and checks every
-    /// row. The call then returns the ticket that the ticket ID names. It changes nothing.
+    /// The call reads the artifact that the `tkt-` tag of the ticket ID names, derives
+    /// the ticket again from it, and returns it. It compares no row and changes nothing.
     /// # Arguments
     /// * `ticket_id` - The K card of the ticket.
     /// * `limits` - Finite content and parser ceilings for the whole call. The SQL
@@ -1095,8 +1087,8 @@ impl LocalOwnerRepository {
     /// # Returns
     /// The ticket ID, native name and record that the artifact carries.
     /// # Errors
-    /// Refuses an unknown ticket ID, stale or failed admission, exhausted ceilings and
-    /// SQL failures.
+    /// Refuses an unknown ticket ID, the refusals of the checks of each command,
+    /// exhausted ceilings and SQL failures.
     /// # Examples
     /// ```no_run
     /// use gossil::storage::{IssueLimits, IssueTicket, LocalOwnerRepository, StorageError};
@@ -1114,8 +1106,8 @@ impl LocalOwnerRepository {
         let mut parse = ParseWork::new(limits.admission.parser)?;
         let mut tx = self.store.begin_write().await?;
         let result = async {
-            tx.check_admission_budgeted(&self.principal, &self.admission, &mut budget).await?;
-            tx.validate_recording_repository(&self.principal, limits.admission, &mut budget, &mut parse).await?;
+            tx.check_admission_budgeted(&self.principal, &mut budget).await?;
+            tx.check_recording_state(&self.principal, limits.admission, &mut budget).await?;
             let found = bounded_rows(&mut tx, "SELECT b.uuid FROM tag t JOIN tagxref x ON x.tagid=t.tagid JOIN blob b ON b.rid=x.rid WHERE t.tagname=?1", vec![Value::Text(format!("tkt-{ticket_id}"))], 1, 128, &mut budget).await?;
             let Some(Value::Text(name)) = found.first().and_then(|row| row.first()) else {
                 return Err(StorageError::state("issue ticket not found"));

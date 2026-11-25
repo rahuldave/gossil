@@ -1,15 +1,19 @@
-//! Measure how many small private tasks one repository takes under the CLI ceilings.
+//! Check that each command charges only what it touches, beside many tasks.
 //!
-//! The ceilings are those of `gos v` and `gos i`. Each write runs the full admission
-//! twice, so the charge of one admission bounds how many issues a repository holds.
+//! The ceilings are those of `gos v` and `gos i`. No command reads the whole
+//! repository, so no count of tasks makes the writes refuse. `task list` and
+//! `gos v verify` read every task, and their cost grows with the count. The ordinary
+//! test stores a few hundred tasks. The ignored test stores 5,000 and prints the time
+//! of each command at 100, 1,000 and 5,000 tasks. `just issue-capacity` runs it in a
+//! release build.
 use gossil::gest_task_values::{TaskValueInputs, task_from_values};
 use gossil::native_date::NativeDate;
 use gossil::storage::{
-    AdmissionLimits, InitializeOptions, IssueLimits, IssueTicket, Limits, LocalOwnerRepository,
-    PathScope, PrivateIssueRequest, StorageError,
+    AdmissionLimits, IssueLimits, Limits, LocalOwnerRepository, PathScope, PrivateIssueRequest,
 };
 use serde_json::{Value as Json, json};
 use std::path::Path;
+use std::time::{Duration, Instant};
 
 /// Give the ceilings of one `gos i` command, as `vcs_open::limits` and `issue::limits` set them.
 /// # Returns
@@ -36,30 +40,6 @@ fn cli_limits() -> IssueLimits {
     }
 }
 
-/// Create a new catalog 6 repository under the CLI ceilings.
-/// # Arguments
-/// * `path` - The absent repository file.
-/// # Returns
-/// The admitted owner.
-async fn repository(path: &Path) -> LocalOwnerRepository {
-    let b = cli_limits().admission;
-    LocalOwnerRepository::initialize(
-        path,
-        InitializeOptions {
-            repository_id: "0123456789abcdef0123456789abcdef01234567",
-            owner_id: "owner",
-            date: "2026-11-20T00:00:00",
-            user: b"Owner",
-            password: "secret",
-            sha1: false,
-            content_limits: b.content,
-            parse_limits: b.parser,
-        },
-    )
-    .await
-    .unwrap()
-}
-
 /// Spell a number as 32 Gest ID letters.
 /// # Arguments
 /// * `n` - The number.
@@ -75,15 +55,16 @@ fn gest_id(n: u32) -> String {
         .collect()
 }
 
-/// Emit the creation artifact of task `n`, with a 21-byte title.
+/// Emit the creation artifact of task `n` of a project, with a 21-byte title.
 /// # Arguments
 /// * `n` - The number of the task.
+/// * `project` - The Gest ID of the project.
 /// # Returns
 /// The artifact bytes.
-fn task(n: u32) -> Vec<u8> {
+fn task(n: u32, project: &str) -> Vec<u8> {
     let task = task_from_values(TaskValueInputs {
         gest_id: json!(gest_id(n)),
-        project_id: json!("klmnopqrstuvwxyzklmnopqrstuvwxyz"),
+        project_id: json!(project),
         title: json!(format!("Small task {n:>10}")),
         priority: Json::Null,
         status: json!("open"),
@@ -99,135 +80,6 @@ fn task(n: u32) -> Vec<u8> {
     let date = NativeDate::parse(b"2026-11-18T12:00:00Z").unwrap();
     gossil::task_ticket::task_creation_bytes(&task, k.as_bytes(), b"gest agent", date, 65_536)
         .unwrap()
-}
-
-/// Give the CLI ceilings with a small decoded-byte ceiling, which the old charge met after a
-/// few issues.
-/// # Returns
-/// The CLI ceilings with a decoded-byte ceiling of [`SMALL_DECODED`] and parser
-/// ledgers wide enough that they do not bind first.
-fn small_limits() -> IssueLimits {
-    let mut limits = cli_limits();
-    limits.admission.content.max_total_decoded_bytes = SMALL_DECODED;
-    limits.admission.parser.cards = 1 << 20;
-    limits.admission.parser.entries = 1 << 20;
-    limits
-}
-
-/// The decoded-byte ceiling of [`small_limits`].
-const SMALL_DECODED: u64 = 4 << 20;
-
-/// Store task `n` through the public writer.
-/// # Arguments
-/// * `owner` - The admitted owner.
-/// * `n` - The number of the task.
-/// * `limits` - The ceilings of the call.
-/// # Returns
-/// The writer's result.
-async fn create(
-    owner: &mut LocalOwnerRepository,
-    n: u32,
-    limits: IssueLimits,
-) -> Result<IssueTicket, StorageError> {
-    owner
-        .create_private_issue(
-            PrivateIssueRequest {
-                artifact: &task(n),
-                scope: PathScope::Private,
-            },
-            limits,
-        )
-        .await
-}
-
-/// Read the bytes of every file in a directory, by name.
-/// # Arguments
-/// * `dir` - The directory.
-/// # Returns
-/// Each file name with its bytes, sorted by name.
-fn files(dir: &Path) -> Vec<(std::ffi::OsString, Vec<u8>)> {
-    let mut all: Vec<_> = std::fs::read_dir(dir)
-        .unwrap()
-        .map(|entry| {
-            let entry = entry.unwrap();
-            (entry.file_name(), std::fs::read(entry.path()).unwrap())
-        })
-        .collect();
-    all.sort();
-    all
-}
-
-#[tokio::test]
-/// Writes go on well past the count at which the old charge refused, and each task reads back.
-///
-/// Under [`small_limits`] the old charge, which took the whole repository text for each
-/// ticket, stored 4 tasks and refused the fifth write. The linear charge stores 15. This
-/// test writes 12, and an open, a list and a read of each task still fit the same ceilings.
-async fn writes_continue_well_past_the_old_ceiling() {
-    let dir = tempfile::tempdir().unwrap();
-    let path = dir.path().join("repo.gossil");
-    let mut owner = repository(&path).await;
-    let mut stored = Vec::new();
-    for n in 0..12 {
-        stored.push(create(&mut owner, n, small_limits()).await.unwrap());
-    }
-    drop(owner);
-    let mut owner = LocalOwnerRepository::open(&path, small_limits().admission)
-        .await
-        .unwrap();
-    assert_eq!(
-        owner.list_private_issues(small_limits()).await.unwrap(),
-        stored
-    );
-    for ticket in &stored {
-        let read = owner
-            .read_private_issue(&ticket.ticket_id, small_limits())
-            .await
-            .unwrap();
-        assert_eq!(&read, ticket);
-    }
-}
-
-#[tokio::test]
-/// The true ceiling still refuses a write cleanly, and the repository stays readable.
-///
-/// The test writes until the decoded-byte ceiling refuses a write. That refusal names the
-/// ceiling, leaves every byte of the repository files unchanged, and leaves the
-/// repository open to reads under the same ceilings.
-async fn the_true_ceiling_refuses_cleanly() {
-    let dir = tempfile::tempdir().unwrap();
-    let path = dir.path().join("repo.gossil");
-    let mut owner = repository(&path).await;
-    let mut n = 0;
-    let error = loop {
-        assert!(n < 64, "no refusal within 64 tasks");
-        drop(owner);
-        let before = files(dir.path());
-        owner = LocalOwnerRepository::open(&path, small_limits().admission)
-            .await
-            .unwrap();
-        match create(&mut owner, n, small_limits()).await {
-            Ok(_) => n += 1,
-            Err(error) => {
-                drop(owner);
-                assert_eq!(files(dir.path()), before);
-                break error;
-            }
-        }
-    };
-    assert_eq!(error.operation, "total decoded content limit");
-    assert!(n >= 12, "the ceiling came at {n} tasks");
-    let mut owner = LocalOwnerRepository::open(&path, small_limits().admission)
-        .await
-        .unwrap();
-    assert_eq!(
-        owner
-            .list_private_issues(small_limits())
-            .await
-            .unwrap()
-            .len(),
-        n as usize
-    );
 }
 
 /// Run `gos` in the fixture home, with the checkout root `root` as working directory.
@@ -249,6 +101,7 @@ fn gos(home: &Path, args: &[&str]) -> String {
         .env("HOME", home)
         .env("XDG_CONFIG_HOME", home)
         .env("XDG_DATA_HOME", home)
+        .env("GOSSIL_USER", "tester")
         .current_dir(home.join("root"))
         .args(args)
         .output()
@@ -261,50 +114,213 @@ fn gos(home: &Path, args: &[&str]) -> String {
     String::from_utf8(output.stdout).unwrap()
 }
 
+/// Run one `vcs` verb on the fixture repository and checkout.
+/// # Arguments
+/// * `home` - The fixture home.
+/// * `verb` - The verb and its own flags.
+/// # Returns
+/// Standard output, after the command succeeds.
+fn vcs(home: &Path, verb: &[&str]) -> String {
+    let repo = home.join("repo");
+    let mut args = vec![
+        "v",
+        verb[0],
+        "--repository",
+        repo.to_str().unwrap(),
+        "--checkout",
+        "work",
+    ];
+    args.extend_from_slice(&verb[1..]);
+    gos(home, &args)
+}
+
+/// Make a repository, open the checkout `work`, run `gos i init`, and track one file.
+/// # Arguments
+/// * `home` - An empty fixture home.
+/// # Returns
+/// The Gest ID of the bound project.
+async fn fixture(home: &Path) -> String {
+    let root = home.join("root");
+    std::fs::create_dir(&root).unwrap();
+    gos(home, &["v", "init", home.join("repo").to_str().unwrap()]);
+    let root = root.canonicalize().unwrap();
+    vcs(home, &["open", "--root", root.to_str().unwrap()]);
+    gos(home, &["i", "init"]);
+    std::fs::write(root.join("file"), "content").unwrap();
+    vcs(home, &["add", "--path", "file"]);
+    vcs(home, &["scope", "--scope", "private", "--path", "file"]);
+    let mut owner = LocalOwnerRepository::open(home.join("repo"), cli_limits().admission)
+        .await
+        .unwrap();
+    owner
+        .bound_project("work", cli_limits())
+        .await
+        .unwrap()
+        .unwrap()
+}
+
+/// Store tasks `from` to `to`, not included, through the public writer.
+/// # Arguments
+/// * `home` - The fixture home.
+/// * `project` - The Gest ID of the project.
+/// * `from` - The number of the first task.
+/// * `to` - The number after the last task.
+async fn create(home: &Path, project: &str, from: u32, to: u32) {
+    let mut owner = LocalOwnerRepository::open(home.join("repo"), cli_limits().admission)
+        .await
+        .unwrap();
+    for n in from..to {
+        let request = PrivateIssueRequest {
+            artifact: &task(n, project),
+            scope: PathScope::Private,
+        };
+        owner
+            .create_private_issue(request, cli_limits())
+            .await
+            .unwrap();
+    }
+}
+
+/// Commit the tracked file with new content.
+/// # Arguments
+/// * `home` - The fixture home.
+/// * `n` - The number of the commit, which gives the content and the date.
+fn commit(home: &Path, n: u32) {
+    std::fs::write(home.join("root").join("file"), format!("content {n}")).unwrap();
+    vcs(
+        home,
+        &[
+            "commit",
+            "--scope",
+            "private",
+            "--all-tracked",
+            "--user",
+            "tester",
+            "--comment",
+            &format!("commit {n}"),
+            "--date-override",
+            &format!("2099-01-01T00:{:02}:{:02}", n / 60, n % 60),
+        ],
+    );
+}
+
+/// The times of the commands at one count of tasks.
+struct Times {
+    /// `gos i task create`.
+    create: Duration,
+    /// `gos i task list --json`.
+    list: Duration,
+    /// `gos i task show`.
+    show: Duration,
+    /// `gos v status`.
+    status: Duration,
+    /// `gos v commit`.
+    commit: Duration,
+    /// `gos v verify`.
+    verify: Duration,
+}
+
+/// Time one run of a command.
+/// # Arguments
+/// * `run` - Runs the command and gives its output.
+/// # Returns
+/// The time and the output.
+fn timed(run: impl FnOnce() -> String) -> (Duration, String) {
+    let start = Instant::now();
+    let out = run();
+    (start.elapsed(), out)
+}
+
+/// Run each command once at the current count, check its output, and time it.
+/// # Arguments
+/// * `home` - The fixture home.
+/// * `tasks` - The count of tasks before `task create` runs.
+/// * `commits` - The count of check-ins before `commit` runs.
+/// # Returns
+/// The time of each command.
+fn run_each(home: &Path, tasks: u32, commits: u32) -> Times {
+    let (create, out) = timed(|| gos(home, &["i", "task", "create", "Timed task"]));
+    assert!(!out.is_empty());
+    let (list, out) = timed(|| gos(home, &["i", "task", "list", "--json"]));
+    let listed: Vec<Json> = serde_json::from_str(&out).unwrap();
+    assert_eq!(listed.len(), tasks as usize + 1);
+    let id = gest_id(tasks / 2);
+    let (show, out) = timed(|| gos(home, &["i", "task", "show", &id, "--json"]));
+    let shown: Json = serde_json::from_str(&out).unwrap();
+    assert_eq!(shown["id"], json!(id));
+    let (status, _) = timed(|| vcs(home, &["status"]));
+    let (commit, _) = timed(|| {
+        commit(home, commits);
+        String::new()
+    });
+    let repo = home.join("repo");
+    let (verify, out) = timed(|| {
+        gos(
+            home,
+            &["v", "verify", "--repository", repo.to_str().unwrap()],
+        )
+    });
+    let expected = format!(
+        "verified: {} check-ins, {} issues, ",
+        commits + 1,
+        tasks + 2
+    );
+    assert!(out.starts_with(&expected), "{out}");
+    Times {
+        create,
+        list,
+        show,
+        status,
+        commit,
+        verify,
+    }
+}
+
 #[tokio::test]
-/// The `gos v` commands still work under the CLI ceilings in a repository with a dozen tasks.
-async fn vcs_commands_work_beside_many_tasks() {
+/// With 300 tasks, each command runs under the CLI ceilings, and its output is right.
+async fn three_hundred_tasks_fit_the_cli_ceilings() {
     let dir = tempfile::tempdir().unwrap();
     let home = dir.path();
-    let (repo, root) = (home.join("repo"), home.join("root"));
-    std::fs::create_dir(&root).unwrap();
-    let repo_arg = repo.to_str().unwrap();
-    gos(home, &["v", "init", repo_arg]);
-    let vcs = |verb: &[&str]| {
-        let mut args = vec!["v", verb[0], "--repository", repo_arg, "--checkout", "work"];
-        args.extend_from_slice(&verb[1..]);
-        gos(home, &args)
-    };
-    vcs(&["open", "--root", root.to_str().unwrap()]);
-    let mut owner = LocalOwnerRepository::open(&repo, cli_limits().admission)
-        .await
-        .unwrap();
-    for n in 0..12 {
-        create(&mut owner, n, cli_limits()).await.unwrap();
+    let project = fixture(home).await;
+    create(home, &project, 0, 300).await;
+    run_each(home, 300, 0);
+    assert_eq!(vcs(home, &["timeline"]).lines().count(), 2);
+}
+
+#[tokio::test]
+#[ignore = "stores 5,000 tasks; run it with just issue-capacity"]
+/// With 5,000 tasks, each command still runs under the CLI ceilings. The test prints
+/// the time of each command at 100, 1,000 and 5,000 tasks, and the load of the machine.
+async fn five_thousand_tasks_fit_the_cli_ceilings() {
+    let dir = tempfile::tempdir().unwrap();
+    let home = dir.path();
+    let project = fixture(home).await;
+    let load = std::process::Command::new("uptime").output().unwrap();
+    println!(
+        "load before: {}",
+        String::from_utf8_lossy(&load.stdout).trim()
+    );
+    println!("tasks  create  list    show    status  commit  verify  (ms)");
+    let (mut stored, mut commits) = (0, 0);
+    for count in [100, 1_000, 5_000] {
+        create(home, &project, stored, count).await;
+        let times = run_each(home, count + commits, commits);
+        stored = count;
+        commits += 1;
+        let ms = |time: Duration| time.as_millis();
+        println!(
+            "{count:<6} {:<7} {:<7} {:<7} {:<7} {:<7} {}",
+            ms(times.create),
+            ms(times.list),
+            ms(times.show),
+            ms(times.status),
+            ms(times.commit),
+            ms(times.verify)
+        );
     }
-    drop(owner);
-    std::fs::write(root.join("file"), "content").unwrap();
-    vcs(&["add", "--path", "file"]);
-    vcs(&["scope", "--scope", "private", "--path", "file"]);
-    vcs(&[
-        "commit",
-        "--scope",
-        "private",
-        "--all-tracked",
-        "--user",
-        "CLI Owner",
-        "--comment",
-        "beside tasks",
-        "--date-override",
-        "2099-01-01T00:00:00",
-    ]);
-    vcs(&["status"]);
-    assert_eq!(vcs(&["timeline"]).lines().count(), 2);
-    let mut owner = LocalOwnerRepository::open(&repo, cli_limits().admission)
-        .await
-        .unwrap();
-    assert_eq!(
-        owner.list_private_issues(cli_limits()).await.unwrap().len(),
-        12
+    let load = std::process::Command::new("uptime").output().unwrap();
+    println!(
+        "load after: {}",
+        String::from_utf8_lossy(&load.stdout).trim()
     );
 }

@@ -103,13 +103,15 @@ catalog6. Catalog6 has a separate private recording API, described below. Its
 shared root stays a check-in with no files.
 
 Admission validates the stored root and authority before repository operations.
-For catalog6, it also validates the complete supported tracking, scope and private
-history state, and each private issue ticket against its artifact. `SharedView`
-restricts access to public content that passed this validation. Read and write
+For catalog6, open checks only the facts whose cost does not grow with the
+history. Each command then checks what it reads and writes, in its own
+transaction. `gos v verify` gives the full proof of the tracking, scope and
+private history state, and of each private issue ticket against its artifact.
+`SharedView` restricts access to public content that passed admission. Read and write
 access to the database file through the operating system establishes local owner
 authority.
 
-The [native storage guide](native-storage.md) defines admission, content bounds
+The [native storage guide](native-storage.md#check-a-repository) defines admission, content bounds
 and access rules. General links between artifacts in the repository graph remain planned, so parsing
 does not establish parent relationships or resolve references. Sync and team authentication also remain planned.
 
@@ -198,10 +200,12 @@ combined head while leaving the empty shared head unchanged. The combined head
 selects the owner's private tree together with the shared tree, which is empty
 in this supported recording family.
 
-The operation validates the full supported history and its derived rows.
+The operation checks every field of the tracked rows, and checks its parent in
+full against the parent of that parent. So its cost does not grow with the
+history, and it never stores a check-in that `gos v verify` then refuses.
 A content budget bounds stored, decoded and retained bytes. A parser ledger
 counts input bytes, cards, owned bytes and entries across parsed artifacts.
-Both bound work across admission, capture, construction and final validation.
+Both bound work across the checks, capture, construction and final validation.
 
 An unchanged tree returns `NoChange` without
 a new receipt or changed head or counter. Working files remain unchanged.
@@ -216,8 +220,9 @@ and explicit actor, comment and date. [Final CLI qualification](development-plan
 is still pending.
 
 The library reader `recorded_timeline` returns the complete current-first ancestry
-through the shared empty root. It authenticates all native history before reading
-original metadata in the same transaction. It reads no working-file contents and
+through the shared empty root. It walks every manifest of the chain, and checks
+the user and comment of each event against the U and C cards of its manifest, in
+the same transaction. It reads no working-file contents and
 returns no partial result when a bound fails. See the
 [recorded ancestry contract](native-storage.md#read-recorded-checkout-ancestry).
 The source [timeline and log commands](cli.md#read-complete-recorded-ancestry)

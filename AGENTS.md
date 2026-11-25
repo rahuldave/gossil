@@ -75,16 +75,19 @@ each other recognised command with status 69.
 writes a private project ticket and its binding in one transaction. The shared
 helper `open_issue_repository` in `src/product/issue.rs` opens the repository of
 an issue command through the published locator, and `IssueFailure` maps errors
-to the CLI-05 statuses 78 and 74. `retry_stale` runs a command once more after
-a stale admission or a `database is locked` refusal. `issue task create` writes
+to the CLI-05 statuses 78 and 74. `retry_locked` runs a command once more after
+a `database is locked` refusal. `issue task create` writes
 one private task in the bound project. It refuses the Gest options that this
 build lacks with status 69. It refuses a `[` and a task artifact over 65,536
 bytes with status 64.
 
 Native local storage supports checkout-free initialization, then one library
-checkout registration at the empty root. Reopen admits strict catalog6 with zero
-or one registration, explicit tracked scopes and the supported private recording
-history. ID and exact-root views authenticate existing registrations;
+checkout registration at the empty root. Open checks only the facts whose cost
+does not grow with the history. They are the catalog, the owner, the
+configuration, the policy and the one registration. Each command checks what it
+reads and writes, and `gos v verify` gives the full proof of the history.
+
+ID and exact-root views authenticate existing registrations;
 the library methods publish no locator. The source `vcs open` adapter registers
 or reopens that checkout and publishes or reconstructs its owner-local locator.
 It requires explicit repository and checkout selection, with `--root` for first
@@ -93,7 +96,9 @@ registration. It selects no files.
 New repositories start at catalog 6, the newest catalog. Every command refuses a
 repository at catalog 2, 4 or 5 with exit 78 and a message to create a new
 repository; there is no migration. Initialization writes the `ticket-table`
-config row, so a stock `fossil rebuild` keeps the Gest ticket columns.
+config row, so a stock `fossil rebuild` keeps the Gest ticket columns. That
+rebuild drops every `g_` table, and then every command exits 78 with a message
+to restore the repository from a backup.
 
 Bound catalog1 creation and bounded private content operations remain supported.
 Generic private content writes refuse catalog6. The metered private put admits
@@ -113,8 +118,9 @@ Broader crosslinks, shared recording, sync and Gest integration remain planned w
 
 The library also exposes `recorded_timeline` and `RecordedCheckin` for complete
 current-first native ancestry, with the immutable shared root last. It preserves
-full hashes and exact native metadata bytes after full admission, within one
-transaction and shared operation ledgers. It reads no working-file contents and
+full hashes and exact native metadata bytes, and checks each event user and
+comment against the U and C cards of its manifest, within one transaction and
+shared operation ledgers. It reads no working-file contents and
 makes no durable mutation.
 
 The source CLI exposes `timeline` and `log` through

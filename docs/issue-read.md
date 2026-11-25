@@ -56,6 +56,17 @@ The parser fails, with exit status 2, on each of these arguments:
 The parser checks every argument before the command refuses an unsupported option. So `--limit x`
 exits with 2, and `--limit 5` exits with 69.
 
+## What task list and task show check
+
+`task list` reads each typed task row of the repository with its ticket ID and artifact name. It
+replays no artifact, so its cost grows with the count of tasks and not with the rest of the
+repository. It does not compare the rows with the artifacts. `gos v verify` does.
+
+`task show` reads only the task rows whose ID starts with the prefix. Then it proves the one task, as
+`gos v verify --issue` does. It replays the artifact of the task, compares the rows of the task with that
+replay, and prints the task from its artifact. Both commands first run the checks of each command, which
+the [native storage guide](native-storage.md#check-a-repository) lists.
+
 ## Order of the list
 
 The newest `created_at` comes first, as in Gest. When two tasks have the same `created_at`, the task that
@@ -82,13 +93,13 @@ ambiguous id prefix 'lq': matches 2 entities
 Id prefix must contain only characters k-z, found 'L'
 ```
 
-The command exits with 74 when admission refuses the repository, or when the command cannot write the
-output.
+The command exits with 74 when open, its checks or the proof of the task refuse the repository, or
+when the command cannot write the output.
 
 Both commands take the write lock of the repository, as every issue command does. A read can wait for
-that lock past its timeout and refuse with `database is locked`, or find that another command made its
-admission stale. After either refusal, the command opens the repository again and tries once more. After a
-second refusal, it exits with 74.
+that lock past its timeout and refuse with `database is locked`. Then the command opens the repository
+again and tries once more. After a second refusal, it exits with 74. A commit of another process between
+two commands needs no retry, because each command checks what it reads in its own transaction.
 
 ## Text output
 
@@ -153,7 +164,8 @@ output is the reference.
 
 `tests/issue_read_cli.rs` runs the two commands through both executables and both group names. It
 builds a checkout with `gos v init`, `gos v open` and `gos i init`, and stores four tasks through the
-library, one of them in another project. It checks the output of each form, each exit status from 2
+library, one of them in another project. A task needs its project, so the test stores each project
+first. It checks the output of each form, each exit status from 2
 to 78, the help forms and a closed stdout. After each read it checks that no byte of the repository
 changed.
 
@@ -174,7 +186,9 @@ check:
 - the order, the default filter, `--all`, `--status` and the project filter
 - the JSON, parsed back and compared with the stored fields
 - a unique prefix, a missing one, an ambiguous one and an invalid one
-- a changed row and a failed write, each of which exits with 74
+- a failed write, which exits with 74
+- a task row that another connection changes, which the list prints and the show refuses with 74
+  before any output. A new open admits the repository, and `verify` refuses it.
 
 `just issue-read-oracle` compares the JSON with a reference `gest`. It creates two tasks with `gest`,
 stores the same values in a Gossil repository and requires equal bytes from `task show --json`, `task

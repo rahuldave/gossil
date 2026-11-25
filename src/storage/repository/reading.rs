@@ -1,12 +1,13 @@
-//! Read complete supported checkout ancestry after full catalog6 admission.
+//! Read the complete ancestry of the checkout.
 //!
-//! Original event metadata is admitted against canonical native U/C cards before
-//! its owned strings are moved into the result. Dates and hashes come directly
-//! from authenticated history, never display projections or working files.
+//! The reader walks every manifest of the chain and reads the event row of each
+//! check-in, which it prints. Dates and hashes come from the manifests, never from
+//! display projections or working files. `gos v verify` compares the event rows with
+//! the manifests.
 //!
 //! ## Recommendations
 //! Select an explicit existing checkout and supply finite whole-operation limits.
-use super::recorded_history::{RecordedCommit, RecordedHistory, bounded_rows};
+use super::recorded_history::{Reach, RecordedCommit, RecordedHistory, bounded_rows};
 use super::{AdmissionLimits, LocalOwnerRepository, ParseWork, StorageError};
 use crate::storage::{WriteTransaction, content::Budget};
 use libsql::Value;
@@ -36,8 +37,9 @@ impl LocalOwnerRepository {
     /// root comes last. Before the first private recording, that root is the sole
     /// result. Pending paths, dirty/deleted working files and filesystem contents
     /// do not affect recorded history. This performs no durable mutation and
-    /// publishes no locator. A single content and parser ledger covers freshness,
-    /// full admission, metadata ownership and result retention in one transaction.
+    /// publishes no locator. One transaction runs the checks of each command, walks
+    /// the manifests of the chain and reads their event rows, under one content and
+    /// parser ledger. It reads no file content.
     /// # Arguments
     /// * `checkout` - Existing nonempty NUL-free registration ID, at most 1024 bytes and parser input bytes.
     /// * `limits` - Explicit finite cumulative content, metadata and parser ceilings.
@@ -45,7 +47,7 @@ impl LocalOwnerRepository {
     /// Complete authenticated current-first ancestry including the shared root,
     /// only after checked transaction completion; never a truncated or empty history.
     /// # Errors
-    /// Refuses missing/foreign checkout, stale authority, unsupported or corrupt
+    /// Refuses missing/foreign checkout, changed authority, unsupported or corrupt
     /// state, invalid/exhausted limits, allocation/provider and checked cleanup errors.
     /// Existing operation causes and separate cleanup failures are preserved.
     /// # Examples
@@ -70,18 +72,69 @@ impl LocalOwnerRepository {
         let mut parse = ParseWork::new(limits.parser)?;
         let mut tx = self.store.begin_write().await?;
         let result = async {
-            tx.check_admission_budgeted(&self.principal, &self.admission, &mut work).await?;
-            let history = tx.validate_recording_repository_history(&self.principal, limits, &mut work, &mut parse).await?
-                .ok_or_else(|| StorageError::state("recorded checkout unavailable"))?;
-            let selections = bounded_rows(&mut tx, "SELECT checkout_id FROM g_checkout", vec![], 1, limits.parser.input_bytes, &mut work).await?;
-            if !matches!(selections.as_slice(), [row] if matches!(row.as_slice(), [Value::Text(id)] if id == checkout)) {
+            tx.check_admission_budgeted(&self.principal, &mut work)
+                .await?;
+            tx.check_recording_state(&self.principal, limits, &mut work)
+                .await?;
+            let selections = bounded_rows(
+                &mut tx,
+                "SELECT checkout_id,shared_head FROM g_checkout",
+                vec![],
+                1,
+                limits.parser.input_bytes,
+                &mut work,
+            )
+            .await?;
+            let one = selections
+                .first()
+                .filter(|_| selections.len() == 1)
+                .map(Vec::as_slice);
+            let Some([Value::Text(id), Value::Text(shared)]) = one else {
+                return Err(StorageError::state("recorded checkout unavailable"));
+            };
+            if id != checkout {
                 return Err(StorageError::state("recorded checkout unavailable"));
             }
-            project_history(&mut tx, history, limits, &mut work).await
-        }.await;
+            // The timeline reads each manifest of the chain, which it prints, and no file.
+            let walk = tx
+                .walk_recorded_history(
+                    &self.principal,
+                    shared,
+                    limits,
+                    &mut work,
+                    &mut parse,
+                    Reach::Manifests,
+                )
+                .await?;
+            // Each printed user and comment must be the U and C card of its manifest.
+            let mut cards: Vec<_> = walk
+                .commits
+                .iter()
+                .rev()
+                .map(|(_, _, artifact)| {
+                    (
+                        artifact.user().map(|card| card.bytes.clone()),
+                        artifact.comment().map(|card| card.bytes.clone()),
+                    )
+                })
+                .collect();
+            cards.push(walk.shared_cards.clone());
+            let printed = project_history(&mut tx, walk.history(), limits, &mut work).await?;
+            if printed.iter().zip(&cards).any(|(row, (user, comment))| {
+                user.as_deref() != Some(row.actor.as_slice())
+                    || comment.as_deref() != Some(row.comment.as_slice())
+            }) {
+                return Err(StorageError::state(EVENT_CARDS));
+            }
+            Ok(printed)
+        }
+        .await;
         complete_read(tx, result).await
     }
 }
+
+/// The refusal of an event row whose user or comment is not that of its manifest.
+const EVENT_CARDS: &str = "recorded event metadata differs from its manifest";
 
 /// Charge and reserve the complete public result capacity before retaining rows.
 /// # Arguments
@@ -505,60 +558,6 @@ mod tests {
         }
     }
 
-    /// Independently inventory provider byte lengths for every variable field in its text allowance.
-    /// # Arguments
-    /// * `tx` - Fixture transaction before the metadata projection budget starts.
-    /// # Returns
-    /// Exact whole-family UTF-8/native byte count, including SQL numeric-to-byte casts.
-    /// # Panics
-    /// Panics on provider failure or a non-BLOB/non-NULL cast result.
-    async fn text_inventory(tx: &mut WriteTransaction<'_>) -> usize {
-        let surfaces: &[(&str, &[&str])] = &[
-            ("blob", &["uuid"]),
-            (
-                "event",
-                &[
-                    "type", "user", "comment", "euser", "ecomment", "bgcolor", "brief",
-                ],
-            ),
-            ("filename", &["name"]),
-            ("tag", &["tagname"]),
-            ("tagxref", &["value"]),
-            ("g_vfile", &["checkout_id", "pathname"]),
-            ("g_path_scope", &["checkout_id", "path", "scope"]),
-            ("rcvfrom", &["uid", "mtime", "nonce", "ipaddr"]),
-            ("g_vvar", &["checkout_id", "name", "value"]),
-            ("config", &["name", "value"]),
-            (
-                "g_checkout",
-                &[
-                    "checkout_id",
-                    "root",
-                    "shared_head",
-                    "combined_head",
-                    "availability",
-                ],
-            ),
-            (
-                "g_checkout_owner",
-                &["checkout_id", "owner_id", "root_device", "root_inode"],
-            ),
-        ];
-        let mut total = 0;
-        for (table, columns) in surfaces {
-            for column in *columns {
-                for row in tx
-                    .query(&format!("SELECT CAST({column} AS BLOB) FROM {table}"))
-                    .await
-                    .unwrap()
-                {
-                    total += native_byte_length(&row);
-                }
-            }
-        }
-        total
-    }
-
     #[tokio::test]
     /// Independently derive repeated metadata ownership and result capacity exact/one-under bounds.
     /// # Panics
@@ -568,17 +567,13 @@ mod tests {
             let (_temp, mut owner) = fixture(commits).await;
             let limits = bounds();
             let mut tx = owner.store.begin_write().await.unwrap();
-            let text = text_inventory(&mut tx).await;
-            // Accepted bounded_rows protocol: numeric bind slots cost32 twice;
-            // sizing SQL +64, literal full-family SQL1771+64, +512 per selected row
-            // +128, and the retained user and comment bytes. The whole native text,
-            // twice, is reserved once for the ledger. The new reader also precharges
-            // one Value argument slot and its public result slots.
+            // Accepted bounded_rows protocol: numeric bind slots cost 32 twice; sizing
+            // SQL +64, +512 per selected row +128, and the retained user and comment
+            // bytes. The reader also precharges one Value argument slot and its public
+            // result slots. No charge depends on the size of the repository.
             let per_row = std::mem::size_of::<Value>()
                 + 2 * 32
                 + "SELECT count(*) FROM (SELECT user,comment FROM event WHERE objid=?1)".len()
-                + 64
-                + 1771
                 + 64
                 + 512
                 + 128;
@@ -595,8 +590,7 @@ mod tests {
                 }
             }
             let count = commits + 1;
-            let exact =
-                count * (per_row + std::mem::size_of::<RecordedCheckin>()) + retained + 2 * text;
+            let exact = count * (per_row + std::mem::size_of::<RecordedCheckin>()) + retained;
             for allowance in [exact, exact - 1] {
                 let mut full_work = Budget::new(limits.content).unwrap();
                 let mut parse = ParseWork::new(limits.parser).unwrap();
@@ -704,7 +698,7 @@ mod tests {
                         .is_some()
                     );
                 } else {
-                    tx.validate_recording_repository(
+                    tx.validate_recording_repository_history(
                         &owner.principal,
                         bounds(),
                         &mut work,

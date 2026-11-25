@@ -9,7 +9,7 @@
 //!
 //! [`open_issue_repository`] finds the repository of an issue command through the
 //! checkout locator that `gos v open` published, as GEST-ROOT-01 asks. Each
-//! handler that reads or writes issues calls it, inside [`retry_stale`].
+//! handler that reads or writes issues calls it, inside [`retry_locked`].
 use super::help::{self, IssueCommand, IssueHandler};
 use crate::native_date::NativeDate;
 use crate::storage::{CheckoutView, IssueLimits, LocalOwnerRepository};
@@ -56,7 +56,7 @@ impl IssueFailure {
 
     /// Map an error of the locator, the storage boundary or the file system to a CLI-05 status.
     ///
-    /// An older Gossil catalog anywhere in the chain gives 78 (CAT-07). A locator
+    /// An older Gossil catalog (CAT-07) or lost Gossil tables in the chain give 78. A locator
     /// error gives its own category, 78 or 74. A storage or I/O error in the chain
     /// gives 74. Every other error is a refusal of the selection policy, such as a
     /// configured data directory that conflicts with the locator, and gives 78.
@@ -66,7 +66,7 @@ impl IssueFailure {
     /// The failure with the error's text and its status.
     pub(crate) fn from_error(error: &(dyn std::error::Error + 'static)) -> Self {
         let chain = || std::iter::successors(Some(error), |current| current.source());
-        let status = if chain().any(|e| e.is::<crate::storage::OlderCatalog>()) {
+        let status = if crate::storage::unusable(error) {
             78
         } else if let Some(locator) = error.downcast_ref::<crate::checkout_locator::Error>() {
             locator.code()
@@ -89,7 +89,7 @@ impl IssueFailure {
     }
 }
 
-/// The repository, checkout and bound project of one issue command, after full admission.
+/// The repository, checkout and bound project of one issue command, after the checks of open.
 pub(crate) struct IssueRepository {
     /// The admitted owner of the repository.
     pub(crate) owner: LocalOwnerRepository,
@@ -123,39 +123,36 @@ pub(crate) fn limits() -> IssueLimits {
     }
 }
 
-/// The storage refusal of a write whose admission proof another process made stale.
-const STALE: &str = "repository admission stale; reopen with explicit admission limits";
-
-/// The text inside the storage refusal of a write that waited for the write lock past its timeout.
+/// The text inside the storage refusal of a command that waited for the write lock past its timeout.
 const LOCKED: &str = "database is locked";
 
 /// Say whether a failure is one that a second attempt may get past.
 /// # Arguments
 /// * `failure` - The failure of one attempt.
 /// # Returns
-/// True for status 74 with the stale refusal [`STALE`], or with a message that holds
-/// [`LOCKED`]. Both refusals come before the commit, so the attempt wrote nothing.
+/// True for status 74 with a message that holds [`LOCKED`]. That refusal comes before
+/// the commit, so the attempt wrote nothing.
 fn retryable(failure: &IssueFailure) -> bool {
-    failure.status == 74 && (failure.message == STALE || failure.message.contains(LOCKED))
+    failure.status == 74 && failure.message.contains(LOCKED)
 }
 
-/// Run one attempt of an issue command, and run it once more after a stale admission or a lock timeout.
+/// Run one attempt of an issue command, and run it once more after a lock timeout.
 ///
-/// Two commands at once can race. The second one admits the repository, and then the
-/// first one commits. The write of the second one then refuses with [`STALE`] and
-/// writes nothing. Every issue command takes the write lock, the reads too, so a
-/// command can also wait for that lock past its timeout and refuse with [`LOCKED`].
-/// A second attempt opens and admits the repository again. The handlers of `init`,
-/// `task create`, `task list` and `task show` each run inside this function.
+/// Every issue command takes the write lock, and so do the reads. So a command can
+/// wait for that lock past its timeout and refuse with [`LOCKED`]. A second attempt opens
+/// the repository again. Each command checks what it reads in its own transaction,
+/// so a commit of another process between two commands needs no retry. The handlers
+/// of `init`, `task create`, `task list` and `task show` each run inside this
+/// function.
 ///
 /// # Arguments
 /// * `attempt` - Opens the repository and runs the command, each time it is called.
 /// # Returns
-/// The result of the first attempt, or of the second one after one of these refusals.
+/// The result of the first attempt, or of the second one after a lock timeout.
 /// # Errors
-/// Gives the failure of the first attempt when it is not one of these refusals, and
-/// the failure of the second attempt otherwise.
-pub(crate) async fn retry_stale<T, F, A>(mut attempt: A) -> Result<T, IssueFailure>
+/// Gives the failure of the first attempt when it is not a lock timeout, and the
+/// failure of the second attempt otherwise.
+pub(crate) async fn retry_locked<T, F, A>(mut attempt: A) -> Result<T, IssueFailure>
 where
     A: FnMut() -> F,
     F: std::future::Future<Output = Result<T, IssueFailure>>,
@@ -217,7 +214,7 @@ pub(crate) fn creation(command: &str) -> Result<Creation, IssueFailure> {
 /// marker at or above the current directory must hold the locator that
 /// `gos v open` published. The locator pins the repository and the checkout, and
 /// [`crate::vcs_open::admit_existing`] then checks them with the same rules as the
-/// `vcs` commands, configuration included. The repository passes full admission,
+/// `vcs` commands, configuration included. Open runs its checks,
 /// and the call reads the project bound to the checkout. It writes nothing.
 /// # Returns
 /// The admitted owner, the checkout view and the bound project, if any.
@@ -800,11 +797,10 @@ mod tests {
         assert_eq!(found.project_id(), Ok("k".repeat(32).as_str()));
     }
 
-    /// A stale admission runs the attempt once more. Success, any other failure and a
-    /// second stale refusal are the result.
+    /// A lock timeout runs the attempt once more. Success, any other failure and a
+    /// second lock timeout are the result.
     #[tokio::test]
-    async fn a_stale_admission_is_retried_once() {
-        let stale = || IssueFailure::new(74, STALE);
+    async fn a_lock_timeout_is_retried_once() {
         let other = || IssueFailure::new(74, "other");
         let locked = || IssueFailure::new(74, "SQLite failure: `database is locked`");
         type Case = (
@@ -812,23 +808,22 @@ mod tests {
             Result<u8, IssueFailure>,
             usize,
         );
-        let cases: [Case; 7] = [
-            (vec![Err(stale()), Ok(1)], Ok(1), 2),
+        let cases: [Case; 6] = [
             (vec![Err(locked()), Ok(1)], Ok(1), 2),
-            (vec![Err(locked()), Err(stale())], Err(stale()), 2),
-            (vec![Err(stale()), Err(stale())], Err(stale()), 2),
+            (vec![Err(locked()), Err(locked())], Err(locked()), 2),
+            (vec![Err(locked()), Err(other())], Err(other()), 2),
             (vec![Ok(1)], Ok(1), 1),
             (vec![Err(other())], Err(other()), 1),
             (
-                vec![Err(IssueFailure::new(78, STALE))],
-                Err(IssueFailure::new(78, STALE)),
+                vec![Err(IssueFailure::new(78, LOCKED))],
+                Err(IssueFailure::new(78, LOCKED)),
                 1,
             ),
         ];
         for (results, expected, count) in cases {
             let mut queue = results.into_iter();
             let mut calls = 0;
-            let result = retry_stale(|| {
+            let result = retry_locked(|| {
                 calls += 1;
                 let next = queue.next().unwrap();
                 async move { next }
@@ -838,10 +833,10 @@ mod tests {
         }
     }
 
-    /// The text of [`STALE`] is the refusal that storage gives an owner after another
-    /// owner of the same repository committed.
+    /// An owner sees what another owner of the same repository committed after it
+    /// opened, so no command needs a retry for it.
     #[tokio::test]
-    async fn the_stale_text_is_the_storage_refusal() {
+    async fn a_second_owner_sees_the_commit_of_the_first() {
         let temp = tempfile::tempdir().unwrap();
         let path = temp.path().join("repo");
         let root = temp.path().join("root");
@@ -867,11 +862,7 @@ mod tests {
             .register_checkout("work", &root.canonicalize().unwrap(), bounds)
             .await
             .unwrap();
-        let error = second.bound_project("work", limits()).await.unwrap_err();
-        assert_eq!(
-            IssueFailure::from_error(&error),
-            IssueFailure::new(74, STALE)
-        );
+        assert_eq!(second.bound_project("work", limits()).await.unwrap(), None);
     }
 
     /// A new ticket gets the current instant, its RFC3339 string and 40 random

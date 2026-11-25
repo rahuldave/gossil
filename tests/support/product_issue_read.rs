@@ -65,9 +65,18 @@ fn ticket(inputs: TaskValueInputs) -> IssueTicket {
 /// # Returns
 /// The project `z...z`.
 fn project() -> crate::gest_project_values::ProjectValues {
+    project_named("z")
+}
+
+/// Give a project whose Gest ID repeats one letter.
+/// # Arguments
+/// * `letter` - The letter of the ID.
+/// # Returns
+/// The project, created at 12:00 on 18 November 2026 and not archived.
+fn project_named(letter: &str) -> crate::gest_project_values::ProjectValues {
     crate::gest_project_values::project_from_values(
         crate::gest_project_values::ProjectValueInputs {
-            gest_id: json!("z".repeat(32)),
+            gest_id: json!(letter.repeat(32)),
             archived_at: json!(null),
             created_at: json!("2026-11-18T12:00:00Z"),
             updated_at: json!("2026-11-18T12:00:00Z"),
@@ -293,53 +302,8 @@ fn the_show_parser_takes_one_id() {
 }
 
 #[test]
-/// The lookup follows Gest `resolve_id`. It searches the tasks in an open status first,
-/// then every task, with a case-sensitive prefix of 1 to 32 letters from `k` to `z`.
-fn the_lookup_finds_one_task_by_prefix() {
-    let time = "2026-11-18T12:00:00Z";
-    let tickets = vec![
-        ticket(inputs("m", "lmo", "open", time)),
-        ticket(inputs("n", "lmp", "done", time)),
-        ticket(inputs("o", "lqr", "done", time)),
-        ticket(inputs("p", "lqs", "cancelled", time)),
-        ticket(inputs("q", "ltu", "in-progress", time)),
-        IssueTicket {
-            record: IssueRecord::Project(project()),
-            ..ticket(inputs("m", "", "open", time))
-        },
-    ];
-    let all = tasks(&tickets);
-    assert_eq!(all.len(), 5);
-    let found = |prefix: &str| find_task(&all, prefix).map(|task| task.values.gest_id.to_string());
-    let full = format!("lmo{}", "m".repeat(29));
-    assert_eq!(found(&full), Ok(full.clone()));
-    assert_eq!(found("lmo"), Ok(full.clone()));
-    // Two tasks start with lm, but only one is open, so the open one wins.
-    assert_eq!(found("lm"), Ok(full.clone()));
-    assert_eq!(found("lt"), Ok(format!("ltu{}", "q".repeat(29))));
-    // With no open match, every task is searched.
-    assert_eq!(found("lmp"), Ok(format!("lmp{}", "n".repeat(29))));
-    assert_eq!(found("l"), Err(LookupError::Ambiguous("l".into(), 2)));
-    assert_eq!(found("lq"), Err(LookupError::Ambiguous("lq".into(), 2)));
-    assert_eq!(found("lz"), Err(LookupError::NotFound("lz".into())));
-    // The project's Gest ID is not a task ID.
-    assert_eq!(found("zz"), Err(LookupError::NotFound("zz".into())));
-    let long = "m".repeat(33);
-    for (prefix, text) in [
-        ("", "Id prefix must not be empty"),
-        (
-            "LMO",
-            "Id prefix must contain only characters k-z, found 'L'",
-        ),
-        (
-            "lm1",
-            "Id prefix must contain only characters k-z, found '1'",
-        ),
-        (&long, "Id prefix must be at most 32 characters, got 33"),
-    ] {
-        let error = LookupError::InvalidPrefix(text.into());
-        assert_eq!(found(prefix), Err(error), "{prefix}");
-    }
+/// Each lookup error gives Gest's message.
+fn the_lookup_errors_give_gest_messages() {
     assert_eq!(
         LookupError::NotFound("lz".into()).to_string(),
         "not found: id prefix 'lz'"
@@ -707,6 +671,7 @@ async fn check_in(owner: &mut LocalOwnerRepository, root: &std::path::Path, view
 ///
 /// The tasks are `lmo…` (open), `lmp…` (done), `lqr…` (open, after the check-in) and
 /// `lqs…` (in progress in project `l…`, after the check-in). The project is `z…`.
+/// The projects `k…` and `l…` of the tasks come first, and are not in the result.
 /// # Returns
 /// The directory, the owner and the stored tickets in receipt order.
 async fn fixture() -> (tempfile::TempDir, LocalOwnerRepository, Vec<IssueTicket>) {
@@ -714,12 +679,25 @@ async fn fixture() -> (tempfile::TempDir, LocalOwnerRepository, Vec<IssueTicket>
     let root = temp.path().join("root");
     std::fs::create_dir(&root).unwrap();
     let mut owner = repository(temp.path().join("repo")).await;
+    let date = NativeDate::parse(b"2026-11-18T12:00:00Z").unwrap();
+    // A new task needs its project, so the projects of the tasks come first.
+    for (n, letter) in [(6, "k"), (7, "l")] {
+        let k = format!("{n:040x}");
+        let bytes = crate::gest_ticket::project_creation_bytes(
+            &project_named(letter),
+            k.as_bytes(),
+            b"agent",
+            date,
+            65_536,
+        )
+        .unwrap();
+        put(&mut owner, &bytes).await;
+    }
     let mut stored = Vec::new();
     let open = inputs("m", "lmo", "open", "2026-11-18T12:00:01Z");
     stored.push(store(&mut owner, open, 1).await);
     let done = inputs("n", "lmp", "done", "2026-11-18T12:00:02Z");
     stored.push(store(&mut owner, done, 2).await);
-    let date = NativeDate::parse(b"2026-11-18T12:00:00Z").unwrap();
     let k = format!("{:040x}", 3);
     let bytes = crate::gest_ticket::project_creation_bytes(
         &project(),
@@ -867,6 +845,29 @@ async fn the_show_handler_looks_up_by_prefix() {
         let got = (error.exit_code(), error.to_string());
         assert_eq!(got, (code, message.to_owned()), "{prefix}");
     }
+    // The prefix is checked before the lookup reads the repository.
+    let long = "m".repeat(33);
+    for (prefix, text) in [
+        ("", "Id prefix must not be empty"),
+        (
+            "lm1",
+            "Id prefix must contain only characters k-z, found '1'",
+        ),
+        (&long, "Id prefix must be at most 32 characters, got 33"),
+    ] {
+        let options = TaskShowOptions {
+            id: prefix.into(),
+            json: false,
+        };
+        let error = task_show(&mut owner, &options, limits(), &mut Vec::new())
+            .await
+            .unwrap_err();
+        assert_eq!(
+            (error.exit_code(), error.to_string()),
+            (64, text.to_owned()),
+            "{prefix}"
+        );
+    }
 }
 
 /// A writer that refuses every write.
@@ -889,8 +890,9 @@ impl Write for Closed {
 }
 
 #[tokio::test]
-/// A failed write exits with 74. When another connection changes a row, both handlers
-/// refuse with 74 before any output, and a new open refuses the repository.
+/// A failed write exits with 74. When another connection changes a task row, the list
+/// prints the row, the show refuses with 74 before any output, a new open admits the
+/// repository, and the full proof refuses it.
 async fn the_handlers_refuse_a_changed_repository_and_a_failed_write() {
     let (temp, mut owner, _) = fixture().await;
     let options = TaskListOptions::default();
@@ -917,27 +919,30 @@ async fn the_handlers_refuse_a_changed_repository_and_a_failed_write() {
         .await
         .unwrap();
     drop(connection);
+    // The list reads the typed rows, so it prints the changed title.
     let mut out = Vec::new();
-    let error = task_list(&mut owner, None, &options, limits(), &mut out)
+    task_list(&mut owner, None, &options, limits(), &mut out)
         .await
-        .unwrap_err();
-    assert!(matches!(error, ReadError::Storage(_)), "{error}");
-    assert_eq!(error.exit_code(), 74);
-    let stale = "repository admission stale; reopen with explicit admission limits";
-    assert_eq!(error.to_string(), stale);
-    assert_eq!(read_failure(error), IssueFailure::new(74, stale));
+        .unwrap();
+    assert!(String::from_utf8(out).unwrap().contains("other"));
+    // The show proves its one task, so it refuses before any output.
+    let differs = "stored issue rows differ from the ticket artifact";
+    let mut out = Vec::new();
     let error = task_show(&mut owner, &show_options, limits(), &mut out)
         .await
         .unwrap_err();
     assert!(matches!(error, ReadError::Storage(_)), "{error}");
+    assert_eq!(error.exit_code(), 74);
+    assert_eq!(read_failure(error), IssueFailure::new(74, differs));
     assert!(out.is_empty());
     drop(owner);
+    // A new open admits the repository, and the full proof refuses it.
     let path = temp.path().join("repo");
-    let refused = LocalOwnerRepository::open(path, limits().admission).await;
-    assert_eq!(
-        refused.err().unwrap().to_string(),
-        "stored issue rows differ from the ticket artifact"
-    );
+    let mut reopened = LocalOwnerRepository::open(path, limits().admission)
+        .await
+        .unwrap();
+    let refused = reopened.verify(limits().admission).await.unwrap_err();
+    assert_eq!(refused.to_string(), differs);
 }
 
 /// Run the reference `gest` in a fixture home and return its standard output.

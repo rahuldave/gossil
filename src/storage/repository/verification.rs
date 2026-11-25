@@ -106,7 +106,7 @@ impl LocalOwnerRepository {
         let (content, mut budget, mut parse) = proof_ledgers(limits)?;
         let mut tx = self.store.begin_write().await?;
         let result = async {
-            tx.check_admission_budgeted(&self.principal, &self.admission, &mut budget)
+            tx.check_admission_budgeted(&self.principal, &mut budget)
                 .await?;
             let rows = scalar_i64(&tx.query_bound(ROWS, vec![]).await?)?;
             let rows =
@@ -141,7 +141,7 @@ impl LocalOwnerRepository {
 
     /// Find the tasks and projects whose Gest ID starts with a prefix.
     ///
-    /// It first runs admission, which reads the whole repository. The search then reads
+    /// It first checks the identity, the schema and the policy. The search then reads
     /// only the rows of the `combined` scope of the typed tables, by their primary key.
     /// It changes nothing.
     /// # Arguments
@@ -150,7 +150,7 @@ impl LocalOwnerRepository {
     /// # Returns
     /// No match, the one full Gest ID, or the count of matches.
     /// # Errors
-    /// Refuses an invalid prefix, stale or failed admission and SQL failures.
+    /// Refuses an invalid prefix, a failed check and SQL failures.
     /// # Examples
     /// ```no_run
     /// use gossil::storage::{AdmissionLimits, IssueMatch, LocalOwnerRepository, StorageError};
@@ -173,7 +173,7 @@ impl LocalOwnerRepository {
         let (_, mut budget, _) = proof_ledgers(limits)?;
         let mut tx = self.store.begin_write().await?;
         let result = async {
-            tx.check_admission_budgeted(&self.principal, &self.admission, &mut budget)
+            tx.check_admission_budgeted(&self.principal, &mut budget)
                 .await?;
             let pattern = Value::Text(format!("{prefix}*"));
             let count = scalar_i64(&tx.query_bound("SELECT (SELECT count(*) FROM g_gest_tasks WHERE scope_key='combined' AND id GLOB ?1)+(SELECT count(*) FROM g_gest_projects WHERE scope_key='combined' AND id GLOB ?1)", vec![pattern.clone()]).await?)?;
@@ -206,10 +206,9 @@ impl LocalOwnerRepository {
     /// full proof admits such a task. It changes nothing.
     ///
     /// The one lookup of the ticket by its Gest ID scans the `ticket` table. The other
-    /// reads use an index or a primary key. Each row read also measures the size of the
-    /// text of the whole repository, as every read of admission does. The proof checks
-    /// that each table that admission keeps empty in every repository has no row, with one
-    /// fixed query per table.
+    /// reads use an index or a primary key. The proof checks that each table that the
+    /// full proof keeps empty in every repository has no row, with one fixed query per
+    /// table.
     ///
     /// The proof does not see a row that no index of the issue reaches, or a typed row
     /// in another scope.
@@ -219,9 +218,10 @@ impl LocalOwnerRepository {
     /// # Returns
     /// The ticket ID, native name and record of the issue.
     /// # Errors
-    /// Refuses an ID that no ticket or more than one ticket holds, a row in a table that
-    /// admission keeps empty in every repository, every difference from the replay, stale or failed
-    /// admission, exhausted ceilings and SQL failures.
+    /// Refuses an ID that no ticket or more than one ticket holds, and a row in a table
+    /// that the full proof keeps empty in every repository. Also refuses every
+    /// difference from the replay, the refusals of the checks of each command,
+    /// exhausted ceilings and SQL failures.
     /// # Examples
     /// ```no_run
     /// use gossil::storage::{AdmissionLimits, IssueTicket, LocalOwnerRepository, StorageError};
@@ -238,7 +238,7 @@ impl LocalOwnerRepository {
         let (_, mut budget, mut parse) = proof_ledgers(limits)?;
         let mut tx = self.store.begin_write().await?;
         let result = async {
-            tx.check_admission_budgeted(&self.principal, &self.admission, &mut budget)
+            tx.check_admission_budgeted(&self.principal, &mut budget)
                 .await?;
             let json = serde_json::to_string(id)
                 .map_err(|error| StorageError::caused("issue ID", error))?;

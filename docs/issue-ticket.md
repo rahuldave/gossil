@@ -32,9 +32,16 @@ the rows and bytes that the SQL queries of one call can return. The result names
 the K card, and the native name of the artifact. It also holds the validated `TaskValues` or
 `ProjectValues`.
 
-`read_private_issue` runs the full admission of `LocalOwnerRepository::open`, then parses the artifact of
-the ticket ID and returns its record. It writes nothing. `create_private_issue` runs the same admission
-before its write and again after it, in the same transaction and under the same limits.
+`read_private_issue` runs the checks of each command, which the
+[native storage guide](native-storage.md#check-a-repository) lists. Then it reads the artifact that the
+`tkt-` tag of the ticket ID names, parses it and returns its record. It compares no row and writes
+nothing.
+
+`create_private_issue` runs the same checks before its write and again after it, in the same
+transaction and under the same limits. It parses its artifact and checks that it is one canonical
+creation. It checks through an index that no row holds its ticket ID, tag, artifact or Gest ID. A task also
+needs a project that the repository holds and that is not archived. Each check uses an index, so the
+cost of a write does not grow with the count of issues.
 
 ## Bind a project to a checkout
 
@@ -57,7 +64,7 @@ The method writes the rows that `create_private_issue` writes for a project, as 
   checkout.
 - **g_checkout_project** gets the checkout ID and the Gest ID of the project.
 
-Like `create_private_issue`, the method runs the full admission before and after its write. Before it
+Like `create_private_issue`, the method runs the checks of each command before and after its write. Before it
 changes anything, it refuses an artifact that is not one project creation, a checkout that is not registered and
 a checkout that already has a project. It also refuses a repository that already holds a project
 ticket, for example one that `create_private_issue` wrote. The refusal for these cases is
@@ -66,7 +73,7 @@ with no project; binding an existing project is not available in this build`. A 
 commit leaves every byte of the repository files unchanged.
 
 `bound_project` returns the Gest ID of the project bound to a checkout, or `None` when the checkout has
-no binding. It runs the full admission of `LocalOwnerRepository::open` first, and it writes nothing.
+no binding. It runs the checks of each command first, and it writes nothing.
 `bound_project` does not use the SQL limits in `limits`.
 
 ## List every issue
@@ -81,30 +88,29 @@ for issue in &issues {
 }
 ```
 
-The call runs the full admission of `LocalOwnerRepository::open` first. Then it runs the issue part of
-admission once more, with the same queries, and takes each record from that second pass. It writes nothing,
-and it uses no SQL that admission does not use. An empty repository gives an empty list.
+The call runs the checks of each command first. Then it reads each `combined` typed row with its
+ticket ID and artifact name. It replays no artifact, so it passes under a parser entry ceiling of one.
+It writes nothing. An empty repository gives an empty list. The SQL row ceiling of `IssueLimits` bounds
+the count of issues, and the parser input ceiling bounds the width of one row.
 
-Both passes charge the same content and parser ledgers. So the limits must cover each issue artifact
-twice. For example, three issues that an open admits with 37 parser entries need 72 entries for a
-list. The shared root takes 2 of those entries, and only the first pass parses it. So the list
-needs 2 + 2 × 35 entries. The list does not use the SQL limits of `IssueLimits`.
+The cost of the list grows with the count of issues, and not with the rest of the repository. The list
+does not compare the typed rows with the artifacts. `gos v verify` does.
 
 The handlers of `issue task list` and `issue task show` read the tasks through this call. The
 [issue read guide](issue-read.md) gives their output.
 
-## How admission checks issues
+## How the full proof checks issues
 
-Admission finds each issue from its `tkt-` tag, parses its artifact again and derives every row from it.
+The full proof of `gos v verify` finds each issue from its `tkt-` tag, parses its artifact again and derives every row from it.
 The `ticket`, `ticketchng`, `g_gest_tasks` and `g_gest_projects` tables must hold exactly the derived rows.
 The `event`, `tagxref`, `tag`, `blob`, `private`, `leaf`, `unclustered`, `unsent` and `rcvfrom` tables
 must hold exactly the rows of the check-ins and of the issues, with nothing else. If any of these tables
-holds another row, for example a changed or extra row, open refuses the repository.
+holds another row, for example a changed or extra row, the full proof refuses the repository.
 
 Issues and private check-ins can come in any order in one repository. Each check-in and each issue owns
 one receipt, and the receipts after the root's have no gaps. Tags above the 12 built-in tags take their
-IDs in the order of the receipts that created them. So admission looks up the private branch tag by name.
-A Gest ID names one task or one project. Admission refuses a project that reuses the Gest ID of a task,
+IDs in the order of the receipts that created them. So the full proof looks up the private branch tag by
+name. A Gest ID names one task or one project. The full proof refuses a project that reuses the Gest ID of a task,
 and a second ticket with the same ticket ID.
 
 The checkout fingerprint names a receipt. Registration takes the newest receipt, so when an issue comes
@@ -122,7 +128,7 @@ belong to the issue and that an index reaches. The rows are its artifact, ticket
 private mark, typed row and, for a task, its project. It does not claim that no other row in the
 repository names the issue. Only the full proof, `gos v verify` without `--issue`, makes that claim.
 
-It then checks that each table that admission keeps empty in every repository has no row, for example `delta`,
+It then checks that each table that the full proof keeps empty in every repository has no row, for example `delta`,
 `cherrypick`, `g_gest_notes` and `g_gest_relationships`. The check takes one fixed query per table. A row
 in one of these tables makes the proof refuse with `unsupported nonempty catalog6 table:` and the name
 of the table. A repository with no checkout must also keep `unsent`, `filename`, `mlink`, `plink`,
@@ -145,16 +151,15 @@ So must its typed row in the `combined` scope. The typed table of the other kind
 
 For a task, the proof checks only that a `combined` project row with its project ID exists. When none
 exists, it refuses with `a stored task names a project that the repository does not hold`. The full
-proof admits such a task, because the library writer may store a task before its project.
+proof admits such a task. The writer refuses it, so only a change outside Gossil can make one.
 
 The proof replays no other artifact. It reads the rows of this issue by an index or a primary key,
-except for the one lookup of the ticket by its Gest ID, which scans the `ticket` table. Each row read
-also measures the size of the text of the whole repository, as every read of admission does. So the cost of the proof
-still grows with the repository, but more slowly than the cost of the full proof.
+except for the one lookup of the ticket by its Gest ID, which scans the `ticket` table. So apart from that
+lookup, the cost of the proof does not grow with the repository.
 
 The proof does not see a row that no index of the issue reaches, for example an unrelated tag or a
-ticket row without an artifact. It does not see a typed row in another scope either. Only the full proof
-of admission, or `gos v verify` without `--issue`, refuses those rows.
+ticket row without an artifact. It does not see a typed row in another scope either. Only the full proof,
+`gos v verify` without `--issue`, refuses those rows.
 
 ## Rows that one write adds
 
@@ -192,21 +197,20 @@ as not supported in this build, and the refusal leaves every table unchanged:
 
 ## Limits of this build
 
-Issues are private only. A write can fail and roll back after its admission check passed. The writer then
-refreshes the change counter of the proof, so the failed write does not lock out the stored tickets. A
-write that the admission check refuses as stale leaves the proof stale, so the check refuses the next call
-of that owner too.
+Issues are private only. A write can fail and roll back after its checks passed. The next command runs
+its checks again in its own transaction, so a failed write does not lock out the stored tickets.
 
-Admission accepts the binding tables `g_project_binding` and `g_checkout_project` in two states only.
+Open and each command accept the binding tables `g_project_binding` and `g_checkout_project` in two states only.
 In the first, both tables are empty. In the second, each table holds the one row that
 `init_private_project` writes. Both rows then name the registered checkout and the Gest ID of one
-admitted project that is not archived. The row of `g_project_binding` also holds the exact root of the
-checkout. Admission refuses every other state with `unsupported project binding state`.
+project that is not archived. The row of `g_project_binding` also holds the exact root of the
+checkout, and each ID must be text. Open refuses every other state with
+`unsupported project binding state`, and so does each command.
 
-In a repository without a checkout registration, admission refuses every binding row. The admission proof also holds
-the rows of both tables, so a later change to them makes the proof stale.
+In a repository without a checkout registration, open refuses every binding row.
 
-The tables `g_identity` and `g_contributor` stay empty, and admission refuses a row in either of them.
+The tables `g_identity` and `g_contributor` stay empty, and the full proof refuses a row in either of
+them.
 The writer writes no audit row and no undo history. `init_private_project` does not bind a project that
 the repository already holds.
 
@@ -215,24 +219,26 @@ the full key of the specification, because the full key needs selectors.
 
 ## How many issues a repository holds
 
-A write runs the full admission twice, and each admission reads and parses every issue artifact. So the
-work of one write grows with the count of issues.
+No command reads the whole repository, so no count of issues makes a write refuse. `task create`,
+`status` and `commit` each read only the rows that they need, by an index. `task show` finds its ticket
+by a scan of the `ticket` table, since no index holds the Gest ID, and then replays only its one
+artifact. `task list` reads every typed row, and `gos v verify` replays every artifact, so their cost
+grows with the count of issues. The scan of `task show` is cheap, as the times below show.
 
-Some reads in admission take a whole surface of the repository. Each bounded SQL read takes the text
-inventory, the text of 12 native and local tables such as `blob`, `event`, `tag` and `tagxref`. Each
-read of stored content checks the owner again, and that check takes the schema and the policy tables.
-The content ledger charges each whole surface once per admission. A later read of that surface charges
-only the bytes that it has grown by. The other charges are the same for each issue, so the
-decoded-byte charge of one admission grows linearly with the count of issues.
+`just issue-capacity` stores 5,000 tasks in a release build and times each command at 100, 1,000 and
+5,000 tasks. One run on macOS, with 8 CPUs and load averages of about 9 before and 7 after, gave these
+times in milliseconds:
 
-The `gos v` and `gos i` commands use one parser ledger of 4096 cards and 4096 entries for a whole call.
-A write parses every task twice. So under those ceilings a repository holds 113 tasks with 21-byte
-titles, which make about 57 KB of artifacts. The card ceiling refuses the 114th write. With wider parser
-ledgers, the decoded-byte ceiling of 64 MiB refuses the write after 378 such tasks. The `gos v`
-commands parse every issue in their admissions too, so the same ceilings bound them.
+| Tasks | create | list | show | status | commit | verify |
+|---|---|---|---|---|---|---|
+| 100 | 15 | 15 | 15 | 13 | 17 | 101 |
+| 1,000 | 15 | 23 | 16 | 13 | 17 | 860 |
+| 5,000 | 15 | 68 | 16 | 13 | 19 | 4,267 |
 
-`gos i task create` refuses a task artifact of more than 65,536 bytes, so that one large task cannot
-use up the budgets of every later write.
+The times of create, show, status and commit stay flat. The times of list and verify grow with the count
+of tasks.
+
+`gos i task create` refuses a task artifact of more than 65,536 bytes.
 
 ## Tests
 
@@ -241,9 +247,14 @@ priority and status values that one creation can hold (part of GEST-T02), and ea
 
 The unit controls in `tests/support/storage_issue_ticket.rs` inject a failure after each write step.
 They check that every byte of the repository files stays the same (GEST-T08). They also check that
-admission refuses a changed or extra row in each admitted table, for example a `tagxref` row with no RID.
-They check too that admission refuses a project that reuses the Gest ID of a task. For each changed row,
-the ticket reader, the next write and a new open each refuse, and leave the repository files unchanged.
+the full proof refuses a changed or extra row in each admitted table, for example a `tagxref` row with no
+RID. They check too that the full proof refuses a project that reuses the Gest ID of a task, while open
+and the read of the project admit it.
+
+For each changed row, the ticket reader, the list and the next write refuse only a change to a fact that
+each one reads. For example, the reader refuses a second artifact under the tag, and the write refuses a
+missing project row. A new open admits each change, because none is a fact that open reads. No case
+changes a byte of the repository files.
 
 Each of the 29 cases of a changed row also runs the proof of one issue on the task and on the project.
 It checks the exact result of each proof. In 22 of the cases, at least one of the two proofs refuses.
@@ -257,7 +268,7 @@ In the case of an artifact whose K is not the K of its tag, the proof of the K o
 with `stored issue rows differ from the ticket artifact`.
 
 `the_proof_has_no_total_ceiling` stores a project and two tasks. It sets total content ceilings of 64 bytes
-and a parser ceiling of 20 entries, which open refuses. Under them `verify` passes and counts 0
+and a parser ceiling of 20 entries, far below what the whole repository needs. Under them `verify` passes and counts 0
 check-ins and 3 issues. A parser input ceiling of 64 bytes makes `verify` refuse.
 
 Under the same small ceilings, `verify_issue` proves a task and a project, and `find_issue` finds each of them by a prefix.
@@ -274,6 +285,11 @@ differ from the ticket artifact`. So does a `plink` row with the artifact as its
 One more case deletes the ticket row of the task, which gives the same refusal. The test also checks the
 exact refusal of the full proof for each case.
 
+Other tamper tests of check-ins, tracking, scopes and the timeline take the exact refusal of the full
+proof from `tests/fixtures/tamper-refusals.tsv`. Each line of that table holds a tamper statement, a tab
+and the first line of the refusal. `assert_refusal` in `tests/support/proof.rs` fails on a statement
+that the table does not hold, or on a different message.
+
 `only_the_full_proof_refuses_rows_that_no_index_reaches` adds each of these in turn:
 
 - a second blob under the receipt of the task
@@ -282,9 +298,10 @@ exact refusal of the full proof for each case.
 
 The proof of the task admits each, and `verify` refuses each.
 
-`only_the_issue_proof_refuses_a_task_without_its_project` stores a task alone. `verify` passes and
-counts one issue. The proof of the task and `verify_issue` both refuse the task with the message of a
-missing project. `verify_issue` also refuses an ID that no ticket holds.
+`a_task_needs_its_project` checks that the writer refuses a task whose project the repository does not
+hold, or holds archived, and changes no byte. Then it deletes the typed row of the project. The proof of
+the task and `verify_issue` both refuse the task with the message of a missing project. `verify_issue`
+also refuses an ID that no ticket holds.
 
 The unit test `a_per_artifact_parser_ledger_does_not_accumulate` in
 `src/storage/repository.rs` checks that a per-artifact parser ledger keeps its whole allowance after each
@@ -295,27 +312,30 @@ parse, and still refuses one artifact over its ceiling.
 and the project by a prefix. It checks the usage line and the status of a usage error. It also checks the statuses of an invalid,
 missing or ambiguous prefix, and the exact count of an ambiguous prefix.
 
-A changed typed row makes both forms exit with status 74 and the fixed message. In this build, open
-refuses the row at admission, before either proof runs. So this test checks the message and the
-status, and the unit tests above check the proofs themselves.
+A changed typed row makes both forms exit with status 74 and the fixed message. Open admits the row,
+so the proof itself refuses it.
+
+`open_refuses_each_fact_that_it_reads` changes one fact that open reads in each case. The cases are a
+wrong catalog marker, a wrong fingerprint, a missing `server-code` or `project-code` config row, a
+missing owner row, a wrong checkout count and lost Gossil tables. `verify` and `status` each refuse
+at open, before their own work, and print the same message, and neither changes a byte. Lost tables give exit
+78 to both. Lost tables also make `gos i task list` and `gos i task show` exit with 78 and the same
+message.
 
 `verify_counts_no_check_in_and_refuses_an_older_catalog` checks a repository without a commit. It prints
 `verified: 0 check-ins, 3 issues, 15 tables compared`. With stdout closed, the command exits with 1 and
 prints `gossil: unable to write the summary: `. A repository at catalog 4 makes both forms exit with 78
 and print three lines. No case changes a byte of the repository.
 
-A change to the `ticket`, `ticketchng`, `g_gest_tasks` or `g_gest_projects` table also makes the saved
-admission proof stale. The admission check of the next write then refuses that write.
-
 Further unit controls cover `init_private_project`. A failure injected after each write step, the
 binding step included, leaves every byte unchanged and the checkout unbound. The method refuses a task,
 an unknown checkout, a bound checkout, a repository that holds an unbound project and a repository
 without a registration.
 
-Admission refuses each changed, missing or extra binding row, a binding to a
+Open refuses each changed, missing or extra binding row, a binding to a
 task or to an archived project, and a value that is not text. Before each change, the list call returns
-all three issues of the bound repository. After the change, the list call refuses with `unsupported project
-binding state`. A change to a binding row also makes the admission proof stale.
+all three issues of the bound repository. After the change, the reader of the binding, the list call and
+a new open each refuse with `unsupported project binding state`.
 
 `tests/issue_init_cli.rs` checks the command `gos i init` in all four forms, its second run, its
 refusals and the `vcs` commands before and after it. `tests/issue_task_cli.rs` checks
@@ -331,37 +351,44 @@ A further test in `tests/issue_task_cli.rs` holds the write lock for 7 seconds. 
 The unit tests of `src/product/issue_task.rs` inject a failure after each write step of a new task. Then
 they check that every byte of the repository stays unchanged (GEST-T08).
 
-Admission parses every artifact under one parser ledger, so the entry ceiling of that ledger limits the
-count of issues. A unit control sets a ceiling that admits two tasks, and checks that admission refuses a
-third.
+A further unit test there opens a second owner, and then the first owner commits. The second owner
+needs no second open. `task create` writes its task, and `gos i init` finds the project of the first
+owner. When no project is bound and the write of an init refuses, the init exits with 74 and the
+message of the write, and stores no project.
 
-A unit control in `src/storage/repository/recorded_history.rs` measures the decoded-byte charge of one
-admission at 3, 6 and 12 tasks, and checks that it grows linearly. Further unit controls there check
-that repeated owner checks charge the schema once per admission. They check that a second admission on
-the same ledger charges each whole surface again. They also check that the ledger charges exactly the
-TEXT and BLOB bytes of a result.
+A unit control in `src/storage/repository/recorded_history.rs` measures the charge of the checks of
+each command at 3, 6 and 12 issues, and checks that it stays the same. Further unit controls there check
+that repeated owner checks charge the schema once per admission. They also check that the ledger charges
+exactly the TEXT and BLOB bytes of a result.
 
 A unit control in `src/storage/content.rs` checks that the ledger charges a surface once per admission,
 and later only its growth. It also checks that the ledger charges and holds nothing for a refused
 reservation.
 
-`tests/issue_capacity.rs` sets a decoded-byte ceiling of 4 MiB. The old charge, which took the whole
-text for each ticket, met that ceiling at the fifth write. The test writes 12 tasks, then opens, lists
-and reads them. Then it writes until the ceiling refuses a write, and checks that the refusal changes no
-byte of the repository files. It also runs the `gos v` commands in a repository with 12 tasks.
+`tests/issue_capacity.rs` uses the ceilings of the CLI. Its ordinary test stores 300 tasks, then runs
+`task create`, `task list`, `task show`, `status`, `commit` and `verify`, and checks the output of
+each. The ignored test stores 5,000 tasks and prints the time of each command at 100, 1,000 and 5,000
+tasks. `just issue-capacity` runs the ignored test in a release build.
 
-A unit control lists two tasks and a project in receipt order, and checks that the list changes no row.
-It also finds the smallest entry ceiling and the smallest decoded-byte ceiling of the list and of an
-open. A list call with the decoded-byte ceiling of the open refuses and changes no row. In each tamper
-case above, the list call also refuses with the same message. In each of its three orders, the CAT-T07
-subset below also lists the issues after each step.
+A unit control lists two tasks and two projects in receipt order under a parser entry ceiling of one, and
+checks that the list changes no row. It finds the least SQL row ceiling under which the list passes, and
+checks that one more task makes the list refuse under that ceiling. It also checks that `find_task`
+refuses an empty prefix, a prefix of 33 letters and a prefix outside the letters k to z, with
+`invalid issue ID prefix`. A further control stores the ID of each task as a blob. A prefix still
+matches such an ID, and then `find_task` refuses the task with
+`a stored typed row does not hold a valid task or project` and changes no row of any table. In each
+of its three orders, the CAT-T07 subset below also lists the issues after each step.
 
 The CAT-T07 subset in `tests/issue_ticket.rs` writes issues and check-ins in three orders. In the first,
 an issue comes before the checkout is registered. In the second, issues come before the first check-in,
 and in the third, issues come after check-ins. After each step, a new open admits the repository, and
-the commands `status`, `add`, `commit` and `timeline` work. With check-ins between the issues, admission
-still refuses a changed issue, tag or receipt row, for example swapped tag IDs or swapped receipts. A
-further test checks which receipt the fingerprint names before and after the first check-in.
+the commands `status`, `add`, `commit` and `timeline` work.
+
+With check-ins between the issues, the
+full proof still refuses a changed issue, tag or receipt row, for example swapped tag IDs or swapped
+receipts. Open admits each change but one, the swapped receipt of the selected check-in, because that
+is the only fact among them that open reads. A further test checks which receipt the fingerprint names
+before and after the first check-in.
 
 `just issue-ticket-interop` runs the stock Fossil check with the pinned Fossil 2.29 at `7e8ecf0ce4`. It
 writes a task and a project, then requires these results of stock Fossil:

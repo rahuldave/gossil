@@ -3,10 +3,8 @@
 //! ## Recommendations
 //! Keep catalog1 on its original validator. Charge shared work before retaining
 //! catalog6 authority, then admit only the complete recorded-history projection.
-use super::recorded_history::{RecordedHistory, parse_recording_budgeted};
-use super::{
-    AdmissionLimits, AdmissionProof, ParseWork, Principal, StorageError, Value, validate_empty_root,
-};
+use super::recorded_history::{RecordedHistory, bounded_rows, parse_recording_budgeted};
+use super::{AdmissionLimits, ParseWork, Principal, StorageError, Value, validate_empty_root};
 use crate::storage::{WriteTransaction, content::Budget};
 use std::{os::unix::fs::MetadataExt, path::Path};
 
@@ -16,8 +14,6 @@ struct SnapshotTable {
     columns: usize,
     /// Scalar count and total retained byte lengths, evaluated before ownership.
     bounds: &'static str,
-    /// Deterministically ordered type/value pairs; no hostile TEXT decoding.
-    rows: &'static str,
 }
 /// All nonempty authority surfaces in this exact initialized/recorded family.
 /// Blob envelopes are authenticated by content reads, not copied into this proof;
@@ -26,147 +22,118 @@ const AUTHORITY_TABLES: &[SnapshotTable] = &[
     SnapshotTable {
         columns: 5,
         bounds: "SELECT count(*),coalesce(sum(coalesce(length(CAST(\"type\" AS BLOB)),0)+coalesce(length(CAST(\"name\" AS BLOB)),0)+coalesce(length(CAST(\"tbl_name\" AS BLOB)),0)+coalesce(length(CAST(\"rootpage\" AS BLOB)),0)+coalesce(length(CAST(\"sql\" AS BLOB)),0)),0) FROM \"sqlite_schema\"",
-        rows: "SELECT typeof(\"type\"),CASE WHEN typeof(\"type\") IN('text','blob') THEN CAST(\"type\" AS BLOB) ELSE \"type\" END,typeof(\"name\"),CASE WHEN typeof(\"name\") IN('text','blob') THEN CAST(\"name\" AS BLOB) ELSE \"name\" END,typeof(\"tbl_name\"),CASE WHEN typeof(\"tbl_name\") IN('text','blob') THEN CAST(\"tbl_name\" AS BLOB) ELSE \"tbl_name\" END,typeof(\"rootpage\"),CASE WHEN typeof(\"rootpage\") IN('text','blob') THEN CAST(\"rootpage\" AS BLOB) ELSE \"rootpage\" END,typeof(\"sql\"),CASE WHEN typeof(\"sql\") IN('text','blob') THEN CAST(\"sql\" AS BLOB) ELSE \"sql\" END FROM \"sqlite_schema\" ORDER BY 1,2,3,4,5,6,7,8,9,10",
     },
     SnapshotTable {
         columns: 6,
         bounds: "SELECT count(*),coalesce(sum(coalesce(length(CAST(\"singleton\" AS BLOB)),0)+coalesce(length(CAST(\"repository_id\" AS BLOB)),0)+coalesce(length(CAST(\"storage_version\" AS BLOB)),0)+coalesce(length(CAST(\"projection_version\" AS BLOB)),0)+coalesce(length(CAST(\"policy_complete\" AS BLOB)),0)+coalesce(length(CAST(\"checkout_count\" AS BLOB)),0)),0) FROM \"g_storage\"",
-        rows: "SELECT typeof(\"singleton\"),CASE WHEN typeof(\"singleton\") IN('text','blob') THEN CAST(\"singleton\" AS BLOB) ELSE \"singleton\" END,typeof(\"repository_id\"),CASE WHEN typeof(\"repository_id\") IN('text','blob') THEN CAST(\"repository_id\" AS BLOB) ELSE \"repository_id\" END,typeof(\"storage_version\"),CASE WHEN typeof(\"storage_version\") IN('text','blob') THEN CAST(\"storage_version\" AS BLOB) ELSE \"storage_version\" END,typeof(\"projection_version\"),CASE WHEN typeof(\"projection_version\") IN('text','blob') THEN CAST(\"projection_version\" AS BLOB) ELSE \"projection_version\" END,typeof(\"policy_complete\"),CASE WHEN typeof(\"policy_complete\") IN('text','blob') THEN CAST(\"policy_complete\" AS BLOB) ELSE \"policy_complete\" END,typeof(\"checkout_count\"),CASE WHEN typeof(\"checkout_count\") IN('text','blob') THEN CAST(\"checkout_count\" AS BLOB) ELSE \"checkout_count\" END FROM \"g_storage\" ORDER BY 1,2,3,4,5,6,7,8,9,10,11,12",
     },
     SnapshotTable {
         columns: 2,
         bounds: "SELECT count(*),coalesce(sum(coalesce(length(CAST(\"singleton\" AS BLOB)),0)+coalesce(length(CAST(\"owner_id\" AS BLOB)),0)),0) FROM \"g_local_owner\"",
-        rows: "SELECT typeof(\"singleton\"),CASE WHEN typeof(\"singleton\") IN('text','blob') THEN CAST(\"singleton\" AS BLOB) ELSE \"singleton\" END,typeof(\"owner_id\"),CASE WHEN typeof(\"owner_id\") IN('text','blob') THEN CAST(\"owner_id\" AS BLOB) ELSE \"owner_id\" END FROM \"g_local_owner\" ORDER BY 1,2,3,4",
     },
     SnapshotTable {
         columns: 3,
         bounds: "SELECT count(*),coalesce(sum(coalesce(length(CAST(\"native_hash\" AS BLOB)),0)+coalesce(length(CAST(\"validation_class\" AS BLOB)),0)+coalesce(length(CAST(\"supporting_root\" AS BLOB)),0)),0) FROM \"g_public_receipt\"",
-        rows: "SELECT typeof(\"native_hash\"),CASE WHEN typeof(\"native_hash\") IN('text','blob') THEN CAST(\"native_hash\" AS BLOB) ELSE \"native_hash\" END,typeof(\"validation_class\"),CASE WHEN typeof(\"validation_class\") IN('text','blob') THEN CAST(\"validation_class\" AS BLOB) ELSE \"validation_class\" END,typeof(\"supporting_root\"),CASE WHEN typeof(\"supporting_root\") IN('text','blob') THEN CAST(\"supporting_root\" AS BLOB) ELSE \"supporting_root\" END FROM \"g_public_receipt\" ORDER BY 1,2,3,4,5,6",
     },
     SnapshotTable {
         columns: 7,
         bounds: "SELECT count(*),coalesce(sum(coalesce(length(CAST(\"checkout_id\" AS BLOB)),0)+coalesce(length(CAST(\"root\" AS BLOB)),0)+coalesce(length(CAST(\"shared_head\" AS BLOB)),0)+coalesce(length(CAST(\"combined_head\" AS BLOB)),0)+coalesce(length(CAST(\"generation\" AS BLOB)),0)+coalesce(length(CAST(\"pending_version\" AS BLOB)),0)+coalesce(length(CAST(\"availability\" AS BLOB)),0)),0) FROM \"g_checkout\"",
-        rows: "SELECT typeof(\"checkout_id\"),CASE WHEN typeof(\"checkout_id\") IN('text','blob') THEN CAST(\"checkout_id\" AS BLOB) ELSE \"checkout_id\" END,typeof(\"root\"),CASE WHEN typeof(\"root\") IN('text','blob') THEN CAST(\"root\" AS BLOB) ELSE \"root\" END,typeof(\"shared_head\"),CASE WHEN typeof(\"shared_head\") IN('text','blob') THEN CAST(\"shared_head\" AS BLOB) ELSE \"shared_head\" END,typeof(\"combined_head\"),CASE WHEN typeof(\"combined_head\") IN('text','blob') THEN CAST(\"combined_head\" AS BLOB) ELSE \"combined_head\" END,typeof(\"generation\"),CASE WHEN typeof(\"generation\") IN('text','blob') THEN CAST(\"generation\" AS BLOB) ELSE \"generation\" END,typeof(\"pending_version\"),CASE WHEN typeof(\"pending_version\") IN('text','blob') THEN CAST(\"pending_version\" AS BLOB) ELSE \"pending_version\" END,typeof(\"availability\"),CASE WHEN typeof(\"availability\") IN('text','blob') THEN CAST(\"availability\" AS BLOB) ELSE \"availability\" END FROM \"g_checkout\" ORDER BY 1,2,3,4,5,6,7,8,9,10,11,12,13,14",
     },
     SnapshotTable {
         columns: 4,
         bounds: "SELECT count(*),coalesce(sum(coalesce(length(CAST(\"checkout_id\" AS BLOB)),0)+coalesce(length(CAST(\"owner_id\" AS BLOB)),0)+coalesce(length(CAST(\"root_device\" AS BLOB)),0)+coalesce(length(CAST(\"root_inode\" AS BLOB)),0)),0) FROM \"g_checkout_owner\"",
-        rows: "SELECT typeof(\"checkout_id\"),CASE WHEN typeof(\"checkout_id\") IN('text','blob') THEN CAST(\"checkout_id\" AS BLOB) ELSE \"checkout_id\" END,typeof(\"owner_id\"),CASE WHEN typeof(\"owner_id\") IN('text','blob') THEN CAST(\"owner_id\" AS BLOB) ELSE \"owner_id\" END,typeof(\"root_device\"),CASE WHEN typeof(\"root_device\") IN('text','blob') THEN CAST(\"root_device\" AS BLOB) ELSE \"root_device\" END,typeof(\"root_inode\"),CASE WHEN typeof(\"root_inode\") IN('text','blob') THEN CAST(\"root_inode\" AS BLOB) ELSE \"root_inode\" END FROM \"g_checkout_owner\" ORDER BY 1,2,3,4,5,6,7,8",
     },
     SnapshotTable {
         columns: 3,
         bounds: "SELECT count(*),coalesce(sum(coalesce(length(CAST(\"checkout_id\" AS BLOB)),0)+coalesce(length(CAST(\"name\" AS BLOB)),0)+coalesce(length(CAST(\"value\" AS BLOB)),0)),0) FROM \"g_vvar\"",
-        rows: "SELECT typeof(\"checkout_id\"),CASE WHEN typeof(\"checkout_id\") IN('text','blob') THEN CAST(\"checkout_id\" AS BLOB) ELSE \"checkout_id\" END,typeof(\"name\"),CASE WHEN typeof(\"name\") IN('text','blob') THEN CAST(\"name\" AS BLOB) ELSE \"name\" END,typeof(\"value\"),CASE WHEN typeof(\"value\") IN('text','blob') THEN CAST(\"value\" AS BLOB) ELSE \"value\" END FROM \"g_vvar\" ORDER BY 1,2,3,4,5,6",
     },
     SnapshotTable {
         columns: 13,
         bounds: "SELECT count(*),coalesce(sum(coalesce(length(CAST(\"checkout_id\" AS BLOB)),0)+coalesce(length(CAST(\"id\" AS BLOB)),0)+coalesce(length(CAST(\"vid\" AS BLOB)),0)+coalesce(length(CAST(\"chnged\" AS BLOB)),0)+coalesce(length(CAST(\"deleted\" AS BLOB)),0)+coalesce(length(CAST(\"isexe\" AS BLOB)),0)+coalesce(length(CAST(\"islink\" AS BLOB)),0)+coalesce(length(CAST(\"rid\" AS BLOB)),0)+coalesce(length(CAST(\"mrid\" AS BLOB)),0)+coalesce(length(CAST(\"mtime\" AS BLOB)),0)+coalesce(length(CAST(\"pathname\" AS BLOB)),0)+coalesce(length(CAST(\"origname\" AS BLOB)),0)+coalesce(length(CAST(\"mhash\" AS BLOB)),0)),0) FROM \"g_vfile\"",
-        rows: "SELECT typeof(\"checkout_id\"),CASE WHEN typeof(\"checkout_id\") IN('text','blob') THEN CAST(\"checkout_id\" AS BLOB) ELSE \"checkout_id\" END,typeof(\"id\"),CASE WHEN typeof(\"id\") IN('text','blob') THEN CAST(\"id\" AS BLOB) ELSE \"id\" END,typeof(\"vid\"),CASE WHEN typeof(\"vid\") IN('text','blob') THEN CAST(\"vid\" AS BLOB) ELSE \"vid\" END,typeof(\"chnged\"),CASE WHEN typeof(\"chnged\") IN('text','blob') THEN CAST(\"chnged\" AS BLOB) ELSE \"chnged\" END,typeof(\"deleted\"),CASE WHEN typeof(\"deleted\") IN('text','blob') THEN CAST(\"deleted\" AS BLOB) ELSE \"deleted\" END,typeof(\"isexe\"),CASE WHEN typeof(\"isexe\") IN('text','blob') THEN CAST(\"isexe\" AS BLOB) ELSE \"isexe\" END,typeof(\"islink\"),CASE WHEN typeof(\"islink\") IN('text','blob') THEN CAST(\"islink\" AS BLOB) ELSE \"islink\" END,typeof(\"rid\"),CASE WHEN typeof(\"rid\") IN('text','blob') THEN CAST(\"rid\" AS BLOB) ELSE \"rid\" END,typeof(\"mrid\"),CASE WHEN typeof(\"mrid\") IN('text','blob') THEN CAST(\"mrid\" AS BLOB) ELSE \"mrid\" END,typeof(\"mtime\"),CASE WHEN typeof(\"mtime\") IN('text','blob') THEN CAST(\"mtime\" AS BLOB) ELSE \"mtime\" END,typeof(\"pathname\"),CASE WHEN typeof(\"pathname\") IN('text','blob') THEN CAST(\"pathname\" AS BLOB) ELSE \"pathname\" END,typeof(\"origname\"),CASE WHEN typeof(\"origname\") IN('text','blob') THEN CAST(\"origname\" AS BLOB) ELSE \"origname\" END,typeof(\"mhash\"),CASE WHEN typeof(\"mhash\") IN('text','blob') THEN CAST(\"mhash\" AS BLOB) ELSE \"mhash\" END FROM \"g_vfile\" ORDER BY 1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26",
     },
     SnapshotTable {
         columns: 3,
         bounds: "SELECT count(*),coalesce(sum(coalesce(length(CAST(\"checkout_id\" AS BLOB)),0)+coalesce(length(CAST(\"path\" AS BLOB)),0)+coalesce(length(CAST(\"scope\" AS BLOB)),0)),0) FROM \"g_path_scope\"",
-        rows: "SELECT typeof(\"checkout_id\"),CASE WHEN typeof(\"checkout_id\") IN('text','blob') THEN CAST(\"checkout_id\" AS BLOB) ELSE \"checkout_id\" END,typeof(\"path\"),CASE WHEN typeof(\"path\") IN('text','blob') THEN CAST(\"path\" AS BLOB) ELSE \"path\" END,typeof(\"scope\"),CASE WHEN typeof(\"scope\") IN('text','blob') THEN CAST(\"scope\" AS BLOB) ELSE \"scope\" END FROM \"g_path_scope\" ORDER BY 1,2,3,4,5,6",
     },
     SnapshotTable {
         columns: 5,
         bounds: "SELECT count(*),coalesce(sum(coalesce(length(CAST(\"rid\" AS BLOB)),0)+coalesce(length(CAST(\"rcvid\" AS BLOB)),0)+coalesce(length(CAST(\"size\" AS BLOB)),0)+coalesce(length(CAST(\"uuid\" AS BLOB)),0)+coalesce(length(CAST(length(\"content\") AS BLOB)),0)),0) FROM \"blob\"",
-        rows: "SELECT typeof(\"rid\"),CASE WHEN typeof(\"rid\") IN('text','blob') THEN CAST(\"rid\" AS BLOB) ELSE \"rid\" END,typeof(\"rcvid\"),CASE WHEN typeof(\"rcvid\") IN('text','blob') THEN CAST(\"rcvid\" AS BLOB) ELSE \"rcvid\" END,typeof(\"size\"),CASE WHEN typeof(\"size\") IN('text','blob') THEN CAST(\"size\" AS BLOB) ELSE \"size\" END,typeof(\"uuid\"),CASE WHEN typeof(\"uuid\") IN('text','blob') THEN CAST(\"uuid\" AS BLOB) ELSE \"uuid\" END,typeof(\"content\"),length(\"content\") FROM \"blob\" ORDER BY 1,2,3,4,5,6,7,8,9,10",
     },
     SnapshotTable {
         columns: 12,
         bounds: "SELECT count(*),coalesce(sum(coalesce(length(CAST(\"type\" AS BLOB)),0)+coalesce(length(CAST(\"mtime\" AS BLOB)),0)+coalesce(length(CAST(\"objid\" AS BLOB)),0)+coalesce(length(CAST(\"tagid\" AS BLOB)),0)+coalesce(length(CAST(\"uid\" AS BLOB)),0)+coalesce(length(CAST(\"bgcolor\" AS BLOB)),0)+coalesce(length(CAST(\"euser\" AS BLOB)),0)+coalesce(length(CAST(\"user\" AS BLOB)),0)+coalesce(length(CAST(\"ecomment\" AS BLOB)),0)+coalesce(length(CAST(\"comment\" AS BLOB)),0)+coalesce(length(CAST(\"brief\" AS BLOB)),0)+coalesce(length(CAST(\"omtime\" AS BLOB)),0)),0) FROM \"event\"",
-        rows: "SELECT typeof(\"type\"),CASE WHEN typeof(\"type\") IN('text','blob') THEN CAST(\"type\" AS BLOB) ELSE \"type\" END,typeof(\"mtime\"),CASE WHEN typeof(\"mtime\") IN('text','blob') THEN CAST(\"mtime\" AS BLOB) ELSE \"mtime\" END,typeof(\"objid\"),CASE WHEN typeof(\"objid\") IN('text','blob') THEN CAST(\"objid\" AS BLOB) ELSE \"objid\" END,typeof(\"tagid\"),CASE WHEN typeof(\"tagid\") IN('text','blob') THEN CAST(\"tagid\" AS BLOB) ELSE \"tagid\" END,typeof(\"uid\"),CASE WHEN typeof(\"uid\") IN('text','blob') THEN CAST(\"uid\" AS BLOB) ELSE \"uid\" END,typeof(\"bgcolor\"),CASE WHEN typeof(\"bgcolor\") IN('text','blob') THEN CAST(\"bgcolor\" AS BLOB) ELSE \"bgcolor\" END,typeof(\"euser\"),CASE WHEN typeof(\"euser\") IN('text','blob') THEN CAST(\"euser\" AS BLOB) ELSE \"euser\" END,typeof(\"user\"),CASE WHEN typeof(\"user\") IN('text','blob') THEN CAST(\"user\" AS BLOB) ELSE \"user\" END,typeof(\"ecomment\"),CASE WHEN typeof(\"ecomment\") IN('text','blob') THEN CAST(\"ecomment\" AS BLOB) ELSE \"ecomment\" END,typeof(\"comment\"),CASE WHEN typeof(\"comment\") IN('text','blob') THEN CAST(\"comment\" AS BLOB) ELSE \"comment\" END,typeof(\"brief\"),CASE WHEN typeof(\"brief\") IN('text','blob') THEN CAST(\"brief\" AS BLOB) ELSE \"brief\" END,typeof(\"omtime\"),CASE WHEN typeof(\"omtime\") IN('text','blob') THEN CAST(\"omtime\" AS BLOB) ELSE \"omtime\" END FROM \"event\" ORDER BY 1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24",
     },
     SnapshotTable {
         columns: 2,
         bounds: "SELECT count(*),coalesce(sum(coalesce(length(CAST(\"tagid\" AS BLOB)),0)+coalesce(length(CAST(\"tagname\" AS BLOB)),0)),0) FROM \"tag\"",
-        rows: "SELECT typeof(\"tagid\"),CASE WHEN typeof(\"tagid\") IN('text','blob') THEN CAST(\"tagid\" AS BLOB) ELSE \"tagid\" END,typeof(\"tagname\"),CASE WHEN typeof(\"tagname\") IN('text','blob') THEN CAST(\"tagname\" AS BLOB) ELSE \"tagname\" END FROM \"tag\" ORDER BY 1,2,3,4",
     },
     SnapshotTable {
         columns: 7,
         bounds: "SELECT count(*),coalesce(sum(coalesce(length(CAST(\"tagid\" AS BLOB)),0)+coalesce(length(CAST(\"tagtype\" AS BLOB)),0)+coalesce(length(CAST(\"srcid\" AS BLOB)),0)+coalesce(length(CAST(\"origid\" AS BLOB)),0)+coalesce(length(CAST(\"value\" AS BLOB)),0)+coalesce(length(CAST(\"mtime\" AS BLOB)),0)+coalesce(length(CAST(\"rid\" AS BLOB)),0)),0) FROM \"tagxref\"",
-        rows: "SELECT typeof(\"tagid\"),CASE WHEN typeof(\"tagid\") IN('text','blob') THEN CAST(\"tagid\" AS BLOB) ELSE \"tagid\" END,typeof(\"tagtype\"),CASE WHEN typeof(\"tagtype\") IN('text','blob') THEN CAST(\"tagtype\" AS BLOB) ELSE \"tagtype\" END,typeof(\"srcid\"),CASE WHEN typeof(\"srcid\") IN('text','blob') THEN CAST(\"srcid\" AS BLOB) ELSE \"srcid\" END,typeof(\"origid\"),CASE WHEN typeof(\"origid\") IN('text','blob') THEN CAST(\"origid\" AS BLOB) ELSE \"origid\" END,typeof(\"value\"),CASE WHEN typeof(\"value\") IN('text','blob') THEN CAST(\"value\" AS BLOB) ELSE \"value\" END,typeof(\"mtime\"),CASE WHEN typeof(\"mtime\") IN('text','blob') THEN CAST(\"mtime\" AS BLOB) ELSE \"mtime\" END,typeof(\"rid\"),CASE WHEN typeof(\"rid\") IN('text','blob') THEN CAST(\"rid\" AS BLOB) ELSE \"rid\" END FROM \"tagxref\" ORDER BY 1,2,3,4,5,6,7,8,9,10,11,12,13,14",
     },
     SnapshotTable {
         columns: 1,
         bounds: "SELECT count(*),coalesce(sum(coalesce(length(CAST(\"rid\" AS BLOB)),0)),0) FROM \"leaf\"",
-        rows: "SELECT typeof(\"rid\"),CASE WHEN typeof(\"rid\") IN('text','blob') THEN CAST(\"rid\" AS BLOB) ELSE \"rid\" END FROM \"leaf\" ORDER BY 1,2",
     },
     SnapshotTable {
         columns: 5,
         bounds: "SELECT count(*),coalesce(sum(coalesce(length(CAST(\"rcvid\" AS BLOB)),0)+coalesce(length(CAST(\"uid\" AS BLOB)),0)+coalesce(length(CAST(\"mtime\" AS BLOB)),0)+coalesce(length(CAST(\"nonce\" AS BLOB)),0)+coalesce(length(CAST(\"ipaddr\" AS BLOB)),0)),0) FROM \"rcvfrom\"",
-        rows: "SELECT typeof(\"rcvid\"),CASE WHEN typeof(\"rcvid\") IN('text','blob') THEN CAST(\"rcvid\" AS BLOB) ELSE \"rcvid\" END,typeof(\"uid\"),CASE WHEN typeof(\"uid\") IN('text','blob') THEN CAST(\"uid\" AS BLOB) ELSE \"uid\" END,typeof(\"mtime\"),CASE WHEN typeof(\"mtime\") IN('text','blob') THEN CAST(\"mtime\" AS BLOB) ELSE \"mtime\" END,typeof(\"nonce\"),CASE WHEN typeof(\"nonce\") IN('text','blob') THEN CAST(\"nonce\" AS BLOB) ELSE \"nonce\" END,typeof(\"ipaddr\"),CASE WHEN typeof(\"ipaddr\") IN('text','blob') THEN CAST(\"ipaddr\" AS BLOB) ELSE \"ipaddr\" END FROM \"rcvfrom\" ORDER BY 1,2,3,4,5,6,7,8,9,10",
     },
     SnapshotTable {
         columns: 1,
         bounds: "SELECT count(*),coalesce(sum(coalesce(length(CAST(\"rid\" AS BLOB)),0)),0) FROM \"private\"",
-        rows: "SELECT typeof(\"rid\"),CASE WHEN typeof(\"rid\") IN('text','blob') THEN CAST(\"rid\" AS BLOB) ELSE \"rid\" END FROM \"private\" ORDER BY 1,2",
     },
     SnapshotTable {
         columns: 1,
         bounds: "SELECT count(*),coalesce(sum(coalesce(length(CAST(\"rid\" AS BLOB)),0)),0) FROM \"unclustered\"",
-        rows: "SELECT typeof(\"rid\"),CASE WHEN typeof(\"rid\") IN('text','blob') THEN CAST(\"rid\" AS BLOB) ELSE \"rid\" END FROM \"unclustered\" ORDER BY 1,2",
     },
     SnapshotTable {
         columns: 1,
         bounds: "SELECT count(*),coalesce(sum(coalesce(length(CAST(\"rid\" AS BLOB)),0)),0) FROM \"unsent\"",
-        rows: "SELECT typeof(\"rid\"),CASE WHEN typeof(\"rid\") IN('text','blob') THEN CAST(\"rid\" AS BLOB) ELSE \"rid\" END FROM \"unsent\" ORDER BY 1,2",
     },
     SnapshotTable {
         columns: 5,
         bounds: "SELECT count(*),coalesce(sum(coalesce(length(CAST(\"pid\" AS BLOB)),0)+coalesce(length(CAST(\"cid\" AS BLOB)),0)+coalesce(length(CAST(\"isprim\" AS BLOB)),0)+coalesce(length(CAST(\"mtime\" AS BLOB)),0)+coalesce(length(CAST(\"baseid\" AS BLOB)),0)),0) FROM \"plink\"",
-        rows: "SELECT typeof(\"pid\"),CASE WHEN typeof(\"pid\") IN('text','blob') THEN CAST(\"pid\" AS BLOB) ELSE \"pid\" END,typeof(\"cid\"),CASE WHEN typeof(\"cid\") IN('text','blob') THEN CAST(\"cid\" AS BLOB) ELSE \"cid\" END,typeof(\"isprim\"),CASE WHEN typeof(\"isprim\") IN('text','blob') THEN CAST(\"isprim\" AS BLOB) ELSE \"isprim\" END,typeof(\"mtime\"),CASE WHEN typeof(\"mtime\") IN('text','blob') THEN CAST(\"mtime\" AS BLOB) ELSE \"mtime\" END,typeof(\"baseid\"),CASE WHEN typeof(\"baseid\") IN('text','blob') THEN CAST(\"baseid\" AS BLOB) ELSE \"baseid\" END FROM \"plink\" ORDER BY 1,2,3,4,5,6,7,8,9,10",
     },
     SnapshotTable {
         columns: 8,
         bounds: "SELECT count(*),coalesce(sum(coalesce(length(CAST(\"mid\" AS BLOB)),0)+coalesce(length(CAST(\"fid\" AS BLOB)),0)+coalesce(length(CAST(\"pmid\" AS BLOB)),0)+coalesce(length(CAST(\"pid\" AS BLOB)),0)+coalesce(length(CAST(\"fnid\" AS BLOB)),0)+coalesce(length(CAST(\"pfnid\" AS BLOB)),0)+coalesce(length(CAST(\"mperm\" AS BLOB)),0)+coalesce(length(CAST(\"isaux\" AS BLOB)),0)),0) FROM \"mlink\"",
-        rows: "SELECT typeof(\"mid\"),CASE WHEN typeof(\"mid\") IN('text','blob') THEN CAST(\"mid\" AS BLOB) ELSE \"mid\" END,typeof(\"fid\"),CASE WHEN typeof(\"fid\") IN('text','blob') THEN CAST(\"fid\" AS BLOB) ELSE \"fid\" END,typeof(\"pmid\"),CASE WHEN typeof(\"pmid\") IN('text','blob') THEN CAST(\"pmid\" AS BLOB) ELSE \"pmid\" END,typeof(\"pid\"),CASE WHEN typeof(\"pid\") IN('text','blob') THEN CAST(\"pid\" AS BLOB) ELSE \"pid\" END,typeof(\"fnid\"),CASE WHEN typeof(\"fnid\") IN('text','blob') THEN CAST(\"fnid\" AS BLOB) ELSE \"fnid\" END,typeof(\"pfnid\"),CASE WHEN typeof(\"pfnid\") IN('text','blob') THEN CAST(\"pfnid\" AS BLOB) ELSE \"pfnid\" END,typeof(\"mperm\"),CASE WHEN typeof(\"mperm\") IN('text','blob') THEN CAST(\"mperm\" AS BLOB) ELSE \"mperm\" END,typeof(\"isaux\"),CASE WHEN typeof(\"isaux\") IN('text','blob') THEN CAST(\"isaux\" AS BLOB) ELSE \"isaux\" END FROM \"mlink\" ORDER BY 1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16",
     },
     SnapshotTable {
         columns: 2,
         bounds: "SELECT count(*),coalesce(sum(coalesce(length(CAST(\"fnid\" AS BLOB)),0)+coalesce(length(CAST(\"name\" AS BLOB)),0)),0) FROM \"filename\"",
-        rows: "SELECT typeof(\"fnid\"),CASE WHEN typeof(\"fnid\") IN('text','blob') THEN CAST(\"fnid\" AS BLOB) ELSE \"fnid\" END,typeof(\"name\"),CASE WHEN typeof(\"name\") IN('text','blob') THEN CAST(\"name\" AS BLOB) ELSE \"name\" END FROM \"filename\" ORDER BY 1,2,3,4",
     },
     SnapshotTable {
         columns: 3,
         bounds: "SELECT count(*),coalesce(sum(coalesce(length(CAST(\"name\" AS BLOB)),0)+coalesce(length(CAST(\"value\" AS BLOB)),0)+coalesce(length(CAST(\"mtime\" AS BLOB)),0)),0) FROM \"config\"",
-        rows: "SELECT typeof(\"name\"),CASE WHEN typeof(\"name\") IN('text','blob') THEN CAST(\"name\" AS BLOB) ELSE \"name\" END,typeof(\"value\"),CASE WHEN typeof(\"value\") IN('text','blob') THEN CAST(\"value\" AS BLOB) ELSE \"value\" END,typeof(\"mtime\"),CASE WHEN typeof(\"mtime\") IN('text','blob') THEN CAST(\"mtime\" AS BLOB) ELSE \"mtime\" END FROM \"config\" ORDER BY 1,2,3,4,5,6",
     },
     SnapshotTable {
         columns: 11,
         bounds: "SELECT count(*),coalesce(sum(coalesce(length(CAST(\"uid\" AS BLOB)),0)+coalesce(length(CAST(\"login\" AS BLOB)),0)+coalesce(length(CAST(\"pw\" AS BLOB)),0)+coalesce(length(CAST(\"cap\" AS BLOB)),0)+coalesce(length(CAST(\"cookie\" AS BLOB)),0)+coalesce(length(CAST(\"ipaddr\" AS BLOB)),0)+coalesce(length(CAST(\"cexpire\" AS BLOB)),0)+coalesce(length(CAST(\"info\" AS BLOB)),0)+coalesce(length(CAST(\"mtime\" AS BLOB)),0)+coalesce(length(CAST(\"photo\" AS BLOB)),0)+coalesce(length(CAST(\"jx\" AS BLOB)),0)),0) FROM \"user\"",
-        rows: "SELECT typeof(\"uid\"),CASE WHEN typeof(\"uid\") IN('text','blob') THEN CAST(\"uid\" AS BLOB) ELSE \"uid\" END,typeof(\"login\"),CASE WHEN typeof(\"login\") IN('text','blob') THEN CAST(\"login\" AS BLOB) ELSE \"login\" END,typeof(\"pw\"),CASE WHEN typeof(\"pw\") IN('text','blob') THEN CAST(\"pw\" AS BLOB) ELSE \"pw\" END,typeof(\"cap\"),CASE WHEN typeof(\"cap\") IN('text','blob') THEN CAST(\"cap\" AS BLOB) ELSE \"cap\" END,typeof(\"cookie\"),CASE WHEN typeof(\"cookie\") IN('text','blob') THEN CAST(\"cookie\" AS BLOB) ELSE \"cookie\" END,typeof(\"ipaddr\"),CASE WHEN typeof(\"ipaddr\") IN('text','blob') THEN CAST(\"ipaddr\" AS BLOB) ELSE \"ipaddr\" END,typeof(\"cexpire\"),CASE WHEN typeof(\"cexpire\") IN('text','blob') THEN CAST(\"cexpire\" AS BLOB) ELSE \"cexpire\" END,typeof(\"info\"),CASE WHEN typeof(\"info\") IN('text','blob') THEN CAST(\"info\" AS BLOB) ELSE \"info\" END,typeof(\"mtime\"),CASE WHEN typeof(\"mtime\") IN('text','blob') THEN CAST(\"mtime\" AS BLOB) ELSE \"mtime\" END,typeof(\"photo\"),CASE WHEN typeof(\"photo\") IN('text','blob') THEN CAST(\"photo\" AS BLOB) ELSE \"photo\" END,typeof(\"jx\"),CASE WHEN typeof(\"jx\") IN('text','blob') THEN CAST(\"jx\" AS BLOB) ELSE \"jx\" END FROM \"user\" ORDER BY 1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22",
     },
     SnapshotTable {
         columns: 45,
         bounds: "SELECT count(*),coalesce(sum(coalesce(length(CAST(\"tkt_id\" AS BLOB)),0)+coalesce(length(CAST(\"tkt_uuid\" AS BLOB)),0)+coalesce(length(CAST(\"tkt_mtime\" AS BLOB)),0)+coalesce(length(CAST(\"tkt_ctime\" AS BLOB)),0)+coalesce(length(CAST(\"type\" AS BLOB)),0)+coalesce(length(CAST(\"status\" AS BLOB)),0)+coalesce(length(CAST(\"subsystem\" AS BLOB)),0)+coalesce(length(CAST(\"priority\" AS BLOB)),0)+coalesce(length(CAST(\"severity\" AS BLOB)),0)+coalesce(length(CAST(\"foundin\" AS BLOB)),0)+coalesce(length(CAST(\"private_contact\" AS BLOB)),0)+coalesce(length(CAST(\"resolution\" AS BLOB)),0)+coalesce(length(CAST(\"title\" AS BLOB)),0)+coalesce(length(CAST(\"comment\" AS BLOB)),0)+coalesce(length(CAST(\"archived_at\" AS BLOB)),0)+coalesce(length(CAST(\"assigned_to\" AS BLOB)),0)+coalesce(length(CAST(\"author_id\" AS BLOB)),0)+coalesce(length(CAST(\"author_type\" AS BLOB)),0)+coalesce(length(CAST(\"body\" AS BLOB)),0)+coalesce(length(CAST(\"completed_at\" AS BLOB)),0)+coalesce(length(CAST(\"created_at\" AS BLOB)),0)+coalesce(length(CAST(\"description\" AS BLOB)),0)+coalesce(length(CAST(\"email\" AS BLOB)),0)+coalesce(length(CAST(\"entity_id\" AS BLOB)),0)+coalesce(length(CAST(\"entity_type\" AS BLOB)),0)+coalesce(length(CAST(\"gest_id\" AS BLOB)),0)+coalesce(length(CAST(\"gossil_deleted\" AS BLOB)),0)+coalesce(length(CAST(\"gossil_key\" AS BLOB)),0)+coalesce(length(CAST(\"gossil_kind\" AS BLOB)),0)+coalesce(length(CAST(\"gossil_schema\" AS BLOB)),0)+coalesce(length(CAST(\"iteration_id\" AS BLOB)),0)+coalesce(length(CAST(\"label\" AS BLOB)),0)+coalesce(length(CAST(\"metadata\" AS BLOB)),0)+coalesce(length(CAST(\"name\" AS BLOB)),0)+coalesce(length(CAST(\"phase\" AS BLOB)),0)+coalesce(length(CAST(\"project_id\" AS BLOB)),0)+coalesce(length(CAST(\"rel_type\" AS BLOB)),0)+coalesce(length(CAST(\"resolved_at\" AS BLOB)),0)+coalesce(length(CAST(\"source_id\" AS BLOB)),0)+coalesce(length(CAST(\"source_type\" AS BLOB)),0)+coalesce(length(CAST(\"tag_id\" AS BLOB)),0)+coalesce(length(CAST(\"target_id\" AS BLOB)),0)+coalesce(length(CAST(\"target_type\" AS BLOB)),0)+coalesce(length(CAST(\"task_id\" AS BLOB)),0)+coalesce(length(CAST(\"updated_at\" AS BLOB)),0)),0) FROM \"ticket\"",
-        rows: "SELECT typeof(\"tkt_id\"),CASE WHEN typeof(\"tkt_id\") IN('text','blob') THEN CAST(\"tkt_id\" AS BLOB) ELSE \"tkt_id\" END,typeof(\"tkt_uuid\"),CASE WHEN typeof(\"tkt_uuid\") IN('text','blob') THEN CAST(\"tkt_uuid\" AS BLOB) ELSE \"tkt_uuid\" END,typeof(\"tkt_mtime\"),CASE WHEN typeof(\"tkt_mtime\") IN('text','blob') THEN CAST(\"tkt_mtime\" AS BLOB) ELSE \"tkt_mtime\" END,typeof(\"tkt_ctime\"),CASE WHEN typeof(\"tkt_ctime\") IN('text','blob') THEN CAST(\"tkt_ctime\" AS BLOB) ELSE \"tkt_ctime\" END,typeof(\"type\"),CASE WHEN typeof(\"type\") IN('text','blob') THEN CAST(\"type\" AS BLOB) ELSE \"type\" END,typeof(\"status\"),CASE WHEN typeof(\"status\") IN('text','blob') THEN CAST(\"status\" AS BLOB) ELSE \"status\" END,typeof(\"subsystem\"),CASE WHEN typeof(\"subsystem\") IN('text','blob') THEN CAST(\"subsystem\" AS BLOB) ELSE \"subsystem\" END,typeof(\"priority\"),CASE WHEN typeof(\"priority\") IN('text','blob') THEN CAST(\"priority\" AS BLOB) ELSE \"priority\" END,typeof(\"severity\"),CASE WHEN typeof(\"severity\") IN('text','blob') THEN CAST(\"severity\" AS BLOB) ELSE \"severity\" END,typeof(\"foundin\"),CASE WHEN typeof(\"foundin\") IN('text','blob') THEN CAST(\"foundin\" AS BLOB) ELSE \"foundin\" END,typeof(\"private_contact\"),CASE WHEN typeof(\"private_contact\") IN('text','blob') THEN CAST(\"private_contact\" AS BLOB) ELSE \"private_contact\" END,typeof(\"resolution\"),CASE WHEN typeof(\"resolution\") IN('text','blob') THEN CAST(\"resolution\" AS BLOB) ELSE \"resolution\" END,typeof(\"title\"),CASE WHEN typeof(\"title\") IN('text','blob') THEN CAST(\"title\" AS BLOB) ELSE \"title\" END,typeof(\"comment\"),CASE WHEN typeof(\"comment\") IN('text','blob') THEN CAST(\"comment\" AS BLOB) ELSE \"comment\" END,typeof(\"archived_at\"),CASE WHEN typeof(\"archived_at\") IN('text','blob') THEN CAST(\"archived_at\" AS BLOB) ELSE \"archived_at\" END,typeof(\"assigned_to\"),CASE WHEN typeof(\"assigned_to\") IN('text','blob') THEN CAST(\"assigned_to\" AS BLOB) ELSE \"assigned_to\" END,typeof(\"author_id\"),CASE WHEN typeof(\"author_id\") IN('text','blob') THEN CAST(\"author_id\" AS BLOB) ELSE \"author_id\" END,typeof(\"author_type\"),CASE WHEN typeof(\"author_type\") IN('text','blob') THEN CAST(\"author_type\" AS BLOB) ELSE \"author_type\" END,typeof(\"body\"),CASE WHEN typeof(\"body\") IN('text','blob') THEN CAST(\"body\" AS BLOB) ELSE \"body\" END,typeof(\"completed_at\"),CASE WHEN typeof(\"completed_at\") IN('text','blob') THEN CAST(\"completed_at\" AS BLOB) ELSE \"completed_at\" END,typeof(\"created_at\"),CASE WHEN typeof(\"created_at\") IN('text','blob') THEN CAST(\"created_at\" AS BLOB) ELSE \"created_at\" END,typeof(\"description\"),CASE WHEN typeof(\"description\") IN('text','blob') THEN CAST(\"description\" AS BLOB) ELSE \"description\" END,typeof(\"email\"),CASE WHEN typeof(\"email\") IN('text','blob') THEN CAST(\"email\" AS BLOB) ELSE \"email\" END,typeof(\"entity_id\"),CASE WHEN typeof(\"entity_id\") IN('text','blob') THEN CAST(\"entity_id\" AS BLOB) ELSE \"entity_id\" END,typeof(\"entity_type\"),CASE WHEN typeof(\"entity_type\") IN('text','blob') THEN CAST(\"entity_type\" AS BLOB) ELSE \"entity_type\" END,typeof(\"gest_id\"),CASE WHEN typeof(\"gest_id\") IN('text','blob') THEN CAST(\"gest_id\" AS BLOB) ELSE \"gest_id\" END,typeof(\"gossil_deleted\"),CASE WHEN typeof(\"gossil_deleted\") IN('text','blob') THEN CAST(\"gossil_deleted\" AS BLOB) ELSE \"gossil_deleted\" END,typeof(\"gossil_key\"),CASE WHEN typeof(\"gossil_key\") IN('text','blob') THEN CAST(\"gossil_key\" AS BLOB) ELSE \"gossil_key\" END,typeof(\"gossil_kind\"),CASE WHEN typeof(\"gossil_kind\") IN('text','blob') THEN CAST(\"gossil_kind\" AS BLOB) ELSE \"gossil_kind\" END,typeof(\"gossil_schema\"),CASE WHEN typeof(\"gossil_schema\") IN('text','blob') THEN CAST(\"gossil_schema\" AS BLOB) ELSE \"gossil_schema\" END,typeof(\"iteration_id\"),CASE WHEN typeof(\"iteration_id\") IN('text','blob') THEN CAST(\"iteration_id\" AS BLOB) ELSE \"iteration_id\" END,typeof(\"label\"),CASE WHEN typeof(\"label\") IN('text','blob') THEN CAST(\"label\" AS BLOB) ELSE \"label\" END,typeof(\"metadata\"),CASE WHEN typeof(\"metadata\") IN('text','blob') THEN CAST(\"metadata\" AS BLOB) ELSE \"metadata\" END,typeof(\"name\"),CASE WHEN typeof(\"name\") IN('text','blob') THEN CAST(\"name\" AS BLOB) ELSE \"name\" END,typeof(\"phase\"),CASE WHEN typeof(\"phase\") IN('text','blob') THEN CAST(\"phase\" AS BLOB) ELSE \"phase\" END,typeof(\"project_id\"),CASE WHEN typeof(\"project_id\") IN('text','blob') THEN CAST(\"project_id\" AS BLOB) ELSE \"project_id\" END,typeof(\"rel_type\"),CASE WHEN typeof(\"rel_type\") IN('text','blob') THEN CAST(\"rel_type\" AS BLOB) ELSE \"rel_type\" END,typeof(\"resolved_at\"),CASE WHEN typeof(\"resolved_at\") IN('text','blob') THEN CAST(\"resolved_at\" AS BLOB) ELSE \"resolved_at\" END,typeof(\"source_id\"),CASE WHEN typeof(\"source_id\") IN('text','blob') THEN CAST(\"source_id\" AS BLOB) ELSE \"source_id\" END,typeof(\"source_type\"),CASE WHEN typeof(\"source_type\") IN('text','blob') THEN CAST(\"source_type\" AS BLOB) ELSE \"source_type\" END,typeof(\"tag_id\"),CASE WHEN typeof(\"tag_id\") IN('text','blob') THEN CAST(\"tag_id\" AS BLOB) ELSE \"tag_id\" END,typeof(\"target_id\"),CASE WHEN typeof(\"target_id\") IN('text','blob') THEN CAST(\"target_id\" AS BLOB) ELSE \"target_id\" END,typeof(\"target_type\"),CASE WHEN typeof(\"target_type\") IN('text','blob') THEN CAST(\"target_type\" AS BLOB) ELSE \"target_type\" END,typeof(\"task_id\"),CASE WHEN typeof(\"task_id\") IN('text','blob') THEN CAST(\"task_id\" AS BLOB) ELSE \"task_id\" END,typeof(\"updated_at\"),CASE WHEN typeof(\"updated_at\") IN('text','blob') THEN CAST(\"updated_at\" AS BLOB) ELSE \"updated_at\" END FROM \"ticket\" ORDER BY 1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90",
     },
     SnapshotTable {
         columns: 42,
         bounds: "SELECT count(*),coalesce(sum(coalesce(length(CAST(\"tkt_id\" AS BLOB)),0)+coalesce(length(CAST(\"tkt_rid\" AS BLOB)),0)+coalesce(length(CAST(\"tkt_mtime\" AS BLOB)),0)+coalesce(length(CAST(\"tkt_user\" AS BLOB)),0)+coalesce(length(CAST(\"login\" AS BLOB)),0)+coalesce(length(CAST(\"username\" AS BLOB)),0)+coalesce(length(CAST(\"mimetype\" AS BLOB)),0)+coalesce(length(CAST(\"icomment\" AS BLOB)),0)+coalesce(length(CAST(\"archived_at\" AS BLOB)),0)+coalesce(length(CAST(\"assigned_to\" AS BLOB)),0)+coalesce(length(CAST(\"author_id\" AS BLOB)),0)+coalesce(length(CAST(\"author_type\" AS BLOB)),0)+coalesce(length(CAST(\"body\" AS BLOB)),0)+coalesce(length(CAST(\"completed_at\" AS BLOB)),0)+coalesce(length(CAST(\"created_at\" AS BLOB)),0)+coalesce(length(CAST(\"description\" AS BLOB)),0)+coalesce(length(CAST(\"email\" AS BLOB)),0)+coalesce(length(CAST(\"entity_id\" AS BLOB)),0)+coalesce(length(CAST(\"entity_type\" AS BLOB)),0)+coalesce(length(CAST(\"gest_id\" AS BLOB)),0)+coalesce(length(CAST(\"gossil_deleted\" AS BLOB)),0)+coalesce(length(CAST(\"gossil_key\" AS BLOB)),0)+coalesce(length(CAST(\"gossil_kind\" AS BLOB)),0)+coalesce(length(CAST(\"gossil_schema\" AS BLOB)),0)+coalesce(length(CAST(\"iteration_id\" AS BLOB)),0)+coalesce(length(CAST(\"label\" AS BLOB)),0)+coalesce(length(CAST(\"metadata\" AS BLOB)),0)+coalesce(length(CAST(\"name\" AS BLOB)),0)+coalesce(length(CAST(\"phase\" AS BLOB)),0)+coalesce(length(CAST(\"priority\" AS BLOB)),0)+coalesce(length(CAST(\"project_id\" AS BLOB)),0)+coalesce(length(CAST(\"rel_type\" AS BLOB)),0)+coalesce(length(CAST(\"resolved_at\" AS BLOB)),0)+coalesce(length(CAST(\"source_id\" AS BLOB)),0)+coalesce(length(CAST(\"source_type\" AS BLOB)),0)+coalesce(length(CAST(\"status\" AS BLOB)),0)+coalesce(length(CAST(\"tag_id\" AS BLOB)),0)+coalesce(length(CAST(\"target_id\" AS BLOB)),0)+coalesce(length(CAST(\"target_type\" AS BLOB)),0)+coalesce(length(CAST(\"task_id\" AS BLOB)),0)+coalesce(length(CAST(\"title\" AS BLOB)),0)+coalesce(length(CAST(\"updated_at\" AS BLOB)),0)),0) FROM \"ticketchng\"",
-        rows: "SELECT typeof(\"tkt_id\"),CASE WHEN typeof(\"tkt_id\") IN('text','blob') THEN CAST(\"tkt_id\" AS BLOB) ELSE \"tkt_id\" END,typeof(\"tkt_rid\"),CASE WHEN typeof(\"tkt_rid\") IN('text','blob') THEN CAST(\"tkt_rid\" AS BLOB) ELSE \"tkt_rid\" END,typeof(\"tkt_mtime\"),CASE WHEN typeof(\"tkt_mtime\") IN('text','blob') THEN CAST(\"tkt_mtime\" AS BLOB) ELSE \"tkt_mtime\" END,typeof(\"tkt_user\"),CASE WHEN typeof(\"tkt_user\") IN('text','blob') THEN CAST(\"tkt_user\" AS BLOB) ELSE \"tkt_user\" END,typeof(\"login\"),CASE WHEN typeof(\"login\") IN('text','blob') THEN CAST(\"login\" AS BLOB) ELSE \"login\" END,typeof(\"username\"),CASE WHEN typeof(\"username\") IN('text','blob') THEN CAST(\"username\" AS BLOB) ELSE \"username\" END,typeof(\"mimetype\"),CASE WHEN typeof(\"mimetype\") IN('text','blob') THEN CAST(\"mimetype\" AS BLOB) ELSE \"mimetype\" END,typeof(\"icomment\"),CASE WHEN typeof(\"icomment\") IN('text','blob') THEN CAST(\"icomment\" AS BLOB) ELSE \"icomment\" END,typeof(\"archived_at\"),CASE WHEN typeof(\"archived_at\") IN('text','blob') THEN CAST(\"archived_at\" AS BLOB) ELSE \"archived_at\" END,typeof(\"assigned_to\"),CASE WHEN typeof(\"assigned_to\") IN('text','blob') THEN CAST(\"assigned_to\" AS BLOB) ELSE \"assigned_to\" END,typeof(\"author_id\"),CASE WHEN typeof(\"author_id\") IN('text','blob') THEN CAST(\"author_id\" AS BLOB) ELSE \"author_id\" END,typeof(\"author_type\"),CASE WHEN typeof(\"author_type\") IN('text','blob') THEN CAST(\"author_type\" AS BLOB) ELSE \"author_type\" END,typeof(\"body\"),CASE WHEN typeof(\"body\") IN('text','blob') THEN CAST(\"body\" AS BLOB) ELSE \"body\" END,typeof(\"completed_at\"),CASE WHEN typeof(\"completed_at\") IN('text','blob') THEN CAST(\"completed_at\" AS BLOB) ELSE \"completed_at\" END,typeof(\"created_at\"),CASE WHEN typeof(\"created_at\") IN('text','blob') THEN CAST(\"created_at\" AS BLOB) ELSE \"created_at\" END,typeof(\"description\"),CASE WHEN typeof(\"description\") IN('text','blob') THEN CAST(\"description\" AS BLOB) ELSE \"description\" END,typeof(\"email\"),CASE WHEN typeof(\"email\") IN('text','blob') THEN CAST(\"email\" AS BLOB) ELSE \"email\" END,typeof(\"entity_id\"),CASE WHEN typeof(\"entity_id\") IN('text','blob') THEN CAST(\"entity_id\" AS BLOB) ELSE \"entity_id\" END,typeof(\"entity_type\"),CASE WHEN typeof(\"entity_type\") IN('text','blob') THEN CAST(\"entity_type\" AS BLOB) ELSE \"entity_type\" END,typeof(\"gest_id\"),CASE WHEN typeof(\"gest_id\") IN('text','blob') THEN CAST(\"gest_id\" AS BLOB) ELSE \"gest_id\" END,typeof(\"gossil_deleted\"),CASE WHEN typeof(\"gossil_deleted\") IN('text','blob') THEN CAST(\"gossil_deleted\" AS BLOB) ELSE \"gossil_deleted\" END,typeof(\"gossil_key\"),CASE WHEN typeof(\"gossil_key\") IN('text','blob') THEN CAST(\"gossil_key\" AS BLOB) ELSE \"gossil_key\" END,typeof(\"gossil_kind\"),CASE WHEN typeof(\"gossil_kind\") IN('text','blob') THEN CAST(\"gossil_kind\" AS BLOB) ELSE \"gossil_kind\" END,typeof(\"gossil_schema\"),CASE WHEN typeof(\"gossil_schema\") IN('text','blob') THEN CAST(\"gossil_schema\" AS BLOB) ELSE \"gossil_schema\" END,typeof(\"iteration_id\"),CASE WHEN typeof(\"iteration_id\") IN('text','blob') THEN CAST(\"iteration_id\" AS BLOB) ELSE \"iteration_id\" END,typeof(\"label\"),CASE WHEN typeof(\"label\") IN('text','blob') THEN CAST(\"label\" AS BLOB) ELSE \"label\" END,typeof(\"metadata\"),CASE WHEN typeof(\"metadata\") IN('text','blob') THEN CAST(\"metadata\" AS BLOB) ELSE \"metadata\" END,typeof(\"name\"),CASE WHEN typeof(\"name\") IN('text','blob') THEN CAST(\"name\" AS BLOB) ELSE \"name\" END,typeof(\"phase\"),CASE WHEN typeof(\"phase\") IN('text','blob') THEN CAST(\"phase\" AS BLOB) ELSE \"phase\" END,typeof(\"priority\"),CASE WHEN typeof(\"priority\") IN('text','blob') THEN CAST(\"priority\" AS BLOB) ELSE \"priority\" END,typeof(\"project_id\"),CASE WHEN typeof(\"project_id\") IN('text','blob') THEN CAST(\"project_id\" AS BLOB) ELSE \"project_id\" END,typeof(\"rel_type\"),CASE WHEN typeof(\"rel_type\") IN('text','blob') THEN CAST(\"rel_type\" AS BLOB) ELSE \"rel_type\" END,typeof(\"resolved_at\"),CASE WHEN typeof(\"resolved_at\") IN('text','blob') THEN CAST(\"resolved_at\" AS BLOB) ELSE \"resolved_at\" END,typeof(\"source_id\"),CASE WHEN typeof(\"source_id\") IN('text','blob') THEN CAST(\"source_id\" AS BLOB) ELSE \"source_id\" END,typeof(\"source_type\"),CASE WHEN typeof(\"source_type\") IN('text','blob') THEN CAST(\"source_type\" AS BLOB) ELSE \"source_type\" END,typeof(\"status\"),CASE WHEN typeof(\"status\") IN('text','blob') THEN CAST(\"status\" AS BLOB) ELSE \"status\" END,typeof(\"tag_id\"),CASE WHEN typeof(\"tag_id\") IN('text','blob') THEN CAST(\"tag_id\" AS BLOB) ELSE \"tag_id\" END,typeof(\"target_id\"),CASE WHEN typeof(\"target_id\") IN('text','blob') THEN CAST(\"target_id\" AS BLOB) ELSE \"target_id\" END,typeof(\"target_type\"),CASE WHEN typeof(\"target_type\") IN('text','blob') THEN CAST(\"target_type\" AS BLOB) ELSE \"target_type\" END,typeof(\"task_id\"),CASE WHEN typeof(\"task_id\") IN('text','blob') THEN CAST(\"task_id\" AS BLOB) ELSE \"task_id\" END,typeof(\"title\"),CASE WHEN typeof(\"title\") IN('text','blob') THEN CAST(\"title\" AS BLOB) ELSE \"title\" END,typeof(\"updated_at\"),CASE WHEN typeof(\"updated_at\") IN('text','blob') THEN CAST(\"updated_at\" AS BLOB) ELSE \"updated_at\" END FROM \"ticketchng\" ORDER BY 1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84",
     },
     SnapshotTable {
         columns: 5,
         bounds: "SELECT count(*),coalesce(sum(coalesce(length(CAST(\"scope_key\" AS BLOB)),0)+coalesce(length(CAST(\"id\" AS BLOB)),0)+coalesce(length(CAST(\"created_at\" AS BLOB)),0)+coalesce(length(CAST(\"updated_at\" AS BLOB)),0)+coalesce(length(CAST(\"archived_at\" AS BLOB)),0)),0) FROM \"g_gest_projects\"",
-        rows: "SELECT typeof(\"scope_key\"),CASE WHEN typeof(\"scope_key\") IN('text','blob') THEN CAST(\"scope_key\" AS BLOB) ELSE \"scope_key\" END,typeof(\"id\"),CASE WHEN typeof(\"id\") IN('text','blob') THEN CAST(\"id\" AS BLOB) ELSE \"id\" END,typeof(\"created_at\"),CASE WHEN typeof(\"created_at\") IN('text','blob') THEN CAST(\"created_at\" AS BLOB) ELSE \"created_at\" END,typeof(\"updated_at\"),CASE WHEN typeof(\"updated_at\") IN('text','blob') THEN CAST(\"updated_at\" AS BLOB) ELSE \"updated_at\" END,typeof(\"archived_at\"),CASE WHEN typeof(\"archived_at\") IN('text','blob') THEN CAST(\"archived_at\" AS BLOB) ELSE \"archived_at\" END FROM \"g_gest_projects\" ORDER BY 1,2,3,4,5,6,7,8,9,10",
     },
     SnapshotTable {
         columns: 12,
         bounds: "SELECT count(*),coalesce(sum(coalesce(length(CAST(\"scope_key\" AS BLOB)),0)+coalesce(length(CAST(\"id\" AS BLOB)),0)+coalesce(length(CAST(\"project_id\" AS BLOB)),0)+coalesce(length(CAST(\"title\" AS BLOB)),0)+coalesce(length(CAST(\"priority\" AS BLOB)),0)+coalesce(length(CAST(\"status\" AS BLOB)),0)+coalesce(length(CAST(\"description\" AS BLOB)),0)+coalesce(length(CAST(\"assigned_to\" AS BLOB)),0)+coalesce(length(CAST(\"metadata\" AS BLOB)),0)+coalesce(length(CAST(\"resolved_at\" AS BLOB)),0)+coalesce(length(CAST(\"created_at\" AS BLOB)),0)+coalesce(length(CAST(\"updated_at\" AS BLOB)),0)),0) FROM \"g_gest_tasks\"",
-        rows: "SELECT typeof(\"scope_key\"),CASE WHEN typeof(\"scope_key\") IN('text','blob') THEN CAST(\"scope_key\" AS BLOB) ELSE \"scope_key\" END,typeof(\"id\"),CASE WHEN typeof(\"id\") IN('text','blob') THEN CAST(\"id\" AS BLOB) ELSE \"id\" END,typeof(\"project_id\"),CASE WHEN typeof(\"project_id\") IN('text','blob') THEN CAST(\"project_id\" AS BLOB) ELSE \"project_id\" END,typeof(\"title\"),CASE WHEN typeof(\"title\") IN('text','blob') THEN CAST(\"title\" AS BLOB) ELSE \"title\" END,typeof(\"priority\"),CASE WHEN typeof(\"priority\") IN('text','blob') THEN CAST(\"priority\" AS BLOB) ELSE \"priority\" END,typeof(\"status\"),CASE WHEN typeof(\"status\") IN('text','blob') THEN CAST(\"status\" AS BLOB) ELSE \"status\" END,typeof(\"description\"),CASE WHEN typeof(\"description\") IN('text','blob') THEN CAST(\"description\" AS BLOB) ELSE \"description\" END,typeof(\"assigned_to\"),CASE WHEN typeof(\"assigned_to\") IN('text','blob') THEN CAST(\"assigned_to\" AS BLOB) ELSE \"assigned_to\" END,typeof(\"metadata\"),CASE WHEN typeof(\"metadata\") IN('text','blob') THEN CAST(\"metadata\" AS BLOB) ELSE \"metadata\" END,typeof(\"resolved_at\"),CASE WHEN typeof(\"resolved_at\") IN('text','blob') THEN CAST(\"resolved_at\" AS BLOB) ELSE \"resolved_at\" END,typeof(\"created_at\"),CASE WHEN typeof(\"created_at\") IN('text','blob') THEN CAST(\"created_at\" AS BLOB) ELSE \"created_at\" END,typeof(\"updated_at\"),CASE WHEN typeof(\"updated_at\") IN('text','blob') THEN CAST(\"updated_at\" AS BLOB) ELSE \"updated_at\" END FROM \"g_gest_tasks\" ORDER BY 1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24",
     },
     SnapshotTable {
         columns: 3,
         bounds: "SELECT count(*),coalesce(sum(coalesce(length(CAST(\"checkout_id\" AS BLOB)),0)+coalesce(length(CAST(\"project_id\" AS BLOB)),0)+coalesce(length(CAST(\"root\" AS BLOB)),0)),0) FROM \"g_project_binding\"",
-        rows: "SELECT typeof(\"checkout_id\"),CASE WHEN typeof(\"checkout_id\") IN('text','blob') THEN CAST(\"checkout_id\" AS BLOB) ELSE \"checkout_id\" END,typeof(\"project_id\"),CASE WHEN typeof(\"project_id\") IN('text','blob') THEN CAST(\"project_id\" AS BLOB) ELSE \"project_id\" END,typeof(\"root\"),CASE WHEN typeof(\"root\") IN('text','blob') THEN CAST(\"root\" AS BLOB) ELSE \"root\" END FROM \"g_project_binding\" ORDER BY 1,2,3,4,5,6",
     },
     SnapshotTable {
         columns: 2,
         bounds: "SELECT count(*),coalesce(sum(coalesce(length(CAST(\"checkout_id\" AS BLOB)),0)+coalesce(length(CAST(\"project_id\" AS BLOB)),0)),0) FROM \"g_checkout_project\"",
-        rows: "SELECT typeof(\"checkout_id\"),CASE WHEN typeof(\"checkout_id\") IN('text','blob') THEN CAST(\"checkout_id\" AS BLOB) ELSE \"checkout_id\" END,typeof(\"project_id\"),CASE WHEN typeof(\"project_id\") IN('text','blob') THEN CAST(\"project_id\" AS BLOB) ELSE \"project_id\" END FROM \"g_checkout_project\" ORDER BY 1,2,3,4",
     },
 ];
 
@@ -252,89 +219,31 @@ impl WriteTransaction<'_> {
         self.record(result)
     }
 
-    /// Retain every supported authority fact under one borrowed work budget.
-    /// # Arguments
-    /// * `budget` - Existing operation accounting; no replenishment occurs here.
-    /// # Returns
-    /// Exact typed metadata with deterministic ordering and raw text bytes.
-    /// # Errors
-    /// Refuses exhausted work, invalid preflight counts or SQL/provider failures.
-    async fn recording_authority_snapshot(
-        &mut self,
-        budget: &mut Budget,
-    ) -> Result<Vec<Vec<Vec<Value>>>, StorageError> {
-        let mut result = Vec::new();
-        result
-            .try_reserve_exact(AUTHORITY_TABLES.len())
-            .map_err(|e| StorageError::caused("authority table allocation", e))?;
-        for table in AUTHORITY_TABLES {
-            let expected = self.preflight_authority_table(table, budget).await?;
-            let rows = self.query_bound(table.rows, vec![]).await?;
-            validate_authority_rows(&rows, expected, table.columns)?;
-            result.push(rows);
-        }
-        Ok(result)
-    }
-
-    /// Seal produced-state authority after complete family validation.
-    /// # Arguments
-    /// * `budget` - Shared operation ledger carrying the caller's original limits.
-    /// # Returns
-    /// Proof retained only after the caller obtains successful COMMIT.
-    /// # Errors
-    /// Refuses exhausted authority ownership or failed provider observations.
-    pub(super) async fn capture_admission_budgeted(
-        &mut self,
-        budget: &mut Budget,
-    ) -> Result<AdmissionProof, StorageError> {
-        let result = async {
-            self.observe_recording_provider()?;
-            let authority = self.recording_authority_snapshot(budget).await?;
-            let data_version = self.query_bound("PRAGMA data_version", vec![]).await?;
-            Ok(AdmissionProof {
-                authority,
-                data_version,
-                total_changes: self.connection().total_changes(),
-                content_limits: Some(budget.limits()),
-            })
-        }
-        .await;
-        self.record(result)
-    }
-
-    /// Reauthenticate retained authority without resetting any operation budget.
+    /// Check the identity, the schema and the policy at the start of a command.
+    ///
+    /// The check observes the provider and the file, and runs
+    /// [`Self::validate_recording_principal_budgeted`]: the catalog marker, the
+    /// schema, the policy tables, the owner, the checkout count and the native
+    /// markers. It keeps no snapshot between commands, so the next command sees a
+    /// change that another process commits.
     /// # Arguments
     /// * `principal` - Sealed owner binding of the opened repository.
-    /// * `proof` - Last committed exact authority snapshot.
     /// * `budget` - Shared caller work ledger.
     /// # Returns
-    /// Success only for the unchanged admitted provider/policy/state.
+    /// Success when the repository still holds this principal under catalog6.
     /// # Errors
-    /// Rejects stale connection/external counters, changed authority or exhausted work.
+    /// Rejects a changed file or provider, a changed identity, schema or policy,
+    /// another catalog and exhausted work.
     pub(super) async fn check_admission_budgeted(
         &mut self,
         principal: &Principal,
-        proof: &AdmissionProof,
         budget: &mut Budget,
     ) -> Result<(), StorageError> {
         let result = async {
-            if self.connection().total_changes() != proof.total_changes
-                || self.query_bound("PRAGMA data_version", vec![]).await? != proof.data_version
-            {
-                return Err(StorageError::state(
-                    "repository admission stale; reopen with explicit admission limits",
-                ));
-            }
             self.observe_recording_provider()?;
             self.validate_recording_principal_budgeted(principal, budget)
                 .await?;
-            self.require_native_checkout().await?;
-            if self.recording_authority_snapshot(budget).await? != proof.authority {
-                return Err(StorageError::state(
-                    "repository authority changed; explicit readmission required",
-                ));
-            }
-            Ok(())
+            self.require_native_checkout().await
         }
         .await;
         self.record(result)
@@ -352,27 +261,189 @@ impl WriteTransaction<'_> {
         Ok(())
     }
 
-    /// Authenticate immutable S and local boundaries before the history decoder.
+    /// Check the facts of the repository whose cost does not grow with its history.
+    ///
+    /// Every command runs this check after [`Self::check_admission_budgeted`], in its
+    /// own transaction. The check reads the one receipt of the shared root and the
+    /// row of its blob, the server code, the checkout count and the registration.
+    /// With a registration it also reads the head of the checkout, its three native
+    /// keys and the receipt that the fingerprint names. Last it checks the project
+    /// binding. It reads no content, parses no artifact and compares no whole table.
+    /// [`Self::validate_recording_repository_history`] is the full proof.
     /// # Arguments
     /// * `principal` - Sealed owner binding.
-    /// * `limits` - Complete native and registration ceilings.
+    /// * `limits` - Registration text ceilings.
     /// * `budget` - Shared content/retained-work ledger.
-    /// * `parse` - Shared parser ledger for S and every private manifest.
     /// # Returns
-    /// Success for exact initialized, tracked/scoped or repeated private-recorded state.
+    /// Success when each of these facts holds.
     /// # Errors
-    /// Refuses foreign schema/policy/provider, corrupted S, unsupported tables,
-    /// invalid registration or any history/projection/fingerprint mismatch.
-    pub(super) async fn validate_recording_repository(
+    /// Refuses a missing or changed root receipt, a bad server code, an unsupported
+    /// checkout inventory, an invalid registration, checkout keys or fingerprint that
+    /// do not match the head, an unsupported project binding and SQL failures.
+    pub(in crate::storage) async fn check_recording_state(
         &mut self,
         principal: &Principal,
         limits: AdmissionLimits,
         budget: &mut Budget,
-        parse: &mut ParseWork,
     ) -> Result<(), StorageError> {
-        self.validate_recording_repository_history(principal, limits, budget, parse)
-            .await
-            .map(|_| ())
+        let result = async {
+            let root = self.public_root().await?;
+            self.require_server_code().await?;
+            let counts=self.query_bound("SELECT (SELECT count(*) FROM g_checkout),(SELECT count(*) FROM g_checkout_owner),checkout_count FROM g_storage WHERE singleton=1",vec![]).await?;
+            if counts != vec![vec![Value::Integer(0); 3]] {
+                if counts != vec![vec![Value::Integer(1); 3]] {
+                    return Err(StorageError::state("unsupported native checkout inventory"));
+                }
+                self.validate_recording_registration(principal, &root, limits).await?;
+                self.check_checkout_keys(limits.parser.input_bytes, budget).await?;
+            }
+            self.admit_project_binding(budget).await
+        }
+        .await;
+        self.record(result)
+    }
+
+    /// Read the one public receipt and check the blob row of the shared root.
+    /// # Returns
+    /// The native hash of the shared root.
+    /// # Errors
+    /// Refuses a missing, extra or malformed receipt, a changed root blob row and SQL
+    /// failures.
+    async fn public_root(&mut self) -> Result<String, StorageError> {
+        let roots=self.query_bound("SELECT CAST(native_hash AS BLOB),CAST(supporting_root AS BLOB),CAST(validation_class AS BLOB) FROM g_public_receipt ORDER BY native_hash,supporting_root LIMIT 2",vec![]).await?;
+        // Each column is NOT NULL and cast to a blob, so one row always has three blobs.
+        let one = roots
+            .first()
+            .filter(|_| roots.len() == 1)
+            .map(Vec::as_slice);
+        let Some([Value::Blob(hash), Value::Blob(root), Value::Blob(class)]) = one else {
+            return Err(StorageError::state(
+                "unsupported required public graph closure",
+            ));
+        };
+        let root =
+            std::str::from_utf8(root).map_err(|e| StorageError::caused("public root UTF-8", e))?;
+        if hash.as_slice() != root.as_bytes()
+            || class.as_slice() != b"local-explicit-publication"
+            || !native_hash(root)
+        {
+            return Err(StorageError::state(
+                "unsupported required public graph closure",
+            ));
+        }
+        let root_type=self.query_bound("SELECT typeof(native_hash),typeof(supporting_root),typeof(validation_class) FROM g_public_receipt",vec![]).await?;
+        if root_type != vec![vec![Value::Text("text".into()); 3]] {
+            return Err(StorageError::state("corrupt public root binding"));
+        }
+        let root_row = self
+            .query_bound(
+                "SELECT rid,rcvid,typeof(uuid),typeof(content) FROM blob WHERE uuid=?1",
+                vec![Value::Text(root.into())],
+            )
+            .await?;
+        if root_row
+            != vec![vec![
+                Value::Integer(1),
+                Value::Integer(1),
+                Value::Text("text".into()),
+                Value::Text("blob".into()),
+            ]]
+        {
+            return Err(StorageError::state(
+                "immutable shared root provenance differs",
+            ));
+        }
+        Ok(root.to_owned())
+    }
+
+    /// Check that the `server-code` config row holds forty lowercase hex digits.
+    /// # Returns
+    /// Success for one such text row.
+    /// # Errors
+    /// Refuses a missing, extra or malformed row and SQL failures.
+    async fn require_server_code(&mut self) -> Result<(), StorageError> {
+        let server = self
+            .query_bound(
+                "SELECT CAST(value AS BLOB),typeof(value) FROM config WHERE name='server-code'",
+                vec![],
+            )
+            .await?;
+        if !matches!(server.as_slice(),[row] if matches!(row.as_slice(),[Value::Blob(value),Value::Text(kind)] if kind=="text" && value.len()==40 && value.iter().all(|b|b.is_ascii_digit() || (b'a'..=b'f').contains(b))))
+        {
+            return Err(StorageError::state("native server identity unavailable"));
+        }
+        Ok(())
+    }
+
+    /// Check the three native keys of the sole checkout against its head.
+    ///
+    /// `checkout` must name the RID of the head and `checkout-hash` its hash. The
+    /// fingerprint must hold the checksum of the receipt that it names. After a
+    /// check-in, that receipt must be the receipt of the head.
+    /// # Arguments
+    /// * `width` - The ceiling of one value.
+    /// * `budget` - Shared content/retained-work ledger.
+    /// # Returns
+    /// Success when the keys match the head.
+    /// # Errors
+    /// Refuses a missing head blob, missing, extra or changed keys, a bad fingerprint
+    /// and SQL failures.
+    async fn check_checkout_keys(
+        &mut self,
+        width: usize,
+        budget: &mut Budget,
+    ) -> Result<(), StorageError> {
+        let checkout = bounded_rows(self, "SELECT c.checkout_id,coalesce(c.combined_head,c.shared_head),c.combined_head IS NOT NULL,b.rid,b.rcvid FROM g_checkout c JOIN blob b ON b.uuid=coalesce(c.combined_head,c.shared_head)", vec![], 1, width, budget).await?;
+        let one = checkout
+            .first()
+            .filter(|_| checkout.len() == 1)
+            .map(Vec::as_slice);
+        let Some(
+            [
+                Value::Text(id),
+                Value::Text(head),
+                Value::Integer(recorded),
+                Value::Integer(rid),
+                Value::Integer(receipt),
+            ],
+        ) = one
+        else {
+            return Err(StorageError::state("recording native checkout selection"));
+        };
+        let vars = bounded_rows(
+            self,
+            "SELECT name,value FROM g_vvar WHERE checkout_id=?1 ORDER BY name",
+            vec![Value::Text(id.clone())],
+            3,
+            width,
+            budget,
+        )
+        .await?;
+        let fingerprint = match vars.get(2).map(Vec::as_slice) {
+            Some([Value::Text(name), Value::Text(value)]) if name == "fingerprint" => value.clone(),
+            _ => return Err(StorageError::state("recording native checkout keys")),
+        };
+        let expected = vec![
+            vec![Value::Text("checkout".into()), Value::Text(rid.to_string())],
+            vec![
+                Value::Text("checkout-hash".into()),
+                Value::Text(head.clone()),
+            ],
+            vec![
+                Value::Text("fingerprint".into()),
+                Value::Text(fingerprint.clone()),
+            ],
+        ];
+        if vars != expected {
+            return Err(StorageError::state("recording native checkout selection"));
+        }
+        let witness = self
+            .verify_recording_fingerprint(&fingerprint, width, budget)
+            .await?;
+        if *recorded == 1 && witness != *receipt {
+            return Err(StorageError::state("recording current receipt relation"));
+        }
+        Ok(())
     }
 
     /// Return supported history only after every complete catalog6 admission guard.
@@ -397,7 +468,7 @@ impl WriteTransaction<'_> {
         budget: &mut Budget,
         parse: &mut ParseWork,
     ) -> Result<Option<RecordedHistory>, StorageError> {
-        // Each admission charges the reservation for the whole repository text again, once.
+        // Each full proof charges the schema and policy surfaces again, once.
         budget.begin_admission();
         let result = async {
             self.observe_recording_provider()?;
@@ -408,15 +479,8 @@ impl WriteTransaction<'_> {
             // or the separately owned exact recorded-history validator.
             for table in AUTHORITY_TABLES { self.preflight_authority_table(table,budget).await?; }
             self.require_recording_empty_tables().await?;
-            let roots=self.query_bound("SELECT CAST(native_hash AS BLOB),CAST(supporting_root AS BLOB),CAST(validation_class AS BLOB) FROM g_public_receipt ORDER BY native_hash,supporting_root LIMIT 2",vec![]).await?;
-            let [row]=roots.as_slice() else {return Err(StorageError::state("unsupported required public graph closure"));};
-            let [Value::Blob(hash),Value::Blob(root),Value::Blob(class)]=row.as_slice() else {return Err(StorageError::state("corrupt public root binding"));};
-            let root=std::str::from_utf8(root).map_err(|e|StorageError::caused("public root UTF-8",e))?;
-            if hash.as_slice()!=root.as_bytes() || class.as_slice()!=b"local-explicit-publication" || !native_hash(root) {return Err(StorageError::state("unsupported required public graph closure"));}
-            let root_type=self.query_bound("SELECT typeof(native_hash),typeof(supporting_root),typeof(validation_class) FROM g_public_receipt",vec![]).await?;
-            if root_type!=vec![vec![Value::Text("text".into());3]] {return Err(StorageError::state("corrupt public root binding"));}
-            let root_row=self.query_bound("SELECT rid,rcvid,typeof(uuid),typeof(content) FROM blob WHERE uuid=?1",vec![Value::Text(root.into())]).await?;
-            if root_row!=vec![vec![Value::Integer(1),Value::Integer(1),Value::Text("text".into()),Value::Text("blob".into())]] {return Err(StorageError::state("immutable shared root provenance differs"));}
+            let root=self.public_root().await?;
+            let root=root.as_str();
             let bytes=self.read_recording_content_budget(principal,root,budget).await?;
             let parsed=parse_recording_budgeted(self,&bytes,parse,budget).await?;
             validate_empty_root(&parsed)?;
@@ -433,8 +497,7 @@ impl WriteTransaction<'_> {
             let tags=self.query_bound("SELECT tagid,tagname FROM tag WHERE tagid<=12 ORDER BY tagid",vec![]).await?;
             let expected:Vec<Vec<Value>>=["bgcolor","comment","user","date","hidden","private","cluster","branch","closed","parent","note","sym-trunk"].into_iter().enumerate().map(|(i,name)|vec![Value::Integer((i+1) as i64),Value::Text(name.into())]).collect();
             if tags!=expected {return Err(StorageError::state("unsupported native tag definitions"));}
-            let server=self.query_bound("SELECT CAST(value AS BLOB),typeof(value) FROM config WHERE name='server-code'",vec![]).await?;
-            if !matches!(server.as_slice(),[row] if matches!(row.as_slice(),[Value::Blob(value),Value::Text(kind)] if kind=="text" && value.len()==40 && value.iter().all(|b|b.is_ascii_digit() || (b'a'..=b'f').contains(b)))) {return Err(StorageError::state("native server identity unavailable"));}
+            self.require_server_code().await?;
             let counts=self.query_bound("SELECT (SELECT count(*) FROM g_checkout),(SELECT count(*) FROM g_checkout_owner),checkout_count FROM g_storage WHERE singleton=1",vec![]).await?;
             let history = if counts==vec![vec![Value::Integer(0);3]] {
                 // Without a registration, reject private history and scoped or native rows.
@@ -466,7 +529,7 @@ impl WriteTransaction<'_> {
         shared: &str,
         limits: AdmissionLimits,
     ) -> Result<(), StorageError> {
-        let valid=self.query_bound("SELECT typeof(c.checkout_id)='text' AND length(CAST(c.checkout_id AS BLOB)) BETWEEN 1 AND ?1 AND typeof(c.root)='text' AND length(CAST(c.root AS BLOB)) BETWEEN 1 AND ?2 AND typeof(c.shared_head)='text' AND c.shared_head IS ?3 AND (typeof(c.combined_head)='null' OR (typeof(c.combined_head)='text' AND length(CAST(c.combined_head AS BLOB)) IN(40,64))) AND typeof(c.generation)='integer' AND c.generation>=0 AND typeof(c.pending_version)='integer' AND c.pending_version>=0 AND typeof(c.availability)='text' AND c.availability IS 'ready' AND typeof(o.checkout_id)='text' AND o.checkout_id IS c.checkout_id AND typeof(o.owner_id)='text' AND o.owner_id IS ?4 AND typeof(o.root_device)='text' AND length(CAST(o.root_device AS BLOB)) BETWEEN 1 AND 20 AND typeof(o.root_inode)='text' AND length(CAST(o.root_inode AS BLOB)) BETWEEN 1 AND 20 FROM g_checkout c JOIN g_checkout_owner o ON o.checkout_id=c.checkout_id",vec![Value::Integer(limits.parser.input_bytes.min(1024) as i64),Value::Integer(limits.parser.input_bytes.min(4096) as i64),Value::Text(shared.into()),Value::Text(principal.owner.clone())]).await?;
+        let valid=self.query_bound("SELECT typeof(c.checkout_id)='text' AND length(CAST(c.checkout_id AS BLOB)) BETWEEN 1 AND ?1 AND typeof(c.root)='text' AND length(CAST(c.root AS BLOB)) BETWEEN 1 AND ?2 AND typeof(c.shared_head)='text' AND c.shared_head IS ?3 AND (typeof(c.combined_head)='null' OR (typeof(c.combined_head)='text' AND length(CAST(c.combined_head AS BLOB)) IN(40,64))) AND typeof(c.generation)='integer' AND c.generation>=0 AND typeof(c.pending_version)='integer' AND c.pending_version>=c.generation AND (c.generation=0 OR c.pending_version>=c.generation+2) AND (c.pending_version=0)=(NOT EXISTS(SELECT 1 FROM g_vfile)) AND typeof(c.availability)='text' AND c.availability IS 'ready' AND typeof(o.checkout_id)='text' AND o.checkout_id IS c.checkout_id AND typeof(o.owner_id)='text' AND o.owner_id IS ?4 AND typeof(o.root_device)='text' AND length(CAST(o.root_device AS BLOB)) BETWEEN 1 AND 20 AND typeof(o.root_inode)='text' AND length(CAST(o.root_inode AS BLOB)) BETWEEN 1 AND 20 FROM g_checkout c JOIN g_checkout_owner o ON o.checkout_id=c.checkout_id",vec![Value::Integer(limits.parser.input_bytes.min(1024) as i64),Value::Integer(limits.parser.input_bytes.min(4096) as i64),Value::Text(shared.into()),Value::Text(principal.owner.clone())]).await?;
         if valid != vec![vec![Value::Integer(1)]] {
             return Err(StorageError::state("unsupported recording checkout state"));
         }
@@ -730,26 +793,6 @@ fn recording_principal_from_rows(rows: &[Vec<Value>]) -> Result<Principal, Stora
     Ok(Principal { repository, owner })
 }
 
-/// Require the authority rows to match their precharged shape.
-/// # Arguments
-/// * `rows` - Complete raw result of the fixed authority query.
-/// * `expected` - Row count admitted by the scalar preflight.
-/// * `columns` - Physical columns expanded into type/value pairs.
-/// # Returns
-/// Success for the exact retained result shape.
-/// # Errors
-/// Refuses changed row counts or incomplete type/value rows.
-fn validate_authority_rows(
-    rows: &[Vec<Value>],
-    expected: usize,
-    columns: usize,
-) -> Result<(), StorageError> {
-    if rows.len() != expected || rows.iter().any(|row| row.len() != columns * 2) {
-        return Err(StorageError::state("authority inventory changed"));
-    }
-    Ok(())
-}
-
 /// Decode precharged registration facts and authenticate their live root.
 /// # Arguments
 /// * `rows` - Raw identity, path, device and inode after scalar state validation.
@@ -839,45 +882,6 @@ mod tests {
         .unwrap()
     }
 
-    /// Raw authority retains storage classes and exact hostile text bytes without decoding them.
-    #[tokio::test]
-    async fn scope_authority_snapshot_retains_raw_text_and_storage_class() {
-        let mut store = LocalStore::open_inner(Path::new(":memory:"), false)
-            .await
-            .unwrap();
-        let mut tx = store.begin_write().await.unwrap();
-        tx.execute("CREATE TABLE g_path_scope(checkout_id TEXT,path TEXT,scope TEXT)")
-            .await
-            .unwrap();
-        tx.execute("INSERT INTO g_path_scope VALUES('work',CAST(x'610062' AS TEXT),'private')")
-            .await
-            .unwrap();
-        let table = &AUTHORITY_TABLES[8];
-        let mut work = budget(4096);
-        assert_eq!(
-            tx.preflight_authority_table(table, &mut work)
-                .await
-                .unwrap(),
-            1
-        );
-        let before = tx.query_bound(table.rows, vec![]).await.unwrap();
-        assert_eq!(before[0][2], Value::Text("text".into()));
-        assert_eq!(before[0][3], Value::Blob(b"a\0b".to_vec()));
-        tx.execute("UPDATE g_path_scope SET path=x'610062'")
-            .await
-            .unwrap();
-        let after = tx.query_bound(table.rows, vec![]).await.unwrap();
-        assert_eq!(after[0][2], Value::Text("blob".into()));
-        assert_eq!(after[0][3], Value::Blob(b"a\0b".to_vec()));
-        assert_ne!(before, after);
-        tx.execute("UPDATE g_path_scope SET path=CAST(x'ff' AS TEXT)")
-            .await
-            .unwrap();
-        let invalid = tx.query_bound(table.rows, vec![]).await.unwrap();
-        assert_eq!(invalid[0][3], Value::Blob(vec![0xff]));
-        tx.rollback().await.unwrap();
-    }
-
     /// Repeated metadata reads consume the same ledger, including empty-valued row overhead.
     #[tokio::test]
     async fn authority_preflight_consumes_shared_work_before_ownership() {
@@ -956,16 +960,6 @@ mod tests {
                 error
             );
         }
-        let exact = vec![vec![Value::Text("text".into()), Value::Blob(b"x".to_vec())]];
-        assert!(validate_authority_rows(&exact, 1, 1).is_ok());
-        assert_eq!(
-            validate_authority_rows(&exact, 0, 1).unwrap_err().operation,
-            "authority inventory changed"
-        );
-        assert_eq!(
-            validate_authority_rows(&exact, 1, 2).unwrap_err().operation,
-            "authority inventory changed"
-        );
         let valid = vec![
             Value::Blob(b"0123456789abcdef0123456789abcdef01234567".to_vec()),
             Value::Blob(b"owner".to_vec()),
