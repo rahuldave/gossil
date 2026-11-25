@@ -35,6 +35,8 @@ pub use initialization::InitializeOptions;
 pub use issue_ticket::{
     IssueLimits, IssueRecord, IssueTicket, PrivateIssueRequest, ProjectInitRequest,
 };
+#[cfg(test)]
+pub(crate) use issue_ticket::{IssuePhase, inject_issue_failure};
 
 /// Fixed scalar predicates bound returned data, not total SQLite scan work.
 /// The admitted root cannot produce other artifact types or a current file/merge selection.

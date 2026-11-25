@@ -63,14 +63,18 @@ The private `src/product/help.rs` table gives product, group and command help.
 It must list every command that `src/product.rs` dispatches. Unknown names exit 2.
 Its issue table holds the Gest command tree of the `issue` group, or `i`. The
 parser in `src/product/issue.rs` walks that table. It runs `init`, in
-`src/product/issue_init.rs`, and refuses each other recognised command with
-status 69.
+`src/product/issue_init.rs`, and `task create`, in `src/product/issue_task.rs`,
+and refuses each other recognised command with status 69.
 
 `issue init` needs a checkout from `vcs init` and `vcs open --root`, and
 writes a private project ticket and its binding in one transaction. The shared
 helper `open_issue_repository` in `src/product/issue.rs` opens the repository of
 an issue command through the published locator, and `IssueFailure` maps errors
-to the CLI-05 statuses 78 and 74.
+to the CLI-05 statuses 78 and 74. `retry_stale` runs a command once more after
+a stale admission or a `database is locked` refusal. `issue task create` writes
+one private task in the bound project. It refuses the Gest options that this
+build lacks with status 69. It refuses a `[` and a task artifact over 65,536
+bytes with status 64.
 
 Native local storage supports checkout-free initialization, then one library
 checkout registration at the empty root. Reopen admits strict catalog6 with zero

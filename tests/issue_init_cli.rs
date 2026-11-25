@@ -646,9 +646,9 @@ fn a_closed_stdout_keeps_the_project_and_exits_74() {
 
 #[test]
 #[ignore = "requires explicit pinned native Fossil; run just issue-ticket-interop"]
-/// Stock Fossil 2.29 checks a repository after `v init`, `v open`, `i init` and a
-/// commit. `test-integrity` finds no error, and `ticket show` gives the fields of the
-/// project ticket.
+/// Stock Fossil 2.29 checks a repository after `v init`, `v open`, `i init`, a task
+/// made by `i task create`, a commit and a second task. `test-integrity` finds no
+/// error, and `ticket show` gives the fields of the project ticket and of each task.
 fn stock_fossil_reads_a_repository_after_issue_init() {
     let fossil =
         std::env::var_os("GOSSIL_FOSSIL_REFERENCE").expect("explicit reference executable");
@@ -670,7 +670,20 @@ fn stock_fossil_reads_a_repository_after_issue_init() {
     let home = temp.path();
     let root = open_checkout(home);
     assert!(gos(home, &["i", "init"]).status.success());
+    assert!(
+        gos(
+            home,
+            &["i", "task", "create", "Before <b> & 'q'", "-p", "1"]
+        )
+        .status
+        .success()
+    );
     commit(home, 1);
+    let made = gos(
+        home,
+        &["i", "t", "new", "After", "-s", "done", "-m", "k=v", "-q"],
+    );
+    assert!(made.status.success());
     let repo = home.join("repo");
     let id = bound_project(&repo, &root);
     let r = OsStr::new("-R");
@@ -681,23 +694,62 @@ fn stock_fossil_reads_a_repository_after_issue_init() {
         repo.as_os_str(),
     ]);
     assert!(integrity.contains("0 errors"), "{integrity}");
-    let k = rows(&repo, "SELECT tkt_uuid FROM ticket");
-    let shown = run(&[
-        OsStr::new("ticket"),
-        OsStr::new("show"),
-        OsStr::new("0"),
-        OsStr::new(&format!("tkt_uuid='{}'", text(&k[0][0]))),
-        OsStr::new("--quote"),
-        OsStr::new("--user"),
-        OsStr::new("tester"),
-        r,
-        repo.as_os_str(),
-    ]);
-    let mut lines = shown.lines();
-    let header: Vec<&str> = lines.next().unwrap().split('\t').collect();
-    let row: Vec<&str> = lines.next().unwrap().split('\t').collect();
-    let shown: std::collections::BTreeMap<&str, &str> = header.into_iter().zip(row).collect();
-    assert_eq!(shown["gossil_kind"], "project");
-    assert_eq!(shown["gest_id"], format!("\"{id}\""));
-    assert_eq!(shown["archived_at"], "null");
+    let show = |kind: &str| {
+        let k = rows(
+            &repo,
+            &format!("SELECT tkt_uuid FROM ticket WHERE gossil_kind='{kind}' ORDER BY title"),
+        );
+        k.iter()
+            .map(|k| {
+                let shown = run(&[
+                    OsStr::new("ticket"),
+                    OsStr::new("show"),
+                    OsStr::new("0"),
+                    OsStr::new(&format!("tkt_uuid='{}'", text(&k[0]))),
+                    OsStr::new("--quote"),
+                    OsStr::new("--user"),
+                    OsStr::new("tester"),
+                    r,
+                    repo.as_os_str(),
+                ]);
+                let mut lines = shown.lines();
+                let header: Vec<String> = lines
+                    .next()
+                    .unwrap()
+                    .split('\t')
+                    .map(String::from)
+                    .collect();
+                let row: Vec<String> = lines
+                    .next()
+                    .unwrap()
+                    .split('\t')
+                    .map(String::from)
+                    .collect();
+                header
+                    .into_iter()
+                    .zip(row)
+                    .collect::<std::collections::BTreeMap<String, String>>()
+            })
+            .collect::<Vec<_>>()
+    };
+    let project = &show("project")[0];
+    assert_eq!(project["gossil_kind"], "project");
+    assert_eq!(project["gest_id"], format!("\"{id}\""));
+    assert_eq!(project["archived_at"], "null");
+    // `ticket show --quote` writes each space as `\s`.
+    let tasks = show("task");
+    assert_eq!(tasks.len(), 2);
+    let quiet = String::from_utf8(made.stdout).unwrap();
+    for (task, title, status, priority) in [
+        (&tasks[0], "\"After\"", "\"done\"", "null"),
+        (&tasks[1], "\"Before\\s<b>\\s&\\s'q'\"", "\"open\"", "1"),
+    ] {
+        assert_eq!(task["gossil_kind"], "task");
+        assert_eq!(task["title"], title);
+        assert_eq!(task["status"], status);
+        assert_eq!(task["priority"], priority);
+        assert_eq!(task["project_id"], format!("\"{id}\""));
+    }
+    assert!(tasks[0]["gest_id"].starts_with(&format!("\"{}", quiet.trim_end())));
+    assert_eq!(tasks[0]["metadata"], "{\"k\":\"v\"}");
 }

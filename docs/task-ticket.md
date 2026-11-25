@@ -11,8 +11,9 @@ artifact and project emitters, which the [Gest ticket guide](gest-ticket.md) des
 
 Use the library to inspect or test
 task creation artifacts in memory. The [issue ticket writer](issue-ticket.md)
-stores a task creation privately in a native repository. Issue commands remain
-separate work.
+stores a task creation privately in a native repository. The command
+[`gos i task create`](cli.md#create-a-task) emits a task creation with this module and stores it
+with that writer. The other issue commands remain separate work.
 
 ## Use the library
 

@@ -94,7 +94,8 @@ The same aliases support [native checkout open](cli.md#open-a-native-checkout).
 
 The [`issue` group](cli.md#issue-commands), or `i`, recognises the Gest command
 names. It runs [`init`](cli.md#create-the-gest-project-of-a-checkout), which creates the
-Gest project of an open checkout. It refuses each other command with status 69. The
+Gest project of an open checkout. It also runs [`task create`](cli.md#create-a-task), which adds a
+private task to that project. It refuses each other command with status 69. The
 other issue commands, shared recording and sync remain planned.
 
 ## Handle failures and choose the next step

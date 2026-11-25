@@ -9,8 +9,8 @@ plus [scope selection and private recording](#select-scopes-and-record-private-f
 and [complete recorded ancestry](#read-complete-recorded-ancestry).
 `gos` is an alias for `gossil`, and `v` is an alias for `vcs`.
 The [`issue` group](#issue-commands), or `i`, recognises each Gest command.
-This build runs one of them, [`issue init`](#create-the-gest-project-of-a-checkout),
-and refuses the others.
+This build runs two of them, [`issue init`](#create-the-gest-project-of-a-checkout)
+and [`issue task create`](#create-a-task), and refuses the others.
 
 Each diagnostic runs without a repository. Run it from this source checkout with `just gossil`, which builds
 and runs the executable through Cargo. Cargo may print build messages on stderr.
@@ -100,25 +100,26 @@ their subcommands. They keep the aliases of the Gest source:
 Help shows the aliases that Gest shows, and hides `a`, `i`, `t`, `u`, `grep`
 and `delete` under `meta`, as Gest does.
 
-This build runs `init`, which the
-[next section](#create-the-gest-project-of-a-checkout) describes. It recognises
-each other command and refuses it:
+This build runs `init` and `task create`, which the sections
+[Create the Gest project of a checkout](#create-the-gest-project-of-a-checkout) and
+[Create a task](#create-a-task) describe. It recognises each other command and
+refuses it:
 
 ```text
-$ gos i task create "First task"
-gossil: issue task create is not available in this build
+$ gos i task claim lkpunroy
+gossil: issue task claim is not available in this build
 ```
 
 The refused command then exits with status 69, the code of an invalid state. It reads and
 writes no file, and it does not open or create a database. The parser checks
-the command names only. Arguments after the last name, such as `"First task"`,
+the command names only. Arguments after the last name, such as `lkpunroy`,
 are not checked. A `--help` or `-h` among them prints the help of the command.
 After `--`, `--help` and `-h` are ordinary arguments, so the build refuses
-`gos i task create -- -h` like any other task creation.
+`gos i task claim -- -h` like any other claim.
 
 | Input | Status | Message on stderr |
 |---|---|---|
-| A recognised command other than `init`, such as `i undo` or `i t ls` | 69 | `gossil: issue PATH is not available in this build` |
+| A recognised command other than `init` and `task create`, such as `i undo` or `i t ls` | 69 | `gossil: issue PATH is not available in this build` |
 | `artifact`, `config`, `generate`, `iteration`, `task` or a `note` group without a subcommand | 2 | `gossil: issue PATH needs a command` |
 | An unknown name, such as `i frob` or `i task frob` | 2 | `gossil: unknown issue command "NAME"` |
 | `i serve` or `i s` | 2 | The unknown-name message, because the root groups `ui` and `serve` replace Gest's server command |
@@ -237,6 +238,126 @@ This build has these limits:
   the one live project, or refuses several of them as ambiguous. Gossil refuses
   both cases with status 74.
 - Repositories of older Gossil versions are not supported.
+
+### Create a task
+
+`gos i task create TITLE`, or `gossil issue task create TITLE`, stores one private
+task in the Gest project of the open checkout. Run `gos i init` first. All four
+forms of executable and group run the same command. The aliases `new` and `t` work
+as in Gest, so `gos i t new TITLE` is the same command too:
+
+```text
+$ gos i task create "Write the docs" -p high -m area=docs
+  ✓  created task  nwlkpqzs
+
+  title  Write the docs
+```
+
+The short ID is the first 8 letters of the Gest ID of the task. The output has no
+color. The text form follows the success message of the pinned Gest source, and
+its exact bytes are provisional. With `-q` or `--quiet`, the command prints the
+short ID alone.
+
+With `-j` or `--json`, the command prints the task as Gest's JSON envelope. The
+envelope has the fields `assigned_to`, `created_at`, `description`, `id`, `metadata`,
+`priority`, `project_id`, `resolved_at`, `status`, `title` and `updated_at`, and
+then `notes`, `relationships` and `tags`. The last three are empty lists. The JSON
+status of a task in progress is `inprogress`, as in Gest. `--json` wins over
+`--quiet`.
+
+Like `init`, the command finds the repository and the checkout through the locator
+of the nearest `.gossil` marker. It takes the project from the checkout binding
+that `init` wrote. In one transaction, it writes the rows of one private task
+ticket, as the [issue ticket guide](issue-ticket.md#rows-that-one-write-adds) lists
+them.
+
+The ticket ID is 40 random hexadecimal digits, and the Gest ID is random. The
+date and both timestamps hold the current time. The user is the local login, as
+for `init`. A failure before the commit leaves every byte of the repository
+unchanged.
+
+The command accepts these options of Gest:
+
+| Option | Value |
+|---|---|
+| `-d`, `--description` | The description. Without it, the description is empty. |
+| `-p`, `--priority` | `0` to `4`, or `critical`, `high`, `medium`, `low` or `lowest` in any case |
+| `-s`, `--status` | `open`, `in-progress`, `in_progress`, `inprogress`, `done` or `cancelled`, in any case. The default is `open`. `done` and `cancelled` also set `resolved_at` to the creation time. |
+| `-m`, `--metadata` | `KEY=VALUE`, repeatable. A dotted key makes nested objects. `true`, `false` and numbers become JSON values, and other values become strings. |
+| `--metadata-json` | A JSON object, repeatable, merged key by key after the `-m` pairs |
+| `-j`, `--json` and `-q`, `--quiet` | The output forms above |
+| `-r`, `--raw`, `--no-color`, `--no-pager`, `-v`, `--verbose` | Accepted, and they change nothing |
+
+The parser follows the rules of Clap, the Rust parser of arguments that the Gest
+source uses. A short option can take its value in the same word, as in `-p1`, and a long option after `=`, as in
+`--priority=1`. Short flags can share one word, as in `-jq`. A word after `--` is
+the title, even when it starts with `-`.
+
+The help options differ from Clap in two cases. Clap prints the help for `-h`
+inside a word of short flags, as in `-jh`, and this build exits 2. Clap refuses `-d -h T`
+because `-d` has no value, and this build prints the help.
+
+The command refuses these inputs:
+
+| Input | Status | Message on stderr |
+|---|---|---|
+| An unknown option, a second title, a repeated option other than `-m`, `--metadata-json`, `--tag`, `-l`, `--link` and `-v`, or a word that is not UTF-8 | 2 | `gossil: issue task create: PROBLEM`, then the usage line |
+| A missing value, or a separate value that starts with `-`, such as `-p -1` | 2 | `gossil: issue task create: "--priority" needs a value` |
+| A priority or status that Gest does not accept, such as `-p 5` or `-s closed` | 2 | `gossil: issue task create: invalid value for "--priority": ...` |
+| `--phase` without `--iteration` | 2 | `gossil: issue task create: "--phase" needs "--iteration"` |
+| `--assign`, `--batch`, `-i` or `--iteration`, `-l` or `--link`, `--phase` or `--tag` | 69 | `gossil: issue task create: --assign is not available in this build` |
+| No title | 69 | `gossil: issue task create: reading the title from stdin is not available in this build; give TITLE` |
+| A `-m` pair without `=`, a key of more than 32 parts, or `--metadata-json` that is not a JSON object | 64 | The Gest message, such as `gossil: issue task create: --metadata-json must be a JSON object` |
+| A `[` in the title, the description or the metadata, including a JSON array | 64 | `gossil: issue task create: the title contains "[", ...` |
+| A task artifact of more than 65,536 bytes | 64 | `gossil: issue task create: the task has at least N bytes, more than the 65536 that this build stores` |
+| No open checkout | 78 | `gossil: no open checkout holds this directory; run gos v init and gos v open first` |
+| A checkout with no project | 78 | `gossil: this checkout has no Gest project; run gos i init first` |
+| A local login that is not UTF-8 | 78 | `gossil: the local login is not UTF-8; set GOSSIL_USER` |
+| A failure of storage or admission, or another I/O failure | 74 | The storage or I/O error |
+| A failure of the JSON output, after the commit | 65 | `gossil: issue task create kept the task, and JSON output failed: ERROR` |
+| A failed write to stdout, after the commit | 74 | `gossil: issue task create kept the task, and stdout failed: ERROR` |
+
+The command checks the usage errors first, then the refused options, then the
+title. It then opens the repository and checks the project. The checks of the
+metadata, of `[` and of the size of the artifact come last. Gest uses another
+order, and checks the project first, before the title and the metadata.
+
+The command never reads stdin and never opens an editor. Gest reads the title or
+the description from stdin or from `$EDITOR` when they are missing. This build
+refuses a missing title and stores an empty description.
+
+Two commands that run at the same time can race. When another command commits between the
+admission and the write of this one, the write refuses as stale and writes
+nothing. With three or more commands at once, a write can also wait for the
+write lock longer than its timeout and refuse with `database is locked`. Both
+refusals come before the commit. `init` and `task create` then open the
+repository again and try once more. A second refusal gives 74, so many commands
+at once can still fail.
+
+This build has these limits:
+
+- The command stores private tasks only.
+- The command writes no audit row and no undo history, so a task that this build
+  creates cannot be undone.
+- A text field cannot hold `[`, because Markdown backlinks are not ported.
+- The command writes no tags, links, iteration membership or assignment.
+- Repositories of older Gossil versions are not supported.
+- A task artifact holds at most 65,536 bytes. A task of about 300 KB would pass
+  its own write and make every later write refuse.
+- In this build, the admission check uses up its budget of decoded content
+  after about 96 tasks of any size. Large tasks use it up sooner. With
+  descriptions of 10,000 bytes, the write of the 32nd task refuses.
+- The cause is in admission. For each stored ticket, it charges the text of the
+  whole repository against that budget. So the cost grows with the number of
+  tickets times the size of the repository.
+- After that, every write refuses with `total decoded content limit`.
+  `task create` then exits with 74, and the `vcs` writes, such as `gos v add`
+  and `gos v commit`, exit with 1. Nothing stored is damaged or lost.
+- With many commands at the same time, a command can still refuse with 74 and
+  `database is locked` after its one retry, and it stored nothing. When the
+  write of the task waited too long, the message starts with
+  `gossil: issue task create:`. When the opening of the repository waited too
+  long, the message is the storage error alone, without that prefix.
 
 ## Initialize a repository
 

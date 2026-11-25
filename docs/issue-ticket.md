@@ -8,8 +8,9 @@ only artifact of a ticket in this build.
 
 The writer is a library method of `LocalOwnerRepository` in `src/storage/issue_ticket.rs`. A second
 method, `init_private_project`, writes a project and binds it to the registered checkout. The command
-[`gos i init`](cli.md#create-the-gest-project-of-a-checkout) calls that method. No command stores a
-task yet. The repository must be at catalog 6, the newest catalog of Gossil storage.
+[`gos i init`](cli.md#create-the-gest-project-of-a-checkout) calls that method, and
+[`gos i task create`](cli.md#create-a-task) calls `create_private_issue` for a task in the bound
+project. The repository must be at catalog 6, the newest catalog of Gossil storage.
 
 ## Write and read a ticket
 
@@ -143,6 +144,19 @@ the repository already holds.
 The writer writes no selectors, tags of Gest or links. The scope key is the literal `combined`, and not
 the full key of the specification, because the full key needs selectors.
 
+Each write checks every stored ticket twice, before and after the write, against one parser budget and
+one budget of decoded content. A task of about 300 KB passes its own write and makes every later write
+refuse. For this reason, `gos i task create` refuses a task artifact of more than 65,536 bytes.
+
+In this build, the budget of decoded content runs out after about 96 tasks of any size. Large tasks use
+it up sooner. With descriptions of 10,000 bytes, the write of the 32nd task refuses. The cause is in
+admission. For each stored ticket, it charges the text of the whole repository against that budget. So the
+cost grows with the number of tickets times the size of the repository.
+
+After that, every write refuses with `total decoded content limit`. `gos i task create` then exits with
+status 74, and the `vcs` writes, such as `gos v add`, exit with status 1. The refused write changes no byte, so
+nothing stored is damaged or lost.
+
 ## Tests
 
 `tests/issue_ticket.rs` checks a task and a project end to end (GEST-T01). It also checks the metadata,
@@ -165,7 +179,10 @@ task or to an archived project, and a value that is not text. A change to a bind
 admission proof stale.
 
 `tests/issue_init_cli.rs` checks the command `gos i init` in all four forms, its second run, its
-refusals and the `vcs` commands before and after it.
+refusals and the `vcs` commands before and after it. `tests/issue_task_cli.rs` checks
+`gos i task create` in the same way, and reads each stored task back with `read_private_issue`. The
+unit tests of `src/product/issue_task.rs` inject a failure after each write step of a new task. Then
+they check that every byte of the repository stays unchanged (GEST-T08).
 
 Admission parses every artifact under one parser ledger, so the entry ceiling of that ledger limits the
 count of issues. A unit control sets a ceiling that admits two tasks, and checks that admission refuses a
@@ -191,9 +208,9 @@ report 0 errors from `fossil test-integrity --parse`. It must list both check-in
 `fossil timeline`, and show the ticket in `fossil ticket show`. `just catalog-interop` runs this check too.
 
 Last, the recipe runs the ignored test `stock_fossil_reads_a_repository_after_issue_init` in
-`tests/issue_init_cli.rs`. The test runs `gos v init`, `gos v open`, `gos i init` and one commit. Stock
-Fossil must then report 0 errors from `fossil test-integrity --parse`, and `fossil ticket show` must show
-the private project.
+`tests/issue_init_cli.rs`. The test runs `gos v init`, `gos v open`, `gos i init`, `gos i task create`,
+one commit and a second `gos i task create`. Stock Fossil must then report 0 errors from
+`fossil test-integrity --parse`, and `fossil ticket show` must show the private project and both tasks.
 
 The comparison counts event times in whole milliseconds. Fossil formats `event.mtime` with its own
 conversion, which adds noise after the ninth decimal place of the Julian day. The comment bytes must be
