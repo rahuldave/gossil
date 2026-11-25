@@ -116,6 +116,28 @@ fn charge_values(values: &[Value], work: &mut Budget) -> Result<(), StorageError
     work.charge_decoded(size)
 }
 
+/// Charge the TEXT and BLOB bytes that one bounded result retains.
+/// # Arguments
+/// * `rows` - The validated provider result.
+/// * `work` - Borrowed whole-operation ledger.
+/// # Returns
+/// Success after charging the exact retained variable-width bytes.
+/// # Errors
+/// Refuses arithmetic overflow and exhausted work.
+fn charge_retained_text(rows: &[Vec<Value>], work: &mut Budget) -> Result<(), StorageError> {
+    let mut size = 0usize;
+    for value in rows.iter().flatten() {
+        size = size
+            .checked_add(match value {
+                Value::Text(s) => s.len(),
+                Value::Blob(b) => b.len(),
+                _ => 0,
+            })
+            .ok_or_else(|| StorageError::state("recording SQL size overflow"))?;
+    }
+    work.charge_decoded(size)
+}
+
 /// Read a finite SQL set after complete family text preflight.
 /// # Arguments
 /// * `tx` - Reserved transaction with the complete text preflight already performed.
@@ -128,8 +150,12 @@ fn charge_values(values: &[Value], work: &mut Budget) -> Result<(), StorageError
 /// Complete exact rows, never a truncated accepted set.
 /// # Errors
 /// Rejects invalid ceilings, excessive count or row width, budget and SQL failures.
-/// Count and conservative result capacity are charged before provider materialization;
-/// family preflight bounds every TEXT/BLOB field before this helper is called.
+/// Count, per-row capacity and the reservation for twice the whole native text are
+/// charged before provider materialization. The ledger charges that reservation once
+/// per admission and later only its growth, through
+/// [`Budget::charge_reserved`](crate::storage::content::Budget::charge_reserved).
+/// The exact TEXT/BLOB bytes of the result are charged after it. Family preflight
+/// bounds every TEXT/BLOB field before this helper is called.
 pub(super) async fn bounded_rows(
     tx: &mut WriteTransaction<'_>,
     sql: &str,
@@ -176,15 +202,22 @@ pub(super) async fn bounded_rows(
     let text = scalar_i64(&tx.query_bound(text_sql, vec![]).await?)?;
     let text =
         usize::try_from(text).map_err(|_| StorageError::state("recording SQL text capacity"))?;
-    let capacity = text
+    // One provider result retains at most twice the whole text. The ledger keeps that
+    // reservation once per admission and charges only its growth, so the cost of an
+    // admission stays linear in the repository. Each result's rows are charged below.
+    let reservation = text
         .checked_mul(2)
-        .and_then(|v| v.checked_add((n as usize).checked_mul(512)?))
+        .ok_or_else(|| StorageError::state("recording SQL allocation overflow"))?;
+    work.charge_reserved("recording text inventory", reservation)?;
+    let capacity = (n as usize)
+        .checked_mul(512)
         .and_then(|v| v.checked_add(128))
         .ok_or_else(|| StorageError::state("recording SQL allocation overflow"))?;
     work.charge_decoded(capacity)?;
     charge_values(&args, work)?;
     let rows = tx.query_bound(sql, args).await?;
     validate_retained_rows(&rows, n as usize, row_bytes)?;
+    charge_retained_text(&rows, work)?;
     Ok(rows)
 }
 
@@ -3163,5 +3196,184 @@ mod controls {
             before
         );
         tx.rollback().await.unwrap();
+    }
+
+    /// Emit the creation artifact of task `n`, with a 21-byte title.
+    /// # Arguments
+    /// * `n` - The number of the task, which spells its Gest ID and K card.
+    /// # Returns
+    /// The canonical artifact bytes.
+    /// # Panics
+    /// Panics if the fixture values are invalid.
+    fn small_task(n: u32) -> Vec<u8> {
+        let id: String = format!("{n:032x}")
+            .bytes()
+            .map(|b| {
+                char::from(if b.is_ascii_digit() {
+                    b'k' + b - b'0'
+                } else {
+                    b'u' + b - b'a'
+                })
+            })
+            .collect();
+        let task =
+            crate::gest_task_values::task_from_values(crate::gest_task_values::TaskValueInputs {
+                gest_id: serde_json::json!(id),
+                project_id: serde_json::json!("klmnopqrstuvwxyzklmnopqrstuvwxyz"),
+                title: serde_json::json!(format!("Small task {n:>10}")),
+                priority: serde_json::Value::Null,
+                status: serde_json::json!("open"),
+                description: serde_json::json!(""),
+                assigned_to: serde_json::Value::Null,
+                metadata: serde_json::json!({}),
+                resolved_at: serde_json::Value::Null,
+                created_at: serde_json::json!("2026-11-18T12:00:00Z"),
+                updated_at: serde_json::json!("2026-11-18T12:00:00Z"),
+            })
+            .unwrap();
+        let date = crate::native_date::NativeDate::parse(b"2026-11-18T12:00:00Z").unwrap();
+        crate::task_ticket::task_creation_bytes(
+            &task,
+            format!("{n:040x}").as_bytes(),
+            b"gest agent",
+            date,
+            65_536,
+        )
+        .unwrap()
+    }
+
+    #[tokio::test]
+    /// The decoded charge of one admission grows linearly with the count of issues.
+    ///
+    /// Each issue adds the same rows, so a linear charge adds the same bytes for each
+    /// issue. The old charge of the whole text once per ticket grew with the square of the count.
+    /// # Panics
+    /// Panics if a write or an admission fails, or if the charge is not linear.
+    async fn admission_charge_grows_linearly_with_issues() {
+        let temp = tempfile::tempdir().unwrap();
+        let mut owner = initialized(&temp.path().join("repo")).await;
+        let limits = crate::storage::IssueLimits {
+            admission: bounds(),
+            sql_rows: 100_000,
+            sql_bytes: 64 << 20,
+        };
+        let mut used = Vec::new();
+        for n in 0..12 {
+            let artifact = small_task(n);
+            owner
+                .create_private_issue(
+                    crate::storage::PrivateIssueRequest {
+                        artifact: &artifact,
+                        scope: crate::storage::PathScope::Private,
+                    },
+                    limits,
+                )
+                .await
+                .unwrap();
+            if [3, 6, 12].contains(&(n + 1)) {
+                let mut work = Budget::new(bounds().content).unwrap();
+                let mut parse = ParseWork::new(bounds().parser).unwrap();
+                let mut tx = owner.store.begin_write().await.unwrap();
+                tx.validate_recording_repository(&owner.principal, bounds(), &mut work, &mut parse)
+                    .await
+                    .unwrap();
+                tx.rollback().await.unwrap();
+                used.push(work.decoded());
+            }
+        }
+        let (first, second) = (used[1] - used[0], used[2] - used[1]);
+        eprintln!("admission charge at 3, 6 and 12 issues: {used:?}");
+        // Twice as many new issues cost twice as much, within one percent.
+        assert!(second.abs_diff(2 * first) * 100 <= 2 * first, "{used:?}");
+    }
+
+    #[tokio::test]
+    /// Each content read checks the owner again, but charges the schema surfaces once per admission.
+    /// # Panics
+    /// Panics if a repeated check charges the schema again before a new admission.
+    async fn repeated_owner_checks_reserve_the_schema_once_per_admission() {
+        let temp = tempfile::tempdir().unwrap();
+        let mut owner = initialized(&temp.path().join("repo")).await;
+        let mut work = Budget::new(bounds().content).unwrap();
+        let mut tx = owner.store.begin_write().await.unwrap();
+        tx.validate_recording_principal_budgeted(&owner.principal, &mut work)
+            .await
+            .unwrap();
+        let once = work.decoded();
+        assert!(once > 0);
+        for _ in 0..3 {
+            tx.validate_recording_principal_budgeted(&owner.principal, &mut work)
+                .await
+                .unwrap();
+        }
+        assert_eq!(work.decoded(), once);
+        work.begin_admission();
+        tx.validate_recording_principal_budgeted(&owner.principal, &mut work)
+            .await
+            .unwrap();
+        assert_eq!(work.decoded(), 2 * once);
+        tx.rollback().await.unwrap();
+    }
+
+    #[tokio::test]
+    /// Each admission on one ledger charges the whole surfaces again, so two equal admissions cost the same.
+    /// # Panics
+    /// Panics if the second admission on the same ledger charges less than the first.
+    async fn each_admission_on_one_ledger_reserves_the_surfaces_again() {
+        let temp = tempfile::tempdir().unwrap();
+        let mut owner = initialized(&temp.path().join("repo")).await;
+        let artifact = small_task(0);
+        owner
+            .create_private_issue(
+                crate::storage::PrivateIssueRequest {
+                    artifact: &artifact,
+                    scope: crate::storage::PathScope::Private,
+                },
+                crate::storage::IssueLimits {
+                    admission: bounds(),
+                    sql_rows: 100_000,
+                    sql_bytes: 64 << 20,
+                },
+            )
+            .await
+            .unwrap();
+        let mut work = Budget::new(bounds().content).unwrap();
+        let mut parse = ParseWork::new(bounds().parser).unwrap();
+        let mut tx = owner.store.begin_write().await.unwrap();
+        let mut used = Vec::new();
+        for _ in 0..2 {
+            tx.validate_recording_repository(&owner.principal, bounds(), &mut work, &mut parse)
+                .await
+                .unwrap();
+            used.push(work.decoded());
+        }
+        tx.rollback().await.unwrap();
+        assert_eq!(used[1], 2 * used[0]);
+    }
+
+    #[test]
+    /// The retained charge counts TEXT and BLOB bytes exactly, and nothing for other values.
+    /// # Panics
+    /// Panics if the charge differs from the exact variable-width bytes.
+    fn retained_text_charges_exact_variable_width_bytes() {
+        let rows = vec![
+            vec![
+                Value::Text("abc".into()),
+                Value::Blob(vec![0, 1]),
+                Value::Integer(7),
+            ],
+            vec![Value::Null, Value::Real(1.5), Value::Text(String::new())],
+        ];
+        let mut work = Budget::new(bounds().content).unwrap();
+        charge_retained_text(&rows, &mut work).unwrap();
+        assert_eq!(work.decoded(), 5);
+        let exact = Limits {
+            max_total_decoded_bytes: 4,
+            ..bounds().content
+        };
+        refuses(
+            charge_retained_text(&rows, &mut Budget::new(exact).unwrap()),
+            "total decoded content limit",
+        );
     }
 }

@@ -167,6 +167,24 @@ the repository already holds.
 The writer writes no selectors, tags of Gest or links. The scope key is the literal `combined`, and not
 the full key of the specification, because the full key needs selectors.
 
+## How many issues a repository holds
+
+A write runs the full admission twice, and each admission reads and parses every issue artifact. So the
+work of one write grows with the count of issues.
+
+Some reads in admission take a whole surface of the repository. Each bounded SQL read takes the text
+inventory, the text of 12 native and local tables such as `blob`, `event`, `tag` and `tagxref`. Each
+read of stored content checks the owner again, and that check takes the schema and the policy tables.
+The content ledger charges each whole surface once per admission. A later read of that surface charges
+only the bytes that it has grown by. The other charges are the same for each issue, so the
+decoded-byte charge of one admission grows linearly with the count of issues.
+
+The `gos v` and `gos i` commands use one parser ledger of 4096 cards and 4096 entries for a whole call.
+A write parses every task twice. So under those ceilings a repository holds 113 tasks with 21-byte
+titles, which make about 57 KB of artifacts. The card ceiling refuses the 114th write. With wider parser
+ledgers, the decoded-byte ceiling of 64 MiB refuses the write after 378 such tasks. The `gos v`
+commands parse every issue in their admissions too, so the same ceilings bound them.
+
 ## Tests
 
 `tests/issue_ticket.rs` checks a task and a project end to end (GEST-T01). It also checks the metadata,
@@ -184,6 +202,21 @@ admission proof stale. The admission check of the next write then refuses that w
 Admission parses every artifact under one parser ledger, so the entry ceiling of that ledger limits the
 count of issues. A unit control sets a ceiling that admits two tasks, and checks that admission refuses a
 third.
+
+A unit control in `src/storage/repository/recorded_history.rs` measures the decoded-byte charge of one
+admission at 3, 6 and 12 tasks, and checks that it grows linearly. Further unit controls there check
+that repeated owner checks charge the schema once per admission. They check that a second admission on
+the same ledger charges each whole surface again. They also check that the ledger charges exactly the
+TEXT and BLOB bytes of a result.
+
+A unit control in `src/storage/content.rs` checks that the ledger charges a surface once per admission,
+and later only its growth. It also checks that the ledger charges and holds nothing for a refused
+reservation.
+
+`tests/issue_capacity.rs` sets a decoded-byte ceiling of 4 MiB. The old charge, which took the whole
+text for each ticket, met that ceiling at the fifth write. The test writes 12 tasks, then opens, lists
+and reads them. Then it writes until the ceiling refuses a write, and checks that the refusal changes no
+byte of the repository files. It also runs the `gos v` commands in a repository with 12 tasks.
 
 A unit control lists two tasks and a project in receipt order, and checks that the list changes no row.
 It also finds the smallest entry ceiling and the smallest decoded-byte ceiling of the list and of an

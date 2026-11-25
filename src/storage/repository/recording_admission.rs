@@ -208,6 +208,10 @@ impl WriteTransaction<'_> {
     }
 
     /// Authenticate schema, sealed owner and native markers with precharged ownership.
+    ///
+    /// Each content read repeats this check. The schema and policy surfaces are charged
+    /// once per admission, and later only by their growth, through
+    /// [`Budget::charge_reserved`](crate::storage::content::Budget::charge_reserved).
     /// # Arguments
     /// * `principal` - OS-established sealed local identity, never caller-selected authority.
     /// * `budget` - Shared operation work retained by the caller.
@@ -223,9 +227,12 @@ impl WriteTransaction<'_> {
         let result = async {
             // validate_principal owns schema rows and these complete policy tables.
             // Precharge the full surfaces before its existing fixed queries run.
+            // A content read repeats this check, so each surface is reserved once per admission.
             for index in [0, 1, 2, 21] {
-                self.preflight_authority_table(&AUTHORITY_TABLES[index], budget)
-                    .await?;
+                let table = &AUTHORITY_TABLES[index];
+                let rows = self.query_bound(table.bounds, vec![]).await?;
+                let (_, bytes) = authority_bounds(&rows, table.columns)?;
+                budget.charge_reserved(table.bounds, bytes)?;
             }
             if self
                 .query_bound(
@@ -369,6 +376,9 @@ impl WriteTransaction<'_> {
     }
 
     /// Return supported history only after every complete catalog6 admission guard.
+    ///
+    /// It starts a new admission on `budget`, so each whole shared surface is charged
+    /// again, once.
     /// # Arguments
     /// * `principal` - Sealed owner binding.
     /// * `limits` - Complete native and registration ceilings.
@@ -387,6 +397,8 @@ impl WriteTransaction<'_> {
         budget: &mut Budget,
         parse: &mut ParseWork,
     ) -> Result<Option<RecordedHistory>, StorageError> {
+        // Each admission charges the reservation for the whole repository text again, once.
+        budget.begin_admission();
         let result = async {
             self.observe_recording_provider()?;
             self.validate_recording_principal_budgeted(principal,budget).await?;
@@ -642,6 +654,20 @@ fn charge_authority_bounds(
     columns: usize,
     budget: &mut Budget,
 ) -> Result<usize, StorageError> {
+    let (count, bytes) = authority_bounds(rows, columns)?;
+    budget.charge_decoded(bytes)?;
+    Ok(count)
+}
+
+/// Decode the scalar preflight of one authority surface into its row count and charge.
+/// # Arguments
+/// * `rows` - Provider result from the fixed aggregate query.
+/// * `columns` - Number of physical columns in the reviewed authority surface.
+/// # Returns
+/// The exact expected row count, and its raw bytes plus row and cell overhead.
+/// # Errors
+/// Refuses missing, ambiguous or malformed scalars and overflow.
+fn authority_bounds(rows: &[Vec<Value>], columns: usize) -> Result<(usize, usize), StorageError> {
     let [row] = rows else {
         return Err(StorageError::state("authority bounds unavailable"));
     };
@@ -654,17 +680,13 @@ fn charge_authority_bounds(
         .map_err(|e| StorageError::caused("authority byte count overflow", e))?;
     // Two Values per column plus owned row/vector overhead. The fixed charge
     // bounds even inventories containing only NULL or empty values.
-    let overhead = columns
+    let charge = columns
         .checked_mul(128)
         .and_then(|v| v.checked_add(64))
         .and_then(|v| v.checked_mul(count))
+        .and_then(|v| v.checked_add(bytes))
         .ok_or_else(|| StorageError::state("authority allocation accounting overflow"))?;
-    budget.charge_decoded(
-        bytes
-            .checked_add(overhead)
-            .ok_or_else(|| StorageError::state("authority allocation accounting overflow"))?,
-    )?;
-    Ok(count)
+    Ok((count, charge))
 }
 
 /// Decode the precharged raw local identity binding.

@@ -139,7 +139,7 @@ async fn project_history(
 /// * `commit` - Existing authenticated RID/hash/date ownership.
 /// * `private` - Visibility established by its position in authenticated history.
 /// * `limits` - Caller metadata width ceiling, at least the complete native manifest width.
-/// * `work` - Borrowed operation ledger; bounded_rows precharges provider result ownership.
+/// * `work` - Borrowed operation ledger; `bounded_rows` reserves and charges provider result ownership.
 /// # Returns
 /// One public row with all four variable-size fields moved rather than copied.
 /// # Errors
@@ -570,20 +570,33 @@ mod tests {
             let mut tx = owner.store.begin_write().await.unwrap();
             let text = text_inventory(&mut tx).await;
             // Accepted bounded_rows protocol: numeric bind slots cost32 twice;
-            // sizing SQL +64, literal full-family SQL1771+64, provider ownership
-            // 2*all-native-text +512 per selected row +128. The new reader also
-            // precharges one Value argument slot and its public result slots.
+            // sizing SQL +64, literal full-family SQL1771+64, +512 per selected row
+            // +128, and the retained user and comment bytes. The whole native text,
+            // twice, is reserved once for the ledger. The new reader also precharges
+            // one Value argument slot and its public result slots.
             let per_row = std::mem::size_of::<Value>()
                 + 2 * 32
                 + "SELECT count(*) FROM (SELECT user,comment FROM event WHERE objid=?1)".len()
                 + 64
                 + 1771
                 + 64
-                + 2 * text
                 + 512
                 + 128;
+            let mut retained = 0;
+            for column in ["user", "comment"] {
+                for row in tx
+                    .query(&format!(
+                        "SELECT CAST({column} AS BLOB) FROM event WHERE type='ci'"
+                    ))
+                    .await
+                    .unwrap()
+                {
+                    retained += native_byte_length(&row);
+                }
+            }
             let count = commits + 1;
-            let exact = count * (per_row + std::mem::size_of::<RecordedCheckin>());
+            let exact =
+                count * (per_row + std::mem::size_of::<RecordedCheckin>()) + retained + 2 * text;
             for allowance in [exact, exact - 1] {
                 let mut full_work = Budget::new(limits.content).unwrap();
                 let mut parse = ParseWork::new(limits.parser).unwrap();
