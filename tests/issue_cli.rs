@@ -1,7 +1,8 @@
 //! Both executables recognise every command of the `issue` group under both group
-//! names. Each command that this build does not run, every one but `init`, refuses
-//! with status 69 and changes no file (CLI-01, CLI-05). `tests/issue_init_cli.rs`
-//! tests `init`.
+//! names. Each command that this build does not run, every one but those of [`RUNS`],
+//! refuses with status 69 and changes no file (CLI-01, CLI-05).
+//! `tests/issue_init_cli.rs` tests `init`, and `tests/issue_read_cli.rs` tests
+//! `task list` and `task show`.
 use std::path::Path;
 use std::process::{Command, Output};
 
@@ -99,6 +100,9 @@ const RUNNABLE: [&str; 84] = [
     "version",
 ];
 
+/// The command paths that this build runs.
+const RUNS: [&str; 3] = ["init", "task list", "task show"];
+
 /// Every command path of the specification that only selects a subcommand.
 const CONTAINERS: [&str; 7] = [
     "artifact",
@@ -171,7 +175,7 @@ fn run_path(binary: &str, dir: &Path, group: &str, path: &str, extra: &[&str]) -
     run(binary, dir, &args)
 }
 
-/// Each recognised command other than `init` exits 69 with one refusal line on
+/// Each recognised command outside [`RUNS`] exits 69 with one refusal line on
 /// stderr, under the four executable and group pairs, with or without arguments, and
 /// writes no file.
 #[test]
@@ -179,7 +183,7 @@ fn every_recognised_command_refuses_with_69() {
     let temp = tempfile::tempdir().unwrap();
     for binary in binaries() {
         for group in ["issue", "i"] {
-            for path in RUNNABLE.into_iter().filter(|path| *path != "init") {
+            for path in RUNNABLE.into_iter().filter(|path| !RUNS.contains(path)) {
                 for extra in [&[][..], &["x", "--json", "help"]] {
                     let out = run_path(binary, temp.path(), group, path, extra);
                     assert_eq!(out.status.code(), Some(69), "{group} {path} {extra:?}");
@@ -191,7 +195,7 @@ fn every_recognised_command_refuses_with_69() {
                     );
                 }
             }
-            for (alias, path) in ALIASES {
+            for (alias, path) in ALIASES.into_iter().filter(|(_, path)| !RUNS.contains(path)) {
                 let out = run_path(binary, temp.path(), group, alias, &[]);
                 assert_eq!(out.status.code(), Some(69), "{alias}");
                 assert_eq!(
@@ -369,7 +373,7 @@ fn every_command_prints_its_help() {
         );
         assert_eq!(
             outputs[0].contains("not available in this build"),
-            *path != "init",
+            !RUNS.contains(path),
             "{path}"
         );
     }
@@ -400,7 +404,7 @@ fn every_command_prints_its_help() {
     let group = String::from_utf8(run(gos, temp.path(), &["i", "--help"]).stdout).unwrap();
     assert!(group.contains(
         "This build recognises each Gest command below.\n\
-         It runs init; every other command is not available in this build.\n"
+         It runs init, task list, task show; every other command is not available in this build.\n"
     ));
     assert!(group.contains("\nEach other command refuses to run, and exits with status 69.\n"));
     let out = run(gos, temp.path(), &["help", "i", "task", "create", "extra"]);

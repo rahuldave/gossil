@@ -142,6 +142,15 @@ fn the_list_parser_refuses_malformed_arguments() {
             "the argument '--json' cannot be used more than once",
         ),
         (
+            &["-aax"],
+            "the argument '--all' cannot be used more than once",
+        ),
+        (
+            &["-a", "-ax"],
+            "the argument '--all' cannot be used more than once",
+        ),
+        (&["-vvx"], "unexpected argument '-x'"),
+        (
             &["-s", "open", "--status", "done"],
             "the argument '--status' cannot be used more than once",
         ),
@@ -542,7 +551,29 @@ fn the_errors_map_to_their_exit_codes() {
         let error = ReadError::Lookup(error);
         assert_eq!(error.exit_code(), code);
         assert_eq!(error.to_string(), text);
+        assert_eq!(
+            read_failure(error),
+            IssueFailure::new(code, format!("gossil: {text}"))
+        );
     }
+    assert_eq!(
+        read_failure(output),
+        IssueFailure::new(74, "gossil: cannot write the output: closed")
+    );
+}
+
+#[test]
+/// A parser failure exits 2 with the prefix `gossil: `, and an unsupported option
+/// exits 69 with its own text.
+fn the_usage_errors_map_to_their_failures() {
+    assert_eq!(
+        usage_failure(UsageError::Usage("bad\nUsage: x".into())),
+        IssueFailure::new(2, "gossil: bad\nUsage: x")
+    );
+    assert_eq!(
+        usage_failure(UsageError::Unsupported("gossil: no".into())),
+        IssueFailure::new(69, "gossil: no")
+    );
 }
 
 /// Supply finite ceilings that every fixture fits.
@@ -894,6 +925,7 @@ async fn the_handlers_refuse_a_changed_repository_and_a_failed_write() {
     assert_eq!(error.exit_code(), 74);
     let stale = "repository admission stale; reopen with explicit admission limits";
     assert_eq!(error.to_string(), stale);
+    assert_eq!(read_failure(error), IssueFailure::new(74, stale));
     let error = task_show(&mut owner, &show_options, limits(), &mut out)
         .await
         .unwrap_err();

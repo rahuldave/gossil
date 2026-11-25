@@ -8,8 +8,10 @@ The text output of both commands is provisional. It is plain and stable text wit
 the styled table of Gest, and a later build can change it. The JSON output follows Gest.
 
 The code is in `src/product/issue_read.rs`. The parsers, the selection and the printers are pure
-functions. The two handlers take a repository that the caller opened. No command calls the handlers
-yet. The next commit connects them to `gos i task list` and `gos i task show`.
+functions. The two handlers take a repository that the caller opened. The commands `gos i task list`
+and `gos i task show` open the repository of the checkout and call the handlers, as the
+[CLI reference](cli.md#list-the-tasks-of-the-project) says. `task list` lists the tasks of the project
+bound to the checkout. Before `gos i init` binds a project, both commands exit with 78.
 
 ## Options
 
@@ -27,10 +29,15 @@ yet. The next commit connects them to `gos i task list` and `gos i task show`.
 pager.
 
 Short options can share one argument, as in `-aj`, and a value can follow its option, as in `-sdone`
-or `--status=done`. `-s=` gives an empty value, which is not a valid status. Each option can appear
-only once, and so can `--no-color` and `--no-pager`. Only `-v` can repeat, because the parser counts it.
-As in the Rust parser Clap, a value in its own argument cannot start with `-`, unless it is `-` alone. So
-`-s -x` has a missing value.
+or `--status=done`. `-s=` gives an empty value, which is not a valid status. As in the Rust parser
+Clap, a value in its own argument cannot start with `-`, unless it is `-` alone. So `-s -x` has a
+missing value.
+
+Each option can appear only once, and so can `--no-color` and `--no-pager`. Only `-v` can repeat,
+because the parser counts it. As in Clap, the parser reports a repeated option at the letter that
+repeats it, also when the first copy is in an earlier argument. It does so before it reads a later
+unknown letter. So `-aah` and `-a -ax` both fail with `the argument '--all' cannot be used more than
+once`.
 
 The parser also accepts the other options of the Gest pin, which is the Gest commit `eaf821b` that this
 build follows. This build does not support those options, so the command then exits with 69:
@@ -138,6 +145,12 @@ A task in this build has no field that Gest's JSON lacks. So every field matches
 output is the reference.
 
 ## Tests
+
+`tests/issue_read_cli.rs` runs the two commands through both executables and both group names. It
+builds a checkout with `gos v init`, `gos v open` and `gos i init`, and stores four tasks through the
+library, one of them in another project. It checks the output of each form, each exit status from 2
+to 78, the help forms and a closed stdout. After each read it checks that no byte of the repository
+changed.
 
 The unit controls in `tests/support/product_issue_read.rs` check the parsers, the lookup, the selection
 and the exact bytes of each printer. Further controls build a catalog 6 repository through the library,

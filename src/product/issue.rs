@@ -3,16 +3,16 @@
 //!
 //! The parser walks the command names of the table in `help.rs`, with the
 //! aliases of the pinned Gest source. It checks the names only. The arguments
-//! after the last name go to the handler unchecked. The handler of `init` runs.
-//! Every other handler of this build refuses with status 69 before it reads or
-//! writes a file.
+//! after the last name go to the handler unchecked. The handlers of `init`,
+//! `task list` and `task show` run. Every other handler of this build refuses with
+//! status 69 before it reads or writes a file.
 //!
 //! [`open_issue_repository`] finds the repository of an issue command through the
 //! checkout locator that `gos v open` published, as GEST-ROOT-01 asks. Each
 //! handler that reads or writes issues calls it.
 use super::help::{self, IssueCommand, IssueHandler};
 use crate::storage::{CheckoutView, IssueLimits, LocalOwnerRepository};
-use std::ffi::OsString;
+use std::ffi::{OsStr, OsString};
 
 /// Run `issue init`. The file is `src/product/issue_init.rs`.
 #[path = "issue_init.rs"]
@@ -177,8 +177,12 @@ pub(super) enum IssueRoute {
 ///
 /// Help words (`--help`, `-h` and `help`) before a command name ask for the help
 /// of the command they lead to, as in `help task create` or `task --help create`.
-/// After the last name, a `--help` or `-h` before any `--` asks for that help too,
-/// and the word `help` is an ordinary argument. The group alone prints the group
+/// After the last name, a `--help`, a `-h` or a cluster of short flags that reaches
+/// `h`, such as `-ah`, before any `--` asks for that help too. The route checks each
+/// argument on its own, by the rules that Clap applies to one cluster. Clap also stops
+/// at a letter that repeats a flag of an earlier argument, such as the second `a` in
+/// `-a -ah`. The route still prints the help there. The word `help`
+/// is an ordinary argument after the last name. The group alone prints the group
 /// help (CLI-04). An unknown name, or a command that needs a subcommand and gets
 /// none, is a parser failure.
 ///
@@ -228,7 +232,7 @@ pub(super) fn route(args: &[OsString], asked: bool) -> IssueRoute {
     if rest
         .iter()
         .take_while(|arg| *arg != "--")
-        .any(|arg| help::is_help_flag(arg))
+        .any(|arg| asks_help(arg, command.handler.map_or("", short_flags)))
     {
         return IssueRoute::Print(help::issue_command(&path, command));
     }
@@ -242,11 +246,59 @@ pub(super) fn route(args: &[OsString], asked: bool) -> IssueRoute {
     }
 }
 
+/// Say whether one argument after the last command name asks for help, as Clap reads it.
+///
+/// The check sees this one argument only. So a letter that repeats a flag of an
+/// earlier argument, such as the second `a` in `-a -ah`, does not stop it.
+///
+/// Clap reads a cluster such as `-ajh` letter by letter, and stops at the first letter
+/// that is not a flag that takes no value. When that letter is `h`, the cluster asks for
+/// help. A letter of an option with a value takes the rest of the cluster as its value,
+/// as in `-sh`, and an unknown letter is a parser failure. So is a second copy of a
+/// flag, as in `-aah`, except the counted `-v`.
+/// # Arguments
+/// * `arg` - One argument after the last command name.
+/// * `flags` - The short letters of the command's flags that take no value.
+/// # Returns
+/// True for `--help`, `-h` and a cluster that reaches `h` through `flags` only.
+fn asks_help(arg: &OsStr, flags: &str) -> bool {
+    help::is_help_flag(arg)
+        || arg
+            .to_str()
+            .and_then(|text| text.strip_prefix('-'))
+            .is_some_and(|cluster| {
+                let mut seen = String::new();
+                let stop = cluster.chars().find(|c| {
+                    let repeated = *c != 'v' && seen.contains(*c);
+                    seen.push(*c);
+                    repeated || !flags.contains(*c)
+                });
+                stop == Some('h')
+            })
+}
+
+/// Give the short letters of the flags of a command that take no value, at the Gest pin.
+///
+/// The global `-v` counts for each command. A command without a planned handler,
+/// such as `undo`, gets no letters, so only `-h` and `--help` print its help.
+/// # Arguments
+/// * `handler` - The handler of the command.
+/// # Returns
+/// The letters, such as `ajqrv` for `task list`.
+fn short_flags(handler: IssueHandler) -> &'static str {
+    match handler {
+        IssueHandler::Init => "v",
+        IssueHandler::TaskList => "ajqrv",
+        IssueHandler::TaskCreate | IssueHandler::TaskShow => "jqrv",
+        IssueHandler::Unavailable => "",
+    }
+}
+
 /// Run the handler of a recognised issue command.
 ///
-/// `init` runs, and each other handler refuses with status 69. A later commit
-/// gives `task create`, `task list` and `task show` their own handlers, each by a
-/// change of its arm here.
+/// `init`, `task list` and `task show` run, and each other handler refuses with
+/// status 69. A later commit gives `task create` its own handler by a change of
+/// its arm here.
 ///
 /// # Arguments
 /// * `handler` - The handler that the table names.
@@ -254,14 +306,13 @@ pub(super) fn route(args: &[OsString], asked: bool) -> IssueRoute {
 /// * `args` - The arguments after the last command name.
 ///
 /// # Returns
-/// The status of `init`, or status 69 after the refusal on stderr.
+/// The status of the handler, or status 69 after the refusal on stderr.
 pub(super) fn run(handler: IssueHandler, path: &str, args: &[OsString]) -> std::process::ExitCode {
     match handler {
         IssueHandler::Init => init::run(args),
-        IssueHandler::TaskCreate
-        | IssueHandler::TaskList
-        | IssueHandler::TaskShow
-        | IssueHandler::Unavailable => refuse(path),
+        IssueHandler::TaskList => super::issue_read::run_list(args),
+        IssueHandler::TaskShow => super::issue_read::run_show(args),
+        IssueHandler::TaskCreate | IssueHandler::Unavailable => refuse(path),
     }
 }
 
@@ -336,6 +387,69 @@ mod tests {
         );
         assert_eq!(route(&os(&["help", "task", "create", "x"]), false), usage);
         assert_eq!(route(&os(&["task", "create", "x"]), true), usage);
+    }
+
+    /// A cluster of short flags asks for help when Clap would reach its `h` through
+    /// flags of the command that take no value, before any `--`.
+    #[test]
+    fn a_cluster_of_flags_can_ask_for_help() {
+        let list = help_of(&["task", "list"]);
+        for args in [
+            &["t", "ls", "-ah"][..],
+            &["t", "ls", "-a", "-h"],
+            &["t", "ls", "-jaqrvh"],
+            &["t", "ls", "-hz"],
+            &["t", "ls", "-s", "open", "-ah"],
+            &["t", "ls", "-a", "-ah"],
+        ] {
+            assert_eq!(route(&os(args), false), list, "{args:?}");
+        }
+        assert_eq!(
+            route(&os(&["t", "show", "lm", "-jh"]), false),
+            help_of(&["task", "show"])
+        );
+        assert_eq!(route(&os(&["init", "-vvh"]), false), help_of(&["init"]));
+        assert_eq!(
+            route(&os(&["t", "new", "-jh"]), false),
+            help_of(&["task", "create"])
+        );
+        for (args, handler, path) in [
+            (&["t", "ls", "-sh"][..], IssueHandler::TaskList, "task list"),
+            (&["t", "ls", "-zh"], IssueHandler::TaskList, "task list"),
+            (&["t", "ls", "-aah"], IssueHandler::TaskList, "task list"),
+            (&["t", "ls", "-ajah"], IssueHandler::TaskList, "task list"),
+            (
+                &["t", "show", "lm", "-jjh"],
+                IssueHandler::TaskShow,
+                "task show",
+            ),
+            (
+                &["t", "ls", "--", "-ah"],
+                IssueHandler::TaskList,
+                "task list",
+            ),
+            (&["t", "ls", "--hz"], IssueHandler::TaskList, "task list"),
+            (&["t", "show", "-ah"], IssueHandler::TaskShow, "task show"),
+            (&["init", "-ah"], IssueHandler::Init, "init"),
+            (
+                &["t", "new", "-dh"],
+                IssueHandler::TaskCreate,
+                "task create",
+            ),
+            (&["undo", "-vh"], IssueHandler::Unavailable, "undo"),
+        ] {
+            assert_eq!(
+                route(&os(args), false),
+                IssueRoute::Run {
+                    handler,
+                    path: path.into(),
+                    args: os(&args[path.split(' ').count()..]),
+                },
+                "{args:?}"
+            );
+        }
+        assert!(!asks_help(OsStr::new("-"), "a"));
+        assert_eq!(short_flags(IssueHandler::Unavailable), "");
     }
 
     /// A recognised command runs its handler with the arguments after its last
@@ -596,12 +710,7 @@ mod tests {
     /// The refusal of each handler that does not run exits 69.
     #[test]
     fn every_handler_refuses() {
-        for handler in [
-            IssueHandler::TaskCreate,
-            IssueHandler::TaskList,
-            IssueHandler::TaskShow,
-            IssueHandler::Unavailable,
-        ] {
+        for handler in [IssueHandler::TaskCreate, IssueHandler::Unavailable] {
             assert_eq!(run(handler, "init", &[]), std::process::ExitCode::from(69));
         }
     }

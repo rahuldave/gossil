@@ -9,19 +9,18 @@
 //! open a repository, read global flags or print a diagnostic. The caller maps each
 //! error to its exit status with [`UsageError::exit_code`] or [`ReadError::exit_code`].
 //!
+//! [`run_list`] and [`run_show`] are that caller for `gos i task list` and
+//! `gos i task show`. They parse the arguments, open the repository of the checkout
+//! through [`open_issue_repository`], require its bound project, run the handler on
+//! stdout and print each failure on stderr.
+//!
 //! The JSON output follows the envelopes of the pinned Gest source. The text output
 //! is provisional. It is plain and stable, but it is not Gest's styled table.
 //!
 //! ## Recommendations
 //! Keep the selection rules here equal to Gest `repo::task::all` and
 //! `repo::resolve::resolve_id`, so that the IDs and filters mean the same thing.
-#![cfg_attr(
-    not(test),
-    expect(
-        dead_code,
-        reason = "the command wiring of the next commit calls these handlers; unit tests call them now"
-    )
-)]
+use super::issue::{IssueFailure, limits, open_issue_repository};
 use crate::gest_model::primitives::{Id, TaskStatus};
 use crate::gest_model::task::Model;
 use crate::gest_task_values::TaskValues;
@@ -30,6 +29,7 @@ use chrono::{DateTime, SecondsFormat, Utc};
 use serde::Serialize;
 use std::ffi::OsString;
 use std::io::Write;
+use std::process::ExitCode;
 
 /// The usage line of `task list`.
 const LIST_USAGE: &str =
@@ -416,8 +416,10 @@ const SHOW_SPECS: &[Spec] = &[
 /// a short option with an attached value, and `--`, after which every argument is
 /// positional. An option that the command lacks is a parser failure. Each option can
 /// appear only once, as Clap requires. Only `--verbose` can repeat, because the parser
-/// counts it. The value of `--limit` must be a whole number. These failures come
-/// before the check for an unsupported option.
+/// counts it. A repeated short letter fails at that letter, also when the first copy is
+/// in an earlier argument. That failure comes before the failure of a later unknown
+/// letter in the same cluster. The value of `--limit` must be a whole number. These failures come before the check for an
+/// unsupported option.
 /// # Arguments
 /// * `args` - The arguments after the command name.
 /// * `specs` - The options of the command.
@@ -431,6 +433,11 @@ fn split(args: &[OsString], specs: &'static [Spec], usage: &str) -> Result<Split
     let (mut used, mut unsupported, mut positional) = (Vec::new(), Vec::new(), Vec::new());
     let mut seen: Vec<&'static str> = Vec::new();
     let fail = |text: String| UsageError::Usage(format!("{text}\n{usage}"));
+    let repeated = |long: &str| {
+        fail(format!(
+            "the argument '--{long}' cannot be used more than once"
+        ))
+    };
     let mut rest = args.iter();
     let mut options = true;
     while let Some(arg) = rest.next() {
@@ -463,6 +470,13 @@ fn split(args: &[OsString], specs: &'static [Spec], usage: &str) -> Result<Split
                     .iter()
                     .find(|spec| spec.short == Some(letter))
                     .ok_or_else(|| fail(format!("unexpected argument '-{letter}'")))?;
+                // As in Clap, a second copy fails before a later letter of the cluster.
+                if spec.long != "verbose"
+                    && (seen.contains(&spec.long)
+                        || found.iter().any(|(other, _)| other.long == spec.long))
+                {
+                    return Err(repeated(spec.long));
+                }
                 if spec.takes_value {
                     let after = &text[1 + at + letter.len_utf8()..];
                     // `-s=` gives an empty value, and `-s` alone takes the next argument.
@@ -488,10 +502,7 @@ fn split(args: &[OsString], specs: &'static [Spec], usage: &str) -> Result<Split
                 None
             };
             if seen.contains(&spec.long) && spec.long != "verbose" {
-                return Err(fail(format!(
-                    "the argument '--{}' cannot be used more than once",
-                    spec.long
-                )));
+                return Err(repeated(spec.long));
             }
             seen.push(spec.long);
             if let ("limit", Some(text)) = (spec.long, &given)
@@ -839,6 +850,118 @@ pub(crate) async fn task_show(
         task_show_text(&task)
     };
     out.write_all(&bytes).map_err(ReadError::Output)
+}
+
+/// Run `issue task list` with the arguments after its name.
+///
+/// The command lists the tasks of the project bound to the open checkout.
+/// # Arguments
+/// * `args` - The arguments after `task list`.
+/// # Returns
+/// Status 0 after the output on stdout. Otherwise the status of the failure after its
+/// diagnostic on stderr: 2 or 69 for the arguments, 78 outside an open checkout or
+/// before `issue init`, and 74 for a storage failure or a failed write to stdout.
+pub(super) fn run_list(args: &[OsString]) -> ExitCode {
+    let result = parse_task_list_args(args)
+        .map_err(usage_failure)
+        .and_then(|options| {
+            block_on(async move {
+                let mut found = open_issue_repository().await?;
+                let project = Id::from(found.project_id()?);
+                let mut out = std::io::stdout().lock();
+                task_list(
+                    &mut found.owner,
+                    Some(&project),
+                    &options,
+                    limits(),
+                    &mut out,
+                )
+                .await
+                .map_err(read_failure)
+            })
+        });
+    finish(result)
+}
+
+/// Run `issue task show` with the arguments after its name.
+///
+/// As in Gest, the command needs a bound project, and it finds the task among the
+/// tasks of every project.
+/// # Arguments
+/// * `args` - The arguments after `task show`.
+/// # Returns
+/// Status 0 after the output on stdout. Otherwise the status of the failure after its
+/// diagnostic on stderr: 2 or 69 for the arguments, 64 for an invalid prefix, 66 for
+/// a missing or ambiguous task, 78 outside an open checkout or before `issue init`,
+/// and 74 for a storage failure or a failed write to stdout.
+pub(super) fn run_show(args: &[OsString]) -> ExitCode {
+    let result = parse_task_show_args(args)
+        .map_err(usage_failure)
+        .and_then(|options| {
+            block_on(async move {
+                let mut found = open_issue_repository().await?;
+                found.project_id()?;
+                let mut out = std::io::stdout().lock();
+                task_show(&mut found.owner, &options, limits(), &mut out)
+                    .await
+                    .map_err(read_failure)
+            })
+        });
+    finish(result)
+}
+
+/// Turn a refusal of the arguments into the failure of the command.
+/// # Arguments
+/// * `error` - The refusal.
+/// # Returns
+/// Status 2 or 69. A parser failure gets the prefix `gossil: `. The message of an
+/// unsupported option already has it.
+fn usage_failure(error: UsageError) -> IssueFailure {
+    let message = match &error {
+        UsageError::Usage(text) => format!("gossil: {text}"),
+        UsageError::Unsupported(text) => text.clone(),
+    };
+    IssueFailure::new(error.exit_code(), message)
+}
+
+/// Turn a failure of a handler into the failure of the command.
+/// # Arguments
+/// * `error` - The failure.
+/// # Returns
+/// Status 64, 66 or 74. A storage error prints as it is, as `issue init` prints it.
+/// Every other failure gets the prefix `gossil: `.
+fn read_failure(error: ReadError) -> IssueFailure {
+    let message = match &error {
+        ReadError::Storage(cause) => cause.to_string(),
+        other => format!("gossil: {other}"),
+    };
+    IssueFailure::new(error.exit_code(), message)
+}
+
+/// Run one command on a runtime of the current thread.
+/// # Arguments
+/// * `command` - The command.
+/// # Returns
+/// The result of the command, or a status 74 failure when no runtime starts.
+fn block_on(
+    command: impl std::future::Future<Output = Result<(), IssueFailure>>,
+) -> Result<(), IssueFailure> {
+    tokio::runtime::Builder::new_current_thread()
+        .build()
+        .map_err(|error| IssueFailure::from_error(&error))
+        .and_then(|runtime| runtime.block_on(command))
+}
+
+/// Give the exit status of a command, after the diagnostic of a failure on stderr.
+/// # Arguments
+/// * `result` - The result of the command.
+/// # Returns
+/// Status 0, or the status of the failure.
+fn finish(result: Result<(), IssueFailure>) -> ExitCode {
+    match result {
+        Ok(()) => ExitCode::SUCCESS,
+        Err(failure) => failure.exit(),
+    }
 }
 
 #[cfg(test)]

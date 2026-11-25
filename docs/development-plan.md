@@ -245,15 +245,15 @@ the CLI controls.
 
 The `issue` group, or `i`, routes each Gest command by the issue table of
 `product::help`. The parser in `product::issue` checks the command names
-and their aliases. It runs `init` and refuses each other recognised command
-with status 69. The [issue section](cli.md#issue-commands) gives the forms and
+and their aliases. It runs `init`, `task list` and `task show`, and refuses each
+other recognised command with status 69. The [issue section](cli.md#issue-commands) gives the forms and
 errors, and `tests/issue_cli.rs` holds the controls. `product::issue_init` runs
 [`issue init`](cli.md#create-the-gest-project-of-a-checkout), and
 `tests/issue_init_cli.rs` holds its controls.
 
 The handler of `task create` remains planned. The handlers of `task list` and
-`task show` are in `product::issue_read`, and no command calls them yet. The
-[issue read guide](issue-read.md) gives their output.
+`task show` are in `product::issue_read`, and `tests/issue_read_cli.rs` holds the
+controls of the two commands. The [issue read guide](issue-read.md) gives their output.
 
 The focused CLI controls are in `tests/vcs_init_cli.rs`; parser, environment,
 password and receipt controls are in the private `vcs_init` module. Source edits

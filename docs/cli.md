@@ -9,7 +9,8 @@ plus [scope selection and private recording](#select-scopes-and-record-private-f
 and [complete recorded ancestry](#read-complete-recorded-ancestry).
 `gos` is an alias for `gossil`, and `v` is an alias for `vcs`.
 The [`issue` group](#issue-commands), or `i`, recognises each Gest command.
-This build runs one of them, [`issue init`](#create-the-gest-project-of-a-checkout),
+This build runs [`issue init`](#create-the-gest-project-of-a-checkout),
+[`issue task list`](#list-the-tasks-of-the-project) and [`issue task show`](#show-one-task),
 and refuses the others.
 
 Each diagnostic runs without a repository. Run it from this source checkout with `just gossil`, which builds
@@ -59,9 +60,11 @@ Several of them in a row count as one. So `gossil help help` prints the product 
 `gossil vcs --help open` and `gossil vcs help help open` print the usage of `open`.
 
 `init`, `new`, `info`, `timeline` and `log` print their own help, which the
-sections below describe. So does `issue init`. Every other command prints its usage line and one
-sentence about what it does. After a command, only a lone `--help` or `-h`
-asks for help. With more arguments, the command parses `--help` by its own
+sections below describe. So do `issue init`, `issue task list` and `issue task show`. Every other command prints its usage line and one
+sentence about what it does.
+
+After a `vcs` command, only a lone `--help` or `-h`
+asks for help. The [issue section](#issue-commands) gives the rule after an issue command. With more arguments, the command parses `--help` by its own
 grammar, so `vcs init -- --help` creates a file named `--help`. The word `help`
 after a command is an ordinary argument, so `vcs init help` creates a repository
 named `help`.
@@ -100,8 +103,8 @@ their subcommands. They keep the aliases of the Gest source:
 Help shows the aliases that Gest shows, and hides `a`, `i`, `t`, `u`, `grep`
 and `delete` under `meta`, as Gest does.
 
-This build runs `init`, which the
-[next section](#create-the-gest-project-of-a-checkout) describes. It recognises
+This build runs `init`, `task list` and `task show`, which the
+[sections below](#create-the-gest-project-of-a-checkout) describe. It recognises
 each other command and refuses it:
 
 ```text
@@ -112,13 +115,26 @@ gossil: issue task create is not available in this build
 The refused command then exits with status 69, the code of an invalid state. It reads and
 writes no file, and it does not open or create a database. The parser checks
 the command names only. Arguments after the last name, such as `"First task"`,
-are not checked. A `--help` or `-h` among them prints the help of the command.
+are not checked.
+
+A `--help` or `-h` among the arguments prints the help of the command. So
+does a cluster of short flags that reaches `h`, such as `-ah` after `task list`. Each letter
+before `h` must be a flag of the command that takes no value, and no letter can come twice.
+Only `v` can come twice, because Clap counts it. So `-vvh` asks for help, and `-aah` and
+`-jjh` do not.
+
+As in Clap, an option that takes a value
+reads the rest of the cluster as its value, so `-sh` gives the status `h`.
+Only `init`, `task create`, `task list` and `task show` read such clusters. After each
+other command, only `--help` and `-h` print its help.
+Clap also rejects a letter that repeats a flag of an earlier argument, but this build checks
+each argument on its own. So Gest exits with 2 on `task list -a -ah`, and this build prints the help.
 After `--`, `--help` and `-h` are ordinary arguments, so the build refuses
 `gos i task create -- -h` like any other task creation.
 
 | Input | Status | Message on stderr |
 |---|---|---|
-| A recognised command other than `init`, such as `i undo` or `i t ls` | 69 | `gossil: issue PATH is not available in this build` |
+| A recognised command that this build does not run, such as `i undo` or `i t new` | 69 | `gossil: issue PATH is not available in this build` |
 | `artifact`, `config`, `generate`, `iteration`, `task` or a `note` group without a subcommand | 2 | `gossil: issue PATH needs a command` |
 | An unknown name, such as `i frob` or `i task frob` | 2 | `gossil: unknown issue command "NAME"` |
 | `i serve` or `i s` | 2 | The unknown-name message, because the root groups `ui` and `serve` replace Gest's server command |
@@ -142,7 +158,8 @@ command.
 This build does not yet recognise the global options `-v`, `--no-color` and
 `--no-pager`, or `--version` at the group root. Before a command name, they
 fail as unknown names. `init` accepts the first three after its name, as the
-next section says.
+next section says. `task list` and `task show` accept `--no-color` and
+`--no-pager` after their names, and refuse `-v` with status 69.
 
 ### Create the Gest project of a checkout
 
@@ -237,6 +254,67 @@ This build has these limits:
   the one live project, or refuses several of them as ambiguous. Gossil refuses
   both cases with status 74.
 - Repositories of older Gossil versions are not supported.
+
+### List the tasks of the project
+
+`gos i task list`, or `gos i t ls`, prints the tasks of the project that `init`
+bound to the open checkout. It finds the repository as `init` does, and it writes
+nothing. The newest task comes first, and the list leaves out each task that is
+`done` or `cancelled`:
+
+```text
+$ gos i task list
+lqrooooo  in-progress  P1    Task o
+lmommmmm  open         P1    Task m
+```
+
+The text output is provisional, as the [issue read guide](issue-read.md#text-output)
+says. `--json` prints the JSON of Gest. The guide gives the order, the filters and
+both forms of output. `task list` accepts these options:
+
+- `-a` or `--all` adds the tasks that are `done` or `cancelled`.
+- `-s STATUS` or `--status STATUS` keeps the tasks in that status. Without `--all`, a
+  `done` or `cancelled` task stays out.
+- `-j` or `--json` prints JSON.
+- `--no-color` and `--no-pager` change nothing.
+
+The Gest pin is the Gest commit that this build follows. Its other options are
+`--assigned-to`, `--limit`, `-t` or `--tag`, `-q` or `--quiet`, `-r` or `--raw`, and
+`-v` or `--verbose`. The command exits with status 69 on each of them:
+
+```text
+gossil: issue task list option --limit is not available in this build
+```
+
+### Show one task
+
+`gos i task show ID`, or `gos i t view ID`, prints one task. The ID can be the
+full 32-letter Gest ID or a prefix of it that names one task. The command searches
+the tasks of every project, as Gest does, but it still needs a bound project.
+It accepts `-j` or `--json`, `--no-color` and `--no-pager`. It refuses `-q` or
+`--quiet`, `-r` or `--raw`, and `-v` or `--verbose` with status 69. The
+[issue read guide](issue-read.md#find-a-task-by-prefix) gives the search and the
+output.
+
+The two read commands exit with these statuses of CLI-05:
+
+| Case | Status | Message on stderr |
+|---|---|---|
+| Success | 0 | None |
+| A parser failure, such as an unknown option, an extra argument or no ID | 2 | `gossil: ` and the problem, then the usage line |
+| An option that this build does not support | 69 | `gossil: issue task COMMAND option --NAME is not available in this build`, where `COMMAND` is `list` or `show` |
+| An invalid prefix, such as `L` | 64 | `gossil: Id prefix must contain only characters k-z, found 'L'` |
+| A prefix that names no task | 66 | `gossil: not found: id prefix 'PREFIX'` |
+| A prefix that names more than one task | 66 | `gossil: ambiguous id prefix 'PREFIX': matches N entities` |
+| No open checkout holds the directory | 78 | `gossil: no open checkout holds this directory; run gos v init and gos v open first` |
+| The checkout has no bound project | 78 | `gossil: this checkout has no Gest project; run gos i init first` |
+| A failure of storage or admission | 74 | The storage error |
+| A failed write to stdout | 74 | `gossil: cannot write the output: ERROR` |
+
+The other failures of the locator and the configuration give the statuses that the
+[`init` table](#create-the-gest-project-of-a-checkout) lists. The parser checks the
+arguments before the command opens the repository. So a parser failure or an
+unsupported option exits with 2 or 69 even outside a checkout.
 
 ## Initialize a repository
 
@@ -637,9 +715,10 @@ The usage lines of the help all use `gossil vcs`.
 ## Exit status and errors
 
 Success and help return status 0. Usage, input, delta and output failures return status 1
-with one diagnostic line on stderr. A recognised issue command other than `init` returns status 69,
+with one diagnostic line on stderr. A recognised issue command that this build does not run returns status 69,
 as the [issue section](#issue-commands) says. `issue init` returns the
-[statuses of CLI-05](#create-the-gest-project-of-a-checkout), such as 78 and 74. An unknown group or command returns status 2,
+[statuses of CLI-05](#create-the-gest-project-of-a-checkout), such as 78 and 74, and so do
+[`issue task list` and `issue task show`](#show-one-task). An unknown group or command returns status 2,
 as the [help section](#get-help) says. A help request with an argument after
 the command name also returns status 2, with two lines on stderr.
 
@@ -726,7 +805,7 @@ are outside this qualification.
 
 Broader version-control commands are planned. Neither `gossil` nor `gos`
 accepts them, and each fails with status 2, as the [help section](#get-help)
-says. The Gest commands other than `init` are recognised and refused with status 69, as the
+says. This build recognises the Gest commands other than `init`, `task list` and `task show`, and refuses them with status 69, as the
 [issue section](#issue-commands) says. The short names above apply to initialization and the
 three delta diagnostics, the prepared glob diagnostic, native open, add/status,
 scope/commit, info and timeline/log. Shared
