@@ -1,8 +1,8 @@
 //! Both executables recognise every command of the `issue` group under both group
 //! names. Each command that this build does not run, every one but those of [`RUNS`],
 //! refuses with status 69 and changes no file (CLI-01, CLI-05).
-//! `tests/issue_init_cli.rs` tests `init`, and `tests/issue_read_cli.rs` tests
-//! `task list` and `task show`.
+//! `tests/issue_init_cli.rs` tests `init`, `tests/issue_task_cli.rs` tests
+//! `task create`, and `tests/issue_read_cli.rs` tests `task list` and `task show`.
 use std::path::Path;
 use std::process::{Command, Output};
 
@@ -101,7 +101,7 @@ const RUNNABLE: [&str; 84] = [
 ];
 
 /// The command paths that this build runs.
-const RUNS: [&str; 3] = ["init", "task list", "task show"];
+const RUNS: [&str; 4] = ["init", "task create", "task list", "task show"];
 
 /// Every command path of the specification that only selects a subcommand.
 const CONTAINERS: [&str; 7] = [
@@ -209,20 +209,24 @@ fn every_recognised_command_refuses_with_69() {
     assert_eq!(std::fs::read_dir(temp.path()).unwrap().count(), 0);
 }
 
-/// Commands whose real forms would write, such as `task create`, write nothing in a
-/// directory that already holds a file, and leave its bytes unchanged. `init` outside
-/// an open checkout refuses with status 78 and writes nothing either.
+/// Commands whose real forms would write files write nothing in a directory that
+/// already holds a file, and leave its bytes unchanged. `init` and `task create` outside an
+/// open checkout refuse with status 78 and write nothing either.
 #[test]
 fn refused_writers_leave_files_unchanged() {
     let temp = tempfile::tempdir().unwrap();
     let kept = temp.path().join("kept.db");
     std::fs::write(&kept, b"unchanged").unwrap();
     for binary in binaries() {
-        let out = run(binary, temp.path(), &["i", "init", "--local"]);
-        assert_eq!(out.status.code(), Some(78));
         for args in [
-            &["issue", "task", "create", "Title", "-d", "text"][..],
-            &["i", "config", "set", "-g", "log.level", "debug"],
+            &["i", "init", "--local"][..],
+            &["issue", "task", "create", "Title", "-d", "text"],
+        ] {
+            let out = run(binary, temp.path(), args);
+            assert_eq!(out.status.code(), Some(78), "{args:?}");
+        }
+        for args in [
+            &["i", "config", "set", "-g", "log.level", "debug"][..],
             &["i", "generate", "man-pages", "man"],
             &["i", "undo"],
         ] {
@@ -382,8 +386,30 @@ fn every_command_prints_its_help() {
         String::from_utf8(out.stdout).unwrap(),
         "Usage: gossil issue task create [OPTIONS] [TITLE]\n\n\
          Create a new task.\n\
-         Names: create, new.\n\
-         This build recognises the command and does not run it: it is not available in this build.\n"
+         Names: create, new.\n\n\
+         Create a private task in the Gest project of the open checkout that holds the\n\
+         current directory, as one private task ticket, in one transaction. Run gos i init\n\
+         first. This build never reads stdin and never opens an editor, so a missing\n\
+         description is empty. A [ in the title, the description or the metadata exits\n\
+         with status 64, and so does a task over 65,536 bytes. Tasks of this build have no\n\
+         undo history. In this build, task create exits 74 after about 113 small\n\
+         tasks, and nothing stored is lost; see docs/cli.md.\n\n\
+         Options:\n\
+         \x20 -d, --description <DESCRIPTION>  The task description\n\
+         \x20 -m, --metadata <KEY=VALUE>       Set a metadata key=value pair (repeatable; supports dot-paths and scalar inference)\n\
+         \x20     --metadata-json <JSON>       Merge a JSON object into metadata (repeatable; applied after --metadata pairs)\n\
+         \x20 -p, --priority <PRIORITY>        The task priority; either 0-4 (lower is higher) or one of critical|high|medium|low|lowest\n\
+         \x20 -s, --status <STATUS>            The initial task status\n\
+         \x20 -j, --json                       Emit output as JSON\n\
+         \x20 -q, --quiet                      Print only the short task ID\n\
+         \x20 -r, --raw                        Accepted; the output has no themed styling\n\
+         \x20     --no-color                   Accepted; the output has no color\n\
+         \x20     --no-pager                   Accepted; the output is not paged\n\
+         \x20 -v, --verbose...                 Accepted; it changes no output\n\
+         \x20 -h, --help                       Print help\n\n\
+         Not available in this build, and refused with status 69:\n\
+         \x20     --assign <ASSIGN>, --batch, -i, --iteration <ITERATION>,\n\
+         \x20 -l, --link <LINK>, --phase <PHASE>, --tag <TAG>, and a title read from stdin\n"
     );
     let out = run(gos, temp.path(), &["i", "init", "-h"]);
     assert_eq!(
@@ -404,7 +430,7 @@ fn every_command_prints_its_help() {
     let group = String::from_utf8(run(gos, temp.path(), &["i", "--help"]).stdout).unwrap();
     assert!(group.contains(
         "This build recognises each Gest command below.\n\
-         It runs init, task list, task show; every other command is not available in this build.\n"
+         It runs init, task create, task list, task show; every other command is not available in this build.\n"
     ));
     assert!(group.contains("\nEach other command refuses to run, and exits with status 69.\n"));
     let out = run(gos, temp.path(), &["help", "i", "task", "create", "extra"]);

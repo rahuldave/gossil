@@ -12,7 +12,9 @@
 //! [`run_list`] and [`run_show`] are that caller for `gos i task list` and
 //! `gos i task show`. They parse the arguments, open the repository of the checkout
 //! through [`open_issue_repository`], require its bound project, run the handler on
-//! stdout and print each failure on stderr.
+//! stdout and print each failure on stderr. They do the open and the read inside
+//! [`retry_stale`], so they try once more after `database is locked` or a stale
+//! admission.
 //!
 //! The JSON output follows the envelopes of the pinned Gest source. The text output
 //! is provisional. It is plain and stable, but it is not Gest's styled table.
@@ -20,7 +22,7 @@
 //! ## Recommendations
 //! Keep the selection rules here equal to Gest `repo::task::all` and
 //! `repo::resolve::resolve_id`, so that the IDs and filters mean the same thing.
-use super::issue::{IssueFailure, limits, open_issue_repository};
+use super::issue::{IssueFailure, limits, open_issue_repository, retry_stale};
 use crate::gest_model::primitives::{Id, TaskStatus};
 use crate::gest_model::task::Model;
 use crate::gest_task_values::TaskValues;
@@ -854,18 +856,20 @@ pub(crate) async fn task_show(
 
 /// Run `issue task list` with the arguments after its name.
 ///
-/// The command lists the tasks of the project bound to the open checkout.
+/// The command lists the tasks of the project bound to the open checkout. It opens and
+/// reads the repository once more after a refusal that [`retry_stale`] retries.
 /// # Arguments
 /// * `args` - The arguments after `task list`.
 /// # Returns
 /// Status 0 after the output on stdout. Otherwise the status of the failure after its
 /// diagnostic on stderr: 2 or 69 for the arguments, 78 outside an open checkout or
-/// before `issue init`, and 74 for a storage failure or a failed write to stdout.
+/// before `issue init`, and 74 for a storage failure or a failed write to stdout. A
+/// lock timeout or a stale admission gives 74 only when the second attempt refuses too.
 pub(super) fn run_list(args: &[OsString]) -> ExitCode {
     let result = parse_task_list_args(args)
         .map_err(usage_failure)
         .and_then(|options| {
-            block_on(async move {
+            block_on(retry_stale(|| async {
                 let mut found = open_issue_repository().await?;
                 let project = Id::from(found.project_id()?);
                 let mut out = std::io::stdout().lock();
@@ -878,7 +882,7 @@ pub(super) fn run_list(args: &[OsString]) -> ExitCode {
                 )
                 .await
                 .map_err(read_failure)
-            })
+            }))
         });
     finish(result)
 }
@@ -886,26 +890,28 @@ pub(super) fn run_list(args: &[OsString]) -> ExitCode {
 /// Run `issue task show` with the arguments after its name.
 ///
 /// As in Gest, the command needs a bound project, and it finds the task among the
-/// tasks of every project.
+/// tasks of every project. It opens and reads the repository once more after a
+/// refusal that [`retry_stale`] retries.
 /// # Arguments
 /// * `args` - The arguments after `task show`.
 /// # Returns
 /// Status 0 after the output on stdout. Otherwise the status of the failure after its
 /// diagnostic on stderr: 2 or 69 for the arguments, 64 for an invalid prefix, 66 for
 /// a missing or ambiguous task, 78 outside an open checkout or before `issue init`,
-/// and 74 for a storage failure or a failed write to stdout.
+/// and 74 for a storage failure or a failed write to stdout. A lock timeout or a
+/// stale admission gives 74 only when the second attempt refuses too.
 pub(super) fn run_show(args: &[OsString]) -> ExitCode {
     let result = parse_task_show_args(args)
         .map_err(usage_failure)
         .and_then(|options| {
-            block_on(async move {
+            block_on(retry_stale(|| async {
                 let mut found = open_issue_repository().await?;
                 found.project_id()?;
                 let mut out = std::io::stdout().lock();
                 task_show(&mut found.owner, &options, limits(), &mut out)
                     .await
                     .map_err(read_failure)
-            })
+            }))
         });
     finish(result)
 }

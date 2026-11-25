@@ -2,7 +2,7 @@
 //! group names.
 //!
 //! Each fixture runs `gos v init`, `gos v open` and `gos i init`, then stores tasks
-//! through the library, because this build has no `task create`. The cases are the
+//! through the library, so that each task has fixed timestamps and IDs. The cases are the
 //! CLI-T04 subset of the two commands: the output of each form, every CLI-05 status
 //! of a refusal, the help forms, and no change to any byte of the repository.
 //!

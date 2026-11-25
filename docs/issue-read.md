@@ -85,6 +85,11 @@ Id prefix must contain only characters k-z, found 'L'
 The command exits with 74 when admission refuses the repository, or when the command cannot write the
 output.
 
+Both commands take the write lock of the repository, as every issue command does. A read can wait for
+that lock past its timeout and refuse with `database is locked`, or find that another command made its
+admission stale. After either refusal, the command opens the repository again and tries once more. After a
+second refusal, it exits with 74.
+
 ## Text output
 
 `task list` prints one line for each task. Two spaces separate the four fields of the line:
@@ -151,6 +156,15 @@ builds a checkout with `gos v init`, `gos v open` and `gos i init`, and stores f
 library, one of them in another project. It checks the output of each form, each exit status from 2
 to 78, the help forms and a closed stdout. After each read it checks that no byte of the repository
 changed.
+
+`tests/issue_task_cli.rs` also reads back the tasks that `gos i task create` stores, through
+both commands in each form. It compares the listed IDs with the stored IDs as a set.
+
+A further test in that file holds the write lock from another connection for 7 seconds. A `task list`
+and a `task show` that start meanwhile both exit with 0 and print the task. The first attempt of each
+waits the 5-second busy timeout and refuses, and the second attempt gets the lock. Without the retry,
+both commands exit with 74. The test then runs a `task create` and a `task list` at the same time, and
+both exit with 0.
 
 The unit controls in `tests/support/product_issue_read.rs` check the parsers, the lookup, the selection
 and the exact bytes of each printer. Further controls build a catalog 6 repository through the library,

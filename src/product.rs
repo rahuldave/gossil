@@ -480,7 +480,7 @@ fn failed(error: &(dyn std::error::Error + 'static)) -> std::process::ExitCode {
 /// after printing an adapter error to standard error. A repository at an older Gossil catalog
 /// returns 78. The first argument `v` is accepted
 /// as an alias for `vcs`. In the `issue` group, or its alias `i`, `init`,
-/// `task list` and `task show` run and return their own statuses, 0 on success.
+/// `task create`, `task list` and `task show` run and return their own statuses, 0 on success.
 /// Every other recognised issue
 /// command writes a refusal to stderr and returns 69, because this build does
 /// not run it. A help request prints the help on stdout and returns 0.

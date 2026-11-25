@@ -103,7 +103,8 @@ Callers supply the identity, actor and date.
 The [issue ticket writer](docs/issue-ticket.md) stores a task or project creation
 privately in a native repository. The command
 [`gos i init`](docs/cli.md#create-the-gest-project-of-a-checkout) stores a project this way and binds
-it to the open checkout. No command stores a task yet. The commands
+it to the open checkout. [`gos i task create`](docs/cli.md#create-a-task) stores a private task in
+that project. The commands
 [`gos i task list` and `gos i task show`](docs/cli.md#list-the-tasks-of-the-project) read the tasks that
 the writer stores.
 

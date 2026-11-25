@@ -47,6 +47,8 @@ pub use repository::{
     PrivateIssueRequest, PrivateRecordingOutcome, PrivateRecordingRequest, ProjectInitRequest,
     RecordedCheckin, SharedView, TrackingLimits,
 };
+#[cfg(test)]
+pub(crate) use repository::{IssuePhase, inject_issue_failure};
 mod lifecycle;
 use lifecycle::FileIdentity;
 

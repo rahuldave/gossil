@@ -4,19 +4,24 @@
 //! The parser walks the command names of the table in `help.rs`, with the
 //! aliases of the pinned Gest source. It checks the names only. The arguments
 //! after the last name go to the handler unchecked. The handlers of `init`,
-//! `task list` and `task show` run. Every other handler of this build refuses with
-//! status 69 before it reads or writes a file.
+//! `task create`, `task list` and `task show` run. Every other handler of this build
+//! refuses with status 69 before it reads or writes a file.
 //!
 //! [`open_issue_repository`] finds the repository of an issue command through the
 //! checkout locator that `gos v open` published, as GEST-ROOT-01 asks. Each
-//! handler that reads or writes issues calls it.
+//! handler that reads or writes issues calls it, inside [`retry_stale`].
 use super::help::{self, IssueCommand, IssueHandler};
+use crate::native_date::NativeDate;
 use crate::storage::{CheckoutView, IssueLimits, LocalOwnerRepository};
 use std::ffi::{OsStr, OsString};
 
 /// Run `issue init`. The file is `src/product/issue_init.rs`.
 #[path = "issue_init.rs"]
 mod init;
+
+/// Run `issue task create`. The file is `src/product/issue_task.rs`.
+#[path = "issue_task.rs"]
+mod task;
 
 /// The refusal of an issue command outside an open checkout.
 pub(crate) const NOT_OPEN: &str =
@@ -116,6 +121,94 @@ pub(crate) fn limits() -> IssueLimits {
         sql_rows: 100_000,
         sql_bytes: 64 << 20,
     }
+}
+
+/// The storage refusal of a write whose admission proof another process made stale.
+const STALE: &str = "repository admission stale; reopen with explicit admission limits";
+
+/// The text inside the storage refusal of a write that waited for the write lock past its timeout.
+const LOCKED: &str = "database is locked";
+
+/// Say whether a failure is one that a second attempt may get past.
+/// # Arguments
+/// * `failure` - The failure of one attempt.
+/// # Returns
+/// True for status 74 with the stale refusal [`STALE`], or with a message that holds
+/// [`LOCKED`]. Both refusals come before the commit, so the attempt wrote nothing.
+fn retryable(failure: &IssueFailure) -> bool {
+    failure.status == 74 && (failure.message == STALE || failure.message.contains(LOCKED))
+}
+
+/// Run one attempt of an issue command, and run it once more after a stale admission or a lock timeout.
+///
+/// Two commands at once can race. The second one admits the repository, and then the
+/// first one commits. The write of the second one then refuses with [`STALE`] and
+/// writes nothing. Every issue command takes the write lock, the reads too, so a
+/// command can also wait for that lock past its timeout and refuse with [`LOCKED`].
+/// A second attempt opens and admits the repository again. The handlers of `init`,
+/// `task create`, `task list` and `task show` each run inside this function.
+///
+/// # Arguments
+/// * `attempt` - Opens the repository and runs the command, each time it is called.
+/// # Returns
+/// The result of the first attempt, or of the second one after one of these refusals.
+/// # Errors
+/// Gives the failure of the first attempt when it is not one of these refusals, and
+/// the failure of the second attempt otherwise.
+pub(crate) async fn retry_stale<T, F, A>(mut attempt: A) -> Result<T, IssueFailure>
+where
+    A: FnMut() -> F,
+    F: std::future::Future<Output = Result<T, IssueFailure>>,
+{
+    match attempt().await {
+        Err(failure) if retryable(&failure) => attempt().await,
+        result => result,
+    }
+}
+
+/// Return the local login, for the U card of a new ticket.
+/// # Returns
+/// The first nonempty value of `GOSSIL_USER`, `USER`, `LOGNAME` and `USERNAME`, or `root`.
+/// # Errors
+/// Refuses a login that is not UTF-8 with status 78.
+pub(crate) fn login() -> Result<String, IssueFailure> {
+    String::from_utf8(crate::vcs_init::default_administrator())
+        .map_err(|_| IssueFailure::new(78, "gossil: the local login is not UTF-8; set GOSSIL_USER"))
+}
+
+/// The clock and the ticket ID of one new ticket.
+pub(crate) struct Creation {
+    /// The current instant, for the D card.
+    pub(crate) date: NativeDate,
+    /// The same instant as a JSON RFC3339 string, for the timestamps of the record.
+    pub(crate) stamp: serde_json::Value,
+    /// Forty random lowercase hexadecimal digits, for the K card.
+    pub(crate) ticket_id: String,
+}
+
+/// Read the clock and draw a random ticket ID for a new ticket.
+/// # Arguments
+/// * `command` - The command path, such as `init`, for the diagnostic.
+/// # Returns
+/// The instant, its RFC3339 string and the ticket ID.
+/// # Errors
+/// Refuses with status 74 when the clock is before 1970 or out of range, or when no
+/// random bytes come.
+pub(crate) fn creation(command: &str) -> Result<Creation, IssueFailure> {
+    let value = |what: &str| IssueFailure::new(74, format!("gossil: issue {command}: {what}"));
+    let nanos = std::time::SystemTime::now()
+        .duration_since(std::time::UNIX_EPOCH)
+        .map_err(|_| value("the clock is before 1970"))?
+        .as_nanos();
+    let date = NativeDate::from_epoch_nanos(nanos as i128)
+        .map_err(|_| value("the clock is out of range"))?;
+    let mut bytes = [0u8; 20];
+    getrandom::fill(&mut bytes).map_err(|_| value("the system gave no random bytes"))?;
+    Ok(Creation {
+        date,
+        stamp: serde_json::json!(format!("{date}Z")),
+        ticket_id: bytes.iter().map(|b| format!("{b:02x}")).collect(),
+    })
 }
 
 /// Open the repository of an issue command through the checkout locator.
@@ -296,9 +389,8 @@ fn short_flags(handler: IssueHandler) -> &'static str {
 
 /// Run the handler of a recognised issue command.
 ///
-/// `init`, `task list` and `task show` run, and each other handler refuses with
-/// status 69. A later commit gives `task create` its own handler by a change of
-/// its arm here.
+/// `init`, `task create`, `task list` and `task show` run, and each other handler
+/// refuses with status 69.
 ///
 /// # Arguments
 /// * `handler` - The handler that the table names.
@@ -306,13 +398,14 @@ fn short_flags(handler: IssueHandler) -> &'static str {
 /// * `args` - The arguments after the last command name.
 ///
 /// # Returns
-/// The status of the handler, or status 69 after the refusal on stderr.
+/// The status of the command that runs, or status 69 after the refusal on stderr.
 pub(super) fn run(handler: IssueHandler, path: &str, args: &[OsString]) -> std::process::ExitCode {
     match handler {
         IssueHandler::Init => init::run(args),
+        IssueHandler::TaskCreate => task::run(args),
         IssueHandler::TaskList => super::issue_read::run_list(args),
         IssueHandler::TaskShow => super::issue_read::run_show(args),
-        IssueHandler::TaskCreate | IssueHandler::Unavailable => refuse(path),
+        IssueHandler::Unavailable => refuse(path),
     }
 }
 
@@ -707,11 +800,102 @@ mod tests {
         assert_eq!(found.project_id(), Ok("k".repeat(32).as_str()));
     }
 
-    /// The refusal of each handler that does not run exits 69.
-    #[test]
-    fn every_handler_refuses() {
-        for handler in [IssueHandler::TaskCreate, IssueHandler::Unavailable] {
-            assert_eq!(run(handler, "init", &[]), std::process::ExitCode::from(69));
+    /// A stale admission runs the attempt once more. Success, any other failure and a
+    /// second stale refusal are the result.
+    #[tokio::test]
+    async fn a_stale_admission_is_retried_once() {
+        let stale = || IssueFailure::new(74, STALE);
+        let other = || IssueFailure::new(74, "other");
+        let locked = || IssueFailure::new(74, "SQLite failure: `database is locked`");
+        type Case = (
+            Vec<Result<u8, IssueFailure>>,
+            Result<u8, IssueFailure>,
+            usize,
+        );
+        let cases: [Case; 7] = [
+            (vec![Err(stale()), Ok(1)], Ok(1), 2),
+            (vec![Err(locked()), Ok(1)], Ok(1), 2),
+            (vec![Err(locked()), Err(stale())], Err(stale()), 2),
+            (vec![Err(stale()), Err(stale())], Err(stale()), 2),
+            (vec![Ok(1)], Ok(1), 1),
+            (vec![Err(other())], Err(other()), 1),
+            (
+                vec![Err(IssueFailure::new(78, STALE))],
+                Err(IssueFailure::new(78, STALE)),
+                1,
+            ),
+        ];
+        for (results, expected, count) in cases {
+            let mut queue = results.into_iter();
+            let mut calls = 0;
+            let result = retry_stale(|| {
+                calls += 1;
+                let next = queue.next().unwrap();
+                async move { next }
+            })
+            .await;
+            assert_eq!((result, calls), (expected, count));
         }
+    }
+
+    /// The text of [`STALE`] is the refusal that storage gives an owner after another
+    /// owner of the same repository committed.
+    #[tokio::test]
+    async fn the_stale_text_is_the_storage_refusal() {
+        let temp = tempfile::tempdir().unwrap();
+        let path = temp.path().join("repo");
+        let root = temp.path().join("root");
+        std::fs::create_dir(&root).unwrap();
+        let bounds = crate::vcs_open::limits();
+        let mut first = LocalOwnerRepository::initialize(
+            &path,
+            crate::storage::InitializeOptions {
+                repository_id: "0123456789abcdef0123456789abcdef01234567",
+                owner_id: "owner",
+                date: "2026-11-20 12:34:56",
+                user: b"owner",
+                password: "secret",
+                sha1: false,
+                content_limits: bounds.content,
+                parse_limits: bounds.parser,
+            },
+        )
+        .await
+        .unwrap();
+        let mut second = LocalOwnerRepository::open(&path, bounds).await.unwrap();
+        first
+            .register_checkout("work", &root.canonicalize().unwrap(), bounds)
+            .await
+            .unwrap();
+        let error = second.bound_project("work", limits()).await.unwrap_err();
+        assert_eq!(
+            IssueFailure::from_error(&error),
+            IssueFailure::new(74, STALE)
+        );
+    }
+
+    /// A new ticket gets the current instant, its RFC3339 string and 40 random
+    /// lowercase hexadecimal digits, and the local login is UTF-8 here.
+    #[test]
+    fn a_creation_has_a_date_and_a_ticket_id() {
+        let now = creation("x").unwrap();
+        assert_eq!(now.stamp, serde_json::json!(format!("{}Z", now.date)));
+        assert_eq!(now.ticket_id.len(), 40);
+        assert!(
+            now.ticket_id
+                .bytes()
+                .all(|b| matches!(b, b'0'..=b'9' | b'a'..=b'f'))
+        );
+        assert_ne!(creation("x").unwrap().ticket_id, now.ticket_id);
+        assert!(!login().unwrap().is_empty());
+    }
+
+    /// The refusal of the handler that does not run exits 69.
+    #[test]
+    fn the_unavailable_handler_refuses() {
+        assert_eq!(
+            run(IssueHandler::Unavailable, "init", &[]),
+            std::process::ExitCode::from(69)
+        );
     }
 }

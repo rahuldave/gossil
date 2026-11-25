@@ -10,9 +10,8 @@
 //!
 //! This build does not create a repository, a checkout registration or a locator.
 //! Run `gos v init` and `gos v open` first.
-use super::{IssueFailure, open_issue_repository};
+use super::{IssueFailure, IssueRepository, open_issue_repository};
 use crate::gest_project_values::{ProjectValueInputs, project_from_values};
-use crate::native_date::NativeDate;
 use crate::storage::ProjectInitRequest;
 use std::ffi::OsString;
 
@@ -55,7 +54,7 @@ pub(super) fn run(args: &[OsString]) -> std::process::ExitCode {
     let result = tokio::runtime::Builder::new_current_thread()
         .build()
         .map_err(|error| IssueFailure::from_error(&error))
-        .and_then(|runtime| runtime.block_on(init()))
+        .and_then(|runtime| runtime.block_on(init_with(open_issue_repository)))
         .and_then(|message| {
             use std::io::Write;
             let mut out = std::io::stdout().lock();
@@ -74,21 +73,40 @@ pub(super) fn run(args: &[OsString]) -> std::process::ExitCode {
     }
 }
 
-/// Find or create the project of the open checkout.
+/// Open the repository, and find or create the project of its checkout. Do both
+/// once more after a refusal that [`super::retry_stale`] retries.
+/// # Arguments
+/// * `open` - Opens and admits the repository, each time it is called.
 /// # Returns
 /// The success message, with the short project ID and the checkout root.
 /// # Errors
-/// Each refusal of [`open_issue_repository`], a login that is not UTF-8, and each
-/// refusal of the write.
-async fn init() -> Result<String, IssueFailure> {
-    let mut found = open_issue_repository().await?;
+/// Each refusal of `open`, a login that is not UTF-8, and each refusal of the
+/// write, after the retry.
+pub(super) async fn init_with<O, F>(mut open: O) -> Result<String, IssueFailure>
+where
+    O: FnMut() -> F,
+    F: std::future::Future<Output = Result<IssueRepository, IssueFailure>>,
+{
+    super::retry_stale(|| {
+        let opening = open();
+        async move { init(opening.await?).await }
+    })
+    .await
+}
+
+/// Find or create the project of one opened checkout.
+/// # Arguments
+/// * `found` - The opened repository.
+/// # Returns
+/// The success message, with the short project ID and the checkout root.
+/// # Errors
+/// A login that is not UTF-8, and each refusal of the write.
+async fn init(mut found: IssueRepository) -> Result<String, IssueFailure> {
     let root = found.view.registered_root.display().to_string();
     if let Ok(project) = found.project_id() {
         return Ok(message(project, &root));
     }
-    let login = String::from_utf8(crate::vcs_init::default_administrator()).map_err(|_| {
-        IssueFailure::new(78, "gossil: the local login is not UTF-8; set GOSSIL_USER")
-    })?;
+    let login = super::login()?;
     let id = crate::gest_model::primitives::Id::new().to_string();
     let artifact = project_artifact(&id, &login)?;
     found
@@ -119,28 +137,19 @@ async fn init() -> Result<String, IssueFailure> {
 /// come, or when the artifact cannot hold the login.
 fn project_artifact(id: &str, login: &str) -> Result<Vec<u8>, IssueFailure> {
     let value = |what: &str| IssueFailure::new(74, format!("gossil: issue init: {what}"));
-    let nanos = std::time::SystemTime::now()
-        .duration_since(std::time::UNIX_EPOCH)
-        .map_err(|_| value("the clock is before 1970"))?
-        .as_nanos();
-    let date = NativeDate::from_epoch_nanos(nanos as i128)
-        .map_err(|_| value("the clock is out of range"))?;
-    let stamp = serde_json::json!(format!("{date}Z"));
+    let now = super::creation("init")?;
     let project = project_from_values(ProjectValueInputs {
         gest_id: serde_json::json!(id),
         archived_at: serde_json::Value::Null,
-        created_at: stamp.clone(),
-        updated_at: stamp,
+        created_at: now.stamp.clone(),
+        updated_at: now.stamp,
     })
     .map_err(|error| value(&error.to_string()))?;
-    let mut bytes = [0u8; 20];
-    getrandom::fill(&mut bytes).map_err(|_| value("the system gave no random bytes"))?;
-    let k: String = bytes.iter().map(|b| format!("{b:02x}")).collect();
     crate::gest_ticket::project_creation_bytes(
         &project,
-        k.as_bytes(),
+        now.ticket_id.as_bytes(),
         login.as_bytes(),
-        date,
+        now.date,
         65_536,
     )
     .map_err(|error| value(&error.to_string()))

@@ -380,7 +380,7 @@ fn raw_field<'a>(parsed: &'a ParsedArtifact, name: &str) -> Option<&'a [u8]> {
 
 /// The steps of one write, after each of which a unit test can inject a failure.
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
-enum IssuePhase {
+pub(crate) enum IssuePhase {
     /// The local receive record exists.
     Receipt,
     /// The private blob exists and names that receive record.
@@ -413,6 +413,15 @@ fn issue_boundary(phase: IssuePhase) -> Result<(), StorageError> {
     }
     let _ = phase;
     Ok(())
+}
+/// Make the issue writes of this thread fail after one step, or clear that choice.
+///
+/// The unit tests of the `issue` commands use it for GEST-T08.
+/// # Arguments
+/// * `phase` - The step after which each write of this thread fails, or `None`.
+#[cfg(test)]
+pub(crate) fn inject_issue_failure(phase: Option<IssuePhase>) {
+    ISSUE_FAILURE.with(|selected| selected.set(phase));
 }
 #[cfg(test)]
 thread_local! {

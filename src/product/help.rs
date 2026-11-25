@@ -3,8 +3,8 @@
 //! The help lists the groups and commands that this build dispatches. It also
 //! names the planned groups, and marks them as not available. Each command of
 //! the `issue` group is recognised. The help says which commands this build runs,
-//! and marks every other one as not available in this build. This build runs `init`, `task list`
-//! and `task show`.
+//! and marks every other one as not available in this build. This build runs `init`,
+//! `task create`, `task list` and `task show`.
 //!
 //! Usage lines keep the fixed `gossil vcs` spelling for every executable and
 //! group alias. Most usage errors of the commands use the same spelling. The
@@ -101,10 +101,10 @@ const VCS_COMMANDS: &[VcsCommand] = &[
 
 /// Names the code that runs a recognised issue command.
 ///
-/// [`IssueHandler::Init`], [`IssueHandler::TaskList`] and [`IssueHandler::TaskShow`]
-/// run their commands. [`IssueHandler::TaskCreate`] marks a command whose handler is
-/// planned, and this build refuses that command. A later commit then changes only
-/// the match arm of the command in `issue::run`.
+/// [`IssueHandler::Init`], [`IssueHandler::TaskCreate`], [`IssueHandler::TaskList`] and
+/// [`IssueHandler::TaskShow`] run their commands. [`IssueHandler::Unavailable`] refuses
+/// every other recognised command. A new handler changes only its match arm in
+/// `issue::run`.
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(super) enum IssueHandler {
     /// `issue init`.
@@ -159,6 +159,31 @@ const INIT_DETAILS: &str = "\nCreate the Gest project of the open checkout that 
      \x20 --no-pager        Accepted; the output is not paged\n\
      \x20 -v, --verbose...  Accepted; it changes no output\n\
      \x20 -h, --help        Print help\n";
+
+/// The help text of `issue task create` after its summary.
+const TASK_CREATE_DETAILS: &str = "\nCreate a private task in the Gest project of the open checkout that holds the\n\
+     current directory, as one private task ticket, in one transaction. Run gos i init\n\
+     first. This build never reads stdin and never opens an editor, so a missing\n\
+     description is empty. A [ in the title, the description or the metadata exits\n\
+     with status 64, and so does a task over 65,536 bytes. Tasks of this build have no\n\
+     undo history. In this build, task create exits 74 after about 113 small\n\
+     tasks, and nothing stored is lost; see docs/cli.md.\n\n\
+     Options:\n\
+     \x20 -d, --description <DESCRIPTION>  The task description\n\
+     \x20 -m, --metadata <KEY=VALUE>       Set a metadata key=value pair (repeatable; supports dot-paths and scalar inference)\n\
+     \x20     --metadata-json <JSON>       Merge a JSON object into metadata (repeatable; applied after --metadata pairs)\n\
+     \x20 -p, --priority <PRIORITY>        The task priority; either 0-4 (lower is higher) or one of critical|high|medium|low|lowest\n\
+     \x20 -s, --status <STATUS>            The initial task status\n\
+     \x20 -j, --json                       Emit output as JSON\n\
+     \x20 -q, --quiet                      Print only the short task ID\n\
+     \x20 -r, --raw                        Accepted; the output has no themed styling\n\
+     \x20     --no-color                   Accepted; the output has no color\n\
+     \x20     --no-pager                   Accepted; the output is not paged\n\
+     \x20 -v, --verbose...                 Accepted; it changes no output\n\
+     \x20 -h, --help                       Print help\n\n\
+     Not available in this build, and refused with status 69:\n\
+     \x20     --assign <ASSIGN>, --batch, -i, --iteration <ITERATION>,\n\
+     \x20 -l, --link <LINK>, --phase <PHASE>, --tag <TAG>, and a title read from stdin\n";
 
 /// The help text of `issue task list` after its summary.
 const TASK_LIST_DETAILS: &str = "\nList the tasks of the project bound to the open checkout, newest first.\n\
@@ -541,6 +566,7 @@ pub(super) const ISSUE_COMMANDS: &[IssueCommand] = &[
             leaf(&["complete"], "[OPTIONS] <ID>", "Mark a task as done"),
             IssueCommand {
                 handler: Some(IssueHandler::TaskCreate),
+                details: Some(TASK_CREATE_DETAILS),
                 ..leaf(&["create", "new"], "[OPTIONS] [TITLE]", "Create a new task")
             },
             leaf(
@@ -694,7 +720,7 @@ pub(super) fn root() -> String {
          gos is a short name for gossil. Both run the same program.\n\n\
          Groups:\n\
          \x20 vcs, v              Repositories, checkouts, private history and diagnostics\n\
-         \x20 issue, i            Gest commands; init, task list and task show run, and the others are not available in this build\n\n\
+         \x20 issue, i            Gest commands; init, task create, task list and task show run, and the others are not available in this build\n\n\
          Planned groups, not available in this build:\n",
         env!("CARGO_PKG_VERSION")
     );
