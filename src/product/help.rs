@@ -3,8 +3,8 @@
 //! The help lists the groups and commands that this build dispatches. It also
 //! names the planned groups, and marks them as not available. Each command of
 //! the `issue` group is recognised. The help says which commands this build runs,
-//! and marks every other one as not available in this build. This build runs `init`
-//! and `task create`.
+//! and marks every other one as not available in this build. This build runs `init`,
+//! `task create`, `task list` and `task show`.
 //!
 //! Usage lines keep the fixed `gossil vcs` spelling for every executable and
 //! group alias. Most usage errors of the commands use the same spelling. The
@@ -101,9 +101,10 @@ const VCS_COMMANDS: &[VcsCommand] = &[
 
 /// Names the code that runs a recognised issue command.
 ///
-/// [`IssueHandler::Init`] runs `issue init`. Each task variant marks a command whose
-/// handler is planned, and this build refuses that command. A later commit then
-/// changes only the match arm of the command in `issue::run`.
+/// [`IssueHandler::Init`], [`IssueHandler::TaskCreate`], [`IssueHandler::TaskList`]
+/// and [`IssueHandler::TaskShow`] run their commands. [`IssueHandler::Unavailable`]
+/// marks each other command, and this build refuses it. A new handler changes only
+/// the match arm of its command in `issue::run`.
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(super) enum IssueHandler {
     /// `issue init`.
@@ -183,6 +184,31 @@ const TASK_CREATE_DETAILS: &str = "\nCreate a private task in the Gest project o
      Not available in this build, and refused with status 69:\n\
      \x20     --assign <ASSIGN>, --batch, -i, --iteration <ITERATION>,\n\
      \x20 -l, --link <LINK>, --phase <PHASE>, --tag <TAG>, and a title read from stdin\n";
+/// The help text of `issue task list` after its summary.
+const TASK_LIST_DETAILS: &str = "\nList the tasks of the project bound to the open checkout, newest first.\n\
+     Without --all, a task that is done or cancelled is left out. The text output\n\
+     is provisional; --json prints the JSON of Gest.\n\n\
+     Options:\n\
+     \x20 -a, --all              Show all tasks, including resolved\n\
+     \x20 -s, --status <STATUS>  Filter by status\n\
+     \x20 -j, --json             Emit output as JSON\n\
+     \x20 --no-color             Accepted; the output has no color\n\
+     \x20 --no-pager             Accepted; the output is not paged\n\
+     \x20 -h, --help             Print help\n\n\
+     Refused in this build with status 69: --assigned-to, --limit, -t/--tag,\n\
+     -q/--quiet, -r/--raw and -v/--verbose.\n";
+
+/// The help text of `issue task show` after its summary.
+const TASK_SHOW_DETAILS: &str = "\nShow one task of any project, by its ID or a unique prefix of it. The text\n\
+     output is provisional; --json prints the JSON of Gest.\n\n\
+     Arguments:\n\
+     \x20 <ID>  The task ID or prefix\n\n\
+     Options:\n\
+     \x20 -j, --json   Emit output as JSON\n\
+     \x20 --no-color   Accepted; the output has no color\n\
+     \x20 --no-pager   Accepted; the output is not paged\n\
+     \x20 -h, --help   Print help\n\n\
+     Refused in this build with status 69: -q/--quiet, -r/--raw and -v/--verbose.\n";
 
 /// Build a command without subcommands, which this build refuses.
 ///
@@ -554,6 +580,7 @@ pub(super) const ISSUE_COMMANDS: &[IssueCommand] = &[
             ),
             IssueCommand {
                 handler: Some(IssueHandler::TaskList),
+                details: Some(TASK_LIST_DETAILS),
                 ..leaf(&["list", "ls"], "[OPTIONS]", "List tasks")
             },
             META,
@@ -571,6 +598,7 @@ pub(super) const ISSUE_COMMANDS: &[IssueCommand] = &[
             ),
             IssueCommand {
                 handler: Some(IssueHandler::TaskShow),
+                details: Some(TASK_SHOW_DETAILS),
                 ..leaf(&["show", "view"], "[OPTIONS] <ID>", "Show a task")
             },
             leaf(&["tag"], "[OPTIONS] <ID> <LABEL>", "Add a tag to a task"),
@@ -691,7 +719,7 @@ pub(super) fn root() -> String {
          gos is a short name for gossil. Both run the same program.\n\n\
          Groups:\n\
          \x20 vcs, v              Repositories, checkouts, private history and diagnostics\n\
-         \x20 issue, i            Gest commands; init and task create run, and the others are not available in this build\n\n\
+         \x20 issue, i            Gest commands; init, task create, task list and task show run, and the others are not available in this build\n\n\
          Planned groups, not available in this build:\n",
         env!("CARGO_PKG_VERSION")
     );

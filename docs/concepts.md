@@ -176,11 +176,12 @@ The [task ticket emitter](task-ticket.md) produces bounded creation artifact byt
 from a validated task, a separate native ticket identity, actor bytes and a typed UTC date.
 The [Gest ticket emitter](gest-ticket.md) takes the same inputs for a validated artifact
 or project, and the three kinds share one emitter.
+
 Before passing decoded values to a converter, callers
 must check raw field presence, duplicates and byte limits. The [issue ticket writer](issue-ticket.md)
 stores a task or project creation privately. The command `gos i init` stores a project this way, and
-`gos i task create` stores a task.
-The other commands for these records remain separate work.
+`gos i task create` stores a task. The commands `gos i task list` and `gos i task show`
+read the tasks. The other commands for these records remain separate work.
 
 ## Explicit scope and private recording
 

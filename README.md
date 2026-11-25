@@ -99,11 +99,14 @@ The [task ticket emitter](docs/task-ticket.md) turns validated task snapshots in
 task creation artifacts in Fossil's ticket format. The [Gest ticket emitter](docs/gest-ticket.md)
 does the same for artifact and project records, and the three kinds share one emitter.
 Callers supply the identity, actor and date.
+
 The [issue ticket writer](docs/issue-ticket.md) stores a task or project creation
 privately in a native repository. The command
 [`gos i init`](docs/cli.md#create-the-gest-project-of-a-checkout) stores a project this way and binds
 it to the open checkout. [`gos i task create`](docs/cli.md#create-a-task) stores a private task in
-that project.
+that project. The commands
+[`gos i task list` and `gos i task show`](docs/cli.md#list-the-tasks-of-the-project) read the tasks that
+the writer stores.
 
 Native storage initializes an empty public root without a checkout through the
 library API. It can then register one existing directory and authenticate that

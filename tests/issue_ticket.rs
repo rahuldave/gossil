@@ -936,6 +936,8 @@ async fn run_order(home: &Path, steps: &[Step]) -> (Vec<IssueTicket>, usize, Vec
             let read = owner.read_private_issue(&issue.ticket_id, limits()).await;
             assert_eq!(&read.unwrap(), issue, "{steps:?} {index}");
         }
+        let listed = owner.list_private_issues(limits()).await.unwrap();
+        assert_eq!(listed, issues, "{steps:?} {index}");
         drop(owner);
         if registered {
             vcs(home, &["status"]);

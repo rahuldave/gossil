@@ -69,6 +69,30 @@ commit leaves every byte of the repository files unchanged.
 no binding. It runs the full admission of `LocalOwnerRepository::open` first, and it writes nothing.
 `bound_project` does not use the SQL limits in `limits`.
 
+## List every issue
+
+`list_private_issues` returns every task and project of the repository, in the order of the receipts
+that stored them:
+
+```rust
+let issues = owner.list_private_issues(limits).await?;
+for issue in &issues {
+    println!("{} {}", issue.ticket_id, issue.native_name);
+}
+```
+
+The call runs the full admission of `LocalOwnerRepository::open` first. Then it runs the issue part of
+admission once more, with the same queries, and takes each record from that second pass. It writes nothing,
+and it uses no SQL that admission does not use. An empty repository gives an empty list.
+
+Both passes charge the same content and parser ledgers. So the limits must cover each issue artifact
+twice. For example, three issues that an open admits with 37 parser entries need 72 entries for a
+list. The shared root takes 2 of those entries, and only the first pass parses it. So the list
+needs 2 + 2 × 35 entries. The list does not use the SQL limits of `IssueLimits`.
+
+The handlers of `issue task list` and `issue task show` read the tasks through this call. The
+[issue read guide](issue-read.md) gives their output.
+
 ## How admission checks issues
 
 Admission finds each issue from its `tkt-` tag, parses its artifact again and derives every row from it.
@@ -171,22 +195,15 @@ the ticket reader, the next write and a new open each refuse, and leave the repo
 A change to the `ticket`, `ticketchng`, `g_gest_tasks` or `g_gest_projects` table also makes the saved
 admission proof stale. The admission check of the next write then refuses that write.
 
-Further unit controls cover `init_private_project`. A failure injected after each write step, the
-binding step included, leaves every byte unchanged and the checkout unbound. The method refuses a task,
-an unknown checkout, a bound checkout, a repository that holds an unbound project and a repository
-without a registration. Admission refuses each changed, missing or extra binding row, a binding to a
-task or to an archived project, and a value that is not text. A change to a binding row also makes the
-admission proof stale.
-
-`tests/issue_init_cli.rs` checks the command `gos i init` in all four forms, its second run, its
-refusals and the `vcs` commands before and after it. `tests/issue_task_cli.rs` checks
-`gos i task create` in the same way, and reads each stored task back with `read_private_issue`. The
-unit tests of `src/product/issue_task.rs` inject a failure after each write step of a new task. Then
-they check that every byte of the repository stays unchanged (GEST-T08).
-
 Admission parses every artifact under one parser ledger, so the entry ceiling of that ledger limits the
 count of issues. A unit control sets a ceiling that admits two tasks, and checks that admission refuses a
 third.
+
+A unit control lists two tasks and a project in receipt order, and checks that the list changes no row.
+It also finds the smallest entry ceiling and the smallest decoded-byte ceiling of the list and of an
+open. A list call with the decoded-byte ceiling of the open refuses and changes no row. In each tamper
+case above, the list call also refuses with the same message. In each of its three orders, the CAT-T07
+subset below also lists the issues after each step.
 
 The CAT-T07 subset in `tests/issue_ticket.rs` writes issues and check-ins in three orders. In the first,
 an issue comes before the checkout is registered. In the second, issues come before the first check-in,
@@ -194,6 +211,22 @@ and in the third, issues come after check-ins. After each step, a new open admit
 the commands `status`, `add`, `commit` and `timeline` work. With check-ins between the issues, admission
 still refuses a changed issue, tag or receipt row, for example swapped tag IDs or swapped receipts. A
 further test checks which receipt the fingerprint names before and after the first check-in.
+
+Further unit controls cover `init_private_project`. A failure injected after each write step, the
+binding step included, leaves every byte unchanged and the checkout unbound. The method refuses a task,
+an unknown checkout, a bound checkout, a repository that holds an unbound project and a repository
+without a registration.
+
+Admission refuses each changed, missing or extra binding row, a binding to a
+task or to an archived project, and a value that is not text. Before each change, the list call returns
+all three issues of the bound repository. After the change, the list call refuses with `unsupported project
+binding state`. A change to a binding row also makes the admission proof stale.
+
+`tests/issue_init_cli.rs` checks the command `gos i init` in all four forms, its second run, its
+refusals and the `vcs` commands before and after it. `tests/issue_task_cli.rs` checks
+`gos i task create` in the same way, and reads each stored task back with `read_private_issue`. The
+unit tests of `src/product/issue_task.rs` inject a failure after each write step of a new task. Then
+they check that every byte of the repository stays unchanged (GEST-T08).
 
 `just issue-ticket-interop` runs the stock Fossil check with the pinned Fossil 2.29 at `7e8ecf0ce4`. It
 writes a task and a project, then requires these results of stock Fossil:

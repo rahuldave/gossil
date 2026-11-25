@@ -3,7 +3,8 @@
 //!
 //! The cases are the CLI-01 forms, the CLI-T03 subset of the arguments, the GEST-T02
 //! subset of stored values, the CLI-05 statuses of the refusals with every byte
-//! unchanged, `vcs` commands beside tasks, a closed stdout and two commands at once.
+//! unchanged, `vcs` commands beside tasks, the read-back through `task list` and
+//! `task show`, a closed stdout and two commands at once.
 //! The unit tests of `src/product/issue_task.rs` inject a failure after each write
 //! step (GEST-T08).
 //!
@@ -640,6 +641,62 @@ fn vcs_commands_work_beside_tasks() {
     vcs(home, &["open"]);
     assert!(ok(home, &["i", "init"]).contains("initialized project"));
     assert_eq!(task_ids(&home.join("repo")).len(), 3);
+}
+
+#[test]
+/// `task list` and `task show` read back each task as `task create` wrote it: no
+/// priority, a priority, metadata, a done status and the clock time of the write.
+fn list_and_show_read_back_created_tasks() {
+    let temp = tempfile::tempdir().unwrap();
+    let home = temp.path();
+    let project = bound(home);
+    let plain: serde_json::Value =
+        serde_json::from_str(&ok(home, &["i", "task", "create", "Plain", "-j"])).unwrap();
+    let done: serde_json::Value = serde_json::from_str(&ok(
+        home,
+        &[
+            "i", "t", "new", "Done", "-d", "Body", "-p", "low", "-s", "done", "-m", "a.b=1",
+            "--json",
+        ],
+    ))
+    .unwrap();
+    assert_eq!(plain["priority"], serde_json::Value::Null);
+    assert_eq!(done["metadata"], serde_json::json!({"a": {"b": 1}}));
+    assert_eq!(done["resolved_at"], done["created_at"]);
+    let created = [&done, &plain];
+    let fields = |task: &serde_json::Value| {
+        let mut task = task.clone();
+        task.as_object_mut().unwrap().remove("notes");
+        task
+    };
+    let listed: Vec<serde_json::Value> =
+        serde_json::from_str(&ok(home, &["i", "task", "list", "--all", "--json"])).unwrap();
+    assert_eq!(listed, created.map(fields));
+    let open: Vec<serde_json::Value> =
+        serde_json::from_str(&ok(home, &["i", "task", "list", "--json"])).unwrap();
+    assert_eq!(open, [fields(&plain)]);
+    for task in created {
+        let id = task["id"].as_str().unwrap();
+        assert_eq!(task["project_id"], project.as_str());
+        let shown: serde_json::Value =
+            serde_json::from_str(&ok(home, &["i", "task", "show", id, "--json"])).unwrap();
+        assert_eq!(&shown, task);
+        let text = ok(home, &["i", "task", "show", &id[..8]]);
+        assert!(text.starts_with(&format!("id           {id}\n")), "{text}");
+        let created_at = task["created_at"].as_str().unwrap();
+        assert!(
+            text.contains(&format!("created at   {created_at}\n")),
+            "{text}"
+        );
+    }
+    assert_eq!(
+        ok(home, &["i", "task", "list", "--all"]),
+        format!(
+            "{}  done         P3    Done\n{}  open         --    Plain\n",
+            &done["id"].as_str().unwrap()[..8],
+            &plain["id"].as_str().unwrap()[..8]
+        )
+    );
 }
 
 #[test]

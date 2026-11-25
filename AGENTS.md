@@ -35,6 +35,9 @@ Read and follow @.agents/instructions/prose.md
   in `g_project_binding` and `g_checkout_project`, and `bound_project` reads that
   binding. Admission accepts both tables empty or with exactly that one binding.
   `g_identity` and `g_contributor` stay required-empty.
+- Issue reads: `src/product/issue_read.rs` parses, selects and prints `task list` and
+  `task show` over `list_private_issues`, with provisional text and Gest JSON. Its guide is
+  `docs/issue-read.md`, and `just issue-read-oracle` compares the JSON with a reference `gest`.
 - Git reader guard: `clippy.toml` bans the gix write paths, and `just lint`
   forbids them with `-F clippy::disallowed_methods -F clippy::disallowed_types`.
   `tests/git_write_lint.rs` proves each ban. Add a probe line for each new entry.
@@ -42,7 +45,7 @@ Read and follow @.agents/instructions/prose.md
   `docs/delta-decoder.md`, `docs/blob-primitives.md`, `docs/token-codec.md`,
   `docs/local-storage.md`, `docs/native-storage.md`, `docs/artifact-parser.md`,
   `docs/glob.md`, `docs/file-path.md`, `docs/history.md`, `docs/git-reader.md`,
-  `docs/task-ticket.md`, `docs/gest-ticket.md`, `docs/issue-ticket.md`, the ten Gest value guides
+  `docs/task-ticket.md`, `docs/gest-ticket.md`, `docs/issue-ticket.md`, `docs/issue-read.md`, the ten Gest value guides
   `docs/gest-*-values.md`, `docs/gest-model.md`, `docs/local-records.md` and
   `docs/development-plan.md`.
 - Product specification: `~/Projects/AIProjectInfra/docs/gossil/README.md` and its linked pages.
@@ -61,10 +64,12 @@ The CLI also exposes `vcs init` and `vcs new` through `gossil` or `gos`, with
 
 The private `src/product/help.rs` table gives product, group and command help.
 It must list every command that `src/product.rs` dispatches. Unknown names exit 2.
+
 Its issue table holds the Gest command tree of the `issue` group, or `i`. The
 parser in `src/product/issue.rs` walks that table. It runs `init`, in
-`src/product/issue_init.rs`, and `task create`, in `src/product/issue_task.rs`,
-and refuses each other recognised command with status 69.
+`src/product/issue_init.rs`, `task create`, in `src/product/issue_task.rs`, and
+`task list` and `task show`, in `src/product/issue_read.rs`. It refuses each other
+recognised command with status 69.
 
 `issue init` needs a checkout from `vcs init` and `vcs open --root`, and
 writes a private project ticket and its binding in one transaction. The shared
