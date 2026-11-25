@@ -57,6 +57,9 @@ The CLI also exposes `vcs init` and `vcs new` through `gossil` or `gos`, with
 
 The private `src/product/help.rs` table gives product, group and command help.
 It must list every command that `src/product.rs` dispatches. Unknown names exit 2.
+Its issue table holds the Gest command tree of the `issue` group, or `i`. The
+parser in `src/product/issue.rs` walks that table and refuses each recognised
+command with status 69.
 
 Native local storage supports checkout-free initialization, then one library
 checkout registration at the empty root. Reopen admits strict catalog6 with zero

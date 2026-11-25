@@ -20,6 +20,7 @@ task artifact emitter and native storage primitives. It does not yet create or r
 existing directory and publishes its lookup locator. The library can record
 the complete private tracked tree. The source [scope and commit commands](cli.md#select-scopes-and-record-private-files)
 expose that operation with explicit selections and metadata. Issue commands remain planned.
+The [`issue` group](cli.md#issue-commands) recognises their names and runs none of them.
 See the [current limits](development-plan.md) and
 [CLI reference](cli.md) before trying a command.
 
