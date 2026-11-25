@@ -5,6 +5,7 @@
 //!
 //! ## Recommendations
 //! Admit this family only together with the immutable catalog6 boundary.
+use super::issue_ticket::{AdmittedIssue, assign_tags};
 use super::recording_manifest::{
     ManifestFile, ManifestParent, PrivateManifestSpec, PrivateParents, build_private_manifest,
 };
@@ -491,17 +492,25 @@ fn fingerprint_from_conversion(
 /// # Arguments
 /// * `receipts` - Full ordered receive rows, including native conversion validity.
 /// * `root_receipt` - Independently authenticated immutable root receipt.
-/// * `commit_count` - Number of fully replayed private commits.
+/// * `owners` - The receipt that each check-in and each issue owns, in any order.
 /// # Returns
-/// Success for the root witness and exactly one local-origin receipt per commit.
+/// Success for the root witness and exactly one local-origin receipt per check-in or
+/// issue, which follow the root receipt with no gaps.
 /// # Errors
-/// Rejects extra/missing receipts, wrong root witness and invalid local origins.
+/// Rejects extra or missing receipts, a wrong root witness and invalid local origins.
 fn validate_receipts(
     receipts: &[Vec<Value>],
     root_receipt: i64,
-    commit_count: usize,
+    owners: &[i64],
 ) -> Result<(), StorageError> {
-    if receipts.len() != commit_count + 1 {
+    let mut owned = owners.to_vec();
+    owned.sort_unstable();
+    if receipts.len() != owned.len() + 1
+        || owned
+            .iter()
+            .zip(root_receipt + 1..)
+            .any(|(owner, expected)| *owner != expected)
+    {
         return Err(StorageError::state("recording unexplained receipt"));
     }
     for (index, row) in receipts.iter().enumerate() {
@@ -517,6 +526,37 @@ fn validate_receipts(
         }
     }
     Ok(())
+}
+
+/// The complete replay rows of the native tables that check-ins and issues share.
+///
+/// [`WriteTransaction::expect_shared_tables`] adds the rows of each admitted issue,
+/// so the check-in rows here are the only other rows that these tables may hold.
+pub(super) struct SharedTables {
+    /// The RID of the shared root, whose `event` and `tagxref` rows admission checks first.
+    pub(super) shared_rid: i64,
+    /// The receive record of the shared root.
+    pub(super) shared_receipt: i64,
+    /// Every `plink` row, in `cid,isprim DESC` order.
+    pub(super) plink: Vec<Vec<Value>>,
+    /// Every `mlink` row, in `mid,fnid,isaux` order.
+    pub(super) mlink: Vec<Vec<Value>>,
+    /// Each check-in `event` row with its `objid`.
+    pub(super) events: Vec<(i64, Vec<Value>)>,
+    /// Each check-in `tagxref` row with its `(rid, tagid)` key.
+    pub(super) tagxref: Vec<((i64, i64), Vec<Value>)>,
+    /// Every `tag` row above the built-in 12, in ID order.
+    pub(super) tags: Vec<Vec<Value>>,
+    /// Every `filename` row, in ID order.
+    pub(super) filenames: Vec<Vec<Value>>,
+    /// Every `leaf` row, in RID order.
+    pub(super) leaves: Vec<Vec<Value>>,
+    /// Each RID that `unsent` holds.
+    pub(super) unsent: BTreeSet<i64>,
+    /// The native name and receipt of each check-in blob, the shared root included.
+    pub(super) referenced: BTreeMap<i64, (String, i64)>,
+    /// The receipt that each check-in owns.
+    pub(super) owners: Vec<i64>,
 }
 
 /// Borrow exact tracked scalar fields after the caller's SQL preflight.
@@ -649,7 +689,7 @@ impl WriteTransaction<'_> {
     /// Success when all supported native/local text is bounded and scalar shapes fit.
     /// # Errors
     /// Rejects excess rows/text, malformed native types and SQL failures.
-    async fn recording_preflight(
+    pub(super) async fn recording_preflight(
         &mut self,
         limits: AdmissionLimits,
         work: &mut Budget,
@@ -710,7 +750,7 @@ impl WriteTransaction<'_> {
     /// Exact RID, receipt and verified bytes.
     /// # Errors
     /// Refuses missing/phantom/delta/shunned content, malformed identities and bounds.
-    async fn recorded_content(
+    pub(super) async fn recorded_content(
         &mut self,
         principal: &Principal,
         name: &str,
@@ -883,6 +923,12 @@ impl WriteTransaction<'_> {
         {
             return Err(StorageError::state("recording generation/history mismatch"));
         }
+        let issues = self.admit_issues(principal, limits, work, parse).await?;
+        let (branch_tag, tags) = assign_tags(
+            reversed.first().map(|(commit, _, _)| commit.receipt),
+            &format!("sym-{branch}"),
+            &issues,
+        );
         let mut history = RecordedHistory {
             shared,
             commits: Vec::new(),
@@ -900,7 +946,9 @@ impl WriteTransaction<'_> {
         );
         let mut unsent = BTreeSet::new();
         for (index, (commit, bytes, artifact)) in reversed.into_iter().enumerate() {
-            if commit.receipt != history.shared.receipt + (index as i64) + 1 {
+            // Issue receipts may fall between check-ins, so the chain only increases.
+            let previous_receipt = history.commits.last().unwrap_or(&history.shared).receipt;
+            if commit.receipt <= previous_receipt {
                 return Err(StorageError::state("recording exact receipt sequence"));
             }
             work.charge_decoded(
@@ -1059,150 +1107,70 @@ impl WriteTransaction<'_> {
             for (tag, type_, value) in [
                 (8, 2, Value::Text(history.branch.clone())),
                 (12, 0, Value::Null),
-                (13, 2, Value::Null),
+                (branch_tag, 2, Value::Null),
             ] {
-                expected_tags.push(vec![
-                    Value::Integer(tag),
-                    Value::Integer(type_),
-                    Value::Integer(commit.rid),
-                    Value::Integer(commit.rid),
-                    value,
-                    super::native_stored_date(commit.julian),
-                    Value::Integer(commit.rid),
-                ]);
+                expected_tags.push((
+                    (commit.rid, tag),
+                    vec![
+                        Value::Integer(tag),
+                        Value::Integer(type_),
+                        Value::Integer(commit.rid),
+                        Value::Integer(commit.rid),
+                        value,
+                        super::native_stored_date(commit.julian),
+                        Value::Integer(commit.rid),
+                    ],
+                ));
             }
             history.commits.push(commit);
         }
-        self.recording_expect(
-            "SELECT pid,cid,isprim,mtime,baseid FROM plink ORDER BY cid,isprim DESC",
-            vec![],
-            expected_plink,
-            n.saturating_mul(2),
-            width,
-            work,
-        )
-        .await?;
+        let mut leaves = vec![vec![Value::Integer(history.shared.rid)]];
+        if let Some(last) = history.commits.last() {
+            leaves.push(vec![Value::Integer(last.rid)]);
+        }
+        let mut filenames: Vec<_> = names
+            .iter()
+            .map(|(name, id)| (*id, vec![Value::Integer(*id), Value::Text(name.clone())]))
+            .collect();
+        filenames.sort_by_key(|(id, _)| *id);
         // fnid is assigned on first appearance and need not follow pathname
         // order after a later lexically earlier addition. Replay compares the
         // same persistent native key order used by the complete SQL projection.
         expected_mlink.sort_by_key(|row| (row[0], row[4], row[7]));
-        let expected_mlink = expected_mlink
-            .into_iter()
-            .map(|row| row.into_iter().map(Value::Integer).collect())
-            .collect();
-        self.recording_expect(
-            "SELECT mid,fid,pmid,pid,fnid,pfnid,mperm,isaux FROM mlink ORDER BY mid,fnid,isaux",
-            vec![],
-            expected_mlink,
-            n.saturating_mul(n).saturating_mul(2),
-            width,
-            work,
-        )
-        .await?;
-        self.recording_expect("SELECT type,mtime,objid,tagid,uid,bgcolor,euser,user,ecomment,comment,brief,omtime FROM event WHERE objid<>?1 ORDER BY objid",vec![Value::Integer(history.shared.rid)],expected_events,n,width,work).await?;
-        // Tag rows 1..12 and S's two xrefs are independently authenticated by base.
-        self.recording_expect("SELECT tagid,tagtype,srcid,origid,value,mtime,rid FROM tagxref WHERE rid<>?1 ORDER BY rid,tagid",vec![Value::Integer(history.shared.rid)],expected_tags,n.saturating_mul(3),width,work).await?;
-        let tag = if history.commits.is_empty() {
-            vec![]
-        } else {
-            vec![vec![
-                Value::Integer(13),
-                Value::Text(format!("sym-{}", history.branch)),
-            ]]
-        };
-        self.recording_expect(
-            "SELECT tagid,tagname FROM tag WHERE tagid>12 ORDER BY tagid",
-            vec![],
-            tag,
-            1,
-            width,
-            work,
-        )
-        .await?;
-        let mut filenames: Vec<_> = names
-            .iter()
-            .map(|(name, id)| vec![Value::Integer(*id), Value::Text(name.clone())])
-            .collect();
-        filenames.sort_by_key(|r| if let Value::Integer(id) = r[0] { id } else { 0 });
-        self.recording_expect(
-            "SELECT fnid,name FROM filename ORDER BY fnid",
-            vec![],
-            filenames,
+        self.expect_shared_tables(
+            SharedTables {
+                shared_rid: history.shared.rid,
+                shared_receipt: history.shared.receipt,
+                plink: expected_plink,
+                mlink: expected_mlink
+                    .into_iter()
+                    .map(|row| row.into_iter().map(Value::Integer).collect())
+                    .collect(),
+                events: history
+                    .commits
+                    .iter()
+                    .map(|commit| commit.rid)
+                    .zip(expected_events)
+                    .collect(),
+                tagxref: expected_tags,
+                tags,
+                filenames: filenames.into_iter().map(|(_, row)| row).collect(),
+                leaves,
+                unsent,
+                referenced,
+                owners: history
+                    .commits
+                    .iter()
+                    .map(|commit| commit.receipt)
+                    .collect(),
+            },
+            &issues,
             n,
             width,
             work,
         )
         .await?;
-        let mut leaves = vec![vec![Value::Integer(history.shared.rid)]];
-        if let Some(last) = history.commits.last() {
-            leaves.push(vec![Value::Integer(last.rid)]);
-        }
-        self.recording_expect(
-            "SELECT rid FROM leaf ORDER BY rid",
-            vec![],
-            leaves,
-            2,
-            64,
-            work,
-        )
-        .await?;
-        self.recording_expect(
-            "SELECT rid FROM unclustered ORDER BY rid",
-            vec![],
-            vec![vec![Value::Integer(history.shared.rid)]],
-            1,
-            64,
-            work,
-        )
-        .await?;
-        self.recording_expect(
-            "SELECT rid FROM unsent ORDER BY rid",
-            vec![],
-            unsent
-                .into_iter()
-                .map(|id| vec![Value::Integer(id)])
-                .collect(),
-            n.saturating_mul(n),
-            64,
-            work,
-        )
-        .await?;
-        let private = referenced
-            .keys()
-            .filter(|id| **id != history.shared.rid)
-            .map(|id| vec![Value::Integer(*id)])
-            .collect();
-        self.recording_expect(
-            "SELECT rid FROM private ORDER BY rid",
-            vec![],
-            private,
-            n.saturating_mul(n),
-            64,
-            work,
-        )
-        .await?;
-        let all = referenced
-            .iter()
-            .map(|(rid, (hash, receipt))| {
-                vec![
-                    Value::Integer(*rid),
-                    Value::Text(hash.clone()),
-                    Value::Integer(*receipt),
-                ]
-            })
-            .collect();
-        self.recording_expect(
-            "SELECT rid,uuid,rcvid FROM blob ORDER BY rid",
-            vec![],
-            all,
-            n.saturating_mul(n),
-            width,
-            work,
-        )
-        .await?;
         let selected = history.commits.last().unwrap_or(&history.shared);
-        let receipts=bounded_rows(self,"SELECT rcvid,uid,typeof(mtime),nonce,ipaddr,datetime(mtime) IS NOT NULL FROM rcvfrom ORDER BY rcvid",vec![],n,128,work).await?;
-        validate_receipts(&receipts, history.shared.receipt, history.commits.len())?;
         let vars = bounded_rows(
             self,
             "SELECT name,value FROM g_vvar WHERE checkout_id=?1 ORDER BY name",
@@ -1225,9 +1193,14 @@ impl WriteTransaction<'_> {
         let witness = self
             .verify_recording_fingerprint(fingerprint, width, work)
             .await?;
-        if witness != selected.receipt
-            || witness != history.shared.receipt + history.commits.len() as i64
-        {
+        // Registration takes the newest receipt, which an earlier issue may own, and
+        // each check-in takes its own receipt.
+        let witnessed = if history.commits.is_empty() {
+            witness == selected.receipt || issues.iter().any(|issue| issue.receipt == witness)
+        } else {
+            witness == selected.receipt
+        };
+        if !witnessed {
             return Err(StorageError::state("recording current receipt relation"));
         }
         let mut expected_vars = vec![
@@ -1279,6 +1252,156 @@ impl WriteTransaction<'_> {
             return Err(StorageError::state("recording native projection differs"));
         }
         Ok(())
+    }
+
+    /// Compare every shared native table with replay of the check-ins and the issues.
+    ///
+    /// Each table must hold exactly the replay rows, in native order. Every receive
+    /// record after the shared root's must belong to one check-in or one issue.
+    /// # Arguments
+    /// * `tables` - The replay rows of the check-ins.
+    /// * `issues` - Every admitted issue, in receipt order.
+    /// * `n` - The parser entry ceiling, which bounds the check-ins.
+    /// * `width` - The parser input ceiling, which bounds each row.
+    /// * `work` - Shared operation allowance.
+    /// # Returns
+    /// Success only when every table equals replay.
+    /// # Errors
+    /// Rejects foreign, missing or divergent rows, unexplained receipts and exhausted limits.
+    pub(super) async fn expect_shared_tables(
+        &mut self,
+        mut tables: SharedTables,
+        issues: &[AdmittedIssue],
+        n: usize,
+        width: usize,
+        work: &mut Budget,
+    ) -> Result<(), StorageError> {
+        let extra = issues.len();
+        for issue in issues {
+            tables.events.push((issue.rid, issue.event.clone()));
+            tables
+                .tagxref
+                .push(((issue.rid, issue.tagid), issue.tagxref.clone()));
+            tables
+                .referenced
+                .insert(issue.rid, (issue.hash.clone(), issue.receipt));
+            tables.owners.push(issue.receipt);
+        }
+        tables.events.sort_by_key(|(rid, _)| *rid);
+        tables.tagxref.sort_by_key(|(key, _)| *key);
+        /// Drop the sort key of each row.
+        fn unkeyed<K>(rows: Vec<(K, Vec<Value>)>) -> Vec<Vec<Value>> {
+            rows.into_iter().map(|(_, row)| row).collect()
+        }
+        let shared = Value::Integer(tables.shared_rid);
+        let private = tables
+            .referenced
+            .keys()
+            .filter(|rid| **rid != tables.shared_rid)
+            .map(|rid| vec![Value::Integer(*rid)])
+            .collect();
+        let blobs = tables
+            .referenced
+            .iter()
+            .map(|(rid, (hash, receipt))| {
+                vec![
+                    Value::Integer(*rid),
+                    Value::Text(hash.clone()),
+                    Value::Integer(*receipt),
+                ]
+            })
+            .collect();
+        let unsent = tables
+            .unsent
+            .iter()
+            .map(|rid| vec![Value::Integer(*rid)])
+            .collect();
+        let many = n.saturating_mul(n).saturating_add(extra);
+        for (sql, args, expected, count, row_bytes) in [
+            (
+                "SELECT pid,cid,isprim,mtime,baseid FROM plink ORDER BY cid,isprim DESC",
+                vec![],
+                tables.plink,
+                n.saturating_mul(2),
+                width,
+            ),
+            (
+                "SELECT mid,fid,pmid,pid,fnid,pfnid,mperm,isaux FROM mlink ORDER BY mid,fnid,isaux",
+                vec![],
+                tables.mlink,
+                n.saturating_mul(n).saturating_mul(2),
+                width,
+            ),
+            (
+                "SELECT type,mtime,objid,tagid,uid,bgcolor,euser,user,ecomment,comment,brief,omtime FROM event WHERE objid<>?1 ORDER BY objid",
+                vec![shared.clone()],
+                unkeyed(tables.events),
+                n.saturating_add(extra),
+                width,
+            ),
+            // Tag rows 1..12 and the root's two xrefs are authenticated before this call.
+            (
+                "SELECT tagid,tagtype,srcid,origid,value,mtime,rid FROM tagxref WHERE rid IS NOT ?1 ORDER BY rid,tagid",
+                vec![shared.clone()],
+                unkeyed(tables.tagxref),
+                n.saturating_mul(3).saturating_add(extra),
+                width,
+            ),
+            (
+                "SELECT tagid,tagname FROM tag WHERE tagid>12 ORDER BY tagid",
+                vec![],
+                tables.tags,
+                extra.saturating_add(1),
+                width,
+            ),
+            (
+                "SELECT fnid,name FROM filename ORDER BY fnid",
+                vec![],
+                tables.filenames,
+                n,
+                width,
+            ),
+            (
+                "SELECT rid FROM leaf ORDER BY rid",
+                vec![],
+                tables.leaves,
+                2,
+                64,
+            ),
+            (
+                "SELECT rid FROM unclustered ORDER BY rid",
+                vec![],
+                vec![vec![shared]],
+                1,
+                64,
+            ),
+            (
+                "SELECT rid FROM unsent ORDER BY rid",
+                vec![],
+                unsent,
+                many,
+                64,
+            ),
+            (
+                "SELECT rid FROM private ORDER BY rid",
+                vec![],
+                private,
+                many,
+                64,
+            ),
+            (
+                "SELECT rid,uuid,rcvid FROM blob ORDER BY rid",
+                vec![],
+                blobs,
+                many,
+                width,
+            ),
+        ] {
+            self.recording_expect(sql, args, expected, count, row_bytes, work)
+                .await?;
+        }
+        let receipts=bounded_rows(self,"SELECT rcvid,uid,typeof(mtime),nonce,ipaddr,datetime(mtime) IS NOT NULL FROM rcvfrom ORDER BY rcvid",vec![],n.saturating_add(extra).saturating_add(1),128,work).await?;
+        validate_receipts(&receipts, tables.shared_receipt, &tables.owners)
     }
 
     /// Verify recorded and newly added tracking rows against the selected full tree.
@@ -1587,9 +1710,7 @@ impl WriteTransaction<'_> {
             work,
         )
         .await?;
-        if tag != 13 {
-            return Err(StorageError::state("recording private branch tag identity"));
-        }
+        // Issues may hold lower tag IDs. The post-state admission checks this ID.
         for (id, type_, value) in [
             (8, 2, Value::Text(history.branch.clone())),
             (12, 0, Value::Null),
@@ -2635,14 +2756,24 @@ mod controls {
             Value::Null,
             Value::Integer(1),
         ];
-        validate_receipts(&[root.clone(), local.clone()], 1, 1).unwrap();
-        validate_receipts(std::slice::from_ref(&root), 1, 0).unwrap();
+        validate_receipts(&[root.clone(), local.clone()], 1, &[2]).unwrap();
+        validate_receipts(std::slice::from_ref(&root), 1, &[]).unwrap();
+        // Two owners of one receipt, or an owner past the last receipt, leave one unexplained.
+        let mut third = local.clone();
+        third[0] = Value::Integer(3);
+        for owners in [&[2, 2][..], &[2, 4], &[3]] {
+            let rows = [root.clone(), local.clone(), third.clone()];
+            refuses(
+                validate_receipts(&rows[..owners.len() + 1], 1, owners),
+                "recording unexplained receipt",
+            );
+        }
         refuses(
-            validate_receipts(&[], 1, 0),
+            validate_receipts(&[], 1, &[]),
             "recording unexplained receipt",
         );
         refuses(
-            validate_receipts(&[vec![Value::Integer(2)]], 1, 0),
+            validate_receipts(&[vec![Value::Integer(2)]], 1, &[]),
             "recording root receipt",
         );
         for (index, value) in [
@@ -2656,13 +2787,13 @@ mod controls {
             let mut row = local.clone();
             row[index] = value;
             refuses(
-                validate_receipts(&[root.clone(), row], 1, 1),
+                validate_receipts(&[root.clone(), row], 1, &[2]),
                 "recording local receipt policy",
             );
         }
         let mut integer_time = local;
         integer_time[2] = Value::Text("integer".into());
-        validate_receipts(&[root, integer_time], 1, 1).unwrap();
+        validate_receipts(&[root, integer_time], 1, &[2]).unwrap();
     }
 
     #[test]

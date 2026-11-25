@@ -254,16 +254,14 @@ async fn a_private_put_reads_back_after_reopen_and_opens_no_shared_view() {
         content: limits(),
         parser: parser(),
     };
-    // Catalog 6 admission refuses any private content, so no shared view of this file
-    // exists. A shared reader cannot learn even that the name is present.
+    // Catalog 6 admission refuses private content that no check-in or issue owns, so
+    // no shared view of this file exists. A shared reader cannot learn that the name
+    // is present.
     let refused = LocalOwnerRepository::open(&path, admission)
         .await
         .err()
         .unwrap();
-    assert_eq!(
-        refused.operation,
-        "unsupported nonempty catalog6 table: private"
-    );
+    assert_eq!(refused.operation, "recording native projection differs");
 }
 
 /// Full and delta reads spend the exact preflight and result cells on one ledger.

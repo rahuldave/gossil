@@ -513,7 +513,8 @@ mod rollback_controls {
     /// # Arguments
     /// No arguments.
     /// # Returns
-    /// Unit after exact entry/copy/tag refusals and a successful neighboring projection.
+    /// Unit after exact entry and copy refusals, a branch tag that takes the next free
+    /// ID after tag 13, and a successful neighboring projection.
     /// # Panics
     /// Panics on an unexpected refusal, early write on budget failure or incomplete rollback.
     async fn staged_projection_bounds_and_tag_identity_roll_back_every_table() {
@@ -718,28 +719,17 @@ mod rollback_controls {
                     "projection wrote before copy debit"
                 );
             } else if case == "tag-identity" {
-                assert_eq!(
-                    result.unwrap_err().operation,
-                    "recording private branch tag identity"
-                );
-                assert_eq!(
-                    tx.query_bound(
-                        "SELECT tagid FROM tag WHERE tagname=?1",
-                        vec![Value::Text(format!("sym-{}", history.branch))]
-                    )
-                    .await
-                    .unwrap(),
-                    vec![vec![Value::Integer(14)]]
-                );
-                // Parent/file/event effects precede this refusal and must be undone by rollback.
+                // An issue may hold tag 13, so the branch tag takes the next free ID.
+                // The post-state admission of the real call checks every tag row.
+                result.unwrap();
                 assert_eq!(
                     tx.query_bound(
-                        "SELECT count(*) FROM plink WHERE cid=?1",
+                        "SELECT tagid FROM tagxref WHERE srcid=?1 AND tagtype=2 AND value IS NULL",
                         vec![Value::Integer(rid)]
                     )
                     .await
                     .unwrap(),
-                    vec![vec![Value::Integer(1)]]
+                    vec![vec![Value::Integer(14)]]
                 );
                 assert_ne!(transaction_snapshot(&mut tx).await, staged);
             } else {

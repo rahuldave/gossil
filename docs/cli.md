@@ -215,10 +215,12 @@ The root can contain ordinary files and nested Git repositories. Their bytes
 remain unselected and unchanged. Native VCS open requires no issue, project or
 author initialization. It does not grant Gest project authority.
 
-The native library admits catalog6 with exactly zero or one registration and
-the supported tracking, scope and private recording history. Catalog1, unrelated
-file history and a second registration are outside this command. The command refuses a
-repository at an older Gossil catalog, 2, 4 or 5, before any effect, with exit 78. The [storage guide](native-storage.md) defines those catalog formats.
+The native library admits catalog6 with exactly zero or one registration,
+the supported tracking, scope and private recording history, and private issue
+tickets. Catalog1, unrelated file history and a second registration are outside
+this command. The command refuses a repository at an older Gossil catalog, 2, 4
+or 5, before any effect, with exit 78. The [storage guide](native-storage.md)
+defines those catalog formats.
 
 Native admission checks the repository and owner binding,
 canonical root, device/inode and complete supported state. The locator cannot

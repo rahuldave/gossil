@@ -38,8 +38,9 @@ complete policy, owner binding and foreign keys.
 
 The remaining local tables must be empty, except for the exact registration,
 tracking, scope and private recording inventories described below. Extra native
-content or indexed history outside that family refuses admission. Persisted
-issue projections and states mixing those issues with file history remain unsupported.
+content or indexed history outside that family refuses admission. Admission also
+accepts private issue tickets written before, between or after check-ins. It checks each row of a
+ticket against the artifact of that ticket, as the [issue ticket guide](issue-ticket.md) says.
 
 No upgrade occurs on open. Open refuses a repository before any effect when its
 catalog marker, the `storage_version` value of `g_storage`, names catalog2,
@@ -445,11 +446,13 @@ their Gest columns.
 
 `just catalog-interop` checks a new repository with the pinned Fossil reference.
 It runs `fossil test-integrity`, then `fossil rebuild` on a copy, and compares the
-ticket columns. When the reference is absent, it exits 5, the status for not-run.
+ticket columns. It then checks a repository with private check-ins and an issue
+between them, with `fossil test-integrity`, `fossil timeline` and `fossil ticket show`.
+When the reference is absent, it exits 5, the status for not-run.
 
 The [issue ticket writer](issue-ticket.md) stores one private task or project
-ticket in a catalog 6 repository, and its reader checks the stored rows again.
-`open` still refuses a repository that holds such a ticket.
+ticket in a catalog 6 repository. `open` admits a repository that holds such
+tickets beside private check-ins.
 
 The required object
 inventory and complete stored definitions are

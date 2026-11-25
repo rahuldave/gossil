@@ -53,9 +53,10 @@ of the metered queries and of those methods.
 Initialization creates catalog6 without a checkout. The library can register
 one existing directory and authenticate its registration by ID or exact root.
 Opening a repository admits exactly zero or one registration and the supported tracking, scope
-and private recording family. Bound catalog1 creation retains its checkout and
-private content operations. Catalog6 generic private content writes remain
-unsupported; its separate recorder writes complete private file trees.
+and private recording family, with private issue tickets written before, between or after check-ins.
+Bound catalog1 creation retains its checkout and private content operations. Catalog6
+generic private content writes remain unsupported; its separate recorder writes
+complete private file trees.
 Registration changes the database only.
 
 The source CLI combines registration with bounded locator

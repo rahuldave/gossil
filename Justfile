@@ -69,7 +69,7 @@ gest-ticket-interop:
     fi
     GOSSIL_FOSSIL_REFERENCE="$fossil" just test --test gest_ticket stock_fossil_reads_emitted_gest_tickets -- --ignored --exact
 
-# Check a new repository with the pinned Fossil reference: test-integrity, and rebuild of a copy; exit 5 means not-run.
+# Check a new repository, and one with check-ins and an issue, with the pinned Fossil reference: test-integrity, rebuild of a copy, timeline and ticket show; exit 5 means not-run.
 catalog-interop:
     #!/usr/bin/env bash
     set -euo pipefail
@@ -79,8 +79,9 @@ catalog-interop:
         exit 5
     fi
     GOSSIL_FOSSIL_REFERENCE="$fossil" just test --test catalog_line stock_fossil_checks_a_new_catalog6_repository -- --ignored --exact
+    GOSSIL_FOSSIL_REFERENCE="$fossil" just test --test issue_ticket stock_fossil_reads_check_ins_and_issues_together -- --ignored --exact
 
-# Check stored private issue tickets with the pinned Fossil reference: test-integrity, ticket show, and the rows of a ticket rebuild; exit 5 means not-run.
+# Check stored private issue tickets, alone and beside check-ins, with the pinned Fossil reference: test-integrity, ticket show, timeline, and the rows of a ticket rebuild; exit 5 means not-run.
 issue-ticket-interop:
     #!/usr/bin/env bash
     set -euo pipefail
@@ -89,7 +90,7 @@ issue-ticket-interop:
         echo "not-run: the pinned Fossil reference is absent at $fossil; run just setup" >&2
         exit 5
     fi
-    GOSSIL_FOSSIL_REFERENCE="$fossil" just test --test issue_ticket stock_fossil_reads_the_stored_issue_tickets -- --ignored --exact
+    GOSSIL_FOSSIL_REFERENCE="$fossil" just test --test issue_ticket stock_fossil_reads -- --ignored
 
 # Respell the Gest ticket creation fixtures from their hand-written cards.
 gest-ticket-reference:

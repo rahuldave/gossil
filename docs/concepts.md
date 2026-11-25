@@ -104,9 +104,10 @@ shared root stays a check-in with no files.
 
 Admission validates the stored root and authority before repository operations.
 For catalog6, it also validates the complete supported tracking, scope and private
-history state. `SharedView` restricts access to public content that passed this
-validation. Read and write access to the database file through the operating
-system establishes local owner authority.
+history state, and each private issue ticket against its artifact. `SharedView`
+restricts access to public content that passed this validation. Read and write
+access to the database file through the operating system establishes local owner
+authority.
 
 The [native storage guide](native-storage.md) defines admission, content bounds
 and access rules. General links between artifacts in the repository graph remain planned, so parsing

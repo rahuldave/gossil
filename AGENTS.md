@@ -30,7 +30,7 @@ Read and follow @.agents/instructions/prose.md
   task kind. `src/storage/issue_ticket.rs` stores one private task or project
   creation in a catalog 6 repository and reads it again; its guide is
   `docs/issue-ticket.md`, and `just issue-ticket-interop` checks it with stock
-  Fossil. `LocalOwnerRepository::open` still refuses a repository with a ticket.
+  Fossil. `LocalOwnerRepository::open` admits these tickets beside private check-ins.
 - Git reader guard: `clippy.toml` bans the gix write paths, and `just lint`
   forbids them with `-F clippy::disallowed_methods -F clippy::disallowed_types`.
   `tests/git_write_lint.rs` proves each ban. Add a probe line for each new entry.
@@ -78,7 +78,7 @@ config row, so a stock `fossil rebuild` keeps the Gest ticket columns.
 Bound catalog1 creation and bounded private content operations remain supported.
 Generic private content writes refuse catalog6. The metered private put admits
 only catalog6, and the issue ticket writer is its one caller. A fresh open
-still refuses the private ticket row that it writes, until the validators admit it.
+admits the private ticket rows that it writes.
 
 The private recording library requires the complete tracked set, immutable
 private scopes and all seven expected checkout facts. It captures every working file with one borrowed content

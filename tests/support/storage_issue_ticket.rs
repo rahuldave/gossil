@@ -1,6 +1,6 @@
 //! Hold the unit controls of the issue ticket writer and reader that need the owner's
 //! private state. They cover the GEST-T08 failure injection before commit and the
-//! reader's refusal of changed rows.
+//! refusal by admission of each changed row.
 use super::*;
 use crate::storage::{InitializeOptions, Limits};
 
@@ -34,6 +34,63 @@ const K: &str = "a1b2c3d4e5f60718293a4b5c6d7e8f9012345678";
 
 /// The K card of a second fixture task.
 const OTHER_K: &str = "ffffffffffffffffffffffffffffffffffffffff";
+
+/// The K card of the fixture project.
+const PROJECT_K: &str = "0000000000000000000000000000000000000001";
+
+/// Emit the creation artifact of a fixture project.
+/// # Arguments
+/// * `k` - The K card.
+/// * `letter` - The letter that the 32 letters of the Gest ID repeat.
+/// # Returns
+/// The artifact bytes.
+fn project_for(k: &str, letter: &str) -> Vec<u8> {
+    use serde_json::json;
+    let project = crate::gest_project_values::project_from_values(
+        crate::gest_project_values::ProjectValueInputs {
+            gest_id: json!(letter.repeat(32)),
+            archived_at: json!(null),
+            created_at: json!("2026-11-18T12:00:00Z"),
+            updated_at: json!("2026-11-18T12:00:00Z"),
+        },
+    )
+    .unwrap();
+    let date = NativeDate::parse(b"2026-11-18T12:00:00Z").unwrap();
+    crate::gest_ticket::project_creation_bytes(&project, k.as_bytes(), b"agent", date, 65_536)
+        .unwrap()
+}
+
+/// Copy the rows that one query selects from one repository into the same table of another.
+/// # Arguments
+/// * `from` - The owner whose rows are read.
+/// * `to` - The owner whose table gets the rows.
+/// * `table` - The fixed table name.
+/// * `filter` - The fixed WHERE clause.
+async fn copy_rows(
+    from: &mut LocalOwnerRepository,
+    to: &mut LocalOwnerRepository,
+    table: &str,
+    filter: &str,
+) {
+    let mut tx = from.store.begin_write().await.unwrap();
+    let rows = tx
+        .query(&format!("SELECT * FROM {table} WHERE {filter}"))
+        .await
+        .unwrap();
+    tx.rollback().await.unwrap();
+    assert!(!rows.is_empty(), "{table}");
+    let mut tx = to.store.begin_write().await.unwrap();
+    for row in rows {
+        let marks = vec!["?"; row.len()].join(",");
+        // The bound writer takes fixed SQL, so the fixture leaks each small statement.
+        let sql: &'static str = Box::leak(format!("INSERT INTO {table} VALUES({marks})").into());
+        tx.execute_bound(sql, row).await.unwrap();
+    }
+    let mut budget = Budget::new(limits().admission.content).unwrap();
+    let proof = tx.capture_admission_budgeted(&mut budget).await.unwrap();
+    tx.commit().await.unwrap();
+    to.admission = proof;
+}
 
 /// Emit the creation artifact of the fixture task.
 /// # Returns
@@ -229,28 +286,33 @@ async fn an_exhausted_ceiling_refuses_without_effect() {
         change(&mut limits);
         limits
     };
-    let cases: [(&str, IssueLimits); 6] = [
-        ("one SQL row", tight(|l| l.sql_rows = 1)),
+    // The reader uses no SQL ceiling, so only the admission ceilings refuse it.
+    let cases: [(&str, IssueLimits, bool); 6] = [
+        ("one SQL row", tight(|l| l.sql_rows = 1), false),
         (
             "SQL rows that end after the first inserts",
             tight(|l| l.sql_rows = 60),
+            false,
         ),
-        ("one SQL byte", tight(|l| l.sql_bytes = 1)),
+        ("one SQL byte", tight(|l| l.sql_bytes = 1), false),
         (
             "a small content limit",
             tight(|l| l.admission.content.max_stored_bytes = 64),
+            true,
         ),
         (
             "a small decoded total",
             tight(|l| l.admission.content.max_total_decoded_bytes = 64),
+            true,
         ),
         (
             "a small parser input",
             tight(|l| l.admission.parser.input_bytes = 64),
+            true,
         ),
     ];
     let second = artifact_for(OTHER_K, "n");
-    for (case, tight) in cases {
+    for (case, tight, refuses_read) in cases {
         let temp = tempfile::tempdir().unwrap();
         let mut owner = repository(&temp.path().join("repo")).await;
         create(&mut owner).await.unwrap();
@@ -260,7 +322,11 @@ async fn an_exhausted_ceiling_refuses_without_effect() {
             "{case}"
         );
         assert_eq!(snapshot(&mut owner).await, before, "{case}");
-        assert!(owner.read_private_issue(K, tight).await.is_err(), "{case}");
+        assert_eq!(
+            owner.read_private_issue(K, tight).await.is_err(),
+            refuses_read,
+            "{case}"
+        );
         assert_eq!(snapshot(&mut owner).await, before, "{case}");
         assert_eq!(
             owner
@@ -283,58 +349,209 @@ async fn an_exhausted_ceiling_refuses_without_effect() {
 }
 
 #[tokio::test]
-/// The reader refuses each stored shape that is not one creation, and each stored
-/// row that differs from the artifact, and it changes nothing.
-async fn the_reader_refuses_changed_rows_and_other_shapes() {
-    let differ = "stored issue rows differ from the ticket artifact";
+/// Admission refuses each stored row that is not exactly what replay of the issue
+/// artifacts gives, in every admitted table. The reader and a new open both refuse,
+/// and nothing changes.
+async fn admission_refuses_each_changed_issue_row() {
     let tag = format!("(SELECT tagid FROM tag WHERE tagname='tkt-{K}')");
+    let last = "(SELECT max(rcvid) FROM rcvfrom)";
+    const PROJECTION: &str = "recording native projection differs";
     let cases = [
-        ("a second artifact", format!("INSERT INTO tagxref(tagid,tagtype,srcid,origid,value,mtime,rid) VALUES({tag},1,1,1,NULL,0,1)"), UNSUPPORTED),
-        ("an attachment", format!("INSERT INTO attachment(attachid,isLatest,mtime,src,target,filename,comment,user) VALUES(1,1,0,NULL,'{K}','f','c','u')"), UNSUPPORTED),
-        ("an artifact that is not a ticket", format!("UPDATE tagxref SET rid=1 WHERE tagid={tag}"), UNSUPPORTED),
-        ("a changed ticket title", "UPDATE ticket SET title='\"other\"'".to_owned(), differ),
-        ("a changed change row", "UPDATE ticketchng SET tkt_user='other'".to_owned(), differ),
-        ("a changed event comment", "UPDATE event SET comment='other' WHERE type='t'".to_owned(), differ),
-        ("a changed tag row", format!("UPDATE tagxref SET tagtype=2 WHERE tagid={tag}"), differ),
-        ("a public ticket", "DELETE FROM private".to_owned(), differ),
-        ("a changed typed row", "UPDATE g_gest_tasks SET title='other'".to_owned(), differ),
-        ("an unclustered row", format!("INSERT INTO unclustered(rid) SELECT rid FROM tagxref WHERE tagid={tag}"), differ),
-        ("an unsent row", format!("INSERT INTO unsent(rid) SELECT rid FROM tagxref WHERE tagid={tag}"), differ),
-        ("a receipt from another user", "UPDATE rcvfrom SET uid=1 WHERE rcvid=(SELECT max(rcvid) FROM rcvfrom)".to_owned(), differ),
-        ("a receipt with a nonce", "UPDATE rcvfrom SET nonce='n' WHERE rcvid=(SELECT max(rcvid) FROM rcvfrom)".to_owned(), differ),
-        ("a receipt from an address", "UPDATE rcvfrom SET ipaddr='127.0.0.1' WHERE rcvid=(SELECT max(rcvid) FROM rcvfrom)".to_owned(), differ),
-        ("a backlink from the ticket", format!("INSERT INTO backlink(target,srctype,srcid,mtime) SELECT 'x',1,rid,0 FROM tagxref WHERE tagid={tag}"), differ),
-        ("a change row of the artifact under another ticket", format!("INSERT INTO ticketchng(tkt_id,tkt_rid,tkt_mtime,tkt_user) SELECT 999,rid,0,'u' FROM tagxref WHERE tagid={tag}"), differ),
-        ("a second event of the ticket", format!("INSERT INTO event(type,tagid,mtime,objid,user,comment) VALUES('t',{tag},0,999,'u','forged')"), differ),
-        ("a second typed row", "INSERT INTO g_gest_tasks SELECT 'shared',id,project_id,title,priority,status,description,assigned_to,metadata,resolved_at,created_at,updated_at FROM g_gest_tasks".to_owned(), differ),
+        ("a second artifact", format!("INSERT INTO tagxref(tagid,tagtype,srcid,origid,value,mtime,rid) VALUES({tag},1,1,1,NULL,0,1)"), "root branch crosslinks differ from canonical bytes"),
+        ("an attachment", format!("INSERT INTO attachment(attachid,isLatest,mtime,src,target,filename,comment,user) VALUES(1,1,0,NULL,'{K}','f','c','u')"), "unsupported nonempty catalog6 table: attachment"),
+        ("an artifact that is not a ticket", format!("UPDATE tagxref SET rid=1 WHERE tagid={tag}"), "root branch crosslinks differ from canonical bytes"),
+        ("a changed ticket title", "UPDATE ticket SET title='\"other\"' WHERE tkt_uuid IS NOT NULL".to_owned(), DIFFERS),
+        ("a changed change row", "UPDATE ticketchng SET tkt_user='other'".to_owned(), DIFFERS),
+        ("a changed event comment", "UPDATE event SET comment='other' WHERE type='t'".to_owned(), PROJECTION),
+        ("a tag row without a RID", "INSERT INTO tagxref(tagid,tagtype,srcid,origid,value,mtime,rid) VALUES(8,2,1,1,'other',0,NULL)".to_owned(), PROJECTION),
+        ("a changed tag row", format!("UPDATE tagxref SET tagtype=2 WHERE tagid={tag}"), PROJECTION),
+        ("a renamed tag", format!("UPDATE tag SET tagname='tkt-x' WHERE tagid={tag}"), DIFFERS),
+        ("an unrelated tag", "INSERT INTO tag(tagname) VALUES('unrelated')".to_owned(), PROJECTION),
+        ("a public ticket", format!("DELETE FROM private WHERE rid=(SELECT rid FROM tagxref WHERE tagid={tag})"), PROJECTION),
+        ("a changed task row", "UPDATE g_gest_tasks SET title='other'".to_owned(), DIFFERS),
+        ("a changed project row", "UPDATE g_gest_projects SET archived_at='2026-11-19T00:00:00Z'".to_owned(), DIFFERS),
+        ("a missing project row", "DELETE FROM g_gest_projects".to_owned(), DIFFERS),
+        ("an unclustered row", format!("INSERT INTO unclustered(rid) SELECT rid FROM tagxref WHERE tagid={tag}"), "recording SQL count limit"),
+        ("an unsent row", format!("INSERT INTO unsent(rid) SELECT rid FROM tagxref WHERE tagid={tag}"), "unsupported nonempty catalog6 table: unsent"),
+        ("a leaf row", format!("INSERT INTO leaf(rid) SELECT rid FROM tagxref WHERE tagid={tag}"), PROJECTION),
+        ("a blob without a receipt", format!("UPDATE blob SET rcvid=NULL WHERE rid=(SELECT rid FROM tagxref WHERE tagid={tag})"), DIFFERS),
+        ("a blob under the root receipt", format!("UPDATE blob SET rcvid=1 WHERE rid=(SELECT rid FROM tagxref WHERE tagid={tag})"), "recording unexplained receipt"),
+        ("a receipt from another user", format!("UPDATE rcvfrom SET uid=1 WHERE rcvid={last}"), "recording local receipt policy"),
+        ("a receipt with a nonce", format!("UPDATE rcvfrom SET nonce='n' WHERE rcvid={last}"), "recording local receipt policy"),
+        ("a receipt from an address", format!("UPDATE rcvfrom SET ipaddr='127.0.0.1' WHERE rcvid={last}"), "recording local receipt policy"),
+        ("a receipt that no artifact owns", "INSERT INTO rcvfrom(uid,mtime,nonce,ipaddr) VALUES(0,julianday('now'),NULL,NULL)".to_owned(), "recording unexplained receipt"),
+        ("a backlink from the ticket", format!("INSERT INTO backlink(target,srctype,srcid,mtime) SELECT 'x',1,rid,0 FROM tagxref WHERE tagid={tag}"), "unsupported nonempty catalog6 table: backlink"),
+        ("a change row of the artifact under another ticket", format!("INSERT INTO ticketchng(tkt_id,tkt_rid,tkt_mtime,tkt_user) SELECT 999,rid,0,'u' FROM tagxref WHERE tagid={tag}"), DIFFERS),
+        ("a second event of the ticket", format!("INSERT INTO event(type,tagid,mtime,objid,user,comment) VALUES('t',{tag},0,999,'u','forged')"), PROJECTION),
+        ("a second typed row", "INSERT INTO g_gest_tasks SELECT 'shared',id,project_id,title,priority,status,description,assigned_to,metadata,resolved_at,created_at,updated_at FROM g_gest_tasks".to_owned(), DIFFERS),
+        ("a ticket row without an artifact", "INSERT INTO ticket(tkt_uuid) VALUES('x')".to_owned(), DIFFERS),
+        ("an artifact whose K is not its tag", format!("UPDATE tag SET tagname='tkt-{OTHER_K}' WHERE tagname='tkt-{K}';UPDATE ticket SET tkt_uuid='{OTHER_K}' WHERE tkt_uuid='{K}'"), DIFFERS),
     ];
     for (case, sql, message) in cases {
         let temp = tempfile::tempdir().unwrap();
-        let mut owner = repository(&temp.path().join("repo")).await;
+        let path = temp.path().join("repo");
+        let mut owner = repository(&path).await;
         create(&mut owner).await.unwrap();
+        create_with(&mut owner, &project_for(PROJECT_K, "p"), limits())
+            .await
+            .unwrap();
         tamper(&mut owner, &sql).await;
         let before = snapshot(&mut owner).await;
         let error = owner.read_private_issue(K, limits()).await.unwrap_err();
-        assert_eq!(error.to_string(), message, "{case}");
         assert_eq!(snapshot(&mut owner).await, before, "{case}");
+        assert_eq!(error.to_string(), message, "{case}");
+        let write = create_with(&mut owner, &artifact_for(OTHER_K, "n"), limits())
+            .await
+            .unwrap_err();
+        assert_eq!(write.to_string(), message, "{case}");
+        assert_eq!(snapshot(&mut owner).await, before, "{case}");
+        drop(owner);
+        let refused = LocalOwnerRepository::open(&path, limits().admission)
+            .await
+            .err()
+            .unwrap();
+        assert_eq!(refused.to_string(), error.to_string(), "{case}");
     }
+}
+
+#[tokio::test]
+/// One parser ledger serves every artifact that admission parses, so its entry ceiling
+/// bounds the count of issues. In this fixture each task takes 14 entries, so 30
+/// entries admit two tasks, and refuse one entry fewer or a third task.
+async fn the_entry_ceiling_bounds_the_issue_count() {
+    let temp = tempfile::tempdir().unwrap();
+    let path = temp.path().join("repo");
+    let bounded = |entries| {
+        let mut limits = limits().admission;
+        limits.parser.entries = entries;
+        limits
+    };
+    let refused = "recording native artifact validation";
+    let mut owner = repository(&path).await;
+    for (k, letter) in [(K, "m"), (OTHER_K, "n")] {
+        create_with(&mut owner, &artifact_for(k, letter), limits())
+            .await
+            .unwrap();
+    }
+    drop(owner);
+    assert!(LocalOwnerRepository::open(&path, bounded(30)).await.is_ok());
+    let error = LocalOwnerRepository::open(&path, bounded(29))
+        .await
+        .err()
+        .unwrap();
+    assert_eq!(error.to_string(), refused);
+    let mut owner = LocalOwnerRepository::open(&path, limits().admission)
+        .await
+        .unwrap();
+    create_with(&mut owner, &artifact_for(PROJECT_K, "p"), limits())
+        .await
+        .unwrap();
+    drop(owner);
+    let error = LocalOwnerRepository::open(&path, bounded(30))
+        .await
+        .err()
+        .unwrap();
+    assert_eq!(error.to_string(), refused);
+}
+
+#[tokio::test]
+/// The admission proof holds every row of the four issue tables, so a change that the
+/// owner's own connection makes, with the change counter refreshed, is still refused
+/// before the next write.
+async fn the_admission_proof_covers_the_issue_tables() {
+    for sql in [
+        "UPDATE ticket SET title='\"other\"'",
+        "UPDATE ticketchng SET tkt_user='other'",
+        "UPDATE g_gest_tasks SET title='other'",
+        "UPDATE g_gest_projects SET archived_at='2026-11-19T00:00:00Z'",
+    ] {
+        let temp = tempfile::tempdir().unwrap();
+        let mut owner = repository(&temp.path().join("repo")).await;
+        create(&mut owner).await.unwrap();
+        create_with(&mut owner, &project_for(PROJECT_K, "p"), limits())
+            .await
+            .unwrap();
+        let mut tx = owner.store.begin_write().await.unwrap();
+        tx.execute(sql).await.unwrap();
+        tx.commit().await.unwrap();
+        owner.admission.total_changes = owner.store.connection.as_ref().unwrap().total_changes();
+        let before = snapshot(&mut owner).await;
+        let error = create_with(&mut owner, &artifact_for(OTHER_K, "n"), limits())
+            .await
+            .unwrap_err();
+        assert_eq!(
+            error.to_string(),
+            "repository authority changed; explicit readmission required",
+            "{sql}"
+        );
+        assert_eq!(snapshot(&mut owner).await, before, "{sql}");
+    }
+}
+
+#[tokio::test]
+/// The writer refuses a project whose Gest ID a task holds, and a task whose Gest ID a
+/// project holds, before any effect.
+async fn the_writer_refuses_a_gest_id_of_the_other_kind() {
     let temp = tempfile::tempdir().unwrap();
     let mut owner = repository(&temp.path().join("repo")).await;
     create(&mut owner).await.unwrap();
-    tamper(
-        &mut owner,
-        &format!("UPDATE tag SET tagname='tkt-{OTHER_K}' WHERE tagname='tkt-{K}';UPDATE ticket SET tkt_uuid='{OTHER_K}' WHERE tkt_uuid='{K}'"),
-    )
-    .await;
-    let error = owner
-        .read_private_issue(OTHER_K, limits())
+    create_with(&mut owner, &project_for(PROJECT_K, "p"), limits())
         .await
-        .unwrap_err();
-    assert_eq!(
-        error.to_string(),
-        differ,
-        "an artifact whose K is not the asked ticket ID"
-    );
+        .unwrap();
+    for bytes in [
+        project_for("0000000000000000000000000000000000000002", "m"),
+        artifact_for(OTHER_K, "p"),
+    ] {
+        let before = snapshot(&mut owner).await;
+        let error = create_with(&mut owner, &bytes, limits()).await.unwrap_err();
+        assert_eq!(error.to_string(), UNSUPPORTED);
+        assert_eq!(snapshot(&mut owner).await, before);
+    }
+}
+
+#[tokio::test]
+/// Admission refuses a project whose artifact reuses the Gest ID of a task, though its
+/// own rows are exact. Admission accepts the same copy with its own Gest ID.
+async fn admission_refuses_a_project_that_reuses_a_task_gest_id() {
+    for (letter, admitted) in [("m", false), ("p", true)] {
+        let temp = tempfile::tempdir().unwrap();
+        let path = temp.path().join("repo");
+        let mut owner = repository(&path).await;
+        create(&mut owner).await.unwrap();
+        // A second repository holds the project at the RID, receipt, tag and ticket ID
+        // that it would take in the first, so its rows can be copied unchanged.
+        let mut donor = repository(&temp.path().join("donor")).await;
+        create_with(&mut donor, &artifact_for(OTHER_K, "z"), limits())
+            .await
+            .unwrap();
+        let project = create_with(&mut donor, &project_for(PROJECT_K, letter), limits())
+            .await
+            .unwrap();
+        for (table, filter) in [
+            ("rcvfrom", "rcvid=3"),
+            ("blob", "rid=3"),
+            ("private", "rid=3"),
+            ("tag", "tagid=14"),
+            ("tagxref", "rid=3"),
+            ("ticket", "tkt_id=2"),
+            ("ticketchng", "tkt_rid=3"),
+            ("event", "objid=3"),
+            ("g_gest_projects", "1"),
+        ] {
+            copy_rows(&mut donor, &mut owner, table, filter).await;
+        }
+        let read = owner.read_private_issue(PROJECT_K, limits()).await;
+        drop(owner);
+        let opened = LocalOwnerRepository::open(&path, limits().admission).await;
+        if admitted {
+            assert_eq!(read.unwrap(), project);
+            assert!(opened.is_ok());
+        } else {
+            let error = read.unwrap_err().to_string();
+            assert_eq!(error, "stored issue rows differ from the ticket artifact");
+            assert_eq!(opened.err().unwrap().to_string(), error);
+        }
+    }
 }
 
 #[tokio::test]

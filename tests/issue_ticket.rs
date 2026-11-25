@@ -1,12 +1,13 @@
 //! Check the private issue ticket writer and reader through the public library.
 //!
 //! The cases are GEST-T01 for a task and a project, the subset of GEST-T02 that one
-//! creation can meet, and the refusals of this build. An ignored oracle checks that
-//! stock Fossil 2.29 reads the stored ticket and writes the same rows for it.
+//! creation can meet, the refusals of this build, and the CAT-T07 subset, where
+//! check-ins and issues share one repository in several orders. Two ignored oracles
+//! check that stock Fossil 2.29 reads the stored tickets, alone and beside check-ins.
 //!
 //! ## Recommendations
-//! Keep one owner for a write and its read back. `LocalOwnerRepository::open`
-//! refuses a repository that holds an issue until its admission accepts issue rows.
+//! `LocalOwnerRepository::open` admits issue rows, so a test may open a new owner
+//! for each step.
 use gossil::gest_project_values::{ProjectValueInputs, project_from_values};
 use gossil::gest_task_values::{TaskValueInputs, task_from_values};
 use gossil::native_date::NativeDate;
@@ -793,4 +794,383 @@ fn stock_fossil_reads_the_stored_issue_tickets() {
         let rebuilt = runtime.block_on(native_ticket_state(&copy));
         assert_eq!(rebuilt, stored, "{command:?}");
     }
+}
+
+/// Run one product command in an isolated home and return its output.
+/// # Arguments
+/// * `home` - The fixture home, which also holds the checkout root `root`.
+/// * `args` - The arguments after the executable.
+/// # Returns
+/// The captured output.
+fn gos(home: &Path, args: &[&std::ffi::OsStr]) -> std::process::Output {
+    let mut command = std::process::Command::new(env!("CARGO_BIN_EXE_gos"));
+    for (key, _) in std::env::vars_os() {
+        if key.to_str().is_some_and(|key| key.starts_with("GEST_")) {
+            command.env_remove(key);
+        }
+    }
+    command
+        .env("HOME", home)
+        .env("XDG_CONFIG_HOME", home)
+        .env("XDG_DATA_HOME", home)
+        .current_dir(home.join("root"))
+        .args(args)
+        .output()
+        .unwrap()
+}
+
+/// Run one `vcs` verb on the fixture repository and checkout, and require success.
+/// # Arguments
+/// * `home` - The fixture home.
+/// * `verb` - The verb and its own flags.
+/// # Returns
+/// Standard output.
+fn vcs(home: &Path, verb: &[&str]) -> String {
+    let repo = home.join("repo");
+    let mut args = vec![
+        std::ffi::OsStr::new("v"),
+        std::ffi::OsStr::new(verb[0]),
+        std::ffi::OsStr::new("--repository"),
+        repo.as_os_str(),
+        std::ffi::OsStr::new("--checkout"),
+        std::ffi::OsStr::new("work"),
+    ];
+    args.extend(verb[1..].iter().map(std::ffi::OsStr::new));
+    let output = gos(home, &args);
+    assert!(
+        output.status.success(),
+        "{verb:?}: {}",
+        String::from_utf8_lossy(&output.stderr)
+    );
+    String::from_utf8(output.stdout).unwrap()
+}
+
+/// One step of a CAT-T07 order.
+#[derive(Clone, Copy, Debug)]
+enum Step {
+    /// Store the next task through the library.
+    Issue,
+    /// Register the checkout with `gos v open --root`.
+    Open,
+    /// Add, scope and commit the next file with the CLI.
+    Commit,
+}
+
+/// Run one order of steps on a new repository made by `gos v init`.
+///
+/// After each step a new open admits the repository and reads every issue back. Once
+/// the checkout is registered, `status` runs after each step, and `timeline` lists
+/// every check-in.
+/// # Arguments
+/// * `home` - An empty fixture home.
+/// * `steps` - The order.
+/// # Returns
+/// The stored tickets, the count of check-ins, and the name of each tag above the 12
+/// built-in tags in the order of creation, with `BRANCH` for the private branch tag.
+async fn run_order(home: &Path, steps: &[Step]) -> (Vec<IssueTicket>, usize, Vec<String>) {
+    let repo = home.join("repo");
+    let root = home.join("root");
+    std::fs::create_dir(&root).unwrap();
+    let init = gos(home, &["v".as_ref(), "init".as_ref(), repo.as_os_str()]);
+    assert!(
+        init.status.success(),
+        "{}",
+        String::from_utf8_lossy(&init.stderr)
+    );
+    let (mut issues, mut commits, mut registered) = (Vec::new(), 0, false);
+    let mut tags = Vec::new();
+    for (index, step) in steps.iter().enumerate() {
+        match step {
+            Step::Issue => {
+                let k = format!("{:040x}", index + 1);
+                let gest_id = char::from(b'k' + index as u8).to_string().repeat(32);
+                let inputs = TaskValueInputs {
+                    gest_id: json!(gest_id),
+                    ..task_inputs()
+                };
+                let mut owner = LocalOwnerRepository::open(&repo, limits().admission)
+                    .await
+                    .unwrap();
+                issues.push(
+                    create(&mut owner, &task_artifact(inputs, &k))
+                        .await
+                        .unwrap(),
+                );
+                tags.push(format!("tkt-{k}"));
+            }
+            Step::Open => {
+                vcs(home, &["open", "--root", root.to_str().unwrap()]);
+                registered = true;
+            }
+            Step::Commit => {
+                commits += 1;
+                if commits == 1 {
+                    tags.push("BRANCH".to_owned());
+                }
+                let file = format!("file{commits}");
+                std::fs::write(root.join(&file), format!("content {commits}")).unwrap();
+                vcs(home, &["add", "--path", &file]);
+                vcs(home, &["scope", "--scope", "private", "--path", &file]);
+                let date = format!("2099-01-01T00:00:{commits:02}");
+                vcs(
+                    home,
+                    &[
+                        "commit",
+                        "--scope",
+                        "private",
+                        "--all-tracked",
+                        "--user",
+                        "CLI Owner",
+                        "--comment",
+                        &format!("commit {commits}"),
+                        "--date-override",
+                        &date,
+                    ],
+                );
+            }
+        }
+        let mut owner = LocalOwnerRepository::open(&repo, limits().admission)
+            .await
+            .unwrap_or_else(|error| panic!("{steps:?} {index}: {error}"));
+        for issue in &issues {
+            let read = owner.read_private_issue(&issue.ticket_id, limits()).await;
+            assert_eq!(&read.unwrap(), issue, "{steps:?} {index}");
+        }
+        drop(owner);
+        if registered {
+            vcs(home, &["status"]);
+            let timeline = vcs(home, &["timeline"]);
+            assert_eq!(timeline.lines().count(), commits + 1, "{steps:?} {index}");
+        }
+    }
+    (issues, commits, tags)
+}
+
+#[tokio::test]
+/// CAT-T07 subset: a repository with check-ins and issues in several orders opens, and
+/// `status`, `add`, `commit` and `timeline` work after issues exist. Issues can be
+/// written before registration, before the first check-in, and after check-ins.
+async fn check_ins_and_issues_share_one_repository_in_any_order() {
+    use Step::{Commit, Issue, Open};
+    for steps in [
+        &[Issue, Open, Commit, Issue, Commit][..],
+        &[Open, Issue, Issue, Commit, Issue][..],
+        &[Open, Commit, Issue, Commit, Commit, Issue][..],
+    ] {
+        let temp = tempfile::tempdir().unwrap();
+        let (issues, commits, names) = run_order(temp.path(), steps).await;
+        let expected = steps.iter().filter(|step| matches!(step, Issue)).count();
+        assert_eq!(issues.len(), expected, "{steps:?}");
+        assert!(commits > 0, "{steps:?}");
+        // Tag IDs above the 12 built-in tags follow the order of creation.
+        let repo = temp.path().join("repo");
+        let server = rows(&repo, "SELECT value FROM config WHERE name='server-code'").await;
+        let branch = format!("sym-gossil-private/{}", server[0][0].as_text().unwrap());
+        let expected_tags: Vec<Vec<Value>> = names
+            .iter()
+            .zip(13..)
+            .map(|(name, id)| vec![Value::Integer(id), text(&name.replace("BRANCH", &branch))])
+            .collect();
+        let tags = rows(
+            &repo,
+            "SELECT tagid,tagname FROM tag WHERE tagid>12 ORDER BY tagid",
+        )
+        .await;
+        assert_eq!(tags, expected_tags, "{steps:?}");
+    }
+}
+
+#[tokio::test]
+/// With a registered checkout and check-ins between issues, admission still refuses
+/// each changed issue, tag or receipt row, so the check-in path checks issues too.
+async fn admission_refuses_changed_issue_rows_beside_check_ins() {
+    use Step::{Commit, Issue, Open};
+    let (differs, projection) = (
+        "stored issue rows differ from the ticket artifact",
+        "recording native projection differs",
+    );
+    let cases = [
+        (
+            "swapped tag IDs",
+            "UPDATE tag SET tagid=-1 WHERE tagid=13; UPDATE tag SET tagid=13 WHERE tagid=14; UPDATE tag SET tagid=14 WHERE tagid=-1; UPDATE tagxref SET tagid=CASE tagid WHEN 13 THEN 14 WHEN 14 THEN 13 ELSE tagid END; UPDATE event SET tagid=CASE tagid WHEN 13 THEN 14 WHEN 14 THEN 13 ELSE tagid END",
+            projection,
+        ),
+        (
+            "a change row that names the check-in",
+            "UPDATE ticketchng SET tkt_rid=(SELECT max(objid) FROM event WHERE type='ci') WHERE tkt_id=1",
+            differs,
+        ),
+        (
+            "an issue under the receipt of a check-in",
+            "DELETE FROM rcvfrom WHERE rcvid=(SELECT max(rcvid) FROM rcvfrom); UPDATE blob SET rcvid=(SELECT max(rcvid) FROM rcvfrom) WHERE rid=(SELECT max(rid) FROM blob)",
+            "recording unexplained receipt",
+        ),
+        (
+            "a missing typed row",
+            "DELETE FROM g_gest_tasks WHERE id=(SELECT max(id) FROM g_gest_tasks)",
+            differs,
+        ),
+        (
+            "a ticket tag without an artifact",
+            "INSERT INTO tag(tagname) VALUES('tkt-0000000000000000000000000000000000000abc')",
+            "recording SQL count limit",
+        ),
+        (
+            "swapped receipts of an issue and a check-in",
+            "UPDATE blob SET rcvid=CASE rcvid WHEN 2 THEN 3 WHEN 3 THEN 2 ELSE rcvid END",
+            projection,
+        ),
+        (
+            "an issue event of type ci",
+            "UPDATE event SET type='ci' WHERE type='t'",
+            projection,
+        ),
+        (
+            "a leaf row for an issue",
+            "INSERT INTO leaf(rid) SELECT max(rid) FROM blob",
+            "recording SQL count limit",
+        ),
+        (
+            "a tag row without a RID",
+            "INSERT INTO tagxref(tagid,tagtype,srcid,origid,value,mtime,rid) VALUES(8,2,1,1,'other',0,NULL)",
+            projection,
+        ),
+    ];
+    for (case, sql, message) in cases {
+        let temp = tempfile::tempdir().unwrap();
+        run_order(temp.path(), &[Open, Issue, Commit, Issue]).await;
+        let repo = temp.path().join("repo");
+        let database = libsql::Builder::new_local(&repo).build().await.unwrap();
+        database
+            .connect()
+            .unwrap()
+            .execute_batch(sql)
+            .await
+            .unwrap();
+        let error = LocalOwnerRepository::open(&repo, limits().admission)
+            .await
+            .err()
+            .unwrap();
+        assert_eq!(error.to_string(), message, "{case}");
+    }
+}
+
+#[tokio::test]
+/// The fingerprint of the checkout must name the receipt of the selected check-in once
+/// one exists. Before that, registration takes the newest receipt, which may belong to
+/// an issue. An older fingerprint, of the root or of an issue, is refused after a check-in.
+async fn the_fingerprint_must_name_the_selected_receipt() {
+    use Step::{Issue, Open};
+    for (steps, receipt) in [(&[Open, Issue][..], "1/"), (&[Issue, Open][..], "2/")] {
+        let temp = tempfile::tempdir().unwrap();
+        run_order(temp.path(), steps).await;
+        let repo = temp.path().join("repo");
+        let sql = "SELECT value FROM g_vvar WHERE name='fingerprint'";
+        let old = rows(&repo, sql).await[0][0].as_text().unwrap().clone();
+        assert!(old.starts_with(receipt), "{steps:?}: {old}");
+        std::fs::write(temp.path().join("root/file"), "content").unwrap();
+        vcs(temp.path(), &["add", "--path", "file"]);
+        vcs(
+            temp.path(),
+            &["scope", "--scope", "private", "--path", "file"],
+        );
+        vcs(
+            temp.path(),
+            &[
+                "commit",
+                "--scope",
+                "private",
+                "--all-tracked",
+                "--user",
+                "CLI Owner",
+                "--comment",
+                "c",
+                "--date-override",
+                "2099-01-01T00:00:01",
+            ],
+        );
+        let database = libsql::Builder::new_local(&repo).build().await.unwrap();
+        database
+            .connect()
+            .unwrap()
+            .execute("UPDATE g_vvar SET value=?1 WHERE name='fingerprint'", [old])
+            .await
+            .unwrap();
+        let error = LocalOwnerRepository::open(&repo, limits().admission)
+            .await
+            .err()
+            .unwrap();
+        assert_eq!(
+            error.to_string(),
+            "recording current receipt relation",
+            "{steps:?}"
+        );
+    }
+}
+
+#[test]
+#[ignore = "requires explicit pinned native Fossil; run just issue-ticket-interop"]
+/// Stock Fossil 2.29 checks a repository that holds check-ins and an issue, written in
+/// turn. `test-integrity` finds no error, `timeline` lists the check-ins and the new
+/// ticket, and `ticket show` gives the fields of the issue. The timeline starts in
+/// 2100, because the check-in dates of the fixture are in 2099.
+fn stock_fossil_reads_check_ins_and_issues_together() {
+    use std::ffi::OsStr;
+    let fossil =
+        std::env::var_os("GOSSIL_FOSSIL_REFERENCE").expect("explicit reference executable");
+    let fossil = fossil.as_os_str();
+    let temp = tempfile::tempdir().unwrap();
+    let runtime = tokio::runtime::Builder::new_current_thread()
+        .build()
+        .unwrap();
+    let (issues, _, _) = runtime.block_on(run_order(
+        temp.path(),
+        &[Step::Open, Step::Commit, Step::Issue, Step::Commit],
+    ));
+    let path = temp.path().join("repo");
+    let r = OsStr::new("-R");
+    let integrity = fossil_run(
+        fossil,
+        &[
+            OsStr::new("test-integrity"),
+            OsStr::new("--parse"),
+            r,
+            path.as_os_str(),
+        ],
+    );
+    assert!(integrity.contains("0 errors"), "{integrity}");
+    let timeline = fossil_run(
+        fossil,
+        &[
+            OsStr::new("timeline"),
+            OsStr::new("before"),
+            OsStr::new("2100-01-01"),
+            OsStr::new("-n"),
+            OsStr::new("0"),
+            r,
+            path.as_os_str(),
+        ],
+    );
+    let k = &issues[0].ticket_id;
+    for expected in [
+        "commit 1",
+        "commit 2",
+        &format!("New ticket [{}]", &k[..10]),
+    ] {
+        assert!(timeline.contains(expected), "{expected}: {timeline}");
+    }
+    let shown = fossil_run(
+        fossil,
+        &[
+            OsStr::new("ticket"),
+            OsStr::new("show"),
+            OsStr::new("0"),
+            OsStr::new(&format!("tkt_uuid='{k}'")),
+            OsStr::new("--quote"),
+            r,
+            path.as_os_str(),
+        ],
+    );
+    assert!(shown.contains(&"m".repeat(32)), "{shown}");
+    assert!(shown.contains(k.as_str()), "{shown}");
 }

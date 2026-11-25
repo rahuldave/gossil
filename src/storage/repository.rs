@@ -793,24 +793,28 @@ impl super::WriteTransaction<'_> {
         }.await;
         self.record(result)
     }
-    /// Refuse every unimplemented local/native state in the zero-or-one checkout catalog6 scope.
+    /// Refuse every unimplemented local/native state in the unregistered catalog6 scope.
+    ///
+    /// The repository holds the native empty root at RID 1 and receipt 1, and any
+    /// number of private issue creations. Every other row is refused.
     /// # Arguments
-    /// * `rid` - Authenticated canonical root RID.
     /// * `root` - Authenticated canonical native hash.
-    /// * `date` - Native numeric date authenticated from the artifact.
     /// * `principal` - Sealed repository and owner binding.
-    /// * `limits` - Native root and registration text ceilings.
+    /// * `limits` - Native root, issue and registration text ceilings.
+    /// * `work` - The operation's content ledger.
+    /// * `parse` - The operation's parser ledger.
     /// # Returns
-    /// Success for one native empty root with zero or one exact authenticated checkout registration.
+    /// Success for one native empty root with only admitted issues and no checkout registration.
     /// # Errors
-    /// Rejects populated tables, extra native history and noncanonical receive/index facts.
+    /// Rejects populated tables, extra native history, issue rows that differ from
+    /// replay and unexplained receipts.
     async fn validate_empty_catalog6(
         &mut self,
-        rid: i64,
         root: &str,
-        date: &Value,
         principal: &Principal,
         limits: AdmissionLimits,
+        work: &mut super::content::Budget,
+        parse: &mut ParseWork,
     ) -> Result<(), StorageError> {
         if self
             .query_bound(
@@ -883,15 +887,10 @@ impl super::WriteTransaction<'_> {
             ),
             ("g_gest_notes", "SELECT EXISTS(SELECT 1 FROM g_gest_notes)"),
             (
-                "g_gest_projects",
-                "SELECT EXISTS(SELECT 1 FROM g_gest_projects)",
-            ),
-            (
                 "g_gest_relationships",
                 "SELECT EXISTS(SELECT 1 FROM g_gest_relationships)",
             ),
             ("g_gest_tags", "SELECT EXISTS(SELECT 1 FROM g_gest_tags)"),
-            ("g_gest_tasks", "SELECT EXISTS(SELECT 1 FROM g_gest_tasks)"),
             (
                 "g_git_checkout",
                 "SELECT EXISTS(SELECT 1 FROM g_git_checkout)",
@@ -982,10 +981,7 @@ impl super::WriteTransaction<'_> {
             ("orphan", "SELECT EXISTS(SELECT 1 FROM orphan)"),
             ("phantom", "SELECT EXISTS(SELECT 1 FROM phantom)"),
             ("plink", "SELECT EXISTS(SELECT 1 FROM plink)"),
-            ("private", "SELECT EXISTS(SELECT 1 FROM private)"),
             ("shun", "SELECT EXISTS(SELECT 1 FROM shun)"),
-            ("ticket", "SELECT EXISTS(SELECT 1 FROM ticket)"),
-            ("ticketchng", "SELECT EXISTS(SELECT 1 FROM ticketchng)"),
             (
                 "transaction_events",
                 "SELECT EXISTS(SELECT 1 FROM transaction_events)",
@@ -1002,79 +998,30 @@ impl super::WriteTransaction<'_> {
                 )));
             }
         }
-        if rid != 1
-            || self
-                .query_bound(
-                    "SELECT rid,rcvid,uuid FROM blob ORDER BY rid LIMIT 2",
-                    vec![],
-                )
-                .await?
-                != vec![vec![
-                    Value::Integer(1),
-                    Value::Integer(1),
-                    Value::Text(root.into()),
-                ]]
-        {
-            return Err(StorageError::state(
-                "unsupported extra native content history",
-            ));
-        }
-        for sql in [
-            "SELECT objid FROM event ORDER BY objid LIMIT 2",
-            "SELECT rid FROM leaf ORDER BY rid LIMIT 2",
-            "SELECT rid FROM unclustered ORDER BY rid LIMIT 2",
-        ] {
-            if self.query_bound(sql, vec![]).await? != vec![vec![Value::Integer(1)]] {
-                return Err(StorageError::state("unsupported native root index history"));
-            }
-        }
-        if self
-            .query_bound(
-                "SELECT rcvid,uid,mtime,nonce,ipaddr FROM rcvfrom ORDER BY rcvid LIMIT 2",
-                vec![],
-            )
-            .await?
-            != vec![vec![
-                Value::Integer(1),
-                Value::Integer(0),
-                date.clone(),
-                Value::Null,
-                Value::Null,
-            ]]
-        {
-            return Err(StorageError::state("native root receive facts differ"));
-        }
-        if self
-            .query_bound("SELECT count(*) FROM tagxref", vec![])
-            .await?
-            != vec![vec![Value::Integer(2)]]
-        {
-            return Err(StorageError::state("unsupported native tag history"));
-        }
-        let tags = self
-            .query_bound("SELECT tagid,tagname FROM tag ORDER BY tagid", vec![])
-            .await?;
-        let expected: Vec<Vec<Value>> = [
-            "bgcolor",
-            "comment",
-            "user",
-            "date",
-            "hidden",
-            "private",
-            "cluster",
-            "branch",
-            "closed",
-            "parent",
-            "note",
-            "sym-trunk",
-        ]
-        .into_iter()
-        .enumerate()
-        .map(|(i, name)| vec![Value::Integer((i + 1) as i64), Value::Text(name.into())])
-        .collect();
-        if tags != expected {
-            return Err(StorageError::state("unsupported native tag definitions"));
-        }
+        self.recording_preflight(limits, work).await?;
+        let issues = self.admit_issues(principal, limits, work, parse).await?;
+        let (_, tags) = issue_ticket::assign_tags(None, "", &issues);
+        self.expect_shared_tables(
+            recorded_history::SharedTables {
+                shared_rid: 1,
+                shared_receipt: 1,
+                plink: vec![],
+                mlink: vec![],
+                events: vec![],
+                tagxref: vec![],
+                tags,
+                filenames: vec![],
+                leaves: vec![vec![Value::Integer(1)]],
+                unsent: std::collections::BTreeSet::new(),
+                referenced: [(1, (root.to_owned(), 1))].into(),
+                owners: vec![],
+            },
+            &issues,
+            limits.parser.entries,
+            limits.parser.input_bytes,
+            work,
+        )
+        .await?;
         let identities = self
             .query_bound("SELECT value FROM config WHERE name='server-code'", vec![])
             .await?;
@@ -1082,7 +1029,7 @@ impl super::WriteTransaction<'_> {
         {
             return Err(StorageError::state("native server identity unavailable"));
         }
-        self.validate_initial_checkout(principal, rid, root, limits)
+        self.validate_initial_checkout(principal, 1, root, limits)
             .await?;
         Ok(())
     }
@@ -3507,20 +3454,32 @@ mod tests {
                 tx.execute(statement).await.unwrap();
             }
             assert_eq!(
-                tx.validate_empty_catalog6(1, "root", &Value::Null, &owner.principal, limits)
-                    .await
-                    .unwrap_err()
-                    .operation,
+                tx.validate_empty_catalog6(
+                    "root",
+                    &owner.principal,
+                    limits,
+                    &mut crate::storage::content::Budget::new(limits.content).unwrap(),
+                    &mut ParseWork::new(limits.parser).unwrap()
+                )
+                .await
+                .unwrap_err()
+                .operation,
                 format!("unsupported nonempty catalog6 table: {table}")
             );
             // The guard checks the owner first, so with no owner it fails before any table check runs.
             if table == "transactions" {
                 tx.execute("DELETE FROM g_local_owner").await.unwrap();
                 assert_eq!(
-                    tx.validate_empty_catalog6(1, "root", &Value::Null, &owner.principal, limits)
-                        .await
-                        .unwrap_err()
-                        .operation,
+                    tx.validate_empty_catalog6(
+                        "root",
+                        &owner.principal,
+                        limits,
+                        &mut crate::storage::content::Budget::new(limits.content).unwrap(),
+                        &mut ParseWork::new(limits.parser).unwrap()
+                    )
+                    .await
+                    .unwrap_err()
+                    .operation,
                     "unsupported catalog6 owner cardinality"
                 );
             }

@@ -164,11 +164,10 @@ charges the bytes of the fingerprint encoding of the schema. It builds that
 encoding before it compares the fingerprint.
 
 The [issue ticket writer](issue-ticket.md) is the one production caller of the
-metered put. The admission check of catalog 6 refuses a nonempty `private` table,
-so a committed put leaves a repository that `LocalOwnerRepository::open` refuses.
-The writer keeps the admission proof of its open owner current, so that owner
-can still read the ticket. A later change teaches the admission to accept the
-ticket rows. The unit tests of the put use it only on fixture files.
+metered put. The admission check of catalog 6 accepts a `private` row only for a
+check-in, a file of a check-in or an issue artifact. So a put that no issue owns
+leaves a repository that `LocalOwnerRepository::open` refuses. The unit tests of
+the put use it only on fixture files.
 
 A put charges its input to the content `Budget` as decoded bytes. A put that
 writes also charges the compressed envelope as stored bytes. It charges the
