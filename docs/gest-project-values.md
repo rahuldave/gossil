@@ -3,7 +3,9 @@
 The `gossil::gest_project_values` module converts all four canonical project
 fields into an owned, validated record. Use it for complete decoded snapshots
 before storage. The [issue ticket writer](issue-ticket.md) stores a project
-privately. CLI commands remain planned.
+privately. The command [`gos i init`](cli.md#create-the-gest-project-of-a-checkout)
+builds a new project with this module and stores it that way. The other CLI
+commands remain planned.
 
 Gest is a task and artifact tracker. These converters use its task and project record model. A Gest project represents a tracked repository or directory. Here, canonical
 means the four project fields in the reviewed field map.

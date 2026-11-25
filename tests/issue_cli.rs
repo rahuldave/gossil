@@ -1,5 +1,7 @@
 //! Both executables recognise every command of the `issue` group under both group
-//! names, refuse it with status 69 and change no file (CLI-01, CLI-05).
+//! names. Each command that this build does not run, every one but `init`, refuses
+//! with status 69 and changes no file (CLI-01, CLI-05). `tests/issue_init_cli.rs`
+//! tests `init`.
 use std::path::Path;
 use std::process::{Command, Output};
 
@@ -169,14 +171,15 @@ fn run_path(binary: &str, dir: &Path, group: &str, path: &str, extra: &[&str]) -
     run(binary, dir, &args)
 }
 
-/// Each recognised command exits 69 with one refusal line on stderr, under the four
-/// executable and group pairs, with or without arguments, and writes no file.
+/// Each recognised command other than `init` exits 69 with one refusal line on
+/// stderr, under the four executable and group pairs, with or without arguments, and
+/// writes no file.
 #[test]
 fn every_recognised_command_refuses_with_69() {
     let temp = tempfile::tempdir().unwrap();
     for binary in binaries() {
         for group in ["issue", "i"] {
-            for path in RUNNABLE {
+            for path in RUNNABLE.into_iter().filter(|path| *path != "init") {
                 for extra in [&[][..], &["x", "--json", "help"]] {
                     let out = run_path(binary, temp.path(), group, path, extra);
                     assert_eq!(out.status.code(), Some(69), "{group} {path} {extra:?}");
@@ -202,17 +205,19 @@ fn every_recognised_command_refuses_with_69() {
     assert_eq!(std::fs::read_dir(temp.path()).unwrap().count(), 0);
 }
 
-/// Commands whose real forms would write, such as `init` and `task create`, write
-/// nothing in a directory that already holds a file, and leave its bytes unchanged.
+/// Commands whose real forms would write, such as `task create`, write nothing in a
+/// directory that already holds a file, and leave its bytes unchanged. `init` outside
+/// an open checkout refuses with status 78 and writes nothing either.
 #[test]
 fn refused_writers_leave_files_unchanged() {
     let temp = tempfile::tempdir().unwrap();
     let kept = temp.path().join("kept.db");
     std::fs::write(&kept, b"unchanged").unwrap();
     for binary in binaries() {
+        let out = run(binary, temp.path(), &["i", "init", "--local"]);
+        assert_eq!(out.status.code(), Some(78));
         for args in [
-            &["i", "init", "--local"][..],
-            &["issue", "task", "create", "Title", "-d", "text"],
+            &["issue", "task", "create", "Title", "-d", "text"][..],
             &["i", "config", "set", "-g", "log.level", "debug"],
             &["i", "generate", "man-pages", "man"],
             &["i", "undo"],
@@ -362,7 +367,11 @@ fn every_command_prints_its_help() {
             outputs[0].starts_with(&format!("Usage: gossil issue {path}")),
             "{path}"
         );
-        assert!(outputs[0].contains("not available in this build"), "{path}");
+        assert_eq!(
+            outputs[0].contains("not available in this build"),
+            *path != "init",
+            "{path}"
+        );
     }
     let out = run(gos, temp.path(), &["i", "t", "new", "--help"]);
     assert_eq!(
@@ -372,6 +381,28 @@ fn every_command_prints_its_help() {
          Names: create, new.\n\
          This build recognises the command and does not run it: it is not available in this build.\n"
     );
+    let out = run(gos, temp.path(), &["i", "init", "-h"]);
+    assert_eq!(
+        String::from_utf8(out.stdout).unwrap(),
+        "Usage: gossil issue init [OPTIONS]\n\n\
+         Initialize gest for the current directory.\n\n\
+         Create the Gest project of the open checkout that holds the current directory,\n\
+         as a private project ticket, and bind the checkout to it in one transaction.\n\
+         Run gos v init and gos v open first. When the checkout already has a project,\n\
+         init prints that project and changes nothing.\n\n\
+         Options:\n\
+         \x20 --local           Accepted; the checkout locator already selects the repository\n\
+         \x20 --no-color        Accepted; the output has no color\n\
+         \x20 --no-pager        Accepted; the output is not paged\n\
+         \x20 -v, --verbose...  Accepted; it changes no output\n\
+         \x20 -h, --help        Print help\n"
+    );
+    let group = String::from_utf8(run(gos, temp.path(), &["i", "--help"]).stdout).unwrap();
+    assert!(group.contains(
+        "This build recognises each Gest command below.\n\
+         It runs init; every other command is not available in this build.\n"
+    ));
+    assert!(group.contains("\nEach other command refuses to run, and exits with status 69.\n"));
     let out = run(gos, temp.path(), &["help", "i", "task", "create", "extra"]);
     assert_eq!(out.status.code(), Some(2));
     assert_eq!(

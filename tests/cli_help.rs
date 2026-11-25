@@ -65,7 +65,9 @@ fn root_help_lists_groups_and_commands() {
         assert!(help.contains("gos GROUP COMMAND"));
         assert!(help.contains("\n  vcs, v "));
         assert!(help.contains("\n  issue, i "));
-        assert!(help.contains("Commands of the issue group, not available in this build:"));
+        assert!(help.contains(
+            "Commands of the issue group. This build runs init; every other command is not available in this build:"
+        ));
         for planned in ["ui, u", "serve, s"] {
             assert!(help.contains(&format!("\n  {planned} ")), "{planned}");
         }

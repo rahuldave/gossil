@@ -479,9 +479,10 @@ fn failed(error: &(dyn std::error::Error + 'static)) -> std::process::ExitCode {
 /// scope selection, private recording, checkout timeline/information or a completed diagnostic. Returns the failure exit code
 /// after printing an adapter error to standard error. A repository at an older Gossil catalog
 /// returns 78. The first argument `v` is accepted
-/// as an alias for `vcs`. A recognised command of the `issue` group, or its
-/// alias `i`, writes a refusal to stderr and returns 69, because this build
-/// runs none of the issue commands. A help request prints the help on stdout and returns 0.
+/// as an alias for `vcs`. In the `issue` group, or its alias `i`, `init` runs
+/// and returns its own status, 0 on success. Every other recognised issue
+/// command writes a refusal to stderr and returns 69, because this build does
+/// not run it. A help request prints the help on stdout and returns 0.
 /// If the write of the help fails, the entry returns 1. An unknown group or command
 /// returns 2, as a parser failure, with a pointer to the help on stderr.
 /// # Panics

@@ -41,6 +41,8 @@ tracking, scope and private recording inventories described below. Extra native
 content or indexed history outside that family refuses admission. Admission also
 accepts private issue tickets written before, between or after check-ins. It checks each row of a
 ticket against the artifact of that ticket, as the [issue ticket guide](issue-ticket.md) says.
+The tables `g_project_binding` and `g_checkout_project` are empty, or each holds the one
+binding row that `issue init` writes. The row binds the registered checkout to an admitted project.
 
 No upgrade occurs on open. Open refuses a repository before any effect when its
 catalog marker, the `storage_version` value of `g_storage`, names catalog2,
@@ -452,7 +454,7 @@ When the reference is absent, it exits 5, the status for not-run.
 
 The [issue ticket writer](issue-ticket.md) stores one private task or project
 ticket in a catalog 6 repository. `open` admits a repository that holds such
-tickets beside private check-ins.
+tickets beside private check-ins, and the project binding that `issue init` writes.
 
 The required object
 inventory and complete stored definitions are

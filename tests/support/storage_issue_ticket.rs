@@ -701,3 +701,318 @@ fn htmlize_escapes_the_five_fossil_characters() {
         "&lt;a href=&#39;x&#39;&gt;&amp;&quot;é"
     );
 }
+
+/// The refusal of the binding admission.
+const BINDING_STATE: &str = "unsupported project binding state";
+
+/// Create a catalog 6 repository with the checkout `work` registered at `DIR/root`.
+/// # Arguments
+/// * `dir` - An empty directory, which gets the repository `repo` and the root `root`.
+/// # Returns
+/// The admitted owner.
+async fn registered(dir: &std::path::Path) -> LocalOwnerRepository {
+    let root = dir.join("root");
+    std::fs::create_dir(&root).unwrap();
+    let mut owner = repository(&dir.join("repo")).await;
+    owner
+        .register_checkout("work", &root.canonicalize().unwrap(), limits().admission)
+        .await
+        .unwrap();
+    owner
+}
+
+/// Write one artifact through the `issue init` writer for a checkout.
+/// # Arguments
+/// * `owner` - The admitted owner.
+/// * `bytes` - The creation artifact.
+/// * `checkout` - The checkout ID.
+/// # Returns
+/// The writer's result.
+async fn init_with(
+    owner: &mut LocalOwnerRepository,
+    bytes: &[u8],
+    checkout: &str,
+) -> Result<IssueTicket, StorageError> {
+    owner
+        .init_private_project(
+            ProjectInitRequest {
+                artifact: bytes,
+                checkout_id: checkout,
+            },
+            limits(),
+        )
+        .await
+}
+
+/// Emit the creation artifact of a fixture project that is archived.
+/// # Arguments
+/// * `k` - The K card.
+/// * `letter` - The letter that the 32 letters of the Gest ID repeat.
+/// # Returns
+/// The artifact bytes.
+fn archived_project(k: &str, letter: &str) -> Vec<u8> {
+    use serde_json::json;
+    let project = crate::gest_project_values::project_from_values(
+        crate::gest_project_values::ProjectValueInputs {
+            gest_id: json!(letter.repeat(32)),
+            archived_at: json!("2026-11-19T00:00:00Z"),
+            created_at: json!("2026-11-18T12:00:00Z"),
+            updated_at: json!("2026-11-18T12:00:00Z"),
+        },
+    )
+    .unwrap();
+    let date = NativeDate::parse(b"2026-11-18T12:00:00Z").unwrap();
+    crate::gest_ticket::project_creation_bytes(&project, k.as_bytes(), b"agent", date, 65_536)
+        .unwrap()
+}
+
+#[tokio::test]
+/// CAT-T01 and GEST-T08 for `issue init`: a failure injected after each write step,
+/// the binding step included, leaves every table and every byte unchanged and the
+/// checkout unbound. The same owner then binds the project, and a new open admits it.
+async fn an_init_failure_before_commit_leaves_every_byte_unchanged() {
+    let temp = tempfile::tempdir().unwrap();
+    let path = temp.path().join("repo");
+    let mut owner = registered(temp.path()).await;
+    create(&mut owner).await.unwrap();
+    let project = project_for(PROJECT_K, "p");
+    for phase in [
+        IssuePhase::Receipt,
+        IssuePhase::Content,
+        IssuePhase::Tag,
+        IssuePhase::Ticket,
+        IssuePhase::Event,
+        IssuePhase::Typed,
+        IssuePhase::Binding,
+        IssuePhase::Admission,
+    ] {
+        let tables = snapshot(&mut owner).await;
+        let files = file_bytes(&path);
+        ISSUE_FAILURE.with(|selected| selected.set(Some(phase)));
+        let error = init_with(&mut owner, &project, "work").await.unwrap_err();
+        ISSUE_FAILURE.with(|selected| selected.set(None));
+        assert_eq!(
+            error.to_string(),
+            "injected issue ticket failure",
+            "{phase:?}"
+        );
+        assert_eq!(file_bytes(&path), files, "{phase:?}");
+        assert_eq!(snapshot(&mut owner).await, tables, "{phase:?}");
+        assert_eq!(owner.bound_project("work", limits()).await.unwrap(), None);
+    }
+    let stored = init_with(&mut owner, &project, "work").await.unwrap();
+    assert_eq!(stored.ticket_id, PROJECT_K);
+    let bound = Some("p".repeat(32));
+    assert_eq!(owner.bound_project("work", limits()).await.unwrap(), bound);
+    assert_eq!(owner.bound_project("other", limits()).await.unwrap(), None);
+    drop(owner);
+    let mut reopened = LocalOwnerRepository::open(&path, limits().admission)
+        .await
+        .unwrap();
+    assert_eq!(
+        reopened.bound_project("work", limits()).await.unwrap(),
+        bound
+    );
+    assert_eq!(
+        reopened
+            .read_private_issue(PROJECT_K, limits())
+            .await
+            .unwrap(),
+        stored
+    );
+}
+
+#[tokio::test]
+/// The `issue init` writer refuses a task creation, an unknown checkout, a checkout
+/// that already has a project, a repository that holds an unbound project, and a
+/// repository without a registration, before any effect.
+async fn init_refuses_a_task_an_unknown_checkout_and_a_bound_checkout() {
+    let temp = tempfile::tempdir().unwrap();
+    let mut owner = registered(temp.path()).await;
+    for (bytes, checkout) in [(artifact(), "work"), (project_for(PROJECT_K, "p"), "other")] {
+        let before = snapshot(&mut owner).await;
+        let error = init_with(&mut owner, &bytes, checkout).await.unwrap_err();
+        assert_eq!(error.to_string(), INIT_REFUSED);
+        assert_eq!(snapshot(&mut owner).await, before);
+    }
+    init_with(&mut owner, &project_for(PROJECT_K, "p"), "work")
+        .await
+        .unwrap();
+    let before = snapshot(&mut owner).await;
+    let error = init_with(&mut owner, &project_for(OTHER_K, "q"), "work")
+        .await
+        .unwrap_err();
+    assert_eq!(error.to_string(), INIT_REFUSED);
+    assert_eq!(snapshot(&mut owner).await, before);
+    let unbound = tempfile::tempdir().unwrap();
+    let mut owner = registered(unbound.path()).await;
+    create_with(&mut owner, &project_for(OTHER_K, "q"), limits())
+        .await
+        .unwrap();
+    let before = snapshot(&mut owner).await;
+    let error = init_with(&mut owner, &project_for(PROJECT_K, "p"), "work")
+        .await
+        .unwrap_err();
+    assert_eq!(error.to_string(), INIT_REFUSED);
+    assert_eq!(snapshot(&mut owner).await, before);
+    let unregistered = tempfile::tempdir().unwrap();
+    let mut owner = repository(&unregistered.path().join("repo")).await;
+    let error = init_with(&mut owner, &project_for(PROJECT_K, "p"), "work")
+        .await
+        .unwrap_err();
+    assert_eq!(error.to_string(), INIT_REFUSED);
+}
+
+#[tokio::test]
+/// Admission accepts only the two binding rows that `issue init` writes. It refuses
+/// each changed, missing or extra row, a project that no admitted project ticket
+/// holds, a task, an archived project, and values that are not text. Before each
+/// change, the list call returns every issue of the bound repository. After the
+/// change, the reader of the binding, the list call and a new open all refuse, and
+/// nothing changes.
+async fn admission_refuses_each_changed_binding_row() {
+    let (task, archived, unknown) = ("m".repeat(32), "r".repeat(32), "q".repeat(32));
+    let both = |id: &str| {
+        format!(
+            "UPDATE g_project_binding SET project_id='{id}';UPDATE g_checkout_project SET project_id='{id}'"
+        )
+    };
+    let cases = [
+        (
+            "a binding without its checkout project",
+            "DELETE FROM g_checkout_project".to_owned(),
+        ),
+        (
+            "a checkout project without its binding",
+            "DELETE FROM g_project_binding".to_owned(),
+        ),
+        (
+            "another root",
+            "UPDATE g_project_binding SET root=root||'/x'".to_owned(),
+        ),
+        ("a project that no ticket holds", both(&unknown)),
+        ("a task as the project", both(&task)),
+        ("an archived project", both(&archived)),
+        (
+            "a checkout project of another project",
+            format!("UPDATE g_checkout_project SET project_id='{archived}'"),
+        ),
+        (
+            "a second binding",
+            format!(
+                "INSERT INTO g_project_binding SELECT checkout_id,'{archived}',root||'/x' FROM g_project_binding"
+            ),
+        ),
+        (
+            "a binding project ID as a blob",
+            "UPDATE g_project_binding SET project_id=CAST(project_id AS BLOB)".to_owned(),
+        ),
+        (
+            "a checkout project ID as a blob",
+            "UPDATE g_checkout_project SET project_id=CAST(project_id AS BLOB)".to_owned(),
+        ),
+        (
+            "a root as a blob",
+            "UPDATE g_project_binding SET root=CAST(root AS BLOB)".to_owned(),
+        ),
+    ];
+    for (case, sql) in cases {
+        let temp = tempfile::tempdir().unwrap();
+        let path = temp.path().join("repo");
+        let mut owner = registered(temp.path()).await;
+        create(&mut owner).await.unwrap();
+        init_with(&mut owner, &project_for(PROJECT_K, "p"), "work")
+            .await
+            .unwrap();
+        create_with(&mut owner, &archived_project(OTHER_K, "r"), limits())
+            .await
+            .unwrap();
+        let listed = owner.list_private_issues(limits()).await.unwrap();
+        assert_eq!(listed.len(), 3, "{case}");
+        assert!(
+            matches!(listed[1].record, IssueRecord::Project(_)),
+            "{case}"
+        );
+        tamper(&mut owner, &sql).await;
+        let before = snapshot(&mut owner).await;
+        let error = owner.bound_project("work", limits()).await.unwrap_err();
+        assert_eq!(error.to_string(), BINDING_STATE, "{case}");
+        let error = owner.list_private_issues(limits()).await.unwrap_err();
+        assert_eq!(error.to_string(), BINDING_STATE, "{case}");
+        assert_eq!(snapshot(&mut owner).await, before, "{case}");
+        drop(owner);
+        let refused = LocalOwnerRepository::open(&path, limits().admission)
+            .await
+            .err()
+            .unwrap();
+        assert_eq!(refused.to_string(), BINDING_STATE, "{case}");
+    }
+}
+
+#[tokio::test]
+/// A checkout ID in a binding table that is not the text ID of the registered
+/// checkout breaks a foreign key. The writer cannot store it. When a write with the
+/// foreign keys off stores it, the foreign key check of admission refuses it, before
+/// the binding check.
+async fn admission_refuses_a_binding_of_another_checkout() {
+    for sql in [
+        "UPDATE g_project_binding SET checkout_id=CAST(checkout_id AS BLOB)",
+        "UPDATE g_checkout_project SET checkout_id=CAST(checkout_id AS BLOB)",
+        "UPDATE g_checkout_project SET checkout_id='other'",
+    ] {
+        let temp = tempfile::tempdir().unwrap();
+        let path = temp.path().join("repo");
+        let mut owner = registered(temp.path()).await;
+        init_with(&mut owner, &project_for(PROJECT_K, "p"), "work")
+            .await
+            .unwrap();
+        let mut tx = owner.store.begin_write().await.unwrap();
+        assert!(tx.execute(sql).await.is_err(), "{sql}");
+        // The failed statement latches its error, so the rollback reports it again.
+        assert!(tx.rollback().await.is_err(), "{sql}");
+        drop(owner);
+        let database = libsql::Builder::new_local(&path).build().await.unwrap();
+        let connection = database.connect().unwrap();
+        connection
+            .execute_batch(&format!("PRAGMA foreign_keys=OFF;{sql}"))
+            .await
+            .unwrap();
+        drop(connection);
+        let refused = LocalOwnerRepository::open(&path, limits().admission)
+            .await
+            .err()
+            .unwrap();
+        assert_eq!(
+            refused.to_string(),
+            "repository foreign key integrity failure",
+            "{sql}"
+        );
+    }
+}
+
+#[tokio::test]
+/// The admission proof holds the rows of both binding tables. So the next read
+/// refuses a change that the owner's own connection makes, with the change counter
+/// refreshed.
+async fn the_admission_proof_covers_the_binding_tables() {
+    for sql in [
+        "UPDATE g_project_binding SET root=root||'/x'",
+        "UPDATE g_checkout_project SET project_id='q'",
+    ] {
+        let temp = tempfile::tempdir().unwrap();
+        let mut owner = registered(temp.path()).await;
+        init_with(&mut owner, &project_for(PROJECT_K, "p"), "work")
+            .await
+            .unwrap();
+        let mut tx = owner.store.begin_write().await.unwrap();
+        tx.execute(sql).await.unwrap();
+        tx.commit().await.unwrap();
+        owner.admission.total_changes = owner.store.connection.as_ref().unwrap().total_changes();
+        let error = owner.bound_project("work", limits()).await.unwrap_err();
+        assert_eq!(
+            error.to_string(),
+            "repository authority changed; explicit readmission required",
+            "{sql}"
+        );
+    }
+}

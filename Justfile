@@ -81,7 +81,7 @@ catalog-interop:
     GOSSIL_FOSSIL_REFERENCE="$fossil" just test --test catalog_line stock_fossil_checks_a_new_catalog6_repository -- --ignored --exact
     GOSSIL_FOSSIL_REFERENCE="$fossil" just test --test issue_ticket stock_fossil_reads_check_ins_and_issues_together -- --ignored --exact
 
-# Check stored private issue tickets, alone and beside check-ins, with the pinned Fossil reference: test-integrity, ticket show, timeline, and the rows of a ticket rebuild; exit 5 means not-run.
+# Check stored private issue tickets, alone, beside check-ins and after gos i init, with the pinned Fossil reference: test-integrity, ticket show, timeline, and the rows of a ticket rebuild; exit 5 means not-run.
 issue-ticket-interop:
     #!/usr/bin/env bash
     set -euo pipefail
@@ -91,6 +91,7 @@ issue-ticket-interop:
         exit 5
     fi
     GOSSIL_FOSSIL_REFERENCE="$fossil" just test --test issue_ticket stock_fossil_reads -- --ignored
+    GOSSIL_FOSSIL_REFERENCE="$fossil" just test --test issue_init_cli stock_fossil_reads -- --ignored
 
 # Compare the JSON of task list and task show with a reference gest for the same two tasks; exit 5 means not-run.
 issue-read-oracle:

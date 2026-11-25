@@ -178,7 +178,8 @@ The [Gest ticket emitter](gest-ticket.md) takes the same inputs for a validated 
 or project, and the three kinds share one emitter.
 Before passing decoded values to a converter, callers
 must check raw field presence, duplicates and byte limits. The [issue ticket writer](issue-ticket.md)
-stores a task or project creation privately. Commands for these records remain separate work.
+stores a task or project creation privately. The command `gos i init` stores a project this way.
+The other commands for these records remain separate work.
 
 ## Explicit scope and private recording
 

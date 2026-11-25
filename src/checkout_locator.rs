@@ -42,6 +42,14 @@ impl Error {
             source: None,
         }
     }
+    /// Return the category of the diagnostic.
+    /// # Returns
+    /// 78 for a configuration failure and 74 for an I/O failure, as the sysexits
+    /// codes of CLI-05 name them. The `vcs` commands exit 1, and the `issue`
+    /// commands exit with this code.
+    pub(crate) fn code(&self) -> u8 {
+        self.code
+    }
     /// Construct a configuration-category preflight diagnostic without an underlying cause.
     /// # Arguments
     /// * `message` - Safe configuration diagnostic.

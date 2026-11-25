@@ -158,6 +158,16 @@ const AUTHORITY_TABLES: &[SnapshotTable] = &[
         bounds: "SELECT count(*),coalesce(sum(coalesce(length(CAST(\"scope_key\" AS BLOB)),0)+coalesce(length(CAST(\"id\" AS BLOB)),0)+coalesce(length(CAST(\"project_id\" AS BLOB)),0)+coalesce(length(CAST(\"title\" AS BLOB)),0)+coalesce(length(CAST(\"priority\" AS BLOB)),0)+coalesce(length(CAST(\"status\" AS BLOB)),0)+coalesce(length(CAST(\"description\" AS BLOB)),0)+coalesce(length(CAST(\"assigned_to\" AS BLOB)),0)+coalesce(length(CAST(\"metadata\" AS BLOB)),0)+coalesce(length(CAST(\"resolved_at\" AS BLOB)),0)+coalesce(length(CAST(\"created_at\" AS BLOB)),0)+coalesce(length(CAST(\"updated_at\" AS BLOB)),0)),0) FROM \"g_gest_tasks\"",
         rows: "SELECT typeof(\"scope_key\"),CASE WHEN typeof(\"scope_key\") IN('text','blob') THEN CAST(\"scope_key\" AS BLOB) ELSE \"scope_key\" END,typeof(\"id\"),CASE WHEN typeof(\"id\") IN('text','blob') THEN CAST(\"id\" AS BLOB) ELSE \"id\" END,typeof(\"project_id\"),CASE WHEN typeof(\"project_id\") IN('text','blob') THEN CAST(\"project_id\" AS BLOB) ELSE \"project_id\" END,typeof(\"title\"),CASE WHEN typeof(\"title\") IN('text','blob') THEN CAST(\"title\" AS BLOB) ELSE \"title\" END,typeof(\"priority\"),CASE WHEN typeof(\"priority\") IN('text','blob') THEN CAST(\"priority\" AS BLOB) ELSE \"priority\" END,typeof(\"status\"),CASE WHEN typeof(\"status\") IN('text','blob') THEN CAST(\"status\" AS BLOB) ELSE \"status\" END,typeof(\"description\"),CASE WHEN typeof(\"description\") IN('text','blob') THEN CAST(\"description\" AS BLOB) ELSE \"description\" END,typeof(\"assigned_to\"),CASE WHEN typeof(\"assigned_to\") IN('text','blob') THEN CAST(\"assigned_to\" AS BLOB) ELSE \"assigned_to\" END,typeof(\"metadata\"),CASE WHEN typeof(\"metadata\") IN('text','blob') THEN CAST(\"metadata\" AS BLOB) ELSE \"metadata\" END,typeof(\"resolved_at\"),CASE WHEN typeof(\"resolved_at\") IN('text','blob') THEN CAST(\"resolved_at\" AS BLOB) ELSE \"resolved_at\" END,typeof(\"created_at\"),CASE WHEN typeof(\"created_at\") IN('text','blob') THEN CAST(\"created_at\" AS BLOB) ELSE \"created_at\" END,typeof(\"updated_at\"),CASE WHEN typeof(\"updated_at\") IN('text','blob') THEN CAST(\"updated_at\" AS BLOB) ELSE \"updated_at\" END FROM \"g_gest_tasks\" ORDER BY 1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24",
     },
+    SnapshotTable {
+        columns: 3,
+        bounds: "SELECT count(*),coalesce(sum(coalesce(length(CAST(\"checkout_id\" AS BLOB)),0)+coalesce(length(CAST(\"project_id\" AS BLOB)),0)+coalesce(length(CAST(\"root\" AS BLOB)),0)),0) FROM \"g_project_binding\"",
+        rows: "SELECT typeof(\"checkout_id\"),CASE WHEN typeof(\"checkout_id\") IN('text','blob') THEN CAST(\"checkout_id\" AS BLOB) ELSE \"checkout_id\" END,typeof(\"project_id\"),CASE WHEN typeof(\"project_id\") IN('text','blob') THEN CAST(\"project_id\" AS BLOB) ELSE \"project_id\" END,typeof(\"root\"),CASE WHEN typeof(\"root\") IN('text','blob') THEN CAST(\"root\" AS BLOB) ELSE \"root\" END FROM \"g_project_binding\" ORDER BY 1,2,3,4,5,6",
+    },
+    SnapshotTable {
+        columns: 2,
+        bounds: "SELECT count(*),coalesce(sum(coalesce(length(CAST(\"checkout_id\" AS BLOB)),0)+coalesce(length(CAST(\"project_id\" AS BLOB)),0)),0) FROM \"g_checkout_project\"",
+        rows: "SELECT typeof(\"checkout_id\"),CASE WHEN typeof(\"checkout_id\") IN('text','blob') THEN CAST(\"checkout_id\" AS BLOB) ELSE \"checkout_id\" END,typeof(\"project_id\"),CASE WHEN typeof(\"project_id\") IN('text','blob') THEN CAST(\"project_id\" AS BLOB) ELSE \"project_id\" END FROM \"g_checkout_project\" ORDER BY 1,2,3,4",
+    },
 ];
 
 impl WriteTransaction<'_> {
@@ -470,10 +480,6 @@ impl WriteTransaction<'_> {
             ("delta", "SELECT EXISTS(SELECT 1 FROM delta)"),
             ("forumpost", "SELECT EXISTS(SELECT 1 FROM forumpost)"),
             ("g_admission", "SELECT EXISTS(SELECT 1 FROM g_admission)"),
-            (
-                "g_checkout_project",
-                "SELECT EXISTS(SELECT 1 FROM g_checkout_project)",
-            ),
             ("g_code_link", "SELECT EXISTS(SELECT 1 FROM g_code_link)"),
             (
                 "g_command_audit",
@@ -560,10 +566,6 @@ impl WriteTransaction<'_> {
             (
                 "g_pending_path",
                 "SELECT EXISTS(SELECT 1 FROM g_pending_path)",
-            ),
-            (
-                "g_project_binding",
-                "SELECT EXISTS(SELECT 1 FROM g_project_binding)",
             ),
             (
                 "g_project_workspaces",

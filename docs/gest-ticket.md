@@ -14,7 +14,7 @@ CHANGE-01 uses an artifact ticket to carry each logical change.
 Use the library to inspect or test these creation artifacts in memory. The
 [issue ticket writer](issue-ticket.md) stores a project creation privately in a
 native repository. The attachment that declares a logical change, the storage of
-artifact tickets and issue commands remain separate work.
+artifact tickets and the issue commands other than `gos i init` remain separate work.
 
 ## Use the library
 

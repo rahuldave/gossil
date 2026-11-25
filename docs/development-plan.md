@@ -48,7 +48,7 @@ of the metered queries and of those methods.
 | Eight structural artifact types with explicit limits | General crosslinks, migration, rebuild and filesystem recovery |
 | Native initialization/open, tracking, scope/commit CLI and library; catalog1 private content | Shared recording, sync and artifact publication |
 | Explicit inherited-test runner configurations | Gest task CLI, server and user interface |
-| Library [writer and reader](issue-ticket.md) of private task and project tickets | Shared tickets, ticket changes and the `issue` commands |
+| Library [writer and reader](issue-ticket.md) of private task and project tickets; [`issue init`](cli.md#create-the-gest-project-of-a-checkout) | Shared tickets, ticket changes and the other `issue` commands |
 
 Initialization creates catalog6 without a checkout. The library can register
 one existing directory and authenticate its registration by ID or exact root.
@@ -245,13 +245,15 @@ the CLI controls.
 
 The `issue` group, or `i`, routes each Gest command by the issue table of
 `product::help`. The parser in `product::issue` checks the command names
-and their aliases. It refuses each recognised command with status 69 and runs
-none of them. The [issue section](cli.md#issue-commands) gives the forms and
-errors, and `tests/issue_cli.rs` holds the controls.
+and their aliases. It runs `init` and refuses each other recognised command
+with status 69. The [issue section](cli.md#issue-commands) gives the forms and
+errors, and `tests/issue_cli.rs` holds the controls. `product::issue_init` runs
+[`issue init`](cli.md#create-the-gest-project-of-a-checkout), and
+`tests/issue_init_cli.rs` holds its controls.
 
-The handlers of `init` and `task create` remain planned. The handlers of
-`task list` and `task show` are in `product::issue_read`, and no command calls
-them yet. The [issue read guide](issue-read.md) gives their output.
+The handler of `task create` remains planned. The handlers of `task list` and
+`task show` are in `product::issue_read`, and no command calls them yet. The
+[issue read guide](issue-read.md) gives their output.
 
 The focused CLI controls are in `tests/vcs_init_cli.rs`; parser, environment,
 password and receipt controls are in the private `vcs_init` module. Source edits

@@ -32,7 +32,9 @@ mod initialization;
 mod issue_ticket;
 pub use checkout::CheckoutView;
 pub use initialization::InitializeOptions;
-pub use issue_ticket::{IssueLimits, IssueRecord, IssueTicket, PrivateIssueRequest};
+pub use issue_ticket::{
+    IssueLimits, IssueRecord, IssueTicket, PrivateIssueRequest, ProjectInitRequest,
+};
 
 /// Fixed scalar predicates bound returned data, not total SQLite scan work.
 /// The admitted root cannot produce other artifact types or a current file/merge selection.

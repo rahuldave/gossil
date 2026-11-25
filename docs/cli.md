@@ -8,8 +8,9 @@ and has three delta file diagnostics. The prepared source also has a
 plus [scope selection and private recording](#select-scopes-and-record-private-files)
 and [complete recorded ancestry](#read-complete-recorded-ancestry).
 `gos` is an alias for `gossil`, and `v` is an alias for `vcs`.
-The [`issue` group](#issue-commands), or `i`, recognises each Gest command
-and runs none of them in this build.
+The [`issue` group](#issue-commands), or `i`, recognises each Gest command.
+This build runs one of them, [`issue init`](#create-the-gest-project-of-a-checkout),
+and refuses the others.
 
 Each diagnostic runs without a repository. Run it from this source checkout with `just gossil`, which builds
 and runs the executable through Cargo. Cargo may print build messages on stderr.
@@ -58,7 +59,7 @@ Several of them in a row count as one. So `gossil help help` prints the product 
 `gossil vcs --help open` and `gossil vcs help help open` print the usage of `open`.
 
 `init`, `new`, `info`, `timeline` and `log` print their own help, which the
-sections below describe. Every other command prints its usage line and one
+sections below describe. So does `issue init`. Every other command prints its usage line and one
 sentence about what it does. After a command, only a lone `--help` or `-h`
 asks for help. With more arguments, the command parses `--help` by its own
 grammar, so `vcs init -- --help` creates a file named `--help`. The word `help`
@@ -99,14 +100,16 @@ their subcommands. They keep the aliases of the Gest source:
 Help shows the aliases that Gest shows, and hides `a`, `i`, `t`, `u`, `grep`
 and `delete` under `meta`, as Gest does.
 
-This build recognises each command and refuses it:
+This build runs `init`, which the
+[next section](#create-the-gest-project-of-a-checkout) describes. It recognises
+each other command and refuses it:
 
 ```text
 $ gos i task create "First task"
 gossil: issue task create is not available in this build
 ```
 
-The command then exits with status 69, the code of an invalid state. It reads and
+The refused command then exits with status 69, the code of an invalid state. It reads and
 writes no file, and it does not open or create a database. The parser checks
 the command names only. Arguments after the last name, such as `"First task"`,
 are not checked. A `--help` or `-h` among them prints the help of the command.
@@ -115,7 +118,7 @@ After `--`, `--help` and `-h` are ordinary arguments, so the build refuses
 
 | Input | Status | Message on stderr |
 |---|---|---|
-| A recognised command, such as `i undo` or `i t ls` | 69 | `gossil: issue PATH is not available in this build` |
+| A recognised command other than `init`, such as `i undo` or `i t ls` | 69 | `gossil: issue PATH is not available in this build` |
 | `artifact`, `config`, `generate`, `iteration`, `task` or a `note` group without a subcommand | 2 | `gossil: issue PATH needs a command` |
 | An unknown name, such as `i frob` or `i task frob` | 2 | `gossil: unknown issue command "NAME"` |
 | `i serve` or `i s` | 2 | The unknown-name message, because the root groups `ui` and `serve` replace Gest's server command |
@@ -138,7 +141,102 @@ command.
 
 This build does not yet recognise the global options `-v`, `--no-color` and
 `--no-pager`, or `--version` at the group root. Before a command name, they
-fail as unknown names.
+fail as unknown names. `init` accepts the first three after its name, as the
+next section says.
+
+### Create the Gest project of a checkout
+
+`gos i init`, or `gossil issue init`, creates the Gest project of the open
+checkout that holds the current directory. It stores the project as a private
+project ticket, and it binds the checkout to that project. A project ticket is
+the Fossil ticket that holds one Gest project, as the
+[issue ticket guide](issue-ticket.md) says. All four forms of executable and group
+run the same command.
+
+First, make the checkout with `vcs init` and `vcs open --root`. Then run `init`
+in the checkout root or in a folder below it:
+
+```text
+$ cd /home/alice/project
+$ gos v init /home/alice/project.fossil
+$ gos v open --repository /home/alice/project.fossil --checkout work --root /home/alice/project
+Opened checkout work at /home/alice/project (repository fc0dd44fb5dcb4aaecff68e771149f0698cbec87, head 397b39fc09ae52025628af5f7fbddefae0bbf53301664e2965cc279e89141c4f)
+$ gos i init
+  ✓  initialized project  lkpunroy
+
+  root  /home/alice/project
+```
+
+The short ID is the first 8 letters of the Gest ID of the project. The line
+`root` names the checkout root. Gest prints the current directory there, and Gossil
+prints the checkout root. The output has no color.
+
+`init` takes no repository or checkout selection. It finds the nearest `.gossil`
+marker at or above the current directory, and reads the locator that `vcs open`
+published. The locator selects the repository and the checkout. The command then
+admits them with the same rules as `vcs open`, configuration included. It never
+creates a repository, a checkout registration or a locator.
+
+In one transaction, `init` writes these rows:
+
+- the rows of a private project ticket, as the
+  [issue ticket guide](issue-ticket.md#bind-a-project-to-a-checkout) lists them
+- one `g_project_binding` row, with the checkout ID, the Gest ID and the checkout root
+- one `g_checkout_project` row, with the checkout ID and the Gest ID
+
+The ticket ID is 40 random hexadecimal digits, and the Gest ID is random. The
+date and both timestamps hold the current time. The user is the local login, the
+first nonempty value of `GOSSIL_USER`, `USER`, `LOGNAME` and `USERNAME`, or else
+`root`. A failure before the commit leaves every byte of the repository unchanged.
+
+A second `init`, or an `init` in a folder below the root, prints the same message
+for the bound project. It changes no byte. Gest also keeps the project that it
+finds. After `init`, every `vcs` command still works, and `init` works
+both before and after the first commit.
+
+`init` accepts `--local`, `--no-color`, `--no-pager` and `-v`, `-vv` or
+`--verbose`, and ignores each of them. The locator already selects the
+repository, so `--local` changes nothing. Every other argument fails with
+status 2:
+
+```text
+gossil: unexpected argument "--json" for issue init
+Usage: gossil issue init [OPTIONS]
+```
+
+A lone `--help` or `-h` prints the help of `init`. The other exit statuses
+follow CLI-05, the list of exit codes in the Gossil CLI specification:
+
+| Case | Status | Message on stderr |
+|---|---|---|
+| Success, also for a checkout with a bound project | 0 | None |
+| An argument that `init` does not take | 2 | `gossil: unexpected argument "X" for issue init` |
+| No marker, a marker without a locator, or a repository without `vcs open` | 78 | `gossil: no open checkout holds this directory; run gos v init and gos v open first` |
+| A malformed locator | 78 | The locator error |
+| A configured data directory that conflicts with the locator, or that holds no `gossil.db` | 78 | `configured storage conflicts with explicit repository` |
+| A repository at an older catalog | 78 | The older-catalog message of the [exit section](#exit-status-and-errors) |
+| A local login that is not UTF-8 | 78 | `gossil: the local login is not UTF-8; set GOSSIL_USER` |
+| A failure of storage or admission, for example a changed binding row | 74 | The storage error, such as `unsupported project binding state` |
+| A repository that already holds a project ticket, while the checkout has no project | 74 | The refusal below |
+| A missing repository file, or another I/O failure | 74 | The I/O error |
+| A failed write of the success message to stdout, after the commit | 74 | `gossil: issue init kept the project, and stdout failed: ERROR` |
+
+For a repository that already holds a project, the storage error holds this text:
+
+```text
+issue init needs one project creation, a registered checkout with no bound project, and a repository with no project; binding an existing project is not available in this build
+```
+
+This build has these limits:
+
+- The project is private only.
+- `init` writes no audit row and no undo history.
+- A text field cannot hold `[`.
+- `init` writes no selectors, tags or links.
+- `init` does not bind a project that the repository already holds. Gest binds
+  the one live project, or refuses several of them as ambiguous. Gossil refuses
+  both cases with status 74.
+- Repositories of older Gossil versions are not supported.
 
 ## Initialize a repository
 
@@ -271,7 +369,8 @@ precedence:
    nested keys, and key names become lowercase.
 
 A usable absolute `storage.data_dir` explicitly selects `gossil.db` inside that
-directory. Its canonical existing database must match `--repository`. The exact
+directory. Its canonical existing database must match `--repository`. A
+directory that holds no `gossil.db` conflicts too. The exact
 uppercase `GEST_STORAGE__DATA_DIR` accepts an absolute native-byte path without
 UTF-8 loss. An effective relative path is not an explicit selection and does
 not revive a value from an earlier configuration layer.
@@ -538,8 +637,9 @@ The usage lines of the help all use `gossil vcs`.
 ## Exit status and errors
 
 Success and help return status 0. Usage, input, delta and output failures return status 1
-with one diagnostic line on stderr. A recognised issue command returns status 69,
-as the [issue section](#issue-commands) says. An unknown group or command returns status 2,
+with one diagnostic line on stderr. A recognised issue command other than `init` returns status 69,
+as the [issue section](#issue-commands) says. `issue init` returns the
+[statuses of CLI-05](#create-the-gest-project-of-a-checkout), such as 78 and 74. An unknown group or command returns status 2,
 as the [help section](#get-help) says. A help request with an argument after
 the command name also returns status 2, with two lines on stderr.
 
@@ -626,7 +726,7 @@ are outside this qualification.
 
 Broader version-control commands are planned. Neither `gossil` nor `gos`
 accepts them, and each fails with status 2, as the [help section](#get-help)
-says. The Gest commands are recognised and refused with status 69, as the
+says. The Gest commands other than `init` are recognised and refused with status 69, as the
 [issue section](#issue-commands) says. The short names above apply to initialization and the
 three delta diagnostics, the prepared glob diagnostic, native open, add/status,
 scope/commit, info and timeline/log. Shared

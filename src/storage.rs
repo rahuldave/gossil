@@ -44,8 +44,8 @@ pub use content::Limits;
 pub use repository::{
     AdmissionLimits, CheckoutView, CreateOptions, InitializeOptions, IssueLimits, IssueRecord,
     IssueTicket, LocalOwnerRepository, PathScope, PathScopeSelection, PendingAdd,
-    PrivateIssueRequest, PrivateRecordingOutcome, PrivateRecordingRequest, RecordedCheckin,
-    SharedView, TrackingLimits,
+    PrivateIssueRequest, PrivateRecordingOutcome, PrivateRecordingRequest, ProjectInitRequest,
+    RecordedCheckin, SharedView, TrackingLimits,
 };
 mod lifecycle;
 use lifecycle::FileIdentity;

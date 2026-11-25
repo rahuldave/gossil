@@ -31,6 +31,10 @@ Read and follow @.agents/instructions/prose.md
   creation in a catalog 6 repository and reads it again; its guide is
   `docs/issue-ticket.md`, and `just issue-ticket-interop` checks it with stock
   Fossil. `LocalOwnerRepository::open` admits these tickets beside private check-ins.
+  Its `init_private_project` also binds one project to the registered checkout
+  in `g_project_binding` and `g_checkout_project`, and `bound_project` reads that
+  binding. Admission accepts both tables empty or with exactly that one binding.
+  `g_identity` and `g_contributor` stay required-empty.
 - Issue reads: `src/product/issue_read.rs` parses, selects and prints `task list` and
   `task show` over `list_private_issues`, with provisional text and Gest JSON. Its guide is
   `docs/issue-read.md`, and `just issue-read-oracle` compares the JSON with a reference `gest`.
@@ -61,8 +65,15 @@ The CLI also exposes `vcs init` and `vcs new` through `gossil` or `gos`, with
 The private `src/product/help.rs` table gives product, group and command help.
 It must list every command that `src/product.rs` dispatches. Unknown names exit 2.
 Its issue table holds the Gest command tree of the `issue` group, or `i`. The
-parser in `src/product/issue.rs` walks that table and refuses each recognised
-command with status 69.
+parser in `src/product/issue.rs` walks that table. It runs `init`, in
+`src/product/issue_init.rs`, and refuses each other recognised command with
+status 69.
+
+`issue init` needs a checkout from `vcs init` and `vcs open --root`, and
+writes a private project ticket and its binding in one transaction. The shared
+helper `open_issue_repository` in `src/product/issue.rs` opens the repository of
+an issue command through the published locator, and `IssueFailure` maps errors
+to the CLI-05 statuses 78 and 74.
 
 Native local storage supports checkout-free initialization, then one library
 checkout registration at the empty root. Reopen admits strict catalog6 with zero
@@ -81,7 +92,7 @@ config row, so a stock `fossil rebuild` keeps the Gest ticket columns.
 Bound catalog1 creation and bounded private content operations remain supported.
 Generic private content writes refuse catalog6. The metered private put admits
 only catalog6, and the issue ticket writer is its one caller. A fresh open
-admits the private ticket rows that it writes.
+admits the private ticket rows and the project binding that it writes.
 
 The private recording library requires the complete tracked set, immutable
 private scopes and all seven expected checkout facts. It captures every working file with one borrowed content

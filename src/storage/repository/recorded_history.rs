@@ -924,6 +924,7 @@ impl WriteTransaction<'_> {
             return Err(StorageError::state("recording generation/history mismatch"));
         }
         let issues = self.admit_issues(principal, limits, work, parse).await?;
+        self.admit_project_binding(work).await?;
         let (branch_tag, tags) = assign_tags(
             reversed.first().map(|(commit, _, _)| commit.receipt),
             &format!("sym-{branch}"),
