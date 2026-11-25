@@ -31,6 +31,9 @@ Read and follow @.agents/instructions/prose.md
   creation in a catalog 6 repository and reads it again; its guide is
   `docs/issue-ticket.md`, and `just issue-ticket-interop` checks it with stock
   Fossil. `LocalOwnerRepository::open` admits these tickets beside private check-ins.
+- Issue reads: `src/product/issue_read.rs` parses, selects and prints `task list` and
+  `task show` over `list_private_issues`, with provisional text and Gest JSON. Its guide is
+  `docs/issue-read.md`, and `just issue-read-oracle` compares the JSON with a reference `gest`.
 - Git reader guard: `clippy.toml` bans the gix write paths, and `just lint`
   forbids them with `-F clippy::disallowed_methods -F clippy::disallowed_types`.
   `tests/git_write_lint.rs` proves each ban. Add a probe line for each new entry.

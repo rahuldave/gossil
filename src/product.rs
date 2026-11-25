@@ -9,6 +9,7 @@ use std::path::{Path, PathBuf};
 
 mod help;
 mod issue;
+mod issue_read;
 
 /// Adapter failures retain their original I/O or allocation cause.
 #[derive(Debug)]

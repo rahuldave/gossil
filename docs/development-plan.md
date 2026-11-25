@@ -247,8 +247,11 @@ The `issue` group, or `i`, routes each Gest command by the issue table of
 `product::help`. The parser in `product::issue` checks the command names
 and their aliases. It refuses each recognised command with status 69 and runs
 none of them. The [issue section](cli.md#issue-commands) gives the forms and
-errors, and `tests/issue_cli.rs` holds the controls. The handlers of `init`,
-`task create`, `task list` and `task show` remain planned.
+errors, and `tests/issue_cli.rs` holds the controls.
+
+The handlers of `init` and `task create` remain planned. The handlers of
+`task list` and `task show` are in `product::issue_read`, and no command calls
+them yet. The [issue read guide](issue-read.md) gives their output.
 
 The focused CLI controls are in `tests/vcs_init_cli.rs`; parser, environment,
 password and receipt controls are in the private `vcs_init` module. Source edits

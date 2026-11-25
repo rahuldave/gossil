@@ -33,6 +33,30 @@ the K card, and the native name of the artifact. It also holds the validated `Ta
 the ticket ID and returns its record. It writes nothing. `create_private_issue` runs the same admission
 before its write and again after it, in the same transaction and under the same limits.
 
+## List every issue
+
+`list_private_issues` returns every task and project of the repository, in the order of the receipts
+that stored them:
+
+```rust
+let issues = owner.list_private_issues(limits).await?;
+for issue in &issues {
+    println!("{} {}", issue.ticket_id, issue.native_name);
+}
+```
+
+The call runs the full admission of `LocalOwnerRepository::open` first. Then it runs the issue part of
+admission once more, with the same queries, and takes each record from that second pass. It writes nothing,
+and it uses no SQL that admission does not use. An empty repository gives an empty list.
+
+Both passes charge the same content and parser ledgers. So the limits must cover each issue artifact
+twice. For example, three issues that an open admits with 37 parser entries need 72 entries for a
+list. The shared root takes 2 of those entries, and only the first pass parses it. So the list
+needs 2 + 2 × 35 entries. The list does not use the SQL limits of `IssueLimits`.
+
+The handlers of `issue task list` and `issue task show` read the tasks through this call. The
+[issue read guide](issue-read.md) gives their output.
+
 ## How admission checks issues
 
 Admission finds each issue from its `tkt-` tag, parses its artifact again and derives every row from it.
@@ -115,6 +139,12 @@ admission proof stale. The admission check of the next write then refuses that w
 Admission parses every artifact under one parser ledger, so the entry ceiling of that ledger limits the
 count of issues. A unit control sets a ceiling that admits two tasks, and checks that admission refuses a
 third.
+
+A unit control lists two tasks and a project in receipt order, and checks that the list changes no row.
+It also finds the smallest entry ceiling and the smallest decoded-byte ceiling of the list and of an
+open. A list call with the decoded-byte ceiling of the open refuses and changes no row. In each tamper
+case above, the list call also refuses with the same message. In each of its three orders, the CAT-T07
+subset below also lists the issues after each step.
 
 The CAT-T07 subset in `tests/issue_ticket.rs` writes issues and check-ins in three orders. In the first,
 an issue comes before the checkout is registered. In the second, issues come before the first check-in,

@@ -92,6 +92,17 @@ issue-ticket-interop:
     fi
     GOSSIL_FOSSIL_REFERENCE="$fossil" just test --test issue_ticket stock_fossil_reads -- --ignored
 
+# Compare the JSON of task list and task show with a reference gest for the same two tasks; exit 5 means not-run.
+issue-read-oracle:
+    #!/usr/bin/env bash
+    set -euo pipefail
+    gest="${GOSSIL_GEST_REFERENCE:-$(command -v gest || true)}"
+    if [ -z "$gest" ] || [ ! -x "$gest" ]; then
+        echo "not-run: no gest executable; set GOSSIL_GEST_REFERENCE or put gest on PATH" >&2
+        exit 5
+    fi
+    GOSSIL_GEST_REFERENCE="$gest" cargo test --lib --locked -- --ignored --exact product::issue_read::tests::gest_reference_json_matches
+
 # Respell the Gest ticket creation fixtures from their hand-written cards.
 gest-ticket-reference:
     jlog run python3 tests/fixtures/gest-ticket/generate.py

@@ -53,6 +53,7 @@ website:
           - task-ticket.md
           - gest-ticket.md
           - issue-ticket.md
+          - issue-read.md
           - local-storage.md
           - native-storage.md
           - local-records.md

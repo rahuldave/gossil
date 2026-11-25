@@ -404,6 +404,8 @@ pub(super) struct AdmittedIssue {
     /// The `tagxref` row, in the column order tagid, tagtype, srcid, origid, value,
     /// mtime and rid.
     pub(super) tagxref: Vec<Value>,
+    /// The ticket ID, the native name and the record that a replay of the artifact gives.
+    pub(super) ticket: IssueTicket,
 }
 
 /// Give the ID of each tag above the 12 built-in tags, in the order of the receipts that created them.
@@ -524,6 +526,11 @@ impl WriteTransaction<'_> {
                     mtime,
                     rid_value,
                 ],
+                ticket: IssueTicket {
+                    ticket_id: creation.ticket_id.clone(),
+                    native_name: hash.clone(),
+                    record: creation.record.clone(),
+                },
             });
             creations.push(creation);
         }
@@ -676,6 +683,56 @@ impl LocalOwnerRepository {
                 Err(error)
             }
         }
+    }
+
+    /// List every private task and project ticket after the full admission of [`Self::open`].
+    ///
+    /// Admission derives every stored ticket again from its artifact and checks every
+    /// row. The call then replays the issues once more, with the same ledgers and the
+    /// same queries, and returns them. It changes nothing and reads no other rows.
+    /// # Arguments
+    /// * `limits` - Finite content and parser ceilings for the whole call. Both passes
+    ///   charge the same ledgers, so the ceilings must cover each issue artifact twice.
+    ///   The call does not use the SQL ceilings.
+    /// # Returns
+    /// Each task and project, in the order of the receipts that stored them. The list is
+    /// empty when the repository holds no issue.
+    /// # Errors
+    /// Refuses stale or failed admission, exhausted ceilings and SQL failures.
+    /// # Examples
+    /// ```no_run
+    /// use gossil::storage::{IssueLimits, IssueTicket, LocalOwnerRepository, StorageError};
+    /// async fn list(owner: &mut LocalOwnerRepository, limits: IssueLimits)
+    ///     -> Result<Vec<IssueTicket>, StorageError> {
+    ///     owner.list_private_issues(limits).await
+    /// }
+    /// ```
+    pub async fn list_private_issues(
+        &mut self,
+        limits: IssueLimits,
+    ) -> Result<Vec<IssueTicket>, StorageError> {
+        let mut budget = Budget::new(limits.admission.content)?;
+        let mut parse = ParseWork::new(limits.admission.parser)?;
+        let mut tx = self.store.begin_write().await?;
+        let result = async {
+            tx.check_admission_budgeted(&self.principal, &self.admission, &mut budget)
+                .await?;
+            tx.validate_recording_repository(
+                &self.principal,
+                limits.admission,
+                &mut budget,
+                &mut parse,
+            )
+            .await?;
+            let issues = tx
+                .admit_issues(&self.principal, limits.admission, &mut budget, &mut parse)
+                .await?;
+            Ok(issues.into_iter().map(|issue| issue.ticket).collect())
+        }
+        .await;
+        let result = tx.record(result);
+        tx.rollback().await?;
+        result
     }
 
     /// Read one private issue ticket after the full admission of [`Self::open`].

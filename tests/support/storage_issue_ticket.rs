@@ -400,6 +400,9 @@ async fn admission_refuses_each_changed_issue_row() {
         let error = owner.read_private_issue(K, limits()).await.unwrap_err();
         assert_eq!(snapshot(&mut owner).await, before, "{case}");
         assert_eq!(error.to_string(), message, "{case}");
+        let list = owner.list_private_issues(limits()).await.unwrap_err();
+        assert_eq!(list.to_string(), message, "{case}");
+        assert_eq!(snapshot(&mut owner).await, before, "{case}");
         let write = create_with(&mut owner, &artifact_for(OTHER_K, "n"), limits())
             .await
             .unwrap_err();
@@ -453,6 +456,101 @@ async fn the_entry_ceiling_bounds_the_issue_count() {
         .unwrap();
     assert_eq!(error.to_string(), refused);
 }
+
+#[tokio::test]
+/// The list call admits the repository and then replays every issue under the same
+/// parser ledger, so it needs the entries of each artifact twice. It returns the
+/// tasks and projects in receipt order and changes nothing.
+async fn the_list_replays_every_issue_in_receipt_order() {
+    let temp = tempfile::tempdir().unwrap();
+    let path = temp.path().join("repo");
+    let mut owner = repository(&path).await;
+    assert_eq!(owner.list_private_issues(limits()).await.unwrap(), vec![]);
+    let mut stored = Vec::new();
+    for bytes in [
+        artifact_for(OTHER_K, "n"),
+        project_for(PROJECT_K, "p"),
+        artifact_for(K, "m"),
+    ] {
+        stored.push(create_with(&mut owner, &bytes, limits()).await.unwrap());
+    }
+    let before = snapshot(&mut owner).await;
+    assert_eq!(owner.list_private_issues(limits()).await.unwrap(), stored);
+    assert_eq!(snapshot(&mut owner).await, before);
+    let bounded = |entries| {
+        let mut bounded = limits();
+        bounded.admission.parser.entries = entries;
+        bounded
+    };
+    let mut needed = 1;
+    while owner.list_private_issues(bounded(needed)).await.is_err() {
+        needed += 1;
+    }
+    drop(owner);
+    // Opening needs one pass of the three artifacts, and the list needs two.
+    let mut opened = 1;
+    while LocalOwnerRepository::open(&path, bounded(opened).admission)
+        .await
+        .is_err()
+    {
+        opened += 1;
+    }
+    assert_eq!(needed, LIST_ENTRIES);
+    assert_eq!(opened, OPEN_ENTRIES);
+    // The content ledger is shared too. The smallest decoded-byte ceiling of a list
+    // is larger than that of an open, and a list at the open's ceiling refuses and
+    // changes no row.
+    let decoded = |bytes| {
+        let mut bounded = limits();
+        bounded.admission.content.max_total_decoded_bytes = bytes;
+        bounded
+    };
+    let mut owner = LocalOwnerRepository::open(&path, limits().admission)
+        .await
+        .unwrap();
+    let (mut low, mut high) = (1, limits().admission.content.max_total_decoded_bytes);
+    while low < high {
+        let middle = low + (high - low) / 2;
+        if owner.list_private_issues(decoded(middle)).await.is_ok() {
+            high = middle;
+        } else {
+            low = middle + 1;
+        }
+    }
+    let list_bytes = low;
+    drop(owner);
+    let (mut low, mut high) = (1, limits().admission.content.max_total_decoded_bytes);
+    while low < high {
+        let middle = low + (high - low) / 2;
+        if LocalOwnerRepository::open(&path, decoded(middle).admission)
+            .await
+            .is_ok()
+        {
+            high = middle;
+        } else {
+            low = middle + 1;
+        }
+    }
+    let open_bytes = low;
+    assert!(list_bytes > open_bytes, "{list_bytes} {open_bytes}");
+    let mut owner = LocalOwnerRepository::open(&path, decoded(open_bytes).admission)
+        .await
+        .unwrap();
+    let before = snapshot(&mut owner).await;
+    assert!(
+        owner
+            .list_private_issues(decoded(open_bytes))
+            .await
+            .is_err()
+    );
+    assert_eq!(snapshot(&mut owner).await, before);
+}
+
+/// The parser entries that the list call of the three fixture issues needs.
+const LIST_ENTRIES: usize = 72;
+
+/// The parser entries that an open of the three fixture issues needs.
+const OPEN_ENTRIES: usize = 37;
 
 #[tokio::test]
 /// The admission proof holds every row of the four issue tables, so a change that the
