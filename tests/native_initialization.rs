@@ -13,7 +13,7 @@ fn content() -> Limits {
         max_output_bytes: 4096,
         max_chain_depth: 4,
         max_total_stored_bytes: 8192,
-        // Catalog4 admission charges exact schema/authority and complete operation work.
+        // Catalog6 admission charges exact schema/authority and complete operation work.
         max_total_decoded_bytes: 16777216,
     }
 }
@@ -110,7 +110,7 @@ async fn initialize_has_real_native_root_settings_identity_and_no_checkout() {
         )
         .await,
         vec![vec![
-            Value::Integer(4),
+            Value::Integer(6),
             Value::Integer(1),
             Value::Integer(0)
         ]]
@@ -120,7 +120,7 @@ async fn initialize_has_real_native_root_settings_identity_and_no_checkout() {
         "SELECT name FROM sqlite_schema WHERE type='table' AND name GLOB 'g_*' ORDER BY name",
     )
     .await;
-    assert_eq!(names.len(), 57);
+    assert_eq!(names.len(), 58);
     for row in names {
         let Value::Text(table) = &row[0] else {
             panic!("table name");
@@ -415,8 +415,9 @@ async fn wrong_schema_owner_and_unsupported_catalogs_are_refused() {
         "DELETE FROM g_local_owner",
         "UPDATE config SET value='wrong' WHERE name='project-code'",
         "UPDATE g_storage SET policy_complete=0",
+        "PRAGMA ignore_check_constraints=ON; UPDATE g_storage SET storage_version=4",
         "PRAGMA ignore_check_constraints=ON; UPDATE g_storage SET storage_version=5",
-        "PRAGMA ignore_check_constraints=ON; UPDATE g_storage SET storage_version=6",
+        "PRAGMA ignore_check_constraints=ON; UPDATE g_storage SET storage_version=7",
         "UPDATE g_storage SET checkout_count=1",
     ] {
         refuses(sql).await;
@@ -499,7 +500,7 @@ async fn bound_create_refuses_unavailable_raw_checkout_input_without_destination
 
 #[tokio::test]
 /// Extra unrelated tag history and missing/malformed native server identities refuse admission.
-async fn empty_catalog4_refuses_extra_tag_history_and_missing_server_identity() {
+async fn empty_catalog6_refuses_extra_tag_history_and_missing_server_identity() {
     for sql in [
         "INSERT INTO tagxref(tagid,tagtype,srcid,origid,mtime,rid) VALUES(1,1,2,2,2461363.5,2)",
         "DELETE FROM config WHERE name='server-code'",
@@ -512,7 +513,7 @@ async fn empty_catalog4_refuses_extra_tag_history_and_missing_server_identity() 
 
 #[tokio::test]
 /// A changed definition with the same object names fails the exact catalog hash check.
-async fn empty_catalog4_refuses_same_name_changed_schema_definition() {
+async fn empty_catalog6_refuses_same_name_changed_schema_definition() {
     let temp = tempfile::tempdir().unwrap();
     let path = temp.path().join("repo");
     initialize(&path).await;
@@ -529,7 +530,7 @@ async fn empty_catalog4_refuses_same_name_changed_schema_definition() {
 
 #[tokio::test]
 /// A second durable owner row cannot hide behind the supported singleton selection.
-async fn empty_catalog4_refuses_extra_local_owner_row() {
+async fn empty_catalog6_refuses_extra_local_owner_row() {
     let temp = tempfile::tempdir().unwrap();
     let path = temp.path().join("repo");
     initialize(&path).await;
@@ -544,5 +545,5 @@ async fn empty_catalog4_refuses_extra_local_owner_row() {
         .await
         .err()
         .expect("extra durable owner row must refuse admission");
-    assert_eq!(error.operation, "unsupported catalog4 owner cardinality");
+    assert_eq!(error.operation, "unsupported catalog6 owner cardinality");
 }

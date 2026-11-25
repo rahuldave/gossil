@@ -1,12 +1,10 @@
--- PROPOSED combined catalog4: catalog2/file2, entity3 and durable checkout cardinality.
--- No adoption or runtime qualification is established by this file.
--- Gossil STORAGE draft v1. Local tables are never xfer payloads.
--- Native content bytes remain Fossil objects; these are policy and indexes.
+-- Catalog6 local audit bookkeeping; new repositories start here, and no migration reaches it.
+-- Existing native artifacts and entity/file wire versions are unchanged.
 PRAGMA foreign_keys=ON;
 CREATE TABLE g_storage(
  singleton INTEGER PRIMARY KEY CHECK(singleton=1),
  repository_id TEXT NOT NULL UNIQUE,
- storage_version INTEGER NOT NULL CHECK(storage_version=4),
+ storage_version INTEGER NOT NULL CHECK(storage_version=6),
  projection_version TEXT NOT NULL CHECK(projection_version='gest-ticket-v1'),
  policy_complete INTEGER NOT NULL CHECK(policy_complete IN(0,1)),
  checkout_count INTEGER NOT NULL CHECK(typeof(checkout_count)='integer' AND checkout_count>=0)
@@ -119,7 +117,7 @@ CREATE TABLE g_local_command(
  CHECK((command_kind='gest_entity' AND project_id IS NOT NULL
          AND checkout_id IS NULL AND recipe_version IN(1,3)) OR
        (command_kind='checkout_file' AND project_id IS NULL
-         AND checkout_id IS NOT NULL AND recipe_version=2)),
+         AND checkout_id IS NOT NULL AND recipe_version IN(2,3))),
  UNIQUE(owner_id,project_id,stack_sequence)
 ) WITHOUT ROWID;
 CREATE INDEX g_command_pending
@@ -129,6 +127,40 @@ CREATE TABLE g_inverse_chain(
  command_id TEXT PRIMARY KEY NOT NULL REFERENCES g_local_command(command_id),
  provenance BLOB NOT NULL
 ) WITHOUT ROWID;
+-- Retained incomplete/raw admission is distinct from completed public authority.
+CREATE TABLE g_admission(
+ native_hash TEXT PRIMARY KEY NOT NULL,
+ state TEXT NOT NULL CHECK(state IN('shared_pending','legacy_shared_incomplete','owner_unclassified')),
+ reason TEXT NOT NULL
+) WITHOUT ROWID;
+-- Local audit bookkeeping of entity commands; local durable, never rebuilt.
+CREATE TABLE transactions(
+ id TEXT PRIMARY KEY NOT NULL,
+ project_id TEXT NOT NULL,
+ author_id TEXT,
+ command TEXT NOT NULL,
+ undone_at TEXT,
+ created_at TEXT NOT NULL
+);
+CREATE INDEX idx_transactions_project_id ON transactions(project_id);
+CREATE TABLE transaction_events(
+ id TEXT PRIMARY KEY NOT NULL,
+ transaction_id TEXT NOT NULL REFERENCES transactions(id),
+ before_data TEXT,
+ event_type TEXT NOT NULL,
+ row_id TEXT NOT NULL,
+ table_name TEXT NOT NULL,
+ semantic_type TEXT,
+ old_value TEXT,
+ new_value TEXT,
+ created_at TEXT NOT NULL
+);
+CREATE INDEX idx_transaction_events_transaction_id ON transaction_events(transaction_id);
+CREATE TABLE g_command_audit(
+ command_id TEXT PRIMARY KEY NOT NULL REFERENCES g_local_command(command_id),
+ transaction_id TEXT NOT NULL UNIQUE REFERENCES transactions(id),
+ owner_id TEXT NOT NULL REFERENCES g_local_owner(owner_id)
+);
 -- Derived tables below are wholly replaceable in a rebuild transaction.
 CREATE TABLE g_contributor(
  scope_key TEXT NOT NULL, ticket_k TEXT NOT NULL, native_hash TEXT NOT NULL,
@@ -157,12 +189,6 @@ CREATE TABLE g_diagnostic(
  scope_key TEXT NOT NULL, ticket_k TEXT NOT NULL, native_hash TEXT NOT NULL,
  field TEXT NOT NULL, code TEXT NOT NULL, detail TEXT NOT NULL,
  PRIMARY KEY(scope_key,ticket_k,native_hash,field,code)
-) WITHOUT ROWID;
--- Retained incomplete/raw admission is distinct from completed public authority.
-CREATE TABLE g_admission(
- native_hash TEXT PRIMARY KEY NOT NULL,
- state TEXT NOT NULL CHECK(state IN('shared_pending','legacy_shared_incomplete','owner_unclassified')),
- reason TEXT NOT NULL
 ) WITHOUT ROWID;
 
 CREATE UNIQUE INDEX g_command_checkout_sequence

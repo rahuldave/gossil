@@ -338,6 +338,34 @@ impl WriteTransaction<'_> {
         .await;
         self.record(result)
     }
+    /// Store the installed ticket DDL as the native `ticket-table` setting.
+    ///
+    /// Stock `fossil rebuild` drops `ticket` and `ticketchng` and runs this setting
+    /// to recreate them (`ticket_create_table` of `tkt.c`). Without the row it runs
+    /// the default ticket schema, which has no Gest columns. The value is the
+    /// stored SQL of the two tables and their index, so a rebuild recreates them
+    /// with the same columns.
+    /// # Returns
+    /// Success after the row is inserted.
+    /// # Errors
+    /// Refuses a schema without both ticket tables and their index, and returns SQL failures.
+    pub(super) async fn install_ticket_table_config(&mut self) -> Result<(), StorageError> {
+        let rows = self
+            .query_bound(
+                "SELECT CASE WHEN count(*)=3 THEN group_concat(sql||';',char(10) ORDER BY name) END FROM sqlite_schema WHERE name IN('ticket','ticketchng','ticketchng_idx1')",
+                vec![],
+            )
+            .await?;
+        let Some([Value::Text(value)]) = rows.first().map(Vec::as_slice) else {
+            return Err(StorageError::state("native ticket schema unavailable"));
+        };
+        self.execute_bound(
+            "INSERT INTO config(name,value,mtime) VALUES('ticket-table',?1,unixepoch())",
+            vec![Value::Text(format!("{value}\n"))],
+        )
+        .await?;
+        Ok(())
+    }
     /// Install the implemented native defaults, administrator and hash policy.
     /// # Arguments
     /// * `options` - Explicit administrator/password and native SHA1 selection.
@@ -354,6 +382,7 @@ impl WriteTransaction<'_> {
         self.connection().execute_batch(include_str!("default-reports.sql")).await?;
         self.execute_bound("INSERT INTO config(name,value,mtime) VALUES('rebuilt',?1,unixepoch()),('ignore-glob','.git,*/.git,.git/*,*/.git/*',unixepoch())",vec![Value::Text(format!("gossil {}",env!("CARGO_PKG_VERSION")))]).await?;
         if options.sha1 { self.execute_bound("INSERT INTO config(name,value,mtime) VALUES('hash-policy','0',unixepoch())",vec![]).await?; }
+        self.install_ticket_table_config().await?;
         let mut secret=Vec::new();secret.extend_from_slice(options.repository_id.as_bytes());secret.push(b'/');secret.extend_from_slice(options.user);secret.push(b'/');secret.extend_from_slice(options.password.as_bytes());
         let secret=crate::content_hash::hex(&crate::content_hash::sha1(&secret));
         self.execute_bound("INSERT INTO user(login,pw,cap,info,mtime) VALUES(CAST(?1 AS TEXT),?2,'s','',unixepoch())",vec![Value::Blob(options.user.into()),Value::Text(secret)]).await?;

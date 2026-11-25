@@ -4,7 +4,7 @@
 //! Its caller must authenticate those sealed facts and the unchanged public S.
 //!
 //! ## Recommendations
-//! Admit this family only together with the immutable catalog4 boundary.
+//! Admit this family only together with the immutable catalog6 boundary.
 use super::recording_manifest::{
     ManifestFile, ManifestParent, PrivateManifestSpec, PrivateParents, build_private_manifest,
 };
@@ -733,7 +733,7 @@ impl WriteTransaction<'_> {
 
     /// Validate exactly the initialized-plus-private-recording family.
     /// # Arguments
-    /// * `principal` - Owner authenticated by the enclosing catalog4 admission.
+    /// * `principal` - Owner authenticated by the enclosing catalog6 admission.
     /// * `shared_hash` - Immutable empty public S authenticated by that admission.
     /// * `limits` - Whole-operation content/parser ceilings.
     /// * `work` - Caller-owned cumulative content/SQL/hash allowance.

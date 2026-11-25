@@ -71,7 +71,7 @@ fn stored_version(rows: &[Vec<Value>], admitted: &[i64]) -> Result<i64, StorageE
     }
 }
 
-/// Require the checkout count of catalog 4 to be zero or one, and to equal the registrations.
+/// Require the checkout count of catalog 6 to be zero or one, and to equal the registrations.
 ///
 /// # Arguments
 /// * `rows` - Materialized rows of [`CHECKOUT_INVENTORY`].
@@ -91,7 +91,7 @@ fn check_inventory(rows: &[Vec<Value>]) -> Result<(), StorageError> {
     );
     if !exact {
         return Err(StorageError::state(
-            "unsupported populated catalog4 checkout scope",
+            "unsupported populated catalog6 checkout scope",
         ));
     }
     Ok(())
@@ -168,7 +168,7 @@ impl WriteTransaction<'_> {
     /// # Arguments
     /// * `principal` - Sealed local repository and owner binding.
     /// # Returns
-    /// Success when durable policy matches the sealed local binding and catalog4 has an exact zero-or-one checkout count.
+    /// Success when durable policy matches the sealed local binding and catalog6 has an exact zero-or-one checkout count.
     /// # Errors
     /// Rejects absent or mismatched complete policy and owner bindings, corrupt rows and SQL failures.
     pub(super) async fn validate_principal(
@@ -182,8 +182,8 @@ impl WriteTransaction<'_> {
             check_identity(principal)?;
             self.validate_catalog().await?;
             let rows = self.query_bound(PRINCIPAL_ROW, vec![]).await?;
-            let version = stored_version(&rows, &[1, 4])?;
-            if version == 4 {
+            let version = stored_version(&rows, &[1, NEWEST_CATALOG])?;
+            if version == NEWEST_CATALOG {
                 check_inventory(&self.query_bound(CHECKOUT_INVENTORY, vec![]).await?)?;
             }
             check_principal(&rows, principal, version)?;
@@ -254,13 +254,13 @@ mod tests {
     fn the_stored_version_must_be_an_admitted_integer() {
         let row = |version| vec![vec![Value::Integer(1), version]];
         assert_eq!(
-            super::stored_version(&row(Value::Integer(4)), &[4]).unwrap(),
-            4
+            super::stored_version(&row(Value::Integer(6)), &[6]).unwrap(),
+            6
         );
         for (rows, admitted) in [
-            (row(Value::Integer(1)), [4]),
-            (row(Value::Text("4".into())), [4]),
-            (vec![vec![Value::Integer(1)]], [4]),
+            (row(Value::Integer(1)), [6]),
+            (row(Value::Text("6".into())), [6]),
+            (vec![vec![Value::Integer(1)]], [6]),
         ] {
             assert_eq!(
                 super::stored_version(&rows, &admitted)
@@ -271,10 +271,10 @@ mod tests {
         }
         for rows in [
             vec![],
-            [row(Value::Integer(4)), row(Value::Integer(4))].concat(),
+            [row(Value::Integer(6)), row(Value::Integer(6))].concat(),
         ] {
             assert_eq!(
-                super::stored_version(&rows, &[4]).unwrap_err().operation,
+                super::stored_version(&rows, &[6]).unwrap_err().operation,
                 "repository principal or complete policy unavailable"
             );
         }

@@ -86,12 +86,12 @@ Its `initialize` constructor creates a repository without a checkout. The
 [`vcs init` command](cli.md#initialize-a-repository) calls this constructor,
 generates identities and a password, and selects a default administrator from
 the environment. The API requires those values explicitly. Its `create`
-constructor creates catalog1 and binds an existing checkout directory. Catalog1 and catalog4
+constructor creates catalog1 and binds an existing checkout directory. Catalog1 and catalog6
 name storage formats; the [native storage guide](native-storage.md) defines their
 creation and admission rules.
 
 After `initialize`,
-`register_checkout` can register one existing directory in catalog4.
+`register_checkout` can register one existing directory in catalog6.
 `checkout_view` authenticates its ID; `checkout_view_for_root` authenticates its
 exact root. These library methods change no working files and publish no locator.
 The source [`vcs open` adapter](cli.md#open-a-native-checkout) adds locator
@@ -99,11 +99,11 @@ publication and recovery around those admitted database operations. Open does
 not select additional files.
 
 Generic private content writes require the bound catalog1 repository and refuse
-catalog4. Catalog4 has a separate private recording API, described below. Its
+catalog6. Catalog6 has a separate private recording API, described below. Its
 shared root stays a check-in with no files.
 
 Admission validates the stored root and authority before repository operations.
-For catalog4, it also validates the complete supported tracking, scope and private
+For catalog6, it also validates the complete supported tracking, scope and private
 history state. `SharedView` restricts access to public content that passed this
 validation. Read and write access to the database file through the operating
 system establishes local owner authority.

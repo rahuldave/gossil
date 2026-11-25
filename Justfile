@@ -69,6 +69,17 @@ gest-ticket-interop:
     fi
     GOSSIL_FOSSIL_REFERENCE="$fossil" just test --test gest_ticket stock_fossil_reads_emitted_gest_tickets -- --ignored --exact
 
+# Check a new repository with the pinned Fossil reference: test-integrity, and rebuild of a copy; exit 5 means not-run.
+catalog-interop:
+    #!/usr/bin/env bash
+    set -euo pipefail
+    fossil="${GOSSIL_FOSSIL_REFERENCE:-{{justfile_directory()}}/.jlog/bin/fossil}"
+    if [ ! -x "$fossil" ]; then
+        echo "not-run: the pinned Fossil reference is absent at $fossil; run just setup" >&2
+        exit 5
+    fi
+    GOSSIL_FOSSIL_REFERENCE="$fossil" just test --test catalog_line stock_fossil_checks_a_new_catalog6_repository -- --ignored --exact
+
 # Respell the Gest ticket creation fixtures from their hand-written cards.
 gest-ticket-reference:
     jlog run python3 tests/fixtures/gest-ticket/generate.py

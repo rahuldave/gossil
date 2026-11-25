@@ -18,7 +18,7 @@ fn limits() -> AdmissionLimits {
             max_output_bytes: 4096,
             max_chain_depth: 4,
             max_total_stored_bytes: 8192,
-            // Catalog4 admission charges exact schema/authority and complete operation work.
+            // Catalog6 admission charges exact schema/authority and complete operation work.
             max_total_decoded_bytes: 16777216,
         },
         parser: ParseLimits {
@@ -123,7 +123,7 @@ async fn reject_mutation(sql: &str) {
     c.execute("PRAGMA foreign_keys=OFF", ()).await.unwrap();
     let expected_constraint = match sql {
         "UPDATE g_storage SET storage_version=1" => {
-            Some("CHECK constraint failed: storage_version=4")
+            Some("CHECK constraint failed: storage_version=6")
         }
         "UPDATE g_vfile SET id=NULL" => Some("NOT NULL constraint failed: g_vfile.id"),
         "UPDATE g_vfile SET checkout_id=NULL" => {
@@ -410,7 +410,7 @@ async fn catalog1_never_admits_native_pending_additions() {
             .await
             .unwrap_err()
             .operation,
-        "native checkout requires catalog4"
+        "native checkout requires catalog6"
     );
     assert_eq!(
         owner
@@ -418,7 +418,7 @@ async fn catalog1_never_admits_native_pending_additions() {
             .await
             .unwrap_err()
             .operation,
-        "native checkout requires catalog4"
+        "native checkout requires catalog6"
     );
     drop(owner);
     drop(LocalOwnerRepository::open(&path, bounds).await.unwrap());

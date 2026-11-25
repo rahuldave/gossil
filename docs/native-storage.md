@@ -3,15 +3,15 @@
 [API: `LocalOwnerRepository`](api/storage.qmd#LocalOwnerRepository) gives the exact contract.
 
 The storage API creates an empty native repository without a checkout. After
-registration, its catalog4 library can track paths, select explicit scopes and
+registration, its catalog6 library can track paths, select explicit scopes and
 record the complete private tracked tree through one owned libSQL transaction.
 The shared history remains the initial empty check-in. General artifact
 crosslinks, Gest projections and filesystem recovery remain planned.
 
 Catalog names identify storage formats. Catalog1 binds a checkout at creation
-and supports bounded private content bytes. Catalog4 starts without a checkout
+and supports bounded private content bytes. Catalog6 starts without a checkout
 and supports one later registration. Generic catalog1 content writes remain
-separate from catalog4 recording.
+separate from catalog6 recording.
 
 ## Initialize without a checkout
 
@@ -22,7 +22,7 @@ finite content/parser limits. The API requires an explicit administrator.
 It does not read environment variables or a preference database. The
 [`vcs init` CLI adapter](cli.md#initialize-a-repository) supplies generated
 identities and a password, and chooses the administrator from options or the
-environment. It uses this strict catalog4 contract; it does not bind a checkout.
+environment. It uses this strict catalog6 contract; it does not bind a checkout.
 
 Initialization normalizes the date for the root D card. It installs the native
 default report, system users and administrator password digest. SHA1 selection
@@ -30,7 +30,7 @@ sets the native hash policy and hashes the actual root with SHA1.
 Otherwise the root uses SHA3-256. `initialization_identity()` returns the stored
 project-code and server-code after checking admission.
 
-This constructor installs catalog4 with `checkout_count=0`. Its only nonempty
+This constructor installs catalog6 with `checkout_count=0`. Its only nonempty
 `g_*` tables are `g_storage`, `g_local_owner` and `g_public_receipt`.
 Reopen authenticates the single canonical empty root, its native hash, date,
 event, branch tags and receive/index facts. It checks the exact schema,
@@ -40,8 +40,14 @@ The remaining local tables must be empty, except for the exact registration,
 tracking, scope and private recording inventories described below. Extra native
 content or indexed history outside that family refuses admission. Persisted
 issue projections and states mixing those issues with file history remain unsupported.
-Catalog5 and catalog6 also remain unsupported. No upgrade occurs on open.
-Generic private content writes through this handle refuse catalog4.
+
+No upgrade occurs on open. Open refuses a repository before any effect when its
+catalog marker, the `storage_version` value of `g_storage`, names catalog2,
+catalog4 or catalog5. The message names the catalog found and catalog6, and the CLI exits 78.
+Gossil has no upgrade path before its first real release, so the fix is a new
+repository. Open refuses an unknown marker, such as 3 or 7, and a missing marker
+with exit 1.
+Generic private content writes through this handle refuse catalog6.
 
 The destination and its recovery neighbors must remain stable through engine
 cleanup. Existing destinations and recovery entries are preserved.
@@ -55,7 +61,7 @@ Templates, global preferences and project display fields are outside this API.
 After checkout-free initialization, call
 `LocalOwnerRepository::register_checkout(checkout_id, root, limits)` to register
 one existing directory against the initial empty root. This API supports only
-catalog4 with no existing registration. It refuses catalog1 and a second
+catalog6 with no existing registration. It refuses catalog1 and a second
 registration, including a retry with the same ID or an alias of the same root.
 
 Supply a nonempty, NUL-free checkout ID of at most 1024 UTF-8 bytes. Supply an
@@ -105,10 +111,10 @@ with locator publication and recovery. Its explicit flags still use the same
 admission and publisher rules. Root lookup itself only gives authenticated
 facts and does not recover a locator.
 
-Reopen accepts exactly zero or one such catalog4 registration. It independently
+Reopen accepts exactly zero or one such catalog6 registration. It independently
 checks the complete checkout, owner and key inventory against `checkout_count`,
 the native root and the supported recording history. Generic private content
-writes still refuse catalog4.
+writes still refuse catalog6.
 
 ## Track native pending additions
 
@@ -130,7 +136,7 @@ paths, and `path_scopes` reads only explicit scope choices.
 `PendingAdd::executable` records the mode at first enrollment. Later mode changes
 do not alter that flag until recording captures the current file.
 
-Only this producer's exact catalog4 state is admitted. New `g_vfile` rows use
+Only this producer's exact catalog6 state is admitted. New `g_vfile` rows use
 the current combined-head `vid`, or the initial root before recording. They use
 `rid=mrid=0`, regular-file link flags, executable mode
 and observed modification time. A RID is a native artifact row identifier.
@@ -197,7 +203,7 @@ all seven `CheckoutView` fields. They are repository ID, checkout ID, registered
 shared head, combined head, generation and pending version. Stale expectations
 or failed owner validation cause the transaction to reject the request.
 
-Catalog1 stores loose private content bytes without a file tree. Catalog4
+Catalog1 stores loose private content bytes without a file tree. Catalog6
 recording stores a complete file tree and its admitted history.
 
 The request supplies actor, comment and native date bytes. The actor is nonempty
@@ -249,7 +255,7 @@ as their `vid`.
 
 A projection is a derived database row. Admission rejects a file link whose
 content hash differs from the hash in its manifest.
-Catalog4 recording accepts full compressed content and refuses physical deltas.
+Catalog6 recording accepts full compressed content and refuses physical deltas.
 Catalog1 retains its separate delta reconstruction contract.
 
 Content that already
@@ -313,7 +319,7 @@ do not extend the supported public graph or implement their corresponding
 product operations.
 
 `AdmissionLimits` bound content reconstruction and parser work. Catalog1 admission
-validates its root; catalog4 admission also checks the complete supported history
+validates its root; catalog6 admission also checks the complete supported history
 and charges retained metadata to the same operation budget.
 Fixed scalar conflict queries bound the data they return. Neither mechanism
 sets a ceiling on SQLite scan work across stored tables.
@@ -385,7 +391,7 @@ their native and typed crosslinks are implemented.
 ## Read recorded checkout ancestry
 
 `LocalOwnerRepository::recorded_timeline(checkout, limits)` returns a complete
-`Vec<RecordedCheckin>` for an explicit existing catalog4 checkout. Each row has
+`Vec<RecordedCheckin>` for an explicit existing catalog6 checkout. Each row has
 `hash: String`, `date: Vec<u8>`, `actor: Vec<u8>`, `comment: Vec<u8>` and
 `private: bool`. The generated [Rust API](api/index.qmd) gives the exact signature.
 
@@ -429,8 +435,19 @@ timeline behavior remain deferred.
 
 ## Schema and remaining work
 
-Each catalog installs six SQL inputs under `src/storage/schema/`. Catalog4
-substitutes `adapter-catalog4.sql` for the catalog1 adapter. The required object
+Each catalog installs six SQL inputs under `src/storage/schema/`. Catalog6
+substitutes `adapter-catalog6.sql` for the catalog1 adapter. That file adds the
+local audit tables `transactions`, `transaction_events` and `g_command_audit`,
+which stay empty in this build. Initialization also stores the SQL of the
+installed ticket tables in the native `ticket-table` setting. A stock
+`fossil rebuild` recreates the ticket tables from that setting, so they keep
+their Gest columns.
+
+`just catalog-interop` checks a new repository with the pinned Fossil reference.
+It runs `fossil test-integrity`, then `fossil rebuild` on a copy, and compares the
+ticket columns. When the reference is absent, it exits 5, the status for not-run.
+
+The required object
 inventory and complete stored definitions are
 checked before mutation. Known optional schema families return an unsupported
 configuration error. Unregistered persistent triggers receive a separate error.
@@ -440,7 +457,7 @@ remain unimplemented. General public receipts, publication, native and typed
 rebuild, retained-dependency administration and filesystem journals also remain
 unimplemented. The public APIs do not offer those operations.
 The internal modules for [strict local records](local-records.md) are the base
-for the record readers of catalog 5, which are not built yet.
+for the record readers of catalog 6, which are not built yet.
 
 ## Recommendations
 

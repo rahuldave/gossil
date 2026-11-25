@@ -152,9 +152,11 @@ The root can contain ordinary files and nested Git repositories. Their bytes
 remain unselected and unchanged. Native VCS open requires no issue, project or
 author initialization. It does not grant Gest project authority.
 
-The native library admits catalog4 with exactly zero or one registration and
+The native library admits catalog6 with exactly zero or one registration and
 the supported tracking, scope and private recording history. Catalog1, unrelated
-file history and a second registration are outside this command. The [storage guide](native-storage.md) defines those catalog formats.
+file history and a second registration are outside this command. The command refuses a
+repository at an older Gossil catalog, 2, 4 or 5, before any effect, with exit 78. The [storage guide](native-storage.md) defines those catalog formats.
+
 Native admission checks the repository and owner binding,
 canonical root, device/inode and complete supported state. The locator cannot
 replace those checks. See [native storage](native-storage.md#register-one-existing-directory)
@@ -266,7 +268,9 @@ Success prints `Opened checkout ID at ROOT (repository REPOSITORY_ID, head HEAD)
 and returns status 0. `HEAD` is the shared head, which stays at the empty root
 when the library records private history. Failures return status 1 with a diagnostic on stderr.
 Locator diagnostics name their publication phase. Internal error categories do
-not change this process exit status.
+not change this process exit status. The one exception is a repository at an
+older Gossil catalog, which returns status 78, as
+[Exit status and errors](#exit-status-and-errors) says.
 
 A receipt write failure can occur after
 successful publication. It preserves the committed registration and locator,
@@ -473,6 +477,12 @@ with one diagnostic line on stderr. An unknown group or command returns status 2
 as the [help section](#get-help) says. A help request with an argument after
 the command name also returns status 2, with two lines on stderr.
 
+A repository whose catalog marker names an older Gossil catalog, 2, 4 or 5,
+returns status 78 before any effect. The three lines on stderr name the
+repository, the catalog found and catalog6, and say to create a new repository.
+The catalog marker is the `storage_version` value of the `g_storage` table, and
+not the `.gossil` checkout marker.
+
 Missing input reports `no such file: PATH`.
 An output-open failure reports `unable to open file "PATH" for writing`.
 Invalid delta application reports `Delta application failed.`.
@@ -610,7 +620,7 @@ space once before serializing the complete response.
 The API records its result and completes its checked transaction before the
 adapter prepares output. Stdout receives no bytes until complete preflight and
 serialization succeed. Success exits 0. Failures exit 1 with a diagnostic and
-retain the original cause. A stdout write failure can leave partial stdout.
+retain the original cause. A repository at an older Gossil catalog exits 78. A stdout write failure can leave partial stdout.
 
 The read preserves logical database state and working files. This contract makes
 no claim that physical database bytes remain identical.

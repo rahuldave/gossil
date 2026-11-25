@@ -19,7 +19,7 @@ pub struct Limits {
     /// Total compressed envelope bytes consumed by the operation; positive.
     pub max_total_stored_bytes: u64,
     /// Total decoded content and reconstructed intermediates; positive.
-    /// Catalog4 operations also charge metadata, parser, capture and retained SQL work.
+    /// Catalog6 operations also charge metadata, parser, capture and retained SQL work.
     pub max_total_decoded_bytes: u64,
 }
 impl Limits {

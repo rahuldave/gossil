@@ -198,7 +198,7 @@ async fn policy_cost(path: &Path) -> SqlWork {
 }
 
 /// CONTENT-01: a private put reads back after reopen with its exact size and private
-/// membership, and the product admission of catalog 4 opens no shared view of it.
+/// membership, and the product admission of catalog 6 opens no shared view of it.
 #[tokio::test(flavor = "current_thread")]
 async fn a_private_put_reads_back_after_reopen_and_opens_no_shared_view() {
     let temp = tempfile::tempdir().unwrap();
@@ -254,7 +254,7 @@ async fn a_private_put_reads_back_after_reopen_and_opens_no_shared_view() {
         content: limits(),
         parser: parser(),
     };
-    // Catalog 4 admission refuses any private content, so no shared view of this file
+    // Catalog 6 admission refuses any private content, so no shared view of this file
     // exists. A shared reader cannot learn even that the name is present.
     let refused = LocalOwnerRepository::open(&path, admission)
         .await
@@ -262,7 +262,7 @@ async fn a_private_put_reads_back_after_reopen_and_opens_no_shared_view() {
         .unwrap();
     assert_eq!(
         refused.operation,
-        "unsupported nonempty catalog4 table: private"
+        "unsupported nonempty catalog6 table: private"
     );
 }
 
@@ -526,7 +526,7 @@ async fn principal_and_policy_refusals_latch_and_discard_earlier_writes() {
             "populated checkout count",
             &["UPDATE g_storage SET checkout_count=1"],
             principal(),
-            "unsupported populated catalog4 checkout scope",
+            "unsupported populated catalog6 checkout scope",
         ),
         (
             "missing native marker",
@@ -611,7 +611,7 @@ async fn an_older_catalog_is_refused_before_any_effect() {
     };
     drop(LocalOwnerRepository::create(&path, options).await.unwrap());
     let before = snapshot_of(&path).await;
-    let message = "repository catalog 1 is not the newest catalog 4";
+    let message = "repository catalog 1 is not the newest catalog 6";
     let mut store = LocalStore::open(&path).await.unwrap();
     let mut tx = store.begin_write().await.unwrap();
     let refused = tx

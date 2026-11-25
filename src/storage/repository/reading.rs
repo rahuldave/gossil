@@ -1,4 +1,4 @@
-//! Read complete supported checkout ancestry after full catalog4 admission.
+//! Read complete supported checkout ancestry after full catalog6 admission.
 //!
 //! Original event metadata is admitted against canonical native U/C cards before
 //! its owned strings are moved into the result. Dates and hashes come directly

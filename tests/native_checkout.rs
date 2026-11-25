@@ -12,7 +12,7 @@ fn limits() -> AdmissionLimits {
             max_output_bytes: 4096,
             max_chain_depth: 4,
             max_total_stored_bytes: 8192,
-            // Catalog4 admission charges exact schema/authority and complete operation work.
+            // Catalog6 admission charges exact schema/authority and complete operation work.
             max_total_decoded_bytes: 16777216,
         },
         parser: ParseLimits {
@@ -156,7 +156,7 @@ async fn register_reopen_preserves_unselected_files_and_native_keys() {
 }
 
 #[tokio::test]
-/// Refuse missing/duplicate identities, second registration, and retain catalog4 private-write refusal.
+/// Refuse missing/duplicate identities, second registration, and retain catalog6 private-write refusal.
 /// # Panics
 /// Panics if fixture setup fails or an asserted registration or admission result differs.
 async fn selection_and_duplicate_errors_never_change_binding() {
@@ -208,7 +208,7 @@ async fn selection_and_duplicate_errors_never_change_binding() {
             .await
             .unwrap_err()
             .to_string(),
-        "private writes unsupported for empty catalog4 scope"
+        "private writes unsupported for empty catalog6 scope"
     );
     drop(owner);
     assert!(LocalOwnerRepository::open(&path, limits()).await.is_ok());
@@ -429,7 +429,7 @@ async fn exact_root_resolution_is_authorized_unique_and_read_only() {
 }
 
 #[tokio::test]
-/// Legacy catalog1 remains reopenable and refuses all catalog4-only checkout methods.
+/// Legacy catalog1 remains reopenable and refuses all catalog6-only checkout methods.
 /// # Panics
 /// Panics if fixture setup fails or an asserted registration or admission result differs.
 async fn catalog1_preserves_legacy_admission_and_refuses_new_api() {

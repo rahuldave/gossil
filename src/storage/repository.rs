@@ -2,7 +2,7 @@
 //!
 //! ## Recommendations
 //! Open this handle only for local CLI/library work; never derive HTTP request authority from it.
-use super::{LocalStore, StorageError, content::Limits, policy::Principal};
+use super::{LocalStore, StorageError, content::Limits, policy::Principal, schema::NEWEST_CATALOG};
 use libsql::Value;
 use std::path::Path;
 
@@ -32,7 +32,7 @@ pub use initialization::InitializeOptions;
 /// Fixed scalar predicates bound returned data, not total SQLite scan work.
 /// The admitted root cannot produce other artifact types or a current file/merge selection.
 /// Catalog1 historical rows, diagnostics, opaque content and target-only references retain no root authority.
-/// Catalog4 admission separately requires an exact zero-or-one registration and one native root.
+/// Catalog6 admission separately requires an exact zero-or-one registration and one native root.
 const ROOT_PROJECTION_CONFLICTS: &str = concat!(
     "SELECT EXISTS(SELECT 1 FROM plink WHERE pid=?1 OR cid=?1 OR baseid=?1),",
     "EXISTS(SELECT 1 FROM mlink WHERE mid=?1 OR fid=?1 OR pmid=?1 OR pid=?1),",
@@ -56,40 +56,15 @@ const ROOT_PROJECTION_CONFLICTS: &str = concat!(
     "EXISTS(SELECT 1 FROM g_discussion_target WHERE attachment_artifact_hash=?2),",
     "EXISTS(SELECT 1 FROM g_vfile UNION ALL SELECT 1 FROM g_vmerge UNION ALL SELECT 1 FROM g_path_scope UNION ALL SELECT 1 FROM g_pending_path UNION ALL SELECT 1 FROM g_journal)",
 );
-/// Catalog4 delegates only g_vfile to exact produced-state admission.
-/// All twenty other flags and the remaining unsupported local state stay sealed.
-const CATALOG4_ROOT_PROJECTION_CONFLICTS: &str = concat!(
-    "SELECT EXISTS(SELECT 1 FROM plink WHERE pid=?1 OR cid=?1 OR baseid=?1),",
-    "EXISTS(SELECT 1 FROM mlink WHERE mid=?1 OR fid=?1 OR pmid=?1 OR pid=?1),",
-    "EXISTS(SELECT 1 FROM cherrypick WHERE parentid=?1 OR childid=?1),",
-    "EXISTS(SELECT 1 FROM phantom WHERE rid=?1),",
-    "EXISTS(SELECT 1 FROM orphan WHERE rid=?1 OR baseline=?1),",
-    "EXISTS(SELECT 1 FROM backlink WHERE srcid=?1),",
-    "EXISTS(SELECT 1 FROM forumpost WHERE fpid=?1 OR froot=?1 OR fprev=?1 OR firt=?1),",
-    "EXISTS(SELECT 1 FROM g_dependency WHERE source_hash=?2 OR (target_hash=?2 AND required=1)),",
-    "EXISTS(SELECT 1 FROM attachment WHERE attachid=?1),",
-    "EXISTS(SELECT 1 FROM ticketchng WHERE tkt_rid=?1),",
-    "EXISTS(SELECT 1 FROM modreq WHERE objid=?1),",
-    "EXISTS(SELECT 1 FROM tagxref WHERE (srcid=?1 OR origid=?1) AND rid IS NOT ?1),",
-    "EXISTS(SELECT 1 FROM g_admission WHERE native_hash=?2),",
-    "EXISTS(SELECT 1 FROM g_contributor WHERE native_hash=?2 AND status='valid'),",
-    "EXISTS(SELECT 1 FROM g_descriptor WHERE (descriptor_hash=?2 OR attachment_artifact_hash=?2) AND status='valid'),",
-    "EXISTS(SELECT 1 FROM g_discussion_message WHERE version_hash=?2),",
-    "EXISTS(SELECT 1 FROM g_message_context WHERE descriptor_hash=?2 OR version_hash=?2),",
-    "EXISTS(SELECT 1 FROM g_message_context_target WHERE descriptor_hash=?2 OR version_hash=?2),",
-    "EXISTS(SELECT 1 FROM g_code_link WHERE attachment_artifact_hash=?2),",
-    "EXISTS(SELECT 1 FROM g_discussion_target WHERE attachment_artifact_hash=?2),",
-    "EXISTS(SELECT 1 FROM g_vmerge UNION ALL SELECT 1 FROM g_path_scope UNION ALL SELECT 1 FROM g_pending_path UNION ALL SELECT 1 FROM g_journal)",
-);
 /// Number of independently sealed scalar root-conflict categories.
 const ROOT_PROJECTION_FLAGS: usize = 21;
 
 /// Finite content and parser bounds for complete supported repository admission.
 #[derive(Clone, Copy)]
 pub struct AdmissionLimits {
-    /// Envelope, reconstruction and cumulative work bounds, including catalog4 metadata and history.
+    /// Envelope, reconstruction and cumulative work bounds, including catalog6 metadata and history.
     pub content: Limits,
-    /// Structural parser bounds, shared across root and private manifest validation in catalog4.
+    /// Structural parser bounds, shared across root and private manifest validation in catalog6.
     pub parser: crate::artifact::ParseLimits,
 }
 /// Sealed authority snapshot and mutation counters from successful admission.
@@ -232,7 +207,7 @@ impl LocalOwnerRepository {
     /// * `path` - New literal native filename; keep its namespace stable through engine cleanup.
     /// * `options` - Explicit administrator, password, date, hash policy and finite limits.
     /// # Returns
-    /// An admitted owner of the canonical empty catalog4 repository.
+    /// An admitted owner of the canonical empty catalog6 repository.
     /// Initialization stores no file tree. [`Self::register_checkout`] can register one existing directory; then explicitly track paths and select private scopes before [`Self::commit_private_tracked_files`].
     /// No environment variables, preference database or templates supply defaults.
     /// # Examples
@@ -299,11 +274,11 @@ impl LocalOwnerRepository {
         )
         .await
     }
-    /// Construct either the existing bound catalog1 or the unbound native catalog4.
+    /// Construct either the existing bound catalog1 or the unbound native catalog6.
     /// # Arguments
     /// * `path` - Exclusively created literal destination.
     /// * `options` - Canonical root fields and optional bound checkout fields.
-    /// * `native` - Implemented native settings, selecting unbound catalog4 when present.
+    /// * `native` - Implemented native settings, selecting unbound catalog6 when present.
     /// # Returns
     /// A complete admitted owner.
     /// # Errors
@@ -370,7 +345,7 @@ impl LocalOwnerRepository {
         let mut store = LocalStore::open_observed(path, true, Some(identity.clone())).await?;
         let mut tx = store.begin_write().await?;
         let result = async {
-            if native.is_some() { tx.install_schema_catalog4().await?; } else { tx.install_schema().await?; }
+            if native.is_some() { tx.install_schema_catalog6().await?; } else { tx.install_schema().await?; }
             let date_token = if let Some(native) = native { tx.initial_date(native.date).await? } else { String::from_utf8(options.date.to_vec()).map_err(|e| StorageError::caused("native date UTF-8", e))? };
             let bytes = empty_root_bytes(date_token.as_bytes(), options.user, root_ceiling)?;
             #[cfg(test)]
@@ -387,7 +362,7 @@ impl LocalOwnerRepository {
             tx.decode_full_content(&hash, bytes.len() as i64, &packed, options.content_limits)?;
             tx.execute_bound("INSERT INTO config(name,value,mtime) VALUES('project-code',?1,unixepoch()),('content-schema','2',unixepoch()),('aux-schema','2015-01-24',unixepoch()),('server-code',lower(hex(randomblob(20))),unixepoch())", vec![Value::Text(options.repository_id.into())]).await?;
             if native.is_some() {
-                tx.execute_bound("INSERT INTO g_storage VALUES(1,?1,4,'gest-ticket-v1',0,0)", vec![Value::Text(options.repository_id.into())]).await?;
+                tx.execute_bound("INSERT INTO g_storage VALUES(1,?1,?2,'gest-ticket-v1',0,0)", vec![Value::Text(options.repository_id.into()), Value::Integer(NEWEST_CATALOG)]).await?;
             } else {
             tx.execute_bound("INSERT INTO g_storage VALUES(1,?1,1,'gest-ticket-v1',0)", vec![Value::Text(options.repository_id.into())]).await?;
             }
@@ -451,8 +426,9 @@ impl LocalOwnerRepository {
     ///
     /// The durable repository and owner identities are read from this file rather
     /// than accepted as caller-selected capability strings.
-    /// Supports bound catalog1 and the exact catalog4 initialized, tracked and private recorded-history family with zero or one checkout registration, without migration.
-    /// Catalog4 requires the immutable shared root and exact supported registration, tracking, scope and native history projections; unrelated local tables remain empty.
+    /// Supports bound catalog1 and the exact catalog6 initialized, tracked and private recorded-history family with zero or one checkout registration, without migration.
+    /// A marker of an older Gossil catalog (2, 4 or 5) is refused before any effect, with the three-line message of CAT-07 that names `path`.
+    /// Catalog6 requires the immutable shared root and exact supported registration, tracking, scope and native history projections; unrelated local tables remain empty.
     /// # Arguments
     /// * `path` - Existing local database under operating-system owner authority.
     /// * `admission_limits` - Explicit finite root decode and parser budgets.
@@ -466,7 +442,7 @@ impl LocalOwnerRepository {
     /// }
     /// ```
     /// # Errors
-    /// Rejects missing policy, unsupported markers, corrupt bindings and engine errors.
+    /// Rejects missing policy, older and unknown markers, corrupt bindings and engine errors.
     pub async fn open(
         path: impl AsRef<Path>,
         admission_limits: AdmissionLimits,
@@ -488,7 +464,7 @@ impl LocalOwnerRepository {
         let mut store = LocalStore::open_observed(path, true, Some(identity.clone())).await?;
         let mut tx = store.begin_write().await?;
         let result = async {
-            if tx.supported_catalog_version().await? == 4 {
+            if tx.supported_catalog_version().await? == NEWEST_CATALOG {
                 let mut budget=super::content::Budget::new(admission_limits.content)?;
                 let mut parse=ParseWork::new(admission_limits.parser)?;
                 let principal=tx.read_recording_principal_budgeted(&mut budget).await?;
@@ -506,8 +482,10 @@ impl LocalOwnerRepository {
             Ok((principal,admission))
         }.await;
         let result = tx.record(result);
-        tx.commit().await?;
-        let (principal, admission) = result?;
+        tx.commit()
+            .await
+            .map_err(|error| error.naming_repository(path))?;
+        let (principal, admission) = result.map_err(|error| error.naming_repository(path))?;
         identity.observe()?;
         Ok(Self {
             store,
@@ -530,7 +508,7 @@ impl LocalOwnerRepository {
     /// ```
     /// # Errors
     /// Rejects policy, hash, size, codec and limit errors, or required unresolved crosslinks.
-    /// Private writes are unsupported for the empty-root catalog4 scope.
+    /// Private writes are unsupported for the empty-root catalog6 scope.
     pub async fn put_private_file_content(
         &mut self,
         native_name: &str,
@@ -552,7 +530,7 @@ impl LocalOwnerRepository {
                 != vec![vec![Value::Integer(1)]]
             {
                 return Err(StorageError::state(
-                    "private writes unsupported for empty catalog4 scope",
+                    "private writes unsupported for empty catalog6 scope",
                 ));
             }
             Ok(())
@@ -618,21 +596,33 @@ impl LocalOwnerRepository {
     }
 }
 
+/// Lists the older Gossil catalogs that a marker may name.
+///
+/// Each is refused before any effect (CAT-07). Catalog 3 was never defined, so its
+/// marker is unknown, as is every marker above [`NEWEST_CATALOG`].
+const OLDER_CATALOGS: [i64; 3] = [2, 4, 5];
+
 /// Decode the fixed-size supported-catalog aggregate without owning raw markers.
 /// # Arguments
-/// * `rows` - Count, valid-marker count and supported version from the fixed query.
+/// * `rows` - Count, integer-singleton count and its integer version from the fixed query.
 /// # Returns
-/// Exactly catalog1 or catalog4 for one valid marker.
+/// Exactly catalog1 or the newest catalog for one valid marker.
 /// # Errors
-/// Refuses missing, ambiguous, malformed or unsupported markers.
+/// Refuses one marker of an older Gossil catalog with an [`super::OlderCatalog`] source, and
+/// refuses missing, ambiguous, malformed and unknown markers.
 fn supported_catalog_from_rows(rows: &[Vec<Value>]) -> Result<i64, StorageError> {
     match rows {
         [row] => match row.as_slice() {
             [
                 Value::Integer(1),
                 Value::Integer(1),
-                Value::Integer(version @ (1 | 4)),
-            ] => Ok(*version),
+                Value::Integer(version),
+            ] if *version == 1 || *version == NEWEST_CATALOG => Ok(*version),
+            [
+                Value::Integer(1),
+                Value::Integer(1),
+                Value::Integer(version),
+            ] if OLDER_CATALOGS.contains(version) => Err(StorageError::older_catalog(*version)),
             _ => Err(StorageError::state("unsupported storage version")),
         },
         _ => Err(StorageError::state("unsupported storage version")),
@@ -642,13 +632,13 @@ fn supported_catalog_from_rows(rows: &[Vec<Value>]) -> Result<i64, StorageError>
 impl super::WriteTransaction<'_> {
     /// Select an exact supported catalog using only fixed-size scalar results.
     /// # Returns
-    /// INTEGER1 or INTEGER4 for exactly one INTEGER singleton marker.
+    /// INTEGER1 or the newest catalog for exactly one INTEGER singleton marker.
     /// # Errors
     /// Refuses missing/extra markers and every unsupported type/value before any
     /// raw marker or principal bytes can be owned by the provider.
     async fn supported_catalog_version(&mut self) -> Result<i64, StorageError> {
         let result=async {
-            let rows=self.query_bound("SELECT count(*),coalesce(sum(CASE WHEN typeof(singleton)='integer' AND singleton=1 AND typeof(storage_version)='integer' AND storage_version IN(1,4) THEN 1 ELSE 0 END),0),max(CASE WHEN typeof(singleton)='integer' AND singleton=1 AND typeof(storage_version)='integer' AND storage_version IN(1,4) THEN storage_version ELSE NULL END) FROM g_storage",vec![]).await?;
+            let rows=self.query_bound("SELECT count(*),coalesce(sum(CASE WHEN typeof(singleton)='integer' AND singleton=1 AND typeof(storage_version)='integer' THEN 1 ELSE 0 END),0),max(CASE WHEN typeof(singleton)='integer' AND singleton=1 AND typeof(storage_version)='integer' THEN storage_version ELSE NULL END) FROM g_storage",vec![]).await?;
             supported_catalog_from_rows(&rows)
         }.await;
         self.record(result)
@@ -656,7 +646,7 @@ impl super::WriteTransaction<'_> {
 
     /// Capture durable authority metadata without reading any content envelope.
     /// # Returns
-    /// Owned exact durable authority rows, including catalog4 checkout keys and native receive records.
+    /// Owned exact durable authority rows, including catalog6 checkout keys and native receive records.
     /// # Errors
     /// Returns SQL execution or owned value-decoding errors.
     async fn authority_snapshot(&mut self) -> Result<Vec<Vec<Vec<Value>>>, StorageError> {
@@ -680,7 +670,7 @@ impl super::WriteTransaction<'_> {
                 vec![],
             )
             .await?
-            == vec![vec![Value::Integer(4)]]
+            == vec![vec![Value::Integer(NEWEST_CATALOG)]]
         {
             snapshot.push(
                 self.query_bound("SELECT * FROM g_vvar ORDER BY checkout_id,name", vec![])
@@ -703,18 +693,18 @@ impl super::WriteTransaction<'_> {
     }
     /// Capture authority and connection counters after successful validation.
     /// # Arguments
-    /// * `limits` - Finite admission ceilings for the bounded catalog4 authority snapshot.
+    /// * `limits` - Finite admission ceilings for the bounded catalog6 authority snapshot.
     /// # Returns
     /// The sealed authority snapshot and current connection counters.
     /// # Errors
     /// Returns SQL execution or owned value-decoding errors while capturing authority.
-    /// For catalog4, also rejects invalid limits, exhausted work, invalid authority
+    /// For catalog6, also rejects invalid limits, exhausted work, invalid authority
     /// metadata, allocation failures and failed provider observations.
     async fn capture_admission(
         &mut self,
         limits: AdmissionLimits,
     ) -> Result<AdmissionProof, StorageError> {
-        if self.supported_catalog_version().await? == 4 {
+        if self.supported_catalog_version().await? == NEWEST_CATALOG {
             let mut budget = super::content::Budget::new(limits.content)?;
             return self.capture_admission_budgeted(&mut budget).await;
         }
@@ -798,7 +788,7 @@ impl super::WriteTransaction<'_> {
         }.await;
         self.record(result)
     }
-    /// Refuse every unimplemented local/native state in the zero-or-one checkout catalog4 scope.
+    /// Refuse every unimplemented local/native state in the zero-or-one checkout catalog6 scope.
     /// # Arguments
     /// * `rid` - Authenticated canonical root RID.
     /// * `root` - Authenticated canonical native hash.
@@ -809,7 +799,7 @@ impl super::WriteTransaction<'_> {
     /// Success for one native empty root with zero or one exact authenticated checkout registration.
     /// # Errors
     /// Rejects populated tables, extra native history and noncanonical receive/index facts.
-    async fn validate_empty_catalog4(
+    async fn validate_empty_catalog6(
         &mut self,
         rid: i64,
         root: &str,
@@ -826,10 +816,10 @@ impl super::WriteTransaction<'_> {
             != vec![vec![Value::Integer(1)]]
         {
             return Err(StorageError::state(
-                "unsupported catalog4 owner cardinality",
+                "unsupported catalog6 owner cardinality",
             ));
         }
-        /// Complete local and native table inventory that must be empty for catalog4 admission.
+        /// Complete local and native table inventory that must be empty for catalog6 admission.
         const EMPTY_TABLES: &[(&str, &str)] = &[
             ("g_admission", "SELECT EXISTS(SELECT 1 FROM g_admission)"),
             (
@@ -837,6 +827,10 @@ impl super::WriteTransaction<'_> {
                 "SELECT EXISTS(SELECT 1 FROM g_checkout_project)",
             ),
             ("g_code_link", "SELECT EXISTS(SELECT 1 FROM g_code_link)"),
+            (
+                "g_command_audit",
+                "SELECT EXISTS(SELECT 1 FROM g_command_audit)",
+            ),
             (
                 "g_contributor",
                 "SELECT EXISTS(SELECT 1 FROM g_contributor)",
@@ -987,6 +981,11 @@ impl super::WriteTransaction<'_> {
             ("shun", "SELECT EXISTS(SELECT 1 FROM shun)"),
             ("ticket", "SELECT EXISTS(SELECT 1 FROM ticket)"),
             ("ticketchng", "SELECT EXISTS(SELECT 1 FROM ticketchng)"),
+            (
+                "transaction_events",
+                "SELECT EXISTS(SELECT 1 FROM transaction_events)",
+            ),
+            ("transactions", "SELECT EXISTS(SELECT 1 FROM transactions)"),
             ("unsent", "SELECT EXISTS(SELECT 1 FROM unsent)"),
             ("unversioned", "SELECT EXISTS(SELECT 1 FROM unversioned)"),
         ];
@@ -994,7 +993,7 @@ impl super::WriteTransaction<'_> {
             // SQL literals enumerate the fixed reviewed schema inventory above.
             if self.query_bound(sql, vec![]).await? != vec![vec![Value::Integer(0)]] {
                 return Err(StorageError::state(format!(
-                    "unsupported nonempty catalog4 table: {table}"
+                    "unsupported nonempty catalog6 table: {table}"
                 )));
             }
         }
@@ -1096,7 +1095,7 @@ impl super::WriteTransaction<'_> {
         limits: AdmissionLimits,
     ) -> Result<(), StorageError> {
         // Catalog1 retains its original validator and all original conflict guards.
-        if self.supported_catalog_version().await? == 4 {
+        if self.supported_catalog_version().await? == NEWEST_CATALOG {
             let mut budget = super::content::Budget::new(limits.content)?;
             let mut parse = ParseWork::new(limits.parser)?;
             return self
@@ -1114,7 +1113,7 @@ impl super::WriteTransaction<'_> {
             let mut budget = super::content::Budget::new(limits.content)?;
             let bytes = self.read_owner_content_budget(principal,root,&mut budget).await?;
             let version = self.query_bound("SELECT storage_version FROM g_storage WHERE singleton=1",vec![]).await?;
-            let parsed = if version == vec![vec![Value::Integer(4)]] {
+            let parsed = if version == vec![vec![Value::Integer(NEWEST_CATALOG)]] {
                 let mut parse_work = ParseWork::new(limits.parser)?;
                 parse_owned_budgeted(self,&bytes,&mut parse_work).await?
             } else { parse_owned(self,&bytes,limits.parser).await? };
@@ -1127,21 +1126,12 @@ impl super::WriteTransaction<'_> {
             let date = parsed.date().unwrap();
             let stored_date = native_stored_date(date);
             if row != &vec![Value::Integer(*rid),Value::Text("ci".into()),stored_date.clone(),Value::Text(user.into()),Value::Text("initial empty check-in".into()),stored_date.clone(),Value::Null,Value::Null,Value::Null,Value::Null,Value::Null,Value::Null] { return Err(StorageError::state("root event differs from canonical bytes")); }
-            // Only authenticated catalog4 replaces the g_vfile empty guard.
-            // All remaining root-conflict categories and unsupported tables stay sealed.
-            let conflicts = if version == vec![vec![Value::Integer(4)]] {
-                CATALOG4_ROOT_PROJECTION_CONFLICTS
-            } else { ROOT_PROJECTION_CONFLICTS };
-            if self.query_bound(conflicts,vec![Value::Integer(*rid),Value::Text(root.clone())]).await? != vec![vec![Value::Integer(0);ROOT_PROJECTION_FLAGS]] {
+            if self.query_bound(ROOT_PROJECTION_CONFLICTS,vec![Value::Integer(*rid),Value::Text(root.clone())]).await? != vec![vec![Value::Integer(0);ROOT_PROJECTION_FLAGS]] {
                 return Err(StorageError::state("root projection contradicts canonical bytes"));
             }
             let tags = self.query_bound("SELECT t.tagname,x.tagtype,x.srcid,x.origid,x.value,x.mtime FROM tagxref x LEFT JOIN tag t ON t.tagid=x.tagid WHERE x.rid=?1 ORDER BY t.tagname LIMIT 3",vec![Value::Integer(*rid)]).await?;
             let expected = vec![vec![Value::Text("branch".into()),Value::Integer(2),Value::Integer(*rid),Value::Integer(*rid),Value::Text("trunk".into()),stored_date.clone()],vec![Value::Text("sym-trunk".into()),Value::Integer(2),Value::Integer(*rid),Value::Integer(*rid),Value::Null,stored_date.clone()]];
             if tags != expected { return Err(StorageError::state("root branch crosslinks differ from canonical bytes")); }
-            if version == vec![vec![Value::Integer(4)]] {
-                self.validate_empty_catalog4(*rid, root, &stored_date, principal, limits).await?;
-                return Ok(());
-            }
             let checkouts = self.query_bound("SELECT c.shared_head,c.combined_head,c.generation,c.pending_version,c.availability,o.owner_id FROM g_checkout c LEFT JOIN g_checkout_owner o ON o.checkout_id=c.checkout_id",vec![]).await?;
             if checkouts.is_empty() || checkouts.iter().any(|row| row != &vec![Value::Text(root.clone()),Value::Null,Value::Integer(0),Value::Integer(0),Value::Text("ready".into()),Value::Text(principal.owner.clone())]) { return Err(StorageError::state("unsupported or unavailable checkout root closure")); }
             use std::os::unix::fs::MetadataExt;
@@ -1505,21 +1495,11 @@ fn empty_root_bytes(date: &[u8], user: &[u8], max_output: usize) -> Result<Vec<u
 #[cfg(test)]
 mod tests {
     use super::*;
-    /// Catalog4 substitutes only the exact tracked-row empty guard.
+    /// The root guard has one result flag for each of its conflict checks.
     #[test]
-    fn catalog4_root_guard_differs_only_by_tracked_row_delegation() {
-        assert_eq!(
-            CATALOG4_ROOT_PROJECTION_CONFLICTS,
-            ROOT_PROJECTION_CONFLICTS.replace("SELECT 1 FROM g_vfile UNION ALL ", "")
-        );
+    fn root_guard_has_one_flag_per_conflict_check() {
         assert_eq!(
             ROOT_PROJECTION_CONFLICTS.matches("EXISTS(").count(),
-            ROOT_PROJECTION_FLAGS
-        );
-        assert_eq!(
-            CATALOG4_ROOT_PROJECTION_CONFLICTS
-                .matches("EXISTS(")
-                .count(),
             ROOT_PROJECTION_FLAGS
         );
     }
@@ -1606,14 +1586,24 @@ mod tests {
         let cases = [
             (vec![], None),
             (vec![(Value::Integer(1), Value::Integer(1))], Some(1)),
-            (vec![(Value::Integer(1), Value::Integer(4))], Some(4)),
-            (vec![(Value::Integer(1), Value::Text("4".into()))], None),
-            (vec![(Value::Integer(1), Value::Blob(b"4".to_vec()))], None),
-            (vec![(Value::Integer(1), Value::Real(4.0))], None),
+            (vec![(Value::Integer(1), Value::Integer(6))], Some(6)),
+            (vec![(Value::Integer(1), Value::Text("6".into()))], None),
+            (vec![(Value::Integer(1), Value::Blob(b"6".to_vec()))], None),
+            (vec![(Value::Integer(1), Value::Real(6.0))], None),
             (vec![(Value::Integer(1), Value::Null)], None),
-            (vec![(Value::Integer(1), Value::Integer(2))], None),
+            (vec![(Value::Integer(1), Value::Integer(3))], None),
+            (vec![(Value::Integer(1), Value::Integer(7))], None),
+            (vec![(Value::Integer(1), Value::Text("4".into()))], None),
+            (vec![(Value::Integer(0), Value::Integer(6))], None),
             (vec![(Value::Integer(0), Value::Integer(4))], None),
-            (vec![(Value::Text("1".into()), Value::Integer(4))], None),
+            (vec![(Value::Text("1".into()), Value::Integer(6))], None),
+            (
+                vec![
+                    (Value::Integer(1), Value::Integer(6)),
+                    (Value::Integer(2), Value::Integer(6)),
+                ],
+                None,
+            ),
             (
                 vec![
                     (Value::Integer(1), Value::Integer(4)),
@@ -3364,10 +3354,45 @@ mod tests {
         assert!(std::error::Error::source(&first).is_some());
         assert_eq!(tx.commit().await.unwrap_err().operation, first.operation);
     }
+    /// Installing the `ticket-table` setting needs both ticket tables and their index, and puts their SQL in the setting in order.
+    #[tokio::test]
+    async fn ticket_table_setting_requires_the_complete_ticket_schema() {
+        let mut store = LocalStore::open_inner(Path::new(":memory:"), false)
+            .await
+            .unwrap();
+        let mut tx = store.begin_write().await.unwrap();
+        tx.execute("CREATE TABLE config(name,value,mtime)")
+            .await
+            .unwrap();
+        // Create the tables out of name order, so that only the ORDER BY gives the order.
+        tx.execute("CREATE TABLE ticketchng(b)").await.unwrap();
+        tx.execute("CREATE TABLE ticket(a)").await.unwrap();
+        assert_eq!(
+            tx.install_ticket_table_config()
+                .await
+                .unwrap_err()
+                .operation,
+            "native ticket schema unavailable"
+        );
+        tx.execute("CREATE INDEX ticketchng_idx1 ON ticketchng(b)")
+            .await
+            .unwrap();
+        tx.install_ticket_table_config().await.unwrap();
+        assert_eq!(
+            tx.query("SELECT value FROM config WHERE name='ticket-table'")
+                .await
+                .unwrap(),
+            vec![vec![Value::Text(
+                "CREATE TABLE ticket(a);\nCREATE TABLE ticketchng(b);\nCREATE INDEX ticketchng_idx1 ON ticketchng(b);\n"
+                    .into()
+            )]]
+        );
+        tx.rollback().await.unwrap();
+    }
     /// Catalog dispatch refuses malformed aggregate shapes without inspecting raw identities.
     #[test]
     fn catalog_scalar_decoder_accepts_only_one_supported_marker() {
-        for version in [1, 4] {
+        for version in [1, 6] {
             assert_eq!(
                 supported_catalog_from_rows(&[vec![
                     Value::Integer(1),
@@ -3378,13 +3403,50 @@ mod tests {
                 version
             );
         }
+        // One marker of an older Gossil catalog is an older-catalog refusal (CAT-07).
+        for version in [2, 4, 5] {
+            let error = supported_catalog_from_rows(&[vec![
+                Value::Integer(1),
+                Value::Integer(1),
+                Value::Integer(version),
+            ]])
+            .unwrap_err();
+            assert_eq!(
+                error.older(),
+                Some(super::super::OlderCatalog { found: version })
+            );
+            assert_eq!(
+                error.operation,
+                format!("repository is at catalog {version}, and this build needs catalog 6")
+            );
+            let named = error.naming_repository(Path::new("/r/old.gossil"));
+            assert_eq!(
+                named.operation,
+                format!(
+                    "gossil: repository /r/old.gossil is at catalog {version}, and this build needs catalog 6.\n\
+                     Gossil has no upgrade path before its first real release.\n\
+                     Create a new repository with gos v init or gos i init."
+                )
+            );
+        }
+        // Naming leaves every other refusal unchanged.
+        let other = StorageError::state("unsupported storage version");
+        assert_eq!(
+            other.naming_repository(Path::new("/r")).operation,
+            "unsupported storage version"
+        );
         for rows in [
             vec![],
             vec![vec![], vec![]],
             vec![vec![
                 Value::Integer(1),
                 Value::Integer(1),
-                Value::Integer(2),
+                Value::Integer(3),
+            ]],
+            vec![vec![
+                Value::Integer(1),
+                Value::Integer(1),
+                Value::Integer(7),
             ]],
             vec![vec![
                 Value::Integer(2),
@@ -3399,9 +3461,106 @@ mod tests {
         }
     }
 
-    /// Legacy internal entries route catalog4 through bounded admission and preserve proof equality.
+    /// The empty-root guard of catalog 6 refuses a row in each of the three audit tables, and a catalog with no owner.
     #[tokio::test]
-    async fn catalog4_internal_admission_entries_use_recording_validation_and_exact_proof() {
+    async fn empty_catalog6_guard_refuses_each_audit_table_row() {
+        for (table, sql) in [
+            (
+                "transactions",
+                "INSERT INTO transactions VALUES('t','p',NULL,'c',NULL,'d')",
+            ),
+            (
+                "transaction_events",
+                "INSERT INTO transactions VALUES('t','p',NULL,'c',NULL,'d');INSERT INTO transaction_events VALUES('e','t',NULL,'insert','r','x',NULL,NULL,NULL,'d')",
+            ),
+            (
+                "g_command_audit",
+                "INSERT INTO transactions VALUES('t','p',NULL,'c',NULL,'d');INSERT INTO g_local_command VALUES('c','owner','p',0,1,x'00',0,'gest_entity',NULL);INSERT INTO g_command_audit VALUES('c','t','owner')",
+            ),
+        ] {
+            let temp = tempfile::tempdir().unwrap();
+            let path = temp.path().join("repository");
+            let mut limits = admission_limits();
+            limits.content.max_total_decoded_bytes = 16_777_216;
+            let mut owner = LocalOwnerRepository::initialize(
+                &path,
+                InitializeOptions {
+                    repository_id: "0123456789abcdef0123456789abcdef01234567",
+                    owner_id: "owner",
+                    date: "2026-11-18 12:34:56.125",
+                    user: b"Owner",
+                    password: "secret",
+                    sha1: false,
+                    content_limits: limits.content,
+                    parse_limits: limits.parser,
+                },
+            )
+            .await
+            .unwrap();
+            let mut tx = owner.store.begin_write().await.unwrap();
+            for statement in sql.split(';') {
+                tx.execute(statement).await.unwrap();
+            }
+            assert_eq!(
+                tx.validate_empty_catalog6(1, "root", &Value::Null, &owner.principal, limits)
+                    .await
+                    .unwrap_err()
+                    .operation,
+                format!("unsupported nonempty catalog6 table: {table}")
+            );
+            // The guard checks the owner first, so with no owner it fails before any table check runs.
+            if table == "transactions" {
+                tx.execute("DELETE FROM g_local_owner").await.unwrap();
+                assert_eq!(
+                    tx.validate_empty_catalog6(1, "root", &Value::Null, &owner.principal, limits)
+                        .await
+                        .unwrap_err()
+                        .operation,
+                    "unsupported catalog6 owner cardinality"
+                );
+            }
+            tx.rollback().await.unwrap();
+        }
+    }
+    /// The plain policy route checks the checkout count of catalog 6, as the metered route does.
+    #[tokio::test]
+    async fn plain_policy_refuses_a_catalog6_checkout_count_without_registrations() {
+        let temp = tempfile::tempdir().unwrap();
+        let path = temp.path().join("repository");
+        let mut limits = admission_limits();
+        limits.content.max_total_decoded_bytes = 16_777_216;
+        let mut owner = LocalOwnerRepository::initialize(
+            &path,
+            InitializeOptions {
+                repository_id: "0123456789abcdef0123456789abcdef01234567",
+                owner_id: "owner",
+                date: "2026-11-18 12:34:56.125",
+                user: b"Owner",
+                password: "secret",
+                sha1: false,
+                content_limits: limits.content,
+                parse_limits: limits.parser,
+            },
+        )
+        .await
+        .unwrap();
+        let mut tx = owner.store.begin_write().await.unwrap();
+        tx.validate_principal(&owner.principal).await.unwrap();
+        tx.execute("UPDATE g_storage SET checkout_count=1")
+            .await
+            .unwrap();
+        assert_eq!(
+            tx.validate_principal(&owner.principal)
+                .await
+                .unwrap_err()
+                .operation,
+            "unsupported populated catalog6 checkout scope"
+        );
+        tx.rollback().await.unwrap_err();
+    }
+    /// Legacy internal entries route catalog6 through bounded admission and preserve proof equality.
+    #[tokio::test]
+    async fn catalog6_internal_admission_entries_use_recording_validation_and_exact_proof() {
         let temp = tempfile::tempdir().unwrap();
         let path = temp.path().join("repository");
         let mut limits = admission_limits();

@@ -56,7 +56,7 @@ The private `src/product/help.rs` table gives product, group and command help.
 It must list every command that `src/product.rs` dispatches. Unknown names exit 2.
 
 Native local storage supports checkout-free initialization, then one library
-checkout registration at the empty root. Reopen admits strict catalog4 with zero
+checkout registration at the empty root. Reopen admits strict catalog6 with zero
 or one registration, explicit tracked scopes and the supported private recording
 history. ID and exact-root views authenticate existing registrations;
 the library methods publish no locator. The source `vcs open` adapter registers
@@ -64,9 +64,14 @@ or reopens that checkout and publishes or reconstructs its owner-local locator.
 It requires explicit repository and checkout selection, with `--root` for first
 registration. It selects no files.
 
+New repositories start at catalog 6, the newest catalog. Every command refuses a
+repository at catalog 2, 4 or 5 with exit 78 and a message to create a new
+repository; there is no migration. Initialization writes the `ticket-table`
+config row, so a stock `fossil rebuild` keeps the Gest ticket columns.
+
 Bound catalog1 creation and bounded private content operations remain supported.
-Generic private content writes refuse catalog4. The metered private put admits
-only catalog4, but has no caller. Admission refuses the private row that it
+Generic private content writes refuse catalog6. The metered private put admits
+only catalog6, but has no caller. Admission refuses the private row that it
 writes, so it waits for a catalog that admits private content.
 
 The private recording library requires the complete tracked set, immutable

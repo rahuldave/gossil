@@ -432,12 +432,33 @@ fn route(args: Vec<OsString>) -> Route {
     }
 }
 
+/// Print a failed command's diagnostic once and choose its exit status.
+///
+/// # Arguments
+/// * `error` - The failure that the command returned.
+///
+/// # Returns
+/// 78, the code of an unusable configuration, when the error chain holds an older
+/// Gossil catalog (CAT-07), and 1 for every other failure.
+fn failed(error: &(dyn std::error::Error + 'static)) -> std::process::ExitCode {
+    eprintln!("{error}");
+    let mut cause = Some(error);
+    while let Some(current) = cause {
+        if current.is::<crate::storage::OlderCatalog>() {
+            return std::process::ExitCode::from(78);
+        }
+        cause = current.source();
+    }
+    std::process::ExitCode::FAILURE
+}
+
 /// Print the adapter error once, with the native newline and exit status.
 ///
 /// # Returns
 /// The success exit code after initialization, native checkout open, tracking,
 /// scope selection, private recording, checkout timeline/information or a completed diagnostic. Returns the failure exit code
-/// after printing an adapter error to standard error. The first argument `v` is accepted
+/// after printing an adapter error to standard error. A repository at an older Gossil catalog
+/// returns 78. The first argument `v` is accepted
 /// as an alias for `vcs`. A help request prints the help on stdout and returns 0.
 /// If the write of the help fails, the entry returns 1. An unknown group or command
 /// returns 2, as a parser failure, with a pointer to the help on stderr.
@@ -464,29 +485,20 @@ pub fn entry() -> std::process::ExitCode {
     {
         return match crate::vcs_init::run(&args[2..]) {
             Ok(()) => std::process::ExitCode::SUCCESS,
-            Err(error) => {
-                eprintln!("{error}");
-                std::process::ExitCode::FAILURE
-            }
+            Err(error) => failed(&*error),
         };
     }
     if args.first().is_some_and(|arg| arg == "vcs") && args.get(1).is_some_and(|arg| arg == "info")
     {
         return crate::vcs_info::run(&args[2..]).map_or_else(
-            |error| {
-                eprintln!("{error}");
-                std::process::ExitCode::FAILURE
-            },
+            |error| failed(&*error),
             |()| std::process::ExitCode::SUCCESS,
         );
     }
     if args.first().is_some_and(|arg| arg == "vcs") && args.get(1).is_some_and(|arg| arg == "open")
     {
         return crate::vcs_open::run(&args[2..]).map_or_else(
-            |error| {
-                eprintln!("{error}");
-                std::process::ExitCode::FAILURE
-            },
+            |error| failed(&*error),
             |()| std::process::ExitCode::SUCCESS,
         );
     }
@@ -496,10 +508,7 @@ pub fn entry() -> std::process::ExitCode {
             .is_some_and(|arg| arg == "add" || arg == "status")
     {
         return crate::vcs_tracking::run(&args[2..], args[1] == "add").map_or_else(
-            |error| {
-                eprintln!("{error}");
-                std::process::ExitCode::FAILURE
-            },
+            |error| failed(&*error),
             |()| std::process::ExitCode::SUCCESS,
         );
     }
@@ -509,10 +518,7 @@ pub fn entry() -> std::process::ExitCode {
             .is_some_and(|arg| arg == "scope" || arg == "commit")
     {
         return crate::vcs_recording::run(&args[2..], args[1] == "commit").map_or_else(
-            |error| {
-                eprintln!("{error}");
-                std::process::ExitCode::FAILURE
-            },
+            |error| failed(&*error),
             |()| std::process::ExitCode::SUCCESS,
         );
     }
@@ -522,10 +528,7 @@ pub fn entry() -> std::process::ExitCode {
             .is_some_and(|arg| arg == "timeline" || arg == "log")
     {
         return crate::vcs_timeline::run(&args[2..]).map_or_else(
-            |error| {
-                eprintln!("{error}");
-                std::process::ExitCode::FAILURE
-            },
+            |error| failed(&*error),
             |()| std::process::ExitCode::SUCCESS,
         );
     }

@@ -48,11 +48,11 @@ catalog. No production code calls the modules or those methods yet.
 | Native initialization/open, tracking, scope/commit CLI and library; catalog1 private content | Shared recording, sync and artifact publication |
 | Explicit inherited-test runner configurations | Gest task CLI, server and user interface |
 
-Initialization creates catalog4 without a checkout. The library can register
+Initialization creates catalog6 without a checkout. The library can register
 one existing directory and authenticate its registration by ID or exact root.
 Opening a repository admits exactly zero or one registration and the supported tracking, scope
 and private recording family. Bound catalog1 creation retains its checkout and
-private content operations. Catalog4 generic private content writes remain
+private content operations. Catalog6 generic private content writes remain
 unsupported; its separate recorder writes complete private file trees.
 Registration changes the database only.
 
@@ -318,8 +318,10 @@ establish execution. The qualification results above identify the checks that ra
 ## Recorded ancestry API qualification
 
 The current source adds `LocalOwnerRepository::recorded_timeline` and
-`RecordedCheckin` for complete supported catalog4 checkout ancestry. The checkpoint
-covers the library. A separate source CLI checkpoint adds `timeline` and `log`.
+`RecordedCheckin` for complete supported catalog6 checkout ancestry. The checkpoint
+covers the library, and it ran on catalog4, before catalog6 replaced it.
+
+A separate source CLI checkpoint adds `timeline` and `log`.
 The timeline delivery baseline is accepted at `4250b873` and released as
 `v0.8.0`. The checkpoint results below retain their original, narrower scope.
 They do not qualify subsequent source changes.

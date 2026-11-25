@@ -1,8 +1,8 @@
-//! Authenticate the exact catalog4 scope and private-recording family.
+//! Authenticate the exact catalog6 scope and private-recording family.
 //!
 //! ## Recommendations
 //! Keep catalog1 on its original validator. Charge shared work before retaining
-//! catalog4 authority, then admit only the complete recorded-history projection.
+//! catalog6 authority, then admit only the complete recorded-history projection.
 use super::recorded_history::{RecordedHistory, parse_recording_budgeted};
 use super::{
     AdmissionLimits, AdmissionProof, ParseWork, Principal, StorageError, Value, validate_empty_root,
@@ -206,7 +206,7 @@ impl WriteTransaction<'_> {
                 != vec![vec![Value::Integer(1)]]
             {
                 return Err(StorageError::state(
-                    "unsupported catalog4 owner cardinality",
+                    "unsupported catalog6 owner cardinality",
                 ));
             }
             self.validate_principal(principal).await
@@ -338,7 +338,7 @@ impl WriteTransaction<'_> {
             .map(|_| ())
     }
 
-    /// Return supported history only after every complete catalog4 admission guard.
+    /// Return supported history only after every complete catalog6 admission guard.
     /// # Arguments
     /// * `principal` - Sealed owner binding.
     /// * `limits` - Complete native and registration ceilings.
@@ -396,7 +396,7 @@ impl WriteTransaction<'_> {
             let counts=self.query_bound("SELECT (SELECT count(*) FROM g_checkout),(SELECT count(*) FROM g_checkout_owner),checkout_count FROM g_storage WHERE singleton=1",vec![]).await?;
             let history = if counts==vec![vec![Value::Integer(0);3]] {
                 // Without a registration, reject private history and scoped or native rows.
-                self.validate_empty_catalog4(1,root,&date,principal,limits).await?;
+                self.validate_empty_catalog6(1,root,&date,principal,limits).await?;
                 None
             } else {
                 if counts!=vec![vec![Value::Integer(1);3]] {return Err(StorageError::state("unsupported native checkout inventory"));}
@@ -432,7 +432,7 @@ impl WriteTransaction<'_> {
         validate_registration_rows(&rows)
     }
 
-    /// Retain every unrelated catalog4 empty-table guard.
+    /// Retain every unrelated catalog6 empty-table guard.
     /// # Returns
     /// Success only when no unsupported local/native state is present.
     /// # Errors
@@ -455,6 +455,10 @@ impl WriteTransaction<'_> {
                 "SELECT EXISTS(SELECT 1 FROM g_checkout_project)",
             ),
             ("g_code_link", "SELECT EXISTS(SELECT 1 FROM g_code_link)"),
+            (
+                "g_command_audit",
+                "SELECT EXISTS(SELECT 1 FROM g_command_audit)",
+            ),
             (
                 "g_contributor",
                 "SELECT EXISTS(SELECT 1 FROM g_contributor)",
@@ -591,12 +595,17 @@ impl WriteTransaction<'_> {
             ("shun", "SELECT EXISTS(SELECT 1 FROM shun)"),
             ("ticket", "SELECT EXISTS(SELECT 1 FROM ticket)"),
             ("ticketchng", "SELECT EXISTS(SELECT 1 FROM ticketchng)"),
+            (
+                "transaction_events",
+                "SELECT EXISTS(SELECT 1 FROM transaction_events)",
+            ),
+            ("transactions", "SELECT EXISTS(SELECT 1 FROM transactions)"),
             ("unversioned", "SELECT EXISTS(SELECT 1 FROM unversioned)"),
         ];
         for &(table, sql) in GUARDS {
             if self.query_bound(sql, vec![]).await? != vec![vec![Value::Integer(0)]] {
                 return Err(StorageError::state(format!(
-                    "unsupported nonempty catalog4 table: {table}"
+                    "unsupported nonempty catalog6 table: {table}"
                 )));
             }
         }

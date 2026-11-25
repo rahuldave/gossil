@@ -108,7 +108,7 @@ selects no files and publishes no checkout locator. See the
 [native storage guide](docs/native-storage.md#register-one-existing-directory).
 
 Catalog names identify storage formats. Catalog1 creation binds a checkout and
-supports bounded private content operations. Catalog4 starts at an empty shared
+supports bounded private content operations. Catalog6 starts at an empty shared
 check-in and accepts the private history described below. General history commands, shared recording, Gest task
 management, a server and a user interface remain planned.
 

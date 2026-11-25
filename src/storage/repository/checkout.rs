@@ -3,7 +3,7 @@
 //! ## Recommendations
 //! Register an explicitly chosen existing directory, then reopen with fresh admission limits.
 use super::{AdmissionLimits, LocalOwnerRepository, Principal, StorageError};
-use crate::storage::WriteTransaction;
+use crate::storage::{WriteTransaction, schema::NEWEST_CATALOG};
 use libsql::Value;
 use std::os::unix::fs::MetadataExt;
 use std::path::{Path, PathBuf};
@@ -121,7 +121,7 @@ impl LocalOwnerRepository {
     /// # Returns
     /// Authenticated persisted registration after a checked commit and admission refresh.
     /// # Errors
-    /// Refuses catalog1, occupied catalog4, stale authority, invalid roots, unsupported state,
+    /// Refuses catalog1, occupied catalog6, stale authority, invalid roots, unsupported state,
     /// resource limits and provider failures. A failed operation never refreshes authority.
     /// # Examples
     /// ```no_run
@@ -404,7 +404,7 @@ fn charge_checkout_view(
 impl WriteTransaction<'_> {
     /// Require the sole catalog supported by the registration API.
     /// # Returns
-    /// Success only for exact catalog4.
+    /// Success only for exact catalog6.
     /// # Errors
     /// Refuses every other catalog and provider failure.
     pub(super) async fn require_native_checkout(&mut self) -> Result<(), StorageError> {
@@ -414,9 +414,9 @@ impl WriteTransaction<'_> {
                 vec![],
             )
             .await?
-            != vec![vec![Value::Integer(4)]]
+            != vec![vec![Value::Integer(NEWEST_CATALOG)]]
         {
-            return Err(StorageError::state("native checkout requires catalog4"));
+            return Err(StorageError::state("native checkout requires catalog6"));
         }
         Ok(())
     }

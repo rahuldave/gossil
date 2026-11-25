@@ -6,7 +6,8 @@
 //! is recorded in `evidence/libsql-provider/provenance.json`. Native repository
 //! creation and admission parse the empty root on this same connection. General
 //! artifact crosslinks, runtime clocks and broader date compatibility remain unqualified.
-//! Catalog4 supports native initialization, one registration and exact private recorded history; bound catalog1 retains private writes.
+//! Catalog6 supports native initialization, one registration and exact private recorded history; bound catalog1 retains private writes.
+//! A marker of an older Gossil catalog (2, 4 or 5) is refused before any effect, without migration.
 //!
 //! ## Recommendations
 //! Use one owner for a complete mutation and explicitly commit or roll back.
@@ -116,7 +117,69 @@ impl StorageError {
             source: None,
         }
     }
+    /// Refuse a repository whose marker names an older Gossil catalog (CAT-07).
+    /// # Arguments
+    /// * `found` - The older catalog that the one stored marker names.
+    /// # Returns
+    /// An error whose source is [`OlderCatalog`], so that the CLI can exit 78.
+    fn older_catalog(found: i64) -> Self {
+        let older = OlderCatalog { found };
+        Self {
+            operation: older.to_string(),
+            cleanup: None,
+            source: Some(Arc::new(older)),
+        }
+    }
+    /// Name the repository in an older-catalog refusal, with the full CAT-07 message.
+    /// # Arguments
+    /// * `repository` - The repository path that the caller selected.
+    /// # Returns
+    /// The same error. An older-catalog refusal gets the three lines of CAT-07.
+    fn naming_repository(mut self, repository: &Path) -> Self {
+        if let Some(older) = self.older() {
+            self.operation = format!(
+                "gossil: repository {} is at catalog {}, and this build needs catalog {}.\n\
+                 Gossil has no upgrade path before its first real release.\n\
+                 Create a new repository with gos v init or gos i init.",
+                repository.display(),
+                older.found,
+                schema::NEWEST_CATALOG
+            );
+        }
+        self
+    }
+    /// Return the older-catalog refusal that this error carries, if any.
+    /// # Returns
+    /// The refusal of CAT-07, when the stored marker named an older Gossil catalog.
+    fn older(&self) -> Option<OlderCatalog> {
+        self.source
+            .as_deref()
+            .and_then(|source| source.downcast_ref::<OlderCatalog>())
+            .copied()
+    }
 }
+
+/// Reports a repository at a Gossil catalog older than the newest catalog of this build.
+///
+/// Gossil has no upgrade path before its first real release (CAT-05), so every
+/// command refuses such a repository before any effect, and the CLI exits 78.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub(crate) struct OlderCatalog {
+    /// The catalog that the one stored marker names.
+    pub(crate) found: i64,
+}
+impl fmt::Display for OlderCatalog {
+    /// Name the catalog found and the catalog that this build needs.
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(
+            f,
+            "repository is at catalog {}, and this build needs catalog {}",
+            self.found,
+            schema::NEWEST_CATALOG
+        )
+    }
+}
+impl std::error::Error for OlderCatalog {}
 
 /// A checked commit failure retains separate operation and cleanup causes.
 /// A cleanup failure means the uncertain connection was discarded and its store poisoned.

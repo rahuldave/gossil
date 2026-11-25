@@ -15,7 +15,7 @@ fn limits() -> AdmissionLimits {
             max_output_bytes: 4096,
             max_chain_depth: 4,
             max_total_stored_bytes: 8192,
-            // Catalog4 admission charges exact schema/authority and complete operation work.
+            // Catalog6 admission charges exact schema/authority and complete operation work.
             max_total_decoded_bytes: 16777216,
         },
         parser: ParseLimits {
