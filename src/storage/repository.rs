@@ -37,6 +37,9 @@ pub use issue_ticket::{
 };
 #[cfg(test)]
 pub(crate) use issue_ticket::{IssuePhase, inject_issue_failure};
+/// Run the full proof of the repository, or of one issue, on demand.
+mod verification;
+pub use verification::{IssueMatch, VerifySummary};
 
 /// Fixed scalar predicates bound returned data, not total SQLite scan work.
 /// The admitted root cannot produce other artifact types or a current file/merge selection.
@@ -1221,6 +1224,8 @@ impl crate::artifact::DateProvider for OwnerDates<'_, '_> {
 pub(super) struct ParseWork {
     /// Unconsumed logical work available to this parser.
     remaining: crate::artifact::ParseLimits,
+    /// True when the limits bound each artifact alone, so a charge subtracts nothing.
+    per_artifact: bool,
 }
 impl ParseWork {
     /// Start one validated finite operation budget without inherited charges.
@@ -1241,7 +1246,24 @@ impl ParseWork {
         {
             return Err(StorageError::state("invalid aggregate parser limits"));
         }
-        Ok(Self { remaining: limits })
+        Ok(Self {
+            remaining: limits,
+            per_artifact: false,
+        })
+    }
+    /// Start a parser ledger whose limits bound each artifact alone.
+    ///
+    /// `gos v verify` uses it, so that the proof has no ceiling on the whole repository.
+    /// # Arguments
+    /// * `limits` - Positive input-byte, card, owned-byte and entry ceilings of one artifact.
+    /// # Returns
+    /// A ledger whose remaining allowance stays equal to the ceilings.
+    /// # Errors
+    /// Rejects limits when any ceiling is zero.
+    pub(super) fn per_artifact(limits: crate::artifact::ParseLimits) -> Result<Self, StorageError> {
+        let mut work = Self::new(limits)?;
+        work.per_artifact = true;
+        Ok(work)
     }
     /// Subtract the parser's exact existing logical charges from the shared remaining work.
     /// # Arguments
@@ -1257,7 +1279,7 @@ impl ParseWork {
         let exhausted =
             || StorageError::state("aggregate parser usage exceeds remaining caller limits");
         let before = self.remaining;
-        self.remaining = crate::artifact::ParseLimits {
+        let next = crate::artifact::ParseLimits {
             input_bytes: before
                 .input_bytes
                 .checked_sub(usage.input_bytes)
@@ -1275,6 +1297,9 @@ impl ParseWork {
                 .checked_sub(usage.entries)
                 .ok_or_else(exhausted)?,
         };
+        if !self.per_artifact {
+            self.remaining = next;
+        }
         Ok(())
     }
 }
@@ -3309,6 +3334,56 @@ mod tests {
         assert_eq!(first.operation, "native artifact validation failed");
         assert!(std::error::Error::source(&first).is_some());
         assert_eq!(tx.commit().await.unwrap_err().operation, first.operation);
+    }
+    /// A per-artifact ledger keeps its whole allowance after each parse, and still
+    /// refuses one artifact over a ceiling.
+    #[tokio::test]
+    async fn a_per_artifact_parser_ledger_does_not_accumulate() {
+        let mut store = LocalStore::open_inner(":memory:", false).await.unwrap();
+        let mut tx = store.begin_write().await.unwrap();
+        let bytes = empty_root_bytes(b"2026-11-18T00:00:00.000", b"Owner", 4096).unwrap();
+        let (_, usage) = crate::artifact::parse_artifact_with_usage(
+            &bytes,
+            root_parse_limits(),
+            &OwnerDates(&tx),
+        )
+        .await
+        .unwrap();
+        let exact = crate::artifact::ParseLimits {
+            input_bytes: usage.input_bytes,
+            cards: usage.cards,
+            owned_bytes: usage.owned_bytes,
+            entries: usage.entries,
+        };
+        let mut work = ParseWork::per_artifact(exact).unwrap();
+        for _ in 0..3 {
+            parse_owned_budgeted(&mut tx, &bytes, &mut work)
+                .await
+                .unwrap();
+            assert_eq!(
+                (
+                    work.remaining.input_bytes,
+                    work.remaining.cards,
+                    work.remaining.owned_bytes,
+                    work.remaining.entries
+                ),
+                (
+                    usage.input_bytes,
+                    usage.cards,
+                    usage.owned_bytes,
+                    usage.entries
+                )
+            );
+        }
+        let mut over = usage;
+        over.entries += 1;
+        let refused = work.charge(over).unwrap_err();
+        assert_eq!(
+            refused.operation,
+            "aggregate parser usage exceeds remaining caller limits"
+        );
+        assert_eq!(work.remaining.entries, usage.entries);
+        tx.rollback().await.unwrap();
     }
     /// Installing the `ticket-table` setting needs both ticket tables and their index, and puts their SQL in the setting in order.
     #[tokio::test]

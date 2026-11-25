@@ -59,7 +59,7 @@ Before a group or a command name, `--help`, `-h` and `help` mean the same.
 Several of them in a row count as one. So `gossil help help` prints the product help, and
 `gossil vcs --help open` and `gossil vcs help help open` print the usage of `open`.
 
-`init`, `new`, `info`, `timeline` and `log` print their own help, which the
+`init`, `new`, `info`, `timeline`, `log` and `verify` print their own help, which the
 sections below describe. So do `issue init`, `issue task create`, `issue task list` and `issue task show`. Every other command prints its usage line and one
 sentence about what it does.
 
@@ -822,7 +822,7 @@ cargo run --locked --bin gos -- v test-delta FILE1 FILE2
 ```
 
 Use either executable with either group name for initialization, native open,
-add/status, scope/commit, info, timeline/log, the three delta diagnostics and
+add/status, scope/commit, info, timeline/log, verify, the three delta diagnostics and
 the prepared glob diagnostic.
 Usage messages use fixed spellings regardless of the invocation alias.
 Add and status use `gos v`, and the other command usage messages use `gossil vcs`.
@@ -925,7 +925,7 @@ accepts them, and each fails with status 2, as the [help section](#get-help)
 says. This build recognises the Gest commands other than `init`, `task create`, `task list` and `task show`, and refuses them with status 69, as the
 [issue section](#issue-commands) says. The short names above apply to initialization and the
 three delta diagnostics, the prepared glob diagnostic, native open, add/status,
-scope/commit, info and timeline/log. Shared
+scope/commit, info, timeline/log and verify. Shared
 recording, changing scopes, removal, rename, materialization, sync and Gest
 record associations remain unsupported.
 
@@ -991,6 +991,74 @@ no claim that physical database bytes remain identical.
 See [qualification](development-plan.md#recorded-ancestry-cli-qualification)
 before treating this source command as released or installed. General Fossil
 timeline behavior and `cat` remain separate work.
+
+## Verify a repository
+
+Run the full proof of a repository, or the proof of one issue:
+
+```sh
+gos v verify --repository REPO
+gos v verify --repository REPO --issue ID
+```
+
+The command takes `--repository` once and `--issue` at most once, in either order.
+Each value must be UTF-8 text of 1 to 4096 bytes, without NUL. Any other value gives the exit status 1.
+The four forms `gossil vcs verify`, `gossil v verify`, `gos vcs verify` and
+`gos v verify` all run it. A lone `--help` or `-h` prints the usage line
+`Usage: gossil vcs verify --repository REPO [--issue ID]`. The command changes no byte
+of the repository.
+
+Without `--issue`, the command replays every check-in and every issue artifact. It
+compares each native and typed table with that replay, as [open](native-storage.md)
+does when it admits a repository. On success it prints one line and exits 0:
+
+```text
+verified: 1 check-ins, 4 issues, 15 tables compared
+```
+
+The first count gives the private check-ins and the second the task and project
+creations. The third count gives the table comparisons that passed. Each
+comparison covers a whole table, so the third count does not grow with each new issue
+or check-in.
+
+`--issue ID` takes a Gest ID or a prefix of one. Unlike `issue task show`, it does not prefer open
+tasks. The prefix must match exactly one task or project in the `combined` scope, whatever its status.
+
+The command proves one task or project from its own rows. The command replays the one
+artifact of the issue and compares its `event`, `tagxref`, `ticket`, `ticketchng` and
+typed rows with that replay. It replays no other artifact. For a task, it checks only
+that a typed project row with its project ID exists. On success it prints
+`verified issue ID: ticket K` and exits 0, where `K` is the ticket ID.
+
+`--issue` checks only a subset of the repository. It proves the rows that belong to
+the issue and that an index reaches. The rows are its artifact, ticket, change row, event, tag, tag row, private
+mark, typed row and, for a task, its project. It does not claim that no other row in the repository
+names the issue. Only `gos v verify` without `--issue` makes that claim.
+
+The proof of one issue reads its rows by an index or a primary key. The one exception is a
+scan of the ticket table to find the ticket of the ID. Each row read also measures the size
+of the text of the whole repository, as every read of admission does.
+
+The proof also checks that each table that admission keeps empty in every repository has no row, with one fixed
+query per table. A repository with no checkout must also keep `unsent`, `filename`, `mlink`, `plink`,
+`g_path_scope`, `g_project_binding` and `g_checkout_project` empty. Only the full proof
+checks those seven whole tables. The proof of one issue does not
+see a row that no index of the issue reaches, or a typed row in another scope. The full proof
+refuses those rows.
+
+The proof of one issue refuses a task whose project the repository does not hold, which
+the full proof admits. See [the proof of one issue](issue-ticket.md#the-proof-of-one-issue).
+
+The statuses follow CLI-05. A failed proof prints on stderr the fixed refusal of the
+first check that fails, such as `stored issue rows differ from the ticket artifact`.
+The command then exits with 74, the status of a database value that is not valid. An invalid prefix
+exits with 64. A prefix that names no issue, or more than one, exits with 66, with
+the messages of `issue task show`.
+
+A usage error or a failed write to stdout exits with 1. A repository at an older Gossil catalog exits with 78.
+
+The proof bounds each artifact and each row by the limits of the CLI, but it sets no
+bound on the whole repository.
 
 ## Inspect a Fossil glob list
 

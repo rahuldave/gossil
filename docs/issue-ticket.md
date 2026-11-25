@@ -111,6 +111,51 @@ The checkout fingerprint names a receipt. Registration takes the newest receipt,
 before registration, the fingerprint names the receipt of that issue. After the first check-in, the
 fingerprint must name the receipt of the selected check-in, and open refuses an older fingerprint.
 
+## The proof of one issue
+
+`LocalOwnerRepository::verify_issue` proves one task or project from its own rows, and
+[`gos v verify --issue ID`](cli.md#verify-a-repository) runs it. It first finds the one ticket whose
+`gest_id` holds the ID.
+
+The proof of one issue checks only a subset of the repository. It proves the rows that
+belong to the issue and that an index reaches. The rows are its artifact, ticket, change row, event, tag, tag row,
+private mark, typed row and, for a task, its project. It does not claim that no other row in the
+repository names the issue. Only the full proof, `gos v verify` without `--issue`, makes that claim.
+
+It then checks that each table that admission keeps empty in every repository has no row, for example `delta`,
+`cherrypick`, `g_gest_notes` and `g_gest_relationships`. The check takes one fixed query per table. A row
+in one of these tables makes the proof refuse with `unsupported nonempty catalog6 table:` and the name
+of the table. A repository with no checkout must also keep `unsent`, `filename`, `mlink`, `plink`,
+`g_path_scope`, `g_project_binding` and `g_checkout_project` empty. The proof does not check those
+seven whole tables. It refuses only an `unsent`, `mlink` or `plink` row that names the issue, as the next
+paragraphs say, and only the full proof refuses every other row there.
+
+The `tkt-K` tag must then have one `tagxref` row. The RID of that row must name a
+private blob with a local receive record. The proof does not look for another blob with the same
+receipt, because no index reaches such a blob. The full proof refuses a shared receipt.
+
+No row of the `unsent`, `unclustered`, `leaf`, `phantom`, `orphan` or `backlink` table may name that
+blob. The same holds for an `attachment` row whose target is K, and for a `g_public_receipt` row with
+the hash of the blob. No `mlink` row may have the blob as its `mid`, `fid` or `pid`, and no `plink` row
+may have it as its `pid` or `cid`. No index reaches `mlink.pmid` or `plink.baseid`, so the proof does not check them.
+
+The proof replays the one artifact, which must be a canonical creation with this K. The `event`, `tagxref`, `ticket` and `ticketchng` rows of the issue must equal the replay.
+So must its typed row in the `combined` scope. The typed table of the other kind must hold no
+`combined` row with the Gest ID of the issue.
+
+For a task, the proof checks only that a `combined` project row with its project ID exists. When none
+exists, it refuses with `a stored task names a project that the repository does not hold`. The full
+proof admits such a task, because the library writer may store a task before its project.
+
+The proof replays no other artifact. It reads the rows of this issue by an index or a primary key,
+except for the one lookup of the ticket by its Gest ID, which scans the `ticket` table. Each row read
+also measures the size of the text of the whole repository, as every read of admission does. So the cost of the proof
+still grows with the repository, but more slowly than the cost of the full proof.
+
+The proof does not see a row that no index of the issue reaches, for example an unrelated tag or a
+ticket row without an artifact. It does not see a typed row in another scope either. Only the full proof
+of admission, or `gos v verify` without `--issue`, refuses those rows.
+
 ## Rows that one write adds
 
 The writer adds these rows in one exclusive transaction:
@@ -199,6 +244,65 @@ They check that every byte of the repository files stays the same (GEST-T08). Th
 admission refuses a changed or extra row in each admitted table, for example a `tagxref` row with no RID.
 They check too that admission refuses a project that reuses the Gest ID of a task. For each changed row,
 the ticket reader, the next write and a new open each refuse, and leave the repository files unchanged.
+
+Each of the 29 cases of a changed row also runs the proof of one issue on the task and on the project.
+It checks the exact result of each proof. In 22 of the cases, at least one of the two proofs refuses.
+
+In the other 7 cases, both proofs admit the change and only the full proof refuses it. Those 7 cases add
+a row that no index of the issue reaches. Examples are an unrelated tag, a second event of the ticket
+and a change row of the artifact under another ticket. One of the 7 cases adds a second typed row in
+another scope.
+
+In the case of an artifact whose K is not the K of its tag, the proof of the K of the tag also refuses,
+with `stored issue rows differ from the ticket artifact`.
+
+`the_proof_has_no_total_ceiling` stores a project and two tasks. It sets total content ceilings of 64 bytes
+and a parser ceiling of 20 entries, which open refuses. Under them `verify` passes and counts 0
+check-ins and 3 issues. A parser input ceiling of 64 bytes makes `verify` refuse.
+
+Under the same small ceilings, `verify_issue` proves a task and a project, and `find_issue` finds each of them by a prefix.
+`find_issue` refuses the prefixes `""`, `"a"` and 33 letters with `invalid issue ID prefix`. No step
+changes a byte.
+
+Most cases of `the_issue_proof_refuses_each_row_that_names_its_artifact` add one row that names the
+task, by its artifact or by its Gest ID. A `phantom`, `orphan`, `delta`, `cherrypick`, `g_gest_notes` or
+`g_gest_relationships` row makes the proof of the task refuse with the message of that nonempty table.
+An `mlink` row with the artifact as its `mid`, `fid` or `pid` makes it refuse with `stored issue rows
+differ from the ticket artifact`. So does a `plink` row with the artifact as its `pid` or `cid`. So do a
+`g_public_receipt` row with the hash of the artifact and a `combined` project row with the Gest ID of the task.
+
+One more case deletes the ticket row of the task, which gives the same refusal. The test also checks the
+exact refusal of the full proof for each case.
+
+`only_the_full_proof_refuses_rows_that_no_index_reaches` adds each of these in turn:
+
+- a second blob under the receipt of the task
+- an `mlink` row whose `pmid` is the task artifact
+- a `plink` row whose `baseid` is the task artifact
+
+The proof of the task admits each, and `verify` refuses each.
+
+`only_the_issue_proof_refuses_a_task_without_its_project` stores a task alone. `verify` passes and
+counts one issue. The proof of the task and `verify_issue` both refuse the task with the message of a
+missing project. `verify_issue` also refuses an ID that no ticket holds.
+
+The unit test `a_per_artifact_parser_ledger_does_not_accumulate` in
+`src/storage/repository.rs` checks that a per-artifact parser ledger keeps its whole allowance after each
+parse, and still refuses one artifact over its ceiling.
+
+`tests/vcs_verify_cli.rs` checks `gos v verify` in all four forms. It checks the exact summary
+`verified: 1 check-ins, 4 issues, 15 tables compared`. It proves one task by its full ID and by a prefix,
+and the project by a prefix. It checks the usage line and the status of a usage error. It also checks the statuses of an invalid,
+missing or ambiguous prefix, and the exact count of an ambiguous prefix.
+
+A changed typed row makes both forms exit with status 74 and the fixed message. In this build, open
+refuses the row at admission, before either proof runs. So this test checks the message and the
+status, and the unit tests above check the proofs themselves.
+
+`verify_counts_no_check_in_and_refuses_an_older_catalog` checks a repository without a commit. It prints
+`verified: 0 check-ins, 3 issues, 15 tables compared`. With stdout closed, the command exits with 1 and
+prints `gossil: unable to write the summary: `. A repository at catalog 4 makes both forms exit with 78
+and print three lines. No case changes a byte of the repository.
 
 A change to the `ticket`, `ticketchng`, `g_gest_tasks` or `g_gest_projects` table also makes the saved
 admission proof stale. The admission check of the next write then refuses that write.

@@ -2,7 +2,7 @@
 //! private state. They cover the GEST-T08 failure injection before commit and the
 //! refusal by admission of each changed row.
 use super::*;
-use crate::storage::{InitializeOptions, Limits};
+use crate::storage::{InitializeOptions, IssueMatch, Limits};
 
 /// Supply finite ceilings that every fixture fits.
 /// # Returns
@@ -206,6 +206,27 @@ async fn snapshot(owner: &mut LocalOwnerRepository) -> Vec<(String, Vec<Vec<Valu
     all
 }
 
+/// Prove one issue in a transaction that is rolled back, without the admission of open.
+/// # Arguments
+/// * `owner` - The repository.
+/// * `ticket_id` - The K card of the issue.
+/// # Returns
+/// The ticket, or the refusal of the proof.
+async fn prove(
+    owner: &mut LocalOwnerRepository,
+    ticket_id: &str,
+) -> Result<IssueTicket, StorageError> {
+    let limits = limits().admission;
+    let mut budget = Budget::new(limits.content).unwrap();
+    let mut parse = ParseWork::per_artifact(limits.parser).unwrap();
+    let mut tx = owner.store.begin_write().await.unwrap();
+    let result = tx
+        .prove_issue(&owner.principal, ticket_id, limits, &mut budget, &mut parse)
+        .await;
+    tx.rollback().await.unwrap();
+    result
+}
+
 /// Change the stored rows with fixture SQL, then admit the changed state again.
 /// # Arguments
 /// * `owner` - The owner whose admission proof the change would make stale.
@@ -351,7 +372,8 @@ async fn an_exhausted_ceiling_refuses_without_effect() {
 #[tokio::test]
 /// Admission refuses each stored row that is not exactly what replay of the issue
 /// artifacts gives, in every admitted table. The reader and a new open both refuse,
-/// and nothing changes.
+/// and nothing changes. The proof of the task or of the project refuses each change
+/// to the rows of that issue, and admits the changes that only the full proof sees.
 async fn admission_refuses_each_changed_issue_row() {
     let tag = format!("(SELECT tagid FROM tag WHERE tagname='tkt-{K}')");
     let last = "(SELECT max(rcvid) FROM rcvfrom)";
@@ -387,16 +409,86 @@ async fn admission_refuses_each_changed_issue_row() {
         ("a ticket row without an artifact", "INSERT INTO ticket(tkt_uuid) VALUES('x')".to_owned(), DIFFERS),
         ("an artifact whose K is not its tag", format!("UPDATE tag SET tagname='tkt-{OTHER_K}' WHERE tagname='tkt-{K}';UPDATE ticket SET tkt_uuid='{OTHER_K}' WHERE tkt_uuid='{K}'"), DIFFERS),
     ];
+    // The exact result of the proof of the task K and of the project PROJECT_K for each
+    // case. The proof of one issue reads the rows of that issue by index, and checks that
+    // each table that admission keeps empty is empty. A case that both proofs admit adds a
+    // row that no index of the issue reaches, or a typed row in another scope, so only
+    // the full proof sees it.
+    type Proof = Result<(), &'static str>;
+    let proofs: [(&str, Proof, Proof); 29] = [
+        ("a second artifact", Err(DIFFERS), Ok(())),
+        (
+            "an attachment",
+            Err("unsupported nonempty catalog6 table: attachment"),
+            Err("unsupported nonempty catalog6 table: attachment"),
+        ),
+        ("an artifact that is not a ticket", Err(DIFFERS), Ok(())),
+        ("a changed ticket title", Err(DIFFERS), Err(DIFFERS)),
+        ("a changed change row", Err(DIFFERS), Err(DIFFERS)),
+        ("a changed event comment", Err(PROJECTION), Err(PROJECTION)),
+        ("a tag row without a RID", Ok(()), Ok(())),
+        ("a changed tag row", Err(PROJECTION), Ok(())),
+        ("a renamed tag", Err("issue ticket not found"), Ok(())),
+        ("an unrelated tag", Ok(()), Ok(())),
+        ("a public ticket", Err(DIFFERS), Ok(())),
+        ("a changed task row", Err(DIFFERS), Ok(())),
+        ("a changed project row", Ok(()), Err(DIFFERS)),
+        ("a missing project row", Err(NO_PROJECT), Err(DIFFERS)),
+        ("an unclustered row", Err(DIFFERS), Ok(())),
+        ("an unsent row", Err(DIFFERS), Ok(())),
+        ("a leaf row", Err(DIFFERS), Ok(())),
+        ("a blob without a receipt", Err(DIFFERS), Ok(())),
+        ("a blob under the root receipt", Err(DIFFERS), Ok(())),
+        ("a receipt from another user", Ok(()), Err(DIFFERS)),
+        ("a receipt with a nonce", Ok(()), Err(DIFFERS)),
+        ("a receipt from an address", Ok(()), Err(DIFFERS)),
+        ("a receipt that no artifact owns", Ok(()), Ok(())),
+        (
+            "a backlink from the ticket",
+            Err("unsupported nonempty catalog6 table: backlink"),
+            Err("unsupported nonempty catalog6 table: backlink"),
+        ),
+        (
+            "a change row of the artifact under another ticket",
+            Ok(()),
+            Ok(()),
+        ),
+        ("a second event of the ticket", Ok(()), Ok(())),
+        ("a second typed row", Ok(()), Ok(())),
+        ("a ticket row without an artifact", Ok(()), Ok(())),
+        (
+            "an artifact whose K is not its tag",
+            Err("issue ticket not found"),
+            Ok(()),
+        ),
+    ];
     for (case, sql, message) in cases {
         let temp = tempfile::tempdir().unwrap();
         let path = temp.path().join("repo");
         let mut owner = repository(&path).await;
         create(&mut owner).await.unwrap();
-        create_with(&mut owner, &project_for(PROJECT_K, "p"), limits())
+        create_with(&mut owner, &project_for(PROJECT_K, "k"), limits())
             .await
             .unwrap();
+        prove(&mut owner, K).await.unwrap();
         tamper(&mut owner, &sql).await;
         let before = snapshot(&mut owner).await;
+        let (_, task, project) = proofs.iter().find(|row| row.0 == case).expect(case);
+        let result = |proof: Result<IssueTicket, StorageError>| {
+            proof.map(|_| ()).map_err(|error| error.to_string())
+        };
+        let task_proof = result(prove(&mut owner, K).await);
+        assert_eq!(task_proof, task.map_err(str::to_owned), "{case}: task");
+        let project_proof = result(prove(&mut owner, PROJECT_K).await);
+        assert_eq!(
+            project_proof,
+            project.map_err(str::to_owned),
+            "{case}: project"
+        );
+        if case == "an artifact whose K is not its tag" {
+            let renamed = result(prove(&mut owner, OTHER_K).await);
+            assert_eq!(renamed, Err(DIFFERS.to_owned()), "{case}");
+        }
         let error = owner.read_private_issue(K, limits()).await.unwrap_err();
         assert_eq!(snapshot(&mut owner).await, before, "{case}");
         assert_eq!(error.to_string(), message, "{case}");
@@ -1015,4 +1107,247 @@ async fn the_admission_proof_covers_the_binding_tables() {
             "{sql}"
         );
     }
+}
+
+#[tokio::test]
+/// The full proof bounds each artifact and each row, and no total: it passes under
+/// total content ceilings and a parser entry ceiling far below what the whole
+/// repository needs, and still refuses one artifact over its own ceiling. The prefix
+/// lookup refuses an invalid prefix and finds a task or a project.
+async fn the_proof_has_no_total_ceiling() {
+    let temp = tempfile::tempdir().unwrap();
+    let path = temp.path().join("repo");
+    let mut owner = repository(&path).await;
+    create_with(&mut owner, &project_for(PROJECT_K, "k"), limits())
+        .await
+        .unwrap();
+    for (k, letter) in [(K, "m"), (OTHER_K, "n")] {
+        create_with(&mut owner, &artifact_for(k, letter), limits())
+            .await
+            .unwrap();
+    }
+    let mut small = limits().admission;
+    small.content.max_total_stored_bytes = 64;
+    small.content.max_total_decoded_bytes = 64;
+    small.parser.entries = 20;
+    assert!(
+        LocalOwnerRepository::open(&path, small).await.is_err(),
+        "the fixture must need more than the small totals"
+    );
+    let before = snapshot(&mut owner).await;
+    let summary = owner.verify(small).await.unwrap();
+    assert_eq!((summary.checkins, summary.issues), (0, 3));
+    assert!(summary.tables > 0);
+    let mut narrow = small;
+    narrow.parser.input_bytes = 64;
+    let refused = owner.verify(narrow).await.unwrap_err();
+    assert_eq!(refused.to_string(), "recording native artifact validation");
+    for id in ["m".repeat(32), "k".repeat(32)] {
+        let ticket = owner.verify_issue(&id, small).await.unwrap();
+        let expected = if id.starts_with('m') { K } else { PROJECT_K };
+        assert_eq!(ticket.ticket_id, expected);
+    }
+    for (prefix, found) in [
+        ("m", IssueMatch::One("m".repeat(32))),
+        ("kk", IssueMatch::One("k".repeat(32))),
+        ("o", IssueMatch::None),
+    ] {
+        assert_eq!(
+            owner.find_issue(prefix, small).await.unwrap(),
+            found,
+            "{prefix}"
+        );
+    }
+    for invalid in ["", "a", &"k".repeat(33)] {
+        let refused = owner.find_issue(invalid, small).await.unwrap_err();
+        assert_eq!(refused.to_string(), "invalid issue ID prefix", "{invalid}");
+    }
+    assert_eq!(snapshot(&mut owner).await, before);
+}
+
+#[tokio::test]
+/// The proof of one issue refuses each row that names its artifact or its Gest ID. A
+/// row in a table that admission keeps empty gets the refusal of that table. A row of
+/// the `mlink` or `plink` table, or a `combined` project row with the Gest ID of the
+/// task, gets the fixed refusal. The full proof refuses each.
+async fn the_issue_proof_refuses_each_row_that_names_its_artifact() {
+    let rid = format!(
+        "(SELECT rid FROM tagxref WHERE tagid=(SELECT tagid FROM tag WHERE tagname='tkt-{K}'))"
+    );
+    let empty = |table: &str| format!("unsupported nonempty catalog6 table: {table}");
+    let task = "m".repeat(32);
+    let other = "n".repeat(32);
+    for (sql, expected, full_expected) in [
+        (
+            format!("INSERT INTO phantom(rid) SELECT {rid}"),
+            empty("phantom"),
+            empty("phantom"),
+        ),
+        (
+            format!("INSERT INTO orphan(rid,baseline) SELECT {rid},1"),
+            empty("orphan"),
+            empty("orphan"),
+        ),
+        (
+            format!("INSERT INTO delta(rid,srcid) SELECT 1,{rid}"),
+            empty("delta"),
+            empty("delta"),
+        ),
+        (
+            format!("INSERT INTO cherrypick(parentid,childid,isExclude) SELECT {rid},1,0"),
+            empty("cherrypick"),
+            empty("cherrypick"),
+        ),
+        (
+            format!("INSERT INTO cherrypick(parentid,childid,isExclude) SELECT 1,{rid},0"),
+            empty("cherrypick"),
+            empty("cherrypick"),
+        ),
+        (
+            format!(
+                "INSERT INTO g_gest_notes(scope_key,id,entity_id,entity_type,body,created_at,updated_at) VALUES('combined','{other}','{task}','task','b','x','x')"
+            ),
+            empty("g_gest_notes"),
+            empty("g_gest_notes"),
+        ),
+        (
+            format!(
+                "INSERT INTO g_gest_relationships(scope_key,id,rel_type,source_id,source_type,target_id,target_type,created_at,updated_at) VALUES('combined','{other}','blocks','{task}','task','{other}','task','x','x')"
+            ),
+            empty("g_gest_relationships"),
+            empty("g_gest_relationships"),
+        ),
+        (
+            format!("DELETE FROM ticket WHERE tkt_uuid='{K}'"),
+            DIFFERS.to_owned(),
+            DIFFERS.to_owned(),
+        ),
+        (
+            format!("INSERT INTO g_gest_projects VALUES('combined','{task}','x','x',NULL)"),
+            DIFFERS.to_owned(),
+            DIFFERS.to_owned(),
+        ),
+        (
+            format!("INSERT INTO mlink(mid,fid,fnid) SELECT {rid},0,1"),
+            DIFFERS.to_owned(),
+            empty("mlink"),
+        ),
+        (
+            format!("INSERT INTO mlink(mid,fid,fnid) SELECT 1,{rid},1"),
+            DIFFERS.to_owned(),
+            empty("mlink"),
+        ),
+        (
+            format!("INSERT INTO mlink(mid,fid,fnid,pid) SELECT 1,0,1,{rid}"),
+            DIFFERS.to_owned(),
+            empty("mlink"),
+        ),
+        (
+            format!("INSERT INTO plink(pid,cid,isprim,mtime) SELECT {rid},1,1,0"),
+            DIFFERS.to_owned(),
+            empty("plink"),
+        ),
+        (
+            format!("INSERT INTO plink(pid,cid,isprim,mtime) SELECT 1,{rid},1,0"),
+            DIFFERS.to_owned(),
+            empty("plink"),
+        ),
+        (
+            format!(
+                "INSERT INTO g_public_receipt(native_hash,supporting_root,validation_class) SELECT uuid,uuid,'local-explicit-publication' FROM blob WHERE rid={rid}"
+            ),
+            DIFFERS.to_owned(),
+            "unsupported required public graph closure".to_owned(),
+        ),
+    ] {
+        let temp = tempfile::tempdir().unwrap();
+        let mut owner = repository(&temp.path().join("repo")).await;
+        create_with(&mut owner, &project_for(PROJECT_K, "k"), limits())
+            .await
+            .unwrap();
+        create(&mut owner).await.unwrap();
+        prove(&mut owner, K).await.unwrap();
+        tamper(&mut owner, &sql).await;
+        let before = snapshot(&mut owner).await;
+        let refused = prove(&mut owner, K).await.unwrap_err();
+        assert_eq!(refused.to_string(), expected, "{sql}");
+        let full = owner.verify(limits().admission).await.unwrap_err();
+        assert_eq!(full.to_string(), full_expected, "{sql}");
+        assert_eq!(snapshot(&mut owner).await, before, "{sql}");
+    }
+}
+
+#[tokio::test]
+/// A second blob under the receipt of the issue artifact, an `mlink` row whose `pmid`
+/// is the artifact and a `plink` row whose `baseid` is the artifact are rows that no
+/// index of the issue reaches. The proof of the issue admits each, and the full proof
+/// refuses each.
+async fn only_the_full_proof_refuses_rows_that_no_index_reaches() {
+    let temp = tempfile::tempdir().unwrap();
+    let mut owner = repository(&temp.path().join("repo")).await;
+    create_with(&mut owner, &project_for(PROJECT_K, "k"), limits())
+        .await
+        .unwrap();
+    create(&mut owner).await.unwrap();
+    let blob = format!(
+        "(SELECT rid FROM tagxref WHERE tagid=(SELECT tagid FROM tag WHERE tagname='tkt-{K}'))"
+    );
+    let sql = format!(
+        "INSERT INTO blob(rcvid,size,uuid,content) SELECT rcvid,0,'{}',x'' FROM blob WHERE rid={blob}",
+        "f".repeat(64)
+    );
+    tamper(&mut owner, &sql).await;
+    assert_eq!(prove(&mut owner, K).await.unwrap().ticket_id, K);
+    let refused = owner.verify(limits().admission).await.unwrap_err();
+    assert_eq!(refused.to_string(), "recording native projection differs");
+    for (sql, table) in [
+        (
+            format!("INSERT INTO mlink(mid,fid,fnid,pmid) SELECT 1,0,1,{blob}"),
+            "mlink",
+        ),
+        (
+            format!("INSERT INTO plink(pid,cid,isprim,mtime,baseid) SELECT 1,2,1,0,{blob}"),
+            "plink",
+        ),
+    ] {
+        let temp = tempfile::tempdir().unwrap();
+        let mut owner = repository(&temp.path().join("repo")).await;
+        create_with(&mut owner, &project_for(PROJECT_K, "k"), limits())
+            .await
+            .unwrap();
+        create(&mut owner).await.unwrap();
+        tamper(&mut owner, &sql).await;
+        assert_eq!(prove(&mut owner, K).await.unwrap().ticket_id, K, "{sql}");
+        let refused = owner.verify(limits().admission).await.unwrap_err();
+        let expected = format!("unsupported nonempty catalog6 table: {table}");
+        assert_eq!(refused.to_string(), expected, "{sql}");
+    }
+}
+
+#[tokio::test]
+/// The full proof admits a task whose project the repository does not hold, and the
+/// proof of that one task refuses it with its own message. Neither changes a byte.
+async fn only_the_issue_proof_refuses_a_task_without_its_project() {
+    let temp = tempfile::tempdir().unwrap();
+    let mut owner = repository(&temp.path().join("repo")).await;
+    create(&mut owner).await.unwrap();
+    let before = snapshot(&mut owner).await;
+    let limits = limits().admission;
+    let summary = owner.verify(limits).await.unwrap();
+    assert_eq!((summary.checkins, summary.issues), (0, 1));
+    assert_eq!(
+        prove(&mut owner, K).await.unwrap_err().to_string(),
+        NO_PROJECT
+    );
+    let refused = owner
+        .verify_issue(&"m".repeat(32), limits)
+        .await
+        .unwrap_err();
+    assert_eq!(refused.to_string(), NO_PROJECT);
+    let refused = owner
+        .verify_issue(&"o".repeat(32), limits)
+        .await
+        .unwrap_err();
+    assert_eq!(refused.to_string(), DIFFERS);
+    assert_eq!(snapshot(&mut owner).await, before);
 }

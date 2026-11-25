@@ -37,7 +37,7 @@
 //! ## Recommendations
 //! Keep the ticket shapes that this module writes and the rows that admission expects
 //! in this one module, so the writer and the validator cannot drift apart.
-use super::recorded_history::{bounded_rows, native_name, parse_recording_budgeted};
+use super::recorded_history::{bounded_rows, native_name, parse_recording_budgeted, scalar_i64};
 use super::{AdmissionLimits, LocalOwnerRepository, ParseWork, PathScope, Principal, StorageError};
 use crate::artifact::{ArtifactType, ParsedArtifact};
 use crate::gest_project_values::{ProjectValueInputs, ProjectValues, project_from_values};
@@ -58,6 +58,25 @@ const DIFFERS: &str = "stored issue rows differ from the ticket artifact";
 /// The count is zero only when no row holds any of them. A Gest ID names one task or
 /// one project, never both.
 const HELD: &str = "SELECT (SELECT count(*) FROM ticket WHERE tkt_uuid=?1)+(SELECT count(*) FROM tag WHERE tagname=?2)+(SELECT count(*) FROM blob WHERE uuid=?3)+(SELECT count(*) FROM g_gest_tasks WHERE id=?4)+(SELECT count(*) FROM g_gest_projects WHERE id=?4)";
+
+/// The refusal of the proof of one task whose project the repository does not hold.
+///
+/// The full proof admits such a task, because the library writer may store a task
+/// before its project.
+const NO_PROJECT: &str = "a stored task names a project that the repository does not hold";
+
+/// Counts the rows of one issue that its proof reads by index, and the rows that may not name it.
+///
+/// The result is 1, 1, 1 and 0 for an issue whose tag `?1` with ID `?2` has one
+/// `tagxref` row and whose artifact `?3` is private. The last count adds the rows of
+/// the `unsent`, `unclustered`, `leaf`, `phantom`, `orphan` and `backlink` tables that
+/// name the artifact, and the `attachment` rows whose target is the ticket ID `?4`.
+/// It also adds the `mlink` rows whose `mid`, `fid` or `pid` is the artifact, the
+/// `plink` rows whose `pid` or `cid` is the artifact, and the `g_public_receipt` rows
+/// of its hash `?5`.
+/// Each lookup uses an index or a primary key. No index reaches `mlink.pmid` or
+/// `plink.baseid`, so only the full proof refuses a row that names the artifact there.
+const ISSUE_ROWS: &str = "SELECT (SELECT count(*) FROM tag WHERE tagname=?1),(SELECT count(*) FROM tagxref WHERE tagid=?2),(SELECT count(*) FROM private WHERE rid=?3),(SELECT count(*) FROM unsent WHERE rid=?3)+(SELECT count(*) FROM unclustered WHERE rid=?3)+(SELECT count(*) FROM leaf WHERE rid=?3)+(SELECT count(*) FROM phantom WHERE rid=?3)+(SELECT count(*) FROM orphan WHERE rid=?3)+(SELECT count(*) FROM backlink WHERE srcid=?3)+(SELECT count(*) FROM attachment WHERE target=?4)+(SELECT count(*) FROM mlink WHERE mid=?3)+(SELECT count(*) FROM mlink WHERE fid=?3)+(SELECT count(*) FROM mlink WHERE pid=?3)+(SELECT count(*) FROM plink WHERE pid=?3)+(SELECT count(*) FROM plink WHERE cid=?3)+(SELECT count(*) FROM g_public_receipt WHERE native_hash=?5)";
 
 /// The refusal of every ticket shape other than one private task or project creation.
 const UNSUPPORTED: &str =
@@ -139,6 +158,8 @@ struct KindSql {
     typed: &'static str,
     /// Read every typed row of the kind, in typed column order and key order.
     typed_all: &'static str,
+    /// Read the typed row of the kind in the combined scope whose `id` is `?1`, by its primary key.
+    typed_one: &'static str,
     /// The J field of each typed column after `scope_key`, in table column order.
     typed_fields: &'static [&'static str],
 }
@@ -149,6 +170,7 @@ const TASK: KindSql = KindSql {
     change: "INSERT INTO ticketchng(tkt_id,tkt_rid,tkt_mtime,tkt_user,assigned_to,created_at,description,gest_id,gossil_deleted,gossil_kind,gossil_schema,metadata,priority,project_id,resolved_at,status,title,updated_at) SELECT tkt_id,?2,?3,?4,?5,?6,?7,?8,?9,?10,?11,?12,?13,?14,?15,?16,?17,?18 FROM ticket WHERE tkt_uuid=?1",
     typed: "INSERT INTO g_gest_tasks(scope_key,id,project_id,title,priority,status,description,assigned_to,metadata,resolved_at,created_at,updated_at) VALUES('combined',?1,?2,?3,?4,?5,?6,?7,?8,?9,?10,?11)",
     typed_all: "SELECT scope_key,id,project_id,title,priority,status,description,assigned_to,metadata,resolved_at,created_at,updated_at FROM g_gest_tasks ORDER BY scope_key,id",
+    typed_one: "SELECT scope_key,id,project_id,title,priority,status,description,assigned_to,metadata,resolved_at,created_at,updated_at FROM g_gest_tasks WHERE scope_key='combined' AND id=?1",
     typed_fields: &[
         "gest_id",
         "project_id",
@@ -170,6 +192,7 @@ const PROJECT: KindSql = KindSql {
     change: "INSERT INTO ticketchng(tkt_id,tkt_rid,tkt_mtime,tkt_user,archived_at,created_at,gest_id,gossil_deleted,gossil_kind,gossil_schema,updated_at) SELECT tkt_id,?2,?3,?4,?5,?6,?7,?8,?9,?10,?11 FROM ticket WHERE tkt_uuid=?1",
     typed: "INSERT INTO g_gest_projects(scope_key,id,created_at,updated_at,archived_at) VALUES('combined',?1,?2,?3,?4)",
     typed_all: "SELECT scope_key,id,created_at,updated_at,archived_at FROM g_gest_projects ORDER BY scope_key,id",
+    typed_one: "SELECT scope_key,id,created_at,updated_at,archived_at FROM g_gest_projects WHERE scope_key='combined' AND id=?1",
     typed_fields: &["gest_id", "created_at", "updated_at", "archived_at"],
 };
 
@@ -539,44 +562,7 @@ impl WriteTransaction<'_> {
             {
                 return Err(StorageError::state(DIFFERS));
             }
-            let (comment, brief) = creation.event_text();
-            let (rid_value, mtime, null) =
-                (Value::Integer(*rid), creation.mtime.clone(), Value::Null);
-            issues.push(AdmittedIssue {
-                rid: *rid,
-                receipt: *receipt,
-                hash: hash.clone(),
-                tagid: *tagid,
-                tag: tag.clone(),
-                event: vec![
-                    Value::Text("t".into()),
-                    mtime.clone(),
-                    rid_value.clone(),
-                    Value::Integer(*tagid),
-                    null.clone(),
-                    null.clone(),
-                    null.clone(),
-                    Value::Text(creation.user.clone()),
-                    null.clone(),
-                    Value::Text(comment),
-                    Value::Text(brief),
-                    null.clone(),
-                ],
-                tagxref: vec![
-                    Value::Integer(*tagid),
-                    Value::Integer(1),
-                    rid_value.clone(),
-                    rid_value.clone(),
-                    null,
-                    mtime,
-                    rid_value,
-                ],
-                ticket: IssueTicket {
-                    ticket_id: creation.ticket_id.clone(),
-                    native_name: hash.clone(),
-                    record: creation.record.clone(),
-                },
-            });
+            issues.push(admitted(*rid, *receipt, hash, *tagid, tag, &creation));
             creations.push(creation);
         }
         let ticket_columns = column_names(self, "ticket", work).await?;
@@ -585,31 +571,16 @@ impl WriteTransaction<'_> {
         let (mut tasks, mut projects) = (BTreeMap::new(), BTreeMap::new());
         for ((issue, creation), tkt_id) in issues.iter().zip(&creations).zip(1..) {
             let tkt_id = Value::Integer(tkt_id);
-            tickets.push(expected_row(
+            let (ticket, change) = native_rows(
                 &ticket_columns,
-                creation,
-                |column| match column {
-                    "tkt_id" => Some(tkt_id.clone()),
-                    "tkt_uuid" => Some(Value::Text(creation.ticket_id.clone())),
-                    "tkt_mtime" | "tkt_ctime" => Some(creation.mtime.clone()),
-                    _ => None,
-                },
-            ));
-            changes.push(expected_row(
                 &change_columns,
                 creation,
-                |column| match column {
-                    "tkt_id" => Some(tkt_id.clone()),
-                    "tkt_rid" => Some(Value::Integer(issue.rid)),
-                    "tkt_mtime" => Some(creation.mtime.clone()),
-                    "tkt_user" => Some(Value::Text(creation.user.clone())),
-                    _ => None,
-                },
-            ));
-            let typed: Vec<_> = [Value::Text(SCOPE.into())]
-                .into_iter()
-                .chain(creation.typed_values())
-                .collect();
+                issue.rid,
+                &tkt_id,
+            );
+            tickets.push(ticket);
+            changes.push(change);
+            let typed = typed_row(creation);
             let key = creation.field("gest_id").unwrap_or_default().to_owned();
             match &creation.record {
                 IssueRecord::Task(_) => tasks.insert(key, typed),
@@ -626,6 +597,7 @@ impl WriteTransaction<'_> {
             if bounded_rows(self, sql, vec![], n, row_bytes, work).await? != expected {
                 return Err(StorageError::state(DIFFERS));
             }
+            work.count_comparison();
         }
         Ok(issues)
     }
@@ -651,6 +623,196 @@ impl WriteTransaction<'_> {
             return Err(StorageError::state("unsupported project binding state"));
         }
         Ok(())
+    }
+
+    /// Prove one issue by replaying its one artifact and comparing every row that it gives.
+    ///
+    /// The proof checks that each table that admission keeps empty in every repository has no
+    /// row, with one fixed query per table. The `tkt-K` tag must have one `tagxref` row, whose RID names a private blob
+    /// with a local receive record. The artifact must be one canonical
+    /// creation with this K. No row that [`ISSUE_ROWS`] counts may name the artifact,
+    /// its hash or the ticket. The `event`, `tagxref`, `ticket`,
+    /// `ticketchng` and `combined` typed rows of the issue must equal the replay, and
+    /// the other kind may hold no `combined` row with its Gest ID. A task needs a
+    /// `combined` project row with its project ID, or the proof refuses with
+    /// [`NO_PROJECT`]. The full proof admits such a task.
+    ///
+    /// The proof replays only this one artifact, and reads the rows of this issue by
+    /// an index or a primary key. Each row read still measures the size of the text of
+    /// the whole repository, as every read of admission does, so that part of the cost
+    /// grows with the repository. The proof does not see a row that no index of the
+    /// issue reaches, such as a second blob with the same receipt, an `mlink` row
+    /// whose `pmid` is the artifact, a `plink` row whose `baseid` is the artifact, or a
+    /// typed row in another scope. Only the full proof refuses those.
+    /// # Arguments
+    /// * `principal` - The authenticated owner, who may read private content.
+    /// * `ticket_id` - The K card of the issue.
+    /// * `limits` - The ceilings of the artifact and of each row.
+    /// * `work` - The operation's content ledger.
+    /// * `parse` - The operation's parser ledger.
+    /// # Returns
+    /// The ticket ID, native name and record of the issue.
+    /// # Errors
+    /// Refuses a row in one of the tables that must stay empty with `unsupported nonempty
+    /// catalog6 table:` and its name, an unknown ticket ID with `issue ticket not found`,
+    /// every difference with [`DIFFERS`] or `recording native projection differs`, a task without its
+    /// project with [`NO_PROJECT`], an artifact that is not a canonical creation,
+    /// exhausted ceilings and SQL failures.
+    pub(super) async fn prove_issue(
+        &mut self,
+        principal: &Principal,
+        ticket_id: &str,
+        limits: AdmissionLimits,
+        work: &mut Budget,
+        parse: &mut ParseWork,
+    ) -> Result<IssueTicket, StorageError> {
+        self.require_recording_empty_tables().await?;
+        let differs = || StorageError::state(DIFFERS);
+        let row_bytes = limits
+            .parser
+            .input_bytes
+            .saturating_mul(2)
+            .saturating_add(512);
+        let tag = format!("tkt-{ticket_id}");
+        let found = bounded_rows(self, "SELECT t.tagid,x.rid,b.uuid,b.rcvid FROM tag t JOIN tagxref x ON x.tagid=t.tagid JOIN blob b ON b.rid=x.rid WHERE t.tagname=?1", vec![Value::Text(tag.clone())], 2, 256, work).await?;
+        let row = match found.as_slice() {
+            [] => return Err(StorageError::state("issue ticket not found")),
+            [row] => row,
+            _ => return Err(differs()),
+        };
+        let [
+            Value::Integer(tagid),
+            Value::Integer(rid),
+            Value::Text(hash),
+            Value::Integer(receipt),
+        ] = row.as_slice()
+        else {
+            return Err(differs());
+        };
+        let (tagid, rid, hash, receipt) = (*tagid, *rid, hash.clone(), *receipt);
+        let counts = bounded_rows(
+            self,
+            ISSUE_ROWS,
+            vec![
+                Value::Text(tag.clone()),
+                Value::Integer(tagid),
+                Value::Integer(rid),
+                Value::Text(ticket_id.into()),
+                Value::Text(hash.clone()),
+            ],
+            1,
+            128,
+            work,
+        )
+        .await?;
+        let one = Value::Integer(1);
+        if counts != vec![vec![one.clone(), one.clone(), one, Value::Integer(0)]] {
+            return Err(differs());
+        }
+        let local = bounded_rows(
+            self,
+            "SELECT uid,nonce,ipaddr,typeof(mtime) FROM rcvfrom WHERE rcvid=?1 AND rcvid>1",
+            vec![Value::Integer(receipt)],
+            1,
+            128,
+            work,
+        )
+        .await?;
+        if local
+            != vec![vec![
+                Value::Integer(0),
+                Value::Null,
+                Value::Null,
+                Value::Text("real".into()),
+            ]]
+        {
+            return Err(differs());
+        }
+        let (content_rid, content_receipt, bytes) =
+            self.recorded_content(principal, &hash, work).await?;
+        let creation = derive_creation(self, &bytes, parse, work).await?;
+        if (content_rid, content_receipt) != (rid, receipt) || creation.ticket_id != ticket_id {
+            return Err(differs());
+        }
+        let issue = admitted(rid, receipt, &hash, tagid, &tag, &creation);
+        let event = bounded_rows(self, "SELECT type,mtime,objid,tagid,uid,bgcolor,euser,user,ecomment,comment,brief,omtime FROM event WHERE objid=?1", vec![Value::Integer(rid)], 2, row_bytes, work).await?;
+        let tagxref = bounded_rows(self, "SELECT tagid,tagtype,srcid,origid,value,mtime,rid FROM tagxref WHERE rid=?1 ORDER BY tagid", vec![Value::Integer(rid)], 2, row_bytes, work).await?;
+        if event != vec![issue.event.clone()] || tagxref != vec![issue.tagxref.clone()] {
+            return Err(StorageError::state("recording native projection differs"));
+        }
+        work.count_comparison();
+        work.count_comparison();
+        let ticket_columns = column_names(self, "ticket", work).await?;
+        let change_columns = column_names(self, "ticketchng", work).await?;
+        let tickets = bounded_rows(
+            self,
+            "SELECT * FROM ticket WHERE tkt_uuid=?1",
+            vec![Value::Text(ticket_id.into())],
+            2,
+            row_bytes,
+            work,
+        )
+        .await?;
+        let [ticket] = tickets.as_slice() else {
+            return Err(differs());
+        };
+        let tkt_id = Value::Integer(scalar_i64(&[ticket.iter().take(1).cloned().collect()])?);
+        let (expected_ticket, expected_change) =
+            native_rows(&ticket_columns, &change_columns, &creation, rid, &tkt_id);
+        let changes = bounded_rows(
+            self,
+            "SELECT * FROM ticketchng WHERE tkt_id=?1 ORDER BY tkt_rid",
+            vec![tkt_id.clone()],
+            2,
+            row_bytes,
+            work,
+        )
+        .await?;
+        let gest_id = creation.typed_values().remove(0);
+        let (own, other) = match creation.record {
+            IssueRecord::Task(_) => (&TASK, &PROJECT),
+            IssueRecord::Project(_) => (&PROJECT, &TASK),
+        };
+        let typed = bounded_rows(
+            self,
+            own.typed_one,
+            vec![gest_id.clone()],
+            2,
+            row_bytes,
+            work,
+        )
+        .await?;
+        let others = bounded_rows(self, other.typed_one, vec![gest_id], 1, row_bytes, work).await?;
+        if *ticket != expected_ticket
+            || changes != vec![expected_change]
+            || typed != vec![typed_row(&creation)]
+            || !others.is_empty()
+        {
+            return Err(differs());
+        }
+        for _ in 0..3 {
+            work.count_comparison();
+        }
+        if let IssueRecord::Task(_) = creation.record {
+            let project = creation
+                .typed_values()
+                .get(1)
+                .cloned()
+                .unwrap_or(Value::Null);
+            let held = bounded_rows(
+                self,
+                "SELECT count(*) FROM g_gest_projects WHERE scope_key='combined' AND id=?1",
+                vec![project],
+                1,
+                64,
+                work,
+            )
+            .await?;
+            if held != vec![vec![Value::Integer(1)]] {
+                return Err(StorageError::state(NO_PROJECT));
+            }
+        }
+        Ok(issue.ticket)
     }
 }
 
@@ -967,6 +1129,107 @@ impl LocalOwnerRepository {
         tx.rollback().await?;
         result
     }
+}
+
+/// Build the admitted issue of one creation, with the `event` and `tagxref` rows that it gives.
+/// # Arguments
+/// * `rid` - The RID of the artifact.
+/// * `receipt` - The receive record that the artifact owns.
+/// * `hash` - The full native name of the artifact.
+/// * `tagid` - The ID of the `tkt-K` tag.
+/// * `tag` - The name of the `tkt-K` tag.
+/// * `creation` - The derived creation.
+/// # Returns
+/// The issue with its expected native rows and its ticket.
+fn admitted(
+    rid: i64,
+    receipt: i64,
+    hash: &str,
+    tagid: i64,
+    tag: &str,
+    creation: &Creation,
+) -> AdmittedIssue {
+    let (comment, brief) = creation.event_text();
+    let (rid_value, mtime, null) = (Value::Integer(rid), creation.mtime.clone(), Value::Null);
+    AdmittedIssue {
+        rid,
+        receipt,
+        hash: hash.into(),
+        tagid,
+        tag: tag.into(),
+        event: vec![
+            Value::Text("t".into()),
+            mtime.clone(),
+            rid_value.clone(),
+            Value::Integer(tagid),
+            null.clone(),
+            null.clone(),
+            null.clone(),
+            Value::Text(creation.user.clone()),
+            null.clone(),
+            Value::Text(comment),
+            Value::Text(brief),
+            null.clone(),
+        ],
+        tagxref: vec![
+            Value::Integer(tagid),
+            Value::Integer(1),
+            rid_value.clone(),
+            rid_value.clone(),
+            null,
+            mtime,
+            rid_value,
+        ],
+        ticket: IssueTicket {
+            ticket_id: creation.ticket_id.clone(),
+            native_name: hash.into(),
+            record: creation.record.clone(),
+        },
+    }
+}
+
+/// Build the `ticket` and `ticketchng` rows that one creation gives.
+/// # Arguments
+/// * `ticket_columns` - The `ticket` column names, in column order.
+/// * `change_columns` - The `ticketchng` column names, in column order.
+/// * `creation` - The derived creation.
+/// * `rid` - The RID of the artifact.
+/// * `tkt_id` - The `tkt_id` of the ticket row.
+/// # Returns
+/// The expected `ticket` row and `ticketchng` row.
+fn native_rows(
+    ticket_columns: &[String],
+    change_columns: &[String],
+    creation: &Creation,
+    rid: i64,
+    tkt_id: &Value,
+) -> (Vec<Value>, Vec<Value>) {
+    let ticket = expected_row(ticket_columns, creation, |column| match column {
+        "tkt_id" => Some(tkt_id.clone()),
+        "tkt_uuid" => Some(Value::Text(creation.ticket_id.clone())),
+        "tkt_mtime" | "tkt_ctime" => Some(creation.mtime.clone()),
+        _ => None,
+    });
+    let change = expected_row(change_columns, creation, |column| match column {
+        "tkt_id" => Some(tkt_id.clone()),
+        "tkt_rid" => Some(Value::Integer(rid)),
+        "tkt_mtime" => Some(creation.mtime.clone()),
+        "tkt_user" => Some(Value::Text(creation.user.clone())),
+        _ => None,
+    });
+    (ticket, change)
+}
+
+/// Build the typed row that one creation gives, `scope_key` first.
+/// # Arguments
+/// * `creation` - The derived creation.
+/// # Returns
+/// The row in table column order.
+fn typed_row(creation: &Creation) -> Vec<Value> {
+    [Value::Text(SCOPE.into())]
+        .into_iter()
+        .chain(creation.typed_values())
+        .collect()
 }
 
 /// Read the column names of one native table, in column order.

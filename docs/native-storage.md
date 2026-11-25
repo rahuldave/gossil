@@ -456,6 +456,12 @@ The [issue ticket writer](issue-ticket.md) stores one private task or project
 ticket in a catalog 6 repository. `open` admits a repository that holds such
 tickets beside private check-ins, and the project binding that `issue init` writes.
 
+`LocalOwnerRepository::verify` runs the same full proof on demand, and
+`verify_issue` proves one issue from its own rows. Both read in a transaction that
+they roll back, so they change nothing. Each proof bounds each artifact and each row,
+and sets no bound on the whole repository. The command
+[`gos v verify`](cli.md#verify-a-repository) runs them.
+
 The required object
 inventory and complete stored definitions are
 checked before mutation. Known optional schema families return an unsupported

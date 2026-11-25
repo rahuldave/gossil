@@ -1285,6 +1285,7 @@ impl WriteTransaction<'_> {
         if bounded_rows(self, sql, args, count.max(1), width, work).await? != expected {
             return Err(StorageError::state("recording native projection differs"));
         }
+        work.count_comparison();
         Ok(())
     }
 

@@ -53,6 +53,8 @@ pub(super) struct Budget {
     visited: BTreeSet<i64>,
     /// The largest reservation charged for each whole shared surface since the current admission began.
     reserved: BTreeMap<&'static str, u64>,
+    /// The table comparisons with replay that passed on this ledger.
+    compared: usize,
 }
 impl Budget {
     /// Return the unchanged finite ceilings used to create this ledger.
@@ -118,6 +120,7 @@ impl Budget {
             decoded: 0,
             visited: BTreeSet::new(),
             reserved: BTreeMap::new(),
+            compared: 0,
         })
     }
     /// Charge before consuming an envelope; a repeated RID always fails.
@@ -167,6 +170,16 @@ impl Budget {
     #[cfg(test)]
     pub(super) fn decoded(&self) -> u64 {
         self.decoded
+    }
+    /// Count one table comparison with replay that passed.
+    pub(super) fn count_comparison(&mut self) {
+        self.compared = self.compared.saturating_add(1);
+    }
+    /// Return the table comparisons with replay that passed on this ledger.
+    /// # Returns
+    /// The count, which `gos v verify` prints.
+    pub(super) fn compared(&self) -> usize {
+        self.compared
     }
     /// Start a new admission, so that each shared surface is reserved again, once.
     /// # Returns

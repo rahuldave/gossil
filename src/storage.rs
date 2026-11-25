@@ -42,10 +42,10 @@ mod repository;
 mod schema;
 pub use content::Limits;
 pub use repository::{
-    AdmissionLimits, CheckoutView, CreateOptions, InitializeOptions, IssueLimits, IssueRecord,
-    IssueTicket, LocalOwnerRepository, PathScope, PathScopeSelection, PendingAdd,
+    AdmissionLimits, CheckoutView, CreateOptions, InitializeOptions, IssueLimits, IssueMatch,
+    IssueRecord, IssueTicket, LocalOwnerRepository, PathScope, PathScopeSelection, PendingAdd,
     PrivateIssueRequest, PrivateRecordingOutcome, PrivateRecordingRequest, ProjectInitRequest,
-    RecordedCheckin, SharedView, TrackingLimits,
+    RecordedCheckin, SharedView, TrackingLimits, VerifySummary,
 };
 #[cfg(test)]
 pub(crate) use repository::{IssuePhase, inject_issue_failure};

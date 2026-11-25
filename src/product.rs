@@ -557,6 +557,11 @@ pub fn entry() -> std::process::ExitCode {
             |()| std::process::ExitCode::SUCCESS,
         );
     }
+    if args.first().is_some_and(|arg| arg == "vcs")
+        && args.get(1).is_some_and(|arg| arg == "verify")
+    {
+        return crate::vcs_verify::run(&args[2..]);
+    }
     match dispatch(&args) {
         Ok(()) => std::process::ExitCode::SUCCESS,
         Err(error) => {
@@ -695,6 +700,7 @@ mod tests {
             "commit",
             "timeline",
             "log",
+            "verify",
             "test-delta-create",
             "test-delta-apply",
             "test-delta",

@@ -479,7 +479,7 @@ impl WriteTransaction<'_> {
     /// Success only when no unsupported local/native state is present.
     /// # Errors
     /// Refuses any populated guard surface or SQL error; never repairs it.
-    async fn require_recording_empty_tables(&mut self) -> Result<(), StorageError> {
+    pub(super) async fn require_recording_empty_tables(&mut self) -> Result<(), StorageError> {
         /// Enumerate every unrelated native surface that must remain empty.
         const GUARDS: &[(&str, &str)] = &[
             ("accesslog", "SELECT EXISTS(SELECT 1 FROM accesslog)"),

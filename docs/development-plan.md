@@ -257,6 +257,11 @@ its controls. The handlers of `task list` and `task show` are in
 `product::issue_read`, and `tests/issue_read_cli.rs` holds the controls of the
 two commands. The [issue read guide](issue-read.md) gives their output.
 
+The module `vcs_verify` runs [`vcs verify`](cli.md#verify-a-repository). It runs the full proof of a
+repository, or the proof of one issue, and changes nothing. The proofs are
+`LocalOwnerRepository::verify` and `verify_issue` in `storage::repository::verification`.
+`tests/vcs_verify_cli.rs` holds the controls of the command.
+
 The focused CLI controls are in `tests/vcs_init_cli.rs`; parser, environment,
 password and receipt controls are in the private `vcs_init` module. Source edits
 and authored tests do not establish a passing qualification run. Versioned

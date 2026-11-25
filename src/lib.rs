@@ -827,6 +827,8 @@ mod vcs_recording;
 mod vcs_timeline;
 /// Adapt explicit tracking enrollment and complete tracked status for product executables.
 mod vcs_tracking;
+/// Run the full proof of a repository, or of one issue, for `vcs verify`.
+mod vcs_verify;
 
 /// Emit the bounded bytes of artifact and project creation tickets through the shared Gest ticket emitter.
 pub mod gest_ticket;

@@ -74,6 +74,12 @@ const VCS_COMMANDS: &[VcsCommand] = &[
         own_help: true,
     },
     VcsCommand {
+        names: &["verify"],
+        usage: "Usage: gossil vcs verify --repository REPO [--issue ID]",
+        summary: "Replay every artifact and compare every table, changing nothing",
+        own_help: true,
+    },
+    VcsCommand {
         names: &["test-delta-create"],
         usage: "Usage: gossil vcs test-delta-create ORIGIN TARGET DELTA",
         summary: "Write the delta from ORIGIN to TARGET into DELTA",

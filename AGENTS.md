@@ -126,6 +126,10 @@ allowances. See
 focused qualification limits. The timeline delivery baseline is accepted
 `4250b873` and released as `v0.8.0`. Those results do not qualify later glob source.
 
+The source CLI also exposes `verify` through both executable and group aliases.
+It runs the full proof of an explicit repository, or with `--issue` the proof of
+one issue, and changes nothing. See the "Verify a repository" section of `docs/cli.md`.
+
 ## Commands and evidence
 
 Use `just conformance CONFIG` for one suite and `just conformance-self-test`
