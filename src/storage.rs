@@ -42,10 +42,10 @@ mod repository;
 mod schema;
 pub use content::Limits;
 pub use repository::{
-    AdmissionLimits, CheckoutView, CreateOptions, InitializeOptions, IssueLimits, IssueRecord,
-    IssueTicket, LocalOwnerRepository, PathScope, PathScopeSelection, PendingAdd,
+    AdmissionLimits, CheckoutView, CreateOptions, InitializeOptions, IssueLimits, IssueMatch,
+    IssueRecord, IssueTicket, LocalOwnerRepository, PathScope, PathScopeSelection, PendingAdd,
     PrivateIssueRequest, PrivateRecordingOutcome, PrivateRecordingRequest, ProjectInitRequest,
-    RecordedCheckin, SharedView, TrackingLimits,
+    RecordedCheckin, SharedView, TrackingLimits, VerifySummary,
 };
 #[cfg(test)]
 pub(crate) use repository::{IssuePhase, inject_issue_failure};
@@ -133,6 +133,16 @@ impl StorageError {
             source: Some(Arc::new(older)),
         }
     }
+    /// Refuse a repository that has lost its Gossil tables, as after a stock `fossil rebuild`.
+    /// # Returns
+    /// An error whose source is [`LostTables`], so that the CLI can exit 78.
+    fn lost_tables() -> Self {
+        Self {
+            operation: LostTables.to_string(),
+            cleanup: None,
+            source: Some(Arc::new(LostTables)),
+        }
+    }
     /// Name the repository in an older-catalog refusal, with the full CAT-07 message.
     /// # Arguments
     /// * `repository` - The repository path that the caller selected.
@@ -183,6 +193,34 @@ impl fmt::Display for OlderCatalog {
     }
 }
 impl std::error::Error for OlderCatalog {}
+
+/// Reports a repository that holds Fossil tables but not the Gossil tables.
+///
+/// A stock `fossil rebuild` drops every table that Fossil does not know, so it drops
+/// each `g_` table. Nothing in the file can restore them, so every command refuses
+/// the repository, and the CLI exits 78.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub(crate) struct LostTables;
+impl fmt::Display for LostTables {
+    /// Say what happened and what to do.
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        f.write_str(
+            "this repository has lost its Gossil tables (was `fossil rebuild` run on it?); restore it from a backup",
+        )
+    }
+}
+impl std::error::Error for LostTables {}
+
+/// Say whether a failure names a repository that no command of this build can use.
+/// # Arguments
+/// * `error` - The failure.
+/// # Returns
+/// True when the error chain holds an [`OlderCatalog`] or [`LostTables`] refusal. The
+/// CLI then exits 78.
+pub(crate) fn unusable(error: &(dyn std::error::Error + 'static)) -> bool {
+    std::iter::successors(Some(error), |current| current.source())
+        .any(|e| e.is::<OlderCatalog>() || e.is::<LostTables>())
+}
 
 /// A checked commit failure retains separate operation and cleanup causes.
 /// A cleanup failure means the uncertain connection was discarded and its store poisoned.

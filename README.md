@@ -108,6 +108,10 @@ that project. The commands
 [`gos i task list` and `gos i task show`](docs/cli.md#list-the-tasks-of-the-project) read the tasks that
 the writer stores. The [issue guide](docs/issues.md) walks through these commands beside check-ins.
 
+The command [`gos v verify`](docs/cli.md#verify-a-repository) replays every check-in and every issue
+artifact and compares each table with that replay. With `--issue ID`, it proves one task or project
+from its own rows. It changes nothing.
+
 Native storage initializes an empty public root without a checkout through the
 library API. It can then register one existing directory and authenticate that
 registration by ID or exact root. Registration changes the database only; it

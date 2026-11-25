@@ -104,6 +104,10 @@ issue-demo:
     fi
     GOSSIL_FOSSIL_REFERENCE="$fossil" just test --test issue_demo stock_fossil_reads_the_demo_repository -- --ignored --exact
 
+# Store 5,000 tasks in a release build and print the time of create, list, show, status, commit and verify at 100, 1,000 and 5,000 tasks.
+issue-capacity:
+    cargo test --release --test issue_capacity five_thousand_tasks_fit_the_cli_ceilings -- --ignored --exact --nocapture
+
 # Compare the JSON of task list and task show with a reference gest for the same two tasks; exit 5 means not-run.
 issue-read-oracle:
     #!/usr/bin/env bash

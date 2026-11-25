@@ -8,6 +8,9 @@ use gossil::storage::{
     PathScopeSelection, TrackingLimits,
 };
 use std::path::{Path, PathBuf};
+
+#[path = "support/proof.rs"]
+mod proof;
 /// Set explicit finite root and registration ceilings.
 fn limits() -> AdmissionLimits {
     AdmissionLimits {
@@ -321,7 +324,8 @@ async fn invalid_batches_preserve_complete_database() {
     }
 }
 #[tokio::test]
-/// Reject corrupt scope scalars and identities on fresh admission without repair.
+/// Reject corrupt scope scalars and identities in the scope command and the full proof,
+/// without repair. Open admits them, since it reads no scope row.
 /// # Panics
 /// Panics if a malformed persisted inventory is admitted or changed by refusal.
 async fn corrupt_scope_inventory_refuses_without_repair() {
@@ -418,16 +422,39 @@ async fn corrupt_scope_inventory_refuses_without_repair() {
                 exhausted
             );
         } else {
-            assert!(LocalOwnerRepository::open(&path, limits()).await.is_err());
+            // Open admits the repository. The full proof refuses the row, and so does
+            // the scope command, which reads the scope inventory that it changes.
+            let (opened, message) = proof::verify_refusal(&path, limits()).await;
+            assert!(opened, "{mutation}");
+            let expected_message = if mutation.contains("checkout_id") {
+                "repository foreign key integrity failure"
+            } else {
+                "scope inventory invalid"
+            };
+            assert_eq!(message, expected_message, "{mutation}");
+            let mut owner = LocalOwnerRepository::open(&path, limits()).await.unwrap();
+            let refused = owner
+                .select_path_scopes(
+                    "work",
+                    &current,
+                    &[selection("beta", PathScope::Private)],
+                    limits(),
+                    tracking(),
+                )
+                .await
+                .unwrap_err();
+            assert_eq!(refused.to_string(), "scope inventory invalid", "{mutation}");
+            drop(owner);
         }
         assert_eq!(snapshot(&path).await, expected);
     }
 }
 #[tokio::test]
-/// Reject stale owner snapshots and changed registered root identity atomically.
+/// An owner opened before another write sees that write. An old view and a changed
+/// registered root identity refuse atomically.
 /// # Panics
-/// Panics if foreign authority or replaced roots can publish scope choices.
-async fn stale_owner_and_replaced_root_refuse() {
+/// Panics if an old view or a replaced root can publish scope choices.
+async fn old_views_and_replaced_root_refuse() {
     let temp = tempfile::tempdir().unwrap();
     let path = temp.path().join("repo");
     let root = checkout_root(temp.path());
@@ -443,13 +470,26 @@ async fn stale_owner_and_replaced_root_refuse() {
         )
         .await
         .unwrap();
+    // The second owner reads the view that the first committed, and writes over it.
+    let later = stale
+        .select_path_scopes(
+            "work",
+            &after,
+            &[selection("beta", PathScope::Shared)],
+            limits(),
+            tracking(),
+        )
+        .await
+        .unwrap();
+    assert_eq!(owner.checkout_view("work", limits()).await.unwrap(), later);
+    // An old view no longer matches, and its write refuses without effect.
     let expected = snapshot(&path).await;
     assert!(
-        stale
+        owner
             .select_path_scopes(
                 "work",
                 &after,
-                &[selection("beta", PathScope::Shared)],
+                &[selection("beta", PathScope::Private)],
                 limits(),
                 tracking()
             )
@@ -463,7 +503,7 @@ async fn stale_owner_and_replaced_root_refuse() {
         owner
             .select_path_scopes(
                 "work",
-                &after,
+                &later,
                 &[selection("alpha", PathScope::Private)],
                 limits(),
                 tracking()

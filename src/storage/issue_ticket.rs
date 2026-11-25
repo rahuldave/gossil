@@ -23,21 +23,24 @@
 //! the ticket is private, and no text field contains `[`. It writes no selector,
 //! tag, link, audit or undo row.
 //!
-//! The admission of [`LocalOwnerRepository::open`] accepts these rows, and it derives
-//! every creation again. The writer runs that full admission before and after its
-//! write, and the reader runs it before its read.
+//! The writer and the readers run the checks of each command in their own
+//! transaction. The cost of those checks does not grow with the history. The
+//! writer then checks the facts of its one write, which are the artifact, the
+//! unused IDs and, for a task, its project.
+//! [`LocalOwnerRepository::list_private_issues`] reads the typed rows. The
+//! full proof of `gos v verify` derives every creation again and compares each row.
 //!
 //! [`LocalOwnerRepository::init_private_project`], which `gos i init` calls, also
 //! binds the new project to the registered checkout, with one `g_project_binding`
 //! row and one `g_checkout_project` row in the same transaction.
-//! [`LocalOwnerRepository::bound_project`] reads that binding. Admission accepts
-//! both tables empty, or with exactly that one binding to an admitted project
+//! [`LocalOwnerRepository::bound_project`] reads that binding. The checks of each
+//! command accept both tables empty, or with exactly that one binding to a project
 //! that is not archived.
 //!
 //! ## Recommendations
 //! Keep the ticket shapes that this module writes and the rows that admission expects
 //! in this one module, so the writer and the validator cannot drift apart.
-use super::recorded_history::{bounded_rows, native_name, parse_recording_budgeted};
+use super::recorded_history::{bounded_rows, native_name, parse_recording_budgeted, scalar_i64};
 use super::{AdmissionLimits, LocalOwnerRepository, ParseWork, PathScope, Principal, StorageError};
 use crate::artifact::{ArtifactType, ParsedArtifact};
 use crate::gest_project_values::{ProjectValueInputs, ProjectValues, project_from_values};
@@ -56,8 +59,35 @@ const DIFFERS: &str = "stored issue rows differ from the ticket artifact";
 /// Count the rows that hold the ticket ID, its tag, its artifact or its Gest ID.
 ///
 /// The count is zero only when no row holds any of them. A Gest ID names one task or
-/// one project, never both.
-const HELD: &str = "SELECT (SELECT count(*) FROM ticket WHERE tkt_uuid=?1)+(SELECT count(*) FROM tag WHERE tagname=?2)+(SELECT count(*) FROM blob WHERE uuid=?3)+(SELECT count(*) FROM g_gest_tasks WHERE id=?4)+(SELECT count(*) FROM g_gest_projects WHERE id=?4)";
+/// one project, never both. Each count uses an index or a primary key. The typed rows
+/// are counted in the `combined` scope only, which is the scope of the key.
+const HELD: &str = "SELECT (SELECT count(*) FROM ticket WHERE tkt_uuid=?1)+(SELECT count(*) FROM tag WHERE tagname=?2)+(SELECT count(*) FROM blob WHERE uuid=?3)+(SELECT count(*) FROM g_gest_tasks WHERE scope_key='combined' AND id=?4)+(SELECT count(*) FROM g_gest_projects WHERE scope_key='combined' AND id=?4)";
+
+/// Count the `combined` projects with an ID that are not archived. A new task needs one.
+const OPEN_PROJECT: &str = "SELECT count(*) FROM g_gest_projects WHERE scope_key='combined' AND id=?1 AND archived_at IS NULL";
+
+/// The refusal of a new task whose project the repository does not hold, or holds archived.
+pub(crate) const TASK_PROJECT: &str =
+    "a new task needs a project that the repository holds and that is not archived";
+
+/// The refusal of the proof of one task whose project the repository does not hold.
+///
+/// The writer refuses a new task without its project. The full proof still admits
+/// such a task, since only a change to the file can make one.
+const NO_PROJECT: &str = "a stored task names a project that the repository does not hold";
+
+/// Counts the rows of one issue that its proof reads by index, and the rows that may not name it.
+///
+/// The result is 1, 1, 1 and 0 for an issue whose tag `?1` with ID `?2` has one
+/// `tagxref` row and whose artifact `?3` is private. The last count adds the rows of
+/// the `unsent`, `unclustered`, `leaf`, `phantom`, `orphan` and `backlink` tables that
+/// name the artifact, and the `attachment` rows whose target is the ticket ID `?4`.
+/// It also adds the `mlink` rows whose `mid`, `fid` or `pid` is the artifact, the
+/// `plink` rows whose `pid` or `cid` is the artifact, and the `g_public_receipt` rows
+/// of its hash `?5`.
+/// Each lookup uses an index or a primary key. No index reaches `mlink.pmid` or
+/// `plink.baseid`, so only the full proof refuses a row that names the artifact there.
+const ISSUE_ROWS: &str = "SELECT (SELECT count(*) FROM tag WHERE tagname=?1),(SELECT count(*) FROM tagxref WHERE tagid=?2),(SELECT count(*) FROM private WHERE rid=?3),(SELECT count(*) FROM unsent WHERE rid=?3)+(SELECT count(*) FROM unclustered WHERE rid=?3)+(SELECT count(*) FROM leaf WHERE rid=?3)+(SELECT count(*) FROM phantom WHERE rid=?3)+(SELECT count(*) FROM orphan WHERE rid=?3)+(SELECT count(*) FROM backlink WHERE srcid=?3)+(SELECT count(*) FROM attachment WHERE target=?4)+(SELECT count(*) FROM mlink WHERE mid=?3)+(SELECT count(*) FROM mlink WHERE fid=?3)+(SELECT count(*) FROM mlink WHERE pid=?3)+(SELECT count(*) FROM plink WHERE pid=?3)+(SELECT count(*) FROM plink WHERE cid=?3)+(SELECT count(*) FROM g_public_receipt WHERE native_hash=?5)";
 
 /// The refusal of every ticket shape other than one private task or project creation.
 const UNSUPPORTED: &str =
@@ -86,10 +116,9 @@ pub struct ProjectInitRequest<'a> {
 /// are empty. It is also 1 when each table holds one row, and both rows name the
 /// registered checkout and the Gest ID of one admitted project that is not archived.
 /// The `g_project_binding` row must then hold the exact root of the checkout.
-/// Every other state gives 0. The checkout IDs need no type check here. The
-/// foreign key check of admission runs first and refuses an ID that is not the
-/// text ID of the registered checkout.
-const BINDING: &str = "SELECT CASE (SELECT count(*) FROM g_project_binding)+(SELECT count(*) FROM g_checkout_project) WHEN 0 THEN 1 WHEN 2 THEN (SELECT count(*) FROM g_project_binding b JOIN g_checkout_project p ON CAST(p.checkout_id AS BLOB)=CAST(b.checkout_id AS BLOB) AND CAST(p.project_id AS BLOB)=CAST(b.project_id AS BLOB) JOIN g_checkout c ON CAST(c.checkout_id AS BLOB)=CAST(b.checkout_id AS BLOB) AND CAST(c.root AS BLOB)=CAST(b.root AS BLOB) JOIN g_gest_projects g ON g.scope_key='combined' AND CAST(g.id AS BLOB)=CAST(b.project_id AS BLOB) AND g.archived_at IS NULL WHERE typeof(b.project_id)='text' AND typeof(b.root)='text' AND typeof(p.project_id)='text') ELSE 0 END";
+/// Every other state gives 0. Each ID and the root must be text. Open does not run
+/// the foreign key check, so this check refuses a checkout ID of another type too.
+const BINDING: &str = "SELECT CASE (SELECT count(*) FROM g_project_binding)+(SELECT count(*) FROM g_checkout_project) WHEN 0 THEN 1 WHEN 2 THEN (SELECT count(*) FROM g_project_binding b JOIN g_checkout_project p ON CAST(p.checkout_id AS BLOB)=CAST(b.checkout_id AS BLOB) AND CAST(p.project_id AS BLOB)=CAST(b.project_id AS BLOB) JOIN g_checkout c ON CAST(c.checkout_id AS BLOB)=CAST(b.checkout_id AS BLOB) AND CAST(c.root AS BLOB)=CAST(b.root AS BLOB) JOIN g_gest_projects g ON g.scope_key='combined' AND CAST(g.id AS BLOB)=CAST(b.project_id AS BLOB) AND g.archived_at IS NULL WHERE typeof(b.project_id)='text' AND typeof(b.root)='text' AND typeof(p.project_id)='text' AND typeof(b.checkout_id)='text' AND typeof(p.checkout_id)='text') ELSE 0 END";
 
 /// The refusal of an `issue init` write whose project, checkout or repository does not fit.
 ///
@@ -139,6 +168,8 @@ struct KindSql {
     typed: &'static str,
     /// Read every typed row of the kind, in typed column order and key order.
     typed_all: &'static str,
+    /// Read the typed row of the kind in the combined scope whose `id` is `?1`, by its primary key.
+    typed_one: &'static str,
     /// The J field of each typed column after `scope_key`, in table column order.
     typed_fields: &'static [&'static str],
 }
@@ -149,6 +180,7 @@ const TASK: KindSql = KindSql {
     change: "INSERT INTO ticketchng(tkt_id,tkt_rid,tkt_mtime,tkt_user,assigned_to,created_at,description,gest_id,gossil_deleted,gossil_kind,gossil_schema,metadata,priority,project_id,resolved_at,status,title,updated_at) SELECT tkt_id,?2,?3,?4,?5,?6,?7,?8,?9,?10,?11,?12,?13,?14,?15,?16,?17,?18 FROM ticket WHERE tkt_uuid=?1",
     typed: "INSERT INTO g_gest_tasks(scope_key,id,project_id,title,priority,status,description,assigned_to,metadata,resolved_at,created_at,updated_at) VALUES('combined',?1,?2,?3,?4,?5,?6,?7,?8,?9,?10,?11)",
     typed_all: "SELECT scope_key,id,project_id,title,priority,status,description,assigned_to,metadata,resolved_at,created_at,updated_at FROM g_gest_tasks ORDER BY scope_key,id",
+    typed_one: "SELECT scope_key,id,project_id,title,priority,status,description,assigned_to,metadata,resolved_at,created_at,updated_at FROM g_gest_tasks WHERE scope_key='combined' AND id=?1",
     typed_fields: &[
         "gest_id",
         "project_id",
@@ -170,6 +202,7 @@ const PROJECT: KindSql = KindSql {
     change: "INSERT INTO ticketchng(tkt_id,tkt_rid,tkt_mtime,tkt_user,archived_at,created_at,gest_id,gossil_deleted,gossil_kind,gossil_schema,updated_at) SELECT tkt_id,?2,?3,?4,?5,?6,?7,?8,?9,?10,?11 FROM ticket WHERE tkt_uuid=?1",
     typed: "INSERT INTO g_gest_projects(scope_key,id,created_at,updated_at,archived_at) VALUES('combined',?1,?2,?3,?4)",
     typed_all: "SELECT scope_key,id,created_at,updated_at,archived_at FROM g_gest_projects ORDER BY scope_key,id",
+    typed_one: "SELECT scope_key,id,created_at,updated_at,archived_at FROM g_gest_projects WHERE scope_key='combined' AND id=?1",
     typed_fields: &["gest_id", "created_at", "updated_at", "archived_at"],
 };
 
@@ -395,7 +428,7 @@ pub(crate) enum IssuePhase {
     Typed,
     /// The project binding and the checkout project rows exist.
     Binding,
-    /// The new admission proof is captured, and only COMMIT is left.
+    /// The checks of each command ran again on the new rows, and only COMMIT is left.
     Admission,
 }
 
@@ -539,44 +572,7 @@ impl WriteTransaction<'_> {
             {
                 return Err(StorageError::state(DIFFERS));
             }
-            let (comment, brief) = creation.event_text();
-            let (rid_value, mtime, null) =
-                (Value::Integer(*rid), creation.mtime.clone(), Value::Null);
-            issues.push(AdmittedIssue {
-                rid: *rid,
-                receipt: *receipt,
-                hash: hash.clone(),
-                tagid: *tagid,
-                tag: tag.clone(),
-                event: vec![
-                    Value::Text("t".into()),
-                    mtime.clone(),
-                    rid_value.clone(),
-                    Value::Integer(*tagid),
-                    null.clone(),
-                    null.clone(),
-                    null.clone(),
-                    Value::Text(creation.user.clone()),
-                    null.clone(),
-                    Value::Text(comment),
-                    Value::Text(brief),
-                    null.clone(),
-                ],
-                tagxref: vec![
-                    Value::Integer(*tagid),
-                    Value::Integer(1),
-                    rid_value.clone(),
-                    rid_value.clone(),
-                    null,
-                    mtime,
-                    rid_value,
-                ],
-                ticket: IssueTicket {
-                    ticket_id: creation.ticket_id.clone(),
-                    native_name: hash.clone(),
-                    record: creation.record.clone(),
-                },
-            });
+            issues.push(admitted(*rid, *receipt, hash, *tagid, tag, &creation));
             creations.push(creation);
         }
         let ticket_columns = column_names(self, "ticket", work).await?;
@@ -585,31 +581,16 @@ impl WriteTransaction<'_> {
         let (mut tasks, mut projects) = (BTreeMap::new(), BTreeMap::new());
         for ((issue, creation), tkt_id) in issues.iter().zip(&creations).zip(1..) {
             let tkt_id = Value::Integer(tkt_id);
-            tickets.push(expected_row(
+            let (ticket, change) = native_rows(
                 &ticket_columns,
-                creation,
-                |column| match column {
-                    "tkt_id" => Some(tkt_id.clone()),
-                    "tkt_uuid" => Some(Value::Text(creation.ticket_id.clone())),
-                    "tkt_mtime" | "tkt_ctime" => Some(creation.mtime.clone()),
-                    _ => None,
-                },
-            ));
-            changes.push(expected_row(
                 &change_columns,
                 creation,
-                |column| match column {
-                    "tkt_id" => Some(tkt_id.clone()),
-                    "tkt_rid" => Some(Value::Integer(issue.rid)),
-                    "tkt_mtime" => Some(creation.mtime.clone()),
-                    "tkt_user" => Some(Value::Text(creation.user.clone())),
-                    _ => None,
-                },
-            ));
-            let typed: Vec<_> = [Value::Text(SCOPE.into())]
-                .into_iter()
-                .chain(creation.typed_values())
-                .collect();
+                issue.rid,
+                &tkt_id,
+            );
+            tickets.push(ticket);
+            changes.push(change);
+            let typed = typed_row(creation);
             let key = creation.field("gest_id").unwrap_or_default().to_owned();
             match &creation.record {
                 IssueRecord::Task(_) => tasks.insert(key, typed),
@@ -626,6 +607,7 @@ impl WriteTransaction<'_> {
             if bounded_rows(self, sql, vec![], n, row_bytes, work).await? != expected {
                 return Err(StorageError::state(DIFFERS));
             }
+            work.count_comparison();
         }
         Ok(issues)
     }
@@ -652,24 +634,217 @@ impl WriteTransaction<'_> {
         }
         Ok(())
     }
+
+    /// Prove one issue by replaying its one artifact and comparing every row that it gives.
+    ///
+    /// The proof checks that each table that the full proof keeps empty in every repository has no
+    /// row, with one fixed query per table. The `tkt-K` tag must have one `tagxref` row, whose RID names a private blob
+    /// with a local receive record. The artifact must be one canonical
+    /// creation with this K. No row that [`ISSUE_ROWS`] counts may name the artifact,
+    /// its hash or the ticket. The `event`, `tagxref`, `ticket`,
+    /// `ticketchng` and `combined` typed rows of the issue must equal the replay, and
+    /// the other kind may hold no `combined` row with its Gest ID. A task needs a
+    /// `combined` project row with its project ID, or the proof refuses with
+    /// [`NO_PROJECT`]. The full proof admits such a task.
+    ///
+    /// The proof replays only this one artifact, and reads the rows of this issue by
+    /// an index or a primary key, so its cost does not grow with the repository. The
+    /// proof does not see a row that no index of the
+    /// issue reaches, such as a second blob with the same receipt, an `mlink` row
+    /// whose `pmid` is the artifact, a `plink` row whose `baseid` is the artifact, or a
+    /// typed row in another scope. Only the full proof refuses those.
+    /// # Arguments
+    /// * `principal` - The authenticated owner, who may read private content.
+    /// * `ticket_id` - The K card of the issue.
+    /// * `limits` - The ceilings of the artifact and of each row.
+    /// * `work` - The operation's content ledger.
+    /// * `parse` - The operation's parser ledger.
+    /// # Returns
+    /// The ticket ID, native name and record of the issue.
+    /// # Errors
+    /// Refuses a row in one of the tables that must stay empty with `unsupported nonempty
+    /// catalog6 table:` and its name, an unknown ticket ID with `issue ticket not found`,
+    /// every difference with [`DIFFERS`] or `recording native projection differs`, a task without its
+    /// project with [`NO_PROJECT`], an artifact that is not a canonical creation,
+    /// exhausted ceilings and SQL failures.
+    pub(super) async fn prove_issue(
+        &mut self,
+        principal: &Principal,
+        ticket_id: &str,
+        limits: AdmissionLimits,
+        work: &mut Budget,
+        parse: &mut ParseWork,
+    ) -> Result<IssueTicket, StorageError> {
+        self.require_recording_empty_tables().await?;
+        let differs = || StorageError::state(DIFFERS);
+        let row_bytes = limits
+            .parser
+            .input_bytes
+            .saturating_mul(2)
+            .saturating_add(512);
+        let tag = format!("tkt-{ticket_id}");
+        let found = bounded_rows(self, "SELECT t.tagid,x.rid,b.uuid,b.rcvid FROM tag t JOIN tagxref x ON x.tagid=t.tagid JOIN blob b ON b.rid=x.rid WHERE t.tagname=?1", vec![Value::Text(tag.clone())], 2, 256, work).await?;
+        let row = match found.as_slice() {
+            [] => return Err(StorageError::state("issue ticket not found")),
+            [row] => row,
+            _ => return Err(differs()),
+        };
+        let [
+            Value::Integer(tagid),
+            Value::Integer(rid),
+            Value::Text(hash),
+            Value::Integer(receipt),
+        ] = row.as_slice()
+        else {
+            return Err(differs());
+        };
+        let (tagid, rid, hash, receipt) = (*tagid, *rid, hash.clone(), *receipt);
+        let counts = bounded_rows(
+            self,
+            ISSUE_ROWS,
+            vec![
+                Value::Text(tag.clone()),
+                Value::Integer(tagid),
+                Value::Integer(rid),
+                Value::Text(ticket_id.into()),
+                Value::Text(hash.clone()),
+            ],
+            1,
+            128,
+            work,
+        )
+        .await?;
+        let one = Value::Integer(1);
+        if counts != vec![vec![one.clone(), one.clone(), one, Value::Integer(0)]] {
+            return Err(differs());
+        }
+        let local = bounded_rows(
+            self,
+            "SELECT uid,nonce,ipaddr,typeof(mtime) FROM rcvfrom WHERE rcvid=?1 AND rcvid>1",
+            vec![Value::Integer(receipt)],
+            1,
+            128,
+            work,
+        )
+        .await?;
+        if local
+            != vec![vec![
+                Value::Integer(0),
+                Value::Null,
+                Value::Null,
+                Value::Text("real".into()),
+            ]]
+        {
+            return Err(differs());
+        }
+        let (content_rid, content_receipt, bytes) =
+            self.recorded_content(principal, &hash, work).await?;
+        let creation = derive_creation(self, &bytes, parse, work).await?;
+        if (content_rid, content_receipt) != (rid, receipt) || creation.ticket_id != ticket_id {
+            return Err(differs());
+        }
+        let issue = admitted(rid, receipt, &hash, tagid, &tag, &creation);
+        let event = bounded_rows(self, "SELECT type,mtime,objid,tagid,uid,bgcolor,euser,user,ecomment,comment,brief,omtime FROM event WHERE objid=?1", vec![Value::Integer(rid)], 2, row_bytes, work).await?;
+        let tagxref = bounded_rows(self, "SELECT tagid,tagtype,srcid,origid,value,mtime,rid FROM tagxref WHERE rid=?1 ORDER BY tagid", vec![Value::Integer(rid)], 2, row_bytes, work).await?;
+        if event != vec![issue.event.clone()] || tagxref != vec![issue.tagxref.clone()] {
+            return Err(StorageError::state("recording native projection differs"));
+        }
+        work.count_comparison();
+        work.count_comparison();
+        let ticket_columns = column_names(self, "ticket", work).await?;
+        let change_columns = column_names(self, "ticketchng", work).await?;
+        let tickets = bounded_rows(
+            self,
+            "SELECT * FROM ticket WHERE tkt_uuid=?1",
+            vec![Value::Text(ticket_id.into())],
+            2,
+            row_bytes,
+            work,
+        )
+        .await?;
+        let [ticket] = tickets.as_slice() else {
+            return Err(differs());
+        };
+        let tkt_id = Value::Integer(scalar_i64(&[ticket.iter().take(1).cloned().collect()])?);
+        let (expected_ticket, expected_change) =
+            native_rows(&ticket_columns, &change_columns, &creation, rid, &tkt_id);
+        let changes = bounded_rows(
+            self,
+            "SELECT * FROM ticketchng WHERE tkt_id=?1 ORDER BY tkt_rid",
+            vec![tkt_id.clone()],
+            2,
+            row_bytes,
+            work,
+        )
+        .await?;
+        let gest_id = creation.typed_values().remove(0);
+        let (own, other) = match creation.record {
+            IssueRecord::Task(_) => (&TASK, &PROJECT),
+            IssueRecord::Project(_) => (&PROJECT, &TASK),
+        };
+        let typed = bounded_rows(
+            self,
+            own.typed_one,
+            vec![gest_id.clone()],
+            2,
+            row_bytes,
+            work,
+        )
+        .await?;
+        let others = bounded_rows(self, other.typed_one, vec![gest_id], 1, row_bytes, work).await?;
+        if *ticket != expected_ticket
+            || changes != vec![expected_change]
+            || typed != vec![typed_row(&creation)]
+            || !others.is_empty()
+        {
+            return Err(differs());
+        }
+        for _ in 0..3 {
+            work.count_comparison();
+        }
+        if let IssueRecord::Task(_) = creation.record {
+            let project = creation
+                .typed_values()
+                .get(1)
+                .cloned()
+                .unwrap_or(Value::Null);
+            let held = bounded_rows(
+                self,
+                "SELECT count(*) FROM g_gest_projects WHERE scope_key='combined' AND id=?1",
+                vec![project],
+                1,
+                64,
+                work,
+            )
+            .await?;
+            if held != vec![vec![Value::Integer(1)]] {
+                return Err(StorageError::state(NO_PROJECT));
+            }
+        }
+        Ok(issue.ticket)
+    }
 }
 
 impl LocalOwnerRepository {
     /// Store one private task or project creation artifact in one transaction.
     ///
-    /// The call runs the full admission of [`Self::open`], writes the native rows of a
-    /// private Fossil ticket and one typed row, runs the full admission again, and
-    /// then commits. A later [`Self::open`] admits the stored ticket.
+    /// The call runs the checks of each command. It parses the artifact and checks that
+    /// it is one canonical creation. It checks that no row holds its ticket ID, tag,
+    /// artifact or Gest ID, and that the project of a task exists and is not archived.
+    /// It then writes the native rows of a private Fossil ticket and one typed row,
+    /// runs the checks of each command again, and commits. Each check uses an index,
+    /// so the cost of the call does not grow with the repository.
     /// # Arguments
     /// * `request` - The creation artifact and the requested scope.
     /// * `limits` - Finite content, parser and SQL ceilings for the whole call.
     /// # Returns
     /// The stored ticket ID, native name and record.
     /// # Errors
-    /// Refuses a shared scope, stale or failed admission and an artifact that is not one
-    /// canonical creation. Also refuses a `[` in a J value, a ticket ID, tag, artifact
-    /// or Gest ID that a row already holds, exhausted ceilings and SQL failures. The
-    /// refusal writes nothing.
+    /// Refuses a shared scope, the refusals of the checks of each command and an
+    /// artifact that is not one canonical creation. Also refuses a `[` in a J value, a
+    /// ticket ID, tag, artifact or Gest ID that a row already holds, a task whose project
+    /// is missing or archived, exhausted ceilings and SQL failures. The refusal writes
+    /// nothing.
     /// # Examples
     /// ```no_run
     /// use gossil::storage::{IssueLimits, IssueTicket, LocalOwnerRepository, PathScope,
@@ -698,8 +873,8 @@ impl LocalOwnerRepository {
     ///
     /// `issue init` makes this write. The call writes the rows of
     /// [`Self::create_private_issue`], one `g_project_binding` row with the root of the
-    /// checkout, and one `g_checkout_project` row. It runs the full admission of
-    /// [`Self::open`] before and after the write, and then commits.
+    /// checkout, and one `g_checkout_project` row. It runs the checks of each command
+    /// before and after the write, and then commits.
     /// # Arguments
     /// * `request` - The project creation artifact and the checkout ID.
     /// * `limits` - Finite content, parser and SQL ceilings for the whole call.
@@ -729,7 +904,7 @@ impl LocalOwnerRepository {
             .await
     }
 
-    /// Return the Gest ID of the project bound to a checkout, after the full admission of [`Self::open`].
+    /// Return the Gest ID of the project bound to a checkout, after the checks of each command.
     ///
     /// It changes nothing.
     /// # Arguments
@@ -739,7 +914,8 @@ impl LocalOwnerRepository {
     /// # Returns
     /// The Gest ID of the bound project, or `None` when the checkout has no binding.
     /// # Errors
-    /// Refuses stale or failed admission, exhausted ceilings and SQL failures.
+    /// Fails with the refusals of the checks of each command, exhausted ceilings and
+    /// SQL failures.
     /// # Examples
     /// ```no_run
     /// use gossil::storage::{IssueLimits, LocalOwnerRepository, StorageError};
@@ -754,18 +930,13 @@ impl LocalOwnerRepository {
         limits: IssueLimits,
     ) -> Result<Option<String>, StorageError> {
         let mut budget = Budget::new(limits.admission.content)?;
-        let mut parse = ParseWork::new(limits.admission.parser)?;
+        ParseWork::new(limits.admission.parser)?;
         let mut tx = self.store.begin_write().await?;
         let result = async {
-            tx.check_admission_budgeted(&self.principal, &self.admission, &mut budget)
+            tx.check_admission_budgeted(&self.principal, &mut budget)
                 .await?;
-            tx.validate_recording_repository(
-                &self.principal,
-                limits.admission,
-                &mut budget,
-                &mut parse,
-            )
-            .await?;
+            tx.check_recording_state(&self.principal, limits.admission, &mut budget)
+                .await?;
             let rows = bounded_rows(
                 &mut tx,
                 "SELECT project_id FROM g_checkout_project WHERE checkout_id=?1",
@@ -805,11 +976,9 @@ impl LocalOwnerRepository {
             bytes: limits.sql_bytes,
         };
         let mut tx = self.store.begin_write().await?;
-        let mut admitted = false;
         let result = async {
-            tx.check_admission_budgeted(&self.principal, &self.admission, &mut budget).await?;
-            admitted = true;
-            tx.validate_recording_repository(&self.principal, limits.admission, &mut budget, &mut parse).await?;
+            tx.check_admission_budgeted(&self.principal, &mut budget).await?;
+            tx.check_recording_state(&self.principal, limits.admission, &mut budget).await?;
             let creation = derive_creation(&mut tx, bytes, &mut parse, &mut budget).await?;
             if let Some(checkout) = checkout {
                 let free = tx.query_bound_work("SELECT (SELECT count(*) FROM g_checkout WHERE checkout_id=?1),(SELECT count(*) FROM g_checkout_project),(SELECT count(*) FROM g_gest_projects)", vec![Value::Text(checkout.into())], 3, &mut sql, &mut budget).await?;
@@ -824,6 +993,13 @@ impl LocalOwnerRepository {
             let held = tx.query_bound_work(HELD, vec![k(), Value::Text(tag.clone()), Value::Text(name.clone()), gest_id], 1, &mut sql, &mut budget).await?;
             if held != vec![vec![Value::Integer(0)]] {
                 return Err(StorageError::state(UNSUPPORTED));
+            }
+            if let IssueRecord::Task(_) = creation.record {
+                let project = creation.typed_values().remove(1);
+                let open = tx.query_bound_work(OPEN_PROJECT, vec![project], 1, &mut sql, &mut budget).await?;
+                if open != vec![vec![Value::Integer(1)]] {
+                    return Err(StorageError::state(TASK_PROJECT));
+                }
             }
             tx.execute_bound("INSERT INTO rcvfrom(uid,mtime,nonce,ipaddr) VALUES(0,julianday('now'),NULL,NULL)", vec![]).await?;
             issue_boundary(IssuePhase::Receipt)?;
@@ -848,44 +1024,30 @@ impl LocalOwnerRepository {
                 tx.execute_bound("INSERT INTO g_checkout_project(checkout_id,project_id) VALUES(?1,?2)", project).await?;
                 issue_boundary(IssuePhase::Binding)?;
             }
-            tx.validate_recording_repository(&self.principal, limits.admission, &mut budget, &mut parse).await?;
-            let proof = tx.capture_admission_budgeted(&mut budget).await?;
+            tx.check_recording_state(&self.principal, limits.admission, &mut budget).await?;
             issue_boundary(IssuePhase::Admission)?;
-            Ok((IssueTicket { ticket_id: creation.ticket_id, native_name: name, record: creation.record }, proof))
+            Ok(IssueTicket { ticket_id: creation.ticket_id, native_name: name, record: creation.record })
         }
         .await;
         let result = tx.record(result);
-        let termination = tx.commit().await;
-        match termination.and(result) {
-            Ok((ticket, proof)) => {
-                self.admission = proof;
-                Ok(ticket)
-            }
-            Err(error) => {
-                // A rolled-back insert still counts in the connection's change counter. The
-                // admitted state is unchanged after the rollback, so keep the owner usable.
-                if admitted && let Some(connection) = &self.store.connection {
-                    self.admission.total_changes = connection.total_changes();
-                }
-                Err(error)
-            }
-        }
+        tx.commit().await.and(result)
     }
 
-    /// List every private task and project ticket after the full admission of [`Self::open`].
+    /// List every private task and project from its typed row.
     ///
-    /// Admission derives every stored ticket again from its artifact and checks every
-    /// row. The call then replays the issues once more, with the same ledgers and the
-    /// same queries, and returns them. It changes nothing and reads no other rows.
+    /// The call runs the checks of each command, and then reads each `combined` typed
+    /// row with its ticket ID and artifact name. It replays no artifact and changes
+    /// nothing. Its cost grows with the number of issues, and not with the rest of the
+    /// repository. `gos v verify` compares the typed rows with the artifacts.
     /// # Arguments
-    /// * `limits` - Finite content and parser ceilings for the whole call. Both passes
-    ///   charge the same ledgers, so the ceilings must cover each issue artifact twice.
-    ///   The call does not use the SQL ceilings.
+    /// * `limits` - The content ceilings, the SQL row ceiling for the number of
+    ///   issues, and the parser input ceiling for the width of one row.
     /// # Returns
     /// Each task and project, in the order of the receipts that stored them. The list is
     /// empty when the repository holds no issue.
     /// # Errors
-    /// Refuses stale or failed admission, exhausted ceilings and SQL failures.
+    /// Fails with the refusals of the checks of each command, a typed row that holds
+    /// no valid task or project, exhausted ceilings and SQL failures.
     /// # Examples
     /// ```no_run
     /// use gossil::storage::{IssueLimits, IssueTicket, LocalOwnerRepository, StorageError};
@@ -899,22 +1061,14 @@ impl LocalOwnerRepository {
         limits: IssueLimits,
     ) -> Result<Vec<IssueTicket>, StorageError> {
         let mut budget = Budget::new(limits.admission.content)?;
-        let mut parse = ParseWork::new(limits.admission.parser)?;
+        ParseWork::new(limits.admission.parser)?;
         let mut tx = self.store.begin_write().await?;
         let result = async {
-            tx.check_admission_budgeted(&self.principal, &self.admission, &mut budget)
+            tx.check_admission_budgeted(&self.principal, &mut budget)
                 .await?;
-            tx.validate_recording_repository(
-                &self.principal,
-                limits.admission,
-                &mut budget,
-                &mut parse,
-            )
-            .await?;
-            let issues = tx
-                .admit_issues(&self.principal, limits.admission, &mut budget, &mut parse)
+            tx.check_recording_state(&self.principal, limits.admission, &mut budget)
                 .await?;
-            Ok(issues.into_iter().map(|issue| issue.ticket).collect())
+            tx.read_typed_issues(limits, &mut budget).await
         }
         .await;
         let result = tx.record(result);
@@ -922,10 +1076,10 @@ impl LocalOwnerRepository {
         result
     }
 
-    /// Read one private issue ticket after the full admission of [`Self::open`].
+    /// Read one private issue ticket after the checks of each command.
     ///
-    /// Admission derives every stored ticket again from its artifact and checks every
-    /// row. The call then returns the ticket that the ticket ID names. It changes nothing.
+    /// The call reads the artifact that the `tkt-` tag of the ticket ID names, derives
+    /// the ticket again from it, and returns it. It compares no row and changes nothing.
     /// # Arguments
     /// * `ticket_id` - The K card of the ticket.
     /// * `limits` - Finite content and parser ceilings for the whole call. The SQL
@@ -933,8 +1087,8 @@ impl LocalOwnerRepository {
     /// # Returns
     /// The ticket ID, native name and record that the artifact carries.
     /// # Errors
-    /// Refuses an unknown ticket ID, stale or failed admission, exhausted ceilings and
-    /// SQL failures.
+    /// Refuses an unknown ticket ID, the refusals of the checks of each command,
+    /// exhausted ceilings and SQL failures.
     /// # Examples
     /// ```no_run
     /// use gossil::storage::{IssueLimits, IssueTicket, LocalOwnerRepository, StorageError};
@@ -952,8 +1106,8 @@ impl LocalOwnerRepository {
         let mut parse = ParseWork::new(limits.admission.parser)?;
         let mut tx = self.store.begin_write().await?;
         let result = async {
-            tx.check_admission_budgeted(&self.principal, &self.admission, &mut budget).await?;
-            tx.validate_recording_repository(&self.principal, limits.admission, &mut budget, &mut parse).await?;
+            tx.check_admission_budgeted(&self.principal, &mut budget).await?;
+            tx.check_recording_state(&self.principal, limits.admission, &mut budget).await?;
             let found = bounded_rows(&mut tx, "SELECT b.uuid FROM tag t JOIN tagxref x ON x.tagid=t.tagid JOIN blob b ON b.rid=x.rid WHERE t.tagname=?1", vec![Value::Text(format!("tkt-{ticket_id}"))], 1, 128, &mut budget).await?;
             let Some(Value::Text(name)) = found.first().and_then(|row| row.first()) else {
                 return Err(StorageError::state("issue ticket not found"));
@@ -967,6 +1121,107 @@ impl LocalOwnerRepository {
         tx.rollback().await?;
         result
     }
+}
+
+/// Build the admitted issue of one creation, with the `event` and `tagxref` rows that it gives.
+/// # Arguments
+/// * `rid` - The RID of the artifact.
+/// * `receipt` - The receive record that the artifact owns.
+/// * `hash` - The full native name of the artifact.
+/// * `tagid` - The ID of the `tkt-K` tag.
+/// * `tag` - The name of the `tkt-K` tag.
+/// * `creation` - The derived creation.
+/// # Returns
+/// The issue with its expected native rows and its ticket.
+fn admitted(
+    rid: i64,
+    receipt: i64,
+    hash: &str,
+    tagid: i64,
+    tag: &str,
+    creation: &Creation,
+) -> AdmittedIssue {
+    let (comment, brief) = creation.event_text();
+    let (rid_value, mtime, null) = (Value::Integer(rid), creation.mtime.clone(), Value::Null);
+    AdmittedIssue {
+        rid,
+        receipt,
+        hash: hash.into(),
+        tagid,
+        tag: tag.into(),
+        event: vec![
+            Value::Text("t".into()),
+            mtime.clone(),
+            rid_value.clone(),
+            Value::Integer(tagid),
+            null.clone(),
+            null.clone(),
+            null.clone(),
+            Value::Text(creation.user.clone()),
+            null.clone(),
+            Value::Text(comment),
+            Value::Text(brief),
+            null.clone(),
+        ],
+        tagxref: vec![
+            Value::Integer(tagid),
+            Value::Integer(1),
+            rid_value.clone(),
+            rid_value.clone(),
+            null,
+            mtime,
+            rid_value,
+        ],
+        ticket: IssueTicket {
+            ticket_id: creation.ticket_id.clone(),
+            native_name: hash.into(),
+            record: creation.record.clone(),
+        },
+    }
+}
+
+/// Build the `ticket` and `ticketchng` rows that one creation gives.
+/// # Arguments
+/// * `ticket_columns` - The `ticket` column names, in column order.
+/// * `change_columns` - The `ticketchng` column names, in column order.
+/// * `creation` - The derived creation.
+/// * `rid` - The RID of the artifact.
+/// * `tkt_id` - The `tkt_id` of the ticket row.
+/// # Returns
+/// The expected `ticket` row and `ticketchng` row.
+fn native_rows(
+    ticket_columns: &[String],
+    change_columns: &[String],
+    creation: &Creation,
+    rid: i64,
+    tkt_id: &Value,
+) -> (Vec<Value>, Vec<Value>) {
+    let ticket = expected_row(ticket_columns, creation, |column| match column {
+        "tkt_id" => Some(tkt_id.clone()),
+        "tkt_uuid" => Some(Value::Text(creation.ticket_id.clone())),
+        "tkt_mtime" | "tkt_ctime" => Some(creation.mtime.clone()),
+        _ => None,
+    });
+    let change = expected_row(change_columns, creation, |column| match column {
+        "tkt_id" => Some(tkt_id.clone()),
+        "tkt_rid" => Some(Value::Integer(rid)),
+        "tkt_mtime" => Some(creation.mtime.clone()),
+        "tkt_user" => Some(Value::Text(creation.user.clone())),
+        _ => None,
+    });
+    (ticket, change)
+}
+
+/// Build the typed row that one creation gives, `scope_key` first.
+/// # Arguments
+/// * `creation` - The derived creation.
+/// # Returns
+/// The row in table column order.
+fn typed_row(creation: &Creation) -> Vec<Value> {
+    [Value::Text(SCOPE.into())]
+        .into_iter()
+        .chain(creation.typed_values())
+        .collect()
 }
 
 /// Read the column names of one native table, in column order.

@@ -1,10 +1,10 @@
 //! Run the issue demo of `docs/issues.md` end to end on the real executables.
 //!
 //! The demo makes a repository and a checkout, records a file, makes the Gest project,
-//! creates three tasks, lists and shows them, and records a second file after the tasks.
-//! Every step runs `gos`, and no step calls the library. An ignored test, the oracle,
-//! then checks the demo repository with stock Fossil 2.29 and runs `fossil rebuild` on
-//! a copy of it.
+//! creates three tasks, lists and shows them, records a second file after the tasks and
+//! runs `gos v verify`. Every step runs `gos`, and no step calls the library. An
+//! ignored test, the oracle, then checks the demo repository with stock Fossil 2.29 and
+//! runs `fossil rebuild` on a copy of it.
 //!
 //! ## Recommendations
 //! Run the oracle with `just issue-demo`, which names the pinned Fossil reference.
@@ -457,6 +457,29 @@ fn demo() -> Demo {
     // The tasks are unchanged after the check-in.
     assert_eq!(ok(home, &["i", "task", "list", "--all"]), all);
 
+    // The full proof counts the two private check-ins and the project and three tasks.
+    let repo_arg = repo.to_str().unwrap();
+    assert_eq!(
+        ok(home, &["v", "verify", "--repository", repo_arg]),
+        "verified: 2 check-ins, 4 issues, 15 tables compared\n"
+    );
+    let done_id = ids[1];
+    let others: Vec<&str> = ids.iter().copied().filter(|id| *id != done_id).collect();
+    assert_eq!(
+        ok(
+            home,
+            &[
+                "v",
+                "verify",
+                "--repository",
+                repo_arg,
+                "--issue",
+                unique_prefix(done_id, &others),
+            ],
+        ),
+        format!("verified issue {done_id}: ticket {}\n", tickets[1])
+    );
+
     Demo {
         home: temp,
         checkins: [second, first],
@@ -496,8 +519,8 @@ fn fossil(fossil: &OsStr, home: &Path, args: &[&OsStr]) -> String {
     String::from_utf8(output.stdout).unwrap()
 }
 
-/// Stock Fossil reads the demo repository, and Gossil refuses a copy that `fossil
-/// rebuild` changed, because the rebuild drops every `g_` table.
+/// Stock Fossil reads the demo repository. After `fossil rebuild` drops every `g_` table
+/// of a copy, `gos v open` and `gos v verify` refuse the copy with status 78.
 #[test]
 #[ignore = "needs the pinned Fossil reference in GOSSIL_FOSSIL_REFERENCE; run just issue-demo"]
 fn stock_fossil_reads_the_demo_repository() {
@@ -661,13 +684,20 @@ fn stock_fossil_reads_the_demo_repository() {
             other.to_str().unwrap(),
         ],
     );
-    assert_eq!(refused.status.code(), Some(1));
+    let lost = "this repository has lost its Gossil tables (was `fossil rebuild` run on it?); \
+                restore it from a backup\n";
+    assert_eq!(refused.status.code(), Some(78));
     assert!(refused.stdout.is_empty());
-    assert_eq!(
-        String::from_utf8(refused.stderr).unwrap(),
-        "SQLite failure: `no such table: g_storage`\n"
-    );
+    assert_eq!(String::from_utf8(refused.stderr).unwrap(), lost);
     assert_eq!(std::fs::read_dir(&other).unwrap().count(), 0);
+    let verified = gos_in(
+        home,
+        &other,
+        &["v", "verify", "--repository", copy.to_str().unwrap()],
+    );
+    assert_eq!(verified.status.code(), Some(78));
+    assert!(verified.stdout.is_empty());
+    assert_eq!(String::from_utf8(verified.stderr).unwrap(), lost);
     assert_eq!(std::fs::read(&copy).unwrap(), copied);
     // The demo repository itself still works.
     assert_eq!(ok(home, &["i", "task", "list", "--all"]).lines().count(), 3);

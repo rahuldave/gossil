@@ -51,6 +51,54 @@ pub(super) struct RecordedHistory {
     pub(super) branch: String,
 }
 
+/// Name how much of the private chain [`WriteTransaction::walk_recorded_history`] reads.
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub(super) enum Reach {
+    /// Every check-in and the content of each of its files, for the full proof.
+    Proof,
+    /// Every check-in manifest, for the timeline. The walk reads no file content,
+    /// and each check-in has an empty file list.
+    Manifests,
+    /// The selected check-in and its parent, with the content of their files, for a
+    /// commit.
+    Parent,
+}
+
+/// Hold what one walk of the private chain read.
+pub(super) struct Walk {
+    /// The shared root.
+    pub(super) shared: RecordedCommit,
+    /// The U and C cards of the shared root, when it has them.
+    pub(super) shared_cards: (Option<Vec<u8>>, Option<Vec<u8>>),
+    /// The private branch derived from the server code.
+    pub(super) branch: String,
+    /// The ID of the sole checkout.
+    pub(super) checkout_id: String,
+    /// The generation of the checkout.
+    pub(super) generation: i64,
+    /// The pending version of the checkout.
+    pub(super) pending: i64,
+    /// Each check-in read, oldest first, with its bytes and its parsed manifest.
+    pub(super) commits: Vec<(RecordedCommit, Vec<u8>, crate::artifact::ParsedArtifact)>,
+}
+
+impl Walk {
+    /// Keep the check-ins of the walk as a history.
+    /// # Returns
+    /// The shared root, the check-ins read, oldest first, and the branch.
+    pub(super) fn history(self) -> RecordedHistory {
+        RecordedHistory {
+            shared: self.shared,
+            commits: self
+                .commits
+                .into_iter()
+                .map(|(commit, _, _)| commit)
+                .collect(),
+            branch: self.branch,
+        }
+    }
+}
+
 /// Describe a newly inserted private manifest and its complete captured file tree.
 pub(super) struct ProjectionInput<'a> {
     /// Native identity of the newly inserted manifest.
@@ -72,6 +120,119 @@ impl RecordedHistory {
     pub(super) fn current_files(&self) -> &[RecordedFile] {
         self.commits.last().unwrap_or(&self.shared).files.as_slice()
     }
+}
+
+/// Check one recorded check-in against its parent, as replay writes it.
+///
+/// The check-in must take a later receipt and a later date than its parent, must
+/// change a file, must keep every file of its parent, and must be the canonical
+/// manifest of its own parents, files, user, comment, date and branch. The full
+/// proof checks each check-in this way, and a commit checks its parent.
+/// # Arguments
+/// * `first` - True when the parent is the shared root.
+/// * `read` - The check-in, its bytes and its parsed manifest.
+/// * `previous` - The parent, or the shared root.
+/// * `shared` - The shared root.
+/// * `branch` - The private branch.
+/// * `work` - The ledger of the operation.
+/// * `width` - The largest manifest that the build may make.
+/// # Returns
+/// Success when the check-in is the one that replay would write.
+/// # Errors
+/// Refuses each difference, exhausted work and a manifest that cannot be built.
+pub(super) fn check_recorded_commit(
+    first: bool,
+    read: (&RecordedCommit, &[u8], &crate::artifact::ParsedArtifact),
+    previous: &RecordedCommit,
+    shared: &RecordedCommit,
+    branch: &str,
+    work: &mut Budget,
+    width: usize,
+) -> Result<(), StorageError> {
+    let (commit, bytes, artifact) = read;
+    // Issue receipts may fall between check-ins, so the chain only increases.
+    let previous_receipt = previous.receipt;
+    if commit.receipt <= previous_receipt {
+        return Err(StorageError::state("recording exact receipt sequence"));
+    }
+    work.charge_decoded(
+        bytes
+            .len()
+            .checked_mul(4)
+            .and_then(|n| n.checked_add(commit.files.len().checked_mul(512)?))
+            .ok_or_else(|| StorageError::state("recording projection capacity overflow"))?,
+    )?;
+    if !commit.julian.is_finite()
+        || commit.julian <= previous.julian
+        || commit.julian <= shared.julian
+    {
+        return Err(StorageError::state("recording SQL parent date ordering"));
+    }
+    if commit.files.len() == previous.files.len()
+        && commit
+            .files
+            .iter()
+            .zip(&previous.files)
+            .all(|(a, b)| a.path == b.path && a.hash == b.hash && a.mode == b.mode)
+    {
+        return Err(StorageError::state(
+            "recording unchanged historical commit unsupported",
+        ));
+    }
+    // No deletion or rename authority exists in this family.
+    if previous
+        .files
+        .iter()
+        .any(|old| !commit.files.iter().any(|new| new.path == old.path))
+    {
+        return Err(StorageError::state("recording deletion unsupported"));
+    }
+    let shared = ManifestParent {
+        hash: &shared.hash,
+        date: &shared.date,
+    };
+    let parents = if first {
+        PrivateParents::First { shared }
+    } else {
+        PrivateParents::Later {
+            previous: ManifestParent {
+                hash: &previous.hash,
+                date: &previous.date,
+            },
+            shared,
+        }
+    };
+    let files: Vec<_> = commit
+        .files
+        .iter()
+        .map(|f| ManifestFile {
+            path: &f.path,
+            hash: &f.hash,
+            mode: f.mode,
+        })
+        .collect();
+    let actor = artifact
+        .user()
+        .ok_or_else(|| StorageError::state("recording actor missing"))?;
+    let comment = artifact
+        .comment()
+        .ok_or_else(|| StorageError::state("recording comment missing"))?;
+    let canonical = build_private_manifest(
+        &PrivateManifestSpec {
+            parents,
+            files: &files,
+            actor: &actor.bytes,
+            comment: &comment.bytes,
+            date: &commit.date,
+            branch,
+        },
+        work,
+        width,
+    )?;
+    if canonical != bytes {
+        return Err(StorageError::state("recording noncanonical full manifest"));
+    }
+    Ok(())
 }
 
 /// Decode one exact signed integer scalar without coercion.
@@ -116,9 +277,31 @@ fn charge_values(values: &[Value], work: &mut Budget) -> Result<(), StorageError
     work.charge_decoded(size)
 }
 
-/// Read a finite SQL set after complete family text preflight.
+/// Charge the TEXT and BLOB bytes that one bounded result retains.
 /// # Arguments
-/// * `tx` - Reserved transaction with the complete text preflight already performed.
+/// * `rows` - The validated provider result.
+/// * `work` - Borrowed whole-operation ledger.
+/// # Returns
+/// Success after charging the exact retained variable-width bytes.
+/// # Errors
+/// Refuses arithmetic overflow and exhausted work.
+fn charge_retained_text(rows: &[Vec<Value>], work: &mut Budget) -> Result<(), StorageError> {
+    let mut size = 0usize;
+    for value in rows.iter().flatten() {
+        size = size
+            .checked_add(match value {
+                Value::Text(s) => s.len(),
+                Value::Blob(b) => b.len(),
+                _ => 0,
+            })
+            .ok_or_else(|| StorageError::state("recording SQL size overflow"))?;
+    }
+    work.charge_decoded(size)
+}
+
+/// Read a finite SQL set, and charge it to the ledger of the operation.
+/// # Arguments
+/// * `tx` - The transaction of the operation.
 /// * `sql` - Private fixed SELECT statement; no caller SQL is accepted.
 /// * `args` - Exact bound values, charged before provider binding.
 /// * `count` - Maximum complete result cardinality.
@@ -128,8 +311,10 @@ fn charge_values(values: &[Value], work: &mut Budget) -> Result<(), StorageError
 /// Complete exact rows, never a truncated accepted set.
 /// # Errors
 /// Rejects invalid ceilings, excessive count or row width, budget and SQL failures.
-/// Count and conservative result capacity are charged before provider materialization;
-/// family preflight bounds every TEXT/BLOB field before this helper is called.
+/// The row count and a fixed capacity per row are charged before the rows are read.
+/// The exact TEXT/BLOB bytes of the result are charged after it, and a row wider
+/// than `row_bytes` is refused then. So the cost of a call depends on the rows that it
+/// reads, not on the size of the repository.
 pub(super) async fn bounded_rows(
     tx: &mut WriteTransaction<'_>,
     sql: &str,
@@ -153,44 +338,21 @@ pub(super) async fn bounded_rows(
     if n < 0 || n as u64 > count as u64 {
         return Err(StorageError::state("recording SQL count limit"));
     }
-    // Bound repeated provider retention BEFORE materialization using the complete
-    // raw text inventory, rather than charging max_manifest_bytes for every tiny
-    // scalar cell. BLOB payload reads belong to the content boundary. Each listed
-    // variable-width field is also covered by enclosing family/root preflight.
-    let text_sql = concat!(
-        "SELECT coalesce(sum(n),0) FROM (",
-        "SELECT coalesce(sum(length(CAST(uuid AS BLOB))),0) n FROM blob UNION ALL ",
-        "SELECT coalesce(sum(length(CAST(type AS BLOB))+coalesce(length(CAST(user AS BLOB)),0)+coalesce(length(CAST(comment AS BLOB)),0)+coalesce(length(CAST(euser AS BLOB)),0)+coalesce(length(CAST(ecomment AS BLOB)),0)+coalesce(length(CAST(bgcolor AS BLOB)),0)+coalesce(length(CAST(brief AS BLOB)),0)),0) FROM event UNION ALL ",
-        "SELECT coalesce(sum(length(CAST(name AS BLOB))),0) FROM filename UNION ALL ",
-        "SELECT coalesce(sum(length(CAST(tagname AS BLOB))),0) FROM tag UNION ALL ",
-        "SELECT coalesce(sum(length(CAST(value AS BLOB))),0) FROM tagxref UNION ALL ",
-        "SELECT coalesce(sum(length(CAST(checkout_id AS BLOB))+length(CAST(pathname AS BLOB))),0) FROM g_vfile UNION ALL ",
-        "SELECT coalesce(sum(length(CAST(checkout_id AS BLOB))+length(CAST(path AS BLOB))+length(CAST(scope AS BLOB))),0) FROM g_path_scope UNION ALL ",
-        "SELECT coalesce(sum(coalesce(length(CAST(uid AS BLOB)),0)+coalesce(length(CAST(mtime AS BLOB)),0)+coalesce(length(CAST(nonce AS BLOB)),0)+coalesce(length(CAST(ipaddr AS BLOB)),0)),0) FROM rcvfrom UNION ALL ",
-        "SELECT coalesce(sum(length(CAST(checkout_id AS BLOB))+length(CAST(name AS BLOB))+coalesce(length(CAST(value AS BLOB)),0)),0) FROM g_vvar UNION ALL ",
-        "SELECT coalesce(sum(length(CAST(name AS BLOB))+coalesce(length(CAST(value AS BLOB)),0)),0) FROM config UNION ALL ",
-        "SELECT coalesce(sum(length(CAST(checkout_id AS BLOB))+length(CAST(root AS BLOB))+length(CAST(shared_head AS BLOB))+coalesce(length(CAST(combined_head AS BLOB)),0)+length(CAST(availability AS BLOB))),0) FROM g_checkout UNION ALL ",
-        "SELECT coalesce(sum(length(CAST(checkout_id AS BLOB))+length(CAST(owner_id AS BLOB))+length(CAST(root_device AS BLOB))+length(CAST(root_inode AS BLOB))),0) FROM g_checkout_owner)"
-    );
-    work.charge_decoded(text_sql.len() + 64)?;
-    let text = scalar_i64(&tx.query_bound(text_sql, vec![]).await?)?;
-    let text =
-        usize::try_from(text).map_err(|_| StorageError::state("recording SQL text capacity"))?;
-    let capacity = text
-        .checked_mul(2)
-        .and_then(|v| v.checked_add((n as usize).checked_mul(512)?))
+    let capacity = (n as usize)
+        .checked_mul(512)
         .and_then(|v| v.checked_add(128))
         .ok_or_else(|| StorageError::state("recording SQL allocation overflow"))?;
     work.charge_decoded(capacity)?;
     charge_values(&args, work)?;
     let rows = tx.query_bound(sql, args).await?;
     validate_retained_rows(&rows, n as usize, row_bytes)?;
+    charge_retained_text(&rows, work)?;
     Ok(rows)
 }
 
-/// Read exactly one native integer through the same bounded SQL preflight.
+/// Read exactly one native integer through [`bounded_rows`].
 /// # Arguments
-/// * `tx` - Reserved transaction after complete family text preflight.
+/// * `tx` - The transaction of the operation.
 /// * `sql` - Private fixed SELECT requiring exactly one integer result.
 /// * `args` - Exact bound values, charged by the bounded row reader.
 /// * `work` - Borrowed whole-operation ledger.
@@ -771,27 +933,36 @@ impl WriteTransaction<'_> {
         Ok((rid, receipt, bytes))
     }
 
-    /// Validate exactly the initialized-plus-private-recording family.
+    /// Walk the private chain from the selected check-in back to the shared root.
+    ///
+    /// The walk reads and parses the shared root and each manifest that `reach` names,
+    /// and checks that each manifest pairs its parent with the shared root. With
+    /// [`Reach::Proof`] and [`Reach::Manifests`] it reads the whole chain and checks its
+    /// length against the generation of the checkout. With [`Reach::Parent`] it reads
+    /// only the selected check-in and its parent, so the cost does not grow with the
+    /// history.
     /// # Arguments
     /// * `principal` - Owner authenticated by the enclosing catalog6 admission.
     /// * `shared_hash` - Immutable empty public S authenticated by that admission.
     /// * `limits` - Whole-operation content/parser ceilings.
     /// * `work` - Caller-owned cumulative content/SQL/hash allowance.
     /// * `parse` - Caller-owned cumulative parser compartments.
+    /// * `reach` - How much of the chain to read.
     /// # Returns
-    /// Private immutable chain facts after complete projection/provenance validation.
+    /// The shared root, the branch, the checkout facts and the manifests read, oldest
+    /// first.
     /// # Errors
-    /// Rejects every unsupported history, foreign row, stale receipt, malformed
-    /// projection, tracking/scope mismatch, exhausted bound and native SQL failure.
-    pub(super) async fn validate_recorded_history(
+    /// Rejects a malformed manifest or parent, a cycle, a length that differs from the
+    /// generation, exhausted bounds and SQL failures.
+    pub(super) async fn walk_recorded_history(
         &mut self,
         principal: &Principal,
         shared_hash: &str,
         limits: AdmissionLimits,
         work: &mut Budget,
         parse: &mut ParseWork,
-    ) -> Result<RecordedHistory, StorageError> {
-        self.recording_preflight(limits, work).await?;
+        reach: Reach,
+    ) -> Result<Walk, StorageError> {
         let n = limits.parser.entries;
         let width = limits.parser.input_bytes;
         let identity = bounded_rows(
@@ -810,6 +981,10 @@ impl WriteTransaction<'_> {
         charge_manifest_retention(&sbytes, work)?;
         let root = parse_recording_budgeted(self, &sbytes, parse, work).await?;
         require_empty_shared_root(&root)?;
+        let shared_cards = (
+            root.user().map(|card| card.bytes.clone()),
+            root.comment().map(|card| card.bytes.clone()),
+        );
         let shared = RecordedCommit {
             rid: srid,
             hash: shared_hash.into(),
@@ -838,6 +1013,7 @@ impl WriteTransaction<'_> {
             generation,
             pending,
         } = checkout_facts(&checkout)?;
+        let (checkout_id, generation, pending) = (checkout_id.clone(), *generation, *pending);
         let mut reversed = Vec::new();
         let mut seen = BTreeSet::new();
         while let Some(hash) = cursor {
@@ -863,7 +1039,13 @@ impl WriteTransaction<'_> {
                 return Err(StorageError::state("recording exact paired parents"));
             }
             let mut files = Vec::new();
-            for file in artifact.files() {
+            // A timeline prints no file, so it reads no file content.
+            let file_cards = if reach == Reach::Manifests {
+                &[][..]
+            } else {
+                artifact.files()
+            };
+            for file in file_cards {
                 let path = std::str::from_utf8(&file.name().bytes)
                     .map_err(|e| StorageError::caused("recording file path UTF-8", e))?
                     .to_owned();
@@ -916,13 +1098,64 @@ impl WriteTransaction<'_> {
                 bytes,
                 artifact,
             ));
+            // A commit checks its parent against the grandparent, so it reads two.
+            if reach == Reach::Parent && reversed.len() == 2 {
+                break;
+            }
         }
         reversed.reverse();
-        if *generation as u64 != reversed.len() as u64
-            || (!reversed.is_empty() && *pending < *generation)
+        if reach != Reach::Parent
+            && (generation as u64 != reversed.len() as u64
+                || (!reversed.is_empty() && pending < generation))
         {
             return Err(StorageError::state("recording generation/history mismatch"));
         }
+        Ok(Walk {
+            shared,
+            shared_cards,
+            branch,
+            checkout_id,
+            generation,
+            pending,
+            commits: reversed,
+        })
+    }
+
+    /// Validate that the history is exactly an initialized repository and its private recordings.
+    /// # Arguments
+    /// * `principal` - Owner authenticated by the enclosing catalog6 admission.
+    /// * `shared_hash` - Immutable empty public S authenticated by that admission.
+    /// * `limits` - Whole-operation content/parser ceilings.
+    /// * `work` - Caller-owned cumulative content/SQL/hash allowance.
+    /// * `parse` - Caller-owned cumulative parser compartments.
+    /// # Returns
+    /// Private immutable chain facts after complete projection/provenance validation.
+    /// # Errors
+    /// Rejects every unsupported history, foreign row, stale receipt, malformed
+    /// projection, tracking/scope mismatch, exhausted bound and native SQL failure.
+    pub(super) async fn validate_recorded_history(
+        &mut self,
+        principal: &Principal,
+        shared_hash: &str,
+        limits: AdmissionLimits,
+        work: &mut Budget,
+        parse: &mut ParseWork,
+    ) -> Result<RecordedHistory, StorageError> {
+        self.recording_preflight(limits, work).await?;
+        let n = limits.parser.entries;
+        let width = limits.parser.input_bytes;
+        let Walk {
+            shared,
+            shared_cards: _,
+            branch,
+            checkout_id,
+            generation,
+            pending,
+            commits: reversed,
+        } = self
+            .walk_recorded_history(principal, shared_hash, limits, work, parse, Reach::Proof)
+            .await?;
+        let (checkout_id, generation, pending) = (&checkout_id, &generation, &pending);
         let issues = self.admit_issues(principal, limits, work, parse).await?;
         self.admit_project_binding(work).await?;
         let (branch_tag, tags) = assign_tags(
@@ -947,89 +1180,22 @@ impl WriteTransaction<'_> {
         );
         let mut unsent = BTreeSet::new();
         for (index, (commit, bytes, artifact)) in reversed.into_iter().enumerate() {
-            // Issue receipts may fall between check-ins, so the chain only increases.
-            let previous_receipt = history.commits.last().unwrap_or(&history.shared).receipt;
-            if commit.receipt <= previous_receipt {
-                return Err(StorageError::state("recording exact receipt sequence"));
-            }
-            work.charge_decoded(
-                bytes
-                    .len()
-                    .checked_mul(4)
-                    .and_then(|n| n.checked_add(commit.files.len().checked_mul(512)?))
-                    .ok_or_else(|| StorageError::state("recording projection capacity overflow"))?,
-            )?;
             let previous = history.commits.last().unwrap_or(&history.shared);
-            if !commit.julian.is_finite()
-                || commit.julian <= previous.julian
-                || commit.julian <= history.shared.julian
-            {
-                return Err(StorageError::state("recording SQL parent date ordering"));
-            }
-            if commit.files.len() == previous.files.len()
-                && commit
-                    .files
-                    .iter()
-                    .zip(&previous.files)
-                    .all(|(a, b)| a.path == b.path && a.hash == b.hash && a.mode == b.mode)
-            {
-                return Err(StorageError::state(
-                    "recording unchanged historical commit unsupported",
-                ));
-            }
-            // No deletion or rename authority exists in this family.
-            if previous
-                .files
-                .iter()
-                .any(|old| !commit.files.iter().any(|new| new.path == old.path))
-            {
-                return Err(StorageError::state("recording deletion unsupported"));
-            }
-            let shared = ManifestParent {
-                hash: &history.shared.hash,
-                date: &history.shared.date,
-            };
-            let parents = if index == 0 {
-                PrivateParents::First { shared }
-            } else {
-                PrivateParents::Later {
-                    previous: ManifestParent {
-                        hash: &previous.hash,
-                        date: &previous.date,
-                    },
-                    shared,
-                }
-            };
-            let files: Vec<_> = commit
-                .files
-                .iter()
-                .map(|f| ManifestFile {
-                    path: &f.path,
-                    hash: &f.hash,
-                    mode: f.mode,
-                })
-                .collect();
+            check_recorded_commit(
+                index == 0,
+                (&commit, &bytes, &artifact),
+                previous,
+                &history.shared,
+                &history.branch,
+                work,
+                width,
+            )?;
             let actor = artifact
                 .user()
                 .ok_or_else(|| StorageError::state("recording actor missing"))?;
             let comment = artifact
                 .comment()
                 .ok_or_else(|| StorageError::state("recording comment missing"))?;
-            let canonical = build_private_manifest(
-                &PrivateManifestSpec {
-                    parents,
-                    files: &files,
-                    actor: &actor.bytes,
-                    comment: &comment.bytes,
-                    date: &commit.date,
-                    branch: &history.branch,
-                },
-                work,
-                width,
-            )?;
-            if canonical != bytes {
-                return Err(StorageError::state("recording noncanonical full manifest"));
-            }
             expected_plink.push(vec![
                 Value::Integer(previous.rid),
                 Value::Integer(commit.rid),
@@ -1252,6 +1418,7 @@ impl WriteTransaction<'_> {
         if bounded_rows(self, sql, args, count.max(1), width, work).await? != expected {
             return Err(StorageError::state("recording native projection differs"));
         }
+        work.count_comparison();
         Ok(())
     }
 
@@ -1418,7 +1585,7 @@ impl WriteTransaction<'_> {
     /// # Errors
     /// Rejects unsupported scalar/null fields, missing tree entries, orphan scopes,
     /// aliases, foreign rows, duplicate IDs, pending paths and exhausted bounds.
-    async fn validate_recorded_tracking(
+    pub(super) async fn validate_recorded_tracking(
         &mut self,
         checkout: &str,
         selected: &RecordedCommit,
@@ -3163,5 +3330,186 @@ mod controls {
             before
         );
         tx.rollback().await.unwrap();
+    }
+
+    /// Emit the creation artifact of task `n`, with a 21-byte title.
+    /// # Arguments
+    /// * `n` - The number of the task, which spells its Gest ID and K card.
+    /// # Returns
+    /// The canonical artifact bytes.
+    /// # Panics
+    /// Panics if the fixture values are invalid.
+    fn small_task(n: u32) -> Vec<u8> {
+        let id: String = format!("{n:032x}")
+            .bytes()
+            .map(|b| {
+                char::from(if b.is_ascii_digit() {
+                    b'k' + b - b'0'
+                } else {
+                    b'u' + b - b'a'
+                })
+            })
+            .collect();
+        let task =
+            crate::gest_task_values::task_from_values(crate::gest_task_values::TaskValueInputs {
+                gest_id: serde_json::json!(id),
+                project_id: serde_json::json!("klmnopqrstuvwxyzklmnopqrstuvwxyz"),
+                title: serde_json::json!(format!("Small task {n:>10}")),
+                priority: serde_json::Value::Null,
+                status: serde_json::json!("open"),
+                description: serde_json::json!(""),
+                assigned_to: serde_json::Value::Null,
+                metadata: serde_json::json!({}),
+                resolved_at: serde_json::Value::Null,
+                created_at: serde_json::json!("2026-11-18T12:00:00Z"),
+                updated_at: serde_json::json!("2026-11-18T12:00:00Z"),
+            })
+            .unwrap();
+        let date = crate::native_date::NativeDate::parse(b"2026-11-18T12:00:00Z").unwrap();
+        crate::task_ticket::task_creation_bytes(
+            &task,
+            format!("{n:040x}").as_bytes(),
+            b"gest agent",
+            date,
+            65_536,
+        )
+        .unwrap()
+    }
+
+    /// Store the project of [`small_task`] through the writer.
+    /// # Arguments
+    /// * `owner` - The admitted owner.
+    /// * `limits` - The ceilings of the call.
+    /// # Panics
+    /// Panics if the write fails.
+    async fn small_project(owner: &mut LocalOwnerRepository, limits: crate::storage::IssueLimits) {
+        let project = crate::gest_project_values::project_from_values(
+            crate::gest_project_values::ProjectValueInputs {
+                gest_id: serde_json::json!("klmnopqrstuvwxyzklmnopqrstuvwxyz"),
+                archived_at: serde_json::Value::Null,
+                created_at: serde_json::json!("2026-11-18T12:00:00Z"),
+                updated_at: serde_json::json!("2026-11-18T12:00:00Z"),
+            },
+        )
+        .unwrap();
+        let date = crate::native_date::NativeDate::parse(b"2026-11-18T12:00:00Z").unwrap();
+        let artifact = crate::gest_ticket::project_creation_bytes(
+            &project,
+            b"ffffffffffffffffffffffffffffffffffffffff",
+            b"gest agent",
+            date,
+            65_536,
+        )
+        .unwrap();
+        owner
+            .create_private_issue(
+                crate::storage::PrivateIssueRequest {
+                    artifact: &artifact,
+                    scope: crate::storage::PathScope::Private,
+                },
+                limits,
+            )
+            .await
+            .unwrap();
+    }
+
+    #[tokio::test]
+    /// The checks that every command runs charge the same at 3, 6 and 12 issues.
+    ///
+    /// The checks read no row whose count grows with the history, so the charge of a
+    /// command depends only on what the command itself reads.
+    /// # Panics
+    /// Panics if a write or a check fails, or if the charge changes with the count.
+    async fn the_checks_of_each_command_do_not_grow_with_issues() {
+        let temp = tempfile::tempdir().unwrap();
+        let mut owner = initialized(&temp.path().join("repo")).await;
+        let limits = crate::storage::IssueLimits {
+            admission: bounds(),
+            sql_rows: 100_000,
+            sql_bytes: 64 << 20,
+        };
+        small_project(&mut owner, limits).await;
+        let mut used = Vec::new();
+        for n in 0..12 {
+            let artifact = small_task(n);
+            owner
+                .create_private_issue(
+                    crate::storage::PrivateIssueRequest {
+                        artifact: &artifact,
+                        scope: crate::storage::PathScope::Private,
+                    },
+                    limits,
+                )
+                .await
+                .unwrap();
+            if [3, 6, 12].contains(&(n + 1)) {
+                let mut work = Budget::new(bounds().content).unwrap();
+                let mut tx = owner.store.begin_write().await.unwrap();
+                tx.check_admission_budgeted(&owner.principal, &mut work)
+                    .await
+                    .unwrap();
+                tx.check_recording_state(&owner.principal, bounds(), &mut work)
+                    .await
+                    .unwrap();
+                tx.rollback().await.unwrap();
+                used.push(work.decoded());
+            }
+        }
+        assert!(used[0] > 0);
+        assert_eq!(used, vec![used[0]; 3]);
+    }
+
+    #[tokio::test]
+    /// Each content read checks the owner again, but charges the schema surfaces once per admission.
+    /// # Panics
+    /// Panics if a repeated check charges the schema again before a new admission.
+    async fn repeated_owner_checks_reserve_the_schema_once_per_admission() {
+        let temp = tempfile::tempdir().unwrap();
+        let mut owner = initialized(&temp.path().join("repo")).await;
+        let mut work = Budget::new(bounds().content).unwrap();
+        let mut tx = owner.store.begin_write().await.unwrap();
+        tx.validate_recording_principal_budgeted(&owner.principal, &mut work)
+            .await
+            .unwrap();
+        let once = work.decoded();
+        assert!(once > 0);
+        for _ in 0..3 {
+            tx.validate_recording_principal_budgeted(&owner.principal, &mut work)
+                .await
+                .unwrap();
+        }
+        assert_eq!(work.decoded(), once);
+        work.begin_admission();
+        tx.validate_recording_principal_budgeted(&owner.principal, &mut work)
+            .await
+            .unwrap();
+        assert_eq!(work.decoded(), 2 * once);
+        tx.rollback().await.unwrap();
+    }
+
+    #[test]
+    /// The retained charge counts TEXT and BLOB bytes exactly, and nothing for other values.
+    /// # Panics
+    /// Panics if the charge differs from the exact variable-width bytes.
+    fn retained_text_charges_exact_variable_width_bytes() {
+        let rows = vec![
+            vec![
+                Value::Text("abc".into()),
+                Value::Blob(vec![0, 1]),
+                Value::Integer(7),
+            ],
+            vec![Value::Null, Value::Real(1.5), Value::Text(String::new())],
+        ];
+        let mut work = Budget::new(bounds().content).unwrap();
+        charge_retained_text(&rows, &mut work).unwrap();
+        assert_eq!(work.decoded(), 5);
+        let exact = Limits {
+            max_total_decoded_bytes: 4,
+            ..bounds().content
+        };
+        refuses(
+            charge_retained_text(&rows, &mut Budget::new(exact).unwrap()),
+            "total decoded content limit",
+        );
     }
 }

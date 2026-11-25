@@ -7,6 +7,9 @@ use gossil::storage::{
     AdmissionLimits, InitializeOptions, Limits, LocalOwnerRepository, TrackingLimits,
 };
 use std::path::{Path, PathBuf};
+
+#[path = "support/proof.rs"]
+mod proof;
 /// Set explicit finite root and registration ceilings.
 fn limits() -> AdmissionLimits {
     AdmissionLimits {
@@ -272,7 +275,7 @@ async fn publication_counts(path: &Path) -> Vec<libsql::Value> {
 }
 
 #[tokio::test]
-/// Addition publishes native tracking only and exact reopen admission refuses fabricated row state.
+/// Addition publishes native tracking only, and the full proof refuses fabricated row state.
 /// # Panics
 /// Panics if add creates canonical history/staging or native scalar corruption is admitted.
 async fn add_creates_no_checkin_or_stage_and_reopen_checks_native_fields() {
@@ -299,7 +302,21 @@ async fn add_creates_no_checkin_or_stage_and_reopen_checks_native_fields() {
     c.execute("UPDATE g_vfile SET chnged=1", ()).await.unwrap();
     drop(c);
     drop(db);
-    assert!(LocalOwnerRepository::open(&path, limits()).await.is_err());
+    // Open admits the changed flag, and the full proof refuses it.
+    assert_eq!(
+        proof::verify_refusal(&path, limits()).await,
+        (true, "recording unsupported tracked state".to_owned())
+    );
+    // A repeated add of the same path reads only its own row and stays a no-op.
+    let mut owner = LocalOwnerRepository::open(&path, limits()).await.unwrap();
+    let view = owner.checkout_view("work", limits()).await.unwrap();
+    let files = proof::file_bytes(&path);
+    owner
+        .add_files("work", &["first"], &view, limits(), tracking())
+        .await
+        .unwrap();
+    drop(owner);
+    assert!(proof::file_bytes(&path) == files);
     assert_eq!(std::fs::read(root.join("first")).unwrap(), b"native bytes");
 }
 

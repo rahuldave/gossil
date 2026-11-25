@@ -74,6 +74,12 @@ const VCS_COMMANDS: &[VcsCommand] = &[
         own_help: true,
     },
     VcsCommand {
+        names: &["verify"],
+        usage: "Usage: gossil vcs verify --repository REPO [--issue ID]",
+        summary: "Replay every artifact and compare every table, changing nothing",
+        own_help: true,
+    },
+    VcsCommand {
         names: &["test-delta-create"],
         usage: "Usage: gossil vcs test-delta-create ORIGIN TARGET DELTA",
         summary: "Write the delta from ORIGIN to TARGET into DELTA",
@@ -101,10 +107,10 @@ const VCS_COMMANDS: &[VcsCommand] = &[
 
 /// Names the code that runs a recognised issue command.
 ///
-/// [`IssueHandler::Init`], [`IssueHandler::TaskCreate`], [`IssueHandler::TaskList`]
-/// and [`IssueHandler::TaskShow`] run their commands. [`IssueHandler::Unavailable`]
-/// marks each other command, and this build refuses it. A new handler changes only
-/// the match arm of its command in `issue::run`.
+/// [`IssueHandler::Init`], [`IssueHandler::TaskCreate`], [`IssueHandler::TaskList`] and
+/// [`IssueHandler::TaskShow`] run their commands. [`IssueHandler::Unavailable`] refuses
+/// every other recognised command. A new handler changes only its match arm in
+/// `issue::run`.
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(super) enum IssueHandler {
     /// `issue init`.
@@ -166,8 +172,8 @@ const TASK_CREATE_DETAILS: &str = "\nCreate a private task in the Gest project o
      first. This build never reads stdin and never opens an editor, so a missing\n\
      description is empty. A [ in the title, the description or the metadata exits\n\
      with status 64, and so does a task over 65,536 bytes. Tasks of this build have no\n\
-     undo history. In this build, task create exits 74 after about 96 tasks\n\
-     of any size, and nothing stored is lost; see docs/cli.md.\n\n\
+     undo history. The cost of task create does not grow with the count of tasks;\n\
+     see docs/cli.md.\n\n\
      Options:\n\
      \x20 -d, --description <DESCRIPTION>  The task description\n\
      \x20 -m, --metadata <KEY=VALUE>       Set a metadata key=value pair (repeatable; supports dot-paths and scalar inference)\n\
@@ -184,6 +190,7 @@ const TASK_CREATE_DETAILS: &str = "\nCreate a private task in the Gest project o
      Not available in this build, and refused with status 69:\n\
      \x20     --assign <ASSIGN>, --batch, -i, --iteration <ITERATION>,\n\
      \x20 -l, --link <LINK>, --phase <PHASE>, --tag <TAG>, and a title read from stdin\n";
+
 /// The help text of `issue task list` after its summary.
 const TASK_LIST_DETAILS: &str = "\nList the tasks of the project bound to the open checkout, newest first.\n\
      Without --all, a task that is done or cancelled is left out. The text output\n\

@@ -26,7 +26,7 @@ The [`issue` group](cli.md#issue-commands) recognises the names of the Gest comm
 [`gos i init`](cli.md#create-the-gest-project-of-a-checkout), which creates the Gest project of an
 open checkout. It also runs [`gos i task create`](cli.md#create-a-task), which adds a private task
 to that project. [`gos i task list` and `gos i task show`](cli.md#list-the-tasks-of-the-project)
-read the tasks. The other issue commands remain planned.
+read its tasks. The other issue commands remain planned.
 See the [current limits](development-plan.md) and
 [CLI reference](cli.md) before trying a command.
 

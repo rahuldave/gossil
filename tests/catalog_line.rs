@@ -496,41 +496,43 @@ const AUDIT_ROWS: [(&str, &str); 3] = [
     ),
 ];
 
+/// Run `gos v verify` on a repository and require its refusal without effect.
+/// # Arguments
+/// * `binary` - Product executable.
+/// * `home` - The fixture home.
+/// * `repo` - The repository file.
+/// * `message` - The diagnostic that stderr must hold.
+fn verify_refuses(binary: &str, home: &Path, repo: &Path, message: &str) {
+    let before = bytes(repo);
+    let output = command(binary, home)
+        .args(["v", "verify", "--repository"])
+        .arg(repo)
+        .output()
+        .unwrap();
+    // CLI-05 gives 74 for a proof that fails.
+    assert_eq!(output.status.code(), Some(74), "{message}");
+    assert!(
+        String::from_utf8_lossy(&output.stderr).contains(message),
+        "{message}: {}",
+        String::from_utf8_lossy(&output.stderr)
+    );
+    assert_eq!(bytes(repo), before, "{message}");
+}
+
 #[test]
-/// `gos` refuses a row in any audit table, with and without a registered
-/// checkout. The refusal leaves every byte of the repository unchanged.
+/// `gos v verify` refuses a row in any audit table, with and without a registered
+/// checkout. The refusal leaves every byte of the repository unchanged. Open and
+/// `status` read no audit table, so they admit the repository.
 fn audit_table_rows_are_refused_with_and_without_a_registration() {
     let binary = env!("CARGO_BIN_EXE_gos");
     for (table, sql) in AUDIT_ROWS {
         let message = format!("unsupported nonempty catalog6 table: {table}");
         let (temp, repo) = create(binary, "init");
-        let root = temp.path().join("root");
-        std::fs::create_dir(&root).unwrap();
         write(&repo, sql);
-        let before = bytes(&repo);
-        let output = command(binary, temp.path())
-            .current_dir(&root)
-            .args(["v", "open", "--repository"])
-            .arg(&repo)
-            .args(["--checkout", "work", "--root"])
-            .arg(&root)
-            .output()
-            .unwrap();
-        assert_eq!(output.status.code(), Some(1), "{table}");
-        assert!(
-            String::from_utf8_lossy(&output.stderr).contains(&message),
-            "{table}: {}",
-            String::from_utf8_lossy(&output.stderr)
-        );
-        assert_eq!(bytes(&repo), before, "{table}");
-        assert!(!root.join(".gossil").exists(), "{table}");
+        verify_refuses(binary, temp.path(), &repo, &message);
         let (temp, root, _second, repo) = registered_with(binary, sql);
+        verify_refuses(binary, temp.path(), &repo, &message);
         let output = invoke(binary, temp.path(), &root, &repo, &["status"]);
-        assert_eq!(output.status.code(), Some(1), "{table}");
-        assert!(
-            String::from_utf8_lossy(&output.stderr).contains(&message),
-            "{table}: {}",
-            String::from_utf8_lossy(&output.stderr)
-        );
+        assert_eq!(output.status.code(), Some(0), "{table}");
     }
 }

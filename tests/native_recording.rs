@@ -14,6 +14,8 @@ use std::{
     path::{Path, PathBuf},
 };
 
+#[path = "support/proof.rs"]
+mod proof;
 #[path = "support/shares.rs"]
 mod shares;
 
@@ -752,9 +754,10 @@ const PROJECTION_PARTS: usize = 4;
 /// # Arguments
 /// * `part` - The share of the 22 projection and bookkeeping corruptions, below `PROJECTION_PARTS`. Each case gets its own fixture.
 /// # Returns
-/// Unit after each independently produced fixture refuses reopen without repair.
+/// Unit after the full proof refuses each independently produced fixture without repair.
 /// # Panics
-/// Panics if any unsupported exact-state mutation is admitted or repaired.
+/// Panics if the full proof admits or repairs any unsupported exact-state mutation, or
+/// if open refuses a changed link row.
 async fn every_native_projection_and_bookkeeping_surface_rejects_corruption(part: usize) {
     for sql in shares::share(
         vec![
@@ -780,6 +783,7 @@ async fn every_native_projection_and_bookkeeping_surface_rejects_corruption(part
             "UPDATE g_path_scope SET scope='shared'",
             "UPDATE g_vvar SET value='1/00000000000000000000000000000000' WHERE name='fingerprint'",
             "UPDATE g_checkout SET generation=generation+1",
+            "DELETE FROM blob WHERE uuid=(SELECT combined_head FROM g_checkout)",
         ],
         part,
         PROJECTION_PARTS,
@@ -793,11 +797,76 @@ async fn every_native_projection_and_bookkeeping_surface_rejects_corruption(part
         drop(owner);
         mutate(&repo, sql).await;
         let corrupt = snapshot(&repo).await;
-        assert!(
-            LocalOwnerRepository::open(&repo, limits()).await.is_err(),
-            "admitted {sql}"
-        );
+        let (opened, message) = proof::verify_refusal(&repo, limits()).await;
+        proof::assert_refusal(sql, &message);
+        // Open reads no link row, so only the full proof sees a changed link.
+        if sql.contains("plink") || sql.contains("mlink") {
+            assert!(opened, "{sql}");
+        }
         assert_eq!(snapshot(&repo).await, corrupt, "repaired {sql}");
+    }
+}
+
+#[tokio::test]
+/// A commit checks every field of the tracked rows that it reads, and that the tables
+/// that must stay empty are empty. So it refuses each changed tracked row and a
+/// pending remove, changes no byte, and never stores a check-in that the full proof
+/// would then refuse. The full proof refuses each change too.
+async fn commit_refuses_changed_tracked_rows_and_pending_paths() {
+    for sql in [
+        "UPDATE g_vfile SET chnged=1",
+        "UPDATE g_vfile SET deleted=1 WHERE pathname='a'",
+        "UPDATE g_vfile SET islink=1",
+        "UPDATE g_vfile SET origname='z'",
+        "UPDATE g_vfile SET mhash='x'",
+        "UPDATE g_vfile SET id=id+10",
+        "UPDATE g_vfile SET vid=vid+100",
+        "UPDATE g_vfile SET mrid=0",
+        "UPDATE g_vfile SET mtime='x'",
+        "INSERT INTO g_pending_path(checkout_id,path,action,selected_scope) VALUES('work','a','remove','private')",
+    ] {
+        let mut f = Fixture::new().await;
+        f.private(&["a", "b"]).await;
+        f.changed(&["a", "b"], b"2026-11-20T00:00:01").await;
+        let Fixture {
+            _temp,
+            owner,
+            repo,
+            root,
+            ..
+        } = f;
+        drop(owner);
+        mutate(&repo, sql).await;
+        let before = snapshot(&repo).await;
+        std::fs::write(root.join("a"), b"a2").unwrap();
+        let mut owner = LocalOwnerRepository::open(&repo, limits()).await.unwrap();
+        let view = owner.checkout_view("work", limits()).await.unwrap();
+        let commit = owner
+            .commit_private_tracked_files(
+                "work",
+                PrivateRecordingRequest {
+                    expected: &view,
+                    paths: &["a", "b"],
+                    scope: PathScope::Private,
+                    actor: b"Owner",
+                    comment: b"after",
+                    date: b"2026-11-20T00:00:02",
+                },
+                limits(),
+                tracking(),
+            )
+            .await;
+        drop(owner);
+        assert_eq!(snapshot(&repo).await, before, "{sql}");
+        let (opened, proof) = proof::verify_refusal(&repo, limits()).await;
+        assert!(opened, "{sql}");
+        // The commit refuses with the same message as the full proof, so the check
+        // that refuses is the one for the changed fact.
+        assert_eq!(
+            commit.err().map(|error| error.to_string()),
+            Some(proof),
+            "{sql}"
+        );
     }
 }
 
@@ -936,6 +1005,17 @@ async fn replace_fixture_manifest(repo: &Path, old: &str, body: &str, sha1: bool
     assert_eq!(
         conn.execute(
             "UPDATE g_checkout SET combined_head=?1 WHERE combined_head=?2",
+            vec![Value::Text(name.clone()), Value::Text(old.into())]
+        )
+        .await
+        .unwrap(),
+        1
+    );
+    // The cheap checks of open compare the checkout key with the head, so the key
+    // follows the new name too.
+    assert_eq!(
+        conn.execute(
+            "UPDATE g_vvar SET value=?1 WHERE name='checkout-hash' AND value=?2",
             vec![Value::Text(name), Value::Text(old.into())]
         )
         .await
@@ -953,7 +1033,8 @@ const PARSER_PARTS: usize = 3;
 /// # Returns
 /// Unit after every independent family violation reaches its exact intended guard.
 /// # Panics
-/// Panics on parser failure, an earlier unexpected refusal, admitted history or mutation.
+/// Panics on parser failure, an earlier unexpected refusal, history that the full
+/// proof admits, a commit on a parent that it can refuse, or mutation.
 async fn parser_valid_unsupported_histories_refuse_without_repair(part: usize) {
     for (case, expected) in shares::share(
         vec![
@@ -1060,11 +1141,37 @@ async fn parser_valid_unsupported_histories_refuse_without_repair(part: usize) {
                 .permissions()
                 .mode(),
         ];
-        let error = LocalOwnerRepository::open(&repo, limits())
-            .await
-            .err()
-            .expect("unsupported private history");
-        assert_eq!(error.operation, expected, "case {case}");
+        let (opened, error) = proof::verify_refusal(&repo, limits()).await;
+        assert_eq!((opened, error.as_str()), (true, expected), "case {case}");
+        assert_eq!(snapshot(&repo).await, before, "repaired {case}");
+        // A commit reads its parent manifest, so it refuses the changed one too.
+        let mut owner = LocalOwnerRepository::open(&repo, limits()).await.unwrap();
+        let view = owner.checkout_view("work", limits()).await.unwrap();
+        std::fs::write(root.join("a"), b"a3").unwrap();
+        let commit = owner
+            .commit_private_tracked_files(
+                "work",
+                PrivateRecordingRequest {
+                    expected: &view,
+                    paths: &["a", "b"],
+                    scope: PathScope::Private,
+                    actor: b"Owner",
+                    comment: b"after",
+                    date: b"2026-11-20T00:00:03",
+                },
+                limits(),
+                tracking(),
+            )
+            .await;
+        std::fs::write(root.join("a"), &files[0]).unwrap();
+        drop(owner);
+        // The commit checks its parent in full against the grandparent, so it refuses
+        // every case and never builds on a parent that the full proof refuses.
+        assert_eq!(
+            commit.err().map(|error| error.to_string()).as_deref(),
+            Some(expected),
+            "case {case}"
+        );
         assert_eq!(snapshot(&repo).await, before, "repaired {case}");
         assert_eq!(
             [
@@ -1128,13 +1235,14 @@ async fn provenance_and_tracking_relationships_are_exact() {
             "UPDATE blob SET rcvid=1 WHERE rid=(SELECT rid FROM g_vfile WHERE pathname='a')",
             "recording first-use receipt mismatch",
         ),
+        // Open reads the checkout keys, and refuses a fingerprint that is not text.
         (
             "UPDATE g_vvar SET value=x'00' WHERE name='fingerprint'",
-            "recording fingerprint type",
+            "recording native checkout keys",
         ),
         (
             "UPDATE g_vvar SET value=NULL WHERE name='fingerprint'",
-            "recording fingerprint type",
+            "recording native checkout keys",
         ),
         (
             "UPDATE g_vfile SET rid=1,mrid=1 WHERE pathname='a'",
@@ -1179,11 +1287,8 @@ async fn provenance_and_tracking_relationships_are_exact() {
             std::fs::read(root.join("a")).unwrap(),
             std::fs::read(root.join("b")).unwrap(),
         ];
-        let error = LocalOwnerRepository::open(&repo, limits())
-            .await
-            .err()
-            .expect("invalid relationship");
-        assert_eq!(error.operation, expected, "mutation {sql}");
+        let (_, error) = proof::verify_refusal(&repo, limits()).await;
+        assert_eq!(error, expected, "mutation {sql}");
         assert_eq!(snapshot(&repo).await, before);
         assert_eq!(
             [
@@ -1523,5 +1628,141 @@ async fn assert_complete_three_tree_oracle(
         )
         .await,
         receipts
+    );
+}
+
+/// Find the least total decoded ceiling under which open, the checkout view and a
+/// commit that changes nothing all succeed.
+/// # Arguments
+/// * `f` - The fixture, whose files match its last check-in.
+/// * `date` - A date later than the last check-in.
+/// # Returns
+/// The least ceiling.
+/// # Panics
+/// Panics if the commit changes the history.
+async fn least_ceiling(f: &Fixture, date: &[u8]) -> u64 {
+    let (mut low, mut high) = (0_u64, 256 << 20);
+    while high - low > 1 {
+        let midpoint = low + (high - low) / 2;
+        let mut bound = limits();
+        bound.content.max_total_decoded_bytes = midpoint;
+        let passed = match LocalOwnerRepository::open(&f.repo, bound).await {
+            Err(_) => false,
+            Ok(mut owner) => match owner.checkout_view("work", bound).await {
+                Err(_) => false,
+                Ok(view) => {
+                    let outcome = owner
+                        .commit_private_tracked_files(
+                            "work",
+                            PrivateRecordingRequest {
+                                expected: &view,
+                                paths: &["a", "b"],
+                                scope: PathScope::Private,
+                                actor: b"Owner",
+                                comment: b"fixture",
+                                date,
+                            },
+                            bound,
+                            tracking(),
+                        )
+                        .await;
+                    match outcome {
+                        Ok(PrivateRecordingOutcome::NoChange { .. }) => true,
+                        Ok(PrivateRecordingOutcome::Recorded { .. }) => panic!("recorded"),
+                        Err(_) => false,
+                    }
+                }
+            },
+        };
+        if passed {
+            high = midpoint;
+        } else {
+            low = midpoint;
+        }
+    }
+    high
+}
+
+#[tokio::test]
+/// Open, the checkout view and commit charge the same at 3, 6 and 12 check-ins.
+///
+/// Open reads no history, the view reads the registration, and commit reads its
+/// parent and grandparent only. So the least ceiling under which all three succeed
+/// does not grow with the count of check-ins.
+/// # Panics
+/// Panics if a commit fails, or if the least ceiling changes with the count.
+async fn open_view_and_commit_do_not_grow_with_checkins() {
+    let mut f = Fixture::new().await;
+    f.private(&["a", "b"]).await;
+    let mut least = Vec::new();
+    for n in 1..=12_u8 {
+        std::fs::write(f.root.join("a"), [b'a', b'a' + n]).unwrap();
+        f.changed(&["a", "b"], format!("2026-11-20T00:00:{n:02}").as_bytes())
+            .await;
+        if [3, 6, 12].contains(&n) {
+            least.push(least_ceiling(&f, b"2026-11-20T00:00:59").await);
+        }
+    }
+    assert!(least[0] > 0);
+    // Values that the checks read as text, such as row numbers and receipt times,
+    // vary by a few bytes. A charge that grew with the history would add at least a
+    // manifest, about 200 bytes, at each step.
+    let (min, max) = (least.iter().min().unwrap(), least.iter().max().unwrap());
+    assert!(max - min <= 16, "{least:?}");
+}
+
+#[tokio::test]
+/// A commit checks the receipt of its parent against the grandparent. So it refuses
+/// a parent whose receipt does not follow the receipt of the grandparent, and changes
+/// no byte. Open reads only the receipt of the head, so it admits the change. The full
+/// proof refuses it too, at its earlier check of first use of each receipt.
+async fn commit_refuses_a_parent_receipt_out_of_order() {
+    let mut f = Fixture::new().await;
+    f.private(&["a", "b"]).await;
+    f.changed(&["a", "b"], b"2026-11-20T00:00:01").await;
+    std::fs::write(f.root.join("a"), b"a2").unwrap();
+    f.changed(&["a", "b"], b"2026-11-20T00:00:02").await;
+    let Fixture {
+        _temp,
+        owner,
+        repo,
+        root,
+        ..
+    } = f;
+    drop(owner);
+    // The first private check-in takes the receipt of the second.
+    mutate(
+        &repo,
+        "UPDATE blob SET rcvid=(SELECT rcvid FROM blob WHERE rid=(SELECT objid FROM event WHERE type='ci' ORDER BY mtime DESC LIMIT 1)) WHERE rid=(SELECT objid FROM event WHERE type='ci' ORDER BY mtime DESC LIMIT 1 OFFSET 1)",
+    )
+    .await;
+    let before = snapshot(&repo).await;
+    std::fs::write(root.join("a"), b"a3").unwrap();
+    let mut owner = LocalOwnerRepository::open(&repo, limits()).await.unwrap();
+    let view = owner.checkout_view("work", limits()).await.unwrap();
+    let commit = owner
+        .commit_private_tracked_files(
+            "work",
+            PrivateRecordingRequest {
+                expected: &view,
+                paths: &["a", "b"],
+                scope: PathScope::Private,
+                actor: b"Owner",
+                comment: b"after",
+                date: b"2026-11-20T00:00:03",
+            },
+            limits(),
+            tracking(),
+        )
+        .await;
+    drop(owner);
+    assert_eq!(
+        commit.err().map(|error| error.to_string()).as_deref(),
+        Some("recording exact receipt sequence")
+    );
+    assert_eq!(snapshot(&repo).await, before);
+    assert_eq!(
+        proof::verify_refusal(&repo, limits()).await,
+        (true, "recording first-use receipt mismatch".to_owned())
     );
 }

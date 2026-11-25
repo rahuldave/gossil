@@ -246,20 +246,26 @@ the CLI controls.
 The `issue` group, or `i`, routes each Gest command by the issue table of
 `product::help`. The parser in `product::issue` checks the command names
 and their aliases. It runs `init`, `task create`, `task list` and `task show`, and
-refuses each other recognised command with status 69. The [issue section](cli.md#issue-commands)
-gives the forms and errors, and `tests/issue_cli.rs` holds the controls.
+refuses each other recognised command with status 69. The
+[issue section](cli.md#issue-commands) gives the forms and errors, and
+`tests/issue_cli.rs` holds the controls.
 
 `product::issue_init` runs [`issue init`](cli.md#create-the-gest-project-of-a-checkout), and
 `tests/issue_init_cli.rs` holds its controls. `product::issue_task` runs
 [`issue task create`](cli.md#create-a-task), and `tests/issue_task_cli.rs` holds
-its controls. The handlers of `task list` and `task show` are in `product::issue_read`,
-and `tests/issue_read_cli.rs` holds the controls of the two commands. The
-[issue read guide](issue-read.md) gives their output.
+its controls. The handlers of `task list` and `task show` are in
+`product::issue_read`, and `tests/issue_read_cli.rs` holds the controls of the
+two commands. The [issue read guide](issue-read.md) gives their output.
 
 `tests/issue_demo.rs` runs the walk-through of the [issue guide](issues.md) on the
 real `gos` binary. Its ignored test reads the demo repository with stock Fossil
 and checks that Gossil refuses a copy after `fossil rebuild`. `just issue-demo`
 runs that part with the pinned Fossil 2.29.
+
+The module `vcs_verify` runs [`vcs verify`](cli.md#verify-a-repository). It runs the full proof of a
+repository, or the proof of one issue, and changes nothing. The proofs are
+`LocalOwnerRepository::verify` and `verify_issue` in `storage::repository::verification`.
+`tests/vcs_verify_cli.rs` holds the controls of the command.
 
 The focused CLI controls are in `tests/vcs_init_cli.rs`; parser, environment,
 password and receipt controls are in the private `vcs_init` module. Source edits

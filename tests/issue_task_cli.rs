@@ -4,7 +4,8 @@
 //! The cases are the CLI-01 forms, the CLI-T03 subset of the arguments, the GEST-T02
 //! subset of stored values, the CLI-05 statuses of the refusals with every byte
 //! unchanged, `vcs` commands beside tasks, the read-back through `task list` and
-//! `task show`, a closed stdout and two commands at once.
+//! `task show`, a closed stdout, two commands at once and reads that retry after
+//! another connection held the write lock.
 //! The unit tests of `src/product/issue_task.rs` inject a failure after each write
 //! step (GEST-T08).
 //!
@@ -219,7 +220,7 @@ fn task_ids(repo: &Path) -> Vec<String> {
         .collect()
 }
 
-/// Read one task back through the library reader, after full admission.
+/// Read one task back through the library reader, after the checks of open.
 /// # Arguments
 /// * `repo` - The repository file, with no open owner.
 /// * `id` - The Gest ID of the task.
@@ -273,6 +274,129 @@ fn read_back(repo: &Path, id: &str) -> gossil::gest_task_values::TaskValueInputs
 /// The expected standard output.
 fn created(id: &str, title: &str) -> String {
     format!("  ✓  created task  {}\n\n  title  {title}\n", &id[..8])
+}
+
+#[test]
+/// Tasks that `task create` stores, in each of the four forms, are listed by `task list`
+/// and shown by `task show` in each form, in JSON, with the stored ID, title and priority.
+fn created_tasks_read_back_through_list_and_show() {
+    let temp = tempfile::tempdir().unwrap();
+    let home = temp.path();
+    let project = bound(home);
+    let repo = home.join("repo");
+    let root = home.join("root");
+    let run = |binary: &str, args: &[&str]| {
+        let args: Vec<&OsStr> = args.iter().map(OsStr::new).collect();
+        let out = command(binary, home, &root, &args).output().unwrap();
+        assert_eq!(out.status.code(), Some(0), "{binary} {args:?}");
+        String::from_utf8(out.stdout).unwrap()
+    };
+    for (n, (binary, group)) in forms().into_iter().enumerate() {
+        run(
+            binary,
+            &[group, "task", "create", &format!("Task {n}"), "-p", "1"],
+        );
+    }
+    let ids = task_ids(&repo);
+    assert_eq!(ids.len(), 4);
+    for (binary, group) in forms() {
+        let listed: serde_json::Value =
+            serde_json::from_str(&run(binary, &[group, "task", "list", "--json"])).unwrap();
+        let listed = listed.as_array().unwrap();
+        let mut listed_ids: Vec<_> = listed
+            .iter()
+            .map(|task| task["id"].as_str().unwrap())
+            .collect();
+        listed_ids.sort_unstable();
+        let mut stored_ids: Vec<_> = ids.iter().map(String::as_str).collect();
+        stored_ids.sort_unstable();
+        assert_eq!(listed_ids, stored_ids);
+        for task in listed {
+            let id = task["id"].as_str().unwrap();
+            assert!(ids.contains(&id.to_owned()));
+            assert_eq!(task["project_id"], serde_json::json!(project));
+            assert_eq!(task["title"], read_back(&repo, id).title);
+        }
+        for id in &ids {
+            let shown: serde_json::Value =
+                serde_json::from_str(&run(binary, &[group, "task", "show", &id[..8], "--json"]))
+                    .unwrap();
+            let stored = read_back(&repo, id);
+            assert_eq!(shown["id"], serde_json::json!(id));
+            assert_eq!(shown["title"], stored.title);
+            assert_eq!(shown["priority"], stored.priority);
+            assert_eq!(shown["priority"], serde_json::json!(1));
+        }
+    }
+}
+
+#[test]
+/// A `task list` and a `task show` that start while another connection holds the write
+/// lock for 7 seconds both succeed. The first attempt of each waits the 5-second busy
+/// timeout and refuses with `database is locked`; the second attempt gets the lock
+/// once it goes. Without the retry, both exit 74. A `task create` beside a `task list`
+/// also both succeed.
+fn reads_retry_after_a_held_write_lock() {
+    let temp = tempfile::tempdir().unwrap();
+    let home = temp.path();
+    bound(home);
+    let root = home.join("root");
+    ok(home, &["i", "task", "create", "Kept"]);
+    let id = task_ids(&home.join("repo")).remove(0);
+    let spawn = |args: &[&str]| {
+        let args: Vec<&OsStr> = args.iter().copied().map(OsStr::new).collect();
+        command(env!("CARGO_BIN_EXE_gos"), home, &root, &args)
+            .stdout(std::process::Stdio::piped())
+            .stderr(std::process::Stdio::piped())
+            .spawn()
+            .unwrap()
+    };
+    let runtime = tokio::runtime::Builder::new_current_thread()
+        .build()
+        .unwrap();
+    let database = runtime
+        .block_on(libsql::Builder::new_local(home.join("repo")).build())
+        .unwrap();
+    let holder = database.connect().unwrap();
+    runtime
+        .block_on(holder.execute("BEGIN IMMEDIATE", ()))
+        .unwrap();
+    let mut children = [
+        spawn(&["i", "task", "list", "--json"]),
+        spawn(&["i", "task", "show", &id[..8], "--json"]),
+    ];
+    std::thread::sleep(std::time::Duration::from_secs(7));
+    // Both reads are still blocked past the 5-second timeout of their first attempt.
+    for child in &mut children {
+        assert!(child.try_wait().unwrap().is_none());
+    }
+    runtime.block_on(holder.execute("ROLLBACK", ())).unwrap();
+    drop(holder);
+    for child in children {
+        let out = child.wait_with_output().unwrap();
+        assert_eq!(
+            out.status.code(),
+            Some(0),
+            "{}",
+            String::from_utf8_lossy(&out.stderr)
+        );
+        let json: serde_json::Value = serde_json::from_slice(&out.stdout).unwrap();
+        assert!(json.to_string().contains(&id));
+    }
+    let children = [
+        spawn(&["i", "task", "create", "Beside"]),
+        spawn(&["i", "task", "list", "--json"]),
+    ];
+    for child in children {
+        let out = child.wait_with_output().unwrap();
+        assert_eq!(
+            out.status.code(),
+            Some(0),
+            "{}",
+            String::from_utf8_lossy(&out.stderr)
+        );
+    }
+    assert_eq!(task_ids(&home.join("repo")).len(), 2);
 }
 
 #[test]
@@ -728,8 +852,8 @@ fn a_closed_stdout_keeps_the_task_and_exits_74() {
 }
 
 #[test]
-/// Two commands at once both succeed. A write that another commit made stale runs
-/// once more on a fresh admission.
+/// Two commands at once both succeed. A write that waited for the write lock past its
+/// timeout runs once more.
 fn two_commands_at_once_both_succeed() {
     let temp = tempfile::tempdir().unwrap();
     let home = temp.path();

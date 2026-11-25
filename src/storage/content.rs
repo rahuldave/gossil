@@ -5,7 +5,7 @@
 use super::{StorageError, WriteTransaction, metered_query::SqlWork, policy::Principal};
 use crate::compression::{self, Unpacked};
 use libsql::Value;
-use std::collections::BTreeSet;
+use std::collections::{BTreeMap, BTreeSet};
 
 /// Finite caller-selected limits; no implicit unbounded fallback exists.
 #[derive(Clone, Copy)]
@@ -51,15 +51,12 @@ pub(super) struct Budget {
     decoded: u64,
     /// Native row identifiers already visited in this reconstruction.
     visited: BTreeSet<i64>,
+    /// The largest reservation charged for each whole shared surface since the current admission began.
+    reserved: BTreeMap<&'static str, u64>,
+    /// The table comparisons with replay that passed on this ledger.
+    compared: usize,
 }
 impl Budget {
-    /// Return the unchanged finite ceilings used to create this ledger.
-    /// # Returns
-    /// Caller-selected content limits, without resetting consumed work.
-    pub(super) fn limits(&self) -> Limits {
-        self.limits
-    }
-
     /// Bound a new compression result by both remaining work ledgers.
     /// # Returns
     /// Largest packed output that fits the envelope, stored and ownership ceilings.
@@ -115,6 +112,8 @@ impl Budget {
             stored: 0,
             decoded: 0,
             visited: BTreeSet::new(),
+            reserved: BTreeMap::new(),
+            compared: 0,
         })
     }
     /// Charge before consuming an envelope; a repeated RID always fails.
@@ -156,6 +155,57 @@ impl Budget {
             .checked_add(length as u64)
             .filter(|n| *n <= self.limits.max_total_decoded_bytes)
             .ok_or_else(|| StorageError::state("total decoded content limit"))?;
+        Ok(())
+    }
+    /// Return the decoded work charged so far, for the unit controls of admission cost.
+    /// # Returns
+    /// The aggregate decoded bytes charged to this ledger.
+    #[cfg(test)]
+    pub(super) fn decoded(&self) -> u64 {
+        self.decoded
+    }
+    /// Count one table comparison with replay that passed.
+    pub(super) fn count_comparison(&mut self) {
+        self.compared = self.compared.saturating_add(1);
+    }
+    /// Return the table comparisons with replay that passed on this ledger.
+    /// # Returns
+    /// The count, which `gos v verify` prints.
+    pub(super) fn compared(&self) -> usize {
+        self.compared
+    }
+    /// Start a new admission, so that each shared surface is reserved again, once.
+    /// # Returns
+    /// Nothing. The work already charged stays charged.
+    pub(super) fn begin_admission(&mut self) {
+        self.reserved.clear();
+    }
+    /// Charge a reservation for one whole shared surface once per admission.
+    ///
+    /// A query that reads a whole surface, such as the repository text or the schema,
+    /// holds its rows only until the next query. The first reservation of a surface
+    /// after [`Self::begin_admission`] charges all of it. A later one charges only its
+    /// growth over the largest reservation of that surface so far.
+    /// # Arguments
+    /// * `surface` - The fixed name of the surface.
+    /// * `reservation` - Bytes that one read of the whole surface could hold now.
+    /// # Returns
+    /// Success after charging the growth.
+    /// # Errors
+    /// Refuses exhausted decoded work, and then charges and records nothing.
+    pub(super) fn charge_reserved(
+        &mut self,
+        surface: &'static str,
+        reservation: usize,
+    ) -> Result<(), StorageError> {
+        let reservation = reservation as u64;
+        let held = self.reserved.get(surface).copied().unwrap_or(0);
+        self.decoded = self
+            .decoded
+            .checked_add(reservation.saturating_sub(held))
+            .filter(|n| *n <= self.limits.max_total_decoded_bytes)
+            .ok_or_else(|| StorageError::state("total decoded content limit"))?;
+        self.reserved.insert(surface, held.max(reservation));
         Ok(())
     }
     /// Bound the output of one delta application by both decoded ceilings.
@@ -1136,7 +1186,7 @@ mod tests {
         assert!(budget.charge_stored(1).is_err());
         assert_eq!(budget.stored, 10);
         assert!(budget.enter(1, 0).is_err());
-        assert_eq!(budget.limits().max_total_stored_bytes, 10);
+        assert_eq!(budget.limits.max_total_stored_bytes, 10);
     }
 
     /// Repeated verified reads reset traversal identity while retaining both aggregate byte counters.
@@ -1309,6 +1359,36 @@ mod tests {
             assert_eq!(budget.decoded, 0);
             assert_eq!(tx.commit().await.unwrap_err().operation, first.operation);
         }
+    }
+
+    #[test]
+    /// A shared surface is charged once per admission, and later only by its growth.
+    fn reserved_surfaces_charge_once_per_admission() {
+        let wide = Limits {
+            max_total_decoded_bytes: 100,
+            ..limits()
+        };
+        let mut budget = Budget::new(wide).unwrap();
+        budget.charge_reserved("text", 30).unwrap();
+        assert_eq!(budget.decoded(), 30);
+        budget.charge_reserved("text", 30).unwrap();
+        budget.charge_reserved("text", 10).unwrap();
+        assert_eq!(budget.decoded(), 30);
+        budget.charge_reserved("text", 40).unwrap();
+        assert_eq!(budget.decoded(), 40);
+        budget.charge_reserved("schema", 20).unwrap();
+        assert_eq!(budget.decoded(), 60);
+        budget.begin_admission();
+        budget.charge_reserved("text", 40).unwrap();
+        assert_eq!(budget.decoded(), 100);
+        // A refused growth charges nothing and keeps the held reservation.
+        let refused = budget.charge_reserved("schema", 21).unwrap_err();
+        assert_eq!(refused.operation, "total decoded content limit");
+        assert_eq!(budget.decoded(), 100);
+        // Nothing of the refused schema reservation is held, so one more byte refuses.
+        assert!(budget.charge_reserved("schema", 1).is_err());
+        budget.charge_reserved("text", 40).unwrap();
+        assert_eq!(budget.decoded(), 100);
     }
 }
 

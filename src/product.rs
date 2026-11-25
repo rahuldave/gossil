@@ -459,15 +459,12 @@ fn route(args: Vec<OsString>) -> Route {
 ///
 /// # Returns
 /// 78, the code of an unusable configuration, when the error chain holds an older
-/// Gossil catalog (CAT-07), and 1 for every other failure.
+/// Gossil catalog (CAT-07) or a repository that lost its Gossil tables, and 1 for
+/// every other failure.
 fn failed(error: &(dyn std::error::Error + 'static)) -> std::process::ExitCode {
     eprintln!("{error}");
-    let mut cause = Some(error);
-    while let Some(current) = cause {
-        if current.is::<crate::storage::OlderCatalog>() {
-            return std::process::ExitCode::from(78);
-        }
-        cause = current.source();
+    if crate::storage::unusable(error) {
+        return std::process::ExitCode::from(78);
     }
     std::process::ExitCode::FAILURE
 }
@@ -557,6 +554,11 @@ pub fn entry() -> std::process::ExitCode {
             |error| failed(&*error),
             |()| std::process::ExitCode::SUCCESS,
         );
+    }
+    if args.first().is_some_and(|arg| arg == "vcs")
+        && args.get(1).is_some_and(|arg| arg == "verify")
+    {
+        return crate::vcs_verify::run(&args[2..]);
     }
     match dispatch(&args) {
         Ok(()) => std::process::ExitCode::SUCCESS,
@@ -696,6 +698,7 @@ mod tests {
             "commit",
             "timeline",
             "log",
+            "verify",
             "test-delta-create",
             "test-delta-apply",
             "test-delta",

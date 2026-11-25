@@ -4,8 +4,8 @@
 //! Keep scope explicit and qualify this source with the accepted tracking base.
 use super::path_scope::PathScope;
 use super::recorded_history::{
-    ProjectionInput, RecordedFile, bounded_rows, bounded_scalar, native_name,
-    parse_recording_budgeted, scalar_i64,
+    ProjectionInput, Reach, RecordedFile, bounded_rows, bounded_scalar, check_recorded_commit,
+    native_name, parse_recording_budgeted, scalar_i64,
 };
 use super::recording_manifest::{
     ManifestFile, ManifestParent, PrivateManifestSpec, PrivateParents, build_private_manifest,
@@ -60,7 +60,7 @@ impl LocalOwnerRepository {
     /// A durable recorded result, or [`PrivateRecordingOutcome::NoChange`] with unchanged
     /// logical repository state, heads and counters.
     /// # Errors
-    /// Rejects stale authority, unsupported scopes or partial sets, malformed metadata,
+    /// Rejects a changed owner or checkout, unsupported scopes or partial sets, malformed metadata,
     /// corrupt history, descriptor drift, exhausted bounds and SQL failures atomically.
     /// # Examples
     /// ```no_run
@@ -125,12 +125,23 @@ impl LocalOwnerRepository {
         let result = async {
             #[cfg(test)]
             RECORDING_AUTH_SAW_DEBIT.with(|slot|slot.set(RECORDING_INITIAL_DEBIT_SEEN.with(|seen|seen.get().is_some())));
-            tx.check_admission_budgeted(&self.principal, &self.admission, &mut work).await?;
+            tx.check_admission_budgeted(&self.principal, &mut work).await?;
             tx.require_native_checkout().await?;
-            tx.validate_recording_repository(&self.principal, limits, &mut work, &mut parse).await?;
+            tx.check_recording_state(&self.principal, limits, &mut work).await?;
             let before = tx.read_checkout_view_budgeted(&self.principal, checkout, &mut work).await?;
             if &before != request.expected { return Err(StorageError::state("recording checkout changed")); }
-            let history = tx.validate_recorded_history(&self.principal, &before.shared_head, limits, &mut work, &mut parse).await?;
+            // Commit reads only the parent check-in and its own parent, so its cost does
+            // not grow with the history. It checks every fact of the parent that it
+            // builds on, so it never stores a check-in that the full proof refuses.
+            tx.require_recording_empty_tables().await?;
+            let walk = tx.walk_recorded_history(&self.principal, &before.shared_head, limits, &mut work, &mut parse, Reach::Parent).await?;
+            if let Some((parent, bytes, artifact)) = walk.commits.last() {
+                let previous = if walk.commits.len() == 2 { &walk.commits[0].0 } else { &walk.shared };
+                check_recorded_commit(walk.commits.len() == 1, (parent, bytes, artifact), previous, &walk.shared, &walk.branch, &mut work, limits.parser.input_bytes)?;
+            }
+            let selected = walk.commits.last().map_or(&walk.shared, |(commit, _, _)| commit);
+            tx.validate_recorded_tracking(checkout, selected, walk.generation, walk.pending, limits, &mut work).await?;
+            let history = walk.history();
             let scopes = tx.read_path_scopes_budgeted(checkout, tracking, &mut work).await?;
             let tracked = bounded_rows(&mut tx,
                 "SELECT CAST(pathname AS BLOB),isexe FROM g_vfile WHERE checkout_id=?1 ORDER BY pathname",
@@ -185,8 +196,8 @@ impl LocalOwnerRepository {
                     capture::recheck_budget(&root,path,captured,&protected,tracking,&mut work)?;
                 }
                 tx.tracking_protected_paths()?;
-                tx.validate_recording_repository(&self.principal,limits,&mut work,&mut parse).await?;
-                return Ok((PrivateRecordingOutcome::NoChange{view:before},None));
+                tx.check_recording_state(&self.principal, limits, &mut work).await?;
+                return Ok(PrivateRecordingOutcome::NoChange{view:before});
             }
             let generation = before.generation.checked_add(1).and_then(|n|i64::try_from(n).ok()).ok_or_else(||StorageError::state("recording generation exhausted"))?;
             let pending = before.pending_version.checked_add(1).and_then(|n|i64::try_from(n).ok()).ok_or_else(||StorageError::state("recording pending exhausted"))?;
@@ -222,19 +233,14 @@ impl LocalOwnerRepository {
             recording_boundary(RecordingPhase::Fingerprint)?;
             for (path,captured) in paths.iter().zip(&captures) { capture::recheck_budget(&root,path,captured,&protected,tracking,&mut work)?; }
             tx.tracking_protected_paths()?;
-            tx.validate_recording_repository(&self.principal,limits,&mut work,&mut parse).await?;
+            tx.check_recording_state(&self.principal, limits, &mut work).await?;
             recording_boundary(RecordingPhase::Poststate)?;
             let view=tx.read_checkout_view_budgeted(&self.principal,checkout,&mut work).await?;
-            let proof=tx.capture_admission_budgeted(&mut work).await?;
-            Ok((PrivateRecordingOutcome::Recorded{view,native_name:name},Some(proof)))
+            Ok(PrivateRecordingOutcome::Recorded{view,native_name:name})
         }.await;
         let result = tx.record(result);
         tx.commit().await?;
-        let (outcome, proof) = result?;
-        if let Some(proof) = proof {
-            self.admission = proof;
-        }
-        Ok(outcome)
+        result
     }
 }
 
@@ -370,7 +376,7 @@ enum RecordingPhase {
     Heads = 32,
     /// Exact current receipt checksum is stored.
     Fingerprint = 64,
-    /// Complete post-state admission has succeeded.
+    /// The checks of each command passed again on the new state.
     Poststate = 128,
 }
 
@@ -1203,8 +1209,8 @@ mod rollback_controls {
     /// # Returns
     /// Unit for successful finite baselines and late stored/decoded/parser rollback.
     /// # Panics
-    /// Panics if a compartment is reset, a claimed late refusal precedes fingerprint
-    /// production, or a failed transaction changes any baseline table/receipt/scope/head.
+    /// Panics if a compartment is reset, a refusal at the boundary comes before the first
+    /// native write, or a failed transaction changes any baseline table/receipt/scope/head.
     async fn cumulative_stored_decoded_and_parser_limits_fail_late_and_atomically() {
         let temp = tempfile::tempdir().unwrap();
         let repo = temp.path().join("repo");
@@ -1318,9 +1324,11 @@ mod rollback_controls {
             let (success, phases, values) =
                 budget_trial(&repo, &image, &view, set(low - margin - 1)).await;
             assert!(!success);
+            // The last charge of each compartment comes after the first native write,
+            // so the refusal tests the rollback of written rows.
             assert!(
-                phases & 64 != 0,
-                "compartment {compartment} failed before late native mutation phases: {phases}"
+                phases & 1 != 0,
+                "compartment {compartment} failed before the first native write: {phases}"
             );
             assert_eq!(values, before);
             std::fs::write(&repo, &image).unwrap();

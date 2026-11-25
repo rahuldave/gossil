@@ -7,7 +7,7 @@ fn binaries() -> [&'static str; 2] {
 }
 
 /// Every vcs command and alias that the help lists and the entry dispatches.
-const COMMANDS: [&str; 14] = [
+const COMMANDS: [&str; 15] = [
     "init",
     "new",
     "open",
@@ -18,6 +18,7 @@ const COMMANDS: [&str; 14] = [
     "commit",
     "timeline",
     "log",
+    "verify",
     "test-delta-create",
     "test-delta-apply",
     "test-delta",

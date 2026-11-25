@@ -98,12 +98,14 @@ impl LocalOwnerRepository {
                 return Err(StorageError::state("duplicate or aliased tracking path"));
             }
         }
-        let mut parse = super::ParseWork::new(limits.parser)?;
+        super::ParseWork::new(limits.parser)?;
         let mut tx = self.store.begin_write().await?;
         let result = async {
-            tx.check_admission_budgeted(&self.principal,&self.admission,&mut budget).await?;
+            tx.check_admission_budgeted(&self.principal, &mut budget).await?;
             tx.require_native_checkout().await?;
-            tx.validate_recording_repository(&self.principal,limits,&mut budget,&mut parse).await?;
+            tx.check_recording_state(&self.principal, limits, &mut budget).await?;
+            // A table that must stay empty, such as a pending remove, changes what this write means.
+            tx.require_recording_empty_tables().await?;
             let before = tx.read_checkout_view_budgeted(&self.principal,checkout,&mut budget).await?;
             if &before != wanted { return Err(StorageError::state("tracking checkout changed")); }
             let bindings = tx.query_bound("SELECT root_device,root_inode FROM g_checkout_owner WHERE checkout_id=?1",vec![Value::Text(checkout.into())]).await?;
@@ -150,15 +152,12 @@ impl LocalOwnerRepository {
             // Observe the retained provider again after all descriptor rechecks.
             // Its namespace/suffix vector is immutable; observe refuses any drift.
             tx.tracking_protected_paths()?;
-            tx.validate_recording_repository(&self.principal,limits,&mut budget,&mut parse).await?;
-            let view = tx.read_checkout_view_budgeted(&self.principal,checkout,&mut budget).await?;
-            Ok((view,tx.capture_admission_budgeted(&mut budget).await?))
+            tx.check_recording_state(&self.principal, limits, &mut budget).await?;
+            tx.read_checkout_view_budgeted(&self.principal,checkout,&mut budget).await
         }.await;
         let result = tx.record(result);
         tx.commit().await?;
-        let (view, admission) = result?;
-        self.admission = admission;
-        Ok(view)
+        result
     }
 
     /// Read explicit durable scope choices without assigning absent paths a scope.
@@ -169,7 +168,7 @@ impl LocalOwnerRepository {
     /// # Returns
     /// Explicit choices only; absent rows remain unselected.
     /// # Errors
-    /// Refuses stale authority, malformed state and exhausted work.
+    /// Refuses a changed owner, malformed state and exhausted work.
     /// # Examples
     /// ```no_run
     /// async fn inspect(owner: &mut gossil::storage::LocalOwnerRepository,
@@ -185,13 +184,13 @@ impl LocalOwnerRepository {
         tracking: TrackingLimits,
     ) -> Result<Vec<super::path_scope::PathScopeSelection>, StorageError> {
         let mut budget = crate::storage::content::Budget::new(limits.content)?;
-        let mut parse = super::ParseWork::new(limits.parser)?;
+        super::ParseWork::new(limits.parser)?;
         let mut tx = self.store.begin_write().await?;
         let result = async {
-            tx.check_admission_budgeted(&self.principal, &self.admission, &mut budget)
+            tx.check_admission_budgeted(&self.principal, &mut budget)
                 .await?;
             tx.require_native_checkout().await?;
-            tx.validate_recording_repository(&self.principal, limits, &mut budget, &mut parse)
+            tx.check_recording_state(&self.principal, limits, &mut budget)
                 .await?;
             tx.read_checkout_view_budgeted(&self.principal, checkout, &mut budget)
                 .await?;
@@ -212,7 +211,7 @@ impl LocalOwnerRepository {
     /// # Returns
     /// Canonical tracked paths in exact pathname order, without inferred scopes.
     /// # Errors
-    /// Refuses stale authority, malformed history, invalid inventory and exhausted work.
+    /// Refuses a changed owner, malformed history, invalid inventory and exhausted work.
     /// # Examples
     /// ```no_run
     /// async fn inspect(owner: &mut gossil::storage::LocalOwnerRepository,
@@ -228,13 +227,13 @@ impl LocalOwnerRepository {
         tracking: TrackingLimits,
     ) -> Result<Vec<String>, StorageError> {
         let mut budget = crate::storage::content::Budget::new(limits.content)?;
-        let mut parse = super::ParseWork::new(limits.parser)?;
+        super::ParseWork::new(limits.parser)?;
         let mut tx = self.store.begin_write().await?;
         let result = async {
-            tx.check_admission_budgeted(&self.principal, &self.admission, &mut budget)
+            tx.check_admission_budgeted(&self.principal, &mut budget)
                 .await?;
             tx.require_native_checkout().await?;
-            tx.validate_recording_repository(&self.principal, limits, &mut budget, &mut parse)
+            tx.check_recording_state(&self.principal, limits, &mut budget)
                 .await?;
             tx.read_checkout_view_budgeted(&self.principal, checkout, &mut budget)
                 .await?;
@@ -263,7 +262,7 @@ impl LocalOwnerRepository {
     /// # Returns
     /// Native additions; the executable flag describes initial enrollment.
     /// # Errors
-    /// Refuses stale owner authority, unsupported native rows and exhausted bounds.
+    /// Refuses a changed owner, unsupported native rows and exhausted bounds.
     pub async fn pending_adds(
         &mut self,
         checkout: &str,
@@ -271,13 +270,13 @@ impl LocalOwnerRepository {
         tracking: TrackingLimits,
     ) -> Result<Vec<PendingAdd>, StorageError> {
         let mut budget = crate::storage::content::Budget::new(limits.content)?;
-        let mut parse = super::ParseWork::new(limits.parser)?;
+        super::ParseWork::new(limits.parser)?;
         let mut tx = self.store.begin_write().await?;
         let result = async {
-            tx.check_admission_budgeted(&self.principal, &self.admission, &mut budget)
+            tx.check_admission_budgeted(&self.principal, &mut budget)
                 .await?;
             tx.require_native_checkout().await?;
-            tx.validate_recording_repository(&self.principal, limits, &mut budget, &mut parse)
+            tx.check_recording_state(&self.principal, limits, &mut budget)
                 .await?;
             tx.read_checkout_view_budgeted(&self.principal, checkout, &mut budget)
                 .await?;

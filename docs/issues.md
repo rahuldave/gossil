@@ -215,6 +215,25 @@ R	private	"README.txt"
 
 `gos v timeline` lists the check-ins only, and not the tasks.
 
+## Check the repository
+
+Each command of the sections above checks only what it reads and writes.
+`gos v verify` checks the whole repository. It replays every check-in and every
+issue, compares each table with that replay and changes nothing. With
+`--issue ID`, it checks only the rows of one task or project. The
+[verify section](cli.md#verify-a-repository) of the CLI reference gives both
+forms and their exit statuses:
+
+```text
+$ gos v verify --repository ~/demo/demo.gossil
+verified: 2 check-ins, 4 issues, 15 tables compared
+$ gos v verify --repository ~/demo/demo.gossil --issue zs
+verified issue zsoopoorkotyulsvmpsmzwkyurrvnlzz: ticket e3faa7a638bcd39e3b0cb02489be6026b357236b
+```
+
+The 2 check-ins are the two private check-ins. The count leaves out the empty
+check-in of `gos v init`. The 4 issues are the project and the three tasks.
+
 ## Read the repository with stock Fossil
 
 Stock Fossil reads the same repository file. `fossil test-integrity` checks
@@ -286,18 +305,20 @@ $ fossil sql -R ~/demo/copy.gossil "SELECT count(*) FROM sqlite_schema WHERE nam
 
 Stock Fossil still reads the copy. `fossil test-integrity` reports 0 errors,
 and `fossil timeline` and `fossil ticket show` list the same check-ins and
-tasks. Only the row numbers of the tickets can change. `gos v open` refuses the
-copy and leaves it unchanged:
+tasks. Only the row numbers of the tickets can change. `gos v open` and
+`gos v verify` refuse the copy and leave it unchanged:
 
 ```text
 $ mkdir ~/demo/other
 $ cd ~/demo/other
 $ gos v open --repository ~/demo/copy.gossil --checkout work --root ~/demo/other
-SQLite failure: `no such table: g_storage`
+this repository has lost its Gossil tables (was `fossil rebuild` run on it?); restore it from a backup
+$ gos v verify --repository ~/demo/copy.gossil
+this repository has lost its Gossil tables (was `fossil rebuild` run on it?); restore it from a backup
 ```
 
-The command exits with status 1 and writes no file in `~/demo/other`. The
-message is the raw storage error of this build.
+Both commands exit with status 78, and `gos v open` writes no file in
+`~/demo/other`.
 
 Run `just issue-demo` in the source checkout to repeat these checks with the
 pinned Fossil 2.29. It runs the ignored test of `tests/issue_demo.rs`.

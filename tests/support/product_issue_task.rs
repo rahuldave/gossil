@@ -716,12 +716,13 @@ async fn reopen(dir: PathBuf) -> Result<IssueRepository, IssueFailure> {
     })
 }
 
-/// The race of two commands at once. A second owner admits the repository, the
-/// first owner commits, and the write of the second owner refuses as stale. Task
-/// create opens once more and writes its task. Init opens once more and finds the
-/// project that the first owner made.
+/// The race of two commands at once. A second owner opens the repository, and the
+/// first owner commits. The second owner checks what it reads in its own
+/// transaction, so it needs no second open. Task create writes its task, and init
+/// finds the project that the first owner made. An init whose write refuses while
+/// no project is bound gives the refusal of the write and stores no project.
 #[tokio::test]
-async fn a_stale_owner_opens_once_more() {
+async fn an_owner_opened_before_another_commit_needs_no_second_open() {
     let temp = tempfile::tempdir().unwrap();
     let dir = temp.path().to_path_buf();
     let mut first = repository(&dir, true).await;
@@ -747,7 +748,7 @@ async fn a_stale_owner_opens_once_more() {
     )
     .await
     .unwrap();
-    assert_eq!(opened, 2);
+    assert_eq!(opened, 1);
     assert!(text.contains("\"title\": \"After\""), "{text}");
 
     let temp = tempfile::tempdir().unwrap();
@@ -771,8 +772,27 @@ async fn a_stale_owner_opens_once_more() {
     })
     .await
     .unwrap();
-    assert_eq!(opened, 2);
+    assert_eq!(opened, 1);
     assert_eq!(found, made);
+
+    // A write that refuses while no project is bound gives its own refusal, and
+    // stores nothing.
+    let temp = tempfile::tempdir().unwrap();
+    let mut other = repository(temp.path(), false).await;
+    other.view.checkout_id = "other".into();
+    let mut given = Some(other);
+    let refused = super::super::init::init_with(|| std::future::ready(Ok(given.take().unwrap())))
+        .await
+        .unwrap_err();
+    assert_eq!(
+        (refused.status, refused.message.as_str()),
+        (
+            74,
+            "issue init needs one project creation, a registered checkout with no bound project, and a repository with no project; binding an existing project is not available in this build"
+        )
+    );
+    let reopened = reopen(temp.path().to_path_buf()).await.unwrap();
+    assert_eq!(reopened.project, None);
 }
 
 /// While another connection holds the write lock, the write waits for its busy
