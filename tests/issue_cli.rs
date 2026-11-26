@@ -391,9 +391,9 @@ fn every_command_prints_its_help() {
          current directory, as one private task ticket, in one transaction. Run gos i init\n\
          first. This build never reads stdin and never opens an editor, so a missing\n\
          description is empty. A [ in the title, the description or the metadata exits\n\
-         with status 64, and so does a task over 65,536 bytes. Tasks of this build have no\n\
-         undo history. The cost of task create does not grow with the count of tasks;\n\
-         see docs/cli.md.\n\n\
+         with status 64, and so does a task over 2,147,418,109 bytes. Tasks of this build\n\
+         have no undo history. The cost of task create does not grow with the count of\n\
+         tasks; see docs/cli.md.\n\n\
          Options:\n\
          \x20 -d, --description <DESCRIPTION>  The task description\n\
          \x20 -m, --metadata <KEY=VALUE>       Set a metadata key=value pair (repeatable; supports dot-paths and scalar inference)\n\

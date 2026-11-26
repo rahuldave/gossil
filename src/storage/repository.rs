@@ -41,6 +41,7 @@ pub(crate) use issue_ticket::{IssuePhase, inject_issue_failure};
 mod issue_rows;
 /// Run the full proof of the repository, or of one issue, on demand.
 mod verification;
+pub(crate) use verification::UNMETERED;
 pub use verification::{IssueMatch, VerifySummary};
 
 /// Fixed scalar predicates bound returned data, not total SQLite scan work.
@@ -669,7 +670,7 @@ async fn precheck_catalog(path: &Path) -> Result<(), StorageError> {
     let database =
         super::open_native_database(path, libsql::OpenFlags::SQLITE_OPEN_READ_WRITE).await?;
     let connection = database.connect()?;
-    connection.busy_timeout(std::time::Duration::from_millis(5000))?;
+    connection.busy_timeout(std::time::Duration::from_millis(super::BUSY_TIMEOUT_MS))?;
     if super::materialize(&connection, LOST_TABLES).await?
         == vec![vec![Value::Integer(0), Value::Integer(1)]]
     {
@@ -1301,6 +1302,9 @@ pub(super) struct ParseWork {
     remaining: crate::artifact::ParseLimits,
     /// True when the limits bound each artifact alone, so a charge subtracts nothing.
     per_artifact: bool,
+    /// The owned bytes of every parse charged so far, saturated, so that a walk can
+    /// measure what the artifacts that it keeps own.
+    owned: usize,
 }
 impl ParseWork {
     /// Start one validated finite operation budget without inherited charges.
@@ -1324,6 +1328,7 @@ impl ParseWork {
         Ok(Self {
             remaining: limits,
             per_artifact: false,
+            owned: 0,
         })
     }
     /// Start a parser ledger whose limits bound each artifact alone.
@@ -1375,7 +1380,14 @@ impl ParseWork {
         if !self.per_artifact {
             self.remaining = next;
         }
+        self.owned = self.owned.saturating_add(usage.owned_bytes);
         Ok(())
+    }
+    /// Give the owned bytes of every parse charged so far.
+    /// # Returns
+    /// The saturated sum of the owned bytes of each charge.
+    pub(super) fn owned(&self) -> usize {
+        self.owned
     }
 }
 /// Parse on the actual owner with remaining aggregate ceilings checked before parser allocation.

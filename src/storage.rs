@@ -1,4 +1,5 @@
-//! Sole-connection local storage. File opens verify WAL, foreign keys, FULL and 5000 ms.
+//! Sole-connection local storage. File opens verify WAL, foreign keys, FULL and a
+//! busy timeout of 15,000 ms.
 //! Unexpected owner destruction poisons the store and closes its connection.
 //! Local SQL blocks its current poll; cancellation after COMMIT cannot undo it.
 //!
@@ -41,6 +42,7 @@ mod policy;
 mod repository;
 mod schema;
 pub use content::Limits;
+pub(crate) use repository::UNMETERED;
 pub use repository::{
     AdmissionLimits, CheckoutView, CreateOptions, InitializeOptions, IssueLimits, IssueMatch,
     IssueRecord, IssueTicket, LocalOwnerRepository, PathScope, PathScopeSelection, PendingAdd,
@@ -54,6 +56,16 @@ use lifecycle::FileIdentity;
 
 use libsql::{Builder, Connection, Value};
 use std::{fmt, path::Path, sync::Arc, time::Duration};
+
+/// A connection waits this many milliseconds, 15,000, for the write lock of
+/// another process.
+///
+/// Fossil sets the same value. But a `fossil commit` behind a held lock still
+/// fails at once, so only Gossil waits.
+///
+/// A command that still finds the lock held then fails with `database is locked`,
+/// and [`crate::vcs_open::retry_locked`] runs it once more.
+pub(crate) const BUSY_TIMEOUT_MS: u64 = 15_000;
 
 /// An operation failure, with a separate checked-cleanup failure when present.
 #[derive(Debug, Clone)]
@@ -365,7 +377,7 @@ impl LocalStore {
             Builder::new_local(path).build().await?
         };
         let connection = database.connect()?;
-        connection.busy_timeout(Duration::from_millis(5000))?;
+        connection.busy_timeout(Duration::from_millis(BUSY_TIMEOUT_MS))?;
         connection.execute("PRAGMA foreign_keys=ON", ()).await?;
         connection.execute("PRAGMA synchronous=FULL", ()).await?;
         let journal = if file { "wal" } else { "memory" };
@@ -376,7 +388,10 @@ impl LocalStore {
             ("PRAGMA journal_mode", Value::Text(journal.into())),
             ("PRAGMA foreign_keys", Value::Integer(1)),
             ("PRAGMA synchronous", Value::Integer(2)),
-            ("PRAGMA busy_timeout", Value::Integer(5000)),
+            (
+                "PRAGMA busy_timeout",
+                Value::Integer(BUSY_TIMEOUT_MS as i64),
+            ),
         ] {
             if materialize(&connection, sql).await? != vec![vec![expected]] {
                 return Err(StorageError::state(format!(
@@ -771,7 +786,7 @@ mod tests {
                     .unwrap(),
                 "wal"
             );
-            for (sql, expected) in [("PRAGMA synchronous", 2), ("PRAGMA busy_timeout", 5000)] {
+            for (sql, expected) in [("PRAGMA synchronous", 2), ("PRAGMA busy_timeout", 15_000)] {
                 assert_eq!(
                     materialize(store.connection.as_ref().unwrap(), sql)
                         .await

@@ -5,7 +5,7 @@
 //! with `--root ROOT --checkout ID`. Without `--root`, open never allocates a checkout.
 use crate::{
     checkout_locator as locator,
-    storage::{AdmissionLimits, CheckoutView, Limits, LocalOwnerRepository},
+    storage::{AdmissionLimits, CheckoutView, Limits, LocalOwnerRepository, TrackingLimits},
 };
 use std::{
     ffi::OsString,
@@ -62,27 +62,156 @@ fn options(args: &[OsString]) -> Result<Options, Error> {
         root,
     })
 }
+/// The largest file, in bytes, that `add` reads and `commit` stores: 2,147,418,109.
+///
+/// It is the largest file that stock Fossil 2.29 reads back from a repository, 3 bytes
+/// under its `MAX_BLOB_SIZE` of 0x7fff0000. `fossil test-integrity` refuses a file of
+/// 2,147,418,110 bytes with `out of memory`. It is also the largest decoded content
+/// object and the largest artifact of every command.
+pub(crate) const FILE_BYTES: u32 = 0x7fff_0000 - 3;
+/// The largest stored envelope of one artifact, in bytes: 999,998,976.
+///
+/// SQLite holds one row of at most 1,000,000,000 bytes, the default `SQLITE_MAX_LENGTH`
+/// that Fossil also keeps. The row of a blob holds the envelope, its name, its size
+/// and its receipt, so 1,024 bytes are kept for them. A file that does not compress
+/// therefore fits up to about 999,700,000 bytes, as in Fossil.
+pub(crate) const STORED_BYTES: u64 = 1_000_000_000 - 1024;
+/// The size of a file, in bytes, above which `add` and `commit` print a warning:
+/// 20,000,000, the default `large-file-size` of Fossil.
+///
+/// `add` warns for each file that it reads. `commit` warns only for each file whose
+/// content differs from the parent check-in.
+pub(crate) const LARGE_FILE_BYTES: u64 = 20_000_000;
+/// The most cards and list entries of one artifact: half of [`FILE_BYTES`].
+///
+/// A card takes at least two bytes, so the byte ceiling of an artifact binds first.
+pub(crate) const ARTIFACT_CARDS: usize = FILE_BYTES as usize / 2;
+
 /// Set finite limits for validating supported native history, independent of Gest project policy.
+///
+/// The ceilings bound one artifact and one row. The two totals are
+/// [`crate::storage::UNMETERED`], the total ceiling of a proof, so no command has a
+/// ceiling on its whole work, as in Fossil.
 /// # Returns
 /// Finite native admission limits, independent of Gest project policy, with explicit content and parser ceilings.
 pub(crate) fn limits() -> AdmissionLimits {
     AdmissionLimits {
         content: Limits {
-            max_stored_bytes: 1048576,
-            max_output_bytes: 1048576,
+            max_stored_bytes: STORED_BYTES,
+            max_output_bytes: FILE_BYTES,
             max_chain_depth: 128,
-            max_total_stored_bytes: 67108864,
-            max_total_decoded_bytes: 67108864,
+            max_total_stored_bytes: crate::storage::UNMETERED,
+            max_total_decoded_bytes: crate::storage::UNMETERED,
         },
         parser: crate::artifact::ParseLimits {
-            input_bytes: 1048576,
-            // A file card of a SHA3 check-in manifest takes at least 68 bytes, so such a
-            // manifest reaches the 1 MiB input ceiling before 16,384 cards. Other
-            // artifacts, such as a cluster, can reach the card ceiling first.
-            cards: 16384,
-            owned_bytes: 8388608,
-            entries: 16384,
+            input_bytes: FILE_BYTES as usize,
+            cards: ARTIFACT_CARDS,
+            owned_bytes: OWNED_RATIO * FILE_BYTES as usize,
+            entries: ARTIFACT_CARDS,
         },
+    }
+}
+
+/// The bytes that the parser owns for each byte of a large manifest, rounded up.
+///
+/// `parser_owns_less_than_the_ratio` measured 3.3 on a manifest of 20,000 short
+/// paths and 2.5 on a cluster of 20,000 cards.
+pub(crate) const OWNED_RATIO: usize = 4;
+
+/// Give the one set of tracking ceilings of `add`, `status`, `scope` and `commit`.
+/// # Returns
+/// As many paths as [`ARTIFACT_CARDS`], paths of at most 4,096 bytes and 128
+/// components, a file of at most [`FILE_BYTES`], and a read buffer of 64 KiB. The
+/// count of paths lets the ceiling on the manifest bound the tracked set.
+pub(crate) fn tracking_limits() -> TrackingLimits {
+    TrackingLimits {
+        paths: ARTIFACT_CARDS,
+        path_bytes: 4096,
+        components: 128,
+        retained_bytes: u64::from(FILE_BYTES),
+        io_buffer_bytes: 65536,
+    }
+}
+
+/// Give a warning line for each file over [`LARGE_FILE_BYTES`].
+///
+/// Fossil asks before it commits such a file. Gossil warns on standard error and
+/// does not ask.
+/// # Arguments
+/// * `root` - The registered root of the checkout.
+/// * `paths` - The paths, relative to the root, that `add` read or that a commit stored.
+/// # Returns
+/// One line for each regular file over the size, in the order of `paths`. A path
+/// whose status cannot be read gives no line.
+pub(crate) fn large_file_warnings(root: &Path, paths: &[&str]) -> Vec<String> {
+    paths
+        .iter()
+        .filter_map(|path| {
+            let size = std::fs::symlink_metadata(root.join(path))
+                .ok()
+                .filter(std::fs::Metadata::is_file)?
+                .len();
+            (size > LARGE_FILE_BYTES).then(|| {
+                format!("warning: the file {path:?} has {size} bytes, more than {LARGE_FILE_BYTES}")
+            })
+        })
+        .collect()
+}
+
+/// The text inside the storage refusal of a command that waited for the write lock
+/// past its timeout.
+pub(crate) const LOCKED: &str = "database is locked";
+
+/// Say whether an error, or any error that caused it, is a lock timeout.
+/// # Arguments
+/// * `error` - The failure of one attempt.
+/// # Returns
+/// True when the message of the error or of one of its sources holds [`LOCKED`].
+pub(crate) fn is_locked(error: &(dyn std::error::Error + 'static)) -> bool {
+    let mut next = Some(error);
+    while let Some(error) = next {
+        if error.to_string().contains(LOCKED) {
+            return true;
+        }
+        next = error.source();
+    }
+    false
+}
+
+/// Run one attempt of a command, and run it once more after a lock timeout.
+///
+/// Every command takes the write lock, even a command that only reads. So a command
+/// can wait for that lock past its busy timeout and fail with [`LOCKED`]. That failure
+/// rolls back its own transaction, and a second attempt opens the repository again.
+///
+/// `vcs add` adds the files in one transaction and reads the list that it prints in
+/// three more transactions. So a failure in one of those three comes after the files
+/// are added. The second attempt is still safe, because add skips each path that is
+/// already tracked.
+///
+/// Every command that opens an existing repository runs inside this
+/// function, except `vcs open`. A first registration of `vcs open` that waits past the
+/// timeout has already made the `.gossil` directory, so a second attempt would fail on
+/// the incomplete marker. `vcs init` makes a new file, which no other process holds.
+/// # Arguments
+/// * `attempt` - Opens the repository and runs the command, each time it is called.
+/// * `retryable` - Says whether a failure is a lock timeout.
+/// # Returns
+/// The result of the first attempt, or of the second one after a lock timeout.
+/// # Errors
+/// Gives the failure of the first attempt when it is not a lock timeout, and the
+/// failure of the second attempt otherwise.
+pub(crate) async fn retry_locked<T, E, F, A>(
+    mut attempt: A,
+    retryable: impl Fn(&E) -> bool,
+) -> Result<T, E>
+where
+    A: FnMut() -> F,
+    F: std::future::Future<Output = Result<T, E>>,
+{
+    match attempt().await {
+        Err(failure) if retryable(&failure) => attempt().await,
+        result => result,
     }
 }
 /// Observe the nearest marker; missing locator remains an incomplete marker, never a default.
@@ -346,27 +475,124 @@ pub(crate) fn run(args: &[OsString]) -> Result<(), Error> {
 #[cfg(test)]
 mod tests {
     use super::*;
-    /// The parser ceilings of the CLI admit an artifact of more than 4,096 cards and
-    /// entries, and refuse one over 16,384.
+    /// A file of exactly 20,000,000 bytes gives no warning and one byte more gives one.
+    /// A directory, a symbolic link and a missing path give none.
     /// # Panics
-    /// Panics if the test date provider gives a date, if 16,384 cards are refused, or if
-    /// 16,385 cards are not refused for a resource limit.
+    /// Panics if a warning is missing or extra.
+    #[test]
+    fn a_warning_only_above_twenty_million_bytes() {
+        let temp = tempfile::tempdir().unwrap();
+        let root = temp.path();
+        for (name, size) in [
+            ("at.bin", LARGE_FILE_BYTES),
+            ("over.bin", LARGE_FILE_BYTES + 1),
+        ] {
+            std::fs::File::create(root.join(name))
+                .unwrap()
+                .set_len(size)
+                .unwrap();
+        }
+        std::fs::create_dir(root.join("dir")).unwrap();
+        std::os::unix::fs::symlink("over.bin", root.join("link")).unwrap();
+        let paths = ["at.bin", "over.bin", "dir", "link", "missing"];
+        assert_eq!(
+            large_file_warnings(root, &paths),
+            ["warning: the file \"over.bin\" has 20000001 bytes, more than 20000000"]
+        );
+    }
+    /// The ceilings of the CLI agree: `add` reads the file that `commit` stores, the
+    /// artifact ceiling is the file ceiling, and the tracked paths are as many as the
+    /// cards of one manifest.
+    /// # Panics
+    /// Panics if two ceilings disagree.
+    #[test]
+    fn ceilings_of_add_and_commit_agree() {
+        let (admission, tracking) = (limits(), tracking_limits());
+        assert_eq!(admission.content.max_output_bytes, 2_147_418_109);
+        assert_eq!(admission.content.max_stored_bytes, 999_998_976);
+        assert_eq!(
+            tracking.retained_bytes,
+            u64::from(admission.content.max_output_bytes)
+        );
+        assert_eq!(
+            admission.parser.input_bytes,
+            admission.content.max_output_bytes as usize
+        );
+        assert_eq!(admission.parser.cards, 1_073_709_054);
+        assert_eq!(admission.parser.entries, admission.parser.cards);
+        assert_eq!(tracking.paths, admission.parser.cards);
+        assert_eq!(
+            admission.parser.owned_bytes,
+            OWNED_RATIO * admission.parser.input_bytes
+        );
+        assert_eq!(
+            (
+                admission.content.max_total_stored_bytes,
+                admission.content.max_total_decoded_bytes
+            ),
+            (crate::storage::UNMETERED, crate::storage::UNMETERED)
+        );
+    }
+
+    /// Run the retry once after a lock timeout, never after another failure, and
+    /// never a third time.
+    /// # Panics
+    /// Panics if the count of attempts or a result differs.
     #[tokio::test]
-    async fn parser_ceilings_admit_more_than_four_thousand_cards() {
-        struct NoDates;
-        impl crate::artifact::DateProvider for NoDates {
+    async fn a_lock_timeout_is_retried_once() {
+        let locked = || -> Error { "SQLite failure: `database is locked`".into() };
+        let retryable = |error: &Error| is_locked(&**error);
+        for (failures, attempts, passed) in [(0, 1, true), (1, 2, true), (2, 2, false)] {
+            let mut count = 0;
+            let result: Result<(), Error> = retry_locked(
+                || {
+                    count += 1;
+                    let fail = count <= failures;
+                    async move { if fail { Err(locked()) } else { Ok(()) } }
+                },
+                retryable,
+            )
+            .await;
+            assert_eq!((count, result.is_ok()), (attempts, passed));
+        }
+        let mut count = 0;
+        let result: Result<(), Error> = retry_locked(
+            || {
+                count += 1;
+                async { Err("tracking path limit".into()) }
+            },
+            retryable,
+        )
+        .await;
+        assert_eq!(
+            (count, result.unwrap_err().to_string().as_str()),
+            (1, "tracking path limit")
+        );
+        // A cause that holds the lock text counts too.
+        let wrapped = std::io::Error::other(crate::storage::StorageError::from(
+            libsql::Error::SqliteFailure(5, LOCKED.into()),
+        ));
+        assert!(is_locked(&wrapped));
+        assert!(!is_locked(&std::io::Error::other("other")));
+    }
+
+    /// The parser owns less than [`OWNED_RATIO`] bytes for each byte of a large
+    /// manifest of short paths, and of a large cluster, and admits more than the old
+    /// ceiling of 16,384 cards.
+    /// # Panics
+    /// Panics if a parse fails, or if it owns more than the ratio.
+    #[tokio::test]
+    async fn parser_owns_less_than_the_ratio() {
+        struct Dates;
+        impl crate::artifact::DateProvider for Dates {
             async fn julianday(
                 &self,
-                _: Option<&[u8]>,
+                date: Option<&[u8]>,
             ) -> Result<Option<f64>, crate::artifact::DateProviderError> {
-                Ok(None)
+                Ok(date.map(|_| 2_461_000.5))
             }
         }
-        let cluster = |count: usize| {
-            let mut input = Vec::new();
-            for index in 0..count {
-                input.extend_from_slice(format!("M {index:040x}\n").as_bytes());
-            }
+        let sealed = |mut input: Vec<u8>| {
             let checksum = crate::artifact_checksum::md5(&input);
             input.extend_from_slice(b"Z ");
             for byte in checksum {
@@ -375,22 +601,32 @@ mod tests {
             input.push(b'\n');
             input
         };
-        // A cluster has no date card, so the provider must give no date.
+        let mut manifest = b"C save\nD 2026-11-20T00:00:00.000\n".to_vec();
+        for index in 0..20_000 {
+            manifest.extend_from_slice(
+                format!("F d{:03}/f{index:05}.txt {index:064x}\n", index / 100).as_bytes(),
+            );
+        }
+        manifest.extend_from_slice(b"U tester\n");
+        let mut cluster = Vec::new();
+        for index in 0..20_000 {
+            cluster.extend_from_slice(format!("M {index:040x}\n").as_bytes());
+        }
+        // A cluster has no date card, so the provider gives no date for it.
         assert_eq!(
-            crate::artifact::DateProvider::julianday(&NoDates, None)
+            crate::artifact::DateProvider::julianday(&Dates, None)
                 .await
                 .unwrap(),
             None
         );
-        let parser = limits().parser;
-        let parsed = crate::artifact::parse_artifact_with_usage(&cluster(16383), parser, &NoDates)
-            .await
-            .unwrap();
-        assert_eq!(parsed.1.cards, 16384);
-        assert!(matches!(
-            crate::artifact::parse_artifact(&cluster(16384), parser, &NoDates).await,
-            Err(crate::artifact::ArtifactError::ResourceLimit)
-        ));
+        for (input, cards) in [(sealed(manifest), 20_004), (sealed(cluster), 20_001)] {
+            let (_, usage) =
+                crate::artifact::parse_artifact_with_usage(&input, limits().parser, &Dates)
+                    .await
+                    .unwrap();
+            assert_eq!(usage.cards, cards);
+            assert!(usage.owned_bytes < OWNED_RATIO * input.len());
+        }
     }
     /// A real registered checkout remains unchanged while each caller/payload mismatch is rejected.
     #[tokio::test]

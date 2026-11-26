@@ -797,7 +797,7 @@ async fn batch_limits_and_existing_aliases_preserve_pending_state() {
                 paths: 1,
                 ..tracking()
             },
-            "tracking batch count limit",
+            "add names 2 paths, more than the 1 paths that one command may name",
         ),
         (&["FIRST"][..], tracking(), "aliased tracked path"),
         (&["first/child"][..], tracking(), "aliased tracked path"),

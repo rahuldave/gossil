@@ -632,19 +632,23 @@ async fn a_failure_after_each_write_step_changes_no_byte() {
     assert_eq!(stored.record, IssueRecord::Task(task));
 }
 
-/// Each of these refuses before the write and changes no byte: bad metadata, a `[`,
-/// an artifact just over the task limit, text over that limit, text over the parser
-/// ceiling, and a project ID that is not a Gest ID. A task just under the limit is
-/// stored, and so is a later small task.
+/// Checks that each bad request refuses before the write and changes no byte.
+///
+/// The bad requests have bad metadata, a `[`, an artifact a little over the
+/// artifact ceiling, text over that ceiling, or a project ID that is not a Gest ID.
+/// The test sets an artifact ceiling of 65,536 bytes and finds the largest
+/// description that is stored. The two RFC 3339 stamps of a task change the size of
+/// the artifact by up to 20 bytes. So a description 21 bytes longer than the largest
+/// stored one is refused, a description 20 bytes shorter is stored, and a later
+/// small task is stored.
 #[tokio::test]
 async fn refusals_before_the_write_change_no_byte() {
+    const CEILING: usize = 65_536;
     let temp = tempfile::tempdir().unwrap();
     let mut found = repository(temp.path(), true).await;
     let path = temp.path().join("repo");
-    let large = Request {
-        description: "x".repeat(super::super::limits().admission.parser.input_bytes),
-        ..titled("T")
-    };
+    let mut small = super::super::limits();
+    small.admission.parser.input_bytes = CEILING;
     let sized = |bytes: usize| Request {
         description: "x".repeat(bytes),
         ..titled("T")
@@ -654,26 +658,36 @@ async fn refusals_before_the_write_change_no_byte() {
         &[b'a'; 40],
         b"owner",
         crate::native_date::NativeDate::parse(b"2026-11-20T12:34:56Z").unwrap(),
-        65_536,
+        CEILING,
     )
     .unwrap()
     .len();
-    let room = TASK_BYTES - base;
+    let room = CEILING - base;
     let files = file_bytes(&path);
-    for (request, status) in [
-        (parse(&os(&["T", "-m", "bad"])).unwrap(), 64),
-        (titled("[x]"), 64),
-        (sized(room + 200), 64),
-        (sized(TASK_BYTES), 64),
-        (large, 64),
+    let over = |bytes: usize| {
+        format!(
+            "gossil: issue task create: the task has at least {bytes} bytes, more than the 65536 bytes of one artifact"
+        )
+    };
+    for (request, status, message) in [
+        (parse(&os(&["T", "-m", "bad"])).unwrap(), 64, None),
+        (titled("[x]"), 64, None),
+        (sized(room + 200), 64, Some(over(CEILING + 1))),
+        // The text of the title, the description and the metadata `{}`.
+        (sized(CEILING), 64, Some(over(CEILING + 3))),
     ] {
-        let failure = create_in(&mut found, &request).await.unwrap_err();
+        let failure = create_bounded(&mut found, &request, small)
+            .await
+            .unwrap_err();
         assert_eq!(failure.status, status, "{}", failure.message);
         assert!(
             failure.message.starts_with("gossil: issue task create: "),
             "{}",
             failure.message
         );
+        if let Some(message) = message {
+            assert_eq!(failure.message, message);
+        }
         assert_eq!(file_bytes(&path), files);
     }
     let project = found.project.replace("bad".to_string());
@@ -686,7 +700,36 @@ async fn refusals_before_the_write_change_no_byte() {
     );
     assert_eq!(file_bytes(&path), files);
     found.project = project;
-    create_in(&mut found, &sized(room - 200)).await.unwrap();
+    // Find the largest description that is stored. Each byte of the description adds
+    // one byte to the artifact. The two stamps of the task are RFC 3339, with 0, 3, 6
+    // or 9 fractional digits. So the artifact of one description varies by up to SLACK
+    // bytes. The message of every refusal names the ceiling plus one.
+    const SLACK: usize = 20;
+    let (mut stored, mut refused) = (room - 200, room + 200);
+    create_bounded(&mut found, &sized(stored), small)
+        .await
+        .unwrap();
+    while refused - stored > 1 {
+        let middle = (stored + refused) / 2;
+        match create_bounded(&mut found, &sized(middle), small).await {
+            Ok(_) => stored = middle,
+            Err(failure) => {
+                assert_eq!(failure.message, over(CEILING + 1));
+                refused = middle;
+            }
+        }
+    }
+    let files = file_bytes(&path);
+    let failure = create_bounded(&mut found, &sized(stored + 1 + SLACK), small)
+        .await
+        .unwrap_err();
+    assert_eq!((failure.status, failure.message), (64, over(CEILING + 1)));
+    assert_eq!(file_bytes(&path), files);
+    create_bounded(&mut found, &sized(stored - SLACK), small)
+        .await
+        .unwrap();
+    // The CLI ceiling stores a task far over the old 65,536 bytes.
+    create_in(&mut found, &sized(200_000)).await.unwrap();
     create_in(&mut found, &titled("small")).await.unwrap();
 }
 
@@ -865,4 +908,18 @@ async fn a_used_up_decoded_budget_refuses_cleanly() {
         .unwrap();
     assert_eq!(stored.record, IssueRecord::Task(task));
     create_in(&mut fresh, &titled("After")).await.unwrap();
+}
+
+/// An encoder over the ceiling refuses with 64, and any other encoder failure with 74.
+#[test]
+fn a_ticket_failure_maps_size_to_64_and_the_rest_to_74() {
+    let size = ticket_failure(&crate::gest_ticket::TicketError::Size, 10);
+    assert_eq!(size.status, 64);
+    assert_eq!(
+        size.message,
+        "gossil: issue task create: the task has at least 11 bytes, more than the 10 bytes of one artifact"
+    );
+    let other = ticket_failure(&crate::gest_ticket::TicketError::TicketId, 10);
+    assert_eq!(other.status, 74);
+    assert!(other.message.starts_with("gossil: issue task create: "));
 }

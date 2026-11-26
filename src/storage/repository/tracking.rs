@@ -78,9 +78,21 @@ impl LocalOwnerRepository {
         limits: AdmissionLimits,
         tracking: TrackingLimits,
     ) -> Result<CheckoutView, StorageError> {
-        if paths.is_empty() || paths.len() > tracking.paths {
+        if paths.is_empty() {
             return Err(StorageError::state("tracking batch count limit"));
         }
+        if paths.len() > tracking.paths {
+            return Err(StorageError::state(format!(
+                "add names {} paths, more than the {} paths that one command may name",
+                paths.len(),
+                tracking.paths
+            )));
+        }
+        // Add reads no file that commit would refuse for its size. Commit can still
+        // refuse a file whose compressed envelope is over `max_stored_bytes`.
+        let largest = tracking
+            .retained_bytes
+            .min(u64::from(limits.content.max_output_bytes));
         // Ceilings bound each file and row, not the whole command.
         let (_, mut budget, _) = super::verification::proof_ledgers(limits)?;
         let mut unique = BTreeSet::new();
@@ -124,13 +136,13 @@ impl LocalOwnerRepository {
                 }
             }
             let total = existing.len().checked_add(paths.iter().filter(|path|!known.contains(**path)).count()).ok_or_else(||StorageError::state("tracking inventory overflow"))?;
-            if total>tracking.paths { return Err(StorageError::state("tracking inventory count limit")); }
+            if total>tracking.paths { return Err(StorageError::state(format!("the checkout would track {total} files, more than the {} files that one checkout may track", tracking.paths))); }
             budget.charge_decoded(paths.len().checked_mul(std::mem::size_of::<(&str,capture::Captured)>()).ok_or_else(||StorageError::state("tracking capture work overflow"))?)?;
             let mut captures = Vec::new();
             captures.try_reserve_exact(paths.len()).map_err(|e|StorageError::caused("tracking capture allocation",e))?;
             // Each file is read once and its bytes dropped, so memory follows the largest file.
             for path in paths {
-                let captured = capture::capture_budget(&root,path,&protected,tracking,tracking.retained_bytes,&mut budget)?;
+                let captured = capture::capture_budget(&root,path,&protected,tracking,largest,&mut budget)?;
                 captures.push((*path,captured.mode,captured.mtime,captured.observed()));
             }
             let rid = tx.query_bound("SELECT rid FROM blob WHERE uuid=?1",vec![Value::Text(before.combined_head.as_ref().unwrap_or(&before.shared_head).clone())]).await?;

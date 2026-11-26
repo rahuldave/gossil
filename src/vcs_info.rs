@@ -69,9 +69,14 @@ pub(crate) fn run(args: &[OsString]) -> Result<(), Error> {
     let options = options(args)?;
     let (_, view) = tokio::runtime::Builder::new_current_thread()
         .build()?
-        .block_on(crate::vcs_open::admit_existing(
-            PathBuf::from(&options.repository),
-            options.checkout,
+        .block_on(crate::vcs_open::retry_locked(
+            || {
+                crate::vcs_open::admit_existing(
+                    PathBuf::from(&options.repository),
+                    options.checkout.clone(),
+                )
+            },
+            |error: &Error| crate::vcs_open::is_locked(&**error),
         ))?;
     let root = view
         .registered_root

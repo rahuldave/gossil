@@ -6,10 +6,12 @@
 use crate::storage::{
     PathScope, PathScopeSelection, PrivateRecordingOutcome, PrivateRecordingRequest, TrackingLimits,
 };
+use crate::vcs_open::tracking_limits as limits;
 use std::{ffi::OsString, path::PathBuf};
 /// Preserve underlying grammar, admission, storage and output failures.
 type Error = Box<dyn std::error::Error>;
 /// Hold explicit caller selections without repository defaults from the current directory.
+#[derive(Clone)]
 struct Options {
     /// Native repository filename.
     repository: PathBuf,
@@ -26,30 +28,18 @@ struct Options {
     /// Required date override for recording, absent for scope selection.
     date: Option<String>,
 }
-/// Supply bounded full inventory and capture work independent of Gest settings.
-/// # Returns
-/// Finite pathname, descriptor and one-file capture ceilings.
-fn limits() -> TrackingLimits {
-    TrackingLimits {
-        // A check-in manifest of 1 MiB holds fewer files than this.
-        paths: 16384,
-        path_bytes: 4096,
-        components: 128,
-        retained_bytes: 67108864,
-        io_buffer_bytes: 65536,
-    }
-}
 /// Parse exact explicit command grammar before any repository observation.
 /// # Arguments
 /// * `args` - Suffix after the scope or commit verb.
 /// * `commit` - Whether private all-tracked recording grammar is required.
+/// * `limits` - The path ceilings.
 /// # Returns
 /// Bounded explicit selectors and recording metadata.
 /// # Errors
 /// Refuses duplicate/unknown options, missing values, implicit scope, missing
 /// all-tracked consent, shared recording, non-UTF-8 metadata and exhausted bounds.
-fn options(args: &[OsString], commit: bool) -> Result<Options, Error> {
-    if args.len() > 16 + 2 * limits().paths {
+fn options(args: &[OsString], commit: bool, limits: TrackingLimits) -> Result<Options, Error> {
+    if args.len() > 16 + 2 * limits.paths {
         return Err("recording argument count limit".into());
     }
     let (mut repository, mut checkout, mut scope) = (None, None, None);
@@ -97,9 +87,11 @@ fn options(args: &[OsString], commit: bool) -> Result<Options, Error> {
                 _ => return Err("explicit supported scope required".into()),
             });
         } else if arg == "--path" && !commit {
-            if text.is_empty() || text.len() > limits().path_bytes || paths.len() >= limits().paths
-            {
+            if text.is_empty() || text.len() > limits.path_bytes {
                 return Err("scope path limit".into());
+            }
+            if paths.len() >= limits.paths {
+                return Err(crate::vcs_tracking::too_many_paths("scope", limits.paths).into());
             }
             paths.push(text.to_owned());
         } else if arg == "--user" && commit && actor.is_none() {
@@ -151,10 +143,10 @@ fn options(args: &[OsString], commit: bool) -> Result<Options, Error> {
 /// # Panics
 /// Panics if called from an already running Tokio runtime.
 pub(crate) fn run(args: &[OsString], commit: bool) -> Result<(), Error> {
-    let options = options(args, commit)?;
-    let message = tokio::runtime::Builder::new_current_thread()
-        .build()?
-        .block_on(async {
+    let options = options(args, commit, limits())?;
+    let attempt = || {
+        let options = options.clone();
+        async move {
             let (mut owner, view) =
                 crate::vcs_open::admit_existing(options.repository, options.checkout).await?;
             if commit {
@@ -190,10 +182,21 @@ pub(crate) fn run(args: &[OsString], commit: bool) -> Result<(), Error> {
                     )
                     .await?;
                 Ok::<_, Error>(match outcome {
-                    PrivateRecordingOutcome::Recorded { native_name, .. } => {
-                        format!("Recorded private check-in: {native_name}")
+                    PrivateRecordingOutcome::Recorded {
+                        native_name,
+                        changed,
+                        ..
+                    } => {
+                        // Warn only for the files that this check-in stored, as Fossil does.
+                        let changed: Vec<&str> = changed.iter().map(String::as_str).collect();
+                        (
+                            format!("Recorded private check-in: {native_name}"),
+                            crate::vcs_open::large_file_warnings(&view.registered_root, &changed),
+                        )
                     }
-                    PrivateRecordingOutcome::NoChange { .. } => "No changes".to_owned(),
+                    PrivateRecordingOutcome::NoChange { .. } => {
+                        ("No changes".to_owned(), Vec::new())
+                    }
                 })
             } else {
                 let selections: Vec<_> = options
@@ -213,9 +216,18 @@ pub(crate) fn run(args: &[OsString], commit: bool) -> Result<(), Error> {
                         limits(),
                     )
                     .await?;
-                Ok(format!("Selected scopes: {}", selections.len()))
+                Ok((format!("Selected scopes: {}", selections.len()), Vec::new()))
             }
-        })?;
+        }
+    };
+    let (message, warnings) = tokio::runtime::Builder::new_current_thread()
+        .build()?
+        .block_on(crate::vcs_open::retry_locked(attempt, |error: &Error| {
+            crate::vcs_open::is_locked(&**error)
+        }))?;
+    for warning in warnings {
+        eprintln!("{warning}");
+    }
     use std::io::Write;
     writeln!(std::io::stdout().lock(), "{message}")?;
     Ok(())
@@ -224,6 +236,16 @@ pub(crate) fn run(args: &[OsString], commit: bool) -> Result<(), Error> {
 /// Check explicit scope and all-tracked recording command grammar.
 mod tests {
     use super::*;
+
+    /// Parse with the ceilings of the CLI.
+    /// # Arguments
+    /// * `args` - Suffix after the scope or commit verb.
+    /// * `commit` - Whether private all-tracked recording grammar is required.
+    /// # Returns
+    /// The result of the parser.
+    fn options(args: &[OsString], commit: bool) -> Result<Options, Error> {
+        super::options(args, commit, limits())
+    }
 
     /// Keep each metadata ceiling inclusive and reject empty, oversized or NUL input.
     #[test]
@@ -285,9 +307,16 @@ mod tests {
         .into_iter()
         .map(OsString::from)
         .collect();
-        let too_many = vec![OsString::from("--path"); 17 + 2 * limits().paths];
+        let small = TrackingLimits {
+            paths: 3,
+            ..limits()
+        };
+        let too_many = vec![OsString::from("--path"); 17 + 2 * small.paths];
         assert_eq!(
-            options(&too_many, false).err().unwrap().to_string(),
+            super::options(&too_many, false, small)
+                .err()
+                .unwrap()
+                .to_string(),
             "recording argument count limit"
         );
         let mut args = base.clone();
@@ -301,14 +330,17 @@ mod tests {
             );
         }
         let mut args = base;
-        for index in 0..limits().paths {
+        for index in 0..small.paths {
             args.extend([OsString::from("--path"), format!("file-{index}").into()]);
         }
-        assert_eq!(options(&args, false).unwrap().paths.len(), 16384);
+        assert_eq!(super::options(&args, false, small).unwrap().paths.len(), 3);
         args.extend([OsString::from("--path"), OsString::from("one-more")]);
         assert_eq!(
-            options(&args, false).err().unwrap().to_string(),
-            "scope path limit"
+            super::options(&args, false, small)
+                .err()
+                .unwrap()
+                .to_string(),
+            "scope names more than the 3 paths that one command may name"
         );
     }
 

@@ -70,8 +70,11 @@ impl LocalOwnerRepository {
     /// One transaction runs the checks of each command, then walks the manifests from
     /// the current check-in to the end of the page, and reads the event row of each
     /// entry of the page. Each manifest has the ceilings of one artifact, and each row
-    /// the ceilings of one row. The read has no ceiling on the whole chain, so its
-    /// cost follows `offset` and `limit`, not the length of the history.
+    /// the ceilings of one row. The read has no parser or content ceiling on the whole
+    /// chain, so its cost follows `offset` and `limit`, not the length of the history.
+    /// The page keeps each manifest that it walks, and the parse of each, up to 1 GiB
+    /// in all. The first manifest, the current check-in, does not count toward that
+    /// ceiling, so only the older manifests count toward it.
     ///
     /// The read refuses an event whose user or comment is not the U or C card of its
     /// manifest. When the walk reaches the shared root, it also refuses a chain whose
@@ -89,9 +92,10 @@ impl LocalOwnerRepository {
     /// completion. The page is empty only when `offset` passes the shared root.
     /// # Errors
     /// Refuses missing/foreign checkout, changed authority, unsupported or corrupt
-    /// state, invalid limits, an artifact or row over its ceiling, allocation/provider
-    /// and checked cleanup errors. Existing operation causes and separate cleanup
-    /// failures are preserved.
+    /// state, invalid limits, an artifact or row over its ceiling, a page whose
+    /// manifests and parses after the first would pass 1 GiB,
+    /// allocation/provider and checked cleanup errors. Existing operation causes and
+    /// separate cleanup failures are preserved.
     /// # Examples
     /// ```no_run
     /// async fn newest(owner: &mut gossil::storage::LocalOwnerRepository, limits: gossil::storage::AdmissionLimits) {
@@ -152,7 +156,10 @@ impl LocalOwnerRepository {
                     limits,
                     &mut work,
                     &mut parse,
-                    Reach::Manifests(offset.saturating_add(limit)),
+                    Reach::Manifests(
+                        offset.saturating_add(limit),
+                        super::recorded_history::PAGE_RETAINED_BYTES,
+                    ),
                 )
                 .await?;
             let root = walk
@@ -812,18 +819,18 @@ mod tests {
         let shared = native_identity(&rows[0]).0.to_string();
         let mismatch = "recording generation/history mismatch";
         for (generation, reach, expected) in [
-            (2, Reach::Manifests(1), Some((1, false))),
-            (2, Reach::Manifests(2), Some((2, true))),
-            (2, Reach::Manifests(usize::MAX), Some((2, true))),
+            (2, Reach::Manifests(1, usize::MAX), Some((1, false))),
+            (2, Reach::Manifests(2, usize::MAX), Some((2, true))),
+            (2, Reach::Manifests(usize::MAX, usize::MAX), Some((2, true))),
             (2, Reach::Parent, Some((2, true))),
             (2, Reach::Proof, Some((2, true))),
-            (1, Reach::Manifests(1), Some((1, false))),
-            (1, Reach::Manifests(2), None),
+            (1, Reach::Manifests(1, usize::MAX), Some((1, false))),
+            (1, Reach::Manifests(2, usize::MAX), None),
             (1, Reach::Parent, None),
             (1, Reach::Proof, None),
-            (3, Reach::Manifests(1), Some((1, false))),
-            (3, Reach::Manifests(2), None),
-            (3, Reach::Manifests(3), None),
+            (3, Reach::Manifests(1, usize::MAX), Some((1, false))),
+            (3, Reach::Manifests(2, usize::MAX), None),
+            (3, Reach::Manifests(3, usize::MAX), None),
             (3, Reach::Parent, None),
             (3, Reach::Proof, None),
         ] {
@@ -861,6 +868,85 @@ mod tests {
                 ),
             }
         }
+        tx.rollback().await.unwrap();
+    }
+
+    #[tokio::test]
+    /// A page keeps at most its ceiling of manifest bytes and parses, and its first
+    /// manifest does not count toward that ceiling. With a ceiling of the exact cost
+    /// of the second manifest, a page of two manifests passes. With one byte less, it
+    /// refuses with the message `PAGE_TOO_LARGE`.
+    /// # Panics
+    /// Panics if the boundary or the message differs.
+    async fn a_page_keeps_at_most_its_ceiling_of_manifests() {
+        let (_temp, mut owner) = fixture(2).await;
+        let limits = bounds();
+        let mut tx = owner.store.begin_write().await.unwrap();
+        let rows = tx
+            .query("SELECT shared_head,0 FROM g_checkout")
+            .await
+            .unwrap();
+        let shared = native_identity(&rows[0]).0.to_string();
+        let mut walk = async |count: usize, ceiling: usize| {
+            let mut work = Budget::new(limits.content).unwrap();
+            let mut parse = ParseWork::per_artifact(limits.parser).unwrap();
+            tx.walk_recorded_history(
+                &owner.principal,
+                &shared,
+                limits,
+                &mut work,
+                &mut parse,
+                Reach::Manifests(count, ceiling),
+            )
+            .await
+            .map(|walk| {
+                walk.commits
+                    .iter()
+                    .map(|commit| commit.0.hash.clone())
+                    .collect::<Vec<_>>()
+            })
+            .map_err(|error| error.operation)
+        };
+        let page = super::super::recorded_history::PAGE_TOO_LARGE;
+        // The first manifest is kept over any ceiling, the second is not.
+        assert_eq!(walk(1, 0).await.unwrap().len(), 1);
+        assert_eq!(walk(2, 0).await, Err(page.to_owned()));
+        // Find the least ceiling that holds two manifests.
+        let (mut refused, mut held) = (0, 1 << 24);
+        let both = walk(2, held).await.unwrap();
+        assert_eq!(both.len(), 2);
+        while held - refused > 1 {
+            let middle = (refused + held) / 2;
+            match walk(2, middle).await {
+                Ok(_) => held = middle,
+                Err(error) => {
+                    assert_eq!(error, page);
+                    refused = middle;
+                }
+            }
+        }
+        assert_eq!(walk(2, held).await, Ok(both.clone()));
+        assert_eq!(walk(2, held - 1).await, Err(page.to_owned()));
+        assert_eq!(walk(2, usize::MAX).await, Ok(both.clone()));
+        // The ceiling counts exactly the second manifest, the older one, and its
+        // parse, which owns more than its bytes. It does not count the newest one.
+        let (_, _, older) = tx
+            .recorded_content(
+                &owner.principal,
+                &both[0],
+                &mut Budget::new(limits.content).unwrap(),
+            )
+            .await
+            .unwrap();
+        let mut parse = ParseWork::per_artifact(limits.parser).unwrap();
+        let mut work = Budget::new(limits.content).unwrap();
+        super::super::recorded_history::parse_recording_budgeted(
+            &mut tx, &older, &mut parse, &mut work,
+        )
+        .await
+        .unwrap();
+        assert_eq!(held, older.len() + parse.owned());
+        assert!(held > 2 * older.len(), "{held} {}", older.len());
         tx.rollback().await.unwrap();
     }
 

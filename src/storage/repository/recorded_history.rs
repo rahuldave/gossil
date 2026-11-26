@@ -56,10 +56,11 @@ pub(super) struct RecordedHistory {
 pub(super) enum Reach {
     /// Every check-in and the content of each of its files, for the full proof.
     Proof,
-    /// At most this many check-in manifests, newest first, for a page of the
-    /// timeline. The walk reads no file content, and each check-in has an empty file
-    /// list.
-    Manifests(usize),
+    /// At most the first number of check-in manifests, newest first, for a page of
+    /// the timeline. The page keeps at most the second number of bytes of the
+    /// manifests and their parses. The walk reads no file content, and each check-in
+    /// has an empty file list.
+    Manifests(usize, usize),
     /// The selected check-in and its parent, for a commit. The walk reads the row of
     /// each of their files, and not its content.
     Parent,
@@ -376,6 +377,17 @@ pub(super) async fn bounded_scalar(
     let rows = bounded_rows(tx, sql, args, 1, 64, work).await?;
     scalar_i64(&rows)
 }
+
+/// One page of the timeline keeps at most these bytes, 1 GiB, of the manifests that
+/// it walks and of their parses. The page keeps every check-in up to its end, so a
+/// large `--offset` on a large tree costs memory. The ceiling bounds that memory
+/// until the walk keeps only the facts of each check-in. The first manifest of the
+/// page, the newest check-in, does not count toward the ceiling, so only the older
+/// manifests count toward it.
+pub(crate) const PAGE_RETAINED_BYTES: usize = 1 << 30;
+
+/// The refusal of a page that would keep more than [`PAGE_RETAINED_BYTES`].
+pub(crate) const PAGE_TOO_LARGE: &str = "this page would hold more than 1 GiB of check-in records in memory; use a smaller --offset or --limit";
 
 /// Reserve the two retained manifest copies before parsing a root or private commit.
 /// # Arguments
@@ -965,8 +977,14 @@ impl WriteTransaction<'_> {
     /// [`Reach::Manifests`] it stops after its count of manifests. With
     /// [`Reach::Parent`] it reads only the selected check-in and its parent. When any
     /// walk reaches the shared root, it checks that the length of the chain is the
-    /// generation. The cost of a page and of a commit follows what
-    /// they read, not the length of the history.
+    /// generation. The cost of a page and of a commit follows what they read, not the
+    /// length of the history. A page refuses with [`PAGE_TOO_LARGE`] when its
+    /// manifests and their parses pass the second number of [`Reach::Manifests`].
+    /// The first manifest does not count toward that number, so a page of the newest
+    /// check-in alone never refuses, and a large newest check-in uses none of the
+    /// allowance of the older ones.
+    /// The proof decodes and hashes each content once in a walk, and reuses its row
+    /// for each later check-in that names the same content.
     /// # Arguments
     /// * `principal` - Owner authenticated by the enclosing catalog6 admission.
     /// * `shared_hash` - Immutable empty public S authenticated by that admission.
@@ -979,7 +997,7 @@ impl WriteTransaction<'_> {
     /// first, and whether the walk reached the shared root.
     /// # Errors
     /// Rejects a malformed manifest or parent, a cycle, a length that differs from the
-    /// generation, exhausted bounds and SQL failures.
+    /// generation, a page over its retained ceiling, exhausted bounds and SQL failures.
     pub(super) async fn walk_recorded_history(
         &mut self,
         principal: &Principal,
@@ -1042,6 +1060,10 @@ impl WriteTransaction<'_> {
         let (checkout_id, generation, pending) = (checkout_id.clone(), *generation, *pending);
         let mut reversed = Vec::new();
         let mut seen = BTreeSet::new();
+        let mut retained = 0usize;
+        // The proof decodes and hashes each content row once in a walk. A later
+        // check-in that names the same content reuses its row.
+        let mut proven = BTreeMap::new();
         while let Some(hash) = cursor {
             if !seen.insert(hash.clone()) || hash == shared_hash {
                 return Err(StorageError::state("recording history cycle"));
@@ -1055,7 +1077,21 @@ impl WriteTransaction<'_> {
                 return Err(StorageError::state("recording manifest hash policy"));
             }
             charge_manifest_retention(&bytes, work)?;
+            let owned = parse.owned();
             let artifact = parse_recording_budgeted(self, &bytes, parse, work).await?;
+            // A page keeps each manifest it walks and its parse until the end. The
+            // first manifest is kept outside the ceiling, so a large newest check-in
+            // neither hides itself nor fills the ceiling of the older ones.
+            if let Reach::Manifests(_, ceiling) = reach
+                && !reversed.is_empty()
+            {
+                retained = retained
+                    .saturating_add(bytes.len())
+                    .saturating_add(parse.owned().saturating_sub(owned));
+                if retained > ceiling {
+                    return Err(StorageError::state(PAGE_TOO_LARGE));
+                }
+            }
             let parents = artifact.parents();
             if parents.len() == 1 && parents[0].as_slice() == shared_hash.as_bytes() {
                 cursor = None;
@@ -1070,7 +1106,7 @@ impl WriteTransaction<'_> {
             }
             let mut files = Vec::new();
             // A timeline prints no file, so it reads no file content.
-            let file_cards = if matches!(reach, Reach::Manifests(_)) {
+            let file_cards = if matches!(reach, Reach::Manifests(..)) {
                 &[][..]
             } else {
                 artifact.files()
@@ -1101,10 +1137,17 @@ impl WriteTransaction<'_> {
                 )
                 .map_err(|e| StorageError::caused("recording file hash UTF-8", e))?
                 .to_owned();
-                // The proof reads each file. A commit reads only the identity of its
-                // parent's files. Their bytes are checked when stored, and by the proof.
+                // The proof reads each content once per walk. A commit reads only the
+                // identity of its parent's files. Their bytes are checked when stored, and by the proof.
                 let fid = if reach == Reach::Proof {
-                    self.recorded_content(principal, &name, work).await?.0
+                    match proven.get(&name) {
+                        Some(rid) => *rid,
+                        None => {
+                            let rid = self.recorded_content(principal, &name, work).await?.0;
+                            proven.insert(name.clone(), rid);
+                            rid
+                        }
+                    }
                 } else {
                     self.recorded_identity(&name, work).await?.0
                 };
@@ -1138,7 +1181,7 @@ impl WriteTransaction<'_> {
             // page reads its count.
             let stop = match reach {
                 Reach::Parent => 2,
-                Reach::Manifests(count) => count,
+                Reach::Manifests(count, _) => count,
                 Reach::Proof => usize::MAX,
             };
             if reversed.len() >= stop {
@@ -1292,7 +1335,8 @@ impl WriteTransaction<'_> {
                     }
                     unsent.insert(file.rid);
                 }
-                let (rid, receipt, _) = self.recorded_content(principal, &file.hash, work).await?;
+                // The walk decoded and hashed each content once. Only its row is needed.
+                let (rid, receipt) = self.recorded_identity(&file.hash, work).await?;
                 validate_file_receipt(referenced.contains_key(&rid), receipt, commit.receipt)?;
                 referenced
                     .entry(rid)
@@ -2275,6 +2319,129 @@ mod controls {
         assert_eq!(parse.remaining.entries, before_parse.entries);
         assert_eq!(snapshot_tables(&mut tx).await, before);
         tx.rollback().await.unwrap();
+    }
+
+    #[tokio::test]
+    /// The proof decodes each content row once in a walk. A later check-in that names
+    /// the same file adds no decode of it, and the proof still refuses a corrupt row
+    /// that every check-in names.
+    /// # Panics
+    /// Panics if a later check-in decodes the file again, or the corrupt row passes.
+    async fn proof_decodes_each_content_once_and_still_refuses_a_corrupt_one() {
+        use crate::storage::{
+            PathScope, PathScopeSelection, PrivateRecordingRequest, TrackingLimits,
+        };
+        const BIG: usize = 64 * 1024;
+        let temp = tempfile::tempdir().unwrap();
+        let root = temp.path().join("root");
+        std::fs::create_dir(&root).unwrap();
+        let root = std::fs::canonicalize(root).unwrap();
+        let mut owner = initialized(&temp.path().join("repo")).await;
+        let b = bounds();
+        let tracking = TrackingLimits {
+            paths: 8,
+            path_bytes: 4096,
+            components: 32,
+            retained_bytes: 1 << 20,
+            io_buffer_bytes: 1024,
+        };
+        // Incompressible, so that its decode costs its whole size.
+        let mut state = 0x9e37_79b9_7f4a_7c15_u64;
+        let big: Vec<u8> = (0..BIG)
+            .map(|_| {
+                state ^= state << 13;
+                state ^= state >> 7;
+                state ^= state << 17;
+                state as u8
+            })
+            .collect();
+        std::fs::write(root.join("big"), &big).unwrap();
+        std::fs::write(root.join("small"), b"0").unwrap();
+        let mut view = owner.register_checkout("work", &root, b).await.unwrap();
+        view = owner
+            .add_files("work", &["big", "small"], &view, b, tracking)
+            .await
+            .unwrap();
+        view = owner
+            .select_path_scopes(
+                "work",
+                &view,
+                &["big", "small"].map(|path| PathScopeSelection {
+                    path: path.into(),
+                    scope: PathScope::Private,
+                }),
+                b,
+                tracking,
+            )
+            .await
+            .unwrap();
+        // Run the whole proof of `verify` on the chain, and give its decoded bytes.
+        async fn decoded(
+            owner: &mut LocalOwnerRepository,
+            b: AdmissionLimits,
+        ) -> Result<u64, String> {
+            let shared = owner.checkout_view("work", b).await.unwrap().shared_head;
+            let mut tx = owner.store.begin_write().await.unwrap();
+            let mut work = Budget::new(b.content).unwrap();
+            let mut parse = ParseWork::per_artifact(b.parser).unwrap();
+            let walk = tx
+                .validate_recorded_history(&owner.principal, &shared, b, &mut work, &mut parse)
+                .await
+                .map(|_| work.decoded())
+                .map_err(|error| error.operation);
+            // A refused walk latches its failure, so the rollback repeats it.
+            let _ = tx.rollback().await;
+            walk
+        }
+        let mut costs = Vec::new();
+        for (day, small) in [(1, b"1"), (2, b"2"), (3, b"3")] {
+            std::fs::write(root.join("small"), small).unwrap();
+            let date = format!("2026-11-20T00:00:0{day}");
+            let outcome = owner
+                .commit_private_tracked_files(
+                    "work",
+                    PrivateRecordingRequest {
+                        expected: &view,
+                        paths: &["big", "small"],
+                        scope: PathScope::Private,
+                        actor: b"Owner",
+                        comment: b"c",
+                        date: date.as_bytes(),
+                    },
+                    b,
+                    tracking,
+                )
+                .await
+                .unwrap();
+            assert!(matches!(
+                outcome,
+                crate::storage::PrivateRecordingOutcome::Recorded { .. }
+            ));
+            view = owner.checkout_view("work", b).await.unwrap();
+            costs.push(decoded(&mut owner, b).await.unwrap());
+        }
+        // Each later check-in names the same big file. A decode of it would charge at
+        // least its size. Each check-in adds less, for its manifest, the small file and
+        // the rows.
+        for pair in costs.windows(2) {
+            assert!(pair[1] - pair[0] < BIG as u64, "{costs:?}");
+        }
+        assert!(costs[0] > BIG as u64, "{costs:?}");
+        // A corrupt big blob, which all three check-ins name, is still refused.
+        let name = native_name(&big, &mut Budget::new(b.content).unwrap()).unwrap();
+        let mut tx = owner.store.begin_write().await.unwrap();
+        let bad = crate::compression::pack(&vec![0; BIG], -1).unwrap();
+        tx.execute_bound(
+            "UPDATE blob SET content=?1 WHERE uuid=?2",
+            vec![Value::Blob(bad), Value::Text(name)],
+        )
+        .await
+        .unwrap();
+        tx.commit().await.unwrap();
+        assert_eq!(
+            decoded(&mut owner, b).await,
+            Err("native content hash mismatch".to_owned())
+        );
     }
 
     #[tokio::test]

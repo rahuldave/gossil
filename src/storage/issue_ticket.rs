@@ -132,9 +132,11 @@ const INIT_REFUSED: &str = "issue init needs one project creation, a registered 
 pub struct IssueLimits {
     /// Content, decoded-byte and parser ceilings, shared by the whole call.
     pub admission: AdmissionLimits,
-    /// SQL result rows that the call may read, preflight rows included.
+    /// SQL result rows that a write may read, preflight rows included. The list of
+    /// issues does not use it.
     pub sql_rows: u64,
-    /// SQL result payload bytes that the call may read.
+    /// SQL result payload bytes that a write may read. The list of issues does not
+    /// use it.
     pub sql_bytes: u64,
 }
 
@@ -1040,8 +1042,9 @@ impl LocalOwnerRepository {
     /// nothing. Its cost grows with the number of issues, and not with the rest of the
     /// repository. `gos v verify` compares the typed rows with the artifacts.
     /// # Arguments
-    /// * `limits` - The content ceilings, the SQL row ceiling for the number of
-    ///   issues, and the parser input ceiling for the width of one row.
+    /// * `limits` - The content ceilings of one row, and the parser input ceiling for
+    ///   the width of one row. No ceiling bounds the number of issues or the whole
+    ///   list.
     /// # Returns
     /// Each task and project, in the order of the receipts that stored them. The list is
     /// empty when the repository holds no issue.
@@ -1060,8 +1063,8 @@ impl LocalOwnerRepository {
         &mut self,
         limits: IssueLimits,
     ) -> Result<Vec<IssueTicket>, StorageError> {
-        let mut budget = Budget::new(limits.admission.content)?;
-        ParseWork::new(limits.admission.parser)?;
+        // Ceilings bound each row, not the whole list, as in `verify`.
+        let (_, mut budget, _) = super::verification::proof_ledgers(limits.admission)?;
         let mut tx = self.store.begin_write().await?;
         let result = async {
             tx.check_admission_budgeted(&self.principal, &mut budget)

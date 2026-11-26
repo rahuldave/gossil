@@ -111,7 +111,8 @@ async fn init(mut found: IssueRepository) -> Result<String, IssueFailure> {
     }
     let login = super::login()?;
     let id = crate::gest_model::primitives::Id::new().to_string();
-    let artifact = project_artifact(&id, &login)?;
+    // A project artifact has the ceiling of every artifact.
+    let artifact = project_artifact(&id, &login, project_ceiling())?;
     let written = found
         .owner
         .init_private_project(
@@ -136,6 +137,13 @@ async fn init(mut found: IssueRepository) -> Result<String, IssueFailure> {
     }
 }
 
+/// Give the ceiling of the project artifact: the artifact ceiling of the CLI.
+/// # Returns
+/// The largest artifact, in bytes.
+fn project_ceiling() -> usize {
+    super::limits().admission.parser.input_bytes
+}
+
 /// Emit the creation artifact of a new project, dated now.
 ///
 /// The D card and both timestamps hold the same instant. The K card is 40 random
@@ -143,12 +151,13 @@ async fn init(mut found: IssueRepository) -> Result<String, IssueFailure> {
 /// # Arguments
 /// * `id` - The Gest ID of the project.
 /// * `login` - The local login.
+/// * `ceiling` - The largest artifact, the ceiling of every artifact in the CLI.
 /// # Returns
 /// The artifact bytes.
 /// # Errors
 /// Refuses with status 74 when the clock is before 1970, when no random bytes
 /// come, or when the artifact cannot hold the login.
-fn project_artifact(id: &str, login: &str) -> Result<Vec<u8>, IssueFailure> {
+fn project_artifact(id: &str, login: &str, ceiling: usize) -> Result<Vec<u8>, IssueFailure> {
     let value = |what: &str| IssueFailure::new(74, format!("gossil: issue init: {what}"));
     let now = super::creation("init")?;
     let project = project_from_values(ProjectValueInputs {
@@ -163,7 +172,7 @@ fn project_artifact(id: &str, login: &str) -> Result<Vec<u8>, IssueFailure> {
         now.ticket_id.as_bytes(),
         login.as_bytes(),
         now.date,
-        65_536,
+        ceiling,
     )
     .map_err(|error| value(&error.to_string()))
 }
@@ -207,7 +216,7 @@ mod tests {
     #[test]
     fn the_project_artifact_and_message_follow_gest() {
         let id = "k".repeat(32);
-        let bytes = project_artifact(&id, "alice").unwrap();
+        let bytes = project_artifact(&id, "alice", 65_536).unwrap();
         let text = String::from_utf8(bytes).unwrap();
         assert!(text.contains(&format!("J gest_id \"{id}\"\n")), "{text}");
         assert!(text.contains("\nU alice\n"), "{text}");
@@ -220,7 +229,20 @@ mod tests {
             "  ✓  initialized project  short\n\n  root  /r\n"
         );
         let long = "x".repeat(70_000);
-        assert_eq!(project_artifact(&id, &long).unwrap_err().status, 74);
-        assert_eq!(project_artifact("bad", "alice").unwrap_err().status, 74);
+        assert_eq!(project_artifact(&id, &long, 65_536).unwrap_err().status, 74);
+        assert_eq!(
+            project_artifact("bad", "alice", 65_536).unwrap_err().status,
+            74
+        );
+    }
+
+    #[test]
+    /// Under the artifact ceiling of the CLI, a login of 70,000 bytes, over the old
+    /// ceiling of 65,536 bytes, gives a project artifact.
+    fn a_long_login_fits_the_artifact_ceiling_of_the_cli() {
+        let id = "k".repeat(32);
+        let login = "a".repeat(70_000);
+        let bytes = project_artifact(&id, &login, project_ceiling()).unwrap();
+        assert!(bytes.len() > 70_000);
     }
 }

@@ -180,7 +180,9 @@ impl Fixture {
     /// Panics on failure or unexpected NoChange.
     async fn changed(&mut self, paths: &[&str], date: &[u8]) -> String {
         match self.record(paths, date, b"fixture").await.unwrap() {
-            PrivateRecordingOutcome::Recorded { view, native_name } => {
+            PrivateRecordingOutcome::Recorded {
+                view, native_name, ..
+            } => {
                 self.view = view;
                 native_name
             }
@@ -507,7 +509,16 @@ async fn a_manifest_over_the_input_ceiling_is_refused_and_changes_no_table() {
         )
         .await
         .unwrap_err();
-    assert_eq!(error.operation, "private manifest output limit");
+    let (start, end) = (
+        "the check-in manifest of 12 files needs ",
+        " bytes, more than the 2048 bytes of one manifest",
+    );
+    let needed = error
+        .operation
+        .strip_prefix(start)
+        .and_then(|rest| rest.strip_suffix(end))
+        .unwrap_or_else(|| panic!("{}", error.operation));
+    assert!(needed.parse::<usize>().unwrap() > 2048);
     assert_eq!(snapshot(&f.repo).await, before);
 }
 
@@ -1901,4 +1912,159 @@ async fn commit_refuses_a_parent_receipt_out_of_order() {
         proof::verify_refusal(&repo, limits()).await,
         (true, "recording first-use receipt mismatch".to_owned())
     );
+}
+
+/// Give `size` bytes that do not compress.
+/// # Arguments
+/// * `seed` - A nonzero seed, so that two files differ.
+/// * `size` - The length of the content.
+/// # Returns
+/// The bytes of a xorshift generator.
+fn noise(seed: u64, size: usize) -> Vec<u8> {
+    let mut state = seed;
+    (0..size)
+        .map(|_| {
+            state ^= state << 13;
+            state ^= state >> 7;
+            state ^= state << 17;
+            state as u8
+        })
+        .collect()
+}
+
+/// Commit `paths` of the fixture under explicit ceilings.
+/// # Arguments
+/// * `f` - The fixture.
+/// * `paths` - The complete tracked set.
+/// * `limits` - The admission ceilings.
+/// * `tracking` - The tracking ceilings.
+/// * `second` - The second of the check-in date, later than each parent.
+/// # Returns
+/// The result of the commit.
+async fn commit_all(
+    f: &mut Fixture,
+    paths: &[&str],
+    limits: AdmissionLimits,
+    tracking: TrackingLimits,
+    second: u32,
+) -> Result<PrivateRecordingOutcome, StorageError> {
+    let date = format!("2026-11-20T00:00:{second:02}");
+    f.owner
+        .commit_private_tracked_files(
+            "work",
+            PrivateRecordingRequest {
+                expected: &f.view,
+                paths,
+                scope: PathScope::Private,
+                actor: b"Owner",
+                comment: b"ceiling",
+                date: date.as_bytes(),
+            },
+            limits,
+            tracking,
+        )
+        .await
+}
+
+#[tokio::test]
+/// `add` and `commit` refuse the same file with the same message, the smaller of the
+/// read and output ceilings binds both, and an incompressible file at the ceiling is
+/// stored when the stored ceiling is the packed bound. An envelope over the stored
+/// ceiling and a tracked set over the path ceiling are refused plainly. No refusal
+/// changes a table.
+/// # Panics
+/// Panics if a boundary passes or refuses on the wrong side, or a refusal changes a table.
+async fn add_and_commit_agree_on_the_file_ceiling() {
+    const CEILING: usize = 1 << 20;
+    let mut f = Fixture::new().await;
+    let mut bounds = limits();
+    bounds.content.max_output_bytes = CEILING as u32;
+    bounds.content.max_stored_bytes = gossil::compression::packed_bound(CEILING as u64);
+    // The read ceiling is larger, so the output ceiling binds both commands.
+    let wide = TrackingLimits {
+        retained_bytes: 4 * CEILING as u64,
+        ..tracking()
+    };
+    std::fs::write(f.root.join("big"), noise(7, CEILING)).unwrap();
+    f.view = f
+        .owner
+        .add_files("work", &["big"], &f.view, bounds, wide)
+        .await
+        .unwrap();
+    f.private(&["a", "b", "big"]).await;
+    let paths = ["a", "b", "big"];
+    let outcome = commit_all(&mut f, &paths, bounds, wide, 1).await.unwrap();
+    let PrivateRecordingOutcome::Recorded { view, .. } = outcome else {
+        panic!("expected a check-in");
+    };
+    f.view = view;
+    let before = snapshot(&f.repo).await;
+    let over = |path: &str| {
+        format!(
+            "the file \"{path}\" has 1048577 bytes, more than the 1048576 bytes that one file may have"
+        )
+    };
+    std::fs::write(f.root.join("over"), noise(9, CEILING + 1)).unwrap();
+    let error = f
+        .owner
+        .add_files("work", &["over"], &f.view, bounds, wide)
+        .await
+        .unwrap_err();
+    assert_eq!(error.operation, over("over"));
+    std::fs::write(f.root.join("big"), noise(11, CEILING + 1)).unwrap();
+    let error = commit_all(&mut f, &paths, bounds, wide, 2)
+        .await
+        .unwrap_err();
+    assert_eq!(error.operation, over("big"));
+    assert_eq!(snapshot(&f.repo).await, before);
+    // A stored ceiling below the envelope of incompressible bytes refuses plainly.
+    std::fs::write(f.root.join("big"), noise(13, CEILING)).unwrap();
+    let mut tight = bounds;
+    tight.content.max_stored_bytes = CEILING as u64;
+    let error = commit_all(&mut f, &paths, tight, wide, 2)
+        .await
+        .unwrap_err();
+    assert!(
+        error.operation.starts_with("the content ")
+            && error.operation.ends_with(
+                " of 1048576 bytes does not compress into the 1048576 bytes that one stored artifact may have"
+            ),
+        "{}",
+        error.operation
+    );
+    assert_eq!(snapshot(&f.repo).await, before);
+    // The path ceiling bounds the tracked set of add and of commit alike.
+    std::fs::write(f.root.join("more"), b"more").unwrap();
+    let three = TrackingLimits { paths: 3, ..wide };
+    let error = f
+        .owner
+        .add_files("work", &["more"], &f.view, bounds, three)
+        .await
+        .unwrap_err();
+    assert_eq!(
+        error.operation,
+        "the checkout would track 4 files, more than the 3 files that one checkout may track"
+    );
+    let two = TrackingLimits { paths: 2, ..wide };
+    let error = commit_all(&mut f, &paths, bounds, two, 2)
+        .await
+        .unwrap_err();
+    assert_eq!(
+        error.operation,
+        "the checkout tracks 3 files, more than the 2 files that one checkout may track"
+    );
+    assert_eq!(snapshot(&f.repo).await, before);
+    // At the path ceiling, commit and add pass.
+    let outcome = commit_all(&mut f, &paths, bounds, three, 2).await.unwrap();
+    let PrivateRecordingOutcome::Recorded { view, changed, .. } = outcome else {
+        panic!("expected a check-in");
+    };
+    // Only `big` differs from the parent, so only `big` is stored.
+    assert_eq!(changed, ["big"]);
+    f.view = view;
+    let four = TrackingLimits { paths: 4, ..wide };
+    f.owner
+        .add_files("work", &["more"], &f.view, bounds, four)
+        .await
+        .unwrap();
 }

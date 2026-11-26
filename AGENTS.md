@@ -82,11 +82,13 @@ each other recognised command with status 69.
 writes a private project ticket and its binding in one transaction. The shared
 helper `open_issue_repository` in `src/product/issue.rs` opens the repository of
 an issue command through the published locator, and `IssueFailure` maps errors
-to the CLI-05 statuses 78 and 74. `retry_locked` runs a command once more after
-a `database is locked` refusal. `issue task create` writes
+to the CLI-05 statuses 78 and 74. `retry_locked` in `src/vcs_open.rs` runs
+each command that opens an existing repository, except `vcs open`, a second
+time after a `database is locked` refusal, which comes after the busy timeout
+of 15,000 ms. `issue task create` writes
 one private task in the bound project. It refuses the Gest options that this
-build lacks with status 69. It refuses a `[` and a task artifact over 65,536
-bytes with status 64.
+build lacks with status 69. It refuses a `[` and a task artifact over the
+artifact ceiling of 2,147,418,109 bytes with status 64.
 
 Native local storage supports checkout-free initialization, then one library
 checkout registration at the empty root. Open checks only the facts whose cost
@@ -316,9 +318,9 @@ existing global-state control), and all 20 unchanged Tcl assertions. Its graph
 comparison retained all 126 nonroot packages and edges/features with one
 `libsql-ffi` 0.10.0 provider. At that checkpoint the Gossil crate version in
 `Cargo.toml` was 0.9.0, since released as `v0.9.0`. The current Gossil crate
-version is 0.18.1. The libSQL provider version 0.10.0 and the Gossil crate
-version are separate numbers. Each version of the crate from 0.10.0 to 0.18.0
-was released with its own tag, from `v0.10.0` to `v0.18.0`.
+version is 0.19.0. The libSQL provider version 0.10.0 and the Gossil crate
+version are separate numbers. Each version of the crate from 0.10.0 to 0.18.1
+was released with its own tag, from `v0.10.0` to `v0.18.1`.
 
 The checkpoint
 used a prospective checked-commit prerequisite, with actual parent `4250b873`;

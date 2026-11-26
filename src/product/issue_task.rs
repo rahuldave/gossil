@@ -12,8 +12,8 @@
 //! `--tag` and a title read from stdin with status 69. It never reads stdin and
 //! never opens an editor, so a missing description is empty. A `[` in the title,
 //! the description or the metadata is refused with status 64, because Markdown
-//! backlinks are not ported. A task artifact over 65,536 bytes is refused with
-//! status 64. The task is private, and the command writes no audit row and no undo
+//! backlinks are not ported. A task artifact over the artifact ceiling,
+//! 2,147,418,109 bytes, is refused with status 64. The task is private, and the command writes no audit row and no undo
 //! history.
 use super::{IssueFailure, IssueRepository, open_issue_repository};
 use crate::gest_model::primitives::{Id, Priority, TaskStatus};
@@ -483,25 +483,36 @@ fn refuse_brackets(request: &Request, metadata: &Value) -> Result<(), IssueFailu
     }
 }
 
-/// The largest size, in bytes, of a task artifact that `task create` stores.
+/// Refuse a task whose artifact is larger than the artifact ceiling.
 ///
-/// The cap keeps each task well below the parser ceilings of the one artifact that
-/// a write parses, and of the proof of `task show` and `gos v verify`. A write
-/// parses only its own artifact, so the cap does not bound the number of tasks.
-const TASK_BYTES: usize = 65_536;
-
-/// Refuse a task that is larger than [`TASK_BYTES`].
+/// The ceiling is the parser ceiling of one artifact, as in Fossil, where a ticket
+/// has no ceiling of its own.
 /// # Arguments
 /// * `bytes` - The size of the artifact, or of its text when the text alone is too large.
+/// * `ceiling` - The largest artifact.
 /// # Returns
 /// The failure, with status 64.
-fn too_large(bytes: usize) -> IssueFailure {
+fn too_large(bytes: usize, ceiling: usize) -> IssueFailure {
     IssueFailure::new(
         64,
         format!(
-            "gossil: issue task create: the task has at least {bytes} bytes, more than the {TASK_BYTES} that this build stores"
+            "gossil: issue task create: the task has at least {bytes} bytes, more than the {ceiling} bytes of one artifact"
         ),
     )
+}
+
+/// Map a failure of the ticket encoder to the failure of the command.
+/// # Arguments
+/// * `error` - The encoder failure.
+/// * `ceiling` - The largest artifact.
+/// # Returns
+/// [`too_large`] for an artifact over the ceiling, with status 64, and status 74
+/// for any other failure.
+fn ticket_failure(error: &crate::gest_ticket::TicketError, ceiling: usize) -> IssueFailure {
+    match error {
+        crate::gest_ticket::TicketError::Size => too_large(ceiling + 1, ceiling),
+        error => IssueFailure::new(74, format!("gossil: issue task create: {error}")),
+    }
 }
 
 /// Store the task of one request in the bound project, in one transaction.
@@ -512,7 +523,7 @@ fn too_large(bytes: usize) -> IssueFailure {
 /// The ticket ID and the stored task.
 /// # Errors
 /// Refuses a checkout with no bound project with status 78, and bad metadata, a
-/// `[` or an artifact over [`TASK_BYTES`] with status 64. A login that is not UTF-8
+/// `[` or an artifact over the artifact ceiling with status 64. A login that is not UTF-8
 /// gives 78. A value or storage failure gives 74. Every refusal leaves the repository unchanged.
 async fn create_in(
     found: &mut IssueRepository,
@@ -540,9 +551,10 @@ async fn create_bounded(
     let project = found.project_id()?.to_owned();
     let metadata = metadata(&request.metadata, &request.metadata_json)?;
     refuse_brackets(request, &metadata)?;
+    let ceiling = limits.admission.parser.input_bytes;
     let text = request.title.len() + request.description.len() + metadata.to_string().len();
-    if text > TASK_BYTES {
-        return Err(too_large(text));
+    if text > ceiling {
+        return Err(too_large(text, ceiling));
     }
     let login = super::login()?;
     let now = super::creation("task create")?;
@@ -573,12 +585,9 @@ async fn create_bounded(
         now.ticket_id.as_bytes(),
         login.as_bytes(),
         now.date,
-        limits.admission.parser.input_bytes,
+        ceiling,
     )
-    .map_err(|error| value(&error))?;
-    if artifact.len() > TASK_BYTES {
-        return Err(too_large(artifact.len()));
-    }
+    .map_err(|error| ticket_failure(&error, ceiling))?;
     let ticket = found
         .owner
         .create_private_issue(
@@ -686,7 +695,7 @@ where
 /// # Returns
 /// Status 0 after the output on stdout. Otherwise the status of [`IssueFailure`]
 /// after its diagnostic on stderr: 2 for a usage error, 69 for a refused option or
-/// a missing title, 64 for bad metadata, a `[` or an artifact over [`TASK_BYTES`],
+/// a missing title, 64 for bad metadata, a `[` or an artifact over the artifact ceiling,
 /// 78 outside an open checkout or before `issue init`, and 74 for a storage or I/O
 /// failure. A failed JSON output after the commit gives 65, a failed write to stdout
 /// after the commit gives 74, and in both cases the task stays.
