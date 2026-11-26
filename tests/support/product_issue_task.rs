@@ -632,10 +632,15 @@ async fn a_failure_after_each_write_step_changes_no_byte() {
     assert_eq!(stored.record, IssueRecord::Task(task));
 }
 
-/// Each of these refuses before the write and changes no byte: bad metadata, a `[`,
-/// an artifact just over the artifact ceiling, text over that ceiling, and a project
-/// ID that is not a Gest ID. A task whose artifact has exactly the ceiling is stored,
-/// one byte more is refused, and a later small task is stored. The test sets an artifact ceiling of 65,536 bytes.
+/// Checks that each bad request refuses before the write and changes no byte.
+///
+/// The bad requests have bad metadata, a `[`, an artifact a little over the
+/// artifact ceiling, text over that ceiling, or a project ID that is not a Gest ID.
+/// The test sets an artifact ceiling of 65,536 bytes and finds the largest
+/// description that is stored. The two RFC 3339 stamps of a task change the size of
+/// the artifact by up to 20 bytes. So a description 21 bytes longer than the largest
+/// stored one is refused, a description 20 bytes shorter is stored, and a later
+/// small task is stored.
 #[tokio::test]
 async fn refusals_before_the_write_change_no_byte() {
     const CEILING: usize = 65_536;
@@ -695,9 +700,11 @@ async fn refusals_before_the_write_change_no_byte() {
     );
     assert_eq!(file_bytes(&path), files);
     found.project = project;
-    // Find the boundary: each byte of the description adds one byte to the artifact,
-    // so the largest description that is stored gives an artifact of exactly CEILING
-    // bytes, and one more byte is refused.
+    // Find the largest description that is stored. Each byte of the description adds
+    // one byte to the artifact. The two stamps of the task are RFC 3339, with 0, 3, 6
+    // or 9 fractional digits. So the artifact of one description varies by up to SLACK
+    // bytes. The message of every refusal names the ceiling plus one.
+    const SLACK: usize = 20;
     let (mut stored, mut refused) = (room - 200, room + 200);
     create_bounded(&mut found, &sized(stored), small)
         .await
@@ -713,12 +720,12 @@ async fn refusals_before_the_write_change_no_byte() {
         }
     }
     let files = file_bytes(&path);
-    let failure = create_bounded(&mut found, &sized(stored + 1), small)
+    let failure = create_bounded(&mut found, &sized(stored + 1 + SLACK), small)
         .await
         .unwrap_err();
     assert_eq!((failure.status, failure.message), (64, over(CEILING + 1)));
     assert_eq!(file_bytes(&path), files);
-    create_bounded(&mut found, &sized(stored), small)
+    create_bounded(&mut found, &sized(stored - SLACK), small)
         .await
         .unwrap();
     // The CLI ceiling stores a task far over the old 65,536 bytes.
