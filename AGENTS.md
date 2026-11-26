@@ -243,11 +243,11 @@ existing global-state control), and all 20 unchanged Tcl assertions. Its graph
 comparison retained all 126 nonroot packages and edges/features with one
 `libsql-ffi` 0.10.0 provider. At that checkpoint the Gossil crate version in
 `Cargo.toml` was 0.9.0, since released as `v0.9.0`. The current Gossil crate
-version is 0.17.0. The libSQL provider version 0.10.0 and the Gossil crate
+version is 0.18.0. The libSQL provider version 0.10.0 and the Gossil crate
 version are separate numbers. Version 0.10.0 of the crate was released as
 `v0.10.0`, version 0.11.0 as `v0.11.0`, version 0.12.0 as `v0.12.0`,
 version 0.13.0 as `v0.13.0`, version 0.14.0 as `v0.14.0`, version 0.15.0
-as `v0.15.0` and version 0.16.0 as `v0.16.0`.
+as `v0.15.0`, version 0.16.0 as `v0.16.0` and version 0.17.0 as `v0.17.0`.
 
 The checkpoint
 used a prospective checked-commit prerequisite, with actual parent `4250b873`;
