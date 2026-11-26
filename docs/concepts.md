@@ -203,10 +203,12 @@ in this supported recording family.
 
 The operation checks every field of the tracked rows, and checks its parent in
 full against the parent of that parent. So its cost does not grow with the
-history, and it never stores a check-in that `gos v verify` then refuses.
-A content budget bounds stored, decoded and retained bytes. A parser ledger
-counts input bytes, cards, owned bytes and entries across parsed artifacts.
-Both bound work across the checks, capture, construction and final validation.
+history. It never stores a check-in whose own facts `gos v verify` then refuses.
+It trusts the stored content of the files that it carries forward, and
+`gos v verify` checks that content.
+The content ceilings bound each file, and the parser ceilings bound each
+artifact. No ceiling applies to the whole operation, so its cost follows the
+count and size of the tracked files.
 
 An unchanged tree returns `NoChange` without
 a new receipt or changed head or counter. Working files remain unchanged.

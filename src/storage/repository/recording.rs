@@ -11,7 +11,7 @@ use super::recording_manifest::{
     ManifestFile, ManifestParent, PrivateManifestSpec, PrivateParents, build_private_manifest,
 };
 use super::tracking::{TrackingLimits, capture};
-use super::{AdmissionLimits, CheckoutView, LocalOwnerRepository, ParseWork, StorageError};
+use super::{AdmissionLimits, CheckoutView, LocalOwnerRepository, StorageError};
 use crate::storage::{WriteTransaction, content::Budget};
 use libsql::Value;
 use std::{collections::BTreeSet, path::Path};
@@ -54,8 +54,9 @@ impl LocalOwnerRepository {
     /// # Arguments
     /// * `checkout` - Exact owned registration identity.
     /// * `request` - Explicit complete set, metadata, scope and all seven expectations.
-    /// * `limits` - Whole-operation native content and parser ceilings.
-    /// * `tracking` - Complete path, descriptor and retained working-byte ceilings.
+    /// * `limits` - Native content ceilings of one file and parser ceilings of one
+    ///   artifact. The total content ceilings are not used.
+    /// * `tracking` - Complete path, descriptor and one-file working-byte ceilings.
     /// # Returns
     /// A durable recorded result, or [`PrivateRecordingOutcome::NoChange`] with unchanged
     /// logical repository state, heads and counters.
@@ -82,24 +83,13 @@ impl LocalOwnerRepository {
         limits: AdmissionLimits,
         tracking: TrackingLimits,
     ) -> Result<PrivateRecordingOutcome, StorageError> {
-        let mut work = Budget::new(limits.content)?;
-        let mut parse = ParseWork::new(limits.parser)?;
-        #[cfg(test)]
-        {
-            // The debit enters the real ledgers before path checks, authority,
-            // capture, parsing or any transaction. No counter is assigned/reset.
-            let [stored, decoded, parser_input] = RECORDING_INITIAL_DEBITS.with(|slot| slot.get());
-            work.charge_stored(stored)?;
-            work.charge_decoded(decoded)?;
-            parse.charge(crate::artifact::ParseUsage {
-                input_bytes: parser_input,
-                cards: 0,
-                owned_bytes: 0,
-                entries: 0,
-            })?;
-            RECORDING_INITIAL_DEBIT_SEEN
-                .with(|slot| slot.set(Some([stored, decoded, parser_input])));
-        }
+        // Ceilings bound each file, artifact and row, not the whole command, so the cost
+        // of a commit follows the count and size of the tracked files.
+        let (content, mut work, mut parse) = super::verification::proof_ledgers(limits)?;
+        let limits = AdmissionLimits {
+            content,
+            parser: limits.parser,
+        };
         if request.scope != PathScope::Private
             || request.actor.is_empty()
             || request.actor.contains(&0)
@@ -123,8 +113,6 @@ impl LocalOwnerRepository {
         }
         let mut tx = self.store.begin_write().await?;
         let result = async {
-            #[cfg(test)]
-            RECORDING_AUTH_SAW_DEBIT.with(|slot|slot.set(RECORDING_INITIAL_DEBIT_SEEN.with(|seen|seen.get().is_some())));
             tx.check_admission_budgeted(&self.principal, &mut work).await?;
             tx.require_native_checkout().await?;
             tx.check_recording_state(&self.principal, limits, &mut work).await?;
@@ -132,7 +120,8 @@ impl LocalOwnerRepository {
             if &before != request.expected { return Err(StorageError::state("recording checkout changed")); }
             // Commit reads only the parent check-in and its own parent, so its cost does
             // not grow with the history. It checks every fact of the parent that it
-            // builds on, so it never stores a check-in that the full proof refuses.
+            // builds on, so it never stores a check-in whose own facts the full proof
+            // refuses. It trusts the stored content of the files that it carries forward.
             tx.require_recording_empty_tables().await?;
             let walk = tx.walk_recorded_history(&self.principal, &before.shared_head, limits, &mut work, &mut parse, Reach::Parent).await?;
             if let Some((parent, bytes, artifact)) = walk.commits.last() {
@@ -156,7 +145,8 @@ impl LocalOwnerRepository {
             if paths.len() != unique.len() || paths.iter().any(|path|!unique.contains(path.as_str())) {
                 return Err(StorageError::state("recording requires exact all-tracked set"));
             }
-            if scopes.len() != paths.len() || paths.iter().any(|path|!scopes.iter().any(|s|s.path == *path && s.scope == PathScope::Private)) {
+            let private: BTreeSet<&str> = scopes.iter().filter(|s|s.scope == PathScope::Private).map(|s|s.path.as_str()).collect();
+            if scopes.len() != paths.len() || paths.iter().any(|path|!private.contains(path.as_str())) {
                 return Err(StorageError::state("recording requires explicit private scope for every tracked path"));
             }
             let bindings = bounded_rows(&mut tx,"SELECT root_device,root_inode FROM g_checkout_owner WHERE checkout_id=?1",vec![Value::Text(checkout.into())],1,128,&mut work).await?;
@@ -167,15 +157,25 @@ impl LocalOwnerRepository {
             let protected = tx.tracking_protected_paths()?;
             let protected:Vec<&Path> = protected.iter().map(|p|p.as_path()).collect();
             work.charge_decoded(paths.len().checked_mul(tracking.path_bytes.saturating_add(512)).ok_or_else(||StorageError::state("recording capture capacity overflow"))?)?;
-            let mut captures = Vec::new();
+            // Read, hash and store one file at a time, so memory follows the largest file.
+            // A file whose hash is that of the same path in the parent keeps its row and
+            // is not read from the repository. The first new content opens the receipt.
+            let current: std::collections::BTreeMap<&str, &RecordedFile> = history.current_files().iter().map(|f|(f.path.as_str(),f)).collect();
+            let mut observed = Vec::new();
             let mut files = Vec::new();
-            let mut remaining = tracking.retained_bytes;
+            let mut receipt = None;
             for path in &paths {
-                let captured = capture::capture_budget(&root,path,&protected,tracking,remaining,&mut work)?;
-                remaining = remaining.checked_sub(captured.bytes.len() as u64).ok_or_else(||StorageError::state("recording retained bytes"))?;
+                let captured = capture::capture_budget(&root,path,&protected,tracking,tracking.retained_bytes,&mut work)?;
                 let hash = native_name(&captured.bytes,&mut work)?;
-                files.push(RecordedFile { path:path.clone(), hash, rid:0, mode:captured.mode });
-                captures.push(captured);
+                let rid = match current.get(path.as_str()) {
+                    Some(old) if old.hash == hash => old.rid,
+                    _ => {
+                        let receipt = match receipt { Some(receipt) => receipt, None => *receipt.insert(tx.recording_receipt(&mut work).await?) };
+                        tx.recording_put(&self.principal,&hash,&captured.bytes,receipt,limits,&mut work).await?
+                    }
+                };
+                files.push(RecordedFile { path:path.clone(), hash, rid, mode:captured.mode });
+                observed.push((captured.mtime, captured.observed()));
             }
             // Build and parse even a no-op so malformed comments/actors/dates never
             // bypass validation. The caller's operation ledgers remain borrowed.
@@ -192,8 +192,8 @@ impl LocalOwnerRepository {
             if !julian.is_finite() || julian<=history.shared.julian || history.commits.last().is_some_and(|parent|julian<=parent.julian) {return Err(StorageError::state("recording SQL date must follow every parent"));}
             let changed = files.len()!=history.current_files().len() || files.iter().zip(history.current_files()).any(|(a,b)|a.path!=b.path || a.hash!=b.hash || a.mode!=b.mode);
             if !changed {
-                for ((path,captured),_) in paths.iter().zip(&captures).zip(&files) {
-                    capture::recheck_budget(&root,path,captured,&protected,tracking,&mut work)?;
+                for (path,(_,seen)) in paths.iter().zip(&observed) {
+                    capture::recheck_observed(&root,path,seen,&protected)?;
                 }
                 tx.tracking_protected_paths()?;
                 tx.check_recording_state(&self.principal, limits, &mut work).await?;
@@ -201,15 +201,8 @@ impl LocalOwnerRepository {
             }
             let generation = before.generation.checked_add(1).and_then(|n|i64::try_from(n).ok()).ok_or_else(||StorageError::state("recording generation exhausted"))?;
             let pending = before.pending_version.checked_add(1).and_then(|n|i64::try_from(n).ok()).ok_or_else(||StorageError::state("recording pending exhausted"))?;
-            // One local-origin receipt; actor bytes do not establish a native uid.
-            tx.recording_execute("INSERT INTO rcvfrom(uid,mtime,nonce,ipaddr) VALUES(0,julianday('now'),NULL,NULL)",vec![],&mut work).await?;
-            recording_boundary(RecordingPhase::Receipt)?;
-            let receipt = bounded_scalar(&mut tx,"SELECT max(rcvid) FROM rcvfrom",vec![],
-                &mut work,
-            ).await?;
-            for (file,captured) in files.iter_mut().zip(&captures) {
-                file.rid=tx.recording_put(&self.principal,&file.hash,&captured.bytes,receipt,limits,&mut work).await?;
-            }
+            // A change of mode alone stores no content, so it opens the receipt here.
+            let receipt = match receipt { Some(receipt) => receipt, None => tx.recording_receipt(&mut work).await? };
             recording_boundary(RecordingPhase::Payloads)?;
             let name=native_name(&bytes,&mut work)?;
             let rid=tx.recording_put(&self.principal,&name,&bytes,receipt,limits,&mut work).await?;
@@ -218,8 +211,8 @@ impl LocalOwnerRepository {
             recording_boundary(RecordingPhase::Manifest)?;
             tx.project_recording(&history,ProjectionInput{rid,bytes:&bytes,files:&files},limits,&mut work,&mut parse).await?;
             recording_boundary(RecordingPhase::Projections)?;
-            for (file,captured) in files.iter().zip(&captures) {
-                let count=tx.recording_execute("UPDATE g_vfile SET vid=?1,rid=?2,mrid=?2,isexe=?3,mtime=?4 WHERE checkout_id=?5 AND pathname=?6",vec![Value::Integer(rid),Value::Integer(file.rid),Value::Integer(file.mode),Value::Integer(captured.mtime),Value::Text(checkout.into()),Value::Text(file.path.clone())],&mut work).await?;
+            for (file,(mtime,_)) in files.iter().zip(&observed) {
+                let count=tx.recording_execute("UPDATE g_vfile SET vid=?1,rid=?2,mrid=?2,isexe=?3,mtime=?4 WHERE checkout_id=?5 AND pathname=?6",vec![Value::Integer(rid),Value::Integer(file.rid),Value::Integer(file.mode),Value::Integer(*mtime),Value::Text(checkout.into()),Value::Text(file.path.clone())],&mut work).await?;
                 if count!=1 { return Err(StorageError::state("recording tracked row changed")); }
             }
             recording_boundary(RecordingPhase::Inventory)?;
@@ -231,7 +224,7 @@ impl LocalOwnerRepository {
                 if tx.recording_execute("UPDATE g_vvar SET value=?1 WHERE checkout_id=?2 AND name=?3",vec![value,Value::Text(checkout.into()),Value::Text(key.into())],&mut work).await?!=1 { return Err(StorageError::state("recording native vvar missing")); }
             }
             recording_boundary(RecordingPhase::Fingerprint)?;
-            for (path,captured) in paths.iter().zip(&captures) { capture::recheck_budget(&root,path,captured,&protected,tracking,&mut work)?; }
+            for (path,(_,seen)) in paths.iter().zip(&observed) { capture::recheck_observed(&root,path,seen,&protected)?; }
             tx.tracking_protected_paths()?;
             tx.check_recording_state(&self.principal, limits, &mut work).await?;
             recording_boundary(RecordingPhase::Poststate)?;
@@ -245,6 +238,26 @@ impl LocalOwnerRepository {
 }
 
 impl WriteTransaction<'_> {
+    /// Insert the one local-origin receipt of a changed commit.
+    ///
+    /// The actor bytes do not establish a native uid.
+    /// # Arguments
+    /// * `work` - Borrowed operation ledger.
+    /// # Returns
+    /// The receive ID of the new receipt.
+    /// # Errors
+    /// Refuses SQL failures and the injected failure of the receipt phase.
+    async fn recording_receipt(&mut self, work: &mut Budget) -> Result<i64, StorageError> {
+        self.recording_execute(
+            "INSERT INTO rcvfrom(uid,mtime,nonce,ipaddr) VALUES(0,julianday('now'),NULL,NULL)",
+            vec![],
+            work,
+        )
+        .await?;
+        recording_boundary(RecordingPhase::Receipt)?;
+        bounded_scalar(self, "SELECT max(rcvid) FROM rcvfrom", vec![], work).await
+    }
+
     /// Insert verified full content or reuse an unchanged admitted identity.
     /// # Arguments
     /// * `principal` - Privately authenticated owner.
@@ -403,17 +416,12 @@ thread_local! {
     static RECORDING_FAILURE:std::cell::Cell<Option<RecordingPhase>>=const{std::cell::Cell::new(None)};
     /// Phases actually reached by a source unit control; no public observation API.
     static RECORDING_PHASES:std::cell::Cell<u16>=const{std::cell::Cell::new(0)};
-    /// Initial real-ledger debit in stored bytes, decoded bytes and parser input bytes.
-    static RECORDING_INITIAL_DEBITS:std::cell::Cell<[usize;3]>=const{std::cell::Cell::new([0;3])};
-    /// Exact debit witnessed before authority or any later phase; None means not reached.
-    static RECORDING_INITIAL_DEBIT_SEEN:std::cell::Cell<Option<[usize;3]>>=const{std::cell::Cell::new(None)};
-    /// Whether the authority entry point observed the already applied initial debit.
-    static RECORDING_AUTH_SAW_DEBIT:std::cell::Cell<bool>=const{std::cell::Cell::new(false)};
 }
 
 #[cfg(test)]
 /// Check private recording with fixtures and failure injection.
 mod rollback_controls {
+    use super::super::ParseWork;
     use super::*;
     use crate::storage::{InitializeOptions, Limits};
 
@@ -816,8 +824,6 @@ mod rollback_controls {
         /// Cannot fail.
         fn drop(&mut self) {
             RECORDING_FAILURE.with(|slot| slot.set(None));
-            RECORDING_INITIAL_DEBITS.with(|slot| slot.set([0; 3]));
-            RECORDING_INITIAL_DEBIT_SEEN.with(|slot| slot.set(None));
         }
     }
     #[tokio::test]
@@ -1203,15 +1209,13 @@ mod rollback_controls {
     }
 
     #[tokio::test]
-    /// Exhaust each cumulative compartment near its observed changed-commit boundary.
-    /// # Arguments
-    /// No arguments.
-    /// # Returns
-    /// Unit for successful finite baselines and late stored/decoded/parser rollback.
+    /// The whole-command totals no longer bind a commit, and the parser ceiling of one
+    /// artifact still refuses atomically after the first native write.
     /// # Panics
-    /// Panics if a compartment is reset, a refusal at the boundary comes before the first
-    /// native write, or a failed transaction changes any baseline table/receipt/scope/head.
-    async fn cumulative_stored_decoded_and_parser_limits_fail_late_and_atomically() {
+    /// Panics if a commit fails under totals of one byte, if the parser input ceiling
+    /// one byte below the smallest that passes does not refuse, or if a refused commit
+    /// changes any table.
+    async fn totals_do_not_bind_and_the_artifact_ceiling_refuses_late() {
         let temp = tempfile::tempdir().unwrap();
         let repo = temp.path().join("repo");
         let root = temp.path().join("root");
@@ -1284,274 +1288,41 @@ mod rollback_controls {
         let image = std::fs::read(&repo).unwrap();
         std::fs::write(root.join("a"), b"changed payload").unwrap();
         std::fs::write(root.join("b"), b"\0\xfe second").unwrap();
-        for compartment in 0..3 {
-            let mut low = 1u64;
-            let mut high = match compartment {
-                0 => b.content.max_total_stored_bytes,
-                1 => b.content.max_total_decoded_bytes,
-                _ => b.parser.input_bytes as u64,
-            };
-            let set = |amount: u64| {
-                let mut candidate = b;
-                match compartment {
-                    0 => candidate.content.max_total_stored_bytes = amount,
-                    1 => candidate.content.max_total_decoded_bytes = amount,
-                    _ => candidate.parser.input_bytes = amount as usize,
-                };
-                candidate
-            };
-            let (success, phases, _) = budget_trial(&repo, &image, &view, set(high)).await;
-            assert!(success);
-            assert_eq!(phases, 255);
-            while low < high {
-                let middle = low + (high - low) / 2;
-                let (success, _, values) = budget_trial(&repo, &image, &view, set(middle)).await;
-                if success {
-                    high = middle;
-                } else {
-                    assert_eq!(values, before);
-                    low = middle + 1;
-                }
-            }
-            // SQL now's decimal receipt-time text can vary by a few bytes between
-            // trials. Keep decoded endpoints 4096 bytes apart from the observed
-            // transition; stored/parser endpoints retain their exact one-byte step.
-            let margin = if compartment == 1 { 4096 } else { 0 };
-            let (success, phases, _) = budget_trial(&repo, &image, &view, set(low + margin)).await;
-            assert!(success);
-            assert_eq!(phases, 255);
-            assert!(low > margin + 1);
-            let (success, phases, values) =
-                budget_trial(&repo, &image, &view, set(low - margin - 1)).await;
-            assert!(!success);
-            // The last charge of each compartment comes after the first native write,
-            // so the refusal tests the rollback of written rows.
-            assert!(
-                phases & 1 != 0,
-                "compartment {compartment} failed before the first native write: {phases}"
-            );
-            assert_eq!(values, before);
-            std::fs::write(&repo, &image).unwrap();
-            let mut reopened = LocalOwnerRepository::open(&repo, b).await.unwrap();
-            assert_eq!(reopened.checkout_view("work", b).await.unwrap(), view);
-            assert_eq!(snapshot(&mut reopened).await, before);
-            drop(reopened);
-        }
-    }
-
-    /// Run a deterministic checked no-op with an initial debit on the genuine ledgers.
-    /// # Arguments
-    /// * `repo` - Disposable database filename.
-    /// * `image` - Exact closed two-file recorded-history baseline image.
-    /// * `view` - Baseline all-seven expectation.
-    /// * `before` - Complete expected table state for successful and refused no-ops.
-    /// * `limits` - Candidate finite operation limits.
-    /// * `debit` - Initial stored/decoded/parser-input debit before every phase.
-    /// # Returns
-    /// Success and whether the authority entry observed the already applied exact debit.
-    /// # Panics
-    /// Panics on fixture failure, changed outcome, ignored expectation or native mutation.
-    async fn noop_debit_trial(
-        repo: &std::path::Path,
-        image: &[u8],
-        view: &CheckoutView,
-        before: &[(String, Vec<Vec<Value>>)],
-        limits: AdmissionLimits,
-        debit: [usize; 3],
-    ) -> (bool, bool) {
-        std::fs::write(repo, image).unwrap();
-        let mut owner = LocalOwnerRepository::open(repo, bounds()).await.unwrap();
-        let _reset = Reset;
-        RECORDING_INITIAL_DEBITS.with(|slot| slot.set(debit));
-        RECORDING_INITIAL_DEBIT_SEEN.with(|slot| slot.set(None));
-        RECORDING_AUTH_SAW_DEBIT.with(|slot| slot.set(false));
-        RECORDING_PHASES.with(|slot| slot.set(0));
-        let result = owner
-            .commit_private_tracked_files(
-                "work",
-                PrivateRecordingRequest {
-                    expected: view,
-                    paths: &["a", "b"],
-                    scope: PathScope::Private,
-                    actor: b"Owner",
-                    comment: b"deterministic checked no-op",
-                    date: b"2026-11-20T00:00:02",
-                },
-                limits,
-                tracking(),
-            )
-            .await;
-        if let Ok(outcome) = &result {
-            assert!(
-                matches!(outcome, PrivateRecordingOutcome::NoChange { view: actual } if actual == view),
-                "no-op produced history or changed its view"
-            );
-        }
-        let witness = RECORDING_INITIAL_DEBIT_SEEN.with(|slot| slot.get() == Some(debit))
-            && RECORDING_AUTH_SAW_DEBIT.with(|slot| slot.get());
-        assert_eq!(RECORDING_PHASES.with(|slot| slot.get()), 0);
-        assert_eq!(snapshot(&mut owner).await.as_slice(), before);
-        (result.is_ok(), witness)
-    }
-
-    /// Find the successful finite threshold independently for one debit scenario.
-    /// # Arguments
-    /// * `repo` - Disposable closed image restoration target.
-    /// * `image` - Exact two-file existing-history database bytes.
-    /// * `view` - Baseline expected view.
-    /// * `before` - Complete immutable baseline table state.
-    /// * `compartment` - Zero stored, one decoded, two cumulative parser input.
-    /// * `debit` - Initial real-ledger precharge; no remaining counter is reset.
-    /// # Returns
-    /// Minimum successful total ceiling, independently searched for this scenario.
-    /// # Panics
-    /// Panics if finite positive control fails, initial debit is not witnessed before
-    /// authority, the boundary is not one byte, or any operation changes baseline data.
-    async fn noop_debit_threshold(
-        repo: &std::path::Path,
-        image: &[u8],
-        view: &CheckoutView,
-        before: &[(String, Vec<Vec<Value>>)],
-        compartment: usize,
-        debit: [usize; 3],
-    ) -> u64 {
-        let b = bounds();
-        let mut low = 1u64;
-        let mut high = match compartment {
-            0 => b.content.max_total_stored_bytes,
-            1 => b.content.max_total_decoded_bytes,
-            _ => b.parser.input_bytes as u64,
-        };
-        let set = |amount: u64| {
+        // Totals of one byte would refuse the first read; they are not used.
+        let mut tiny = b;
+        tiny.content.max_total_stored_bytes = 1;
+        tiny.content.max_total_decoded_bytes = 1;
+        let (success, phases, _) = budget_trial(&repo, &image, &view, tiny).await;
+        assert!(success);
+        assert_eq!(phases, 255);
+        // Find the smallest parser input ceiling that admits every artifact.
+        let set = |amount: usize| {
             let mut candidate = b;
-            match compartment {
-                0 => candidate.content.max_total_stored_bytes = amount,
-                1 => candidate.content.max_total_decoded_bytes = amount,
-                _ => candidate.parser.input_bytes = amount as usize,
-            };
+            candidate.parser.input_bytes = amount;
             candidate
         };
-        let (positive, witness) =
-            noop_debit_trial(repo, image, view, before, set(high), debit).await;
-        assert!(positive && witness);
+        let (mut low, mut high) = (1, b.parser.input_bytes);
         while low < high {
             let middle = low + (high - low) / 2;
-            let (success, _) =
-                noop_debit_trial(repo, image, view, before, set(middle), debit).await;
+            let (success, _, values) = budget_trial(&repo, &image, &view, set(middle)).await;
             if success {
                 high = middle;
             } else {
+                assert_eq!(values, before);
                 low = middle + 1;
             }
         }
-        let (positive, witness) =
-            noop_debit_trial(repo, image, view, before, set(low), debit).await;
-        assert!(positive && witness);
-        assert!(low > 1);
-        let (success, witness) =
-            noop_debit_trial(repo, image, view, before, set(low - 1), debit).await;
-        assert!(!success && witness);
-        low
-    }
-
-    #[tokio::test]
-    /// A known debit must shift every independently measured total threshold exactly.
-    /// # Arguments
-    /// No arguments.
-    /// # Returns
-    /// Unit after two-file existing-history operations prove no stored/decoded/parser
-    /// ledger reset or lost initial debit across full pre/post admission and capture.
-    /// # Panics
-    /// Panics if any precharge disappears, threshold shifts incorrectly, a positive
-    /// control fails, the debit is not present before authority, or data changes.
-    /// This deterministic NoChange control complements the separate changed-record
-    /// late-failure rollback control; it creates no test-only receipt clock policy.
-    async fn initial_borrowed_debits_shift_total_thresholds_exactly() {
-        let temp = tempfile::tempdir().unwrap();
-        let repo = temp.path().join("repo");
-        let root = temp.path().join("root");
-        std::fs::create_dir(&root).unwrap();
-        let root = std::fs::canonicalize(root).unwrap();
-        std::fs::write(root.join("a"), b"first retained payload").unwrap();
-        std::fs::write(root.join("b"), b"\0\xff second retained payload").unwrap();
-        let b = bounds();
-        let mut owner = LocalOwnerRepository::initialize(
-            &repo,
-            InitializeOptions {
-                repository_id: "0123456789abcdef0123456789abcdef01234567",
-                owner_id: "owner",
-                date: "2026-11-20T00:00:00",
-                user: b"Owner",
-                password: "secret",
-                sha1: false,
-                content_limits: b.content,
-                parse_limits: b.parser,
-            },
-        )
-        .await
-        .unwrap();
-        let view = owner.register_checkout("work", &root, b).await.unwrap();
-        let view = owner
-            .add_files("work", &["a", "b"], &view, b, tracking())
-            .await
-            .unwrap();
-        let view = owner
-            .select_path_scopes(
-                "work",
-                &view,
-                &[
-                    super::super::path_scope::PathScopeSelection {
-                        path: "a".into(),
-                        scope: PathScope::Private,
-                    },
-                    super::super::path_scope::PathScopeSelection {
-                        path: "b".into(),
-                        scope: PathScope::Private,
-                    },
-                ],
-                b,
-                tracking(),
-            )
-            .await
-            .unwrap();
-        let outcome = owner
-            .commit_private_tracked_files(
-                "work",
-                PrivateRecordingRequest {
-                    expected: &view,
-                    paths: &["a", "b"],
-                    scope: PathScope::Private,
-                    actor: b"Owner",
-                    comment: b"recorded history prefix",
-                    date: b"2026-11-20T00:00:01",
-                },
-                b,
-                tracking(),
-            )
-            .await
-            .unwrap();
-        let view = owner.checkout_view("work", b).await.unwrap();
+        let (success, _, _) = budget_trial(&repo, &image, &view, set(low)).await;
+        assert!(success);
+        let (success, phases, values) = budget_trial(&repo, &image, &view, set(low - 1)).await;
+        assert!(!success);
+        // The new manifest is parsed after its files are stored, so the refusal
+        // tests the rollback of written rows.
         assert!(
-            matches!(outcome, PrivateRecordingOutcome::Recorded { view: actual, .. } if actual == view)
+            phases & 1 != 0,
+            "refused before the first native write: {phases}"
         );
-        let before = snapshot(&mut owner).await;
-        drop(owner);
-        let image = std::fs::read(&repo).unwrap();
-        /// Known initial work charged independently to each cumulative compartment.
-        const DEBIT: usize = 64;
-        for compartment in 0..3 {
-            let baseline =
-                noop_debit_threshold(&repo, &image, &view, &before, compartment, [0; 3]).await;
-            let mut debit = [0; 3];
-            debit[compartment] = DEBIT;
-            let precharged =
-                noop_debit_threshold(&repo, &image, &view, &before, compartment, debit).await;
-            assert_eq!(
-                precharged,
-                baseline + DEBIT as u64,
-                "lost/reset cumulative compartment {compartment}"
-            );
-        }
+        assert_eq!(values, before);
         std::fs::write(&repo, &image).unwrap();
         let mut reopened = LocalOwnerRepository::open(&repo, b).await.unwrap();
         assert_eq!(reopened.checkout_view("work", b).await.unwrap(), view);

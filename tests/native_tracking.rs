@@ -59,7 +59,7 @@ fn checkout_root(temp: &Path) -> PathBuf {
     std::fs::canonicalize(root).unwrap()
 }
 
-/// Bound the complete explicit batch and its cumulative retained bytes.
+/// Bound the complete explicit batch and the bytes of one captured file.
 fn tracking() -> TrackingLimits {
     TrackingLimits {
         paths: 64,
@@ -183,8 +183,9 @@ async fn invalid_batch_and_aggregate_budget_preserve_exact_pending_state() {
             .await
             .is_err()
     );
+    // The read ceiling bounds one file: each file has 4 bytes.
     let mut small = tracking();
-    small.retained_bytes = 7;
+    small.retained_bytes = 3;
     assert!(
         owner
             .add_files("work", &["one", "two"], &before, limits(), small)
@@ -203,6 +204,14 @@ async fn invalid_batch_and_aggregate_budget_preserve_exact_pending_state() {
     assert_eq!(owner.checkout_view("work", limits()).await.unwrap(), before);
     assert_eq!(std::fs::read(root.join("one")).unwrap(), b"1234");
     assert_eq!(std::fs::read(root.join("two")).unwrap(), b"5678");
+    // The ceiling bounds each file, not the sum: two files of 4 bytes pass under 4.
+    let mut each = tracking();
+    each.retained_bytes = 4;
+    let after = owner
+        .add_files("work", &["one", "two"], &before, limits(), each)
+        .await
+        .unwrap();
+    assert_eq!(after.pending_version, before.pending_version + 1);
 }
 
 #[tokio::test]
@@ -482,11 +491,13 @@ async fn symlink_open_protects_actual_sidecars_and_their_hardlinks() {
     drop(db);
 }
 
-/// Input-name charges share one ledger and fail before tracking changes the checkout.
+/// The whole-command totals do not bound add.
+///
+/// A batch passes under totals of one byte.
 /// # Panics
-/// Panics if cumulative input work is reset or an early failure changes the owner proof.
+/// Panics if a total refuses the batch.
 #[tokio::test]
-async fn tracking_input_work_is_cumulative_before_the_transaction() {
+async fn totals_do_not_bound_add() {
     let temp = tempfile::tempdir().unwrap();
     let path = temp.path().join("repo");
     let root = checkout_root(temp.path());
@@ -497,22 +508,73 @@ async fn tracking_input_work_is_cumulative_before_the_transaction() {
         .register_checkout("work", &root, limits())
         .await
         .unwrap();
-    for bytes in [128, 257] {
-        let mut short = limits();
-        short.content.max_total_decoded_bytes = bytes;
-        assert_eq!(
-            owner
-                .add_files("work", &["a", "b"], &before, short, tracking())
-                .await
-                .unwrap_err()
-                .operation,
-            "total decoded content limit"
-        );
-        assert_eq!(owner.checkout_view("work", limits()).await.unwrap(), before);
-    }
+    let mut tiny = limits();
+    tiny.content.max_total_stored_bytes = 1;
+    tiny.content.max_total_decoded_bytes = 1;
     let after = owner
-        .add_files("work", &["a", "b"], &before, limits(), tracking())
+        .add_files("work", &["a", "b"], &before, tiny, tracking())
         .await
         .unwrap();
     assert_eq!(after.pending_version, before.pending_version + 1);
+    // The reads of status ignore the totals too.
+    assert_eq!(
+        owner
+            .pending_adds("work", tiny, tracking())
+            .await
+            .unwrap()
+            .len(),
+        2
+    );
+    assert_eq!(
+        owner.tracked_paths("work", tiny, tracking()).await.unwrap(),
+        ["a", "b"]
+    );
+    assert!(
+        owner
+            .path_scopes("work", tiny, tracking())
+            .await
+            .unwrap()
+            .is_empty()
+    );
+}
+
+/// Add refuses a path that differs from a tracked path only by case, or whose
+/// folded form is a directory of one, before it reads a file; it accepts the exact
+/// tracked path again.
+/// # Panics
+/// Panics if an alias passes, or the exact path is refused.
+#[tokio::test]
+async fn add_refuses_folded_aliases_of_tracked_paths() {
+    let temp = tempfile::tempdir().unwrap();
+    let path = temp.path().join("repo");
+    let root = checkout_root(temp.path());
+    std::fs::create_dir(root.join("a")).unwrap();
+    std::fs::write(root.join("a/b"), b"ab").unwrap();
+    let mut owner = initialize(&path).await;
+    let before = owner
+        .register_checkout("work", &root, limits())
+        .await
+        .unwrap();
+    let view = owner
+        .add_files("work", &["a/b"], &before, limits(), tracking())
+        .await
+        .unwrap();
+    for alias in ["A", "A/B", "a/b/c"] {
+        assert_eq!(
+            owner
+                .add_files("work", &[alias], &view, limits(), tracking())
+                .await
+                .unwrap_err()
+                .operation,
+            "aliased tracked path",
+            "{alias}"
+        );
+    }
+    assert_eq!(
+        owner
+            .add_files("work", &["a/b"], &view, limits(), tracking())
+            .await
+            .unwrap(),
+        view
+    );
 }

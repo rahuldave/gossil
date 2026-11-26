@@ -253,6 +253,28 @@ impl OpenedRoot {
     }
 }
 impl Parent {
+    /// Give the identity of each directory below the root on the path, in order.
+    /// # Returns
+    /// The facts of each directory edge, with no descriptor.
+    pub(super) fn identities(&self) -> Vec<Facts> {
+        self.edges
+            .iter()
+            .map(|(_, _, facts)| facts.clone())
+            .collect()
+    }
+    /// Compare the directories of this path with identities saved earlier.
+    /// # Arguments
+    /// * `saved` - The identities that [`Self::identities`] gave for the same path.
+    /// # Returns
+    /// Whether each directory is the same object, in the same order.
+    pub(super) fn same_identities(&self, saved: &[Facts]) -> bool {
+        self.edges.len() == saved.len()
+            && self
+                .edges
+                .iter()
+                .zip(saved)
+                .all(|((_, _, facts), old)| facts.same_object(old))
+    }
     /// Verify that the registered root and every retained parent edge still match.
     /// # Errors
     /// Refuses replaced directory edges and filesystem failures.

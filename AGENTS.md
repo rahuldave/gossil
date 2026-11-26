@@ -113,8 +113,9 @@ only catalog6, and the issue ticket writer is its one caller. A fresh open
 admits the private ticket rows and the project binding that it writes.
 
 The private recording library requires the complete tracked set, immutable
-private scopes and all seven expected checkout facts. It captures every working file with one borrowed content
-budget and parser ledger, preserves the empty shared root, and admits exact
+private scopes and all seven expected checkout facts. It reads, hashes and stores
+one working file at a time, under ceilings for each file, artifact and row,
+preserves the empty shared root, and admits exact
 private history projections. Working files remain unchanged. Existing CLI status
 prints A/R and actual scope.
 
@@ -315,7 +316,7 @@ existing global-state control), and all 20 unchanged Tcl assertions. Its graph
 comparison retained all 126 nonroot packages and edges/features with one
 `libsql-ffi` 0.10.0 provider. At that checkpoint the Gossil crate version in
 `Cargo.toml` was 0.9.0, since released as `v0.9.0`. The current Gossil crate
-version is 0.18.0. The libSQL provider version 0.10.0 and the Gossil crate
+version is 0.18.1. The libSQL provider version 0.10.0 and the Gossil crate
 version are separate numbers. Each version of the crate from 0.10.0 to 0.18.0
 was released with its own tag, from `v0.10.0` to `v0.18.0`.
 

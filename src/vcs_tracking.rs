@@ -21,7 +21,8 @@ struct Options {
 /// Fixed finite bounds independent of Gest project policy.
 fn limits() -> TrackingLimits {
     TrackingLimits {
-        paths: 4096,
+        // A check-in manifest of 1 MiB holds fewer files than this.
+        paths: 16384,
         path_bytes: 4096,
         components: 128,
         retained_bytes: 67108864,
@@ -174,8 +175,16 @@ mod tests {
         ]);
         assert_eq!(options(&valid, true).unwrap().paths, ["a", "b"]);
         let mut excessive = valid;
-        excessive.extend((0..8193).map(|_| OsString::from("x")));
-        assert!(options(&excessive, true).is_err());
+        let mut most = args(&["--repository", "repo", "--checkout", "work"]);
+        for index in 0..limits().paths {
+            most.extend([OsString::from("--path"), format!("file-{index}").into()]);
+        }
+        assert_eq!(options(&most, true).unwrap().paths.len(), 16384);
+        excessive.extend((0..2 * limits().paths).map(|_| OsString::from("x")));
+        assert_eq!(
+            options(&excessive, true).err().unwrap().to_string(),
+            "tracking argument count limit"
+        );
     }
     /// Refuse empty, oversized or NUL-containing IDs and oversized path arguments.
     /// # Panics

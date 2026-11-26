@@ -60,8 +60,8 @@ pub(super) enum Reach {
     /// timeline. The walk reads no file content, and each check-in has an empty file
     /// list.
     Manifests(usize),
-    /// The selected check-in and its parent, with the content of their files, for a
-    /// commit.
+    /// The selected check-in and its parent, for a commit. The walk reads the row of
+    /// each of their files, and not its content.
     Parent,
 }
 
@@ -186,10 +186,11 @@ pub(super) fn check_recorded_commit(
         ));
     }
     // No deletion or rename authority exists in this family.
+    let paths: BTreeSet<&str> = commit.files.iter().map(|f| f.path.as_str()).collect();
     if previous
         .files
         .iter()
-        .any(|old| !commit.files.iter().any(|new| new.path == old.path))
+        .any(|old| !paths.contains(old.path.as_str()))
     {
         return Err(StorageError::state("recording deletion unsupported"));
     }
@@ -924,6 +925,26 @@ impl WriteTransaction<'_> {
         name: &str,
         work: &mut Budget,
     ) -> Result<(i64, i64, Vec<u8>), StorageError> {
+        let (rid, receipt) = self.recorded_identity(name, work).await?;
+        let bytes = self
+            .read_recording_content_budget(principal, name, work)
+            .await?;
+        Ok((rid, receipt, bytes))
+    }
+
+    /// Find the full-content row of a native name, without reading its content.
+    /// # Arguments
+    /// * `name` - Exact full canonical native name.
+    /// * `work` - The operation ledger.
+    /// # Returns
+    /// Exact RID and receipt of a full-content row that is not a delta.
+    /// # Errors
+    /// Refuses a malformed name, a missing, delta or malformed row and SQL failures.
+    async fn recorded_identity(
+        &mut self,
+        name: &str,
+        work: &mut Budget,
+    ) -> Result<(i64, i64), StorageError> {
         if !matches!(name.len(), 40 | 64)
             || !name
                 .bytes()
@@ -932,11 +953,7 @@ impl WriteTransaction<'_> {
             return Err(StorageError::state("recording native name grammar"));
         }
         let rows=bounded_rows(self,"SELECT rid,rcvid FROM blob WHERE uuid=?1 AND typeof(rid)='integer' AND typeof(rcvid)='integer' AND size>=0 AND NOT EXISTS(SELECT 1 FROM delta WHERE delta.rid=blob.rid)",vec![Value::Text(name.into())],1,64,work).await?;
-        let (rid, receipt) = content_identity(&rows)?;
-        let bytes = self
-            .read_recording_content_budget(principal, name, work)
-            .await?;
-        Ok((rid, receipt, bytes))
+        content_identity(&rows)
     }
 
     /// Walk the private chain from the selected check-in back to the shared root.
@@ -1084,7 +1101,13 @@ impl WriteTransaction<'_> {
                 )
                 .map_err(|e| StorageError::caused("recording file hash UTF-8", e))?
                 .to_owned();
-                let (fid, _, _) = self.recorded_content(principal, &name, work).await?;
+                // The proof reads each file. A commit reads only the identity of its
+                // parent's files. Their bytes are checked when stored, and by the proof.
+                let fid = if reach == Reach::Proof {
+                    self.recorded_content(principal, &name, work).await?.0
+                } else {
+                    self.recorded_identity(&name, work).await?.0
+                };
                 files.push(RecordedFile {
                     path,
                     hash: name,
@@ -1233,12 +1256,17 @@ impl WriteTransaction<'_> {
                     Value::Null,
                 ]);
             }
+            let before: BTreeMap<&str, &RecordedFile> = previous
+                .files
+                .iter()
+                .map(|f| (f.path.as_str(), f))
+                .collect();
             for file in &commit.files {
                 if !names.contains_key(&file.path) {
                     let id = names.len() as i64 + 1;
                     names.insert(file.path.clone(), id);
                 }
-                let old = previous.files.iter().find(|old| old.path == file.path);
+                let old = before.get(file.path.as_str()).copied();
                 if old.is_none_or(|old| old.rid != file.rid || old.mode != file.mode) {
                     expected_mlink.push([
                         commit.rid,
@@ -1650,6 +1678,11 @@ impl WriteTransaction<'_> {
         };
         let mut names = BTreeSet::new();
         let mut recorded = BTreeSet::new();
+        let by_path: BTreeMap<&str, &RecordedFile> = selected
+            .files
+            .iter()
+            .map(|f| (f.path.as_str(), f))
+            .collect();
         for (index, row) in rows.iter().enumerate() {
             let TrackedFacts {
                 id,
@@ -1662,19 +1695,11 @@ impl WriteTransaction<'_> {
             }
             super::tracking::capture::checked_path(path, bounds)?;
             let folded = path.to_ascii_lowercase();
-            if names.iter().any(|prior: &String| {
-                prior == &folded
-                    || prior
-                        .strip_prefix(&folded)
-                        .is_some_and(|tail| tail.starts_with('/'))
-                    || folded
-                        .strip_prefix(prior)
-                        .is_some_and(|tail| tail.starts_with('/'))
-            }) {
+            if super::tracking::folded_alias(&names, &folded) {
                 return Err(StorageError::state("recording tracked alias"));
             }
             names.insert(folded);
-            let prior = selected.files.iter().find(|file| file.path == *path);
+            let prior = by_path.get(path.as_str());
             match prior {
                 Some(file) if *rid == file.rid && *mode == file.mode => {
                     recorded.insert(path.clone());
@@ -1690,11 +1715,11 @@ impl WriteTransaction<'_> {
             .read_path_scopes_budgeted(checkout, bounds, work)
             .await?;
         let new_paths = collect_pending_references(&rows, work)?;
-        let scoped_new = new_paths.iter().any(|path| {
-            scopes
-                .iter()
-                .any(|scope| scope.path.as_str() == path.as_str())
-        });
+        let scoped: BTreeMap<&str, super::path_scope::PathScope> =
+            scopes.iter().map(|s| (s.path.as_str(), s.scope)).collect();
+        let scoped_new = new_paths
+            .iter()
+            .any(|path| scoped.contains_key(path.as_str()));
         let minimum = if generation == 0 {
             i64::from(!rows.is_empty()) + i64::from(!scopes.is_empty())
         } else {
@@ -1708,9 +1733,7 @@ impl WriteTransaction<'_> {
             return Err(StorageError::state("recording pending counter unreachable"));
         }
         if selected.files.iter().any(|file| {
-            !scopes.iter().any(|scope| {
-                scope.path == file.path && scope.scope == super::path_scope::PathScope::Private
-            })
+            scoped.get(file.path.as_str()) != Some(&super::path_scope::PathScope::Private)
         }) {
             return Err(StorageError::state(
                 "recording historical private scope missing",
@@ -1848,6 +1871,11 @@ impl WriteTransaction<'_> {
             )
             .await?;
         }
+        let before: BTreeMap<&str, &RecordedFile> = previous
+            .files
+            .iter()
+            .map(|f| (f.path.as_str(), f))
+            .collect();
         for file in files {
             self.recording_execute(
                 "INSERT OR IGNORE INTO filename(name) VALUES(?1)",
@@ -1862,7 +1890,7 @@ impl WriteTransaction<'_> {
                 work,
             )
             .await?;
-            let old = previous.files.iter().find(|old| old.path == file.path);
+            let old = before.get(file.path.as_str()).copied();
             if old.is_none_or(|old| old.rid != file.rid || old.mode != file.mode) {
                 self.recording_execute("INSERT INTO mlink(mid,fid,pmid,pid,fnid,pfnid,mperm,isaux) VALUES(?1,?2,?3,?4,?5,0,?6,0)",vec![Value::Integer(rid),Value::Integer(file.rid),Value::Integer(previous.rid),Value::Integer(old.map_or(0,|old|old.rid)),Value::Integer(fnid),Value::Integer(file.mode)],work).await?;
                 if !history.commits.is_empty() {

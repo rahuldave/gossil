@@ -468,6 +468,70 @@ async fn mode_only_retains_payload_receipt_and_uses_zero_auxiliary_parent_conten
 }
 
 #[tokio::test]
+/// A manifest over the parser input ceiling is refused with its own message, and
+/// the refusal changes no table.
+/// # Panics
+/// Panics if the commit passes, gives another message, or changes a table.
+async fn a_manifest_over_the_input_ceiling_is_refused_and_changes_no_table() {
+    let mut f = Fixture::new().await;
+    let names: Vec<String> = (0..10).map(|i| format!("{i:0>200}")).collect();
+    for name in &names {
+        std::fs::write(f.root.join(name), name.as_bytes()).unwrap();
+    }
+    let added: Vec<&str> = names.iter().map(String::as_str).collect();
+    f.view = f
+        .owner
+        .add_files("work", &added, &f.view, limits(), tracking())
+        .await
+        .unwrap();
+    let mut paths = vec!["a", "b"];
+    paths.extend(added.iter().copied());
+    f.private(&paths).await;
+    let before = snapshot(&f.repo).await;
+    let mut small = limits();
+    small.parser.input_bytes = 2048;
+    let error = f
+        .owner
+        .commit_private_tracked_files(
+            "work",
+            PrivateRecordingRequest {
+                expected: &f.view,
+                paths: &paths,
+                scope: PathScope::Private,
+                actor: b"Owner",
+                comment: b"too large",
+                date: b"2026-11-20T00:00:01",
+            },
+            small,
+            tracking(),
+        )
+        .await
+        .unwrap_err();
+    assert_eq!(error.operation, "private manifest output limit");
+    assert_eq!(snapshot(&f.repo).await, before);
+}
+
+#[tokio::test]
+/// A commit trusts the stored content of a file that it carries forward, and the
+/// full proof checks that content.
+/// # Panics
+/// Panics if the commit over a corrupt unchanged row fails, or the proof admits it.
+async fn commit_trusts_carried_content_and_verify_refuses_it() {
+    let mut f = Fixture::new().await;
+    f.private(&["a", "b"]).await;
+    f.changed(&["a", "b"], b"2026-11-20T00:00:01").await;
+    mutate(
+        &f.repo,
+        "UPDATE blob SET content=X'00000002789c' WHERE rid=(SELECT rid FROM g_vfile WHERE pathname='a')",
+    )
+    .await;
+    f.owner = LocalOwnerRepository::open(&f.repo, limits()).await.unwrap();
+    std::fs::write(f.root.join("b"), b"b2").unwrap();
+    f.changed(&["a", "b"], b"2026-11-20T00:00:02").await;
+    assert!(f.owner.verify(limits()).await.is_err());
+}
+
+#[tokio::test]
 /// Paths added after a recording remain unselected; reusing existing payloads preserves `rcvid`.
 /// # Arguments
 /// No arguments.
@@ -687,19 +751,20 @@ async fn selection_and_explicit_scope_refusals_are_atomic() {
 }
 
 #[tokio::test]
-/// Missing files and cumulative multi-file byte exhaustion retain the admitted head.
+/// Missing files and a second file over its read or content ceiling retain the admitted head.
 /// # Arguments
 /// No arguments.
 /// # Returns
-/// Unit after descriptor and aggregate-budget refusals.
+/// Unit after descriptor and per-file ceiling refusals, each after file `a` is stored.
 /// # Panics
 /// Panics if any refused request leaves content, counters or metadata behind.
-async fn capture_and_cumulative_budget_failures_are_atomic() {
+async fn capture_and_per_file_ceiling_failures_are_atomic() {
     let mut f = Fixture::new().await;
     f.private(&["a", "b"]).await;
     let before = snapshot(&f.repo).await;
+    // File `a` has 2 bytes and file `b` 3, so only `b` is over each ceiling.
     let mut small = tracking();
-    small.retained_bytes = 4;
+    small.retained_bytes = 2;
     assert!(
         f.owner
             .commit_private_tracked_files(
@@ -719,7 +784,7 @@ async fn capture_and_cumulative_budget_failures_are_atomic() {
             .is_err()
     );
     let mut small = limits();
-    small.content.max_total_decoded_bytes = 1024;
+    small.content.max_output_bytes = 2;
     assert!(
         f.owner
             .commit_private_tracked_files(
@@ -745,6 +810,28 @@ async fn capture_and_cumulative_budget_failures_are_atomic() {
             .is_err()
     );
     assert_eq!(snapshot(&f.repo).await, before);
+    // The read ceiling bounds each file, not the sum. Files of 2 and 3 bytes pass under 3.
+    std::fs::write(f.root.join("b"), b"\0\xff\n").unwrap();
+    let mut each = tracking();
+    each.retained_bytes = 3;
+    let outcome = f
+        .owner
+        .commit_private_tracked_files(
+            "work",
+            PrivateRecordingRequest {
+                expected: &f.view,
+                paths: &["a", "b"],
+                scope: PathScope::Private,
+                actor: b"Owner",
+                comment: b"each file fits",
+                date: b"2026-11-20T00:00:01",
+            },
+            limits(),
+            each,
+        )
+        .await
+        .unwrap();
+    assert!(matches!(outcome, PrivateRecordingOutcome::Recorded { .. }));
 }
 
 /// The number of tests that split the 22 projection and bookkeeping corruptions.

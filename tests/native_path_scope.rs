@@ -59,7 +59,7 @@ fn checkout_root(temp: &Path) -> PathBuf {
     std::fs::canonicalize(root).unwrap()
 }
 
-/// Bound the complete explicit batch and its cumulative retained bytes.
+/// Bound the complete explicit batch and the bytes of one captured file.
 fn tracking() -> TrackingLimits {
     TrackingLimits {
         paths: 64,
@@ -518,10 +518,13 @@ async fn old_views_and_replaced_root_refuse() {
     );
 }
 #[tokio::test]
-/// Enforce cumulative work bounds on checked no-ops and new scope choices.
+/// The whole-command totals do not bound scope selection.
+///
+/// A checked no-op and new choices pass under totals of one byte, and the no-op
+/// changes nothing.
 /// # Panics
-/// Panics if an exhausted operation changes any table or working file.
-async fn aggregate_budget_exhaustion_preserves_equal_noop_and_new_choices() {
+/// Panics if a total refuses the batch or the no-op changes a table or working file.
+async fn totals_do_not_bound_equal_noop_and_new_choices() {
     let temp = tempfile::tempdir().unwrap();
     let path = temp.path().join("repo");
     let root = checkout_root(temp.path());
@@ -537,94 +540,35 @@ async fn aggregate_budget_exhaustion_preserves_equal_noop_and_new_choices() {
         .await
         .unwrap();
     let expected = snapshot(&path).await;
-    // Find the cumulative complete-operation boundary without assuming that
-    // authentication/snapshot implementations retain a particular byte count.
-    let mut refused = 1u64;
-    let mut admitted = limits().content.max_total_decoded_bytes;
-    let mut minimum = limits();
-    minimum.content.max_total_decoded_bytes = refused;
-    assert!(
-        owner
-            .select_path_scopes(
-                "work",
-                &current,
-                &[selection("alpha", PathScope::Private)],
-                minimum,
-                tracking()
-            )
-            .await
-            .is_err()
-    );
-    while admitted - refused > 1 {
-        let middle = refused + (admitted - refused) / 2;
-        let mut bounds = limits();
-        bounds.content.max_total_decoded_bytes = middle;
-        match owner
-            .select_path_scopes(
-                "work",
-                &current,
-                &[selection("alpha", PathScope::Private)],
-                bounds,
-                tracking(),
-            )
-            .await
-        {
-            Ok(view) => {
-                assert_eq!(view, current);
-                admitted = middle;
-            }
-            Err(error) => {
-                assert!(
-                    error.to_string().contains("total decoded content limit"),
-                    "{error}"
-                );
-                refused = middle;
-            }
-        }
-        assert_eq!(snapshot(&path).await, expected);
-    }
-    // More than either isolated scope inventory (21 bytes) must be charged
-    // across authority checks, complete admission and final snapshot work.
-    assert!(admitted > 21);
-    let mut exhausted = limits();
-    exhausted.content.max_total_decoded_bytes = refused;
-    for batch in [
-        vec![selection("alpha", PathScope::Private)],
-        vec![
-            selection("alpha", PathScope::Private),
-            selection("beta", PathScope::Shared),
-        ],
-    ] {
-        let error = owner
-            .select_path_scopes("work", &current, &batch, exhausted, tracking())
-            .await
-            .unwrap_err();
-        assert!(
-            error.to_string().contains("total decoded content limit"),
-            "{error}"
-        );
-        assert_eq!(snapshot(&path).await, expected);
-    }
-    // A late refusal rolls back durable state, but the connection's total-change
-    // counter still advances. Explicitly readmit before the successful control.
-    drop(owner);
-    let mut owner = LocalOwnerRepository::open(&path, limits()).await.unwrap();
-    let mut sufficient = limits();
-    sufficient.content.max_total_decoded_bytes = admitted;
-    assert_eq!(
-        owner
-            .select_path_scopes(
-                "work",
-                &current,
-                &[selection("alpha", PathScope::Private)],
-                sufficient,
-                tracking()
-            )
-            .await
-            .unwrap(),
-        current
-    );
+    let mut tiny = limits();
+    tiny.content.max_total_stored_bytes = 1;
+    tiny.content.max_total_decoded_bytes = 1;
+    let noop = owner
+        .select_path_scopes(
+            "work",
+            &current,
+            &[selection("alpha", PathScope::Private)],
+            tiny,
+            tracking(),
+        )
+        .await
+        .unwrap();
+    assert_eq!(noop, current);
     assert_eq!(snapshot(&path).await, expected);
+    let next = owner
+        .select_path_scopes(
+            "work",
+            &current,
+            &[
+                selection("alpha", PathScope::Private),
+                selection("beta", PathScope::Shared),
+            ],
+            tiny,
+            tracking(),
+        )
+        .await
+        .unwrap();
+    assert_eq!(next.pending_version, current.pending_version + 1);
     assert_eq!(std::fs::read(root.join("alpha")).unwrap(), b"live alpha");
     assert_eq!(std::fs::read(root.join("beta")).unwrap(), b"live beta");
 }

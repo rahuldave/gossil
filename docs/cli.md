@@ -680,15 +680,21 @@ without following symlinks, and their identities are rechecked before commit.
 Keep the filesystem namespace stable during the command. These checks do not
 promise protection against hostile concurrent replacement.
 
-The CLI bounds the complete tracked inventory and each batch to 4096 paths.
-Each path has at most 4096 bytes and 128 components. Add temporarily captures files to validate the batch. It limits those initial
-captures to 64 MiB of working bytes and uses a 64 KiB read buffer.
-The final recheck temporarily holds a second copy of one file alongside those
-captures, so captured bytes can total 128 MiB. These bounds exclude other process
-allocations.
+The CLI bounds the complete tracked inventory and each batch to 16,384 paths.
+Each path has at most 4096 bytes and 128 components. A check-in manifest has
+at most 1 MiB. A commit reaches that ceiling before the limit of paths, near
+10,000 files with paths of 30 bytes.
 
-Native admission has separate finite bounds. If any bound is
-exceeded, the command returns an error.
+Add reads each file once to check it, and keeps the bytes of one file at a time.
+It refuses a file over 64 MiB and uses a 64 KiB read buffer.
+The final recheck compares the identity, size and times of each file and of each
+directory on its path. It reads no file a second time. On a filesystem with
+coarse times, a write of the same size in the same tick as the read is not
+found. These bounds exclude other process allocations.
+
+Native admission bounds each file, each artifact and each row. No ceiling
+applies to the whole command, so its cost follows the count and size of the
+files that it reads. If any bound is exceeded, the command returns an error.
 
 Add persists tracking metadata only. Earlier additions remain tracked across
 batches and reopen. A successful batch with new paths advances `pending_version`
@@ -810,12 +816,25 @@ no `--path`, and scope accepts no recording metadata or `--all-tracked`.
 Both executable names and both group names use the same grammar.
 
 Checkout IDs are nonempty UTF-8, bounded to 1024 bytes. Scope selection and
-recording use the tracking limits above. These allow 4096 paths, 4096 bytes per
-path, 128 components, 64 MiB of retained working bytes and a 64 KiB read buffer.
-The temporary final file recheck can require another captured copy. Native
-content and parser limits also bound cumulative work across the complete operation.
+recording use the tracking limits above. Those limits allow 16,384 paths, 4096 bytes per
+path, 128 components, 64 MiB for the read of one file and a 64 KiB read buffer.
+
+Commit reads, hashes and stores one file at a time, so its memory follows the
+largest file and not the sum of the files. The content ceiling of one artifact
+is 1 MiB, 1,048,576 bytes. Commit refuses a tracked file of 1,048,577 bytes or
+more with `recording content output limit`, and a manifest over 1 MiB with
+`private manifest output limit`. A refusal changes no byte of the repository.
+
+If a file has the same hash as its path in the parent check-in, commit reuses
+the stored row. It does not read the stored content of that file from the
+repository. So a later commit reads each working file once, and stores only the
+files that changed.
+
+Versions up to 0.18.0 charged the whole command to one ledger. Under the CLI
+ceilings, add and commit refused about 70 small files, or 6 files of 1 MB, with
+`total decoded content limit`.
 The [library contract](native-storage.md#private-recording-library) defines those
-budgets, immutable history checks, protected files and rollback guarantees.
+ceilings, immutable history checks, protected files and rollback guarantees.
 
 A capture, validation or transaction failure leaves no partial recording.
 An output failure returns status 1 and can occur after a durable scope change

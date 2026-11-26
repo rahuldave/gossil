@@ -28,10 +28,11 @@ struct Options {
 }
 /// Supply bounded full inventory and capture work independent of Gest settings.
 /// # Returns
-/// Finite pathname, descriptor and cumulative capture ceilings.
+/// Finite pathname, descriptor and one-file capture ceilings.
 fn limits() -> TrackingLimits {
     TrackingLimits {
-        paths: 4096,
+        // A check-in manifest of 1 MiB holds fewer files than this.
+        paths: 16384,
         path_bytes: 4096,
         components: 128,
         retained_bytes: 67108864,
@@ -284,7 +285,7 @@ mod tests {
         .into_iter()
         .map(OsString::from)
         .collect();
-        let too_many = vec![OsString::from("--path"); 8209];
+        let too_many = vec![OsString::from("--path"); 17 + 2 * limits().paths];
         assert_eq!(
             options(&too_many, false).err().unwrap().to_string(),
             "recording argument count limit"
@@ -300,10 +301,10 @@ mod tests {
             );
         }
         let mut args = base;
-        for index in 0..4096 {
+        for index in 0..limits().paths {
             args.extend([OsString::from("--path"), format!("file-{index}").into()]);
         }
-        assert_eq!(options(&args, false).unwrap().paths.len(), 4096);
+        assert_eq!(options(&args, false).unwrap().paths.len(), 16384);
         args.extend([OsString::from("--path"), OsString::from("one-more")]);
         assert_eq!(
             options(&args, false).err().unwrap().to_string(),
