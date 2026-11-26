@@ -243,6 +243,19 @@ fn unique_prefix<'a>(id: &'a str, others: &[&str]) -> &'a str {
         .unwrap()
 }
 
+/// The shortest unique prefix grows until no other ID starts with it. A prefix that is
+/// unique among the tasks alone can still match the project ID, which `verify --issue`
+/// also searches.
+#[test]
+fn unique_prefix_leaves_every_other_id() {
+    let task = "kmzkkkkkkkkkkkkkkkkkkkkkkkkkkkkk";
+    let other_task = "lkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk";
+    let project = "kmykkkkkkkkkkkkkkkkkkkkkkkkkkkkk";
+    assert_eq!(unique_prefix(task, &[other_task]), "k");
+    assert_eq!(unique_prefix(task, &[other_task, project]), "kmz");
+    assert_eq!(unique_prefix(task, &[]), "k");
+}
+
 /// What the demo made, for the stock Fossil oracle.
 struct Demo {
     /// The fixture home, which holds the repository and the root.
@@ -463,8 +476,16 @@ fn demo() -> Demo {
         ok(home, &["v", "verify", "--repository", repo_arg]),
         "verified: 2 check-ins, 4 issues, 15 tables compared\n"
     );
+    // `verify --issue` looks up tasks and projects together, so the prefix must also
+    // differ from the project ID.
     let done_id = ids[1];
-    let others: Vec<&str> = ids.iter().copied().filter(|id| *id != done_id).collect();
+    let project_id = created["project_id"].as_str().unwrap();
+    let others: Vec<&str> = ids
+        .iter()
+        .copied()
+        .filter(|id| *id != done_id)
+        .chain([project_id])
+        .collect();
     assert_eq!(
         ok(
             home,
