@@ -526,7 +526,7 @@ qualification.
 
 At the checkpoint, `Cargo.toml` set the version of the Gossil crate to 0.9.0,
 which was later released as `v0.9.0`. The current version of the crate is
-0.18.1, and version 0.18.0 was released as `v0.18.0`. The `libsql-ffi`
+0.19.0, and version 0.18.1 was released as `v0.18.1`. The `libsql-ffi`
 provider is at 0.10.0, and its version is separate
 from the version of the crate.
 
