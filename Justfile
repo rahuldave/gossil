@@ -69,6 +69,56 @@ gest-ticket-interop:
     fi
     GOSSIL_FOSSIL_REFERENCE="$fossil" just test --test gest_ticket stock_fossil_reads_emitted_gest_tickets -- --ignored --exact
 
+# Check a new repository, and one with check-ins and an issue, with the pinned Fossil reference: test-integrity, rebuild of a copy, timeline and ticket show, and a stock Fossil repository that verify and open refuse without changing a byte; exit 5 means not-run.
+catalog-interop:
+    #!/usr/bin/env bash
+    set -euo pipefail
+    fossil="${GOSSIL_FOSSIL_REFERENCE:-{{justfile_directory()}}/.jlog/bin/fossil}"
+    if [ ! -x "$fossil" ]; then
+        echo "not-run: the pinned Fossil reference is absent at $fossil; run just setup" >&2
+        exit 5
+    fi
+    GOSSIL_FOSSIL_REFERENCE="$fossil" just test --test catalog_line stock_fossil_checks_a_new_catalog6_repository -- --ignored --exact
+    GOSSIL_FOSSIL_REFERENCE="$fossil" just test --test issue_ticket stock_fossil_reads_check_ins_and_issues_together -- --ignored --exact
+
+# Check stored private issue tickets, alone, beside check-ins and after gos i init, with the pinned Fossil reference: test-integrity, ticket show, timeline, and the rows of a ticket rebuild; exit 5 means not-run.
+issue-ticket-interop:
+    #!/usr/bin/env bash
+    set -euo pipefail
+    fossil="${GOSSIL_FOSSIL_REFERENCE:-{{justfile_directory()}}/.jlog/bin/fossil}"
+    if [ ! -x "$fossil" ]; then
+        echo "not-run: the pinned Fossil reference is absent at $fossil; run just setup" >&2
+        exit 5
+    fi
+    GOSSIL_FOSSIL_REFERENCE="$fossil" just test --test issue_ticket stock_fossil_reads -- --ignored
+    GOSSIL_FOSSIL_REFERENCE="$fossil" just test --test issue_init_cli stock_fossil_reads -- --ignored
+
+# Run the demo of docs/issues.md, then read its repository with the pinned Fossil reference: test-integrity, timeline, ticket show, a refused rebuilt copy, and a push to a clone after which verify, commit and task create still pass; exit 5 means not-run.
+issue-demo:
+    #!/usr/bin/env bash
+    set -euo pipefail
+    fossil="${GOSSIL_FOSSIL_REFERENCE:-{{justfile_directory()}}/.jlog/bin/fossil}"
+    if [ ! -x "$fossil" ]; then
+        echo "not-run: the pinned Fossil reference is absent at $fossil; run just setup" >&2
+        exit 5
+    fi
+    GOSSIL_FOSSIL_REFERENCE="$fossil" just test --test issue_demo stock_fossil_reads_the_demo_repository -- --ignored --exact
+
+# Store 5,000 tasks in a release build and print the time of create, list, show, status, commit and verify at 100, 1,000 and 5,000 tasks.
+issue-capacity:
+    cargo test --release --test issue_capacity five_thousand_tasks_fit_the_cli_ceilings -- --ignored --exact --nocapture
+
+# Compare the JSON of task list and task show with a reference gest for the same two tasks; exit 5 means not-run.
+issue-read-oracle:
+    #!/usr/bin/env bash
+    set -euo pipefail
+    gest="${GOSSIL_GEST_REFERENCE:-$(command -v gest || true)}"
+    if [ -z "$gest" ] || [ ! -x "$gest" ]; then
+        echo "not-run: no gest executable; set GOSSIL_GEST_REFERENCE or put gest on PATH" >&2
+        exit 5
+    fi
+    GOSSIL_GEST_REFERENCE="$gest" cargo test --lib --locked -- --ignored --exact product::issue_read::tests::gest_reference_json_matches
+
 # Respell the Gest ticket creation fixtures from their hand-written cards.
 gest-ticket-reference:
     jlog run python3 tests/fixtures/gest-ticket/generate.py

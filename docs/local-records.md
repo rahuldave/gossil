@@ -10,9 +10,10 @@ internal modules of `src/storage/` give the base for such a reader:
 - `operation_limits.rs` joins the ceilings of one file operation and their saved form.
 - `metered_query.rs` charges the size of a query result before it reads the rows.
 
-The modules have no public API and no production caller yet. The metered content
-methods below use `metered_query.rs`, but no production code calls them either.
-The record readers of catalog 5 are the first planned production callers. Until
+The modules have no public API. The metered content methods below use
+`metered_query.rs`. The [issue ticket writer](issue-ticket.md) calls the put method
+and `metered_query.rs`, and no production code calls the other modules yet.
+The record readers of catalog 6 are the first planned production callers of the other modules. Until
 they exist, an `expect(dead_code)` attribute on each module states that no
 production code calls it. When production code calls every item of a module,
 the lint fails on the attribute, so that someone removes it.
@@ -162,11 +163,11 @@ row and each retained cell before it reads the rows. The schema check also
 charges the bytes of the fingerprint encoding of the schema. It builds that
 encoding before it compares the fingerprint.
 
-Do not call the metered put from production code yet. The admission check of
-catalog 4 refuses a nonempty `private` table, so a committed put leaves a
-repository that `LocalOwnerRepository::open` refuses. Production code can use the
-put only after a catalog admits private content. The tests use it only on
-fixture files.
+The [issue ticket writer](issue-ticket.md) is the one production caller of the
+metered put. The full proof of catalog 6 accepts a `private` row only for a
+check-in, a file of a check-in or an issue artifact. So a put that no issue owns
+leaves a repository that `gos v verify` refuses. The unit tests of
+the put use it only on fixture files.
 
 A put charges its input to the content `Budget` as decoded bytes. A put that
 writes also charges the compressed envelope as stored bytes. It charges the
@@ -189,14 +190,13 @@ The methods keep these rules of the unmetered methods of the content boundary in
 - In a read, a missing, phantom or shunned baseline makes the content unavailable.
 
 The constant `NEWEST_CATALOG` in `schema.rs` names the newest catalog, which is
-catalog 4 in this build. The metered methods admit only that catalog. They refuse a
+catalog 6 in this build. The metered methods admit only that catalog. They refuse a
 repository at catalog 1 with the message `repository catalog 1 is not the
-newest catalog 4`. The older unmetered methods still admit catalog 1.
+newest catalog 6`. The older unmetered methods still admit catalog 1.
 
 Each failure of these methods latches in the transaction, so an earlier write in
-the same transaction does not survive the rollback. No production code calls
-these methods yet, and the attribute `expect(dead_code)` on the put method states
-that.
+the same transaction does not survive the rollback. The issue ticket writer
+calls the put method and the read method.
 
 ## Tests
 
@@ -205,7 +205,7 @@ The tests live in `tests/support/storage_command_codec.rs`,
 `tests/support/storage_metered_query.rs` and
 `tests/support/storage_content_metered.rs`. They run as unit tests of the
 storage module. The metered query and metered content tests use a real libSQL
-file, and the content fixtures come from the product initializer at catalog 4.
+file, and the content fixtures come from the product initializer at catalog 6.
 The content tests follow the cases CONTENT-01 to CONTENT-08 of the content
 boundary contract of the specification. All the tests check each limit at the
 last value that it accepts and at the next value, which it refuses.

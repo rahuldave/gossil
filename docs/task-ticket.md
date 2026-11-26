@@ -10,9 +10,11 @@ The task emitter shares its card syntax, size plan and checksum with the
 artifact and project emitters, which the [Gest ticket guide](gest-ticket.md) describes.
 
 Use the library to inspect or test
-task creation artifacts in memory. No current Gossil repository
-API consumes these bytes. Raw input admission, storage integration and issue
-commands remain separate work.
+task creation artifacts in memory. The [issue ticket writer](issue-ticket.md)
+stores a task creation privately in a native repository. The command
+[`gos i task create`](cli.md#create-a-task) emits a task creation with this module and stores it
+with that writer. The commands `gos i task list` and `gos i task show` read the tasks
+back. The other issue commands remain separate work.
 
 ## Use the library
 

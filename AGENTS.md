@@ -27,7 +27,24 @@ Read and follow @.agents/instructions/prose.md
   portable fixtures and the private storage composition test.
 - Gest tickets: `src/gest_ticket.rs` holds the shared emitter of creation
   tickets and the artifact and project kinds. `src/task_ticket.rs` holds the
-  task kind.
+  task kind. `src/storage/issue_ticket.rs` stores one private task or project
+  creation in a catalog 6 repository and reads it again; its guide is
+  `docs/issue-ticket.md`, and `just issue-ticket-interop` checks it with stock
+  Fossil. `LocalOwnerRepository::open` admits these tickets beside private check-ins.
+  Its `init_private_project` also binds one project to the registered checkout
+  in `g_project_binding` and `g_checkout_project`, and `bound_project` reads that
+  binding. Admission accepts both tables empty or with exactly that one binding.
+  `g_identity` and `g_contributor` stay required-empty.
+- Issue reads: `src/product/issue_read.rs` parses, selects and prints the tasks of
+  `task list` and `task show`. `task list` reads them through `list_private_issues`,
+  and `task show` through `find_task` and `verify_issue`. The text output is
+  provisional, and the JSON output is Gest's. Its guide is
+  `docs/issue-read.md`, and `just issue-read-oracle` compares the JSON with a reference `gest`.
+- Issue demo: `tests/issue_demo.rs` runs the walk-through of the user guide
+  `docs/issues.md` on the real binaries. `just issue-demo` runs its ignored part,
+  which reads the demo repository with stock Fossil and checks that Gossil refuses
+  a copy after `fossil rebuild`. It then pushes the demo repository to a stock
+  clone, and checks that `verify`, a commit and `task create` still pass.
 - Git reader guard: `clippy.toml` bans the gix write paths, and `just lint`
   forbids them with `-F clippy::disallowed_methods -F clippy::disallowed_types`.
   `tests/git_write_lint.rs` proves each ban. Add a probe line for each new entry.
@@ -35,7 +52,7 @@ Read and follow @.agents/instructions/prose.md
   `docs/delta-decoder.md`, `docs/blob-primitives.md`, `docs/token-codec.md`,
   `docs/local-storage.md`, `docs/native-storage.md`, `docs/artifact-parser.md`,
   `docs/glob.md`, `docs/file-path.md`, `docs/history.md`, `docs/git-reader.md`,
-  `docs/task-ticket.md`, `docs/gest-ticket.md`, the ten Gest value guides
+  `docs/task-ticket.md`, `docs/gest-ticket.md`, `docs/issue-ticket.md`, `docs/issue-read.md`, `docs/issues.md`, the ten Gest value guides
   `docs/gest-*-values.md`, `docs/gest-model.md`, `docs/local-records.md` and
   `docs/development-plan.md`.
 - Product specification: `~/Projects/AIProjectInfra/docs/gossil/README.md` and its linked pages.
@@ -55,19 +72,45 @@ The CLI also exposes `vcs init` and `vcs new` through `gossil` or `gos`, with
 The private `src/product/help.rs` table gives product, group and command help.
 It must list every command that `src/product.rs` dispatches. Unknown names exit 2.
 
+Its issue table holds the Gest command tree of the `issue` group, or `i`. The
+parser in `src/product/issue.rs` walks that table. It runs `init`, in
+`src/product/issue_init.rs`, `task create`, in `src/product/issue_task.rs`,
+and `task list` and `task show`, in `src/product/issue_read.rs`. It refuses
+each other recognised command with status 69.
+
+`issue init` needs a checkout from `vcs init` and `vcs open --root`, and
+writes a private project ticket and its binding in one transaction. The shared
+helper `open_issue_repository` in `src/product/issue.rs` opens the repository of
+an issue command through the published locator, and `IssueFailure` maps errors
+to the CLI-05 statuses 78 and 74. `retry_locked` runs a command once more after
+a `database is locked` refusal. `issue task create` writes
+one private task in the bound project. It refuses the Gest options that this
+build lacks with status 69. It refuses a `[` and a task artifact over 65,536
+bytes with status 64.
+
 Native local storage supports checkout-free initialization, then one library
-checkout registration at the empty root. Reopen admits strict catalog4 with zero
-or one registration, explicit tracked scopes and the supported private recording
-history. ID and exact-root views authenticate existing registrations;
+checkout registration at the empty root. Open checks only the facts whose cost
+does not grow with the history. They are the catalog, the owner, the
+configuration, the policy and the one registration. Each command checks what it
+reads and writes, and `gos v verify` gives the full proof of the history.
+
+ID and exact-root views authenticate existing registrations;
 the library methods publish no locator. The source `vcs open` adapter registers
 or reopens that checkout and publishes or reconstructs its owner-local locator.
 It requires explicit repository and checkout selection, with `--root` for first
 registration. It selects no files.
 
+New repositories start at catalog 6, the newest catalog. Every command refuses a
+repository at catalog 2, 4 or 5 with exit 78 and a message to create a new
+repository; there is no migration. Initialization writes the `ticket-table`
+config row, so a stock `fossil rebuild` keeps the Gest ticket columns. That
+rebuild drops every `g_` table, and then every command exits 78 with a message
+to restore the repository from a backup.
+
 Bound catalog1 creation and bounded private content operations remain supported.
-Generic private content writes refuse catalog4. The metered private put admits
-only catalog4, but has no caller. Admission refuses the private row that it
-writes, so it waits for a catalog that admits private content.
+Generic private content writes refuse catalog6. The metered private put admits
+only catalog6, and the issue ticket writer is its one caller. A fresh open
+admits the private ticket rows and the project binding that it writes.
 
 The private recording library requires the complete tracked set, immutable
 private scopes and all seven expected checkout facts. It captures every working file with one borrowed content
@@ -82,8 +125,9 @@ Broader crosslinks, shared recording, sync and Gest integration remain planned w
 
 The library also exposes `recorded_timeline` and `RecordedCheckin` for complete
 current-first native ancestry, with the immutable shared root last. It preserves
-full hashes and exact native metadata bytes after full admission, within one
-transaction and shared operation ledgers. It reads no working-file contents and
+full hashes and exact native metadata bytes, and checks each event user and
+comment against the U and C cards of its manifest, within one transaction and
+shared operation ledgers. It reads no working-file contents and
 makes no durable mutation.
 
 The source CLI exposes `timeline` and `log` through
@@ -94,6 +138,10 @@ allowances. See
 `docs/native-storage.md` and `docs/development-plan.md` for the contract and
 focused qualification limits. The timeline delivery baseline is accepted
 `4250b873` and released as `v0.8.0`. Those results do not qualify later glob source.
+
+The source CLI also exposes `verify` through both executable and group aliases.
+It runs the full proof of an explicit repository, or with `--issue` the proof of
+one issue, and changes nothing. See the "Verify a repository" section of `docs/cli.md`.
 
 ## Commands and evidence
 
@@ -192,11 +240,11 @@ existing global-state control), and all 20 unchanged Tcl assertions. Its graph
 comparison retained all 126 nonroot packages and edges/features with one
 `libsql-ffi` 0.10.0 provider. At that checkpoint the Gossil crate version in
 `Cargo.toml` was 0.9.0, since released as `v0.9.0`. The current Gossil crate
-version is 0.16.0. The libSQL provider version 0.10.0 and the Gossil crate
+version is 0.17.0. The libSQL provider version 0.10.0 and the Gossil crate
 version are separate numbers. Version 0.10.0 of the crate was released as
 `v0.10.0`, version 0.11.0 as `v0.11.0`, version 0.12.0 as `v0.12.0`,
-version 0.13.0 as `v0.13.0`, version 0.14.0 as `v0.14.0` and version 0.15.0
-as `v0.15.0`.
+version 0.13.0 as `v0.13.0`, version 0.14.0 as `v0.14.0`, version 0.15.0
+as `v0.15.0` and version 0.16.0 as `v0.16.0`.
 
 The checkpoint
 used a prospective checked-commit prerequisite, with actual parent `4250b873`;

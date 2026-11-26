@@ -3,15 +3,15 @@
 [API: `LocalOwnerRepository`](api/storage.qmd#LocalOwnerRepository) gives the exact contract.
 
 The storage API creates an empty native repository without a checkout. After
-registration, its catalog4 library can track paths, select explicit scopes and
+registration, its catalog6 library can track paths, select explicit scopes and
 record the complete private tracked tree through one owned libSQL transaction.
 The shared history remains the initial empty check-in. General artifact
 crosslinks, Gest projections and filesystem recovery remain planned.
 
 Catalog names identify storage formats. Catalog1 binds a checkout at creation
-and supports bounded private content bytes. Catalog4 starts without a checkout
+and supports bounded private content bytes. Catalog6 starts without a checkout
 and supports one later registration. Generic catalog1 content writes remain
-separate from catalog4 recording.
+separate from catalog6 recording.
 
 ## Initialize without a checkout
 
@@ -22,7 +22,7 @@ finite content/parser limits. The API requires an explicit administrator.
 It does not read environment variables or a preference database. The
 [`vcs init` CLI adapter](cli.md#initialize-a-repository) supplies generated
 identities and a password, and chooses the administrator from options or the
-environment. It uses this strict catalog4 contract; it does not bind a checkout.
+environment. It uses this strict catalog6 contract; it does not bind a checkout.
 
 Initialization normalizes the date for the root D card. It installs the native
 default report, system users and administrator password digest. SHA1 selection
@@ -30,18 +30,33 @@ sets the native hash policy and hashes the actual root with SHA1.
 Otherwise the root uses SHA3-256. `initialization_identity()` returns the stored
 project-code and server-code after checking admission.
 
-This constructor installs catalog4 with `checkout_count=0`. Its only nonempty
+This constructor installs catalog6 with `checkout_count=0`. Its only nonempty
 `g_*` tables are `g_storage`, `g_local_owner` and `g_public_receipt`.
-Reopen authenticates the single canonical empty root, its native hash, date,
-event, branch tags and receive/index facts. It checks the exact schema,
-complete policy, owner binding and foreign keys.
+[Check a repository](#check-a-repository) says what open, each command and
+`gos v verify` check in a catalog6 repository.
 
-The remaining local tables must be empty, except for the exact registration,
-tracking, scope and private recording inventories described below. Extra native
-content or indexed history outside that family refuses admission. Persisted
-issue projections and states mixing those issues with file history remain unsupported.
-Catalog5 and catalog6 also remain unsupported. No upgrade occurs on open.
-Generic private content writes through this handle refuse catalog4.
+The full proof of `gos v verify` authenticates the single canonical empty root,
+its native hash, date, event, branch tags and receive/index facts. The
+remaining local tables must be empty, except for the exact registration,
+tracking, scope and private recording inventories described below. The full
+proof refuses extra native content or indexed history outside that family.
+
+It accepts private issue tickets written before, between or after check-ins. It
+checks each row of a ticket against the artifact of that ticket, as the
+[issue ticket guide](issue-ticket.md) says. The tables `g_project_binding` and
+`g_checkout_project` are empty, or each holds the one binding row that
+`issue init` writes. The row binds the registered checkout to a project.
+
+No upgrade occurs on open. Open refuses a repository before any effect when its
+catalog marker, the `storage_version` value of `g_storage`, names catalog2,
+catalog4 or catalog5. The message names the catalog found and catalog6, and the CLI exits 78.
+Gossil has no upgrade path before its first real release, so the fix is a new
+repository. Open reads the marker before it switches the file to WAL, the write-ahead log
+mode of SQLite. So a refused file keeps every byte.
+
+Open refuses an unknown marker, such as 3 or 7, and a missing marker
+with exit 1.
+Generic private content writes through this handle refuse catalog6.
 
 The destination and its recovery neighbors must remain stable through engine
 cleanup. Existing destinations and recovery entries are preserved.
@@ -55,7 +70,7 @@ Templates, global preferences and project display fields are outside this API.
 After checkout-free initialization, call
 `LocalOwnerRepository::register_checkout(checkout_id, root, limits)` to register
 one existing directory against the initial empty root. This API supports only
-catalog4 with no existing registration. It refuses catalog1 and a second
+catalog6 with no existing registration. It refuses catalog1 and a second
 registration, including a retry with the same ID or an alias of the same root.
 
 Supply a nonempty, NUL-free checkout ID of at most 1024 UTF-8 bytes. Supply an
@@ -69,13 +84,12 @@ device, inode and owner binding on every admission. Canonical components are
 observed without following links. Callers must keep the namespace stable.
 These pathname observations do not protect against hostile concurrent replacement.
 
-Registration uses one exclusive database transaction. It checks the saved
-admission proof and complete native state before writing one checkout row, one
-owner row and `checkout_count=1`. It writes exactly the three native keys
+Registration uses one exclusive database transaction. It runs the checks of
+each command, and checks that no checkout row exists, before
+writing one checkout row, one owner row and `checkout_count=1`. It writes exactly the three native keys
 `checkout`, `checkout-hash` and `fingerprint`. These keys retain the actual initial root RID,
 its hash and the native fingerprint derived from the receive record. The API
-validates the complete result and captures its proof before checked commit.
-It replaces the saved proof only after known success.
+runs the checks of each command again on the result before checked commit.
 
 Earlier writes roll back on failure. The lifecycle rules still govern commit
 and cleanup uncertainty.
@@ -91,7 +105,7 @@ the combined head while the shared head stays fixed.
 `checkout_view(checkout_id, limits)` authenticates
 that exact persisted registration. `checkout_view_for_root(root, limits)`
 authenticates the sole registration for the explicitly chosen canonical root.
-Both methods revalidate complete native state and refuse stale authority,
+Both methods run the checks of each command and refuse a changed owner,
 invalid bindings or unsupported inventory. Root lookup refuses absence, another
 root, unauthorized ownership and multiple registrations. It allocates no identity
 and repairs no registration or native key.
@@ -105,10 +119,11 @@ with locator publication and recovery. Its explicit flags still use the same
 admission and publisher rules. Root lookup itself only gives authenticated
 facts and does not recover a locator.
 
-Reopen accepts exactly zero or one such catalog4 registration. It independently
-checks the complete checkout, owner and key inventory against `checkout_count`,
-the native root and the supported recording history. Generic private content
-writes still refuse catalog4.
+Reopen accepts exactly zero or one such catalog6 registration. It checks the
+checkout and owner rows against `checkout_count`, and the three native keys
+against the head of the checkout. The full proof of `gos v verify` checks the
+supported recording history. Generic private content writes still refuse
+catalog6.
 
 ## Track native pending additions
 
@@ -121,7 +136,8 @@ limits. The `wanted` view states the complete checkout state that the caller
 expects before mutation.
 The method validates the whole batch and cumulative inventory, reads and
 rechecks each regular file, then returns the committed view. The method rejects the batch if the heads,
-generation, pending version or admission authority are stale.
+generation or pending version are stale, or if the owner changed. It also checks that each table that
+must stay empty, such as the pending removes, is empty.
 Use the returned view for the next mutation.
 
 `pending_adds(checkout, limits, tracking)` returns the complete bounded pending
@@ -130,7 +146,7 @@ paths, and `path_scopes` reads only explicit scope choices.
 `PendingAdd::executable` records the mode at first enrollment. Later mode changes
 do not alter that flag until recording captures the current file.
 
-Only this producer's exact catalog4 state is admitted. New `g_vfile` rows use
+Only this producer's exact catalog6 state is admitted. New `g_vfile` rows use
 the current combined-head `vid`, or the initial root before recording. They use
 `rid=mrid=0`, regular-file link flags, executable mode
 and observed modification time. A RID is a native artifact row identifier.
@@ -186,7 +202,8 @@ the accepted tracking baseline and remaining work.
 `select_path_scopes(checkout, wanted, selections, limits, tracking)` persists
 immutable explicit choices for tracked paths. An equal batch is a checked no-op;
 a conflicting choice rejects the whole batch. A batch with new choices advances
-`pending_version` once. `path_scopes` reads only explicit choices; `tracked_paths`
+`pending_version` once. Like add, scope selection checks that each table that
+must stay empty is empty. `path_scopes` reads only explicit choices; `tracked_paths`
 returns the complete ordered tracked inventory. Neither read infers missing scopes.
 
 `commit_private_tracked_files(checkout, request, limits, tracking)` requires
@@ -197,7 +214,7 @@ all seven `CheckoutView` fields. They are repository ID, checkout ID, registered
 shared head, combined head, generation and pending version. Stale expectations
 or failed owner validation cause the transaction to reject the request.
 
-Catalog1 stores loose private content bytes without a file tree. Catalog4
+Catalog1 stores loose private content bytes without a file tree. Catalog6
 recording stores a complete file tree and its admitted history.
 
 The request supplies actor, comment and native date bytes. The actor is nonempty
@@ -242,14 +259,19 @@ parent S; later manifests have parents Lprev then S. Every private manifest
 contains the complete tree.
 
 Keeping S as a parent preserves the explicit shared base while the first parent
-follows private history. Admission validates the full history and exact native
-and local projections, including private content, parent, event, leaf,
-file-link and checkout facts. Later additions use the current combined-head RID
+follows private history. A commit reads only its parent and the parent of that
+parent, so its cost does not grow with the history. It checks every field of
+the tracked rows and the tables that must stay empty. It checks its parent in
+full against the grandparent, which means the canonical bytes, comment,
+receipt, date, unchanged files and the absence of deletions. So a commit never stores a check-in that
+the full proof then refuses. Later additions use the current combined-head RID
 as their `vid`.
 
-A projection is a derived database row. Admission rejects a file link whose
-content hash differs from the hash in its manifest.
-Catalog4 recording accepts full compressed content and refuses physical deltas.
+A projection is a derived database row. The full proof of `gos v verify`
+validates the whole history and the exact native and local projections,
+including private content, parent, event, leaf, file-link and checkout facts.
+It rejects a file link whose content hash differs from the hash in its manifest.
+Catalog6 recording accepts full compressed content and refuses physical deltas.
 Catalog1 retains its separate delta reconstruction contract.
 
 Content that already
@@ -313,8 +335,9 @@ do not extend the supported public graph or implement their corresponding
 product operations.
 
 `AdmissionLimits` bound content reconstruction and parser work. Catalog1 admission
-validates its root; catalog4 admission also checks the complete supported history
-and charges retained metadata to the same operation budget.
+validates its root. Catalog6 open checks only the facts
+whose cost does not grow with the history, and charges retained metadata to the
+same operation budget.
 Fixed scalar conflict queries bound the data they return. Neither mechanism
 sets a ceiling on SQLite scan work across stored tables.
 
@@ -328,14 +351,67 @@ private file name return the same unavailable error. A private association with
 already public root bytes preserves their public classification. A receipt for
 an unsupported general graph cannot grant shared access.
 
-## Check admission before operations
+## Check a repository
 
-Admission is the validation required before repository operations. A sealed
-admission proof records SQLite `data_version`, connection
-`total_changes` and exact durable authority metadata. Each content operation
-checks that proof under its writer reservation before a private lookup.
-The saved metadata includes the root-conflict predicates. Refreshing only the
-connection counter cannot accept a newly contradictory projection.
+Gossil checks a catalog6 repository in three places, which are open, each
+command and `gos v verify`.
+
+1. **Open** checks only the facts whose cost does not grow with the history.
+   SQLite and its foreign keys must be on. Open checks the catalog marker, the
+   fingerprint, the `project-code` and `server-code` config rows, the schema and
+   the policy. It checks `checkout_count` and the one registration, with its
+   `pending_version` bounded by the generation and the tracked rows. It checks
+   the project binding, whose IDs must all be text. Open replays no artifact,
+   compares no table, checks no hash and runs no foreign key scan.
+2. **Each command** checks what it reads and writes, in its own transaction. A
+   write never stores an artifact that `verify` then refuses because of a fact
+   that the write read. A read checks what it prints against what it parses.
+   The [issue ticket guide](issue-ticket.md),
+   [private recording](#private-recording-library) and
+   [recorded ancestry](#read-recorded-checkout-ancestry) give the checks of each
+   command.
+3. **`gos v verify`** gives the full proof. It replays every check-in and every
+   issue artifact and compares each table with that replay.
+
+Only a scan of the history or of a whole table can check some facts. Commands
+trust these facts, and only `verify` checks them. This guide calls them the
+trusted class.
+Examples are rows that no index of a command reaches, link rows, the amended
+user and comment columns `euser` and `ecomment` of `event`, and foreign key
+integrity. An edit by the owner that keeps every fact consistent with every
+other fact was never detectable by open, by a command or by `verify`.
+
+A stock `fossil rebuild` drops every table that Fossil does not know, so it
+drops each `g_` table. Open then refuses the repository, and the CLI exits 78
+with this message:
+
+```text
+this repository has lost its Gossil tables (was `fossil rebuild` run on it?); restore it from a backup
+```
+
+A stock `fossil push` or `fossil sync` sends no private artifact and empties
+`unsent`. A push, sync or pull adds the config rows `last-sync-url` and
+`hash-policy`. The push is safe. `verify` admits an `unsent` table that holds any subset of the rows that
+replay gives, and every command still works after the push. But `verify` still
+refuses an `unsent` row that replay does not give.
+
+A push leaves `unclustered` unchanged, and so does a sync or pull that receives
+nothing. So `verify` still requires that `unclustered` hold exactly the rows that
+replay gives. A pull or sync that receives a public artifact adds rows to `blob`,
+`unclustered` and other tables, and `verify` refuses the repository. By default, a
+commit in a checkout of a clone has the same effect, because autosync pushes the
+commit back into the Gossil file. Gossil does not support receiving artifacts yet.
+
+A command keeps no snapshot of the repository between transactions. So an owner
+sees each commit that another process makes after the open, and needs no
+second open. The CLI retries a command once only after `database is locked`.
+
+Catalog1 keeps its snapshot, because its operations do not check what they
+read. A sealed admission proof records SQLite `data_version`, connection
+`total_changes` and exact durable authority metadata. Each catalog1 content
+operation checks that proof under its writer reservation before a private
+lookup. The saved metadata includes the root-conflict predicates. Refreshing
+only the connection counter cannot accept a newly contradictory projection.
 
 An unrelated external commit conservatively requires explicit readmission.
 Unexpected writes on the same connection also require readmission.
@@ -385,7 +461,7 @@ their native and typed crosslinks are implemented.
 ## Read recorded checkout ancestry
 
 `LocalOwnerRepository::recorded_timeline(checkout, limits)` returns a complete
-`Vec<RecordedCheckin>` for an explicit existing catalog4 checkout. Each row has
+`Vec<RecordedCheckin>` for an explicit existing catalog6 checkout. Each row has
 `hash: String`, `date: Vec<u8>`, `actor: Vec<u8>`, `comment: Vec<u8>` and
 `private: bool`. The generated [Rust API](api/index.qmd) gives the exact signature.
 
@@ -393,25 +469,30 @@ Results start with the current private check-in and follow its ancestors to the
 immutable shared empty root S. The root occurs exactly once, last, with
 `private == false`; every private row has `private == true`. Before any private
 recording, S is the sole row. The reader follows ancestry rather than sorting
-rows by date. Accepted recordings have strictly increasing dates; equal or
-backward dates still refuse admission.
+rows by date. Accepted recordings have strictly increasing dates. A commit
+checks the date of its parent, and the full proof refuses equal or backward
+dates anywhere in the history.
 
 Hashes are full verified native identities. Dates preserve native D-card bytes;
 actor and comment preserve the decoded native U-card and C-card bytes exactly.
 The supported metadata is UTF-8 without NUL, but these public fields remain byte
 vectors. The reader does not normalize dates, abbreviate hashes or use edited
-display metadata. Complete native equality admission first authenticates the
-original event user and comment. Only then does the reader get their owned
-bytes in the same transaction.
+display metadata.
 
-One content budget and one parser ledger cover freshness, complete repository
-admission, metadata queries and result retention. The complete result capacity
-is charged before allocation. Full admission retains every existing authority,
-provider, foreign-key, registration, native-root and history projection check.
-Existing admission callers keep their checks and accounting unchanged.
+The reader walks every manifest of the chain and reads the
+event row of each check-in. It refuses an event whose user or comment is not
+the U or C card of its manifest, and a chain whose length differs from the
+generation. It reads no file content. The full proof of `gos v verify` checks
+the rest of each event row.
+
+One transaction runs the checks of each command, walks the manifests and reads
+their event rows, under one content budget and one parser ledger. The complete
+result capacity is charged before allocation. The ledger covers the whole chain,
+so the parser limits bound the length of the history that the timeline can read.
+Under the CLI limits that is about 500 check-ins of one file.
 
 Success returns the entire ancestry only after checked transaction completion.
-There is no truncation or successful empty history. Missing checkout, stale
+There is no truncation or successful empty history. Missing checkout, changed
 authority, unsupported or corrupt state, invalid or exhausted limits, allocation,
 provider and transaction failures return `StorageError`. The first operation
 cause and separate cleanup failure retain their existing precedence.
@@ -429,8 +510,34 @@ timeline behavior remain deferred.
 
 ## Schema and remaining work
 
-Each catalog installs six SQL inputs under `src/storage/schema/`. Catalog4
-substitutes `adapter-catalog4.sql` for the catalog1 adapter. The required object
+Each catalog installs six SQL inputs under `src/storage/schema/`. Catalog6
+substitutes `adapter-catalog6.sql` for the catalog1 adapter. That file adds the
+local audit tables `transactions`, `transaction_events` and `g_command_audit`,
+which stay empty in this build. Initialization also stores the SQL of the
+installed ticket tables in the native `ticket-table` setting. A stock
+`fossil rebuild` recreates the ticket tables from that setting, so they keep
+their Gest columns.
+
+`just catalog-interop` checks a new repository with the pinned Fossil reference.
+It runs `fossil test-integrity`, then `fossil rebuild` on a copy, and compares the
+ticket columns. It then checks a repository with private check-ins and an issue
+between them, with `fossil test-integrity`, `fossil timeline` and `fossil ticket show`.
+Last, it makes a stock Fossil repository and checks that `verify` and `open` refuse
+it with exit 78 and change no byte of it.
+When the reference is absent, it exits 5, the status for not-run.
+
+The [issue ticket writer](issue-ticket.md) stores one private task or project
+ticket in a catalog 6 repository. `open` admits a repository that holds such
+tickets beside private check-ins, and the project binding that `issue init` writes.
+
+`LocalOwnerRepository::verify` runs the full proof on demand, and
+`verify_issue` proves one issue from its own rows. Both read in a transaction that
+they roll back, so they change nothing. Each proof bounds each artifact and each row.
+No proof sets a bound on the whole repository. The timeline is the one command
+that does, because it parses its whole chain under one ledger. The command
+[`gos v verify`](cli.md#verify-a-repository) runs both proofs.
+
+The required object
 inventory and complete stored definitions are
 checked before mutation. Known optional schema families return an unsupported
 configuration error. Unregistered persistent triggers receive a separate error.
@@ -440,7 +547,7 @@ remain unimplemented. General public receipts, publication, native and typed
 rebuild, retained-dependency administration and filesystem journals also remain
 unimplemented. The public APIs do not offer those operations.
 The internal modules for [strict local records](local-records.md) are the base
-for the record readers of catalog 5, which are not built yet.
+for the record readers of catalog 6, which are not built yet.
 
 ## Recommendations
 

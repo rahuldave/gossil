@@ -29,6 +29,7 @@ g_checkout_project
 g_code_link
 g_code_link_entity
 g_code_link_target
+g_command_audit
 g_command_checkout_pending
 g_command_checkout_sequence
 g_command_pending
@@ -116,6 +117,8 @@ g_vmerge
 g_vmerge_ck1
 g_vmergex1
 g_vvar
+idx_transaction_events_transaction_id
+idx_transactions_project_id
 leaf
 message_context
 mlink
@@ -141,6 +144,8 @@ tagxref_i1
 ticket
 ticketchng
 ticketchng_idx1
+transaction_events
+transactions
 unclustered
 unsent
 unversioned

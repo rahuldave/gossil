@@ -672,10 +672,15 @@ fn strict_selectors_grammar_and_storage_free_help() {
 const METADATA_PARTS: usize = 6;
 
 /// Reject forged original metadata and unsupported display amendments without repair, for one share.
+///
+/// `verify` refuses each corruption with exit 74. `timeline` and `log` refuse a user
+/// or comment that is not text or not the card of its manifest, and a changed
+/// generation.
 /// # Arguments
 /// * `part` - The share of the corruptions, below `METADATA_PARTS`. Each corruption gets its own fixture.
 /// # Panics
-/// Panics if invalid native event columns are displayed, repaired or masked by ownership.
+/// Panics if `verify` admits invalid native event columns, if a refusal repairs them,
+/// or if a refusal of the timeline is masked by ownership.
 fn metadata_types_nuls_tampering_amendments_and_authority_refuse(part: usize) {
     let mut corruptions = Vec::new();
     for objid in ["objid=1", "objid<>1"] {
@@ -707,31 +712,59 @@ fn metadata_types_nuls_tampering_amendments_and_authority_refuse(part: usize) {
         sql(mutate(&f.repo, &mutation));
         let before = sql(snapshot(&f.repo));
         let files = tree(&f.root);
-        for verb in ["timeline", "log"] {
-            let output = run(&mut f.operation(env!("CARGO_BIN_EXE_gossil"), "vcs", verb));
-            assert_eq!(output.status.code(), Some(1), "admitted {mutation}");
-            assert!(output.stdout.is_empty(), "partial history for {mutation}");
-            let diagnostic = String::from_utf8(output.stderr).unwrap();
-            let expected_guard = if mutation.contains("event") {
-                if mutation.ends_with("objid=1") {
-                    "root event"
-                } else {
-                    "projection"
-                }
-            } else if mutation.contains("generation") {
-                "generation"
-            } else if mutation.contains("phantom") {
-                "phantom"
+        let expected_guard = if mutation.contains("event") {
+            if mutation.ends_with("objid=1") {
+                "root event"
             } else {
                 "projection"
-            };
-            assert!(
-                diagnostic.contains(expected_guard),
-                "wrong refusal for {mutation}: {diagnostic}"
-            );
+            }
+        } else if mutation.contains("generation") {
+            "unsupported recording checkout state"
+        } else if mutation.contains("phantom") {
+            "phantom"
+        } else {
+            "projection"
+        };
+        // The timeline prints the user and the comment, so it refuses a value that is
+        // not text, and text that is not the U or C card of the manifest. It prints no
+        // amendment, so it trusts `euser` and `ecomment`, which only `verify` checks. It
+        // also reads the generation of the checkout.
+        let timeline_guard = if mutation.contains("NULL") || mutation.contains("x'ff'") {
+            Some("recorded event metadata must be original text")
+        } else if mutation.contains("char(65,0,66)") || mutation.contains("forged metadata") {
+            Some("recorded event metadata differs from its manifest")
+        } else if mutation.contains("generation") {
+            Some("unsupported recording checkout state")
+        } else {
+            None
+        };
+        for verb in ["timeline", "log"] {
+            let output = run(&mut f.operation(env!("CARGO_BIN_EXE_gossil"), "vcs", verb));
+            if let Some(guard) = timeline_guard {
+                assert_eq!(output.status.code(), Some(1), "admitted {mutation}");
+                assert!(output.stdout.is_empty(), "partial history for {mutation}");
+                let diagnostic = String::from_utf8(output.stderr).unwrap();
+                assert!(
+                    diagnostic.contains(guard),
+                    "wrong refusal for {mutation}: {diagnostic}"
+                );
+            }
             assert_eq!(sql(snapshot(&f.repo)), before, "repaired {mutation}");
             assert_eq!(tree(&f.root), files);
         }
+        // The full proof of `verify` refuses every corruption with exit 74.
+        let output = run(command(env!("CARGO_BIN_EXE_gos"), f.temp.path())
+            .current_dir(&f.root)
+            .args(["v", "verify", "--repository"])
+            .arg(&f.repo));
+        let diagnostic = String::from_utf8(output.stderr).unwrap();
+        assert_eq!(output.status.code(), Some(74), "{mutation}: {diagnostic}");
+        assert!(output.stdout.is_empty(), "{mutation}");
+        assert!(
+            diagnostic.contains(expected_guard),
+            "wrong refusal for {mutation}: {diagnostic}"
+        );
+        assert_eq!(sql(snapshot(&f.repo)), before, "repaired {mutation}");
     }
 }
 

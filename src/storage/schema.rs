@@ -1,10 +1,10 @@
-//! Install six accepted DDL inputs for catalog1 or empty catalog4 inside the borrowed writer.
+//! Install six accepted DDL inputs for catalog1 or empty catalog6 inside the borrowed writer.
 //!
 //! ## Recommendations
 //! Install only as part of complete repository initialization; validate before admission.
 use super::{StorageError, WriteTransaction, content::Budget, metered_query::SqlWork};
 
-/// Exact catalog1 schema inputs; catalog4 substitutes its adapter at installation.
+/// Exact catalog1 schema inputs; catalog6 substitutes its adapter at installation.
 const DDL: [&str; 6] = [
     include_str!("schema/native-repository.sql"),
     include_str!("schema/adapter-v4.sql"),
@@ -56,7 +56,14 @@ fn encode_catalog_value(value: libsql::Value, bytes: &mut Vec<u8>) -> Result<(),
 /// The catalog that this build creates and that new routes admit (CAT-04).
 ///
 /// Older routes still admit catalog 1. A metered route admits only this catalog.
-pub(super) const NEWEST_CATALOG: i64 = 4;
+pub(super) const NEWEST_CATALOG: i64 = 6;
+
+/// The registered raw schema fingerprint of catalog 6 (CAT-04), which CAT-T02 compares.
+///
+/// It covers every row of [`CATALOG_ROWS`] of a fresh repository. No fingerprint of
+/// catalog 4 or 5 is registered, because the marker check refuses those repositories.
+const CATALOG6_FINGERPRINT: &str =
+    "0cb960d2106b8d59368148fe029764533adaf8ca799842587259e2abc9358631";
 
 /// Every schema object outside SQLite's own, with its stored definition, in a fixed order.
 const CATALOG_ROWS: &str = "SELECT type,name,tbl_name,sql FROM sqlite_schema WHERE name NOT LIKE 'sqlite_%' ORDER BY type,name";
@@ -101,7 +108,7 @@ fn encoded_catalog_len(rows: &[Vec<libsql::Value>]) -> Result<usize, StorageErro
 fn catalog_version(rows: Vec<Vec<libsql::Value>>) -> Result<i64, StorageError> {
     use std::collections::BTreeSet;
     let required: BTreeSet<&str> = include_str!("schema/required-names.txt").lines().collect();
-    let required4: BTreeSet<&str> = include_str!("schema/required-names-catalog4.txt")
+    let required6: BTreeSet<&str> = include_str!("schema/required-names-catalog6.txt")
         .lines()
         .collect();
     let mut seen = BTreeSet::new();
@@ -110,7 +117,7 @@ fn catalog_version(rows: Vec<Vec<libsql::Value>>) -> Result<i64, StorageError> {
         let Some(libsql::Value::Text(name)) = row.get(1) else {
             return Err(StorageError::state("corrupt schema object name"));
         };
-        if !required.contains(name.as_str()) && !required4.contains(name.as_str()) {
+        if !required.contains(name.as_str()) && !required6.contains(name.as_str()) {
             let trigger = row.first() == Some(&libsql::Value::Text("trigger".into()));
             let optional = ["fx_", "ticket", "fts", "subscriber", "alert"]
                 .iter()
@@ -130,7 +137,7 @@ fn catalog_version(rows: Vec<Vec<libsql::Value>>) -> Result<i64, StorageError> {
         }
     }
     let seen: BTreeSet<&str> = seen.iter().map(String::as_str).collect();
-    if seen != required && seen != required4 {
+    if seen != required && seen != required6 {
         return Err(StorageError::state(
             "missing required repository catalog object",
         ));
@@ -139,7 +146,7 @@ fn catalog_version(rows: Vec<Vec<libsql::Value>>) -> Result<i64, StorageError> {
         .ok_or_else(|| StorageError::state("catalog fingerprint unavailable"))?;
     match crate::content_hash::hex(&digest).as_str() {
         "35862e3d85100f9415d63bbb04e6a8e9540e2a53595de25bc44a7ddf478c3e1e" => Ok(1),
-        "8ba7ef53cb917460fbe325d04b1078f4f64aaf7d7438756b44cd7776dbca49e4" => Ok(4),
+        CATALOG6_FINGERPRINT => Ok(NEWEST_CATALOG),
         hash => Err(StorageError::state(format!(
             "unsupported repository catalog: {hash}"
         ))),
@@ -243,29 +250,29 @@ impl WriteTransaction<'_> {
     pub(super) async fn install_schema(&mut self) -> Result<(), StorageError> {
         self.install_schema_catalog(false).await
     }
-    /// Install the exact catalog4 adapter with the five unchanged base DDL inputs.
+    /// Install the exact catalog6 adapter with the five unchanged base DDL inputs.
     /// # Returns
     /// Success after all schema inputs execute inside the owned writer.
     /// # Errors
     /// Returns the first latched failure or SQL installation error.
-    pub(super) async fn install_schema_catalog4(&mut self) -> Result<(), StorageError> {
+    pub(super) async fn install_schema_catalog6(&mut self) -> Result<(), StorageError> {
         self.install_schema_catalog(true).await
     }
     /// Select the constructor's exact schema without migrating an existing file.
     /// # Arguments
-    /// * `catalog4` - Select the unbound native initializer adapter.
+    /// * `catalog6` - Select the unbound native initializer adapter.
     /// # Returns
     /// Success after complete installation.
     /// # Errors
     /// Preserves the first SQL or transaction failure.
-    async fn install_schema_catalog(&mut self, catalog4: bool) -> Result<(), StorageError> {
+    async fn install_schema_catalog(&mut self, catalog6: bool) -> Result<(), StorageError> {
         if let Some(error) = &self.failure {
             return Err(error.clone());
         }
         let result = async {
             for (index, sql) in DDL.into_iter().enumerate() {
-                let sql = if catalog4 && index == 1 {
-                    include_str!("schema/adapter-catalog4.sql")
+                let sql = if catalog6 && index == 1 {
+                    include_str!("schema/adapter-catalog6.sql")
                 } else {
                     sql
                 };

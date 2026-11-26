@@ -52,7 +52,7 @@ impl LocalOwnerRepository {
     /// # Returns
     /// The committed view, unchanged for an entirely equal batch.
     /// # Errors
-    /// Refuses stale authority or expectations, invalid limits, aliases, unknown
+    /// Refuses a changed owner, stale expectations, invalid limits, aliases, unknown
     /// paths, conflicting choices, corrupt inventories, counter overflow and SQL failures.
     /// # Examples
     /// ```no_run
@@ -92,12 +92,14 @@ impl LocalOwnerRepository {
                 return Err(StorageError::state("duplicate or aliased scope path"));
             }
         }
-        let mut parse = ParseWork::new(limits.parser)?;
+        ParseWork::new(limits.parser)?;
         let mut tx = self.store.begin_write().await?;
         let result = async {
-            tx.check_admission_budgeted(&self.principal, &self.admission, &mut budget).await?;
+            tx.check_admission_budgeted(&self.principal, &mut budget).await?;
             tx.require_native_checkout().await?;
-            tx.validate_recording_repository(&self.principal, limits, &mut budget, &mut parse).await?;
+            tx.check_recording_state(&self.principal, limits, &mut budget).await?;
+            // A table that must stay empty, such as a pending remove, changes what this write means.
+            tx.require_recording_empty_tables().await?;
             let before = tx.read_checkout_view_budgeted(&self.principal, checkout, &mut budget).await?;
             if &before != wanted { return Err(StorageError::state("scope checkout changed")); }
             tx.tracking_protected_paths()?;
@@ -129,16 +131,14 @@ impl LocalOwnerRepository {
                 require_scope_update(tx.execute_bound("UPDATE g_checkout SET pending_version=?1 WHERE checkout_id=?2 AND generation=?3 AND pending_version=?4 AND availability='ready'", vec![Value::Integer(pending), Value::Text(checkout.into()), Value::Integer(generation), Value::Integer(old_pending)]).await?)?;
             }
             tx.tracking_protected_paths()?;
-            tx.validate_recording_repository(&self.principal, limits, &mut budget, &mut parse).await?;
+            tx.check_recording_state(&self.principal, limits, &mut budget).await?;
             tx.read_path_scopes_budgeted(checkout, tracking, &mut budget).await?;
             tx.tracking_protected_paths()?;
-            Ok((tx.read_checkout_view_budgeted(&self.principal, checkout, &mut budget).await?, tx.capture_admission_budgeted(&mut budget).await?))
+            tx.read_checkout_view_budgeted(&self.principal, checkout, &mut budget).await
         }.await;
         let result = tx.record(result);
         tx.commit().await?;
-        let (view, admission) = result?;
-        self.admission = admission;
-        Ok(view)
+        result
     }
 }
 

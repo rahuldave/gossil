@@ -8,6 +8,9 @@ use gossil::storage::{
 };
 use std::path::{Path, PathBuf};
 
+#[path = "support/proof.rs"]
+mod proof;
+
 #[path = "support/shares.rs"]
 mod shares;
 /// Set explicit finite root and registration ceilings.
@@ -18,7 +21,7 @@ fn limits() -> AdmissionLimits {
             max_output_bytes: 4096,
             max_chain_depth: 4,
             max_total_stored_bytes: 8192,
-            // Catalog4 admission charges exact schema/authority and complete operation work.
+            // Catalog6 admission charges exact schema/authority and complete operation work.
             max_total_decoded_bytes: 16777216,
         },
         parser: ParseLimits {
@@ -101,7 +104,8 @@ async fn logical_state(connection: &libsql::Connection) -> Vec<(String, Vec<Vec<
 
 /// Exercise a complete freshly produced row before a single hostile mutation.
 /// # Panics
-/// Panics if fixture creation, valid reopen, or rejection of corruption fails.
+/// Panics if fixture creation, valid reopen, or rejection of corruption by the full
+/// proof or by the listing fails.
 async fn reject_mutation(sql: &str) {
     let temp = tempfile::tempdir().unwrap();
     let path = temp.path().join("repo");
@@ -123,7 +127,7 @@ async fn reject_mutation(sql: &str) {
     c.execute("PRAGMA foreign_keys=OFF", ()).await.unwrap();
     let expected_constraint = match sql {
         "UPDATE g_storage SET storage_version=1" => {
-            Some("CHECK constraint failed: storage_version=4")
+            Some("CHECK constraint failed: storage_version=6")
         }
         "UPDATE g_vfile SET id=NULL" => Some("NOT NULL constraint failed: g_vfile.id"),
         "UPDATE g_vfile SET checkout_id=NULL" => {
@@ -160,10 +164,30 @@ async fn reject_mutation(sql: &str) {
     if expected_constraint.is_some() {
         drop(LocalOwnerRepository::open(&path, limits()).await.unwrap());
     } else {
-        assert!(
-            LocalOwnerRepository::open(&path, limits()).await.is_err(),
-            "accepted {sql}"
-        );
+        // The full proof refuses each change without effect.
+        let (opened, proof) = proof::verify_refusal(&path, limits()).await;
+        proof::assert_refusal(sql, &proof);
+        // The listing reads the path and the mode of each row, so it refuses a
+        // change to either. Open checks only the registration and its keys.
+        if sql.starts_with("UPDATE g_vfile SET pathname=")
+            || sql.starts_with("UPDATE g_vfile SET isexe=")
+        {
+            assert!(opened, "{sql}");
+            let mut owner = LocalOwnerRepository::open(&path, limits()).await.unwrap();
+            let listed = owner
+                .pending_adds("work", limits(), tracking())
+                .await
+                .err()
+                .map(|e| e.to_string());
+            // The listing names a bad path as the full proof does. It gives its own
+            // message for a value of the wrong type or a pathname that is not UTF-8.
+            let expected = match proof.as_str() {
+                "recording unsupported tracked state" => "tracking inventory invalid",
+                "invalid column type" => "tracking pathname is not UTF-8",
+                other => other,
+            };
+            assert_eq!(listed.as_deref(), Some(expected), "listed {sql}");
+        }
     }
     assert_eq!(std::fs::read(root.join("first")).unwrap(), b"unchanged");
 }
@@ -175,7 +199,7 @@ const TRACKING_PARTS: usize = 5;
 /// # Arguments
 /// * `part` - The share of the 88 mutations, below `TRACKING_PARTS`. Each mutation gets its own fixture.
 /// # Panics
-/// Panics if schema constraints or full reopen admission accept a mutated row.
+/// Panics if schema constraints or the full proof accept a mutated row.
 async fn all_native_tracking_fields_refuse_corruption(part: usize) {
     let mut mutations: Vec<String> = Vec::new();
     for field in [
@@ -297,7 +321,7 @@ async fn all_native_tracking_fields_refuse_corruption_4() {
     all_native_tracking_fields_refuse_corruption(4).await;
 }
 
-/// A valid produced inventory is bounded independently at reopen and listing.
+/// A valid produced inventory is bounded independently by the full proof and the listing.
 /// # Panics
 /// Panics if lower inventory/text/component bounds fail to reject a complete inventory.
 #[tokio::test]
@@ -340,13 +364,19 @@ async fn complete_tracking_inventory_obeys_admission_and_request_bounds() {
         assert!(owner.pending_adds("work", limits(), bound).await.is_err());
     }
     drop(owner);
+    // Open parses no artifact, and the full proof parses the root under the ceiling.
     let mut bound = limits();
     bound.parser.entries = 1;
-    assert!(LocalOwnerRepository::open(&path, bound).await.is_err());
-    assert!(LocalOwnerRepository::open(&path, limits()).await.is_ok());
+    let mut owner = LocalOwnerRepository::open(&path, bound).await.unwrap();
+    assert_eq!(
+        owner.verify(bound).await.unwrap_err().to_string(),
+        "recording native artifact validation"
+    );
+    assert!(owner.verify(limits()).await.is_ok());
 }
 
-/// Empty registration remains admitted; native rows without registrations never do.
+/// Empty registration remains admitted. The full proof refuses native rows without a
+/// registration.
 /// # Panics
 /// Panics if empty-state handling or unregistered fabricated-row refusal regresses.
 #[tokio::test]
@@ -366,7 +396,10 @@ async fn zero_registration_rejects_fabricated_tracking_rows() {
     .unwrap();
     drop(c);
     drop(db);
-    assert!(LocalOwnerRepository::open(&path, limits()).await.is_err());
+    assert_eq!(
+        proof::verify_refusal(&path, limits()).await,
+        (true, "repository foreign key integrity failure".to_owned())
+    );
 }
 
 /// Genuine catalog1 rejects add/status and retains its exact root-projection predicate.
@@ -410,7 +443,7 @@ async fn catalog1_never_admits_native_pending_additions() {
             .await
             .unwrap_err()
             .operation,
-        "native checkout requires catalog4"
+        "native checkout requires catalog6"
     );
     assert_eq!(
         owner
@@ -418,7 +451,7 @@ async fn catalog1_never_admits_native_pending_additions() {
             .await
             .unwrap_err()
             .operation,
-        "native checkout requires catalog4"
+        "native checkout requires catalog6"
     );
     drop(owner);
     drop(LocalOwnerRepository::open(&path, bounds).await.unwrap());

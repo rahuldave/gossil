@@ -1,4 +1,5 @@
-//! Route native initialization, checkout open, information, tracking, recording, timeline, delta and glob diagnostics.
+//! Route native initialization, checkout open, information, tracking, recording, timeline, delta and glob diagnostics,
+//! and the recognised commands of the `issue` group.
 use crate::delta::{DeltaError, Limits, apply, create};
 use std::collections::TryReserveError;
 use std::ffi::{OsStr, OsString};
@@ -7,6 +8,8 @@ use std::io::{Read, Write};
 use std::path::{Path, PathBuf};
 
 mod help;
+mod issue;
+mod issue_read;
 
 /// Adapter failures retain their original I/O or allocation cause.
 #[derive(Debug)]
@@ -364,6 +367,9 @@ enum Route {
     Fail(String),
     /// Run the command, with the group normalized to `vcs`.
     Dispatch(Vec<OsString>),
+    /// Run the handler of a recognised issue command, with its canonical path
+    /// and the arguments after its last name.
+    Issue(help::IssueHandler, String, Vec<OsString>),
 }
 
 /// Answer help requests and unknown names before any command runs.
@@ -383,6 +389,9 @@ enum Route {
 /// failure. So is a name that is
 /// neither a group nor a command of this build. Each diagnostic points to the help.
 ///
+/// The group `issue`, or its alias `i`, hands the rest to the issue parser,
+/// which applies the same help rules at each level of its command tree.
+///
 /// # Arguments
 /// * `args` - The arguments after the executable name.
 ///
@@ -395,6 +404,17 @@ fn route(args: Vec<OsString>) -> Route {
     let Some(group) = args.get(leading) else {
         return Route::Print(help::root());
     };
+    if group == "issue" || group == "i" {
+        return match issue::route(&args[leading + 1..], leading > 0) {
+            issue::IssueRoute::Print(text) => Route::Print(text),
+            issue::IssueRoute::Fail(message) => Route::Fail(message),
+            issue::IssueRoute::Run {
+                handler,
+                path,
+                args,
+            } => Route::Issue(handler, path, args),
+        };
+    }
     if group != "vcs" && group != "v" {
         return Route::Fail(help::unknown_group(group));
     }
@@ -432,13 +452,36 @@ fn route(args: Vec<OsString>) -> Route {
     }
 }
 
+/// Print a failed command's diagnostic once and choose its exit status.
+///
+/// # Arguments
+/// * `error` - The failure that the command returned.
+///
+/// # Returns
+/// 78, the code of an unusable configuration, when the error chain holds an older
+/// Gossil catalog (CAT-07) or a repository that lost its Gossil tables, and 1 for
+/// every other failure.
+fn failed(error: &(dyn std::error::Error + 'static)) -> std::process::ExitCode {
+    eprintln!("{error}");
+    if crate::storage::unusable(error) {
+        return std::process::ExitCode::from(78);
+    }
+    std::process::ExitCode::FAILURE
+}
+
 /// Print the adapter error once, with the native newline and exit status.
 ///
 /// # Returns
 /// The success exit code after initialization, native checkout open, tracking,
 /// scope selection, private recording, checkout timeline/information or a completed diagnostic. Returns the failure exit code
-/// after printing an adapter error to standard error. The first argument `v` is accepted
-/// as an alias for `vcs`. A help request prints the help on stdout and returns 0.
+/// after printing an adapter error to standard error. A repository at an older Gossil catalog
+/// returns 78. The first argument `v` is accepted
+/// as an alias for `vcs`. In the `issue` group, or its alias `i`, `init`,
+/// `task create`, `task list` and `task show` run and return their own statuses,
+/// 0 on success.
+/// Every other recognised issue
+/// command writes a refusal to stderr and returns 69, because this build does
+/// not run it. A help request prints the help on stdout and returns 0.
 /// If the write of the help fails, the entry returns 1. An unknown group or command
 /// returns 2, as a parser failure, with a pointer to the help on stderr.
 /// # Panics
@@ -458,35 +501,27 @@ pub fn entry() -> std::process::ExitCode {
             eprintln!("{message}");
             return std::process::ExitCode::from(2);
         }
+        Route::Issue(handler, path, args) => return issue::run(handler, &path, &args),
     };
     if args.first().is_some_and(|arg| arg == "vcs")
         && args.get(1).is_some_and(|arg| arg == "init" || arg == "new")
     {
         return match crate::vcs_init::run(&args[2..]) {
             Ok(()) => std::process::ExitCode::SUCCESS,
-            Err(error) => {
-                eprintln!("{error}");
-                std::process::ExitCode::FAILURE
-            }
+            Err(error) => failed(&*error),
         };
     }
     if args.first().is_some_and(|arg| arg == "vcs") && args.get(1).is_some_and(|arg| arg == "info")
     {
         return crate::vcs_info::run(&args[2..]).map_or_else(
-            |error| {
-                eprintln!("{error}");
-                std::process::ExitCode::FAILURE
-            },
+            |error| failed(&*error),
             |()| std::process::ExitCode::SUCCESS,
         );
     }
     if args.first().is_some_and(|arg| arg == "vcs") && args.get(1).is_some_and(|arg| arg == "open")
     {
         return crate::vcs_open::run(&args[2..]).map_or_else(
-            |error| {
-                eprintln!("{error}");
-                std::process::ExitCode::FAILURE
-            },
+            |error| failed(&*error),
             |()| std::process::ExitCode::SUCCESS,
         );
     }
@@ -496,10 +531,7 @@ pub fn entry() -> std::process::ExitCode {
             .is_some_and(|arg| arg == "add" || arg == "status")
     {
         return crate::vcs_tracking::run(&args[2..], args[1] == "add").map_or_else(
-            |error| {
-                eprintln!("{error}");
-                std::process::ExitCode::FAILURE
-            },
+            |error| failed(&*error),
             |()| std::process::ExitCode::SUCCESS,
         );
     }
@@ -509,10 +541,7 @@ pub fn entry() -> std::process::ExitCode {
             .is_some_and(|arg| arg == "scope" || arg == "commit")
     {
         return crate::vcs_recording::run(&args[2..], args[1] == "commit").map_or_else(
-            |error| {
-                eprintln!("{error}");
-                std::process::ExitCode::FAILURE
-            },
+            |error| failed(&*error),
             |()| std::process::ExitCode::SUCCESS,
         );
     }
@@ -522,12 +551,14 @@ pub fn entry() -> std::process::ExitCode {
             .is_some_and(|arg| arg == "timeline" || arg == "log")
     {
         return crate::vcs_timeline::run(&args[2..]).map_or_else(
-            |error| {
-                eprintln!("{error}");
-                std::process::ExitCode::FAILURE
-            },
+            |error| failed(&*error),
             |()| std::process::ExitCode::SUCCESS,
         );
+    }
+    if args.first().is_some_and(|arg| arg == "vcs")
+        && args.get(1).is_some_and(|arg| arg == "verify")
+    {
+        return crate::vcs_verify::run(&args[2..]);
     }
     match dispatch(&args) {
         Ok(()) => std::process::ExitCode::SUCCESS,
@@ -602,9 +633,21 @@ mod tests {
                     .into()
             )
         );
+        for args in [
+            &["help", "issue"][..],
+            &["i"],
+            &["issue", "--help"],
+            &["-h", "i"],
+        ] {
+            assert_eq!(route(os(args)), Route::Print(help::issue()), "{args:?}");
+        }
         assert_eq!(
-            route(os(&["help", "issue"])),
-            Route::Fail(help::unknown_group(OsStr::new("issue")))
+            route(os(&["help", "i", "frob"])),
+            Route::Fail(help::unknown_issue("", OsStr::new("frob")))
+        );
+        assert_eq!(
+            route(os(&["help", "ui"])),
+            Route::Fail(help::unknown_group(OsStr::new("ui")))
         );
         assert_eq!(
             route(vec![OsString::from("help"); 100_000]),
@@ -655,6 +698,7 @@ mod tests {
             "commit",
             "timeline",
             "log",
+            "verify",
             "test-delta-create",
             "test-delta-apply",
             "test-delta",
@@ -667,6 +711,38 @@ mod tests {
         for name in ["help", "frob", "diff", "push", "-h", ""] {
             assert!(!help::is_vcs_command(OsStr::new(name)), "{name}");
             assert!(help::command(OsStr::new(name)).is_none());
+        }
+        let root = help::root();
+        for command in help::ISSUE_COMMANDS {
+            assert!(root.contains(&format!("\n  {} ", command.names.join(", "))));
+            for group in ["issue", "i"] {
+                let routed = route(os(&[group, command.names[0], "--help"]));
+                assert!(
+                    matches!(routed, Route::Print(ref text) if text.lines().next()
+                        .is_some_and(|line| line.split(' ').nth(3) == Some(command.names[0]))),
+                    "{routed:?}"
+                );
+            }
+        }
+        for (args, handler, path) in [
+            (&["i", "init"][..], help::IssueHandler::Init, "init"),
+            (
+                &["issue", "task", "create"],
+                help::IssueHandler::TaskCreate,
+                "task create",
+            ),
+            (&["i", "t", "ls"], help::IssueHandler::TaskList, "task list"),
+            (
+                &["issue", "task", "show"],
+                help::IssueHandler::TaskShow,
+                "task show",
+            ),
+            (&["i", "u"], help::IssueHandler::Unavailable, "undo"),
+        ] {
+            assert_eq!(
+                route(os(args)),
+                Route::Issue(handler, path.into(), Vec::new())
+            );
         }
         assert_eq!(
             help::command(OsStr::new("log")).unwrap(),

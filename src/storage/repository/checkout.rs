@@ -3,7 +3,7 @@
 //! ## Recommendations
 //! Register an explicitly chosen existing directory, then reopen with fresh admission limits.
 use super::{AdmissionLimits, LocalOwnerRepository, Principal, StorageError};
-use crate::storage::WriteTransaction;
+use crate::storage::{WriteTransaction, schema::NEWEST_CATALOG};
 use libsql::Value;
 use std::os::unix::fs::MetadataExt;
 use std::path::{Path, PathBuf};
@@ -121,7 +121,7 @@ impl LocalOwnerRepository {
     /// # Returns
     /// Authenticated persisted registration after a checked commit and admission refresh.
     /// # Errors
-    /// Refuses catalog1, occupied catalog4, stale authority, invalid roots, unsupported state,
+    /// Refuses catalog1, occupied catalog6, a changed owner, invalid roots, unsupported state,
     /// resource limits and provider failures. A failed operation never refreshes authority.
     /// # Examples
     /// ```no_run
@@ -138,7 +138,7 @@ impl LocalOwnerRepository {
     ) -> Result<CheckoutView, StorageError> {
         check_id(checkout_id, limits)?;
         let mut budget = crate::storage::content::Budget::new(limits.content)?;
-        let mut parse = super::ParseWork::new(limits.parser)?;
+        super::ParseWork::new(limits.parser)?;
         // Bound fixed registration/view SQL bind and scalar-result ownership.
         budget.charge_decoded(
             limits
@@ -162,10 +162,10 @@ impl LocalOwnerRepository {
         let mut tx = self.store.begin_write().await?;
         let result =
             async {
-                tx.check_admission_budgeted(&self.principal, &self.admission, &mut budget)
+                tx.check_admission_budgeted(&self.principal, &mut budget)
                     .await?;
                 tx.require_native_checkout().await?;
-                tx.validate_recording_repository(&self.principal, limits, &mut budget, &mut parse)
+                tx.check_recording_state(&self.principal, limits, &mut budget)
                     .await?;
                 if tx
                     .query_bound("SELECT count(*) FROM g_checkout", vec![])
@@ -239,21 +239,18 @@ impl LocalOwnerRepository {
                     .await?;
                     registration_boundary(4 + index)?;
                 }
-                tx.validate_recording_repository(&self.principal, limits, &mut budget, &mut parse)
+                tx.check_recording_state(&self.principal, limits, &mut budget)
                     .await?;
                 let view = tx
                     .read_checkout_view_budgeted(&self.principal, checkout_id, &mut budget)
                     .await?;
-                let admission = tx.capture_admission_budgeted(&mut budget).await?;
                 registration_boundary(7)?;
-                Ok((view, admission))
+                Ok(view)
             }
             .await;
         let result = tx.record(result);
         tx.commit().await?;
-        let (view, admission) = result?;
-        self.admission = admission;
-        Ok(view)
+        result
     }
 
     /// Authenticate and read one exact existing native registration, without creating or repairing it.
@@ -263,7 +260,7 @@ impl LocalOwnerRepository {
     /// # Returns
     /// An owned registration whose directory, owner, head and native keys passed admission.
     /// # Errors
-    /// Rejects missing identities, catalog1, stale authority, changed directory identity,
+    /// Rejects missing identities, catalog1, a changed owner, changed directory identity,
     /// unsupported native/local state, resource limits and provider failures.
     /// # Examples
     /// ```no_run
@@ -279,7 +276,7 @@ impl LocalOwnerRepository {
     ) -> Result<CheckoutView, StorageError> {
         check_id(checkout_id, limits)?;
         let mut budget = crate::storage::content::Budget::new(limits.content)?;
-        let mut parse = super::ParseWork::new(limits.parser)?;
+        super::ParseWork::new(limits.parser)?;
         // Bound fixed registration/view SQL bind and scalar-result ownership.
         budget.charge_decoded(
             limits
@@ -293,10 +290,10 @@ impl LocalOwnerRepository {
         )?;
         let mut tx = self.store.begin_write().await?;
         let result = async {
-            tx.check_admission_budgeted(&self.principal, &self.admission, &mut budget)
+            tx.check_admission_budgeted(&self.principal, &mut budget)
                 .await?;
             tx.require_native_checkout().await?;
-            tx.validate_recording_repository(&self.principal, limits, &mut budget, &mut parse)
+            tx.check_recording_state(&self.principal, limits, &mut budget)
                 .await?;
             tx.read_checkout_view_budgeted(&self.principal, checkout_id, &mut budget)
                 .await
@@ -316,7 +313,7 @@ impl LocalOwnerRepository {
     /// # Returns
     /// The sole authenticated registration only when its persisted canonical root matches exactly.
     /// # Errors
-    /// Rejects zero or multiple registrations, another root, unauthorized owner, stale admission,
+    /// Rejects zero or multiple registrations, another root, unauthorized owner, a changed owner,
     /// root replacement, unsupported state, invalid input, resource limits and provider failures.
     /// # Examples
     /// ```no_run
@@ -331,7 +328,7 @@ impl LocalOwnerRepository {
         limits: AdmissionLimits,
     ) -> Result<CheckoutView, StorageError> {
         let mut budget = crate::storage::content::Budget::new(limits.content)?;
-        let mut parse = super::ParseWork::new(limits.parser)?;
+        super::ParseWork::new(limits.parser)?;
         // Bound fixed registration/view SQL bind and scalar-result ownership.
         budget.charge_decoded(
             limits
@@ -354,9 +351,9 @@ impl LocalOwnerRepository {
         let (root, metadata) = real_directory(root, limits)?;
         let mut tx = self.store.begin_write().await?;
         let result = async {
-            tx.check_admission_budgeted(&self.principal, &self.admission, &mut budget).await?;
+            tx.check_admission_budgeted(&self.principal, &mut budget).await?;
             tx.require_native_checkout().await?;
-            tx.validate_recording_repository(&self.principal, limits, &mut budget, &mut parse).await?;
+            tx.check_recording_state(&self.principal, limits, &mut budget).await?;
             let rows = tx.query_bound("SELECT c.checkout_id FROM g_checkout c JOIN g_checkout_owner o ON o.checkout_id=c.checkout_id WHERE c.root=?1 AND o.root_device=?2 AND o.root_inode=?3", vec![Value::Text(root.to_str().unwrap().into()), Value::Text(metadata.dev().to_string()), Value::Text(metadata.ino().to_string())]).await?;
             let [row] = rows.as_slice() else { return Err(StorageError::state("checkout for root unavailable")); };
             let [Value::Text(id)] = row.as_slice() else { return Err(StorageError::state("invalid checkout for root")); };
@@ -404,7 +401,7 @@ fn charge_checkout_view(
 impl WriteTransaction<'_> {
     /// Require the sole catalog supported by the registration API.
     /// # Returns
-    /// Success only for exact catalog4.
+    /// Success only for exact catalog6.
     /// # Errors
     /// Refuses every other catalog and provider failure.
     pub(super) async fn require_native_checkout(&mut self) -> Result<(), StorageError> {
@@ -414,9 +411,9 @@ impl WriteTransaction<'_> {
                 vec![],
             )
             .await?
-            != vec![vec![Value::Integer(4)]]
+            != vec![vec![Value::Integer(NEWEST_CATALOG)]]
         {
-            return Err(StorageError::state("native checkout requires catalog4"));
+            return Err(StorageError::state("native checkout requires catalog6"));
         }
         Ok(())
     }
@@ -855,12 +852,9 @@ mod injection {
             assert_eq!(error.operation, "injected registration boundary failure");
             assert!(error.cleanup.is_none());
             PHASE.with(|slot| slot.set(0));
-            let stale = owner.checkout_view("work", limits).await.unwrap_err();
-            if phase == 8 {
-                assert_eq!(stale.operation, "checkout unavailable");
-            } else {
-                assert!(stale.operation.contains("admission stale"));
-            }
+            // The rollback left no registration, and the same owner sees that.
+            let missing = owner.checkout_view("work", limits).await.unwrap_err();
+            assert_eq!(missing.operation, "checkout unavailable", "{phase}");
             drop(owner);
             let mut owner = LocalOwnerRepository::open(&path, limits).await.unwrap();
             let mut tx = owner.store.begin_write().await.unwrap();

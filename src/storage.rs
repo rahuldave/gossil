@@ -6,7 +6,8 @@
 //! is recorded in `evidence/libsql-provider/provenance.json`. Native repository
 //! creation and admission parse the empty root on this same connection. General
 //! artifact crosslinks, runtime clocks and broader date compatibility remain unqualified.
-//! Catalog4 supports native initialization, one registration and exact private recorded history; bound catalog1 retains private writes.
+//! Catalog6 supports native initialization, one registration and exact private recorded history; bound catalog1 retains private writes.
+//! A marker of an older Gossil catalog (2, 4 or 5) is refused before any effect, without migration.
 //!
 //! ## Recommendations
 //! Use one owner for a complete mutation and explicitly commit or roll back.
@@ -41,10 +42,13 @@ mod repository;
 mod schema;
 pub use content::Limits;
 pub use repository::{
-    AdmissionLimits, CheckoutView, CreateOptions, InitializeOptions, LocalOwnerRepository,
-    PathScope, PathScopeSelection, PendingAdd, PrivateRecordingOutcome, PrivateRecordingRequest,
-    RecordedCheckin, SharedView, TrackingLimits,
+    AdmissionLimits, CheckoutView, CreateOptions, InitializeOptions, IssueLimits, IssueMatch,
+    IssueRecord, IssueTicket, LocalOwnerRepository, PathScope, PathScopeSelection, PendingAdd,
+    PrivateIssueRequest, PrivateRecordingOutcome, PrivateRecordingRequest, ProjectInitRequest,
+    RecordedCheckin, SharedView, TrackingLimits, VerifySummary,
 };
+#[cfg(test)]
+pub(crate) use repository::{IssuePhase, inject_issue_failure};
 mod lifecycle;
 use lifecycle::FileIdentity;
 
@@ -116,6 +120,106 @@ impl StorageError {
             source: None,
         }
     }
+    /// Refuse a repository whose marker names an older Gossil catalog (CAT-07).
+    /// # Arguments
+    /// * `found` - The older catalog that the one stored marker names.
+    /// # Returns
+    /// An error whose source is [`OlderCatalog`], so that the CLI can exit 78.
+    fn older_catalog(found: i64) -> Self {
+        let older = OlderCatalog { found };
+        Self {
+            operation: older.to_string(),
+            cleanup: None,
+            source: Some(Arc::new(older)),
+        }
+    }
+    /// Refuse a repository that has lost its Gossil tables, as after a stock `fossil rebuild`.
+    /// # Returns
+    /// An error whose source is [`LostTables`], so that the CLI can exit 78.
+    fn lost_tables() -> Self {
+        Self {
+            operation: LostTables.to_string(),
+            cleanup: None,
+            source: Some(Arc::new(LostTables)),
+        }
+    }
+    /// Name the repository in an older-catalog refusal, with the full CAT-07 message.
+    /// # Arguments
+    /// * `repository` - The repository path that the caller selected.
+    /// # Returns
+    /// The same error. An older-catalog refusal gets the three lines of CAT-07.
+    fn naming_repository(mut self, repository: &Path) -> Self {
+        if let Some(older) = self.older() {
+            self.operation = format!(
+                "gossil: repository {} is at catalog {}, and this build needs catalog {}.\n\
+                 Gossil has no upgrade path before its first real release.\n\
+                 Create a new repository with gos v init.",
+                repository.display(),
+                older.found,
+                schema::NEWEST_CATALOG
+            );
+        }
+        self
+    }
+    /// Return the older-catalog refusal that this error carries, if any.
+    /// # Returns
+    /// The refusal of CAT-07, when the stored marker named an older Gossil catalog.
+    fn older(&self) -> Option<OlderCatalog> {
+        self.source
+            .as_deref()
+            .and_then(|source| source.downcast_ref::<OlderCatalog>())
+            .copied()
+    }
+}
+
+/// Reports a repository at a Gossil catalog older than the newest catalog of this build.
+///
+/// Gossil has no upgrade path before its first real release (CAT-05), so every
+/// command refuses such a repository before any effect, and the CLI exits 78.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub(crate) struct OlderCatalog {
+    /// The catalog that the one stored marker names.
+    pub(crate) found: i64,
+}
+impl fmt::Display for OlderCatalog {
+    /// Name the catalog found and the catalog that this build needs.
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(
+            f,
+            "repository is at catalog {}, and this build needs catalog {}",
+            self.found,
+            schema::NEWEST_CATALOG
+        )
+    }
+}
+impl std::error::Error for OlderCatalog {}
+
+/// Reports a repository that holds Fossil tables but not the Gossil tables.
+///
+/// A stock `fossil rebuild` drops every table that Fossil does not know, so it drops
+/// each `g_` table. Nothing in the file can restore them, so every command refuses
+/// the repository, and the CLI exits 78.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub(crate) struct LostTables;
+impl fmt::Display for LostTables {
+    /// Say what happened and what to do.
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        f.write_str(
+            "this repository has lost its Gossil tables (was `fossil rebuild` run on it?); restore it from a backup",
+        )
+    }
+}
+impl std::error::Error for LostTables {}
+
+/// Say whether a failure names a repository that no command of this build can use.
+/// # Arguments
+/// * `error` - The failure.
+/// # Returns
+/// True when the error chain holds an [`OlderCatalog`] or [`LostTables`] refusal. The
+/// CLI then exits 78.
+pub(crate) fn unusable(error: &(dyn std::error::Error + 'static)) -> bool {
+    std::iter::successors(Some(error), |current| current.source())
+        .any(|e| e.is::<OlderCatalog>() || e.is::<LostTables>())
 }
 
 /// A checked commit failure retains separate operation and cleanup causes.

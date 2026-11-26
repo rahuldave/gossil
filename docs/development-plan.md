@@ -33,7 +33,8 @@ serializes validated artifact and project snapshots in the same way, and the thr
 The internal modules for [strict local records](local-records.md) decode local
 JSON records and charge queries against fixed limits. The metered content methods
 read and write content through the metered queries, and they admit only the newest
-catalog. No production code calls the modules or those methods yet.
+catalog. The [issue ticket writer](issue-ticket.md) is the first production caller
+of the metered queries and of those methods.
 
 ## Current scope
 
@@ -47,13 +48,15 @@ catalog. No production code calls the modules or those methods yet.
 | Eight structural artifact types with explicit limits | General crosslinks, migration, rebuild and filesystem recovery |
 | Native initialization/open, tracking, scope/commit CLI and library; catalog1 private content | Shared recording, sync and artifact publication |
 | Explicit inherited-test runner configurations | Gest task CLI, server and user interface |
+| Library [writer and reader](issue-ticket.md) of private task and project tickets; [`issue init`](cli.md#create-the-gest-project-of-a-checkout) | Shared tickets, ticket changes and the other `issue` commands |
 
-Initialization creates catalog4 without a checkout. The library can register
+Initialization creates catalog6 without a checkout. The library can register
 one existing directory and authenticate its registration by ID or exact root.
 Opening a repository admits exactly zero or one registration and the supported tracking, scope
-and private recording family. Bound catalog1 creation retains its checkout and
-private content operations. Catalog4 generic private content writes remain
-unsupported; its separate recorder writes complete private file trees.
+and private recording family, with private issue tickets written before, between or after check-ins.
+Bound catalog1 creation retains its checkout and private content operations. Catalog6
+generic private content writes remain unsupported; its separate recorder writes
+complete private file trees.
 Registration changes the database only.
 
 The source CLI combines registration with bounded locator
@@ -240,6 +243,31 @@ status 2. The
 [help section](cli.md#get-help) gives the forms, and `tests/cli_help.rs` holds
 the CLI controls.
 
+The `issue` group, or `i`, routes each Gest command by the issue table of
+`product::help`. The parser in `product::issue` checks the command names
+and their aliases. It runs `init`, `task create`, `task list` and `task show`, and
+refuses each other recognised command with status 69. The
+[issue section](cli.md#issue-commands) gives the forms and errors, and
+`tests/issue_cli.rs` holds the controls.
+
+`product::issue_init` runs [`issue init`](cli.md#create-the-gest-project-of-a-checkout), and
+`tests/issue_init_cli.rs` holds its controls. `product::issue_task` runs
+[`issue task create`](cli.md#create-a-task), and `tests/issue_task_cli.rs` holds
+its controls. The handlers of `task list` and `task show` are in
+`product::issue_read`, and `tests/issue_read_cli.rs` holds the controls of the
+two commands. The [issue read guide](issue-read.md) gives their output.
+
+`tests/issue_demo.rs` runs the walk-through of the [issue guide](issues.md) on the
+real `gos` binary. Its ignored test reads the demo repository with stock Fossil
+and checks that Gossil refuses a copy after `fossil rebuild`. It then makes a clone with
+stock Fossil, pushes the demo repository to it, and checks that `verify`, a commit and
+`task create` still pass. `just issue-demo` runs that part with the pinned Fossil 2.29.
+
+The module `vcs_verify` runs [`vcs verify`](cli.md#verify-a-repository). It runs the full proof of a
+repository, or the proof of one issue, and changes nothing. The proofs are
+`LocalOwnerRepository::verify` and `verify_issue` in `storage::repository::verification`.
+`tests/vcs_verify_cli.rs` holds the controls of the command.
+
 The focused CLI controls are in `tests/vcs_init_cli.rs`; parser, environment,
 password and receipt controls are in the private `vcs_init` module. Source edits
 and authored tests do not establish a passing qualification run. Versioned
@@ -318,8 +346,10 @@ establish execution. The qualification results above identify the checks that ra
 ## Recorded ancestry API qualification
 
 The current source adds `LocalOwnerRepository::recorded_timeline` and
-`RecordedCheckin` for complete supported catalog4 checkout ancestry. The checkpoint
-covers the library. A separate source CLI checkpoint adds `timeline` and `log`.
+`RecordedCheckin` for complete supported catalog6 checkout ancestry. The checkpoint
+covers the library, and it ran on catalog4, before catalog6 replaced it.
+
+A separate source CLI checkpoint adds `timeline` and `log`.
 The timeline delivery baseline is accepted at `4250b873` and released as
 `v0.8.0`. The checkpoint results below retain their original, narrower scope.
 They do not qualify subsequent source changes.
@@ -396,7 +426,7 @@ qualification.
 
 At the checkpoint, `Cargo.toml` set the version of the Gossil crate to 0.9.0,
 which was later released as `v0.9.0`. The current version of the crate is
-0.16.0, and version 0.15.0 was released as `v0.15.0`. The `libsql-ffi`
+0.17.0, and version 0.16.0 was released as `v0.16.0`. The `libsql-ffi`
 provider is at 0.10.0, and its version is separate
 from the version of the crate.
 

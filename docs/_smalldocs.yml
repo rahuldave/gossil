@@ -35,6 +35,7 @@ website:
       - cli.md
       - section: Guides
         contents:
+          - issues.md
           - working-with-repositories.md
           - compare-with-git.md
           - concepts.md
@@ -52,6 +53,8 @@ website:
           - diff.md
           - task-ticket.md
           - gest-ticket.md
+          - issue-ticket.md
+          - issue-read.md
           - local-storage.md
           - native-storage.md
           - local-records.md

@@ -7,7 +7,7 @@ fn binaries() -> [&'static str; 2] {
 }
 
 /// Every vcs command and alias that the help lists and the entry dispatches.
-const COMMANDS: [&str; 14] = [
+const COMMANDS: [&str; 15] = [
     "init",
     "new",
     "open",
@@ -18,6 +18,7 @@ const COMMANDS: [&str; 14] = [
     "commit",
     "timeline",
     "log",
+    "verify",
     "test-delta-create",
     "test-delta-apply",
     "test-delta",
@@ -64,7 +65,13 @@ fn root_help_lists_groups_and_commands() {
         assert!(help.contains("Usage: gossil GROUP COMMAND"));
         assert!(help.contains("gos GROUP COMMAND"));
         assert!(help.contains("\n  vcs, v "));
-        for planned in ["issue, i", "ui, u", "serve, s"] {
+        assert!(help.contains(
+            "\n  issue, i            Gest commands; init, task create, task list and task show run, and the others are not available in this build\n\n"
+        ));
+        assert!(help.contains(
+            "Commands of the issue group. This build runs init, task create, task list, task show; every other command is not available in this build:"
+        ));
+        for planned in ["ui, u", "serve, s"] {
             assert!(help.contains(&format!("\n  {planned} ")), "{planned}");
         }
         assert!(help.contains("Planned groups, not available in this build:"));
@@ -254,9 +261,9 @@ fn unknown_commands_point_to_help() {
                 format!("gossil: unknown command \"frob\"\n{root}"),
             ),
             (
-                vec!["issue", "task", "list"],
+                vec!["serve", "--port", "1"],
                 format!(
-                    "gossil: the group \"issue\" is planned and not available in this build\n{root}"
+                    "gossil: the group \"serve\" is planned and not available in this build\n{root}"
                 ),
             ),
             (

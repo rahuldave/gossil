@@ -89,7 +89,7 @@ pub(crate) fn limits() -> AdmissionLimits {
 /// The nearest marker root and its optional locator, or no marker. A missing locator remains an incomplete marker.
 /// # Errors
 /// Return traversal I/O failures and reject unsafe markers or invalid locators without ancestor fallback.
-fn marker(root: &Path) -> Result<Option<(PathBuf, Option<locator::Locator>)>, Error> {
+pub(crate) fn marker(root: &Path) -> Result<Option<(PathBuf, Option<locator::Locator>)>, Error> {
     for ancestor in root.ancestors() {
         let marker = ancestor.join(".gossil");
         match std::fs::symlink_metadata(&marker) {
@@ -150,8 +150,9 @@ fn selection(options: &Options) -> Result<Selection, Error> {
     locator::validate_path(&repository)?;
     if let Some(directory) = config.explicit {
         // An explicit config directory is a selection request, even with an explicit CLI path.
-        let configured = std::fs::canonicalize(directory.join("gossil.db"))?;
-        if configured != repository {
+        // A configured directory without that database names other storage, so it conflicts too.
+        let configured = std::fs::canonicalize(directory.join("gossil.db")).ok();
+        if configured.as_ref() != Some(&repository) {
             return Err("configured storage conflicts with explicit repository".into());
         }
     }

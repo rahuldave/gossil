@@ -91,7 +91,16 @@ just gossil v test-delta "$example_dir/origin" "$example_dir/target"
 The source also builds a `gos` executable with the same diagnostics. See
 [short executable names](cli.md#short-names) for its source invocation.
 The same aliases support [native checkout open](cli.md#open-a-native-checkout).
-Issue commands, shared recording and sync remain planned.
+
+The [`issue` group](cli.md#issue-commands), or `i`, recognises the Gest command
+names. It runs [`init`](cli.md#create-the-gest-project-of-a-checkout), which creates the
+Gest project of an open checkout. It also runs [`task create`](cli.md#create-a-task), which adds a
+private task to that project. [`task list` and `task show`](cli.md#list-the-tasks-of-the-project)
+read its tasks. It refuses each other command with status 69. The
+other issue commands, shared recording and sync remain planned.
+
+The [issue guide](issues.md) walks through these commands beside check-ins, and reads the
+result with stock Fossil.
 
 ## Handle failures and choose the next step
 

@@ -11,9 +11,11 @@ piece of work. Planned work also uses the artifact ticket. A logical change is
 a stable name for future work on an issue. The planned-changes contract
 CHANGE-01 uses an artifact ticket to carry each logical change.
 
-Use the library to inspect or test these creation artifacts in memory. No
-current Gossil repository API stores them. Storage, the attachment that
-declares a logical change, history replay and issue commands remain separate work.
+Use the library to inspect or test these creation artifacts in memory. The
+[issue ticket writer](issue-ticket.md) stores a project creation privately in a
+native repository. The attachment that declares a logical change and the storage
+of artifact tickets remain separate work. So do the issue commands other than `gos i init`,
+`gos i task create`, `gos i task list` and `gos i task show`.
 
 ## Use the library
 
@@ -156,5 +158,5 @@ Rosalind Reid, Shreya Shankar and Oskar Austegard.
 Validate a record with its converter, then call `artifact_creation_bytes` or
 `project_creation_bytes` with an explicit output limit. Run
 `just gest-ticket-interop` after a change to the emitter, and report `not-run`
-apart from a pass. Storage of these tickets and the declaration of a logical
-change remain planned.
+apart from a pass. Store a project with the [issue ticket writer](issue-ticket.md).
+The storage of artifact tickets and the declaration of a logical change remain planned.

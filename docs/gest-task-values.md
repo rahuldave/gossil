@@ -158,8 +158,8 @@ Those runs qualify their recorded trees and do not establish full Gest or Fossil
 The task ticket emitter takes its list of canonical fields from this module.
 The list borrows the title, description and metadata, and it holds short owned
 strings for the identifiers, the status and the timestamps.
-Storage and commands do not call this module. Database schemas do not
-integrate its task record format.
+The [issue ticket writer](issue-ticket.md) calls `task_from_values` on each task
+creation that it stores or reads. Commands do not call this module.
 
 This page follows the nossaifd writing guide, including principles credited to
 Rosalind Reid, Shreya Shankar and Oskar Austegard.

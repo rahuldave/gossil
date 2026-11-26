@@ -86,12 +86,12 @@ Its `initialize` constructor creates a repository without a checkout. The
 [`vcs init` command](cli.md#initialize-a-repository) calls this constructor,
 generates identities and a password, and selects a default administrator from
 the environment. The API requires those values explicitly. Its `create`
-constructor creates catalog1 and binds an existing checkout directory. Catalog1 and catalog4
+constructor creates catalog1 and binds an existing checkout directory. Catalog1 and catalog6
 name storage formats; the [native storage guide](native-storage.md) defines their
 creation and admission rules.
 
 After `initialize`,
-`register_checkout` can register one existing directory in catalog4.
+`register_checkout` can register one existing directory in catalog6.
 `checkout_view` authenticates its ID; `checkout_view_for_root` authenticates its
 exact root. These library methods change no working files and publish no locator.
 The source [`vcs open` adapter](cli.md#open-a-native-checkout) adds locator
@@ -99,16 +99,19 @@ publication and recovery around those admitted database operations. Open does
 not select additional files.
 
 Generic private content writes require the bound catalog1 repository and refuse
-catalog4. Catalog4 has a separate private recording API, described below. Its
+catalog6. Catalog6 has a separate private recording API, described below. Its
 shared root stays a check-in with no files.
 
 Admission validates the stored root and authority before repository operations.
-For catalog4, it also validates the complete supported tracking, scope and private
-history state. `SharedView` restricts access to public content that passed this
-validation. Read and write access to the database file through the operating
-system establishes local owner authority.
+For catalog6, open checks only the facts whose cost does not grow with the
+history. Each command then checks what it reads and writes, in its own
+transaction. `gos v verify` gives the full proof of the tracking, scope and
+private history state, and of each private issue ticket against its artifact.
+`SharedView` restricts access to public content that passed admission. Read and write
+access to the database file through the operating system establishes local owner
+authority.
 
-The [native storage guide](native-storage.md) defines admission, content bounds
+The [native storage guide](native-storage.md#check-a-repository) defines admission, content bounds
 and access rules. General links between artifacts in the repository graph remain planned, so parsing
 does not establish parent relationships or resolve references. Sync and team authentication also remain planned.
 
@@ -175,8 +178,12 @@ The [task ticket emitter](task-ticket.md) produces bounded creation artifact byt
 from a validated task, a separate native ticket identity, actor bytes and a typed UTC date.
 The [Gest ticket emitter](gest-ticket.md) takes the same inputs for a validated artifact
 or project, and the three kinds share one emitter.
+
 Before passing decoded values to a converter, callers
-must check raw field presence, duplicates and byte limits. Storage integration and commands for these records remain separate work.
+must check raw field presence, duplicates and byte limits. The [issue ticket writer](issue-ticket.md)
+stores a task or project creation privately. The command `gos i init` stores a project this way, and
+`gos i task create` stores a task. The commands `gos i task list` and `gos i task show`
+read the tasks. The other commands for these records remain separate work.
 
 ## Explicit scope and private recording
 
@@ -194,10 +201,12 @@ combined head while leaving the empty shared head unchanged. The combined head
 selects the owner's private tree together with the shared tree, which is empty
 in this supported recording family.
 
-The operation validates the full supported history and its derived rows.
+The operation checks every field of the tracked rows, and checks its parent in
+full against the parent of that parent. So its cost does not grow with the
+history, and it never stores a check-in that `gos v verify` then refuses.
 A content budget bounds stored, decoded and retained bytes. A parser ledger
 counts input bytes, cards, owned bytes and entries across parsed artifacts.
-Both bound work across admission, capture, construction and final validation.
+Both bound work across the checks, capture, construction and final validation.
 
 An unchanged tree returns `NoChange` without
 a new receipt or changed head or counter. Working files remain unchanged.
@@ -212,8 +221,9 @@ and explicit actor, comment and date. [Final CLI qualification](development-plan
 is still pending.
 
 The library reader `recorded_timeline` returns the complete current-first ancestry
-through the shared empty root. It authenticates all native history before reading
-original metadata in the same transaction. It reads no working-file contents and
+through the shared empty root. It walks every manifest of the chain, and checks
+the user and comment of each event against the U and C cards of its manifest, in
+the same transaction. It reads no working-file contents and
 returns no partial result when a bound fails. See the
 [recorded ancestry contract](native-storage.md#read-recorded-checkout-ancestry).
 The source [timeline and log commands](cli.md#read-complete-recorded-ancestry)
