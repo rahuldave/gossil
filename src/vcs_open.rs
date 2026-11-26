@@ -76,9 +76,12 @@ pub(crate) fn limits() -> AdmissionLimits {
         },
         parser: crate::artifact::ParseLimits {
             input_bytes: 1048576,
-            cards: 4096,
+            // A file card of a SHA3 check-in manifest takes at least 68 bytes, so such a
+            // manifest reaches the 1 MiB input ceiling before 16,384 cards. Other
+            // artifacts, such as a cluster, can reach the card ceiling first.
+            cards: 16384,
             owned_bytes: 8388608,
-            entries: 4096,
+            entries: 16384,
         },
     }
 }
@@ -343,6 +346,52 @@ pub(crate) fn run(args: &[OsString]) -> Result<(), Error> {
 #[cfg(test)]
 mod tests {
     use super::*;
+    /// The parser ceilings of the CLI admit an artifact of more than 4,096 cards and
+    /// entries, and refuse one over 16,384.
+    /// # Panics
+    /// Panics if the test date provider gives a date, if 16,384 cards are refused, or if
+    /// 16,385 cards are not refused for a resource limit.
+    #[tokio::test]
+    async fn parser_ceilings_admit_more_than_four_thousand_cards() {
+        struct NoDates;
+        impl crate::artifact::DateProvider for NoDates {
+            async fn julianday(
+                &self,
+                _: Option<&[u8]>,
+            ) -> Result<Option<f64>, crate::artifact::DateProviderError> {
+                Ok(None)
+            }
+        }
+        let cluster = |count: usize| {
+            let mut input = Vec::new();
+            for index in 0..count {
+                input.extend_from_slice(format!("M {index:040x}\n").as_bytes());
+            }
+            let checksum = crate::artifact_checksum::md5(&input);
+            input.extend_from_slice(b"Z ");
+            for byte in checksum {
+                input.extend_from_slice(format!("{byte:02x}").as_bytes());
+            }
+            input.push(b'\n');
+            input
+        };
+        // A cluster has no date card, so the provider must give no date.
+        assert_eq!(
+            crate::artifact::DateProvider::julianday(&NoDates, None)
+                .await
+                .unwrap(),
+            None
+        );
+        let parser = limits().parser;
+        let parsed = crate::artifact::parse_artifact_with_usage(&cluster(16383), parser, &NoDates)
+            .await
+            .unwrap();
+        assert_eq!(parsed.1.cards, 16384);
+        assert!(matches!(
+            crate::artifact::parse_artifact(&cluster(16384), parser, &NoDates).await,
+            Err(crate::artifact::ArtifactError::ResourceLimit)
+        ));
+    }
     /// A real registered checkout remains unchanged while each caller/payload mismatch is rejected.
     #[tokio::test]
     /// # Panics

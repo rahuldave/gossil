@@ -112,6 +112,21 @@ issue-capacity:
 timeline-capacity:
     cargo test --release --test timeline_capacity five_thousand_checkins -- --ignored --exact --nocapture
 
+# Commit 5,000 small files and 200 files of 1 MB in a release build, change one file of each and commit again, and print the time of add, status, commit and verify.
+commit-capacity:
+    cargo test --release --test commit_capacity capacity_targets -- --ignored --exact --nocapture
+
+# Give a check-in of 1,000 files to the pinned Fossil reference: test-integrity and the file list of the check-in; exit 5 means not-run.
+commit-oracle:
+    #!/usr/bin/env bash
+    set -euo pipefail
+    fossil="${GOSSIL_FOSSIL_REFERENCE:-{{justfile_directory()}}/.jlog/bin/fossil}"
+    if [ ! -x "$fossil" ]; then
+        echo "not-run: the pinned Fossil reference is absent at $fossil; run just setup" >&2
+        exit 5
+    fi
+    GOSSIL_FOSSIL_REFERENCE="$fossil" just test --test commit_capacity stock_fossil_reads_a_thousand_file_checkin -- --ignored --exact
+
 # Compare the JSON of task list and task show with a reference gest for the same two tasks; exit 5 means not-run.
 issue-read-oracle:
     #!/usr/bin/env bash

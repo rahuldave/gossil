@@ -160,14 +160,20 @@ No file bytes, canonical artifacts, receipts or file-containing check-ins are
 stored by add. Working bytes remain unchanged.
 
 `TrackingLimits` bounds the complete inventory and batch count, bytes per path,
-path components, initial captured working bytes and read buffer size.
-The final recheck temporarily retains another copy of one captured file.
-The captured-byte limit therefore does not bound total process memory.
+path components, the bytes of one captured file and the size of the read buffer.
+Add and commit capture one file at a time. They keep only the facts of each
+file. The facts are the device, inode, mode, size and times of the leaf, and the
+identity of each directory on its path.
 
-The methods reject zero structural or buffer bounds. Capture, recapture and
-comparison also charge the operation's borrowed content budget, including retained
-parent-directory checks. The cumulative work bounds do not measure
-all process allocations. Captured bytes exist only for transaction validation.
+The final recheck opens each path again
+and compares those facts. It reads no byte a second time, and it holds no
+descriptor between files. A write changes the change time of a file. On a
+filesystem with coarse times, such as HFS+ or FAT, a write of the same size in
+the same tick as the capture keeps every fact, and the recheck does not find it.
+
+The methods reject zero structural or buffer bounds. The content and parser
+ceilings bound each file, each artifact and each SQL row. No ceiling applies to
+the whole command. Captured bytes exist only for transaction validation.
 
 Paths and descriptor identities
 must satisfy the [CLI path contract](cli.md#add-explicit-paths-and-inspect-pending-additions).
@@ -185,7 +191,7 @@ recording return checkout views. Pass the most recent returned view as the
 expected view and set `request.scope` to `PathScope::Private`.
 The [storage API](api/storage.qmd#LocalOwnerRepository) gives the exact signatures.
 Supply finite `AdmissionLimits` for content and parsing, plus `TrackingLimits`
-for path counts, path sizes and retained working bytes.
+for path counts, path sizes and the bytes of one working file.
 
 Private recording saves the current bytes and executable modes of every tracked
 file as one complete private history snapshot. Scope is each path's explicit
@@ -225,9 +231,9 @@ the backlink table outside this bounded family. No alternative escape for a lite
 The date must use the [native date grammar](task-ticket.md#date-domain) and
 be strictly later than every parent, including under native SQL date conversion. The recorder captures all working files again, retaining their bytes and
 executable modes within finite limits. Edits
-after add are included without a second add. Capture and parser helpers borrow
-one content budget and one parser work ledger, which count cumulative work
-across the whole operation.
+after add are included without a second add. The recorder reads, hashes and
+stores one file at a time. The ceilings bound each file, each manifest and each SQL row,
+so the cost of a commit follows the count and size of the tracked files.
 
 A request explicitly supplies all tracked paths and the current view:
 
@@ -263,9 +269,14 @@ follows private history. A commit reads only its parent and the parent of that
 parent, so its cost does not grow with the history. It checks every field of
 the tracked rows and the tables that must stay empty. It checks its parent in
 full against the grandparent, which means the canonical bytes, comment,
-receipt, date, unchanged files and the absence of deletions. So a commit never stores a check-in that
-the full proof then refuses. Later additions use the current combined-head RID
-as their `vid`.
+receipt, date, unchanged files and the absence of deletions. So a commit never
+stores a check-in whose own facts the full proof then refuses.
+
+A commit reads the row of each file of the parent, and not its content. A file
+whose hash is unchanged keeps that row. So a commit trusts the stored content of
+the files that it carries forward. If that content is corrupt, the commit still
+passes, and the full proof refuses the repository. Later additions use the
+current combined-head RID as their `vid`.
 
 A projection is a derived database row. The full proof of `gos v verify`
 validates the whole history and the exact native and local projections,

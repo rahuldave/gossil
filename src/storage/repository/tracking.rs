@@ -27,8 +27,8 @@ pub struct TrackingLimits {
     pub path_bytes: usize,
     /// Maximum number of explicit components per path.
     pub components: usize,
-    /// Aggregate initial captured working bytes across the batch.
-    /// Rechecking temporarily retains another copy of one captured file.
+    /// Largest working file that one capture reads. A command captures one file at a
+    /// time, and the final recheck reads no byte again.
     pub retained_bytes: u64,
     /// Maximum bytes in one descriptor read buffer.
     pub io_buffer_bytes: usize,
@@ -81,8 +81,10 @@ impl LocalOwnerRepository {
         if paths.is_empty() || paths.len() > tracking.paths {
             return Err(StorageError::state("tracking batch count limit"));
         }
-        let mut budget = crate::storage::content::Budget::new(limits.content)?;
+        // Ceilings bound each file and row, not the whole command.
+        let (_, mut budget, _) = super::verification::proof_ledgers(limits)?;
         let mut unique = BTreeSet::new();
+        let mut folded = BTreeSet::new();
         for path in paths {
             budget.charge_decoded(
                 path.len()
@@ -90,15 +92,11 @@ impl LocalOwnerRepository {
                     .ok_or_else(|| StorageError::state("tracking input work overflow"))?,
             )?;
             capture::checked_path(path, tracking)?;
-            if !unique.insert(*path)
-                || paths
-                    .iter()
-                    .any(|other| *other != *path && other.eq_ignore_ascii_case(path))
-            {
+            // A repeated path and two spellings that differ only in ASCII case are refused.
+            if !unique.insert(*path) || !folded.insert(path.to_ascii_lowercase()) {
                 return Err(StorageError::state("duplicate or aliased tracking path"));
             }
         }
-        super::ParseWork::new(limits.parser)?;
         let mut tx = self.store.begin_write().await?;
         let result = async {
             tx.check_admission_budgeted(&self.principal, &mut budget).await?;
@@ -118,37 +116,38 @@ impl LocalOwnerRepository {
             let protected: Vec<&Path> = protected.iter().map(PathBuf::as_path).collect();
             tx.charge_tracking_inventory(checkout, &mut budget).await?;
             let existing = tx.read_tracking_inventory(checkout,tracking,false).await?;
+            let known: BTreeSet<&str> = existing.iter().map(|entry|entry.path.as_str()).collect();
+            let folded: BTreeSet<String> = existing.iter().map(|entry|entry.path.to_ascii_lowercase()).collect();
             for path in paths {
-                if existing.iter().any(|entry|entry.path != *path && (entry.path.eq_ignore_ascii_case(path) || entry.path.strip_prefix(*path).is_some_and(|tail|tail.starts_with('/')) || path.strip_prefix(entry.path.as_str()).is_some_and(|tail|tail.starts_with('/')))) {
+                if !known.contains(path) && folded_alias(&folded, &path.to_ascii_lowercase()) {
                     return Err(StorageError::state("aliased tracked path"));
                 }
             }
-            let total = existing.len().checked_add(paths.iter().filter(|path|!existing.iter().any(|entry|entry.path == **path)).count()).ok_or_else(||StorageError::state("tracking inventory overflow"))?;
+            let total = existing.len().checked_add(paths.iter().filter(|path|!known.contains(**path)).count()).ok_or_else(||StorageError::state("tracking inventory overflow"))?;
             if total>tracking.paths { return Err(StorageError::state("tracking inventory count limit")); }
             budget.charge_decoded(paths.len().checked_mul(std::mem::size_of::<(&str,capture::Captured)>()).ok_or_else(||StorageError::state("tracking capture work overflow"))?)?;
             let mut captures = Vec::new();
             captures.try_reserve_exact(paths.len()).map_err(|e|StorageError::caused("tracking capture allocation",e))?;
-            let mut remaining = tracking.retained_bytes;
+            // Each file is read once and its bytes dropped, so memory follows the largest file.
             for path in paths {
-                let captured = capture::capture_budget(&root,path,&protected,tracking,remaining,&mut budget)?;
-                remaining = remaining.checked_sub(captured.bytes.len() as u64).ok_or_else(||StorageError::state("tracking retained limit"))?;
-                captures.push((*path,captured));
+                let captured = capture::capture_budget(&root,path,&protected,tracking,tracking.retained_bytes,&mut budget)?;
+                captures.push((*path,captured.mode,captured.mtime,captured.observed()));
             }
             let rid = tx.query_bound("SELECT rid FROM blob WHERE uuid=?1",vec![Value::Text(before.combined_head.as_ref().unwrap_or(&before.shared_head).clone())]).await?;
             let [row] = rid.as_slice() else {return Err(StorageError::state("tracking head unavailable"));};
             let [Value::Integer(rid)] = row.as_slice() else {return Err(StorageError::state("tracking head invalid"));};
-            for (path,captured) in &captures {
-                if existing.iter().any(|entry|entry.path == *path) { continue; }
+            for (path,mode,mtime,_) in &captures {
+                if known.contains(path) { continue; }
                 budget.charge_decoded(path.len().checked_add(checkout.len()).and_then(|n|n.checked_add(512)).ok_or_else(||StorageError::state("tracking SQL work overflow"))?)?;
                 // Fossil add.c add_one_file: vid=current checkout, rid=mrid=0,
                 // chnged=deleted=islink=0. No content or event row is produced.
-                tx.execute_bound("INSERT INTO g_vfile(checkout_id,id,vid,chnged,deleted,isexe,islink,rid,mrid,mtime,pathname,origname,mhash) SELECT ?1,coalesce(max(id),0)+1,?2,0,0,?3,0,0,0,?4,?5,NULL,NULL FROM g_vfile WHERE checkout_id=?1",vec![Value::Text(checkout.into()),Value::Integer(*rid),Value::Integer(captured.mode),Value::Integer(captured.mtime),Value::Text((*path).into())]).await?;
+                tx.execute_bound("INSERT INTO g_vfile(checkout_id,id,vid,chnged,deleted,isexe,islink,rid,mrid,mtime,pathname,origname,mhash) SELECT ?1,coalesce(max(id),0)+1,?2,0,0,?3,0,0,0,?4,?5,NULL,NULL FROM g_vfile WHERE checkout_id=?1",vec![Value::Text(checkout.into()),Value::Integer(*rid),Value::Integer(*mode),Value::Integer(*mtime),Value::Text((*path).into())]).await?;
             }
             if total > existing.len() {
             let pending = before.pending_version.checked_add(1).ok_or_else(||StorageError::state("tracking pending counter exhausted"))?;
             require_pending_update(tx.execute_bound("UPDATE g_checkout SET pending_version=?1 WHERE checkout_id=?2 AND generation=?3 AND pending_version=?4 AND availability='ready'",vec![Value::Integer(i64::try_from(pending).map_err(|_|StorageError::state("tracking pending counter exhausted"))?),Value::Text(checkout.into()),Value::Integer(i64::try_from(before.generation).map_err(|_|StorageError::state("tracking generation exhausted"))?),Value::Integer(i64::try_from(before.pending_version).map_err(|_|StorageError::state("tracking pending counter exhausted"))?)]).await?)?;
             }
-            for (path,captured) in &captures { capture::recheck_budget(&root,path,captured,&protected,tracking,&mut budget)?; }
+            for (path,_,_,seen) in &captures { capture::recheck_observed(&root,path,seen,&protected)?; }
             // Observe the retained provider again after all descriptor rechecks.
             // Its namespace/suffix vector is immutable; observe refuses any drift.
             tx.tracking_protected_paths()?;
@@ -163,7 +162,7 @@ impl LocalOwnerRepository {
     /// Read explicit durable scope choices without assigning absent paths a scope.
     /// # Arguments
     /// * `checkout` - Exact admitted checkout identity.
-    /// * `limits` - Whole-operation native admission ceilings.
+    /// * `limits` - Native admission ceilings of one artifact and one row.
     /// * `tracking` - Complete inventory and pathname ceilings.
     /// # Returns
     /// Explicit choices only; absent rows remain unselected.
@@ -183,8 +182,8 @@ impl LocalOwnerRepository {
         limits: AdmissionLimits,
         tracking: TrackingLimits,
     ) -> Result<Vec<super::path_scope::PathScopeSelection>, StorageError> {
-        let mut budget = crate::storage::content::Budget::new(limits.content)?;
-        super::ParseWork::new(limits.parser)?;
+        // Ceilings bound each row, not the whole command.
+        let (_, mut budget, _) = super::verification::proof_ledgers(limits)?;
         let mut tx = self.store.begin_write().await?;
         let result = async {
             tx.check_admission_budgeted(&self.principal, &mut budget)
@@ -206,7 +205,7 @@ impl LocalOwnerRepository {
     /// List every admitted tracked path, including recorded files and pending additions.
     /// # Arguments
     /// * `checkout` - Exact admitted checkout identity.
-    /// * `limits` - Whole-operation native admission ceilings.
+    /// * `limits` - Native admission ceilings of one artifact and one row.
     /// * `tracking` - Complete inventory and pathname ceilings.
     /// # Returns
     /// Canonical tracked paths in exact pathname order, without inferred scopes.
@@ -226,8 +225,8 @@ impl LocalOwnerRepository {
         limits: AdmissionLimits,
         tracking: TrackingLimits,
     ) -> Result<Vec<String>, StorageError> {
-        let mut budget = crate::storage::content::Budget::new(limits.content)?;
-        super::ParseWork::new(limits.parser)?;
+        // Ceilings bound each row, not the whole command.
+        let (_, mut budget, _) = super::verification::proof_ledgers(limits)?;
         let mut tx = self.store.begin_write().await?;
         let result = async {
             tx.check_admission_budgeted(&self.principal, &mut budget)
@@ -269,8 +268,8 @@ impl LocalOwnerRepository {
         limits: AdmissionLimits,
         tracking: TrackingLimits,
     ) -> Result<Vec<PendingAdd>, StorageError> {
-        let mut budget = crate::storage::content::Budget::new(limits.content)?;
-        super::ParseWork::new(limits.parser)?;
+        // Ceilings bound each row, not the whole command.
+        let (_, mut budget, _) = super::verification::proof_ledgers(limits)?;
         let mut tx = self.store.begin_write().await?;
         let result = async {
             tx.check_admission_budgeted(&self.principal, &mut budget)
@@ -441,21 +440,34 @@ impl WriteTransaction<'_> {
         let mut names = BTreeSet::new();
         for entry in entries {
             let name = entry.path.to_ascii_lowercase();
-            if names.iter().any(|other: &String| {
-                other == &name
-                    || other
-                        .strip_prefix(&name)
-                        .is_some_and(|tail| tail.starts_with('/'))
-                    || name
-                        .strip_prefix(other)
-                        .is_some_and(|tail| tail.starts_with('/'))
-            }) {
+            if folded_alias(&names, &name) {
                 return Err(StorageError::state("aliased native tracked path"));
             }
             names.insert(name);
         }
         Ok(())
     }
+}
+
+/// Find a path that aliases one already seen, in time that grows with its components.
+///
+/// Two paths alias when their ASCII-folded spellings are equal, or when one is a
+/// directory of the other.
+/// # Arguments
+/// * `names` - The folded paths seen so far.
+/// * `folded` - The folded path to check.
+/// # Returns
+/// Whether `folded` equals a seen path, is a directory of one, or lies below one.
+pub(super) fn folded_alias(names: &BTreeSet<String>, folded: &str) -> bool {
+    let below = format!("{folded}/");
+    names.contains(folded)
+        || names
+            .range(below.clone()..)
+            .next()
+            .is_some_and(|next| next.starts_with(&below))
+        || folded
+            .match_indices('/')
+            .any(|(end, _)| names.contains(&folded[..end]))
 }
 
 /// Decode and charge the complete tracking inventory before retaining its paths.
@@ -550,6 +562,85 @@ mod boundary_controls {
             components: 4,
             retained_bytes: 64,
             io_buffer_bytes: 8,
+        }
+    }
+    /// The alias check finds an equal path, a directory of a seen path and a path
+    /// below one, and passes neighbours that only share a prefix.
+    #[test]
+    fn folded_alias_finds_equal_directory_and_below() {
+        let names: BTreeSet<String> = ["a/b", "c"].map(String::from).into();
+        for alias in ["a/b", "a", "c/d", "c/d/e"] {
+            assert!(folded_alias(&names, alias), "{alias}");
+        }
+        for other in ["a.b", "a/bc", "a/c", "ab", "cd", "b"] {
+            assert!(!folded_alias(&names, other), "{other}");
+        }
+    }
+    /// The admission of pending additions refuses a row that aliases another by case
+    /// or as a directory of it.
+    /// # Panics
+    /// Panics if fixture setup fails or an aliased row passes.
+    #[tokio::test]
+    async fn added_files_admission_refuses_aliased_rows() {
+        use crate::storage::{InitializeOptions, Limits};
+        for alias in ["FIRST", "first/child"] {
+            let temp = tempfile::tempdir().unwrap();
+            let base = std::fs::canonicalize(temp.path()).unwrap();
+            let root = base.join("root");
+            std::fs::create_dir(&root).unwrap();
+            std::fs::write(root.join("first"), b"1").unwrap();
+            let bounds = AdmissionLimits {
+                content: Limits {
+                    max_stored_bytes: 1 << 20,
+                    max_output_bytes: 1 << 20,
+                    max_chain_depth: 128,
+                    max_total_stored_bytes: 64 << 20,
+                    max_total_decoded_bytes: 64 << 20,
+                },
+                parser: crate::artifact::ParseLimits {
+                    input_bytes: 1 << 20,
+                    cards: 4096,
+                    owned_bytes: 8 << 20,
+                    entries: 4096,
+                },
+            };
+            let mut owner = LocalOwnerRepository::initialize(
+                &base.join("repo"),
+                InitializeOptions {
+                    repository_id: "0123456789abcdef0123456789abcdef01234567",
+                    owner_id: "owner",
+                    date: "2026-11-20T00:00:00",
+                    user: b"Owner",
+                    password: "secret",
+                    sha1: false,
+                    content_limits: bounds.content,
+                    parse_limits: bounds.parser,
+                },
+            )
+            .await
+            .unwrap();
+            let view = owner
+                .register_checkout("work", &root, bounds)
+                .await
+                .unwrap();
+            let view = owner
+                .add_files("work", &["first"], &view, bounds, limits())
+                .await
+                .unwrap();
+            let principal = &owner.principal;
+            let mut tx = owner.store.begin_write().await.unwrap();
+            tx.execute(&format!("INSERT INTO g_vfile SELECT checkout_id,2,vid,chnged,deleted,isexe,islink,rid,mrid,mtime,'{alias}',origname,mhash FROM g_vfile"))
+                .await
+                .unwrap();
+            let pending = i64::try_from(view.pending_version).unwrap();
+            assert_eq!(
+                tx.validate_added_files(principal, "work", 1, pending, bounds)
+                    .await
+                    .unwrap_err()
+                    .operation,
+                "aliased native tracked path"
+            );
+            tx.rollback().await.unwrap();
         }
     }
     /// Refuse ambiguous update counts and malformed pending-row shapes or modes.

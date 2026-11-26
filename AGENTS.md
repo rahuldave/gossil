@@ -113,8 +113,9 @@ only catalog6, and the issue ticket writer is its one caller. A fresh open
 admits the private ticket rows and the project binding that it writes.
 
 The private recording library requires the complete tracked set, immutable
-private scopes and all seven expected checkout facts. It captures every working file with one borrowed content
-budget and parser ledger, preserves the empty shared root, and admits exact
+private scopes and all seven expected checkout facts. It reads, hashes and stores
+one working file at a time, under ceilings for each file, artifact and row,
+preserves the empty shared root, and admits exact
 private history projections. Working files remain unchanged. Existing CLI status
 prints A/R and actual scope.
 

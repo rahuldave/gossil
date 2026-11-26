@@ -6,7 +6,7 @@
 //! Persist explicit choices only after tracking. Next, require complete private
 //! coverage in the recording coordinator before it captures working content.
 use super::tracking::{TrackingLimits, checked_scope_path};
-use super::{AdmissionLimits, CheckoutView, LocalOwnerRepository, ParseWork, StorageError, Value};
+use super::{AdmissionLimits, CheckoutView, LocalOwnerRepository, StorageError, Value};
 use crate::storage::{WriteTransaction, content::Budget};
 use std::collections::BTreeSet;
 
@@ -77,7 +77,8 @@ impl LocalOwnerRepository {
         if selections.is_empty() || selections.len() > tracking.paths {
             return Err(StorageError::state("scope batch count limit"));
         }
-        let mut budget = Budget::new(limits.content)?;
+        // Ceilings bound each row, not the whole command.
+        let (_, mut budget, _) = super::verification::proof_ledgers(limits)?;
         let mut names = BTreeSet::new();
         for selection in selections {
             checked_scope_path(&selection.path, tracking)?;
@@ -92,7 +93,6 @@ impl LocalOwnerRepository {
                 return Err(StorageError::state("duplicate or aliased scope path"));
             }
         }
-        ParseWork::new(limits.parser)?;
         let mut tx = self.store.begin_write().await?;
         let result = async {
             tx.check_admission_budgeted(&self.principal, &mut budget).await?;
@@ -108,12 +108,14 @@ impl LocalOwnerRepository {
             budget.charge_decoded(selections.len().checked_mul(std::mem::size_of::<&PathScopeSelection>()).ok_or_else(||StorageError::state("scope batch work overflow"))?)?;
             let mut new = Vec::new();
             new.try_reserve_exact(selections.len()).map_err(|e| StorageError::caused("scope batch allocation", e))?;
+            let tracked: BTreeSet<&str> = tracked.iter().map(String::as_str).collect();
+            let existing: std::collections::BTreeMap<&str, &PathScopeSelection> = existing.iter().map(|entry| (entry.path.as_str(), entry)).collect();
             // Validate the entire batch and counter before the first write.
             for selection in selections {
-                if !tracked.contains(&selection.path) {
+                if !tracked.contains(selection.path.as_str()) {
                     return Err(StorageError::state("scope path is not tracked"));
                 }
-                match existing.iter().find(|entry| entry.path == selection.path) {
+                match existing.get(selection.path.as_str()) {
                     Some(entry) if entry.scope != selection.scope => return Err(StorageError::state("scope selection is immutable")),
                     Some(_) => {},
                     None => new.push(selection),
@@ -291,6 +293,7 @@ fn scopes_from_rows(
         .try_reserve_exact(rows.len())
         .map_err(|e| StorageError::caused("scope inventory allocation", e))?;
     let mut names = BTreeSet::new();
+    let tracked: BTreeSet<&str> = tracked.iter().map(String::as_str).collect();
     for row in rows {
         let [Value::Blob(bytes), Value::Text(token)] = row.as_slice() else {
             return Err(StorageError::state("scope inventory invalid"));
@@ -298,7 +301,7 @@ fn scopes_from_rows(
         let path = std::str::from_utf8(bytes)
             .map_err(|e| StorageError::caused("scope pathname is not UTF-8", e))?;
         checked_scope_path(path, limits)?;
-        if !tracked.iter().any(|entry| entry == path) || !names.insert(path.to_ascii_lowercase()) {
+        if !tracked.contains(path) || !names.insert(path.to_ascii_lowercase()) {
             return Err(StorageError::state("scope inventory path differs"));
         }
         let scope = match token.as_str() {
@@ -371,15 +374,7 @@ fn scope_tracked_from_rows(
             .map_err(|e| StorageError::caused("scope tracked pathname is not UTF-8", e))?;
         checked_scope_path(path, limits)?;
         let folded = path.to_ascii_lowercase();
-        if names.iter().any(|other: &String| {
-            other == &folded
-                || other
-                    .strip_prefix(&folded)
-                    .is_some_and(|tail| tail.starts_with('/'))
-                || folded
-                    .strip_prefix(other)
-                    .is_some_and(|tail| tail.starts_with('/'))
-        }) {
+        if super::tracking::folded_alias(&names, &folded) {
             return Err(StorageError::state("scope tracked aliases"));
         }
         names.insert(folded);

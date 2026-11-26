@@ -110,9 +110,9 @@ Opening a `LocalStore` alone does not establish those prerequisites.
 
 The recorder validates the complete supported history, captures every explicitly
 private tracked file, and writes content, a manifest, its receipt and derived
-rows in one transaction. Helpers borrow the operation's content budget and parser
-ledger throughout. Failure rolls back earlier database writes, and recording
-never writes the working files.
+rows in one transaction. Helpers borrow one content ledger and one parser ledger,
+whose ceilings bound each file, artifact and row. Failure rolls back earlier
+database writes, and recording never writes the working files.
 
 The [qualification record](development-plan.md#private-recording-qualification)
 distinguishes the checked library checkpoint from the CLI awaiting final gates.

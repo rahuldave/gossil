@@ -62,7 +62,7 @@ fn checkout_root(temp: &Path) -> PathBuf {
     std::fs::canonicalize(root).unwrap()
 }
 
-/// Bound the complete explicit batch and its cumulative retained bytes.
+/// Bound the complete explicit batch and the bytes of one captured file.
 fn tracking() -> TrackingLimits {
     TrackingLimits {
         paths: 64,
