@@ -70,8 +70,10 @@ that stored them:</p>
 }</code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>The call runs the checks of each command first. Then it reads each <code>combined</code> typed row with its
 ticket ID and artifact name. It replays no artifact, so it passes under a parser entry ceiling of one.
-It writes nothing. An empty repository gives an empty list. The SQL row ceiling of <a href="api/storage.html#IssueLimits"><code>IssueLimits</code></a> bounds
-the count of issues, and the parser input ceiling bounds the width of one row.</p>
+It writes nothing. An empty repository gives an empty list.</p>
+<p>The ceilings bound each row, and not the whole list, as in <code>gos v verify</code>. No ceiling bounds the count
+of issues or their total content. The list does not use the SQL ceilings of <a href="api/storage.html#IssueLimits"><code>IssueLimits</code></a>. The parser
+input ceiling bounds the width of one row.</p>
 <p>The cost of the list grows with the count of issues, and not with the rest of the repository. The list
 does not compare the typed rows with the artifacts. <code>gos v verify</code> does.</p>
 <p>The <code>issue task list</code> handler reads the tasks through this call. The <code>issue task show</code> handler does
@@ -240,7 +242,11 @@ times in milliseconds:</p>
 </div>
 <p>The times of create, show, status and commit stay flat. The times of list and verify grow with the count
 of tasks.</p>
-<p><code>gos i task create</code> refuses a task artifact of more than 65,536 bytes.</p>
+<p><code>gos i task create</code> refuses a task artifact of more than 2,147,418,109 bytes, the ceiling of every
+artifact. <code>tests/issue_task_cli.rs</code> creates, shows and lists a task with a description of 120,000 bytes.
+That size is over 65,536 bytes, the ceiling of earlier versions, and under the 131,072 bytes that Linux
+allows for one argument. On macOS only, the capacity run <code>just limits-capacity</code> also creates a task of
+1 MB.</p>
 </section>
 <section id="tests" class="level2">
 <h2 class="anchored" data-anchor-id="tests">Tests</h2>
@@ -325,8 +331,9 @@ also creates a task in each of the four forms. Then it checks that <code>gos i t
 four, and that <code>gos i task show --json</code> shows the stored ID, title and priority of each. It runs two
 <code>task create</code> commands at the same time, four times, and requires that both exit with 0.</p>
 <p>A further test in <code>tests/issue_task_cli.rs</code> holds the write lock for 7 seconds. A <code>task list</code> and a
-<code>task show</code> that start meanwhile retry and exit with 0. Then the test runs a <code>task create</code> beside a
-<code>task list</code>.</p>
+<code>task show</code> that start meanwhile wait for the lock. Each gets it within the busy timeout of 15 seconds,
+the time that a connection waits for a held lock, and exits with 0. Then the test runs a <code>task create</code>
+beside a <code>task list</code>.</p>
 <p>The unit tests of <code>src/product/issue_task.rs</code> inject a failure after each write step of a new task. Then
 they check that every byte of the repository stays unchanged (GEST-T08).</p>
 <p>A further unit test there opens a second owner, and then the first owner commits. The second owner
@@ -345,11 +352,12 @@ reservation.</p>
 each. The ignored test stores 5,000 tasks and prints the time of each command at 100, 1,000 and 5,000
 tasks. <code>just issue-capacity</code> runs the ignored test in a release build.</p>
 <p>A unit control lists two tasks and two projects in receipt order under a parser entry ceiling of one, and
-checks that the list changes no row. It finds the least SQL row ceiling under which the list passes, and
-checks that one more task makes the list refuse under that ceiling. It also checks that <code>find_task</code>
-refuses an empty prefix, a prefix of 33 letters and a prefix outside the letters k to z, with
-<code>invalid issue ID prefix</code>. A further control stores the ID of each task as a blob. A prefix still
-matches such an ID, and then <code>find_task</code> refuses the task with
+checks that the list changes no row. The list also passes under a SQL row ceiling of one and under
+total content ceilings of 64 bytes. It refuses under a parser input ceiling of 16 bytes, which one row
+exceeds. After one more task, the list still passes under the SQL row ceiling of one.</p>
+<p>The same control checks that <code>find_task</code> refuses an empty prefix, a prefix of 33 letters and a prefix
+outside the letters k to z, with <code>invalid issue ID prefix</code>. A further control stores the ID of each
+task as a blob. A prefix still matches such an ID, and then <code>find_task</code> refuses the task with
 <code>a stored typed row does not hold a valid task or project</code> and changes no row of any table. In each
 of its three orders, the CAT-T07 subset below also lists the issues after each step.</p>
 <p>The CAT-T07 subset in <code>tests/issue_ticket.rs</code> writes issues and check-ins in three orders. In the first,

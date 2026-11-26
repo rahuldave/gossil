@@ -39,8 +39,9 @@ An embedded NUL returns an error with the original <code>std::ffi::NulError</cod
 An empty path retains SQLite’s temporary-database behavior and fails the required
 WAL check.</p>
 <p>Every file open sets and reads back WAL, foreign keys ON, <code>synchronous=FULL</code>
-and a 5000 ms busy timeout. WAL is SQLite’s write-ahead journal mode.
-An open fails if configuration differs from these requirements.</p>
+and a 15,000 ms busy timeout, the value that Fossil sets. WAL is SQLite’s
+write-ahead journal mode. A <code>fossil commit</code> behind a held lock still fails at
+once, so only Gossil waits. An open fails if configuration differs from these requirements.</p>
 <p><code>begin_write(&amp;mut self)</code> takes the connection before it issues <code>BEGIN IMMEDIATE</code>.
 The returned <a href="api/storage.html#WriteTransaction"><code>WriteTransaction</code></a>, the transaction owner, exclusively borrows the store.
 A second owner cannot borrow it at the same time.

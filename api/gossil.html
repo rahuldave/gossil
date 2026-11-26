@@ -25,7 +25,7 @@
 </tr>
 <tr>
 <td><a href="storage.html"><code>storage</code></a></td>
-<td>Own local database connections and exclusive write boundaries. Sole-connection local storage. File opens verify WAL, foreign keys, FULL and 5000 ms. Unexpected owner destruction poisons the store and closes its connection. Local SQL blocks its current poll; cancellation after COMMIT cannot undo it.</td>
+<td>Own local database connections and exclusive write boundaries. Sole-connection local storage. File opens verify WAL, foreign keys, FULL and a busy timeout of 15,000 ms. Unexpected owner destruction poisons the store and closes its connection. Local SQL blocks its current poll; cancellation after COMMIT cannot undo it.</td>
 </tr>
 <tr>
 <td><a href="token_codec.html"><code>token_codec</code></a></td>

@@ -453,10 +453,12 @@ with <code>-n</code>/<code>--limit</code> and <code>--offset</code> as in Fossil
 <a href="api/storage.html#LocalOwnerRepository.recorded_timeline_page"><code>LocalOwnerRepository::recorded_timeline_page</code></a>, which gives each manifest the
 ceilings of one artifact and sets no ceiling on the whole chain. Before it, one
 parser ledger covered the whole chain, and the commands refused a history of
-about 455 one-file check-ins. <code>just timeline-capacity</code> makes 5,000 one-file
-check-ins in a release build, and times <code>timeline</code>, <code>log</code>, <code>status</code>, <code>commit</code>
-and <code>verify</code> at 1,000 and at 5,000 check-ins. The checkpoint results above do not qualify this
-change.</p>
+about 455 one-file check-ins. A later change limits one page to 1 GiB of older
+manifests and their parses, and does not count the newest check-in toward that
+ceiling.</p>
+<p><code>just timeline-capacity</code> makes 5,000 one-file check-ins in a release build, and
+times <code>timeline</code>, <code>log</code>, <code>status</code>, <code>commit</code> and <code>verify</code> at 1,000 and at 5,000
+check-ins. The checkpoint results above do not qualify this change.</p>
 </section>
 <section id="glob-source-checkpoint-and-pending-qualification" class="level2">
 <h2 class="anchored" data-anchor-id="glob-source-checkpoint-and-pending-qualification">Glob source checkpoint and pending qualification</h2>
@@ -480,7 +482,7 @@ argument conversion has source review only, with no cross-compilation or runtime
 qualification.</p>
 <p>At the checkpoint, <code>Cargo.toml</code> set the version of the Gossil crate to 0.9.0,
 which was later released as <code>v0.9.0</code>. The current version of the crate is
-0.18.1, and version 0.18.0 was released as <code>v0.18.0</code>. The <code>libsql-ffi</code>
+0.19.0, and version 0.18.1 was released as <code>v0.18.1</code>. The <code>libsql-ffi</code>
 provider is at 0.10.0, and its version is separate
 from the version of the crate.</p>
 <p>The focused tree

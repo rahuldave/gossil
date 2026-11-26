@@ -162,6 +162,14 @@ expected view and set <code>request.scope</code> to <code>PathScope::Private</co
 The <a href="api/storage.html#LocalOwnerRepository">storage API</a> gives the exact signatures.
 Supply finite <a href="api/storage.html#AdmissionLimits"><code>AdmissionLimits</code></a> for content and parsing, plus <a href="api/storage.html#TrackingLimits"><code>TrackingLimits</code></a>
 for path counts, path sizes and the bytes of one working file.</p>
+<p><code>add_files</code> and <code>commit_private_tracked_files</code> read a file only when it has at
+most the smaller of <code>retained_bytes</code> and <code>max_output_bytes</code>. So both refuse the
+same file. They take its size from its status before any read, and refuse it
+with <code>the file &quot;PATH&quot; has N bytes, more than the C bytes that one file may have</code>.
+Commit refuses a compressed envelope over <code>max_stored_bytes</code> with <code>the content HASH of N bytes does not compress into the C bytes that one stored artifact may have</code>. The CLI ceilings are in <a href="cli.html#size-and-count-limits">Size and count limits</a>.</p>
+<p><code>add_files</code> refuses more than <code>paths</code> paths in one call with <code>add names N paths, more than the C paths that one command may name</code>. It refuses an add that would
+make the checkout track more than <code>paths</code> files with <code>the checkout would track N files, more than the C files that one checkout may track</code>. Commit refuses a
+request of more than <code>paths</code> paths with <code>the checkout tracks N files, more than the C files that one checkout may track</code>.</p>
 <p>Private recording saves the current bytes and executable modes of every tracked
 file as one complete private history snapshot. Scope is each path’s explicit
 shared or private choice. Private means owner-local history; shared marks a path
@@ -242,7 +250,9 @@ Catalog1 retains its separate delta reconstruction contract.</p>
 exists is verified and reused without rewriting its receipt or privacy class.
 General removal and rename remain unsupported.</p>
 <p><code>Recorded.native_name</code> is the new manifest/check-in hash. <code>Recorded</code> also
-returns the refreshed view after checked commit.
+returns the refreshed view after checked commit. Its field <code>changed</code> lists the
+tracked paths whose content differs from the same path in the parent, in
+pathname order.
 <code>NoChange</code> validates metadata, dates, bytes and modes but creates no receipt
 and changes no head or counter.</p>
 <p>Changed recording writes one local receipt, payloads, manifest and projections
@@ -324,7 +334,9 @@ The <a href="issue-ticket.html">issue ticket guide</a>,
 <a href="#read-recorded-checkout-ancestry">recorded ancestry</a> give the checks of each
 command.</li>
 <li><strong><code>gos v verify</code></strong> gives the full proof. It replays every check-in and every
-issue artifact and compares each table with that replay.</li>
+issue artifact and compares each table with that replay. In one run it decodes
+and hashes each stored file content once, and reuses that row for each later
+check-in that names the same content. It keeps nothing between runs.</li>
 </ol>
 <p>Only a scan of the history or of a whole table can check some facts. Commands
 trust these facts, and only <code>verify</code> checks them. This guide calls them the
@@ -350,7 +362,11 @@ commit in a checkout of a clone has the same effect, because autosync pushes the
 commit back into the Gossil file. Gossil does not support receiving artifacts yet.</p>
 <p>A command keeps no snapshot of the repository between transactions. So an owner
 sees each commit that another process makes after the open, and needs no
-second open. The CLI retries a command once only after <code>database is locked</code>.</p>
+second open. Each connection waits up to 15,000 ms for the write lock. Fossil
+sets the same timeout, but a <code>fossil commit</code> behind a held lock fails at once.
+The CLI retries a command once, and only after <code>database is locked</code>. It does not
+retry <code>vcs open</code>, because its first registration makes the <code>.gossil</code> directory
+before it waits.</p>
 <p>Catalog1 keeps its snapshot, because its operations do not check what they
 read. A sealed admission proof records SQLite <code>data_version</code>, connection
 <code>total_changes</code> and exact durable authority metadata. Each catalog1 content
@@ -430,10 +446,14 @@ and nothing past the end of the page. The full proof of <code>gos v verify</code
 the rest of each event row, and every manifest.</p>
 <p>One transaction runs the checks of each command, walks the manifests and reads
 the event rows of the page. Each manifest has the parser ceilings of one artifact,
-and each SQL row the ceilings of one row. The read has no ceiling on the whole
-chain, as the full proof has none. The page bounds the work. It reads at most
-<code>offset + limit</code> manifests and <code>limit</code> event rows. The result capacity is charged
-before allocation.</p>
+and each SQL row the ceilings of one row. The read has no parser or content
+ceiling on the whole chain, as the full proof has none. The page bounds the
+work. It reads at most <code>offset + limit</code> manifests and <code>limit</code> event rows. The
+result capacity is charged before allocation.</p>
+<p>The page keeps in memory each manifest that it walks, and the parse of each.
+The older check-ins hold at most 1 GiB together, and the newest check-in does
+not count toward that ceiling, whatever its size. A page that would hold more refuses with
+<code>this page would hold more than 1 GiB of check-in records in memory; use a smaller --offset or --limit</code>. The full proof has no such bound.</p>
 <p>Versions up to 0.17.0 parsed the whole chain under one parser
 ledger, which refused about 455 one-file check-ins.</p>
 <p>Success returns the page only after checked transaction completion. There is no
@@ -447,10 +467,10 @@ not change its recorded result.</p>
 <p>The source <a href="cli.html#read-recorded-ancestry">timeline and log commands</a>
 expose this reader as compact NDJSON, 20 entries unless <code>--limit</code> says otherwise.
 Existing-locator opening admission is separate from the API operation.
-Serialization has a third finite allowance of one row, derived from the
-unchanged CLI decoded-content limit. No whole-invocation aggregate budget is
-claimed. Revision selection, filters and broader Fossil timeline behavior remain
-deferred.</p>
+Serialization has a third allowance, for one row. That allowance is the total
+decoded ceiling of the CLI, 2^60 bytes, which no row reaches. No
+whole-invocation aggregate budget is claimed. Revision selection, filters and
+broader Fossil timeline behavior remain deferred.</p>
 </section>
 <section id="schema-and-remaining-work" class="level2">
 <h2 class="anchored" data-anchor-id="schema-and-remaining-work">Schema and remaining work</h2>
@@ -474,9 +494,11 @@ tickets beside private check-ins, and the project binding that <code>issue init<
 <p><a href="api/storage.html#LocalOwnerRepository.verify"><code>LocalOwnerRepository::verify</code></a> runs the full proof on demand, and
 <code>verify_issue</code> proves one issue from its own rows. Both read in a transaction that
 they roll back, so they change nothing. Each proof bounds each artifact and each row.
-No proof sets a bound on the whole repository, and the timeline sets none on
-the whole chain. The command
+No proof sets a bound on the whole repository. The command
 <a href="cli.html#verify-a-repository"><code>gos v verify</code></a> runs both proofs.</p>
+<p>The timeline sets no parser or content bound on the whole chain. A page of the
+timeline keeps at most 1 GiB of the manifests that it walks and of their parses.
+The newest check-in does not count toward that ceiling.</p>
 <p>The required object
 inventory and complete stored definitions are
 checked before mutation. Known optional schema families return an unsupported

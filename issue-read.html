@@ -82,7 +82,7 @@ Id prefix must contain only characters k-z, found &#x27;L&#x27;</code></pre></di
 <p>The command exits with 74 when open, its checks or the proof of the task refuse the repository, or
 when the command cannot write the output.</p>
 <p>Both commands take the write lock of the repository, as every issue command does. A read can wait for
-that lock past its timeout and refuse with <code>database is locked</code>. Then the command opens the repository
+that lock past its timeout of 15 seconds and refuse with <code>database is locked</code>. Then the command opens the repository
 again and tries once more. After a second refusal, it exits with 74. A commit of another process between
 two commands needs no retry, because each command checks what it reads in its own transaction.</p>
 </section>
@@ -144,10 +144,9 @@ changed.</p>
 <p><code>tests/issue_task_cli.rs</code> also reads back the tasks that <code>gos i task create</code> stores, through
 both commands in each form. It compares the listed IDs with the stored IDs as a set.</p>
 <p>A further test in that file holds the write lock from another connection for 7 seconds. A <code>task list</code>
-and a <code>task show</code> that start meanwhile both exit with 0 and print the task. The first attempt of each
-waits the 5-second busy timeout and refuses, and the second attempt gets the lock. Without the retry,
-both commands exit with 74. The test then runs a <code>task create</code> and a <code>task list</code> at the same time, and
-both exit with 0.</p>
+and a <code>task show</code> that start meanwhile both exit with 0 and print the task. Each gets the lock within the busy
+timeout of 15 seconds. The unit test of <code>crate::vcs_open::retry_locked</code> checks the one retry after a
+timeout. The test then runs a <code>task create</code> and a <code>task list</code> at the same time, and both exit with 0.</p>
 <p>The unit controls in <code>tests/support/product_issue_read.rs</code> check the parsers, the lookup, the selection
 and the exact bytes of each printer. Further controls build a catalog 6 repository through the library,
 with a project and four tasks, two of them after a private check-in. Then they run both handlers and
