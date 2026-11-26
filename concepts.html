@@ -173,10 +173,12 @@ selects the owner’s private tree together with the shared tree, which is empty
 in this supported recording family.</p>
 <p>The operation checks every field of the tracked rows, and checks its parent in
 full against the parent of that parent. So its cost does not grow with the
-history, and it never stores a check-in that <code>gos v verify</code> then refuses.
-A content budget bounds stored, decoded and retained bytes. A parser ledger
-counts input bytes, cards, owned bytes and entries across parsed artifacts.
-Both bound work across the checks, capture, construction and final validation.</p>
+history. It never stores a check-in whose own facts <code>gos v verify</code> then refuses.
+It trusts the stored content of the files that it carries forward, and
+<code>gos v verify</code> checks that content.
+The content ceilings bound each file, and the parser ceilings bound each
+artifact. No ceiling applies to the whole operation, so its cost follows the
+count and size of the tracked files.</p>
 <p>An unchanged tree returns <code>NoChange</code> without
 a new receipt or changed head or counter. Working files remain unchanged.
 Read <a href="native-storage.html#private-recording-library">native storage</a> for request

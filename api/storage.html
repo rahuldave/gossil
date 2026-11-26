@@ -764,7 +764,7 @@ failures are preserved.</p>
 </section>
 <section id="LocalOwnerRepository.commit_private_tracked_files" class="level3">
 <h3 class="anchored" data-anchor-id="LocalOwnerRepository.commit_private_tracked_files">LocalOwnerRepository::commit_private_tracked_files</h3>
-<p><a href="https://github.com/rahuldave/gossil/blob/main/src/storage/repository/recording.rs#L78" class="source-link">source</a></p>
+<p><a href="https://github.com/rahuldave/gossil/blob/main/src/storage/repository/recording.rs#L79" class="source-link">source</a></p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb23"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span class="kw">pub</span> <span class="kw">async</span> <span class="kw">fn</span> <span class="fu">commit_private_tracked_files</span>(
     <span class="op">&amp;</span><span class="kw">mut</span> <span class="va">self</span>,
     checkout: <span class="kw">&amp;</span><span class="dt">str</span>,
@@ -813,12 +813,12 @@ corrupt history, descriptor drift, exhausted bounds and SQL failures atomically.
 <tr>
 <td><code>limits</code></td>
 <td>AdmissionLimits</td>
-<td>Whole-operation native content and parser ceilings.</td>
+<td>Native content ceilings of one file and parser ceilings of one artifact. The total content ceilings are not used.</td>
 </tr>
 <tr>
 <td><code>tracking</code></td>
 <td>TrackingLimits</td>
-<td>Complete path, descriptor and retained working-byte ceilings.</td>
+<td>Complete path, descriptor and one-file working-byte ceilings.</td>
 </tr>
 <tr>
 <td>returns</td>
@@ -905,7 +905,7 @@ files, changed descriptors, exhausted bounds and SQL failures atomically.</p>
 </section>
 <section id="LocalOwnerRepository.path_scopes" class="level3">
 <h3 class="anchored" data-anchor-id="LocalOwnerRepository.path_scopes">LocalOwnerRepository::path_scopes</h3>
-<p><a href="https://github.com/rahuldave/gossil/blob/main/src/storage/repository/tracking.rs#L180" class="source-link">source</a></p>
+<p><a href="https://github.com/rahuldave/gossil/blob/main/src/storage/repository/tracking.rs#L179" class="source-link">source</a></p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb27"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span class="kw">pub</span> <span class="kw">async</span> <span class="kw">fn</span> <span class="fu">path_scopes</span>(
     <span class="op">&amp;</span><span class="kw">mut</span> <span class="va">self</span>,
     checkout: <span class="kw">&amp;</span><span class="dt">str</span>,
@@ -942,7 +942,7 @@ files, changed descriptors, exhausted bounds and SQL failures atomically.</p>
 <tr>
 <td><code>limits</code></td>
 <td>AdmissionLimits</td>
-<td>Whole-operation native admission ceilings.</td>
+<td>Native admission ceilings of one artifact and one row.</td>
 </tr>
 <tr>
 <td><code>tracking</code></td>
@@ -961,7 +961,7 @@ files, changed descriptors, exhausted bounds and SQL failures atomically.</p>
 </section>
 <section id="LocalOwnerRepository.tracked_paths" class="level3">
 <h3 class="anchored" data-anchor-id="LocalOwnerRepository.tracked_paths">LocalOwnerRepository::tracked_paths</h3>
-<p><a href="https://github.com/rahuldave/gossil/blob/main/src/storage/repository/tracking.rs#L223" class="source-link">source</a></p>
+<p><a href="https://github.com/rahuldave/gossil/blob/main/src/storage/repository/tracking.rs#L222" class="source-link">source</a></p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb29"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span class="kw">pub</span> <span class="kw">async</span> <span class="kw">fn</span> <span class="fu">tracked_paths</span>(
     <span class="op">&amp;</span><span class="kw">mut</span> <span class="va">self</span>,
     checkout: <span class="kw">&amp;</span><span class="dt">str</span>,
@@ -998,7 +998,7 @@ files, changed descriptors, exhausted bounds and SQL failures atomically.</p>
 <tr>
 <td><code>limits</code></td>
 <td>AdmissionLimits</td>
-<td>Whole-operation native admission ceilings.</td>
+<td>Native admission ceilings of one artifact and one row.</td>
 </tr>
 <tr>
 <td><code>tracking</code></td>
@@ -1017,7 +1017,7 @@ files, changed descriptors, exhausted bounds and SQL failures atomically.</p>
 </section>
 <section id="LocalOwnerRepository.pending_adds" class="level3">
 <h3 class="anchored" data-anchor-id="LocalOwnerRepository.pending_adds">LocalOwnerRepository::pending_adds</h3>
-<p><a href="https://github.com/rahuldave/gossil/blob/main/src/storage/repository/tracking.rs#L266" class="source-link">source</a></p>
+<p><a href="https://github.com/rahuldave/gossil/blob/main/src/storage/repository/tracking.rs#L265" class="source-link">source</a></p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb31"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span class="kw">pub</span> <span class="kw">async</span> <span class="kw">fn</span> <span class="fu">pending_adds</span>(
     <span class="op">&amp;</span><span class="kw">mut</span> <span class="va">self</span>,
     checkout: <span class="kw">&amp;</span><span class="dt">str</span>,
@@ -2252,7 +2252,7 @@ Unsupported required public graphs, corruption and limits reject the operation.<
 <tr>
 <td><code>retained_bytes</code></td>
 <td>u64</td>
-<td>Aggregate initial captured working bytes across the batch. Rechecking temporarily retains another copy of one captured file.</td>
+<td>Largest working file that one capture reads. A command captures one file at a time, and the final recheck reads no byte again.</td>
 </tr>
 <tr>
 <td><code>io_buffer_bytes</code></td>
