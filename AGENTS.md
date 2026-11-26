@@ -126,13 +126,16 @@ Broader crosslinks, shared recording, sync and Gest integration remain planned w
 The library also exposes `recorded_timeline` and `RecordedCheckin` for complete
 current-first native ancestry, with the immutable shared root last. It preserves
 full hashes and exact native metadata bytes, and checks each event user and
-comment against the U and C cards of its manifest, within one transaction and
-shared operation ledgers. It reads no working-file contents and
+comment against the U and C cards of its manifest, within one transaction. It
+reads no working-file contents and
 makes no durable mutation.
 
 The source CLI exposes `timeline` and `log` through
 both executable and group aliases. It requires explicit repository and checkout
-selections and an existing matching locator, then prints complete ordered NDJSON.
+selections and an existing matching locator, then prints one page of ordered
+NDJSON: 20 entries, or the page that `-n`/`--limit` and `--offset` choose, as in
+Fossil. `recorded_timeline_page` reads only the manifests up to the end of the
+page, each under the ceilings of one artifact, with no ceiling on the whole chain.
 Opening admission, the API operation and serialization have separate finite
 allowances. See
 `docs/native-storage.md` and `docs/development-plan.md` for the contract and
@@ -240,11 +243,11 @@ existing global-state control), and all 20 unchanged Tcl assertions. Its graph
 comparison retained all 126 nonroot packages and edges/features with one
 `libsql-ffi` 0.10.0 provider. At that checkpoint the Gossil crate version in
 `Cargo.toml` was 0.9.0, since released as `v0.9.0`. The current Gossil crate
-version is 0.17.0. The libSQL provider version 0.10.0 and the Gossil crate
+version is 0.18.0. The libSQL provider version 0.10.0 and the Gossil crate
 version are separate numbers. Version 0.10.0 of the crate was released as
 `v0.10.0`, version 0.11.0 as `v0.11.0`, version 0.12.0 as `v0.12.0`,
 version 0.13.0 as `v0.13.0`, version 0.14.0 as `v0.14.0`, version 0.15.0
-as `v0.15.0` and version 0.16.0 as `v0.16.0`.
+as `v0.15.0`, version 0.16.0 as `v0.16.0` and version 0.17.0 as `v0.17.0`.
 
 The checkpoint
 used a prospective checked-commit prerequisite, with actual parent `4250b873`;

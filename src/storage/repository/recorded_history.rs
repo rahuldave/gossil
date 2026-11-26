@@ -56,9 +56,10 @@ pub(super) struct RecordedHistory {
 pub(super) enum Reach {
     /// Every check-in and the content of each of its files, for the full proof.
     Proof,
-    /// Every check-in manifest, for the timeline. The walk reads no file content,
-    /// and each check-in has an empty file list.
-    Manifests,
+    /// At most this many check-in manifests, newest first, for a page of the
+    /// timeline. The walk reads no file content, and each check-in has an empty file
+    /// list.
+    Manifests(usize),
     /// The selected check-in and its parent, with the content of their files, for a
     /// commit.
     Parent,
@@ -80,6 +81,8 @@ pub(super) struct Walk {
     pub(super) pending: i64,
     /// Each check-in read, oldest first, with its bytes and its parsed manifest.
     pub(super) commits: Vec<(RecordedCommit, Vec<u8>, crate::artifact::ParsedArtifact)>,
+    /// True when the walk reached the shared root, so it read the whole chain.
+    pub(super) complete: bool,
 }
 
 impl Walk {
@@ -98,6 +101,9 @@ impl Walk {
         }
     }
 }
+
+/// The refusal of a chain whose length is not the generation of the checkout.
+const MISMATCH: &str = "recording generation/history mismatch";
 
 /// Describe a newly inserted private manifest and its complete captured file tree.
 pub(super) struct ProjectionInput<'a> {
@@ -936,21 +942,24 @@ impl WriteTransaction<'_> {
     /// Walk the private chain from the selected check-in back to the shared root.
     ///
     /// The walk reads and parses the shared root and each manifest that `reach` names,
-    /// and checks that each manifest pairs its parent with the shared root. With
-    /// [`Reach::Proof`] and [`Reach::Manifests`] it reads the whole chain and checks its
-    /// length against the generation of the checkout. With [`Reach::Parent`] it reads
-    /// only the selected check-in and its parent, so the cost does not grow with the
-    /// history.
+    /// and checks that each manifest pairs its parent with the shared root. A chain
+    /// longer than the generation of the checkout is refused as soon as the walk
+    /// passes the generation. With [`Reach::Proof`] it reads the whole chain. With
+    /// [`Reach::Manifests`] it stops after its count of manifests. With
+    /// [`Reach::Parent`] it reads only the selected check-in and its parent. When any
+    /// walk reaches the shared root, it checks that the length of the chain is the
+    /// generation. The cost of a page and of a commit follows what
+    /// they read, not the length of the history.
     /// # Arguments
     /// * `principal` - Owner authenticated by the enclosing catalog6 admission.
     /// * `shared_hash` - Immutable empty public S authenticated by that admission.
-    /// * `limits` - Whole-operation content/parser ceilings.
-    /// * `work` - Caller-owned cumulative content/SQL/hash allowance.
-    /// * `parse` - Caller-owned cumulative parser compartments.
+    /// * `limits` - Content/parser ceilings.
+    /// * `work` - Caller-owned content/SQL/hash allowance.
+    /// * `parse` - Caller-owned parser compartments.
     /// * `reach` - How much of the chain to read.
     /// # Returns
     /// The shared root, the branch, the checkout facts and the manifests read, oldest
-    /// first.
+    /// first, and whether the walk reached the shared root.
     /// # Errors
     /// Rejects a malformed manifest or parent, a cycle, a length that differs from the
     /// generation, exhausted bounds and SQL failures.
@@ -1017,8 +1026,12 @@ impl WriteTransaction<'_> {
         let mut reversed = Vec::new();
         let mut seen = BTreeSet::new();
         while let Some(hash) = cursor {
-            if reversed.len() >= n || !seen.insert(hash.clone()) || hash == shared_hash {
-                return Err(StorageError::state("recording history cycle or limit"));
+            if !seen.insert(hash.clone()) || hash == shared_hash {
+                return Err(StorageError::state("recording history cycle"));
+            }
+            // An honest chain has exactly `generation` check-ins.
+            if reversed.len() as u64 >= generation as u64 {
+                return Err(StorageError::state(MISMATCH));
             }
             let (rid, receipt, bytes) = self.recorded_content(principal, &hash, work).await?;
             if hash.len() != 64 {
@@ -1040,7 +1053,7 @@ impl WriteTransaction<'_> {
             }
             let mut files = Vec::new();
             // A timeline prints no file, so it reads no file content.
-            let file_cards = if reach == Reach::Manifests {
+            let file_cards = if matches!(reach, Reach::Manifests(_)) {
                 &[][..]
             } else {
                 artifact.files()
@@ -1098,17 +1111,23 @@ impl WriteTransaction<'_> {
                 bytes,
                 artifact,
             ));
-            // A commit checks its parent against the grandparent, so it reads two.
-            if reach == Reach::Parent && reversed.len() == 2 {
+            // A commit checks its parent against the grandparent, so it reads two. A
+            // page reads its count.
+            let stop = match reach {
+                Reach::Parent => 2,
+                Reach::Manifests(count) => count,
+                Reach::Proof => usize::MAX,
+            };
+            if reversed.len() >= stop {
                 break;
             }
         }
         reversed.reverse();
-        if reach != Reach::Parent
-            && (generation as u64 != reversed.len() as u64
-                || (!reversed.is_empty() && pending < generation))
+        let complete = cursor.is_none();
+        if (complete && generation as u64 != reversed.len() as u64)
+            || (reach != Reach::Parent && !reversed.is_empty() && pending < generation)
         {
-            return Err(StorageError::state("recording generation/history mismatch"));
+            return Err(StorageError::state(MISMATCH));
         }
         Ok(Walk {
             shared,
@@ -1118,6 +1137,7 @@ impl WriteTransaction<'_> {
             generation,
             pending,
             commits: reversed,
+            complete,
         })
     }
 
@@ -1152,6 +1172,7 @@ impl WriteTransaction<'_> {
             generation,
             pending,
             commits: reversed,
+            complete: _,
         } = self
             .walk_recorded_history(principal, shared_hash, limits, work, parse, Reach::Proof)
             .await?;

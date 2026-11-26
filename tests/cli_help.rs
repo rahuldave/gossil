@@ -155,7 +155,7 @@ fn command_help_text_matches_each_grammar() {
         ),
         (
             "log",
-            "Usage: gossil vcs timeline|log --repository REPO --checkout ID\n",
+            "Usage: gossil vcs timeline|log --repository REPO --checkout ID [-n|--limit N] [--offset P]\n",
         ),
         (
             "open",

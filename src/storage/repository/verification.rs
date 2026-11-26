@@ -61,13 +61,18 @@ pub enum IssueMatch {
 }
 
 /// Give the ceilings of a proof: the caller's ceilings of one artifact, and no total.
+///
+/// The timeline uses the same ledgers, so that a page has no ceiling on the whole
+/// chain either.
 /// # Arguments
 /// * `limits` - The caller's ceilings.
 /// # Returns
 /// The content ledger and the parser ledger of the proof.
 /// # Errors
 /// Refuses invalid ceilings.
-fn proof_ledgers(limits: AdmissionLimits) -> Result<(Limits, Budget, ParseWork), StorageError> {
+pub(super) fn proof_ledgers(
+    limits: AdmissionLimits,
+) -> Result<(Limits, Budget, ParseWork), StorageError> {
     let content = Limits {
         max_total_stored_bytes: UNMETERED,
         max_total_decoded_bytes: UNMETERED,

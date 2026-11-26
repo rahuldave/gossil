@@ -1,18 +1,19 @@
-//! Read the complete ancestry of the checkout.
+//! Read the ancestry of the checkout, whole or one page at a time.
 //!
-//! The reader walks every manifest of the chain and reads the event row of each
-//! check-in, which it prints. Dates and hashes come from the manifests, never from
-//! display projections or working files. `gos v verify` compares the event rows with
-//! the manifests.
+//! The reader walks the manifests from the current check-in to the end of the page
+//! and reads the event row of each check-in that it prints. Dates and hashes come
+//! from the manifests, never from display projections or working files. `gos v
+//! verify` compares the event rows with the manifests.
 //!
 //! ## Recommendations
-//! Select an explicit existing checkout and supply finite whole-operation limits.
-use super::recorded_history::{Reach, RecordedCommit, RecordedHistory, bounded_rows};
-use super::{AdmissionLimits, LocalOwnerRepository, ParseWork, StorageError};
+//! Select an explicit existing checkout and supply the finite ceilings of one
+//! artifact and one row.
+use super::recorded_history::{Reach, RecordedCommit, bounded_rows};
+use super::{AdmissionLimits, LocalOwnerRepository, StorageError};
 use crate::storage::{WriteTransaction, content::Budget};
 use libsql::Value;
 
-/// One authenticated native check-in in a complete current-first checkout ancestry.
+/// One authenticated native check-in of the current-first ancestry of a checkout.
 ///
 /// Byte fields preserve the original native date token and decoded user/comment
 /// bytes. The supported admitted family requires UTF-8 metadata without NUL.
@@ -33,23 +34,15 @@ pub struct RecordedCheckin {
 impl LocalOwnerRepository {
     /// Read the complete supported native ancestry of an explicitly selected checkout.
     ///
-    /// The current private check-in comes first and the immutable shared empty
-    /// root comes last. Before the first private recording, that root is the sole
-    /// result. Pending paths, dirty/deleted working files and filesystem contents
-    /// do not affect recorded history. This performs no durable mutation and
-    /// publishes no locator. One transaction runs the checks of each command, walks
-    /// the manifests of the chain and reads their event rows, under one content and
-    /// parser ledger. It reads no file content.
+    /// It returns [`Self::recorded_timeline_page`] with no offset and no limit.
     /// # Arguments
     /// * `checkout` - Existing nonempty NUL-free registration ID, at most 1024 bytes and parser input bytes.
-    /// * `limits` - Explicit finite cumulative content, metadata and parser ceilings.
+    /// * `limits` - The ceilings of one artifact and one row.
     /// # Returns
     /// Complete authenticated current-first ancestry including the shared root,
     /// only after checked transaction completion; never a truncated or empty history.
     /// # Errors
-    /// Refuses missing/foreign checkout, changed authority, unsupported or corrupt
-    /// state, invalid/exhausted limits, allocation/provider and checked cleanup errors.
-    /// Existing operation causes and separate cleanup failures are preserved.
+    /// The refusals of [`Self::recorded_timeline_page`].
     /// # Examples
     /// ```no_run
     /// async fn history(owner: &mut gossil::storage::LocalOwnerRepository, limits: gossil::storage::AdmissionLimits) {
@@ -62,14 +55,70 @@ impl LocalOwnerRepository {
         checkout: &str,
         limits: AdmissionLimits,
     ) -> Result<Vec<RecordedCheckin>, StorageError> {
+        self.recorded_timeline_page(checkout, 0, 0, limits).await
+    }
+
+    /// Read one page of the native ancestry of an explicitly selected checkout.
+    ///
+    /// The ancestry starts with the current private check-in, follows its first
+    /// parents, and ends with the immutable shared empty root. Before the first
+    /// private recording, that root is the only entry. The page skips the first
+    /// `offset` entries and then holds at most `limit` entries, or every remaining
+    /// entry when `limit` is 0, as the `--offset` and `--limit` options of
+    /// `fossil timeline` do.
+    ///
+    /// One transaction runs the checks of each command, then walks the manifests from
+    /// the current check-in to the end of the page, and reads the event row of each
+    /// entry of the page. Each manifest has the ceilings of one artifact, and each row
+    /// the ceilings of one row. The read has no ceiling on the whole chain, so its
+    /// cost follows `offset` and `limit`, not the length of the history.
+    ///
+    /// The read refuses an event whose user or comment is not the U or C card of its
+    /// manifest. When the walk reaches the shared root, it also refuses a chain whose
+    /// length is not the generation of the checkout. It reads no file content, makes
+    /// no durable mutation and publishes no locator. Pending paths and working files
+    /// do not change the result.
+    /// # Arguments
+    /// * `checkout` - Existing nonempty NUL-free registration ID, at most 1024 bytes and parser input bytes.
+    /// * `offset` - The count of newest entries to skip.
+    /// * `limit` - The most entries to return, or 0 for every remaining entry.
+    /// * `limits` - The ceilings of one artifact and one row. The total content
+    ///   ceilings are not used.
+    /// # Returns
+    /// The entries of the page, newest first, only after checked transaction
+    /// completion. The page is empty only when `offset` passes the shared root.
+    /// # Errors
+    /// Refuses missing/foreign checkout, changed authority, unsupported or corrupt
+    /// state, invalid limits, an artifact or row over its ceiling, allocation/provider
+    /// and checked cleanup errors. Existing operation causes and separate cleanup
+    /// failures are preserved.
+    /// # Examples
+    /// ```no_run
+    /// async fn newest(owner: &mut gossil::storage::LocalOwnerRepository, limits: gossil::storage::AdmissionLimits) {
+    ///     let rows = owner.recorded_timeline_page("work", 0, 20, limits).await.unwrap();
+    ///     assert!(rows.len() <= 20);
+    /// }
+    /// ```
+    pub async fn recorded_timeline_page(
+        &mut self,
+        checkout: &str,
+        offset: usize,
+        limit: usize,
+        limits: AdmissionLimits,
+    ) -> Result<Vec<RecordedCheckin>, StorageError> {
         if checkout.is_empty()
             || checkout.contains('\0')
             || checkout.len() > 1024.min(limits.parser.input_bytes)
         {
             return Err(StorageError::state("checkout identity limit or spelling"));
         }
-        let mut work = Budget::new(limits.content)?;
-        let mut parse = ParseWork::new(limits.parser)?;
+        let (content, mut work, mut parse) = super::verification::proof_ledgers(limits)?;
+        let limits = AdmissionLimits {
+            content,
+            parser: limits.parser,
+        };
+        // A limit of 0 has no end, as in Fossil.
+        let limit = if limit == 0 { usize::MAX } else { limit };
         let mut tx = self.store.begin_write().await?;
         let result = async {
             tx.check_admission_budgeted(&self.principal, &mut work)
@@ -95,7 +144,7 @@ impl LocalOwnerRepository {
             if id != checkout {
                 return Err(StorageError::state("recorded checkout unavailable"));
             }
-            // The timeline reads each manifest of the chain, which it prints, and no file.
+            // The page reads the manifests up to its end, and no file.
             let walk = tx
                 .walk_recorded_history(
                     &self.principal,
@@ -103,23 +152,27 @@ impl LocalOwnerRepository {
                     limits,
                     &mut work,
                     &mut parse,
-                    Reach::Manifests,
+                    Reach::Manifests(offset.saturating_add(limit)),
                 )
                 .await?;
+            let root = walk
+                .complete
+                .then_some((walk.shared, false, walk.shared_cards));
+            let entries = walk.commits.into_iter().rev().map(|(commit, _, artifact)| {
+                let cards = (
+                    artifact.user().map(|card| card.bytes.clone()),
+                    artifact.comment().map(|card| card.bytes.clone()),
+                );
+                (commit, true, cards)
+            });
+            let (page, cards): (Vec<_>, Vec<_>) = entries
+                .chain(root)
+                .skip(offset)
+                .take(limit)
+                .map(|(commit, private, cards)| ((commit, private), cards))
+                .unzip();
+            let printed = project_history(&mut tx, page, limits, &mut work).await?;
             // Each printed user and comment must be the U and C card of its manifest.
-            let mut cards: Vec<_> = walk
-                .commits
-                .iter()
-                .rev()
-                .map(|(_, _, artifact)| {
-                    (
-                        artifact.user().map(|card| card.bytes.clone()),
-                        artifact.comment().map(|card| card.bytes.clone()),
-                    )
-                })
-                .collect();
-            cards.push(walk.shared_cards.clone());
-            let printed = project_history(&mut tx, walk.history(), limits, &mut work).await?;
             if printed.iter().zip(&cards).any(|(row, (user, comment))| {
                 user.as_deref() != Some(row.actor.as_slice())
                     || comment.as_deref() != Some(row.comment.as_slice())
@@ -138,10 +191,10 @@ const EVENT_CARDS: &str = "recorded event metadata differs from its manifest";
 
 /// Charge and reserve the complete public result capacity before retaining rows.
 /// # Arguments
-/// * `count` - Complete supported ancestry length, including the shared root.
-/// * `work` - Borrowed whole-operation content/ownership ledger.
+/// * `count` - The count of entries of the page.
+/// * `work` - Borrowed operation content/ownership ledger.
 /// # Returns
-/// Empty vector with sufficient capacity for the full result.
+/// Empty vector with capacity for every entry of the page.
 /// # Errors
 /// Refuses multiplication/isize overflow, exhausted retention or allocation failure.
 fn reserve_result(count: usize, work: &mut Budget) -> Result<Vec<RecordedCheckin>, StorageError> {
@@ -157,32 +210,26 @@ fn reserve_result(count: usize, work: &mut Budget) -> Result<Vec<RecordedCheckin
     Ok(result)
 }
 
-/// Move metadata and identity into complete ancestry order without cloning fields.
+/// Move metadata and identity into page order without cloning fields.
 /// # Arguments
 /// * `tx` - Same reserved transaction that completed all admission guards.
-/// * `history` - Authenticated complete history, oldest private ancestor first.
+/// * `page` - Each authenticated entry of the page, newest first, and whether it is private.
 /// * `limits` - Finite bound for each admitted metadata row.
-/// * `work` - Same cumulative ledger used by authentication and history parsing.
+/// * `work` - Same ledger used by authentication and history parsing.
 /// # Returns
-/// Complete current-first result with S exactly once at the end.
+/// The rows of the page, in its order.
 /// # Errors
-/// Refuses capacity, metadata shape/cardinality, provider or cumulative work failure.
+/// Refuses capacity, metadata shape/cardinality, provider or work failure.
 async fn project_history(
     tx: &mut WriteTransaction<'_>,
-    history: RecordedHistory,
+    page: Vec<(RecordedCommit, bool)>,
     limits: AdmissionLimits,
     work: &mut Budget,
 ) -> Result<Vec<RecordedCheckin>, StorageError> {
-    let count = history
-        .commits
-        .len()
-        .checked_add(1)
-        .ok_or_else(|| StorageError::state("recorded timeline length overflow"))?;
-    let mut result = reserve_result(count, work)?;
-    for commit in history.commits.into_iter().rev() {
-        result.push(project_commit(tx, commit, true, limits, work).await?);
+    let mut result = reserve_result(page.len(), work)?;
+    for (commit, private) in page {
+        result.push(project_commit(tx, commit, private, limits, work).await?);
     }
-    result.push(project_commit(tx, history.shared, false, limits, work).await?);
     Ok(result)
 }
 
@@ -272,6 +319,7 @@ async fn complete_read(
 #[cfg(test)]
 /// Exercise ownership, independent accounting and checked transaction completion.
 mod tests {
+    use super::super::ParseWork;
     use super::*;
     use crate::artifact::{ParseLimits, ParseUsage};
     use crate::storage::{
@@ -609,7 +657,14 @@ mod tests {
                 let mut content = limits.content;
                 content.max_total_decoded_bytes = allowance as u64;
                 let mut work = Budget::new(content).unwrap();
-                let result = project_history(&mut tx, history, limits, &mut work).await;
+                let page = history
+                    .commits
+                    .into_iter()
+                    .rev()
+                    .map(|commit| (commit, true))
+                    .chain([(history.shared, false)])
+                    .collect();
+                let result = project_history(&mut tx, page, limits, &mut work).await;
                 if allowance == exact {
                     let result = result.unwrap();
                     assert_eq!(result.len(), count);
@@ -736,6 +791,77 @@ mod tests {
                 assert!(tx.commit().await.is_err());
             }
         }
+    }
+
+    #[tokio::test]
+    /// A page walk reads only its count, and the generation bounds every walk.
+    ///
+    /// A walk refuses as soon as it passes the generation. A walk that reaches the
+    /// shared root also refuses a chain shorter than the generation. A page that
+    /// stops before the root checks only the manifests that it reads.
+    /// # Panics
+    /// Panics if a walk reads past its page or admits a chain that is not the generation.
+    async fn page_walks_read_their_count_and_the_generation_bounds_each_walk() {
+        let (_temp, mut owner) = fixture(2).await;
+        let limits = bounds();
+        let mut tx = owner.store.begin_write().await.unwrap();
+        let rows = tx
+            .query("SELECT shared_head,0 FROM g_checkout")
+            .await
+            .unwrap();
+        let shared = native_identity(&rows[0]).0.to_string();
+        let mismatch = "recording generation/history mismatch";
+        for (generation, reach, expected) in [
+            (2, Reach::Manifests(1), Some((1, false))),
+            (2, Reach::Manifests(2), Some((2, true))),
+            (2, Reach::Manifests(usize::MAX), Some((2, true))),
+            (2, Reach::Parent, Some((2, true))),
+            (2, Reach::Proof, Some((2, true))),
+            (1, Reach::Manifests(1), Some((1, false))),
+            (1, Reach::Manifests(2), None),
+            (1, Reach::Parent, None),
+            (1, Reach::Proof, None),
+            (3, Reach::Manifests(1), Some((1, false))),
+            (3, Reach::Manifests(2), None),
+            (3, Reach::Manifests(3), None),
+            (3, Reach::Parent, None),
+            (3, Reach::Proof, None),
+        ] {
+            tx.execute_bound(
+                "UPDATE g_checkout SET generation=?1,pending_version=max(pending_version,?1)",
+                vec![Value::Integer(generation)],
+            )
+            .await
+            .unwrap();
+            let mut work = Budget::new(limits.content).unwrap();
+            let mut parse = ParseWork::per_artifact(limits.parser).unwrap();
+            let walk = tx
+                .walk_recorded_history(
+                    &owner.principal,
+                    &shared,
+                    limits,
+                    &mut work,
+                    &mut parse,
+                    reach,
+                )
+                .await;
+            match expected {
+                Some((count, complete)) => {
+                    let walk = walk.unwrap();
+                    assert_eq!(
+                        (walk.commits.len(), walk.complete),
+                        (count, complete),
+                        "{generation} {reach:?}"
+                    );
+                }
+                None => assert_eq!(
+                    walk.err().unwrap().operation,
+                    mismatch,
+                    "{generation} {reach:?}"
+                ),
+            }
+        }
+        tx.rollback().await.unwrap();
     }
 
     #[tokio::test]

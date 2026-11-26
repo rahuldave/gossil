@@ -69,8 +69,8 @@ const VCS_COMMANDS: &[VcsCommand] = &[
     },
     VcsCommand {
         names: &["timeline", "log"],
-        usage: "Usage: gossil vcs timeline|log --repository REPO --checkout ID",
-        summary: "Print the complete recorded ancestry as NDJSON",
+        usage: "Usage: gossil vcs timeline|log --repository REPO --checkout ID [-n|--limit N] [--offset P]",
+        summary: "Print recorded check-ins as NDJSON, newest first, 20 unless --limit says otherwise",
         own_help: true,
     },
     VcsCommand {
