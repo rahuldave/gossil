@@ -75,7 +75,13 @@ checkpoint remain separate work.
 
 ## Contributor setup
 
-Install Rust with Cargo, Git, Just, uv and the `jlog` command recorder.
+Install Rust with Cargo through rustup, and install Git, Just, uv and the
+`jlog` command recorder. `rust-toolchain.toml` pins Rust 1.95.0 with
+clippy, rustfmt and llvm-tools-preview. CI uses the same compiler, so a local
+`just lint` gives the same lints as CI. Run `rustup toolchain install` in the
+checkout to install that toolchain. Do not set `RUSTUP_TOOLCHAIN`, because the
+variable takes the place of the file.
+
 The repository has installed workflow copies under `.agents/`.
 Their owning packages are `jnterfaces`, `jnprofile-rust`,
 `agent_gest_git_skills` and `nossaifd` under `~/Projects`.
@@ -117,9 +123,88 @@ rustdoc with private items and fails on each warning. So `just typecheck`, and
 `just check` with it, fails on a broken intra-doc link. A broken intra-doc link is
 a link in a doc comment that rustdoc cannot resolve to an item.
 
-`just test` first runs nine focused Python installer controls, then runs the Rust
-unit tests through the installed coverage workflow. `just integration` uses that
-Rust coverage workflow. Its reports do not measure Python installer coverage.
+`just test` first runs nine focused Python installer controls. Next it runs
+`scripts/check-ci-config.py` and the 78 tests of that checker in
+`scripts/test_ci_config.py`. Then it runs the Rust unit tests through the
+installed coverage workflow. `just integration` uses that Rust coverage
+workflow. Its reports do not measure Python installer coverage.
+
+The checker reads `.config/nextest.toml` and the workflows, and does not run
+cargo. It accepts only the plain forms that Gossil uses, so a form that it
+cannot judge fails. `.config/nextest.toml` must have exactly one override, of
+the profile `default`. That override may hold only `filter`, `test-group` and
+`threads-required = "num-test-threads"`. Another override placed before it would
+win, because nextest takes each setting from the first override that matches.
+
+Each term of the filter must be a plain `test(NAME)` or `binary(NAME)`, with no
+`=`, regex or glob. The filter joins its terms with `|` or `or` only. It must
+name `test(plan_cli_and_evidence)` and `binary(conformance)`, the tests that
+must run alone.
+
+Each `test(NAME)` must name a function with the attribute
+`#[test]` or `#[tokio::test]` in `src/` or `tests/`. Each `binary(NAME)` must
+name a test target as `Cargo.toml` names it. A file `tests/NAME.rs` gives a
+target with the stem of the file, NAME, unless a `[[test]]` entry renames it.
+For example, an entry renames `tests/glob.rs` to `glob_port`, so the stem
+`glob` does not count. With `autotests = false`, no stem counts.
+
+nextest accepts, with no message, a `test()` term that matches no test, so a
+renamed test would drop out of the filter in silence. The checker catches the
+renamed test. A test inside a `//` comment or a `/* */` comment does not count,
+and `/* */` comments nest, as in Rust.
+A test that a Rust string literal writes out does count, because the checker
+does not parse Rust strings.
+
+The checker reads each workflow, `*.yml` or `*.yaml`. Each install script that
+a workflow fetches from `raw.githubusercontent.com`, in any letter case, must
+come over `https` at a full commit hash. Each time the host appears, the
+workflow must write out the whole URL, as
+`https://raw.githubusercontent.com/OWNER/REPO/HASH/`. So a URL that takes its
+ref from a variable or an expression fails.
+
+Each step must be under a job line that is a plain name at an indent of two
+spaces, below the line `jobs:`. Each item of a list must be `- KEY:` or
+`- VALUE`, with one space after the dash, so a step in another form fails. Each
+line that names `actions/cache`, in any letter case, must be a bare
+`uses: actions/cache@vN`, `uses: actions/cache/restore@vN` or
+`uses: actions/cache/save@vN`, with no quotes and no comment.
+
+In each job with a cache step, the step with the id `rust` must come before the
+cache steps. It must have no `if:` condition and no `continue-on-error:`, and it
+must write the runner image to its outputs. The line that writes the image must
+come right after the line that fails the step when the runner gives no
+`ImageOS`. Each cache step needs a line that holds only `with:`, and exactly one
+line `key:`. No line of the step may hold a comment.
+
+Each `key:` and each line of a `restore-keys: |` block must hold
+`${{ steps.rust.outputs.image }}`. The checker finds the lines of that block by
+their indent. The save step may instead reuse the primary key of an earlier
+restore step with the id `rust-cache` in its job.
+
+Last, the checker checks the release workflow. The workflow must restore the
+cache, and it may have no `defaults:` or `working-directory:` line. The
+workflow must also remove the coverage stamp of each restored cache. The coverage stamp is the file
+`target/llvm-cov-target/jnprofile-rust-build.txt`. A step that holds only a
+`name` and `run:` must remove it. That step must come after each restore, and
+before the next restore or step that runs `just` in the same job.
+
+The checker counts a step as one that runs `just` when the word `just` appears
+anywhere in its `run` line. The word counts even in quotes or after a path.
+
+With `JNPROFILE_RUST_NEXTEST=1` set, `just integration` runs its tests through
+`cargo llvm-cov nextest`, which runs several test binaries at once. The
+job `check` of the release workflow sets the variable. That mode needs nextest,
+which `cargo install cargo-nextest --locked` installs.
+`.config/nextest.toml` names the tests that must run alone, with no other test
+beside them.
+
+In a fix round, run `just quick` and `just integration-changed`. `just quick`
+runs the format check, clippy, `cargo check` and the unit tests, with no
+coverage. `just integration-changed` runs only the test targets that the
+change may break, with no coverage. Run the full `just check` once, on the final
+staged tree. After a release, `just install-bin` builds the release binaries
+into `~/.cargo/bin`.
+
 Keep failed, blocked, skipped and disabled-feature observations distinct from
 passes. Installed tool copies and hook files do not prove actual executions.
 Complete the required checks and independent review before delivery to `main`.
@@ -147,7 +232,9 @@ and search, with source links to the published `main` branch.
 
 The main-only Pages workflow retains `just docs-publish` and deploys the rendered
 artifact through GitHub Pages. It installs the pinned nightly toolchain before
-generation. Local rendering does not establish a successful deployment.
+generation, because smalldocs builds the API pages with that toolchain and not
+with the one in `rust-toolchain.toml`. Local rendering does not establish a
+successful deployment.
 
 ## Maintain the bundled provider
 
@@ -436,7 +523,7 @@ qualification.
 
 At the checkpoint, `Cargo.toml` set the version of the Gossil crate to 0.9.0,
 which was later released as `v0.9.0`. The current version of the crate is
-0.18.0, and version 0.17.0 was released as `v0.17.0`. The `libsql-ffi`
+0.18.0, released as `v0.18.0`, and version 0.17.0 was released as `v0.17.0`. The `libsql-ffi`
 provider is at 0.10.0, and its version is separate
 from the version of the crate.
 

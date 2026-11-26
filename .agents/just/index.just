@@ -43,11 +43,21 @@ fmt-check:
     just --justfile {{quote(justfile())}} rust fmt-check
     jlog step fmt-check
 
+# just install-bin for each language that has it: rust
+[positional-arguments]
+install-bin *args:
+    just --justfile {{quote(justfile())}} rust install-bin "$@"
+
 # just integration for each language that has it: rust
 [positional-arguments]
 integration *args:
     just --justfile {{quote(justfile())}} rust integration "$@"
     jlog step integration
+
+# just integration-changed for each language that has it: rust
+[positional-arguments]
+integration-changed *args:
+    just --justfile {{quote(justfile())}} rust integration-changed "$@"
 
 # just quick for each language that has it: rust
 [positional-arguments]

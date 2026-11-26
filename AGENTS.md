@@ -134,9 +134,11 @@ makes no durable mutation.
 The source CLI exposes `timeline` and `log` through
 both executable and group aliases. It requires explicit repository and checkout
 selections and an existing matching locator, then prints one page of ordered
-NDJSON: 20 entries, or the page that `-n`/`--limit` and `--offset` choose, as in
-Fossil. `recorded_timeline_page` reads only the manifests up to the end of the
-page, each under the ceilings of one artifact, with no ceiling on the whole chain.
+NDJSON. The page holds 20 entries, or the entries that `-n`/`--limit` and
+`--offset` choose, as in Fossil. `recorded_timeline_page` reads only the
+manifests up to the end of the page, each under the ceilings of one artifact,
+with no ceiling on the whole chain.
+
 Opening admission, the API operation and serialization have separate finite
 allowances. See
 `docs/native-storage.md` and `docs/development-plan.md` for the contract and
@@ -165,8 +167,66 @@ intra-doc link.
 In a fix round, run `just quick`. It runs `cargo fmt --check`, `cargo clippy`,
 `cargo check` and the unit tests, with plain `cargo test` and no coverage
 build. It stops at the first failure. It skips the libSQL vendor and wrapper
-checks and `just rustdoc-check`, which run in `just typecheck` only. Run the
-full `just check` once, on the final staged tree.
+checks and `just rustdoc-check`, which run in `just typecheck` only.
+
+In a fix round, also run `just integration-changed`. It runs only the test
+targets that the change to the tree may break, with no coverage. It prints each
+target that it runs or skips. Run the full `just check` once, on the final
+staged tree.
+
+Set `JNPROFILE_RUST_NEXTEST=1` in the shell, as the job `check` of the release
+workflow does. The `integration` step then runs through
+`cargo llvm-cov nextest`, which runs several test binaries at once. On
+the owner's Mac on 2026-11-25 the step took 142 s to 153 s. With `cargo test`
+it took 323 s to 394 s, for the same 600 tests and the same coverage. The step
+needs nextest, which `cargo install cargo-nextest --locked` installs.
+
+`.config/nextest.toml` names the tests that run alone, with no other test
+beside them. `scripts/check-ci-config.py`, a step of `just test`, checks the
+file. The file must have exactly one override, of the profile `default`, and
+that override holds only `filter`, `test-group` and
+`threads-required = "num-test-threads"`. Each term of the filter must be a
+plain `test(NAME)` or `binary(NAME)`, with no `=`, regex or glob. The filter
+joins its terms with `|` or `or` only, and it must name each test that must run
+alone.
+
+Each `test(NAME)` must name a function with the attribute `#[test]` or
+`#[tokio::test]`, and each `binary(NAME)` must name a test target as
+`Cargo.toml` names it. A `[[test]]` entry can rename `tests/NAME.rs`, as it
+renames `tests/glob.rs` to `glob_port`, and then the stem of the file does not
+count. With `autotests = false`, no stem counts.
+`scripts/test_ci_config.py` holds the 78 tests of the checker.
+
+`rust-toolchain.toml` pins Rust 1.95.0 with clippy, rustfmt and
+llvm-tools-preview. CI uses the same compiler, so a local `just lint` gives
+the same lints as CI. The pin is 1.95.0 and not 1.100.0 on purpose. Rust 1.100.0
+reports the comment gap after some async functions as lines that never ran, so
+the diff coverage of `just coverage-check` fails on code that the tests cover. Do not set `RUSTUP_TOOLCHAIN`, because the variable takes
+the place of the file. The API pages build with `nightly-2026-11-12`, and not with the pinned
+toolchain.
+
+After a release, run `just install-bin`. It builds the release binaries of the
+current commit into `~/.cargo/bin`, and keeps the binary that it replaces as
+`NAME-VERSION`.
+
+`just worktree-new` copies `target/` from the primary checkout into the new
+worktree by copy-on-write, so the first build there reuses the compiled
+dependencies. The copy is never a link, because a shared build folder gives
+false passes. The copy helps only when the primary checkout has a current
+`target/`.
+
+The copy also holds the coverage stamp of the primary checkout. The coverage
+stamp is the file `target/llvm-cov-target/jnprofile-rust-build.txt`, which a
+passed coverage run writes. With a stamp, the coverage build cleans only the
+packages that differ from HEAD. With the stamp of the primary checkout, it can
+then reuse test binaries of the commit of the primary checkout. So after
+`just worktree-new`, delete the stamp in the new worktree:
+
+```bash
+rm -f target/llvm-cov-target/jnprofile-rust-build.txt
+```
+
+The next coverage build then cleans the whole workspace once.
 
 The runner checkpoint is `evidence/runner-checkpoint-2026-11-17.json`.
 It records executed macOS checks, not a final gate pass or Linux qualification.
@@ -210,9 +270,21 @@ only the tag.
 A run of the release workflow by hand, with the input `tag`, runs `just check`
 on the selected branch, checks that the tag exists and gives it as the output
 of the job `release`. It makes no new tag. Gossil has no publish job, so the
-run builds nothing from the tag. The check, release and Pages
-workflows install jlog 0.3.0 from its release script. The release workflow
-also installs gest 0.6.0 and jagt 0.6.4 that way.
+run builds nothing from the tag.
+
+The check, release and Pages workflows install jlog 0.5.0 from its release
+script. They fetch the script at the full commit hash of the jlog tag. The
+release workflow also installs gest 0.6.0 and jagt 0.6.4 that way.
+
+The check and release workflows restore a cache of the cargo registry and of
+`target/`. Only a passed `just check` on a push to `main` saves it. The cache
+key holds the runner image, such as `ubuntu24`, and the compiler. Each job of
+the workflows runs on `ubuntu-24.04`.
+
+After the restore, the release workflow removes the coverage stamp
+`target/llvm-cov-target/jnprofile-rust-build.txt`. In CI the checkout gives
+each file a new time, so cargo rebuilds the workspace in any case. Without the stamp, the coverage build cleans the workspace once,
+as for a new commit, and keeps the builds of the dependencies.
 
 The pre-push hook runs `pre_push.py` of the gate package. It runs `just ci`,
 less each recipe that the pass of `just check` for the pushed tree ran.
@@ -245,10 +317,8 @@ comparison retained all 126 nonroot packages and edges/features with one
 `libsql-ffi` 0.10.0 provider. At that checkpoint the Gossil crate version in
 `Cargo.toml` was 0.9.0, since released as `v0.9.0`. The current Gossil crate
 version is 0.18.0. The libSQL provider version 0.10.0 and the Gossil crate
-version are separate numbers. Version 0.10.0 of the crate was released as
-`v0.10.0`, version 0.11.0 as `v0.11.0`, version 0.12.0 as `v0.12.0`,
-version 0.13.0 as `v0.13.0`, version 0.14.0 as `v0.14.0`, version 0.15.0
-as `v0.15.0`, version 0.16.0 as `v0.16.0` and version 0.17.0 as `v0.17.0`.
+version are separate numbers. Each version of the crate from 0.10.0 to 0.18.0
+was released with its own tag, from `v0.10.0` to `v0.18.0`.
 
 The checkpoint
 used a prospective checked-commit prerequisite, with actual parent `4250b873`;

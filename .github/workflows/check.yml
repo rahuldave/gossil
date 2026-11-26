@@ -9,7 +9,10 @@
 # request, not the merge commit that GitHub makes, since that commit has no trailer.
 # Keep the event pull_request, not pull_request_target. The steps run the code of the pull request, and
 # pull_request_target would give that code the secrets of the repository.
-# Add the setup of the tools of your languages before the step "CI", if a step of the list ci needs them.
+# Gossil: before just ci, the job checks the vendored libSQL provider, compiles it, checks its date semantics and
+# builds the API docs on Linux. Each install script comes from the full commit of its release tag, so a moved tag
+# cannot change the script. The script still downloads the binary and its .sha256 from the release of the tag, so the
+# hash check finds a broken download, not a changed release.
 name: check
 
 on:
@@ -29,13 +32,61 @@ jobs:
       - uses: extractions/setup-just@v3
       - uses: astral-sh/setup-uv@v6
       - name: Install jlog
-        # The tag v0.3.0 of jlog is the commit d4b712b, as in the CI of jnterfaces. install.sh comes from the tag. It
-        # downloads the release binary, checks its SHA-256 and puts it in ~/.local/bin. setup-uv comes first, so
-        # install.sh makes the environments of the plugins. The step shell bash has pipefail, so a failed download fails.
+        # The tag v0.5.0 of jlog is the commit 224a622a27920256e3d6ad6a8363c9ea96078a20. install.sh comes from that
+        # commit. It downloads the release binary, checks it against the .sha256 of the same release and puts it in ~/.local/bin. setup-uv comes
+        # first, so install.sh makes the environments of the plugins. The step shell bash has pipefail, so a failed
+        # download fails.
         shell: bash
         run: |
-          curl -fsSL https://raw.githubusercontent.com/rahuldave/jlog/v0.3.0/scripts/install.sh | sh -s -- --tag v0.3.0
+          curl -fsSL https://raw.githubusercontent.com/rahuldave/jlog/224a622a27920256e3d6ad6a8363c9ea96078a20/scripts/install.sh | sh -s -- --tag v0.5.0
           echo "$HOME/.local/bin" >> "$GITHUB_PATH"
+      # rustup reads rust-toolchain.toml, so the workflow names no channel, and CI runs the compiler of each machine of
+      # the project. Do not set RUSTUP_TOOLCHAIN: it would take the place of the file, so the step stops when it is set.
+      - name: Install the Rust toolchain of rust-toolchain.toml
+        id: rust
+        shell: bash
+        run: |
+          if [ -n "${RUSTUP_TOOLCHAIN:-}" ]; then
+            echo "::error::RUSTUP_TOOLCHAIN is set. Remove it, so that the toolchain file names the toolchain."
+            exit 1
+          fi
+          test -f rust-toolchain.toml || { echo "::error::Gossil pins its compiler in rust-toolchain.toml, and the file is missing."; exit 1; }
+          rustup toolchain install
+          rustup component add clippy rustfmt llvm-tools-preview
+          # The key of the cache holds the compiler that runs, as rustc -V prints it. "rustc 1.95.0 (abcdef012
+          # 2026-10-01)" becomes 1.95.0-abcdef012-2026-10-01.
+          toolchain="$(rustc -V | sed -E 's/^rustc //; s/[^A-Za-z0-9._]+/-/g; s/^-+//; s/-+$//')"
+          if [[ ! "$toolchain" =~ ^[0-9]+\.[0-9]+\.[0-9]+[A-Za-z0-9._-]*$ ]]; then
+            echo "::error::rustc -V printed no version of Rust, so the cache has no key."
+            exit 1
+          fi
+          echo "toolchain=$toolchain" >> "$GITHUB_OUTPUT"
+          # The key of the cache holds the image of the runner, such as ubuntu24. The runner sets ImageOS in the
+          # environment of each step, but not in the env context of the expressions, so this step writes it to its
+          # outputs.
+          [[ "${ImageOS:-}" =~ ^[a-z]+[0-9]+$ ]] || { echo "::error::The runner gives no ImageOS, so the cache has no key."; exit 1; }
+          echo "image=$ImageOS" >> "$GITHUB_OUTPUT"
+      # The job restores the cache that the job check of release.yml saves on main: the crates that cargo downloads
+      # and the whole build folder, target/ with target/llvm-cov-target. The key is the runner, the release of its
+      # image, the compiler, the word check, the hash of each Cargo.lock and the commit. The release of the image is
+      # ImageOS, such as ubuntu24, so that a run on another Ubuntu release never reuses its builds. ImageOS stays the
+      # same through the weekly updates of the image. A restore takes the newest cache with the same Cargo.lock, else
+      # the newest cache of the same compiler. A run reads the caches of its own branch, of the base branch of its pull
+      # request and of the default branch.
+      # This workflow runs only on pull requests, so it only restores and never saves.
+      - name: Restore the Rust cache
+        id: rust-cache
+        uses: actions/cache/restore@v4
+        with:
+          path: |
+            ~/.cargo/registry/index
+            ~/.cargo/registry/cache
+            ~/.cargo/git/db
+            target/
+          key: ${{ runner.os }}-${{ steps.rust.outputs.image }}-${{ runner.arch }}-rust-${{ steps.rust.outputs.toolchain }}-check-${{ hashFiles('**/Cargo.lock') }}-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-${{ steps.rust.outputs.image }}-${{ runner.arch }}-rust-${{ steps.rust.outputs.toolchain }}-check-${{ hashFiles('**/Cargo.lock') }}-
+            ${{ runner.os }}-${{ steps.rust.outputs.image }}-${{ runner.arch }}-rust-${{ steps.rust.outputs.toolchain }}-check-
       - name: Verify complete vendored provider
         run: |
           python3 scripts/verify-libsql-vendor.py
