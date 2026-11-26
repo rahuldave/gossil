@@ -245,7 +245,7 @@ metadata is preserved with standard JSON escaping. The root alone has
 
 The commands need a complete matching locator. They do not read working-file
 contents, select revisions or accept filters. See the
-[ancestry command contract](cli.md#read-complete-recorded-ancestry) for bounds
+[ancestry command contract](cli.md#read-recorded-ancestry) for bounds
 and failures. This walkthrough builds source and supplies no installation evidence.
 
 ## Inspect a glob list from source

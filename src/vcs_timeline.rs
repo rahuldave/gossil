@@ -1,7 +1,9 @@
-//! Print complete authenticated checkout ancestry as bounded compact NDJSON.
+//! Print one page of authenticated checkout ancestry as bounded compact NDJSON.
 //!
 //! Opening admission is a separate operation. The history API completes its own
 //! transaction before this adapter preflights, reserves and serializes output.
+//! The page holds the newest 20 entries unless `-n`/`--limit` and `--offset` say
+//! otherwise, as in `fossil timeline`.
 //!
 //! ## Recommendations
 //! Open the checkout first, then select its repository and identity explicitly.
@@ -12,59 +14,100 @@ use std::{ffi::OsString, io::Write, path::PathBuf};
 /// Preserve original grammar, UTF-8, storage, allocation, serialization and I/O causes.
 type Error = Box<dyn std::error::Error>;
 /// Exact supported grammar, shared by standalone help and option failures.
-const USAGE: &str = "Usage: gossil vcs timeline|log --repository REPO --checkout ID";
+const USAGE: &str =
+    "Usage: gossil vcs timeline|log --repository REPO --checkout ID [-n|--limit N] [--offset P]";
+/// The entries of a page when no limit is given, as `fossil timeline` prints 20 lines.
+const DEFAULT_LIMIT: usize = 20;
+/// The refusal of a limit that is not a decimal integer.
+const BAD_LIMIT: &str = "timeline --limit requires an integer";
+/// The refusal of an offset that is not a nonnegative decimal integer.
+const BAD_OFFSET: &str = "timeline --offset requires a nonnegative integer";
 
 /// Parsed storage-free help or complete explicit checkout selections.
 enum Request {
     /// Standalone help requires no storage observation.
     Help,
-    /// Complete explicit selectors for existing locator admission.
+    /// Complete explicit selectors for existing locator admission, and the page.
     Read {
         /// Supplied existing repository filename.
         repository: PathBuf,
         /// Exact nonempty bounded UTF-8 registration identity.
         checkout: String,
+        /// The count of newest entries to skip.
+        offset: usize,
+        /// The most entries to print, or 0 for every remaining entry.
+        limit: usize,
     },
 }
 
-/// Parse unique exact selectors before any storage observation.
+/// Read a count of entries in the decimal spelling that Fossil reads.
+/// # Arguments
+/// * `text` - The value of the option.
+/// * `signed` - True when a leading `-` is allowed. A negative limit counts lines,
+///   and each entry is one line, so its size is the count.
+/// # Returns
+/// The count, or `None` for an empty value, a sign that is not allowed or any
+/// other character. A count above the largest `usize` is the largest `usize`.
+fn count(text: &str, signed: bool) -> Option<usize> {
+    let digits = match text.strip_prefix('-') {
+        Some(rest) if signed => rest,
+        _ => text,
+    };
+    if digits.is_empty() || !digits.bytes().all(|b| b.is_ascii_digit()) {
+        return None;
+    }
+    Some(digits.bytes().fold(0_usize, |n, b| {
+        n.saturating_mul(10).saturating_add(usize::from(b - b'0'))
+    }))
+}
+
+/// Parse unique exact selectors and page options before any storage observation.
 /// # Arguments
 /// * `args` - Suffix after either timeline or log.
 /// # Returns
-/// Standalone help or complete bounded explicit selections in either order.
+/// Standalone help or complete bounded explicit selections in any order.
 /// # Errors
 /// Refuses missing/duplicate/unknown options, positional/filter/equals forms,
-/// non-UTF-8/NUL/empty selectors and excessive argument or selector lengths.
+/// non-UTF-8/NUL/empty selectors, excessive argument or selector lengths, and a
+/// limit or offset that is not an integer.
 fn request(args: &[OsString]) -> Result<Request, Error> {
     if matches!(args, [arg] if arg == "--help" || arg == "-h") {
         return Ok(Request::Help);
     }
-    if args.len() > 4 {
+    if args.len() > 8 {
         return Err(USAGE.into());
     }
-    let (mut repository, mut checkout) = (None, None);
+    let (mut repository, mut checkout, mut offset, mut limit) = (None, None, None, None);
     let mut args = args.iter();
     while let Some(arg) = args.next() {
-        if arg != "--repository" && arg != "--checkout" {
+        let Some(name) = arg.to_str().filter(|name| {
+            ["--repository", "--checkout", "-n", "--limit", "--offset"].contains(name)
+        }) else {
             return Err(USAGE.into());
-        }
+        };
         let value = args.next().ok_or("timeline option requires a value")?;
         let text = value.to_str().ok_or("timeline selector must be UTF-8")?;
-        let maximum = if arg == "--repository" { 4096 } else { 1024 };
-        if text.is_empty() || text.contains('\0') || text.len() > maximum {
-            return Err("timeline selector limit or spelling".into());
+        if name == "--repository" || name == "--checkout" {
+            let maximum = if name == "--repository" { 4096 } else { 1024 };
+            if text.is_empty() || text.contains('\0') || text.len() > maximum {
+                return Err("timeline selector limit or spelling".into());
+            }
         }
-        if arg == "--repository" && repository.is_none() {
-            repository = Some(PathBuf::from(text));
-        } else if arg == "--checkout" && checkout.is_none() {
-            checkout = Some(text.to_owned());
-        } else {
-            return Err(USAGE.into());
+        match name {
+            "--repository" if repository.is_none() => repository = Some(PathBuf::from(text)),
+            "--checkout" if checkout.is_none() => checkout = Some(text.to_owned()),
+            "--offset" if offset.is_none() => offset = Some(count(text, false).ok_or(BAD_OFFSET)?),
+            "-n" | "--limit" if limit.is_none() => {
+                limit = Some(count(text, true).ok_or(BAD_LIMIT)?)
+            }
+            _ => return Err(USAGE.into()),
         }
     }
     Ok(Request::Read {
         repository: repository.ok_or("timeline requires --repository REPO")?,
         checkout: checkout.ok_or("timeline requires --checkout ID")?,
+        offset: offset.unwrap_or(0),
+        limit: limit.unwrap_or(DEFAULT_LIMIT),
     })
 }
 
@@ -119,14 +162,17 @@ fn row_bound(previous: usize, source: usize, private: bool) -> Result<usize, Err
         .ok_or_else(|| "timeline JSON size overflow".into())
 }
 
-/// Preflight every field and the complete cumulative serialization capacity.
+/// Preflight every field and the complete serialization capacity.
+///
+/// `limit` bounds the output of each row. The page bounds the count of rows, so
+/// the output has no ceiling that a long history reaches.
 /// # Arguments
 /// * `rows` - Complete checked API result in native ancestry order.
-/// * `limit` - Separate finite output capacity, derived from the existing CLI limits.
+/// * `limit` - Separate finite output capacity of one row, derived from the existing CLI limits.
 /// # Returns
 /// Complete worst-case capacity before any output buffer allocation.
 /// # Errors
-/// Refuses invalid UTF-8, arithmetic/platform overflow or exhausted output capacity.
+/// Refuses invalid UTF-8, arithmetic/platform overflow or a row over its capacity.
 fn output_bound(rows: &[RecordedCheckin], limit: usize) -> Result<usize, Error> {
     let mut total = 0;
     for row in rows {
@@ -140,10 +186,10 @@ fn output_bound(rows: &[RecordedCheckin], limit: usize) -> Result<usize, Error> 
         .into_iter()
         .try_fold(0_usize, usize::checked_add)
         .ok_or("timeline JSON source size overflow")?;
-        total = row_bound(total, source, row.private)?;
-        if total > limit {
+        if row_bound(0, source, row.private)? > limit {
             return Err("timeline JSON output limit".into());
         }
+        total = row_bound(total, source, row.private)?;
     }
     Ok(total)
 }
@@ -151,7 +197,7 @@ fn output_bound(rows: &[RecordedCheckin], limit: usize) -> Result<usize, Error> 
 /// Serialize complete ordered NDJSON only after one full output reservation.
 /// # Arguments
 /// * `rows` - Complete checked API result, borrowed without cloning metadata or strings.
-/// * `limit` - Finite separate serialization capacity.
+/// * `limit` - Finite separate serialization capacity of one row.
 /// # Returns
 /// Compact key-ordered NDJSON with exactly one LF per row and no extra output.
 /// # Errors
@@ -188,13 +234,16 @@ fn write_output(mut writer: impl Write, output: &[u8]) -> Result<(), Error> {
 /// # Errors
 /// Preserves selector, admission, checked API, capacity, UTF-8, serializer and stdout causes.
 /// Opening admission and the API each own separate operation ledgers; serialization
-/// owns a separate finite capacity derived from the unchanged CLI content limit.
+/// owns a separate finite capacity of one row, derived from the unchanged CLI
+/// content limit.
 /// # Panics
 /// Panics if called from an already running Tokio runtime.
 pub(crate) fn run(args: &[OsString]) -> Result<(), Error> {
     let Request::Read {
         repository,
         checkout,
+        offset,
+        limit,
     } = request(args)?
     else {
         return write_output(std::io::stdout().lock(), format!("{USAGE}\n").as_bytes());
@@ -204,12 +253,12 @@ pub(crate) fn run(args: &[OsString]) -> Result<(), Error> {
         .block_on(async {
             let (mut owner, view) = crate::vcs_open::admit_existing(repository, checkout).await?;
             owner
-                .recorded_timeline(&view.checkout_id, crate::vcs_open::limits())
+                .recorded_timeline_page(&view.checkout_id, offset, limit, crate::vcs_open::limits())
                 .await
                 .map_err(Error::from)
         })?;
-    let limit = usize::try_from(crate::vcs_open::limits().content.max_total_decoded_bytes)?;
-    let output = serialize(&rows, limit)?;
+    let capacity = usize::try_from(crate::vcs_open::limits().content.max_total_decoded_bytes)?;
+    let output = serialize(&rows, capacity)?;
     write_output(std::io::stdout().lock(), &output)
 }
 
@@ -258,7 +307,7 @@ mod tests {
             vec!["--checkout", "work", "--repository", "../repo"],
         ] {
             assert!(
-                matches!(request(&arguments(&values)).unwrap(), Request::Read { repository, checkout } if repository == std::path::Path::new("../repo") && checkout == "work")
+                matches!(request(&arguments(&values)).unwrap(), Request::Read { repository, checkout, offset: 0, limit: 20 } if repository == std::path::Path::new("../repo") && checkout == "work")
             );
         }
         for (values, expected) in [
@@ -302,7 +351,21 @@ mod tests {
             vec!["--repository=repo", "--checkout", "work"],
             vec!["--repository", "repo", "--checkout=work"],
             vec!["current"],
-            vec!["--limit", "1"],
+            vec!["--limit=1", "--repository", "repo", "--checkout", "work"],
+            vec!["--limit", "1", "--limit", "2"],
+            vec!["-n", "1", "--limit", "2"],
+            vec!["--offset", "1", "--offset", "2"],
+            vec![
+                "--repository",
+                "repo",
+                "--checkout",
+                "work",
+                "-n",
+                "1",
+                "--offset",
+                "1",
+                "extra",
+            ],
             vec!["--repository", "repo", "--checkout", "work", "extra"],
         ] {
             assert_eq!(
@@ -332,7 +395,7 @@ mod tests {
                 };
                 assert!(matches!(
                     request(&complete(boundary.clone().into())).unwrap(),
-                    Request::Read { repository, checkout }
+                    Request::Read { repository, checkout, .. }
                         if repository == std::path::Path::new(expected_repo)
                             && checkout == expected_checkout
                 ));
@@ -361,10 +424,72 @@ mod tests {
     }
 
     #[test]
-    /// Count each source field once and require exact cumulative worst-case output capacity.
+    /// Read the page options as `fossil timeline` does, and refuse each bad value.
+    /// # Panics
+    /// Panics if a limit or an offset is read wrongly or a bad value is admitted.
+    fn page_options_follow_fossil() {
+        let base = ["--repository", "repo", "--checkout", "work"];
+        let read = |values: &[&str]| match request(&arguments(values)) {
+            Ok(Request::Read { offset, limit, .. }) => Ok((offset, limit)),
+            Ok(Request::Help) => Err("help".to_string()),
+            Err(error) => Err(error.to_string()),
+        };
+        let page = |extra: &[&str]| {
+            let mut values = base.to_vec();
+            values.extend_from_slice(extra);
+            read(&values)
+        };
+        assert_eq!(read(&["-h"]), Err("help".into()));
+        assert_eq!(page(&[]), Ok((0, 20)));
+        assert_eq!(page(&["-n", "5"]), Ok((0, 5)));
+        assert_eq!(page(&["--limit", "5"]), Ok((0, 5)));
+        // A negative limit counts lines, and each entry is one line.
+        assert_eq!(page(&["-n", "-7"]), Ok((0, 7)));
+        assert_eq!(page(&["--limit", "0"]), Ok((0, 0)));
+        assert_eq!(page(&["--limit", "-0"]), Ok((0, 0)));
+        assert_eq!(page(&["--offset", "3", "-n", "2"]), Ok((3, 2)));
+        assert_eq!(page(&["--offset", "0"]), Ok((0, 20)));
+        assert_eq!(
+            page(&["--limit", "99999999999999999999999999"]),
+            Ok((0, usize::MAX))
+        );
+        let mut first = vec!["-n", "4", "--offset", "1"];
+        first.extend_from_slice(&base);
+        assert!(matches!(
+            request(&arguments(&first)).unwrap(),
+            Request::Read {
+                offset: 1,
+                limit: 4,
+                ..
+            }
+        ));
+        for bad in ["", "-", "x", "1x", "+1", " 1", "1.5", "--1", "0x10"] {
+            assert_eq!(page(&["--limit", bad]), Err(BAD_LIMIT.into()), "{bad:?}");
+            assert_eq!(page(&["-n", bad]), Err(BAD_LIMIT.into()), "{bad:?}");
+            assert_eq!(page(&["--offset", bad]), Err(BAD_OFFSET.into()), "{bad:?}");
+        }
+        assert_eq!(page(&["--offset", "-1"]), Err(BAD_OFFSET.into()));
+        assert_eq!(
+            page(&["--limit"]),
+            Err("timeline option requires a value".into())
+        );
+        use std::os::unix::ffi::OsStringExt;
+        let mut values = arguments(&base);
+        values.extend([OsString::from("-n"), OsString::from_vec(vec![0xff])]);
+        assert_eq!(
+            request(&values).err().unwrap().to_string(),
+            "timeline selector must be UTF-8"
+        );
+        let mut values = arguments(&base);
+        values.extend([OsString::from_vec(vec![0xff]), OsString::from("1")]);
+        assert_eq!(request(&values).err().unwrap().to_string(), USAGE);
+    }
+
+    #[test]
+    /// Count each source field once, cap each row exactly, and reserve the exact total.
     /// # Panics
     /// Panics on a wrong fixed overhead, double-counted hash, reset ledger or permissive cap.
-    fn independent_fixed_overhead_exact_one_under_cumulative_and_zero() {
+    fn independent_fixed_overhead_exact_one_under_per_row_and_zero() {
         let true_skeleton =
             b"{\"hash\":\"\",\"date\":\"\",\"actor\":\"\",\"comment\":\"\",\"private\":true}\n";
         let false_skeleton =
@@ -375,11 +500,10 @@ mod tests {
         // Four one-byte source values per row: 6*(1+1+1+1) + literal syntax.
         let expected = 2 * 6 * 4 + true_skeleton.len() + false_skeleton.len();
         assert_eq!(output_bound(&rows, expected).unwrap(), 171);
-        assert!(output_bound(&rows, expected - 1).is_err());
-        assert!(
-            output_bound(&rows, 86).is_err(),
-            "complete rows may not reset the cap"
-        );
+        // The cap bounds each row, and the page bounds the count of rows.
+        assert_eq!(output_bound(&rows, 86).unwrap(), 171);
+        assert!(output_bound(&rows, 85).is_err());
+        assert!(output_bound(&[row(true)], 85).is_ok());
         let output = serialize(&rows, expected).unwrap();
         assert_eq!(output, b"{\"hash\":\"h\",\"date\":\"D\",\"actor\":\"U\",\"comment\":\"C\",\"private\":true}\n{\"hash\":\"h\",\"date\":\"D\",\"actor\":\"U\",\"comment\":\"C\",\"private\":false}\n");
         assert_eq!(
@@ -387,7 +511,8 @@ mod tests {
             expected,
             "serialization must fit its single reservation"
         );
-        assert!(serialize(&rows, expected - 1).is_err());
+        assert_eq!(serialize(&rows, 86).unwrap(), output);
+        assert!(serialize(&rows, 85).is_err());
         assert_eq!(output_bound(&[], 0).unwrap(), 0);
         assert!(serialize(&[], 0).unwrap().is_empty());
         assert!(row_bound(0, usize::MAX, false).is_err());

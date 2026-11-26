@@ -704,12 +704,17 @@ fn ceiling(limits: &mut AdmissionLimits, axis: usize, value: u64) {
 /// The number of tests that split the six cumulative ceilings, one ceiling each.
 const CUMULATIVE_PARTS: usize = 6;
 
-/// Find the public cumulative boundary of each ceiling in one share, then prove exact success and one-under refusal.
+/// Find the boundary of each ceiling in one share, then prove exact success and one-under refusal.
+///
+/// The reader gives each manifest its own parser ceilings and uses no total
+/// content ceiling. So each parser boundary is that of the largest single
+/// manifest, below the sum over the chain, and any total content ceiling passes.
 /// # Arguments
 /// * `part` - The share of the six ceilings, below `CUMULATIVE_PARTS`, on its own fixture.
 /// # Panics
-/// Panics if limits reset across ancestors, a failed read mutates state, or the
-/// smallest passing complete-history ceiling also accepts its predecessor.
+/// Panics if a parser ceiling covers the whole chain, a total content ceiling is
+/// used, a failed read mutates state, or the smallest passing ceiling also accepts
+/// its predecessor.
 async fn cumulative_content_and_parser_limits_have_complete_history_boundaries(part: usize) {
     let mut f = Fixture::new().await;
     f.private(&["a", "b"]).await;
@@ -719,8 +724,8 @@ async fn cumulative_content_and_parser_limits_have_complete_history_boundaries(p
     drop(f.owner);
     let before = snapshot(&f.repo).await;
     let files = tree(&f.root);
-    let mut native_bytes = 0_u64;
-    let mut native_cards = 0_u64;
+    let (mut native_bytes, mut largest_bytes) = (0_u64, 0_u64);
+    let (mut native_cards, mut largest_cards) = (0_u64, 0_u64);
     for row in rows(
         &f.repo,
         "SELECT uuid FROM blob JOIN event ON event.objid=blob.rid WHERE event.type='ci'",
@@ -731,13 +736,28 @@ async fn cumulative_content_and_parser_limits_have_complete_history_boundaries(p
             panic!("native identity required")
         };
         let bytes = manifest(&f.repo, hash).await;
-        native_bytes += bytes.len() as u64;
-        native_cards += bytes
+        let cards = bytes
             .split(|byte| *byte == b'\n')
             .filter(|line| !line.is_empty())
             .count() as u64;
+        native_bytes += bytes.len() as u64;
+        native_cards += cards;
+        largest_bytes = largest_bytes.max(bytes.len() as u64);
+        largest_cards = largest_cards.max(cards);
     }
     for axis in shares::share((0..6).collect(), part, CUMULATIVE_PARTS) {
+        if axis < 2 {
+            // The total content ceilings are not used.
+            let mut zero = limits();
+            ceiling(&mut zero, axis, 0);
+            let mut owner = LocalOwnerRepository::open(&f.repo, limits()).await.unwrap();
+            assert_eq!(
+                owner.recorded_timeline("work", zero).await.unwrap().len(),
+                3
+            );
+            assert_eq!(snapshot(&f.repo).await, before);
+            continue;
+        }
         let mut low = 0_u64;
         let mut high = 256 << 20;
         while high - low > 1 {
@@ -751,13 +771,13 @@ async fn cumulative_content_and_parser_limits_have_complete_history_boundaries(p
                 low = midpoint;
             }
         }
-        // These independent native totals make per-ancestor ledger resets observable;
-        // internal helper tests separately own the exact repeated-root accounting.
+        // Each manifest has its own ceilings, so the boundary is that of the largest
+        // manifest, not the sum over the chain.
         if axis == 2 {
-            assert!(high >= native_bytes, "parser input reset across ancestry");
+            assert!(high <= largest_bytes && high < native_bytes, "{high}");
         }
         if axis == 3 {
-            assert!(high >= native_cards, "parser cards reset across ancestry");
+            assert!(high <= largest_cards && high < native_cards, "{high}");
         }
         let mut exact = limits();
         ceiling(&mut exact, axis, high);

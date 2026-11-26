@@ -126,13 +126,18 @@ Broader crosslinks, shared recording, sync and Gest integration remain planned w
 The library also exposes `recorded_timeline` and `RecordedCheckin` for complete
 current-first native ancestry, with the immutable shared root last. It preserves
 full hashes and exact native metadata bytes, and checks each event user and
-comment against the U and C cards of its manifest, within one transaction and
-shared operation ledgers. It reads no working-file contents and
+comment against the U and C cards of its manifest, within one transaction. It
+reads no working-file contents and
 makes no durable mutation.
 
 The source CLI exposes `timeline` and `log` through
 both executable and group aliases. It requires explicit repository and checkout
-selections and an existing matching locator, then prints complete ordered NDJSON.
+selections and an existing matching locator, then prints one page of ordered
+NDJSON. The page holds 20 entries, or the entries that `-n`/`--limit` and
+`--offset` choose, as in Fossil. `recorded_timeline_page` reads only the
+manifests up to the end of the page, each under the ceilings of one artifact,
+with no ceiling on the whole chain.
+
 Opening admission, the API operation and serialization have separate finite
 allowances. See
 `docs/native-storage.md` and `docs/development-plan.md` for the contract and
@@ -191,9 +196,11 @@ renames `tests/glob.rs` to `glob_port`, and then the stem of the file does not
 count. With `autotests = false`, no stem counts.
 `scripts/test_ci_config.py` holds the 78 tests of the checker.
 
-`rust-toolchain.toml` pins Rust 1.100.0 with clippy, rustfmt and
+`rust-toolchain.toml` pins Rust 1.95.0 with clippy, rustfmt and
 llvm-tools-preview. CI uses the same compiler, so a local `just lint` gives
-the same lints as CI. Do not set `RUSTUP_TOOLCHAIN`, because the variable takes
+the same lints as CI. The pin is 1.95.0 and not 1.100.0 on purpose. Rust 1.100.0
+reports the comment gap after some async functions as lines that never ran, so
+the diff coverage of `just coverage-check` fails on code that the tests cover. Do not set `RUSTUP_TOOLCHAIN`, because the variable takes
 the place of the file. The API pages build with `nightly-2026-11-12`, and not with the pinned
 toolchain.
 
@@ -308,11 +315,9 @@ existing global-state control), and all 20 unchanged Tcl assertions. Its graph
 comparison retained all 126 nonroot packages and edges/features with one
 `libsql-ffi` 0.10.0 provider. At that checkpoint the Gossil crate version in
 `Cargo.toml` was 0.9.0, since released as `v0.9.0`. The current Gossil crate
-version is 0.17.0. The libSQL provider version 0.10.0 and the Gossil crate
-version are separate numbers. Version 0.10.0 of the crate was released as
-`v0.10.0`, version 0.11.0 as `v0.11.0`, version 0.12.0 as `v0.12.0`,
-version 0.13.0 as `v0.13.0`, version 0.14.0 as `v0.14.0`, version 0.15.0
-as `v0.15.0` and version 0.16.0 as `v0.16.0`.
+version is 0.18.0. The libSQL provider version 0.10.0 and the Gossil crate
+version are separate numbers. Each version of the crate from 0.10.0 to 0.18.0
+was released with its own tag, from `v0.10.0` to `v0.18.0`.
 
 The checkpoint
 used a prospective checked-commit prerequisite, with actual parent `4250b873`;

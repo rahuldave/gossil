@@ -53,8 +53,8 @@ jobs:
           test -f rust-toolchain.toml || { echo "::error::Gossil pins its compiler in rust-toolchain.toml, and the file is missing."; exit 1; }
           rustup toolchain install
           rustup component add clippy rustfmt llvm-tools-preview
-          # The key of the cache holds the compiler that runs, as rustc -V prints it. "rustc 1.100.0 (abcdef012
-          # 2026-10-01)" becomes 1.100.0-abcdef012-2026-10-01.
+          # The key of the cache holds the compiler that runs, as rustc -V prints it. "rustc 1.95.0 (abcdef012
+          # 2026-10-01)" becomes 1.95.0-abcdef012-2026-10-01.
           toolchain="$(rustc -V | sed -E 's/^rustc //; s/[^A-Za-z0-9._]+/-/g; s/^-+//; s/-+$//')"
           if [[ ! "$toolchain" =~ ^[0-9]+\.[0-9]+\.[0-9]+[A-Za-z0-9._-]*$ ]]; then
             echo "::error::rustc -V printed no version of Rust, so the cache has no key."

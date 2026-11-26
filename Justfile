@@ -114,6 +114,10 @@ issue-demo:
 issue-capacity:
     cargo test --release --test issue_capacity five_thousand_tasks_fit_the_cli_ceilings -- --ignored --exact --nocapture
 
+# Make 5,000 one-file check-ins in a release build and print the time of timeline, log, status, commit and verify at 1,000 and 5,000.
+timeline-capacity:
+    cargo test --release --test timeline_capacity five_thousand_checkins -- --ignored --exact --nocapture
+
 # Compare the JSON of task list and task show with a reference gest for the same two tasks; exit 5 means not-run.
 issue-read-oracle:
     #!/usr/bin/env bash

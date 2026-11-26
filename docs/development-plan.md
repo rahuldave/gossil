@@ -76,7 +76,7 @@ checkpoint remain separate work.
 ## Contributor setup
 
 Install Rust with Cargo through rustup, and install Git, Just, uv and the
-`jlog` command recorder. `rust-toolchain.toml` pins Rust 1.100.0 with
+`jlog` command recorder. `rust-toolchain.toml` pins Rust 1.95.0 with
 clippy, rustfmt and llvm-tools-preview. CI uses the same compiler, so a local
 `just lint` gives the same lints as CI. Run `rustup toolchain install` in the
 checkout to install that toolchain. Do not set `RUSTUP_TOOLCHAIN`, because the
@@ -466,7 +466,7 @@ and do not establish a full pass for the later CLI tree.
 
 The source `src/vcs_timeline.rs` adapter exposes complete recorded ancestry
 through both executable names, both group names and `timeline` or `log`.
-[The CLI reference](cli.md#read-complete-recorded-ancestry) defines explicit
+[The CLI reference](cli.md#read-recorded-ancestry) defines explicit
 selectors, existing-locator admission, exact NDJSON and separate opening, API
 and serialization allowances. This checkpoint implements no filters, truncation,
 working-file content reads or locator publication.
@@ -487,6 +487,16 @@ No broader Fossil parity is claimed. `cat` remains separate issue 18 work;
 issue 17 remains open. Neither issue is completed by these ancestry commands.
 The later accepted timeline delivery at `4250b873` completed the `v0.8.0`
 release. That delivery is separate from the prepared glob source below.
+
+A later source change makes the commands print one page, 20 entries by default,
+with `-n`/`--limit` and `--offset` as in Fossil. It adds
+`LocalOwnerRepository::recorded_timeline_page`, which gives each manifest the
+ceilings of one artifact and sets no ceiling on the whole chain. Before it, one
+parser ledger covered the whole chain, and the commands refused a history of
+about 455 one-file check-ins. `just timeline-capacity` makes 5,000 one-file
+check-ins in a release build, and times `timeline`, `log`, `status`, `commit`
+and `verify` at 1,000 and at 5,000 check-ins. The checkpoint results above do not qualify this
+change.
 
 ## Glob source checkpoint and pending qualification
 
@@ -513,7 +523,7 @@ qualification.
 
 At the checkpoint, `Cargo.toml` set the version of the Gossil crate to 0.9.0,
 which was later released as `v0.9.0`. The current version of the crate is
-0.17.0, and version 0.16.0 was released as `v0.16.0`. The `libsql-ffi`
+0.18.0, released as `v0.18.0`, and version 0.17.0 was released as `v0.17.0`. The `libsql-ffi`
 provider is at 0.10.0, and its version is separate
 from the version of the crate.
 
