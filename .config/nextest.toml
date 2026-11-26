@@ -1,0 +1,16 @@
+# cargo nextest reads this file. The integration step uses nextest only with JNPROFILE_RUST_NEXTEST=1.
+# nextest runs the tests of every test binary at the same time. Each test that the filter below names runs alone.
+# threads-required = "num-test-threads" takes every test thread, so no other test runs beside it, and the group
+# serial keeps two of them from starting together. The tests of the binary conformance start programs with short
+# timeouts. plan_cli_and_evidence is one of them, named on its own too. The unit tests of the library, such as
+# live_rollback_journal_and_hardlink_are_protected, are not named here, because the integration step runs no --lib
+# and the test step runs them with cargo test, not nextest. nextest refuses a binary(...) that matches no binary,
+# but not a test(...) that matches no test. So scripts/check-ci-config.py, a step of just test, checks that each
+# name is one of the project.
+[test-groups]
+serial = { max-threads = 1 }
+
+[[profile.default.overrides]]
+filter = 'test(plan_cli_and_evidence) | binary(conformance)'
+test-group = 'serial'
+threads-required = 'num-test-threads'

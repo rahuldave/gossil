@@ -30,8 +30,11 @@
 # released" and gives the tag again. To build a tag by hand, run this workflow with the tag:
 # gh workflow run release --ref main -f tag=vX.Y.Z. The job release then skips just release, checks that the tag
 # exists and gives it as its output. It makes no new tag. Gossil has no publish job, so such a run builds nothing.
-# The job check installs the programs that tools-check needs (jlog, gest and jagt; gh is on the runner), the coverage
-# tools, the nightly rustdoc of the API pages and the build prerequisites of the native references.
+# The job check installs the programs that tools-check needs (jlog, gest and jagt; gh is on the runner), the
+# toolchain of rust-toolchain.toml, the coverage tool, the nightly rustdoc of the API pages and the build
+# prerequisites of the native references. Each install script comes from the full commit of its release tag, so a
+# moved tag cannot change the script. The script still downloads the binary and its .sha256 from the release of the
+# tag, so the hash check finds a broken download, not a changed release.
 name: release
 
 on:
@@ -50,9 +53,12 @@ permissions:
 
 jobs:
   check:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
+    # The integration step runs its tests with cargo llvm-cov nextest, which runs the test binaries at the same time.
+    # .config/nextest.toml names the tests that run one at a time. The job ci of check.yml runs no integration step,
+    # so it neither sets the variable nor installs cargo-nextest.
     env:
-      RUSTUP_TOOLCHAIN: stable
+      JNPROFILE_RUST_NEXTEST: "1"
     steps:
       # The whole history and the tags, for the step release-check of just check.
       - uses: actions/checkout@v4
@@ -61,36 +67,116 @@ jobs:
       - uses: extractions/setup-just@v3
       - uses: astral-sh/setup-uv@v6
       - name: Install jlog
-        # The tag v0.3.0 of jlog is the commit d4b712b, as in the CI of jnterfaces. install.sh comes from the tag. It
-        # downloads the release binary, checks its SHA-256 and puts it in ~/.local/bin. setup-uv comes first, so
-        # install.sh makes the environments of the plugins. The step shell bash has pipefail, so a failed download fails.
+        # The tag v0.5.0 of jlog is the commit 224a622a27920256e3d6ad6a8363c9ea96078a20. install.sh comes from that
+        # commit. It downloads the release binary, checks it against the .sha256 of the same release and puts it in ~/.local/bin. setup-uv comes
+        # first, so install.sh makes the environments of the plugins. The step shell bash has pipefail, so a failed
+        # download fails.
         shell: bash
         run: |
-          curl -fsSL https://raw.githubusercontent.com/rahuldave/jlog/v0.3.0/scripts/install.sh | sh -s -- --tag v0.3.0
+          curl -fsSL https://raw.githubusercontent.com/rahuldave/jlog/224a622a27920256e3d6ad6a8363c9ea96078a20/scripts/install.sh | sh -s -- --tag v0.5.0
           echo "$HOME/.local/bin" >> "$GITHUB_PATH"
       - name: Install gest v0.6.0 and jagt v0.6.4, which tools-check needs
-        # install.sh of gest comes from its tag v0.6.0, and install.sh of jagt from its tag v0.6.4, as in the CI of
-        # agent_gest_git_skills. Each one checks the SHA-256.
+        # The tag v0.6.0 of gest is the commit 67fb4f37d8e7aff689929bc6de33b4324272a82c, and the tag v0.6.4 of jagt
+        # is the commit 604e3fb7754a168a28beeaa908908abd8589eee1. Each install.sh comes from its commit and checks
+        # the binary against the .sha256 of the same release.
         shell: bash
         run: |
-          curl -fsSL https://raw.githubusercontent.com/rahuldave/gest/v0.6.0/scripts/install.sh | sh -s -- --tag v0.6.0
-          curl -fsSL https://raw.githubusercontent.com/rahuldave/jagt/v0.6.4/scripts/install.sh | sh -s -- --tag v0.6.4
-      - name: Install coverage prerequisites
+          curl -fsSL https://raw.githubusercontent.com/rahuldave/gest/67fb4f37d8e7aff689929bc6de33b4324272a82c/scripts/install.sh | sh -s -- --tag v0.6.0
+          curl -fsSL https://raw.githubusercontent.com/rahuldave/jagt/604e3fb7754a168a28beeaa908908abd8589eee1/scripts/install.sh | sh -s -- --tag v0.6.4
+      # rustup reads rust-toolchain.toml, so the workflow names no channel, and CI runs the compiler of each machine of
+      # the project. Do not set RUSTUP_TOOLCHAIN: it would take the place of the file, so the step stops when it is set.
+      - name: Install the Rust toolchain of rust-toolchain.toml
+        id: rust
+        shell: bash
         run: |
-          rustup component add llvm-tools-preview --toolchain stable
-          cargo +stable install --locked cargo-llvm-cov@0.9.1
+          if [ -n "${RUSTUP_TOOLCHAIN:-}" ]; then
+            echo "::error::RUSTUP_TOOLCHAIN is set. Remove it, so that the toolchain file names the toolchain."
+            exit 1
+          fi
+          test -f rust-toolchain.toml || { echo "::error::Gossil pins its compiler in rust-toolchain.toml, and the file is missing."; exit 1; }
+          rustup toolchain install
+          # just check needs clippy, rustfmt and llvm-tools-preview. rustup adds them to the toolchain of the file.
+          rustup component add clippy rustfmt llvm-tools-preview
+          # The key of the cache holds the compiler that runs, as rustc -V prints it. "rustc 1.100.0 (abcdef012
+          # 2026-10-01)" becomes 1.100.0-abcdef012-2026-10-01.
+          toolchain="$(rustc -V | sed -E 's/^rustc //; s/[^A-Za-z0-9._]+/-/g; s/^-+//; s/-+$//')"
+          if [[ ! "$toolchain" =~ ^[0-9]+\.[0-9]+\.[0-9]+[A-Za-z0-9._-]*$ ]]; then
+            echo "::error::rustc -V printed no version of Rust, so the cache has no key."
+            exit 1
+          fi
+          echo "toolchain=$toolchain" >> "$GITHUB_OUTPUT"
+          # The key of the cache holds the image of the runner, such as ubuntu24. The runner sets ImageOS in the
+          # environment of each step, but not in the env context of the expressions, so this step writes it to its
+          # outputs.
+          [[ "${ImageOS:-}" =~ ^[a-z]+[0-9]+$ ]] || { echo "::error::The runner gives no ImageOS, so the cache has no key."; exit 1; }
+          echo "image=$ImageOS" >> "$GITHUB_OUTPUT"
+      # cargo-llvm-cov comes as a release binary, so no run compiles it. Keep the version as the profile pins it.
+      - name: Install cargo-llvm-cov
+        uses: taiki-e/install-action@v2
+        with:
+          tool: cargo-llvm-cov@0.9.1
+      # cargo-nextest comes as a release binary too, at the version of the starter of the tasker role.
+      - name: Install cargo-nextest
+        if: env.JNPROFILE_RUST_NEXTEST == '1'
+        uses: taiki-e/install-action@v2
+        with:
+          tool: cargo-nextest@0.9.151
       - name: Install pinned rustdoc JSON generator
         run: rustup toolchain install nightly-2026-11-12 --profile minimal
       - name: Install native reference build prerequisites
         run: sudo apt-get update && sudo apt-get install -y --no-install-recommends build-essential zlib1g-dev ca-certificates
+      # The cache keeps the crates that cargo downloads and the whole build folder, target/ with
+      # target/llvm-cov-target, the warm build of coverage. The key is the runner, the compiler, the word check, the
+      # hash of each Cargo.lock and the commit. The release of the image (ImageOS, such as ubuntu24) is in the key
+      # too, so that a run on another Ubuntu release never reuses its builds. ImageOS stays the same through the weekly
+      # updates of the image, so those reuse the cache. The job ci of check.yml runs on the same image and uses the
+      # same word, so it restores this cache too. A restore takes the newest cache with the same Cargo.lock, else the
+      # newest cache of the same compiler. A run reads the caches of its own branch, of the base branch of its pull
+      # request and of the default branch.
+      # Set no CARGO* or RUST* variable from a value that changes on each run, such as github.run_id. The coverage
+      # build keeps a fingerprint of these variables, and a new value makes it clean the whole build.
+      - name: Restore the Rust cache
+        id: rust-cache
+        uses: actions/cache/restore@v4
+        with:
+          path: |
+            ~/.cargo/registry/index
+            ~/.cargo/registry/cache
+            ~/.cargo/git/db
+            target/
+          key: ${{ runner.os }}-${{ steps.rust.outputs.image }}-${{ runner.arch }}-rust-${{ steps.rust.outputs.toolchain }}-check-${{ hashFiles('**/Cargo.lock') }}-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-${{ steps.rust.outputs.image }}-${{ runner.arch }}-rust-${{ steps.rust.outputs.toolchain }}-check-${{ hashFiles('**/Cargo.lock') }}-
+            ${{ runner.os }}-${{ steps.rust.outputs.image }}-${{ runner.arch }}-rust-${{ steps.rust.outputs.toolchain }}-check-
+      # The restored target/llvm-cov-target holds the coverage stamp of the commit of main that saved the cache. With
+      # that stamp, the coverage build of the profile cleans only the packages that differ from HEAD, and in CI none
+      # do. Then only the newer times of the checked-out files would make cargo rebuild the workspace. Without the
+      # stamp, the coverage build cleans the whole workspace once, as for a new commit, and keeps the third-party
+      # builds warm.
+      - name: Drop the coverage stamp of the restored cache
+        run: rm -f target/llvm-cov-target/jnprofile-rust-build.txt
       - name: Set up the project
         run: just setup
       - name: Check
         run: just check
+      # Only a push to main saves the cache, so a pull request or a manual run saves none. The key holds the commit,
+      # so each push to main saves a new cache, and the next run restores the newest. Only a passed check saves.
+      - name: Save the Rust cache
+        if: >-
+          github.event_name == 'push' && github.ref == 'refs/heads/main'
+          && steps.rust-cache.outputs.cache-hit != 'true'
+        uses: actions/cache/save@v4
+        with:
+          path: |
+            ~/.cargo/registry/index
+            ~/.cargo/registry/cache
+            ~/.cargo/git/db
+            target/
+          key: ${{ steps.rust-cache.outputs.cache-primary-key }}
   release:
     if: (github.event_name == 'push' && github.ref == 'refs/heads/main') || github.event_name == 'workflow_dispatch'
     needs: check
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     permissions:
       contents: write
     # The tag that the run made, or that was already released, or the given tag, else empty.
@@ -110,8 +196,17 @@ jobs:
         # The recipes run through the shell jlog that .agents/just/index.just sets, so just release needs jlog too.
         shell: bash
         run: |
-          curl -fsSL https://raw.githubusercontent.com/rahuldave/jlog/v0.3.0/scripts/install.sh | sh -s -- --tag v0.3.0
+          curl -fsSL https://raw.githubusercontent.com/rahuldave/jlog/224a622a27920256e3d6ad6a8363c9ea96078a20/scripts/install.sh | sh -s -- --tag v0.5.0
           echo "$HOME/.local/bin" >> "$GITHUB_PATH"
+      # As in the starter: a recipe of just release that runs cargo runs the toolchain of rust-toolchain.toml.
+      - name: Install the Rust toolchain of rust-toolchain.toml
+        shell: bash
+        run: |
+          if [ -n "${RUSTUP_TOOLCHAIN:-}" ]; then
+            echo "::error::RUSTUP_TOOLCHAIN is set. Remove it, so that the toolchain file names the toolchain."
+            exit 1
+          fi
+          rustup toolchain install
       - name: Name the author of the tag and of the version commit
         if: github.event_name == 'push'
         run: |

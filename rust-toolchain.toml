@@ -1,0 +1,6 @@
+# Written once by the rust profile of jnterfaces. It is yours from then on: just install never changes it.
+# CI and each machine read this file, so they run the same compiler and the same lints. To move to a
+# newer Rust, change the channel.
+[toolchain]
+channel = "1.100.0"
+components = ["clippy", "rustfmt", "llvm-tools-preview"]

@@ -31,8 +31,14 @@ _reference-tools:
 _reference-tools-tests:
     jlog run python3 tests/test_reference_tools.py -v
 
-# Keep native setup security controls in the generic test contract.
-test *args: _reference-tools-tests
+# Check the nextest names, the test isolation and the CI cache and pins, then test that checker.
+[private]
+_ci-config-check:
+    jlog run python3 scripts/check-ci-config.py
+    jlog run python3 -m unittest discover -s scripts -p 'test_ci_config.py' -v
+
+# Keep native setup security controls and the CI config checks in the generic test contract.
+test *args: _reference-tools-tests _ci-config-check
     just --justfile {{quote(justfile())}} rust test "$@"
     jlog step test
 

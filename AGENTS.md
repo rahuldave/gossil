@@ -161,8 +161,64 @@ intra-doc link.
 In a fix round, run `just quick`. It runs `cargo fmt --check`, `cargo clippy`,
 `cargo check` and the unit tests, with plain `cargo test` and no coverage
 build. It stops at the first failure. It skips the libSQL vendor and wrapper
-checks and `just rustdoc-check`, which run in `just typecheck` only. Run the
-full `just check` once, on the final staged tree.
+checks and `just rustdoc-check`, which run in `just typecheck` only.
+
+In a fix round, also run `just integration-changed`. It runs only the test
+targets that the change to the tree may break, with no coverage. It prints each
+target that it runs or skips. Run the full `just check` once, on the final
+staged tree.
+
+Set `JNPROFILE_RUST_NEXTEST=1` in the shell, as the job `check` of the release
+workflow does. The `integration` step then runs through
+`cargo llvm-cov nextest`, which runs several test binaries at once. On
+the owner's Mac on 2026-11-25 the step took 142 s to 153 s. With `cargo test`
+it took 323 s to 394 s, for the same 600 tests and the same coverage. The step
+needs nextest, which `cargo install cargo-nextest --locked` installs.
+
+`.config/nextest.toml` names the tests that run alone, with no other test
+beside them. `scripts/check-ci-config.py`, a step of `just test`, checks the
+file. The file must have exactly one override, of the profile `default`, and
+that override holds only `filter`, `test-group` and
+`threads-required = "num-test-threads"`. Each term of the filter must be a
+plain `test(NAME)` or `binary(NAME)`, with no `=`, regex or glob. The filter
+joins its terms with `|` or `or` only, and it must name each test that must run
+alone.
+
+Each `test(NAME)` must name a function with the attribute `#[test]` or
+`#[tokio::test]`, and each `binary(NAME)` must name a test target as
+`Cargo.toml` names it. A `[[test]]` entry can rename `tests/NAME.rs`, as it
+renames `tests/glob.rs` to `glob_port`, and then the stem of the file does not
+count. With `autotests = false`, no stem counts.
+`scripts/test_ci_config.py` holds the 78 tests of the checker.
+
+`rust-toolchain.toml` pins Rust 1.100.0 with clippy, rustfmt and
+llvm-tools-preview. CI uses the same compiler, so a local `just lint` gives
+the same lints as CI. Do not set `RUSTUP_TOOLCHAIN`, because the variable takes
+the place of the file. The API pages build with `nightly-2026-11-12`, and not with the pinned
+toolchain.
+
+After a release, run `just install-bin`. It builds the release binaries of the
+current commit into `~/.cargo/bin`, and keeps the binary that it replaces as
+`NAME-VERSION`.
+
+`just worktree-new` copies `target/` from the primary checkout into the new
+worktree by copy-on-write, so the first build there reuses the compiled
+dependencies. The copy is never a link, because a shared build folder gives
+false passes. The copy helps only when the primary checkout has a current
+`target/`.
+
+The copy also holds the coverage stamp of the primary checkout. The coverage
+stamp is the file `target/llvm-cov-target/jnprofile-rust-build.txt`, which a
+passed coverage run writes. With a stamp, the coverage build cleans only the
+packages that differ from HEAD. With the stamp of the primary checkout, it can
+then reuse test binaries of the commit of the primary checkout. So after
+`just worktree-new`, delete the stamp in the new worktree:
+
+```bash
+rm -f target/llvm-cov-target/jnprofile-rust-build.txt
+```
+
+The next coverage build then cleans the whole workspace once.
 
 The runner checkpoint is `evidence/runner-checkpoint-2026-11-17.json`.
 It records executed macOS checks, not a final gate pass or Linux qualification.
@@ -206,9 +262,21 @@ only the tag.
 A run of the release workflow by hand, with the input `tag`, runs `just check`
 on the selected branch, checks that the tag exists and gives it as the output
 of the job `release`. It makes no new tag. Gossil has no publish job, so the
-run builds nothing from the tag. The check, release and Pages
-workflows install jlog 0.3.0 from its release script. The release workflow
-also installs gest 0.6.0 and jagt 0.6.4 that way.
+run builds nothing from the tag.
+
+The check, release and Pages workflows install jlog 0.5.0 from its release
+script. They fetch the script at the full commit hash of the jlog tag. The
+release workflow also installs gest 0.6.0 and jagt 0.6.4 that way.
+
+The check and release workflows restore a cache of the cargo registry and of
+`target/`. Only a passed `just check` on a push to `main` saves it. The cache
+key holds the runner image, such as `ubuntu24`, and the compiler. Each job of
+the workflows runs on `ubuntu-24.04`.
+
+After the restore, the release workflow removes the coverage stamp
+`target/llvm-cov-target/jnprofile-rust-build.txt`. In CI the checkout gives
+each file a new time, so cargo rebuilds the workspace in any case. Without the stamp, the coverage build cleans the workspace once,
+as for a new commit, and keeps the builds of the dependencies.
 
 The pre-push hook runs `pre_push.py` of the gate package. It runs `just ci`,
 less each recipe that the pass of `just check` for the pushed tree ran.

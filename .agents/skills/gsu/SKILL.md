@@ -313,7 +313,11 @@ Prefer project-local dependency state and version pins:
   usually external but versioned by the `go` directive. Prefer
   absolute local cache paths such as `GOCACHE="$PWD/.local/go-build"` and
   `GOMODCACHE="$PWD/.local/go-mod"` when setup should avoid ambient caches.
-- Rust: commit `rust-toolchain.toml` when the project wants a pinned toolchain;
+- Rust: commit `rust-toolchain.toml` with the exact version, such as
+  `channel = "1.95.0"`, not `stable`. `just install` of jnterfaces writes it
+  with the version of the machine, so do not copy a version from a template.
+  The CI starters read this file. A project with a `Cargo.toml` and no
+  toolchain file fails in CI, with a message that says to run `just install`.
   Cargo build artifacts stay local under `target/`.
 
 For tools that should be available only inside this repository, prefer an
