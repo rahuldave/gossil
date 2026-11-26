@@ -165,8 +165,9 @@ nor private recording.</p>
 <p>The source library also reads <a href="native-storage.html#read-recorded-checkout-ancestry">complete recorded ancestry</a>
 through <code>recorded_timeline</code>. Its rows preserve full native hashes and exact
 metadata bytes, current first and shared root last. The source
-<a href="cli.html#read-complete-recorded-ancestry">timeline and log commands</a> print those
-rows as compact NDJSON with explicit selectors and an existing matching locator.
+<a href="cli.html#read-recorded-ancestry">timeline and log commands</a> print those
+rows as compact NDJSON with explicit selectors and an existing matching locator,
+20 at a time unless <code>--limit</code> and <code>--offset</code> choose another page.
 This bounded reader does not establish general Fossil timeline compatibility.</p>
 </section>
 <section id="prepared-glob-utility" class="level2">

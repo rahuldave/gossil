@@ -192,10 +192,13 @@ through the shared empty root. It walks every manifest of the chain, and checks
 the user and comment of each event against the U and C cards of its manifest, in
 the same transaction. It reads no working-file contents and
 returns no partial result when a bound fails. See the
-<a href="native-storage.html#read-recorded-checkout-ancestry">recorded ancestry contract</a>.
-The source <a href="cli.html#read-complete-recorded-ancestry">timeline and log commands</a>
-print those rows as compact NDJSON after existing-locator admission and checked
-API completion. Opening, the API and serialization have separate finite bounds.</p>
+<a href="native-storage.html#read-recorded-checkout-ancestry">recorded ancestry contract</a>.</p>
+<p>The library reader <code>recorded_timeline_page</code> returns one page of that ancestry.
+It reads the manifests only up to the end of the page.
+The source <a href="cli.html#read-recorded-ancestry">timeline and log commands</a>
+print one page as compact NDJSON after existing-locator admission and checked
+API completion. The page is 20 entries unless <code>--limit</code> and <code>--offset</code> choose
+another, as in Fossil. Opening, the API and serialization have separate finite bounds.</p>
 </section>
 <section id="glob-lists-and-sql-expressions" class="level2">
 <h2 class="anchored" data-anchor-id="glob-lists-and-sql-expressions">Glob lists and SQL expressions</h2>

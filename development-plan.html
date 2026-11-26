@@ -357,7 +357,7 @@ and do not establish a full pass for the later CLI tree.</p>
 <h2 class="anchored" data-anchor-id="recorded-ancestry-cli-qualification">Recorded ancestry CLI qualification</h2>
 <p>The source <code>src/vcs_timeline.rs</code> adapter exposes complete recorded ancestry
 through both executable names, both group names and <code>timeline</code> or <code>log</code>.
-<a href="cli.html#read-complete-recorded-ancestry">The CLI reference</a> defines explicit
+<a href="cli.html#read-recorded-ancestry">The CLI reference</a> defines explicit
 selectors, existing-locator admission, exact NDJSON and separate opening, API
 and serialization allowances. This checkpoint implements no filters, truncation,
 working-file content reads or locator publication.</p>
@@ -375,6 +375,15 @@ No broader Fossil parity is claimed. <code>cat</code> remains separate issue 18 
 issue 17 remains open. Neither issue is completed by these ancestry commands.
 The later accepted timeline delivery at <code>4250b873</code> completed the <code>v0.8.0</code>
 release. That delivery is separate from the prepared glob source below.</p>
+<p>A later source change makes the commands print one page, 20 entries by default,
+with <code>-n</code>/<code>--limit</code> and <code>--offset</code> as in Fossil. It adds
+<a href="api/storage.html#LocalOwnerRepository.recorded_timeline_page"><code>LocalOwnerRepository::recorded_timeline_page</code></a>, which gives each manifest the
+ceilings of one artifact and sets no ceiling on the whole chain. Before it, one
+parser ledger covered the whole chain, and the commands refused a history of
+about 455 one-file check-ins. <code>just timeline-capacity</code> makes 5,000 one-file
+check-ins in a release build, and times <code>timeline</code>, <code>log</code>, <code>status</code>, <code>commit</code>
+and <code>verify</code> at 1,000 and at 5,000 check-ins. The checkpoint results above do not qualify this
+change.</p>
 </section>
 <section id="glob-source-checkpoint-and-pending-qualification" class="level2">
 <h2 class="anchored" data-anchor-id="glob-source-checkpoint-and-pending-qualification">Glob source checkpoint and pending qualification</h2>
@@ -398,7 +407,7 @@ argument conversion has source review only, with no cross-compilation or runtime
 qualification.</p>
 <p>At the checkpoint, <code>Cargo.toml</code> set the version of the Gossil crate to 0.9.0,
 which was later released as <code>v0.9.0</code>. The current version of the crate is
-0.17.0, and version 0.16.0 was released as <code>v0.16.0</code>. The <code>libsql-ffi</code>
+0.18.0, and version 0.17.0 was released as <code>v0.17.0</code>. The <code>libsql-ffi</code>
 provider is at 0.10.0, and its version is separate
 from the version of the crate.</p>
 <p>The focused tree

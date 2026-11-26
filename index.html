@@ -24,8 +24,9 @@ hashes and token escaping.</p>
 <p>Use <a href="cli.html#inspect-current-recorded-checkout-identity"><code>vcs info</code></a> to show the
 current recorded checkout and its shared and private heads. Explicit repository
 and checkout selections and a complete locator are required. The source
-<a href="cli.html#read-complete-recorded-ancestry"><code>vcs timeline</code> and <code>vcs log</code> commands</a>
-print complete recorded ancestry as compact NDJSON. Historical revision selection
+<a href="cli.html#read-recorded-ancestry"><code>vcs timeline</code> and <code>vcs log</code> commands</a>
+print recorded ancestry as compact NDJSON, one page at a time, with Fossil’s
+<code>--limit</code> and <code>--offset</code>. Historical revision selection
 remains unsupported. The library can read
 <a href="native-storage.html#read-recorded-checkout-ancestry">complete recorded ancestry</a>
 through <code>recorded_timeline</code>, with native metadata bytes and the shared root last.</p>
