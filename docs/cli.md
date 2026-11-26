@@ -853,9 +853,15 @@ the command name also returns status 2, with two lines on stderr.
 
 A repository whose catalog marker names an older Gossil catalog, 2, 4 or 5,
 returns status 78 before any effect. The three lines on stderr name the
-repository, the catalog found and catalog6, and say to create a new repository.
+repository, the catalog found and catalog6, and say to create a new repository
+with `gos v init`. The CAT-07 message of the specification also names `gos i init`.
+In this build `gos i init` makes no repository, so the message leaves it out.
 The catalog marker is the `storage_version` value of the `g_storage` table, and
 not the `.gossil` checkout marker.
+
+Open, `verify` and every command that reads a repository check the catalog marker
+before they set any SQLite pragma that writes to the file. So a plain SQLite file, a
+stock Fossil repository or a file at an older catalog keeps every byte, and its header too.
 
 A stock `fossil rebuild` drops every table that Fossil does not know, so it
 drops each `g_` table. A repository that holds Fossil tables but no Gossil

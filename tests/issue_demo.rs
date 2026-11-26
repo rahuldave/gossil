@@ -498,7 +498,8 @@ fn the_issue_demo_runs_end_to_end() {
 /// # Arguments
 /// * `fossil` - The reference executable.
 /// * `home` - The fixture home, set as `HOME` and `FOSSIL_HOME`, so that Fossil reads no
-///   user configuration.
+///   user configuration and writes its list of repositories there. `USER` is `tester`,
+///   the admin user of the demo, which `fossil push` needs.
 /// * `args` - The arguments.
 /// # Returns
 /// Standard output.
@@ -509,6 +510,7 @@ fn fossil(fossil: &OsStr, home: &Path, args: &[&OsStr]) -> String {
         .args(args)
         .env("HOME", home)
         .env("FOSSIL_HOME", home)
+        .env("USER", "tester")
         .output()
         .unwrap();
     assert!(
@@ -701,4 +703,51 @@ fn stock_fossil_reads_the_demo_repository() {
     assert_eq!(std::fs::read(&copy).unwrap(), copied);
     // The demo repository itself still works.
     assert_eq!(ok(home, &["i", "task", "list", "--all"]).lines().count(), 3);
+
+    // A stock clone and push send nothing private. The push empties `unsent`, and the
+    // original still passes verify, a commit and a task create.
+    let remote = home.join("remote.fossil");
+    fossil(
+        &reference,
+        home,
+        &[
+            OsStr::new("clone"),
+            OsStr::new("--no-open"),
+            repo.as_os_str(),
+            remote.as_os_str(),
+        ],
+    );
+    let pushed = run(&["push", remote.to_str().unwrap()], &repo);
+    assert!(pushed.contains("Artifacts sent: 0"), "{pushed}");
+    assert_eq!(run(&["sql", "SELECT count(*) FROM unsent"], &repo), "0\n");
+    assert_eq!(run(&["sql", "SELECT count(*) FROM ticket"], &remote), "0\n");
+    for hash in &demo.checkins {
+        let found = format!("SELECT count(*) FROM blob WHERE uuid='{hash}'");
+        assert_eq!(run(&["sql", &found], &remote), "0\n", "{hash}");
+    }
+    let verify = |home: &Path| {
+        ok(
+            home,
+            &["v", "verify", "--repository", repo.to_str().unwrap()],
+        )
+    };
+    assert_eq!(
+        verify(home),
+        "verified: 2 check-ins, 4 issues, 15 tables compared\n"
+    );
+    record(
+        home,
+        "LATER.txt",
+        "Add a file after the push",
+        "2099-01-01T00:00:03",
+        &["NOTES.txt", "README.txt"],
+    );
+    short_id(
+        &ok(home, &["i", "task", "create", "After the push"]),
+        "After the push",
+    );
+    assert_eq!(
+        verify(home),
+        "verified: 3 check-ins, 5 issues, 15 tables compared\n"
+    );
 }

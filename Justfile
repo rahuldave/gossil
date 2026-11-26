@@ -69,7 +69,7 @@ gest-ticket-interop:
     fi
     GOSSIL_FOSSIL_REFERENCE="$fossil" just test --test gest_ticket stock_fossil_reads_emitted_gest_tickets -- --ignored --exact
 
-# Check a new repository, and one with check-ins and an issue, with the pinned Fossil reference: test-integrity, rebuild of a copy, timeline and ticket show; exit 5 means not-run.
+# Check a new repository, and one with check-ins and an issue, with the pinned Fossil reference: test-integrity, rebuild of a copy, timeline and ticket show, and a stock Fossil repository that verify and open refuse without changing a byte; exit 5 means not-run.
 catalog-interop:
     #!/usr/bin/env bash
     set -euo pipefail
@@ -93,7 +93,7 @@ issue-ticket-interop:
     GOSSIL_FOSSIL_REFERENCE="$fossil" just test --test issue_ticket stock_fossil_reads -- --ignored
     GOSSIL_FOSSIL_REFERENCE="$fossil" just test --test issue_init_cli stock_fossil_reads -- --ignored
 
-# Run the demo of docs/issues.md, then read its repository with the pinned Fossil reference: test-integrity, timeline, ticket show, and a refused rebuilt copy; exit 5 means not-run.
+# Run the demo of docs/issues.md, then read its repository with the pinned Fossil reference: test-integrity, timeline, ticket show, a refused rebuilt copy, and a push to a clone after which verify, commit and task create still pass; exit 5 means not-run.
 issue-demo:
     #!/usr/bin/env bash
     set -euo pipefail

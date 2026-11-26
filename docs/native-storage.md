@@ -51,7 +51,10 @@ No upgrade occurs on open. Open refuses a repository before any effect when its
 catalog marker, the `storage_version` value of `g_storage`, names catalog2,
 catalog4 or catalog5. The message names the catalog found and catalog6, and the CLI exits 78.
 Gossil has no upgrade path before its first real release, so the fix is a new
-repository. Open refuses an unknown marker, such as 3 or 7, and a missing marker
+repository. Open reads the marker before it switches the file to WAL, the write-ahead log
+mode of SQLite. So a refused file keeps every byte.
+
+Open refuses an unknown marker, such as 3 or 7, and a missing marker
 with exit 1.
 Generic private content writes through this handle refuse catalog6.
 
@@ -386,6 +389,19 @@ with this message:
 this repository has lost its Gossil tables (was `fossil rebuild` run on it?); restore it from a backup
 ```
 
+A stock `fossil push` or `fossil sync` sends no private artifact and empties
+`unsent`. A push, sync or pull adds the config rows `last-sync-url` and
+`hash-policy`. The push is safe. `verify` admits an `unsent` table that holds any subset of the rows that
+replay gives, and every command still works after the push. But `verify` still
+refuses an `unsent` row that replay does not give.
+
+A push leaves `unclustered` unchanged, and so does a sync or pull that receives
+nothing. So `verify` still requires that `unclustered` hold exactly the rows that
+replay gives. A pull or sync that receives a public artifact adds rows to `blob`,
+`unclustered` and other tables, and `verify` refuses the repository. By default, a
+commit in a checkout of a clone has the same effect, because autosync pushes the
+commit back into the Gossil file. Gossil does not support receiving artifacts yet.
+
 A command keeps no snapshot of the repository between transactions. So an owner
 sees each commit that another process makes after the open, and needs no
 second open. The CLI retries a command once only after `database is locked`.
@@ -506,6 +522,8 @@ their Gest columns.
 It runs `fossil test-integrity`, then `fossil rebuild` on a copy, and compares the
 ticket columns. It then checks a repository with private check-ins and an issue
 between them, with `fossil test-integrity`, `fossil timeline` and `fossil ticket show`.
+Last, it makes a stock Fossil repository and checks that `verify` and `open` refuse
+it with exit 78 and change no byte of it.
 When the reference is absent, it exits 5, the status for not-run.
 
 The [issue ticket writer](issue-ticket.md) stores one private task or project

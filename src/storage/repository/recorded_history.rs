@@ -1424,7 +1424,9 @@ impl WriteTransaction<'_> {
 
     /// Compare every shared native table with replay of the check-ins and the issues.
     ///
-    /// Each table must hold exactly the replay rows, in native order. Every receive
+    /// Each table must hold exactly the replay rows, in native order, except `unsent`.
+    /// That table may hold any subset of its replay rows, because a stock `fossil push`
+    /// or `fossil sync` that sends nothing deletes them. Every receive
     /// record after the shared root's must belong to one check-in or one issue.
     /// # Arguments
     /// * `tables` - The replay rows of the check-ins.
@@ -1479,7 +1481,7 @@ impl WriteTransaction<'_> {
                 ]
             })
             .collect();
-        let unsent = tables
+        let unsent: Vec<Vec<Value>> = tables
             .unsent
             .iter()
             .map(|rid| vec![Value::Integer(*rid)])
@@ -1544,13 +1546,6 @@ impl WriteTransaction<'_> {
                 64,
             ),
             (
-                "SELECT rid FROM unsent ORDER BY rid",
-                vec![],
-                unsent,
-                many,
-                64,
-            ),
-            (
                 "SELECT rid FROM private ORDER BY rid",
                 vec![],
                 private,
@@ -1568,6 +1563,24 @@ impl WriteTransaction<'_> {
             self.recording_expect(sql, args, expected, count, row_bytes, work)
                 .await?;
         }
+        // A stock `fossil push` or `fossil sync` that sends nothing deletes the rows of
+        // `unsent`, so the table may hold any subset of the replay rows.
+        let held = bounded_rows(
+            self,
+            "SELECT rid FROM unsent ORDER BY rid",
+            vec![],
+            many.max(1),
+            64,
+            work,
+        )
+        .await?;
+        for row in &unsent {
+            charge_values(row, work)?;
+        }
+        if !unsent_subset(&held, &tables.unsent) {
+            return Err(StorageError::state("recording native projection differs"));
+        }
+        work.count_comparison();
         let receipts=bounded_rows(self,"SELECT rcvid,uid,typeof(mtime),nonce,ipaddr,datetime(mtime) IS NOT NULL FROM rcvfrom ORDER BY rcvid",vec![],n.saturating_add(extra).saturating_add(1),128,work).await?;
         validate_receipts(&receipts, tables.shared_receipt, &tables.owners)
     }
@@ -1904,11 +1917,47 @@ impl WriteTransaction<'_> {
     }
 }
 
+/// Say whether the `unsent` rows that a repository holds are a subset of the replay rows.
+///
+/// A stock `fossil push` or `fossil sync` that sends nothing deletes the `unsent` rows
+/// that it considered. So the table may hold fewer rows than replay gives, but never
+/// a row that replay does not give. Each lookup is in a [`BTreeSet`], so the check is
+/// linear in the held rows.
+/// # Arguments
+/// * `held` - The rows of `unsent`, each one RID.
+/// * `expected` - The replay RIDs.
+/// # Returns
+/// True when each held row is one integer RID that replay gives.
+fn unsent_subset(held: &[Vec<Value>], expected: &BTreeSet<i64>) -> bool {
+    held.iter().all(|row| match row.as_slice() {
+        [Value::Integer(rid)] => expected.contains(rid),
+        _ => false,
+    })
+}
+
 #[cfg(test)]
 /// Check exact provider scalars and the historical fingerprint algorithm.
 mod controls {
     use super::*;
     use crate::storage::{InitializeOptions, Limits, LocalOwnerRepository};
+
+    /// The `unsent` check admits each subset of the replay RIDs, the empty table
+    /// included, and refuses a RID that replay does not give and a row that is not
+    /// one integer.
+    #[test]
+    fn unsent_subset_admits_only_replay_rids() {
+        let expected: BTreeSet<i64> = [2, 3, 5].into();
+        let rows = |rids: &[i64]| -> Vec<Vec<Value>> {
+            rids.iter().map(|rid| vec![Value::Integer(*rid)]).collect()
+        };
+        for held in [&[][..], &[3], &[2, 5], &[2, 3, 5]] {
+            assert!(unsent_subset(&rows(held), &expected), "{held:?}");
+        }
+        assert!(!unsent_subset(&rows(&[2, 4]), &expected));
+        assert!(!unsent_subset(&rows(&[1]), &BTreeSet::new()));
+        assert!(!unsent_subset(&[vec![Value::Text("2".into())]], &expected));
+        assert!(!unsent_subset(&[vec![]], &expected));
+    }
 
     /// Supply finite native and parser bounds for decoder and real-provider controls.
     /// # Arguments

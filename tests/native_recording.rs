@@ -772,7 +772,7 @@ async fn every_native_projection_and_bookkeeping_surface_rejects_corruption(part
             "UPDATE tagxref SET srcid=0 WHERE rid<>1",
             "DELETE FROM leaf WHERE rid<>1",
             "INSERT INTO unclustered SELECT rid FROM private LIMIT 1",
-            "DELETE FROM unsent",
+            "INSERT INTO unsent VALUES(1)",
             "DELETE FROM private",
             "UPDATE blob SET rcvid=1 WHERE rid<>1",
             "UPDATE rcvfrom SET uid=1 WHERE rcvid>1",
@@ -804,6 +804,55 @@ async fn every_native_projection_and_bookkeeping_surface_rejects_corruption(part
             assert!(opened, "{sql}");
         }
         assert_eq!(snapshot(&repo).await, corrupt, "repaired {sql}");
+    }
+}
+
+#[tokio::test]
+/// Stock `fossil push` and `fossil sync` delete the `unsent` rows that they sent or
+/// considered. The full proof admits an `unsent` table that holds any subset of its
+/// replay rows. A later commit, and the full proof after it, still pass.
+async fn the_full_proof_admits_unsent_rows_that_a_push_removed() {
+    for sql in [
+        "DELETE FROM unsent",
+        "DELETE FROM unsent WHERE rid=(SELECT min(rid) FROM unsent)",
+    ] {
+        let mut f = Fixture::new().await;
+        f.private(&["a", "b"]).await;
+        f.changed(&["a", "b"], b"2026-11-20T00:00:01").await;
+        let Fixture {
+            _temp,
+            owner,
+            repo,
+            root,
+            ..
+        } = f;
+        drop(owner);
+        mutate(&repo, sql).await;
+        let before = snapshot(&repo).await;
+        let mut owner = LocalOwnerRepository::open(&repo, limits()).await.unwrap();
+        owner.verify(limits()).await.unwrap();
+        drop(owner);
+        assert_eq!(snapshot(&repo).await, before, "{sql}");
+        std::fs::write(root.join("a"), b"a2").unwrap();
+        let mut owner = LocalOwnerRepository::open(&repo, limits()).await.unwrap();
+        let view = owner.checkout_view("work", limits()).await.unwrap();
+        owner
+            .commit_private_tracked_files(
+                "work",
+                PrivateRecordingRequest {
+                    expected: &view,
+                    paths: &["a", "b"],
+                    scope: PathScope::Private,
+                    actor: b"Owner",
+                    comment: b"after push",
+                    date: b"2026-11-20T00:00:02",
+                },
+                limits(),
+                tracking(),
+            )
+            .await
+            .unwrap();
+        owner.verify(limits()).await.unwrap();
     }
 }
 

@@ -259,8 +259,9 @@ two commands. The [issue read guide](issue-read.md) gives their output.
 
 `tests/issue_demo.rs` runs the walk-through of the [issue guide](issues.md) on the
 real `gos` binary. Its ignored test reads the demo repository with stock Fossil
-and checks that Gossil refuses a copy after `fossil rebuild`. `just issue-demo`
-runs that part with the pinned Fossil 2.29.
+and checks that Gossil refuses a copy after `fossil rebuild`. It then makes a clone with
+stock Fossil, pushes the demo repository to it, and checks that `verify`, a commit and
+`task create` still pass. `just issue-demo` runs that part with the pinned Fossil 2.29.
 
 The module `vcs_verify` runs [`vcs verify`](cli.md#verify-a-repository). It runs the full proof of a
 repository, or the proof of one issue, and changes nothing. The proofs are

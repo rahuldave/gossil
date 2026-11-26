@@ -496,11 +496,15 @@ impl LocalOwnerRepository {
         }
         let identity = super::FileIdentity::from_metadata(path, true, &metadata)?;
         drop(file);
+        identity.observe()?;
+        precheck_catalog(path)
+            .await
+            .map_err(|error| error.naming_repository(path))?;
         let mut store = LocalStore::open_observed(path, true, Some(identity.clone())).await?;
         let mut tx = store.begin_write().await?;
         let result = async {
             // A stock `fossil rebuild` keeps the Fossil tables and drops every `g_` table.
-            if tx.query_bound("SELECT (SELECT count(*) FROM sqlite_schema WHERE type='table' AND name='g_storage'),(SELECT count(*) FROM sqlite_schema WHERE type='table' AND name='blob')", vec![]).await? == vec![vec![Value::Integer(0), Value::Integer(1)]] {
+            if tx.query_bound(LOST_TABLES, vec![]).await? == vec![vec![Value::Integer(0), Value::Integer(1)]] {
                 return Err(StorageError::lost_tables());
             }
             if tx.supported_catalog_version().await? == NEWEST_CATALOG {
@@ -635,6 +639,46 @@ impl LocalOwnerRepository {
     }
 }
 
+/// Counts the `g_storage` and `blob` tables. A stock `fossil rebuild` keeps `blob` and
+/// drops every `g_` table, so the counts 0 and 1 mean lost Gossil tables.
+const LOST_TABLES: &str = "SELECT (SELECT count(*) FROM sqlite_schema WHERE type='table' AND name='g_storage'),(SELECT count(*) FROM sqlite_schema WHERE type='table' AND name='blob')";
+
+/// Reads the catalog marker as three fixed-size scalars, for [`supported_catalog_from_rows`].
+const CATALOG_MARKER: &str = "SELECT count(*),coalesce(sum(CASE WHEN typeof(singleton)='integer' AND singleton=1 AND typeof(storage_version)='integer' THEN 1 ELSE 0 END),0),max(CASE WHEN typeof(singleton)='integer' AND singleton=1 AND typeof(storage_version)='integer' THEN storage_version ELSE NULL END) FROM g_storage";
+
+/// Refuse a file that is not a supported Gossil repository before any write to it.
+///
+/// Open later switches the file to WAL, which writes bytes 18 and 19 of its header.
+/// So this check reads the file first, through a connection that sets no pragma. A
+/// read-only connection would leave `-wal` and `-shm` files beside a WAL repository.
+/// Instead, the connection opens for reading and writing, but its two queries write nothing.
+/// It gives the same refusals as the checks inside the open transaction, for these files:
+/// * a file that has lost its Gossil tables
+/// * a file without `g_storage`, such as a plain SQLite file or a stock Fossil repository
+/// * a file with an older or unknown catalog marker
+///
+/// # Arguments
+/// * `path` - The existing repository file.
+/// # Returns
+/// Nothing, when the marker names catalog 1 or the newest catalog.
+/// # Errors
+/// Refuses lost tables with [`StorageError::lost_tables`], and an older catalog with
+/// [`StorageError::older_catalog`]. It refuses each other marker, a missing table and
+/// an engine failure as the open transaction does.
+async fn precheck_catalog(path: &Path) -> Result<(), StorageError> {
+    let database =
+        super::open_native_database(path, libsql::OpenFlags::SQLITE_OPEN_READ_WRITE).await?;
+    let connection = database.connect()?;
+    connection.busy_timeout(std::time::Duration::from_millis(5000))?;
+    if super::materialize(&connection, LOST_TABLES).await?
+        == vec![vec![Value::Integer(0), Value::Integer(1)]]
+    {
+        return Err(StorageError::lost_tables());
+    }
+    supported_catalog_from_rows(&super::materialize(&connection, CATALOG_MARKER).await?)?;
+    Ok(())
+}
+
 /// Lists the older Gossil catalogs that a marker may name.
 ///
 /// Each is refused before any effect (CAT-07). Catalog 3 was never defined, so its
@@ -676,10 +720,11 @@ impl super::WriteTransaction<'_> {
     /// Refuses missing/extra markers and every unsupported type/value before any
     /// raw marker or principal bytes can be owned by the provider.
     async fn supported_catalog_version(&mut self) -> Result<i64, StorageError> {
-        let result=async {
-            let rows=self.query_bound("SELECT count(*),coalesce(sum(CASE WHEN typeof(singleton)='integer' AND singleton=1 AND typeof(storage_version)='integer' THEN 1 ELSE 0 END),0),max(CASE WHEN typeof(singleton)='integer' AND singleton=1 AND typeof(storage_version)='integer' THEN storage_version ELSE NULL END) FROM g_storage",vec![]).await?;
+        let result = async {
+            let rows = self.query_bound(CATALOG_MARKER, vec![]).await?;
             supported_catalog_from_rows(&rows)
-        }.await;
+        }
+        .await;
         self.record(result)
     }
 
@@ -3486,7 +3531,7 @@ mod tests {
                 format!(
                     "gossil: repository /r/old.gossil is at catalog {version}, and this build needs catalog 6.\n\
                      Gossil has no upgrade path before its first real release.\n\
-                     Create a new repository with gos v init or gos i init."
+                     Create a new repository with gos v init."
                 )
             );
         }

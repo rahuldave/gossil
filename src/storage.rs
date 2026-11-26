@@ -153,7 +153,7 @@ impl StorageError {
             self.operation = format!(
                 "gossil: repository {} is at catalog {}, and this build needs catalog {}.\n\
                  Gossil has no upgrade path before its first real release.\n\
-                 Create a new repository with gos v init or gos i init.",
+                 Create a new repository with gos v init.",
                 repository.display(),
                 older.found,
                 schema::NEWEST_CATALOG

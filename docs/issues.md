@@ -286,6 +286,15 @@ e3faa7a638bcd39e3b0cb02489be6026b357236b	"done"	1	"Fix the parser"
 
 Each value is the JSON value that Gest stores, so a text value is in quotes.
 
+A stock `fossil push` to a clone sends no private check-in and no task, because
+both are private. The push also empties the list of artifacts to send. Every `gos`
+command and `gos v verify` still pass after that push, and after a `fossil sync`
+or `fossil pull` that receives nothing. A pull or sync that receives a public artifact
+from the clone is not supported, and `gos v verify` then refuses the repository.
+By default, a commit in a checkout of the clone has the same effect, because Fossil
+autosync pushes the commit back into the Gossil file. Turn off `autosync` in the
+clone, or point the clone at another remote, before you commit there.
+
 ## Rebuild a copy with stock Fossil
 
 Run `fossil rebuild` on a copy only, and never on the repository that you use.

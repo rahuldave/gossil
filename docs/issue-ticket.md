@@ -104,9 +104,11 @@ not use it. It finds one task with `find_task` and proves it with `verify_issue`
 
 The full proof of `gos v verify` finds each issue from its `tkt-` tag, parses its artifact again and derives every row from it.
 The `ticket`, `ticketchng`, `g_gest_tasks` and `g_gest_projects` tables must hold exactly the derived rows.
-The `event`, `tagxref`, `tag`, `blob`, `private`, `leaf`, `unclustered`, `unsent` and `rcvfrom` tables
-must hold exactly the rows of the check-ins and of the issues, with nothing else. If any of these tables
-holds another row, for example a changed or extra row, the full proof refuses the repository.
+The `event`, `tagxref`, `tag`, `blob`, `private`, `leaf`, `unclustered` and `rcvfrom` tables
+must hold exactly the rows of the check-ins and of the issues, with nothing else. The `unsent` table may
+hold any subset of the rows that replay gives, because a stock `fossil push` or `fossil sync` that sends
+nothing deletes rows from it. If any of these tables holds another row, for example a changed or extra
+row, the full proof refuses the repository.
 
 Issues and private check-ins can come in any order in one repository. Each check-in and each issue owns
 one receipt, and the receipts after the root's have no gaps. Tags above the 12 built-in tags take their

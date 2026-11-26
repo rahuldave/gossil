@@ -379,7 +379,7 @@ fn refuse_every_family(binary: &str, marker: &str, code: i32, message: &str, exa
 /// The three lines of CAT-07, with REPO in place of the repository path.
 const OLDER: &str = "gossil: repository REPO is at catalog CATALOG, and this build needs catalog 6.\n\
 Gossil has no upgrade path before its first real release.\n\
-Create a new repository with gos v init or gos i init.\n";
+Create a new repository with gos v init.\n";
 
 #[test]
 /// CAT-T03: catalogs 4 and 5 are refused by every command family before any effect,
@@ -422,6 +422,121 @@ fn unknown_higher_and_absent_markers_are_refused_with_every_byte_kept() {
             "unsupported storage version",
             false,
         );
+    }
+}
+
+/// Run `verify` and `open` on a file that is not at catalog 6 and not in WAL mode, and
+/// require that each keeps every byte of it.
+///
+/// Open switches a file to WAL, which writes bytes 18 and 19 of its header, so the
+/// catalog check must refuse the file before that.
+/// # Arguments
+/// * `home` - The fixture home.
+/// * `repo` - The file, in rollback-journal mode.
+/// * `codes` - The exit statuses of `verify` and `open`.
+/// * `message` - The standard error of `verify` and `open`, with REPO for the path.
+/// # Panics
+/// Panics when the file starts in WAL mode, or a command changes a byte or exits
+/// with another status.
+fn foreign_file_keeps_every_byte(home: &Path, repo: &Path, codes: [i32; 2], message: &str) {
+    let repo = &std::fs::canonicalize(repo).unwrap();
+    let before = bytes(repo);
+    assert_eq!(before[0].1.as_ref().unwrap()[18..20], [1, 1], "not WAL");
+    let root = home.join("foreign-root");
+    std::fs::create_dir_all(&root).unwrap();
+    let expected = message.replace(
+        "REPO",
+        std::fs::canonicalize(repo).unwrap().to_str().unwrap(),
+    );
+    let run = |args: &[&std::ffi::OsStr]| {
+        command(env!("CARGO_BIN_EXE_gos"), home)
+            .current_dir(&root)
+            .args(args)
+            .output()
+            .unwrap()
+    };
+    let repo_arg = repo.as_os_str();
+    for (code, args) in codes.into_iter().zip([
+        vec![
+            "v".as_ref(),
+            "verify".as_ref(),
+            "--repository".as_ref(),
+            repo_arg,
+        ],
+        vec![
+            "v".as_ref(),
+            "open".as_ref(),
+            "--repository".as_ref(),
+            repo_arg,
+            "--checkout".as_ref(),
+            "work".as_ref(),
+            "--root".as_ref(),
+            root.as_os_str(),
+        ],
+    ]) {
+        let output = run(&args);
+        assert_eq!(output.status.code(), Some(code), "{args:?}");
+        assert_eq!(
+            String::from_utf8_lossy(&output.stderr),
+            expected,
+            "{args:?}"
+        );
+        assert_eq!(bytes(repo), before, "{args:?}");
+    }
+    assert!(!root.join(".gossil").exists());
+}
+
+/// The refusal of a repository that has lost its Gossil tables, as `gos` prints it.
+const LOST: &str = "this repository has lost its Gossil tables (was `fossil rebuild` run on it?); restore it from a backup\n";
+
+#[test]
+/// A plain SQLite file, a file with the Fossil `blob` table and no Gossil tables, and
+/// a catalog 4 repository in rollback-journal mode each keep every byte through
+/// `verify` and `open`. The catalog 4 repository has a registered checkout and a Gest
+/// project, so `status` and `i task list` in that checkout open it, refuse it with
+/// status 78 and keep every byte too.
+fn files_that_are_not_at_catalog_6_keep_every_byte() {
+    let temp = tempfile::tempdir().unwrap();
+    let plain = temp.path().join("plain.db");
+    write(&plain, "CREATE TABLE t(x)");
+    foreign_file_keeps_every_byte(
+        temp.path(),
+        &plain,
+        [74, 1],
+        "SQLite failure: `no such table: g_storage`\n",
+    );
+    let fossil = temp.path().join("fossil-like.fossil");
+    write(&fossil, "CREATE TABLE blob(rid INTEGER PRIMARY KEY)");
+    foreign_file_keeps_every_byte(temp.path(), &fossil, [78, 78], LOST);
+    let (temp, root, _, repo) = registered_with(env!("CARGO_BIN_EXE_gos"), "SELECT 1");
+    succeed({
+        let mut init = command(env!("CARGO_BIN_EXE_gos"), temp.path());
+        init.current_dir(&root).args(["i", "init"]);
+        init
+    });
+    write(
+        &repo,
+        "PRAGMA journal_mode=DELETE; PRAGMA ignore_check_constraints=ON; UPDATE g_storage SET storage_version=4",
+    );
+    let older = OLDER.replace("CATALOG", "4");
+    foreign_file_keeps_every_byte(temp.path(), &repo, [78, 78], &older);
+    let repo = std::fs::canonicalize(&repo).unwrap();
+    let before = bytes(&repo);
+    let expected = older.replace("REPO", repo.to_str().unwrap());
+    for args in [&["v", "status", "--repository"][..], &["i", "task", "list"]] {
+        let mut run = command(env!("CARGO_BIN_EXE_gos"), temp.path());
+        run.current_dir(&root).args(args);
+        if args[0] == "v" {
+            run.arg(&repo).args(["--checkout", "work"]);
+        }
+        let output = run.output().unwrap();
+        assert_eq!(output.status.code(), Some(78), "{args:?}");
+        assert_eq!(
+            String::from_utf8_lossy(&output.stderr),
+            expected,
+            "{args:?}"
+        );
+        assert_eq!(bytes(&repo), before, "{args:?}");
     }
 }
 
@@ -475,6 +590,10 @@ fn stock_fossil_checks_a_new_catalog6_repository() {
     assert_eq!(columns(&copy, "ticket"), ticket);
     assert_eq!(columns(&copy, "ticketchng"), change);
     assert!(ticket.contains(&"gest_id".to_owned()));
+    // A stock Fossil repository keeps every byte through the commands of Gossil.
+    let stock = temp.path().join("stock.fossil");
+    fossil_run(&fossil, &[OsStr::new("new"), stock.as_os_str()]);
+    foreign_file_keeps_every_byte(temp.path(), &stock, [78, 78], LOST);
 }
 
 /// Each entry names an audit table and gives the SQL that inserts one row in it, with the parent rows that its foreign keys need.

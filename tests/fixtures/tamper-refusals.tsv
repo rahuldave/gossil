@@ -7,7 +7,6 @@ DELETE FROM leaf WHERE rid<>1	recording native projection differs
 DELETE FROM mlink	recording native projection differs
 DELETE FROM private	recording native projection differs
 DELETE FROM tagxref WHERE tagid=8	root branch crosslinks differ from canonical bytes
-DELETE FROM unsent	recording native projection differs
 DROP INDEX delta_i1	missing required repository catalog object
 INSERT INTO event(type,mtime,objid) VALUES('ci',2461363.5,2)	recording native projection differs
 INSERT INTO filename(name) VALUES('real-file')	unsupported nonempty catalog6 table: filename
@@ -29,6 +28,7 @@ INSERT INTO tag(tagname) VALUES('extra')	recording native projection differs
 INSERT INTO tagxref(tagid,tagtype,srcid,origid,mtime,rid) VALUES(1,1,2,2,2461363.5,2)	recording native projection differs
 INSERT INTO unclustered SELECT rid FROM private LIMIT 1	recording SQL count limit
 INSERT INTO unclustered VALUES(2)	recording SQL count limit
+INSERT INTO unsent VALUES(1)	recording native projection differs
 PRAGMA ignore_check_constraints=ON; UPDATE g_storage SET storage_version=4	gossil: repository REPO is at catalog 4, and this build needs catalog 6.
 PRAGMA ignore_check_constraints=ON; UPDATE g_storage SET storage_version=5	gossil: repository REPO is at catalog 5, and this build needs catalog 6.
 PRAGMA ignore_check_constraints=ON; UPDATE g_storage SET storage_version=7	unsupported storage version

@@ -43,7 +43,8 @@ Read and follow @.agents/instructions/prose.md
 - Issue demo: `tests/issue_demo.rs` runs the walk-through of the user guide
   `docs/issues.md` on the real binaries. `just issue-demo` runs its ignored part,
   which reads the demo repository with stock Fossil and checks that Gossil refuses
-  a copy after `fossil rebuild`.
+  a copy after `fossil rebuild`. It then pushes the demo repository to a stock
+  clone, and checks that `verify`, a commit and `task create` still pass.
 - Git reader guard: `clippy.toml` bans the gix write paths, and `just lint`
   forbids them with `-F clippy::disallowed_methods -F clippy::disallowed_types`.
   `tests/git_write_lint.rs` proves each ban. Add a probe line for each new entry.
