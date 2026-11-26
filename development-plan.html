@@ -99,8 +99,13 @@ checkpoint remain separate work.</p>
 </section>
 <section id="contributor-setup" class="level2">
 <h2 class="anchored" data-anchor-id="contributor-setup">Contributor setup</h2>
-<p>Install Rust with Cargo, Git, Just, uv and the <code>jlog</code> command recorder.
-The repository has installed workflow copies under <code>.agents/</code>.
+<p>Install Rust with Cargo through rustup, and install Git, Just, uv and the
+<code>jlog</code> command recorder. <code>rust-toolchain.toml</code> pins Rust 1.95.0 with
+clippy, rustfmt and llvm-tools-preview. CI uses the same compiler, so a local
+<code>just lint</code> gives the same lints as CI. Run <code>rustup toolchain install</code> in the
+checkout to install that toolchain. Do not set <code>RUSTUP_TOOLCHAIN</code>, because the
+variable takes the place of the file.</p>
+<p>The repository has installed workflow copies under <code>.agents/</code>.
 Their owning packages are <code>jnterfaces</code>, <code>jnprofile-rust</code>,
 <code>agent_gest_git_skills</code> and <code>nossaifd</code> under <code>~/Projects</code>.
 Use <code>SKILL_PACKAGES_DIR</code> to select another package location.</p>
@@ -131,10 +136,76 @@ just docs-build</code></pre></div><button title="Copy to Clipboard" class="code-
 rustdoc with private items and fails on each warning. So <code>just typecheck</code>, and
 <code>just check</code> with it, fails on a broken intra-doc link. A broken intra-doc link is
 a link in a doc comment that rustdoc cannot resolve to an item.</p>
-<p><code>just test</code> first runs nine focused Python installer controls, then runs the Rust
-unit tests through the installed coverage workflow. <code>just integration</code> uses that
-Rust coverage workflow. Its reports do not measure Python installer coverage.
-Keep failed, blocked, skipped and disabled-feature observations distinct from
+<p><code>just test</code> first runs nine focused Python installer controls. Next it runs
+<code>scripts/check-ci-config.py</code> and the 78 tests of that checker in
+<code>scripts/test_ci_config.py</code>. Then it runs the Rust unit tests through the
+installed coverage workflow. <code>just integration</code> uses that Rust coverage
+workflow. Its reports do not measure Python installer coverage.</p>
+<p>The checker reads <code>.config/nextest.toml</code> and the workflows, and does not run
+cargo. It accepts only the plain forms that Gossil uses, so a form that it
+cannot judge fails. <code>.config/nextest.toml</code> must have exactly one override, of
+the profile <code>default</code>. That override may hold only <code>filter</code>, <code>test-group</code> and
+<code>threads-required = &quot;num-test-threads&quot;</code>. Another override placed before it would
+win, because nextest takes each setting from the first override that matches.</p>
+<p>Each term of the filter must be a plain <code>test(NAME)</code> or <code>binary(NAME)</code>, with no
+<code>=</code>, regex or glob. The filter joins its terms with <code>|</code> or <code>or</code> only. It must
+name <code>test(plan_cli_and_evidence)</code> and <code>binary(conformance)</code>, the tests that
+must run alone.</p>
+<p>Each <code>test(NAME)</code> must name a function with the attribute
+<code>#[test]</code> or <code>#[tokio::test]</code> in <code>src/</code> or <code>tests/</code>. Each <code>binary(NAME)</code> must
+name a test target as <code>Cargo.toml</code> names it. A file <code>tests/NAME.rs</code> gives a
+target with the stem of the file, NAME, unless a <code>[[test]]</code> entry renames it.
+For example, an entry renames <code>tests/glob.rs</code> to <code>glob_port</code>, so the stem
+<code>glob</code> does not count. With <code>autotests = false</code>, no stem counts.</p>
+<p>nextest accepts, with no message, a <code>test()</code> term that matches no test, so a
+renamed test would drop out of the filter in silence. The checker catches the
+renamed test. A test inside a <code>//</code> comment or a <code>/* */</code> comment does not count,
+and <code>/* */</code> comments nest, as in Rust.
+A test that a Rust string literal writes out does count, because the checker
+does not parse Rust strings.</p>
+<p>The checker reads each workflow, <code>*.yml</code> or <code>*.yaml</code>. Each install script that
+a workflow fetches from <code>raw.githubusercontent.com</code>, in any letter case, must
+come over <code>https</code> at a full commit hash. Each time the host appears, the
+workflow must write out the whole URL, as
+<code>https://raw.githubusercontent.com/OWNER/REPO/HASH/</code>. So a URL that takes its
+ref from a variable or an expression fails.</p>
+<p>Each step must be under a job line that is a plain name at an indent of two
+spaces, below the line <code>jobs:</code>. Each item of a list must be <code>- KEY:</code> or
+<code>- VALUE</code>, with one space after the dash, so a step in another form fails. Each
+line that names <code>actions/cache</code>, in any letter case, must be a bare
+<code>uses: actions/cache@vN</code>, <code>uses: actions/cache/restore@vN</code> or
+<code>uses: actions/cache/save@vN</code>, with no quotes and no comment.</p>
+<p>In each job with a cache step, the step with the id <code>rust</code> must come before the
+cache steps. It must have no <code>if:</code> condition and no <code>continue-on-error:</code>, and it
+must write the runner image to its outputs. The line that writes the image must
+come right after the line that fails the step when the runner gives no
+<code>ImageOS</code>. Each cache step needs a line that holds only <code>with:</code>, and exactly one
+line <code>key:</code>. No line of the step may hold a comment.</p>
+<p>Each <code>key:</code> and each line of a <code>restore-keys: |</code> block must hold
+<code>${{ steps.rust.outputs.image }}</code>. The checker finds the lines of that block by
+their indent. The save step may instead reuse the primary key of an earlier
+restore step with the id <code>rust-cache</code> in its job.</p>
+<p>Last, the checker checks the release workflow. The workflow must restore the
+cache, and it may have no <code>defaults:</code> or <code>working-directory:</code> line. The
+workflow must also remove the coverage stamp of each restored cache. The coverage stamp is the file
+<code>target/llvm-cov-target/jnprofile-rust-build.txt</code>. A step that holds only a
+<code>name</code> and <code>run:</code> must remove it. That step must come after each restore, and
+before the next restore or step that runs <code>just</code> in the same job.</p>
+<p>The checker counts a step as one that runs <code>just</code> when the word <code>just</code> appears
+anywhere in its <code>run</code> line. The word counts even in quotes or after a path.</p>
+<p>With <code>JNPROFILE_RUST_NEXTEST=1</code> set, <code>just integration</code> runs its tests through
+<code>cargo llvm-cov nextest</code>, which runs several test binaries at once. The
+job <code>check</code> of the release workflow sets the variable. That mode needs nextest,
+which <code>cargo install cargo-nextest --locked</code> installs.
+<code>.config/nextest.toml</code> names the tests that must run alone, with no other test
+beside them.</p>
+<p>In a fix round, run <code>just quick</code> and <code>just integration-changed</code>. <code>just quick</code>
+runs the format check, clippy, <code>cargo check</code> and the unit tests, with no
+coverage. <code>just integration-changed</code> runs only the test targets that the
+change may break, with no coverage. Run the full <code>just check</code> once, on the final
+staged tree. After a release, <code>just install-bin</code> builds the release binaries
+into <code>~/.cargo/bin</code>.</p>
+<p>Keep failed, blocked, skipped and disabled-feature observations distinct from
 passes. Installed tool copies and hook files do not prove actual executions.
 Complete the required checks and independent review before delivery to <code>main</code>.</p>
 </section>
@@ -155,7 +226,9 @@ Edit source comments to change API content. The site has generated API navigatio
 and search, with source links to the published <code>main</code> branch.</p>
 <p>The main-only Pages workflow retains <code>just docs-publish</code> and deploys the rendered
 artifact through GitHub Pages. It installs the pinned nightly toolchain before
-generation. Local rendering does not establish a successful deployment.</p>
+generation, because smalldocs builds the API pages with that toolchain and not
+with the one in <code>rust-toolchain.toml</code>. Local rendering does not establish a
+successful deployment.</p>
 </section>
 <section id="maintain-the-bundled-provider" class="level2">
 <h2 class="anchored" data-anchor-id="maintain-the-bundled-provider">Maintain the bundled provider</h2>
@@ -407,7 +480,7 @@ argument conversion has source review only, with no cross-compilation or runtime
 qualification.</p>
 <p>At the checkpoint, <code>Cargo.toml</code> set the version of the Gossil crate to 0.9.0,
 which was later released as <code>v0.9.0</code>. The current version of the crate is
-0.18.0, and version 0.17.0 was released as <code>v0.17.0</code>. The <code>libsql-ffi</code>
+0.18.0, released as <code>v0.18.0</code>, and version 0.17.0 was released as <code>v0.17.0</code>. The <code>libsql-ffi</code>
 provider is at 0.10.0, and its version is separate
 from the version of the crate.</p>
 <p>The focused tree
