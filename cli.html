@@ -1,11 +1,15 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="generator" content="smalldocs-0.5.13"><meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes"><title>CLI reference – Gossil</title><link rel="icon" href="site_libs/themes/atelier/logo.svg"><link rel="stylesheet" href="site_libs/themes/atelier/atelier.css" data-mode="light" class="quarto-color-scheme" id="quarto-bootstrap-light" media="not all and (prefers-color-scheme: dark)"><link rel="stylesheet" href="site_libs/themes/atelier/atelier-dark.css" data-mode="dark" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap-dark" media="(prefers-color-scheme: dark)"><link rel="stylesheet" href="site_libs/bootstrap-icons/bootstrap-icons.min.css"><link rel="stylesheet" href="site_libs/smalldocs.css"><meta name="smalldocs:offset" content="./"><script src="site_libs/bootstrap/bootstrap.bundle.min.js"></script><script src="site_libs/fuse/fuse.min.js"></script><script src="site_libs/smalldocs.js" defer></script><script>(function(){var d=document.documentElement,s=null;try{s=localStorage.getItem('smalldocs-scheme')}catch(e){}var alt=s?s==='alternate':!!(window.matchMedia&&matchMedia('(prefers-color-scheme: dark)').matches);var ls=document.querySelectorAll('link.quarto-color-scheme');if(alt)d.dataset.scheme='alternate';if(s)ls.forEach(function(l){var on=l.classList.contains('quarto-color-alternate')===alt;if(on)l.setAttribute('blocking','render');l.media=on?'all':'not all'});var on=ls[alt?1:0];if(on&&on.dataset.mode==='dark')d.classList.add('quarto-dark')})();</script></head><body class="nav-sidebar floating nav-fixed"><header id="quarto-header" class="headroom sticky-top"><nav class="navbar navbar-expand-lg sd-navbar-default"><div class="navbar-container container-fluid"><div class="navbar-brand-container mx-auto"><a class="navbar-brand" href="index.html"><span class="navbar-title">Gossil</span></a></div><button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button><div class="collapse navbar-collapse" id="navbarCollapse"><ul class="navbar-nav navbar-nav-scroll me-auto"><li class="nav-item"><a class="nav-link" href="getting-started.html"><span class="menu-text">Start</span></a></li><li class="nav-item"><a class="nav-link" href="concepts.html"><span class="menu-text">Library concepts</span></a></li><li class="nav-item"><a class="nav-link active" href="cli.html" aria-current="page"><span class="menu-text">CLI</span></a></li><li class="nav-item"><a class="nav-link" href="api/index.html"><span class="menu-text">Rust API</span></a></li><li class="nav-item"><a class="nav-link" href="development-plan.html"><span class="menu-text">Development</span></a></li></ul><ul class="navbar-nav navbar-nav-scroll ms-auto"><li class="nav-item compact"><a class="nav-link" href="https://github.com/rahuldave/gossil" aria-label="github"><i class="bi bi-github" role="img"></i></a></li><li class="nav-item compact"><a class="quarto-color-scheme-toggle nav-link" href="" title="Toggle dark mode" onclick="window.smalldocsToggleScheme(); return false;"><i class="bi"></i></a></li></ul><div class="quarto-navbar-tools"><div class="smalldocs-search" id="quarto-search"><i class="bi bi-search" aria-hidden="true"></i><input type="search" class="form-control form-control-sm" placeholder="Search" aria-label="Search" autocomplete="off"><div class="smalldocs-search-results dropdown-menu"></div></div></div></div></div></nav><nav class="quarto-secondary-nav"><div class="container-fluid d-flex"><button type="button" class="quarto-btn-toggle btn" aria-controls="quarto-sidebar" aria-label="Toggle sidebar navigation"><i class="bi bi-layout-text-sidebar-reverse"></i></button><nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="cli.html">CLI reference</a></li></ol></nav></div></nav></header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article has-sidebar has-margin"><nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto"><div class="sidebar-menu-container"><ul class="list-unstyled mt-1"><li class="sidebar-item"><div class="sidebar-item-container"><a href="index.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Gossil</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="getting-started.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Get started</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="cli.html" class="sidebar-item-text sidebar-link active" aria-current="page"><span class="menu-text">CLI reference</span></a></div></li><li class="sidebar-item sidebar-item-section"><div class="sidebar-item-container"><a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true"><span class="menu-text">Guides</span></a><a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section"><i class="bi bi-chevron-right ms-2"></i></a></div><ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show"><li class="sidebar-item"><div class="sidebar-item-container"><a href="working-with-repositories.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Working with repositories</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="compare-with-git.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Compare Gossil with Git</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="concepts.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Library concepts</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="examples.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Rust library examples</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="delta-encoder.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Bounded delta encoder</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="delta-decoder.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Bounded delta decoder</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="blob-primitives.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Byte digests and packed blobs</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="artifact-checksum.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Artifact byte checksums</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="token-codec.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Fossil token bytes</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="glob.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Bounded Fossil glob port</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="file-path.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Lexical file paths</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="history.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Check-in graph paths</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="git-reader.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Git reader</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="artifact-parser.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Artifact parser</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="diff.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Compare normalized byte lines</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="task-ticket.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Emit a task creation artifact</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="gest-ticket.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Emit artifact and project creation tickets</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="local-storage.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Local database ownership</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="native-storage.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Native local storage</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="local-records.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Strict local records and metered queries</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="gest-task-values.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Gest task values</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="gest-project-values.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Gest project values</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="gest-author-values.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Gest author values</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="gest-artifact-values.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Gest artifact values</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="gest-iteration-values.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Gest iteration values</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="gest-tag-values.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Gest tag values</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="gest-note-values.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Gest note values</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="gest-relationship-values.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Gest relationship values</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="gest-entity-tag-values.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Gest entity tag values</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="gest-iteration-task-values.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Gest iteration task values</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="gest-model.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Gest model</span></a></div></li></ul></li><li class="sidebar-item sidebar-item-section"><div class="sidebar-item-container"><a class="sidebar-item-text sidebar-link" href="api/index.html"><span class="menu-text">Rust API</span></a><a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Toggle section"><i class="bi bi-chevron-right ms-2"></i></a></div><ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show"><li class="sidebar-item"><div class="sidebar-item-container"><a href="api/artifact.html" class="sidebar-item-text sidebar-link"><span class="menu-text">artifact</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="api/artifact_checksum.html" class="sidebar-item-text sidebar-link"><span class="menu-text">artifact_checksum</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="api/compression.html" class="sidebar-item-text sidebar-link"><span class="menu-text">compression</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="api/content_hash.html" class="sidebar-item-text sidebar-link"><span class="menu-text">content_hash</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="api/delta.html" class="sidebar-item-text sidebar-link"><span class="menu-text">delta</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="api/diff.html" class="sidebar-item-text sidebar-link"><span class="menu-text">diff</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="api/file_path.html" class="sidebar-item-text sidebar-link"><span class="menu-text">file_path</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="api/gest_artifact_values.html" class="sidebar-item-text sidebar-link"><span class="menu-text">gest_artifact_values</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="api/gest_author_values.html" class="sidebar-item-text sidebar-link"><span class="menu-text">gest_author_values</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="api/gest_entity_tag_values.html" class="sidebar-item-text sidebar-link"><span class="menu-text">gest_entity_tag_values</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="api/gest_iteration_task_values.html" class="sidebar-item-text sidebar-link"><span class="menu-text">gest_iteration_task_values</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="api/gest_iteration_values.html" class="sidebar-item-text sidebar-link"><span class="menu-text">gest_iteration_values</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="api/gest_note_values.html" class="sidebar-item-text sidebar-link"><span class="menu-text">gest_note_values</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="api/gest_project_values.html" class="sidebar-item-text sidebar-link"><span class="menu-text">gest_project_values</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="api/gest_relationship_values.html" class="sidebar-item-text sidebar-link"><span class="menu-text">gest_relationship_values</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="api/gest_tag_values.html" class="sidebar-item-text sidebar-link"><span class="menu-text">gest_tag_values</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="api/gest_task_values.html" class="sidebar-item-text sidebar-link"><span class="menu-text">gest_task_values</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="api/gest_ticket.html" class="sidebar-item-text sidebar-link"><span class="menu-text">gest_ticket</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="api/git_reader.html" class="sidebar-item-text sidebar-link"><span class="menu-text">git_reader</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="api/glob.html" class="sidebar-item-text sidebar-link"><span class="menu-text">glob</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="api/gossil.html" class="sidebar-item-text sidebar-link"><span class="menu-text">gossil</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="api/history.html" class="sidebar-item-text sidebar-link"><span class="menu-text">history</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="api/native_date.html" class="sidebar-item-text sidebar-link"><span class="menu-text">native_date</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="api/product.html" class="sidebar-item-text sidebar-link"><span class="menu-text">product</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="api/storage.html" class="sidebar-item-text sidebar-link"><span class="menu-text">storage</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="api/task_ticket.html" class="sidebar-item-text sidebar-link"><span class="menu-text">task_ticket</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="api/token_codec.html" class="sidebar-item-text sidebar-link"><span class="menu-text">token_codec</span></a></div></li><li class="sidebar-item sidebar-item-section"><div class="sidebar-item-container"><a class="sidebar-item-text sidebar-link" href="api/gest_model/index.html"><span class="menu-text">gest_model</span></a><a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="false" aria-label="Toggle section"><i class="bi bi-chevron-right ms-2"></i></a></div><ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth2"><li class="sidebar-item"><div class="sidebar-item-container"><a href="api/gest_model/artifact.html" class="sidebar-item-text sidebar-link"><span class="menu-text">artifact</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="api/gest_model/author.html" class="sidebar-item-text sidebar-link"><span class="menu-text">author</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="api/gest_model/entity_tag.html" class="sidebar-item-text sidebar-link"><span class="menu-text">entity_tag</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="api/gest_model/iteration.html" class="sidebar-item-text sidebar-link"><span class="menu-text">iteration</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="api/gest_model/note.html" class="sidebar-item-text sidebar-link"><span class="menu-text">note</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="api/gest_model/primitives.html" class="sidebar-item-text sidebar-link"><span class="menu-text">primitives</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="api/gest_model/project.html" class="sidebar-item-text sidebar-link"><span class="menu-text">project</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="api/gest_model/relationship.html" class="sidebar-item-text sidebar-link"><span class="menu-text">relationship</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="api/gest_model/tag.html" class="sidebar-item-text sidebar-link"><span class="menu-text">tag</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="api/gest_model/task.html" class="sidebar-item-text sidebar-link"><span class="menu-text">task</span></a></div></li></ul></li></ul></li><li class="sidebar-item sidebar-item-section"><div class="sidebar-item-container"><a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true"><span class="menu-text">Development</span></a><a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true" aria-label="Toggle section"><i class="bi bi-chevron-right ms-2"></i></a></div><ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show"><li class="sidebar-item"><div class="sidebar-item-container"><a href="development-plan.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Development and contributing</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="conformance.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Inherited-test runner</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="libsql-wrapper.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Exact libsql TEXT retrieval</span></a></div></li></ul></li></ul></div></nav><div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item"></div><div id="quarto-margin-sidebar" class="sidebar margin-sidebar"><nav id="TOC" role="doc-toc" class="toc-active"><h2 id="toc-title">On this page</h2><ul><li><a href="#get-help" id="toc-get-help" class="nav-link" data-scroll-target="#get-help">Get help</a></li><li><a href="#initialize-a-repository" id="toc-initialize-a-repository" class="nav-link" data-scroll-target="#initialize-a-repository">Initialize a repository</a></li><li><a href="#open-a-native-checkout" id="toc-open-a-native-checkout" class="nav-link" data-scroll-target="#open-a-native-checkout">Open a native checkout</a><ul><li><a href="#reopen-and-recover" id="toc-reopen-and-recover" class="nav-link" data-scroll-target="#reopen-and-recover">Reopen and recover</a></li><li><a href="#configuration-before-mutation" id="toc-configuration-before-mutation" class="nav-link" data-scroll-target="#configuration-before-mutation">Configuration before mutation</a></li><li><a href="#locator-bounds-and-permissions" id="toc-locator-bounds-and-permissions" class="nav-link" data-scroll-target="#locator-bounds-and-permissions">Locator bounds and permissions</a></li><li><a href="#publication-failures" id="toc-publication-failures" class="nav-link" data-scroll-target="#publication-failures">Publication failures</a></li></ul></li><li><a href="#add-explicit-paths-and-inspect-pending-additions" id="toc-add-explicit-paths-and-inspect-pending-additions" class="nav-link" data-scroll-target="#add-explicit-paths-and-inspect-pending-additions">Add explicit paths and inspect pending additions</a></li><li><a href="#select-scopes-and-record-private-files" id="toc-select-scopes-and-record-private-files" class="nav-link" data-scroll-target="#select-scopes-and-record-private-files">Select scopes and record private files</a><ul><li><a href="#select-immutable-path-scopes" id="toc-select-immutable-path-scopes" class="nav-link" data-scroll-target="#select-immutable-path-scopes">Select immutable path scopes</a></li><li><a href="#record-the-complete-private-tree" id="toc-record-the-complete-private-tree" class="nav-link" data-scroll-target="#record-the-complete-private-tree">Record the complete private tree</a></li><li><a href="#grammar-limits-and-failures" id="toc-grammar-limits-and-failures" class="nav-link" data-scroll-target="#grammar-limits-and-failures">Grammar, limits and failures</a></li></ul></li><li><a href="#short-names" id="toc-short-names" class="nav-link" data-scroll-target="#short-names">Short names</a></li><li><a href="#exit-status-and-errors" id="toc-exit-status-and-errors" class="nav-link" data-scroll-target="#exit-status-and-errors">Exit status and errors</a></li><li><a href="#development-runner" id="toc-development-runner" class="nav-link" data-scroll-target="#development-runner">Development runner</a></li><li><a href="#inspect-current-recorded-checkout-identity" id="toc-inspect-current-recorded-checkout-identity" class="nav-link" data-scroll-target="#inspect-current-recorded-checkout-identity">Inspect current recorded checkout identity</a></li><li><a href="#planned-commands" id="toc-planned-commands" class="nav-link" data-scroll-target="#planned-commands">Planned commands</a></li><li><a href="#read-complete-recorded-ancestry" id="toc-read-complete-recorded-ancestry" class="nav-link" data-scroll-target="#read-complete-recorded-ancestry">Read complete recorded ancestry</a></li><li><a href="#inspect-a-fossil-glob-list" id="toc-inspect-a-fossil-glob-list" class="nav-link" data-scroll-target="#inspect-a-fossil-glob-list">Inspect a Fossil glob list</a></li><li><a href="#recommendations" id="toc-recommendations" class="nav-link" data-scroll-target="#recommendations">Recommendations</a></li></ul></nav></div><main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block default"><div class="quarto-title"><h1 class="title">CLI reference</h1></div><div class="quarto-title-meta"></div></header><p>The <code>gossil</code> executable initializes empty repositories, opens native checkouts
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="generator" content="smalldocs-0.5.13"><meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes"><title>CLI reference – Gossil</title><link rel="icon" href="site_libs/themes/atelier/logo.svg"><link rel="stylesheet" href="site_libs/themes/atelier/atelier.css" data-mode="light" class="quarto-color-scheme" id="quarto-bootstrap-light" media="not all and (prefers-color-scheme: dark)"><link rel="stylesheet" href="site_libs/themes/atelier/atelier-dark.css" data-mode="dark" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap-dark" media="(prefers-color-scheme: dark)"><link rel="stylesheet" href="site_libs/bootstrap-icons/bootstrap-icons.min.css"><link rel="stylesheet" href="site_libs/smalldocs.css"><meta name="smalldocs:offset" content="./"><script src="site_libs/bootstrap/bootstrap.bundle.min.js"></script><script src="site_libs/fuse/fuse.min.js"></script><script src="site_libs/smalldocs.js" defer></script><script>(function(){var d=document.documentElement,s=null;try{s=localStorage.getItem('smalldocs-scheme')}catch(e){}var alt=s?s==='alternate':!!(window.matchMedia&&matchMedia('(prefers-color-scheme: dark)').matches);var ls=document.querySelectorAll('link.quarto-color-scheme');if(alt)d.dataset.scheme='alternate';if(s)ls.forEach(function(l){var on=l.classList.contains('quarto-color-alternate')===alt;if(on)l.setAttribute('blocking','render');l.media=on?'all':'not all'});var on=ls[alt?1:0];if(on&&on.dataset.mode==='dark')d.classList.add('quarto-dark')})();</script></head><body class="nav-sidebar floating nav-fixed"><header id="quarto-header" class="headroom sticky-top"><nav class="navbar navbar-expand-lg sd-navbar-default"><div class="navbar-container container-fluid"><div class="navbar-brand-container mx-auto"><a class="navbar-brand" href="index.html"><span class="navbar-title">Gossil</span></a></div><button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button><div class="collapse navbar-collapse" id="navbarCollapse"><ul class="navbar-nav navbar-nav-scroll me-auto"><li class="nav-item"><a class="nav-link" href="getting-started.html"><span class="menu-text">Start</span></a></li><li class="nav-item"><a class="nav-link" href="concepts.html"><span class="menu-text">Library concepts</span></a></li><li class="nav-item"><a class="nav-link active" href="cli.html" aria-current="page"><span class="menu-text">CLI</span></a></li><li class="nav-item"><a class="nav-link" href="api/index.html"><span class="menu-text">Rust API</span></a></li><li class="nav-item"><a class="nav-link" href="development-plan.html"><span class="menu-text">Development</span></a></li></ul><ul class="navbar-nav navbar-nav-scroll ms-auto"><li class="nav-item compact"><a class="nav-link" href="https://github.com/rahuldave/gossil" aria-label="github"><i class="bi bi-github" role="img"></i></a></li><li class="nav-item compact"><a class="quarto-color-scheme-toggle nav-link" href="" title="Toggle dark mode" onclick="window.smalldocsToggleScheme(); return false;"><i class="bi"></i></a></li></ul><div class="quarto-navbar-tools"><div class="smalldocs-search" id="quarto-search"><i class="bi bi-search" aria-hidden="true"></i><input type="search" class="form-control form-control-sm" placeholder="Search" aria-label="Search" autocomplete="off"><div class="smalldocs-search-results dropdown-menu"></div></div></div></div></div></nav><nav class="quarto-secondary-nav"><div class="container-fluid d-flex"><button type="button" class="quarto-btn-toggle btn" aria-controls="quarto-sidebar" aria-label="Toggle sidebar navigation"><i class="bi bi-layout-text-sidebar-reverse"></i></button><nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="cli.html">CLI reference</a></li></ol></nav></div></nav></header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article has-sidebar has-margin"><nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto"><div class="sidebar-menu-container"><ul class="list-unstyled mt-1"><li class="sidebar-item"><div class="sidebar-item-container"><a href="index.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Gossil</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="getting-started.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Get started</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="cli.html" class="sidebar-item-text sidebar-link active" aria-current="page"><span class="menu-text">CLI reference</span></a></div></li><li class="sidebar-item sidebar-item-section"><div class="sidebar-item-container"><a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true"><span class="menu-text">Guides</span></a><a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section"><i class="bi bi-chevron-right ms-2"></i></a></div><ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show"><li class="sidebar-item"><div class="sidebar-item-container"><a href="issues.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Track issues beside your files</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="working-with-repositories.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Working with repositories</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="compare-with-git.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Compare Gossil with Git</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="concepts.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Library concepts</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="examples.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Rust library examples</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="delta-encoder.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Bounded delta encoder</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="delta-decoder.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Bounded delta decoder</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="blob-primitives.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Byte digests and packed blobs</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="artifact-checksum.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Artifact byte checksums</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="token-codec.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Fossil token bytes</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="glob.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Bounded Fossil glob port</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="file-path.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Lexical file paths</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="history.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Check-in graph paths</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="git-reader.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Git reader</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="artifact-parser.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Artifact parser</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="diff.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Compare normalized byte lines</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="task-ticket.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Emit a task creation artifact</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="gest-ticket.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Emit artifact and project creation tickets</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="issue-ticket.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Store a private issue ticket</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="issue-read.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Read tasks with task list and task show</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="local-storage.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Local database ownership</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="native-storage.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Native local storage</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="local-records.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Strict local records and metered queries</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="gest-task-values.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Gest task values</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="gest-project-values.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Gest project values</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="gest-author-values.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Gest author values</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="gest-artifact-values.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Gest artifact values</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="gest-iteration-values.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Gest iteration values</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="gest-tag-values.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Gest tag values</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="gest-note-values.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Gest note values</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="gest-relationship-values.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Gest relationship values</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="gest-entity-tag-values.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Gest entity tag values</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="gest-iteration-task-values.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Gest iteration task values</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="gest-model.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Gest model</span></a></div></li></ul></li><li class="sidebar-item sidebar-item-section"><div class="sidebar-item-container"><a class="sidebar-item-text sidebar-link" href="api/index.html"><span class="menu-text">Rust API</span></a><a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Toggle section"><i class="bi bi-chevron-right ms-2"></i></a></div><ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show"><li class="sidebar-item"><div class="sidebar-item-container"><a href="api/artifact.html" class="sidebar-item-text sidebar-link"><span class="menu-text">artifact</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="api/artifact_checksum.html" class="sidebar-item-text sidebar-link"><span class="menu-text">artifact_checksum</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="api/compression.html" class="sidebar-item-text sidebar-link"><span class="menu-text">compression</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="api/content_hash.html" class="sidebar-item-text sidebar-link"><span class="menu-text">content_hash</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="api/delta.html" class="sidebar-item-text sidebar-link"><span class="menu-text">delta</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="api/diff.html" class="sidebar-item-text sidebar-link"><span class="menu-text">diff</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="api/file_path.html" class="sidebar-item-text sidebar-link"><span class="menu-text">file_path</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="api/gest_artifact_values.html" class="sidebar-item-text sidebar-link"><span class="menu-text">gest_artifact_values</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="api/gest_author_values.html" class="sidebar-item-text sidebar-link"><span class="menu-text">gest_author_values</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="api/gest_entity_tag_values.html" class="sidebar-item-text sidebar-link"><span class="menu-text">gest_entity_tag_values</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="api/gest_iteration_task_values.html" class="sidebar-item-text sidebar-link"><span class="menu-text">gest_iteration_task_values</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="api/gest_iteration_values.html" class="sidebar-item-text sidebar-link"><span class="menu-text">gest_iteration_values</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="api/gest_note_values.html" class="sidebar-item-text sidebar-link"><span class="menu-text">gest_note_values</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="api/gest_project_values.html" class="sidebar-item-text sidebar-link"><span class="menu-text">gest_project_values</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="api/gest_relationship_values.html" class="sidebar-item-text sidebar-link"><span class="menu-text">gest_relationship_values</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="api/gest_tag_values.html" class="sidebar-item-text sidebar-link"><span class="menu-text">gest_tag_values</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="api/gest_task_values.html" class="sidebar-item-text sidebar-link"><span class="menu-text">gest_task_values</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="api/gest_ticket.html" class="sidebar-item-text sidebar-link"><span class="menu-text">gest_ticket</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="api/git_reader.html" class="sidebar-item-text sidebar-link"><span class="menu-text">git_reader</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="api/glob.html" class="sidebar-item-text sidebar-link"><span class="menu-text">glob</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="api/gossil.html" class="sidebar-item-text sidebar-link"><span class="menu-text">gossil</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="api/history.html" class="sidebar-item-text sidebar-link"><span class="menu-text">history</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="api/native_date.html" class="sidebar-item-text sidebar-link"><span class="menu-text">native_date</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="api/product.html" class="sidebar-item-text sidebar-link"><span class="menu-text">product</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="api/storage.html" class="sidebar-item-text sidebar-link"><span class="menu-text">storage</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="api/task_ticket.html" class="sidebar-item-text sidebar-link"><span class="menu-text">task_ticket</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="api/token_codec.html" class="sidebar-item-text sidebar-link"><span class="menu-text">token_codec</span></a></div></li><li class="sidebar-item sidebar-item-section"><div class="sidebar-item-container"><a class="sidebar-item-text sidebar-link" href="api/gest_model/index.html"><span class="menu-text">gest_model</span></a><a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="false" aria-label="Toggle section"><i class="bi bi-chevron-right ms-2"></i></a></div><ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth2"><li class="sidebar-item"><div class="sidebar-item-container"><a href="api/gest_model/artifact.html" class="sidebar-item-text sidebar-link"><span class="menu-text">artifact</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="api/gest_model/author.html" class="sidebar-item-text sidebar-link"><span class="menu-text">author</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="api/gest_model/entity_tag.html" class="sidebar-item-text sidebar-link"><span class="menu-text">entity_tag</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="api/gest_model/iteration.html" class="sidebar-item-text sidebar-link"><span class="menu-text">iteration</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="api/gest_model/note.html" class="sidebar-item-text sidebar-link"><span class="menu-text">note</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="api/gest_model/primitives.html" class="sidebar-item-text sidebar-link"><span class="menu-text">primitives</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="api/gest_model/project.html" class="sidebar-item-text sidebar-link"><span class="menu-text">project</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="api/gest_model/relationship.html" class="sidebar-item-text sidebar-link"><span class="menu-text">relationship</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="api/gest_model/tag.html" class="sidebar-item-text sidebar-link"><span class="menu-text">tag</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="api/gest_model/task.html" class="sidebar-item-text sidebar-link"><span class="menu-text">task</span></a></div></li></ul></li></ul></li><li class="sidebar-item sidebar-item-section"><div class="sidebar-item-container"><a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true"><span class="menu-text">Development</span></a><a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true" aria-label="Toggle section"><i class="bi bi-chevron-right ms-2"></i></a></div><ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show"><li class="sidebar-item"><div class="sidebar-item-container"><a href="development-plan.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Development and contributing</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="conformance.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Inherited-test runner</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="libsql-wrapper.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Exact libsql TEXT retrieval</span></a></div></li></ul></li></ul></div></nav><div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item"></div><div id="quarto-margin-sidebar" class="sidebar margin-sidebar"><nav id="TOC" role="doc-toc" class="toc-active"><h2 id="toc-title">On this page</h2><ul><li><a href="#get-help" id="toc-get-help" class="nav-link" data-scroll-target="#get-help">Get help</a></li><li><a href="#issue-commands" id="toc-issue-commands" class="nav-link" data-scroll-target="#issue-commands">Issue commands</a><ul><li><a href="#create-the-gest-project-of-a-checkout" id="toc-create-the-gest-project-of-a-checkout" class="nav-link" data-scroll-target="#create-the-gest-project-of-a-checkout">Create the Gest project of a checkout</a></li><li><a href="#create-a-task" id="toc-create-a-task" class="nav-link" data-scroll-target="#create-a-task">Create a task</a></li><li><a href="#list-the-tasks-of-the-project" id="toc-list-the-tasks-of-the-project" class="nav-link" data-scroll-target="#list-the-tasks-of-the-project">List the tasks of the project</a></li><li><a href="#show-one-task" id="toc-show-one-task" class="nav-link" data-scroll-target="#show-one-task">Show one task</a></li></ul></li><li><a href="#initialize-a-repository" id="toc-initialize-a-repository" class="nav-link" data-scroll-target="#initialize-a-repository">Initialize a repository</a></li><li><a href="#open-a-native-checkout" id="toc-open-a-native-checkout" class="nav-link" data-scroll-target="#open-a-native-checkout">Open a native checkout</a><ul><li><a href="#reopen-and-recover" id="toc-reopen-and-recover" class="nav-link" data-scroll-target="#reopen-and-recover">Reopen and recover</a></li><li><a href="#configuration-before-mutation" id="toc-configuration-before-mutation" class="nav-link" data-scroll-target="#configuration-before-mutation">Configuration before mutation</a></li><li><a href="#locator-bounds-and-permissions" id="toc-locator-bounds-and-permissions" class="nav-link" data-scroll-target="#locator-bounds-and-permissions">Locator bounds and permissions</a></li><li><a href="#publication-failures" id="toc-publication-failures" class="nav-link" data-scroll-target="#publication-failures">Publication failures</a></li></ul></li><li><a href="#add-explicit-paths-and-inspect-pending-additions" id="toc-add-explicit-paths-and-inspect-pending-additions" class="nav-link" data-scroll-target="#add-explicit-paths-and-inspect-pending-additions">Add explicit paths and inspect pending additions</a></li><li><a href="#select-scopes-and-record-private-files" id="toc-select-scopes-and-record-private-files" class="nav-link" data-scroll-target="#select-scopes-and-record-private-files">Select scopes and record private files</a><ul><li><a href="#select-immutable-path-scopes" id="toc-select-immutable-path-scopes" class="nav-link" data-scroll-target="#select-immutable-path-scopes">Select immutable path scopes</a></li><li><a href="#record-the-complete-private-tree" id="toc-record-the-complete-private-tree" class="nav-link" data-scroll-target="#record-the-complete-private-tree">Record the complete private tree</a></li><li><a href="#grammar-limits-and-failures" id="toc-grammar-limits-and-failures" class="nav-link" data-scroll-target="#grammar-limits-and-failures">Grammar, limits and failures</a></li></ul></li><li><a href="#short-names" id="toc-short-names" class="nav-link" data-scroll-target="#short-names">Short names</a></li><li><a href="#exit-status-and-errors" id="toc-exit-status-and-errors" class="nav-link" data-scroll-target="#exit-status-and-errors">Exit status and errors</a></li><li><a href="#development-runner" id="toc-development-runner" class="nav-link" data-scroll-target="#development-runner">Development runner</a></li><li><a href="#inspect-current-recorded-checkout-identity" id="toc-inspect-current-recorded-checkout-identity" class="nav-link" data-scroll-target="#inspect-current-recorded-checkout-identity">Inspect current recorded checkout identity</a></li><li><a href="#planned-commands" id="toc-planned-commands" class="nav-link" data-scroll-target="#planned-commands">Planned commands</a></li><li><a href="#read-complete-recorded-ancestry" id="toc-read-complete-recorded-ancestry" class="nav-link" data-scroll-target="#read-complete-recorded-ancestry">Read complete recorded ancestry</a></li><li><a href="#verify-a-repository" id="toc-verify-a-repository" class="nav-link" data-scroll-target="#verify-a-repository">Verify a repository</a></li><li><a href="#inspect-a-fossil-glob-list" id="toc-inspect-a-fossil-glob-list" class="nav-link" data-scroll-target="#inspect-a-fossil-glob-list">Inspect a Fossil glob list</a></li><li><a href="#recommendations" id="toc-recommendations" class="nav-link" data-scroll-target="#recommendations">Recommendations</a></li></ul></nav></div><main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block default"><div class="quarto-title"><h1 class="title">CLI reference</h1></div><div class="quarto-title-meta"></div></header><p>The <code>gossil</code> executable initializes empty repositories, opens native checkouts
 and has three delta file diagnostics. The prepared source also has a
 <a href="#inspect-a-fossil-glob-list">glob diagnostic</a>, with a
 <a href="glob.html#current-source-status">focused source checkpoint</a>. This source checkout also has
 <a href="#add-explicit-paths-and-inspect-pending-additions">explicit add and tracked status</a>,
 plus <a href="#select-scopes-and-record-private-files">scope selection and private recording</a>
 and <a href="#read-complete-recorded-ancestry">complete recorded ancestry</a>.
-<code>gos</code> is an alias for <code>gossil</code>, and <code>v</code> is an alias for <code>vcs</code>.</p>
+<code>gos</code> is an alias for <code>gossil</code>, and <code>v</code> is an alias for <code>vcs</code>.
+The <a href="#issue-commands"><code>issue</code> group</a>, or <code>i</code>, recognises each Gest command.
+This build runs <a href="#create-the-gest-project-of-a-checkout"><code>issue init</code></a>,
+<a href="#create-a-task"><code>issue task create</code></a>, <a href="#list-the-tasks-of-the-project"><code>issue task list</code></a>
+and <a href="#show-one-task"><code>issue task show</code></a>, and refuses the others.</p>
 <p>Each diagnostic runs without a repository. Run it from this source checkout with <code>just gossil</code>, which builds
 and runs the executable through Cargo. Cargo may print build messages on stderr.</p>
 <div class="sd-table">
@@ -63,7 +67,7 @@ build runs. It also names the planned groups, and marks them as not available.</
 <tbody>
 <tr>
 <td><code>gossil</code>, <code>gossil --help</code>, <code>gossil -h</code>, <code>gossil help</code></td>
-<td>Product help: the groups and the commands of <code>vcs</code></td>
+<td>Product help: the groups and the commands of <code>vcs</code> and <code>issue</code></td>
 </tr>
 <tr>
 <td><code>gossil vcs</code>, <code>gossil vcs --help</code>, <code>gossil vcs -h</code>, <code>gossil vcs help</code></td>
@@ -77,21 +81,31 @@ build runs. It also names the planned groups, and marks them as not available.</
 <td><code>gossil vcs help COMMAND</code>, <code>gossil help vcs COMMAND</code></td>
 <td>The same usage of one command</td>
 </tr>
+<tr>
+<td><code>gossil issue</code>, <code>gossil issue --help</code>, <code>gossil issue -h</code>, <code>gossil issue help</code>, <code>gossil help issue</code></td>
+<td>Help of the <code>issue</code> group</td>
+</tr>
+<tr>
+<td><code>gossil issue task create --help</code>, <code>gossil issue help task create</code></td>
+<td>Usage of one issue command</td>
+</tr>
 </tbody>
 </table>
 </div>
-<p>Each form works with <code>gos</code> in place of <code>gossil</code> and <code>v</code> in place of <code>vcs</code>. Help
-goes to stdout, and the executable exits with status 0. A help request reads and
-writes no file.</p>
-<p>The product help also names the planned groups <code>issue</code> (<code>i</code>), <code>ui</code> (<code>u</code>) and
-<code>serve</code> (<code>s</code>). This build does not run them.</p>
+<p>Each form works with <code>gos</code> in place of <code>gossil</code>, <code>v</code> in place of <code>vcs</code> and <code>i</code>
+in place of <code>issue</code>. Help goes to stdout, and the executable exits with status 0.
+A help request reads and writes no file.</p>
+<p>The product help also names the planned groups <code>ui</code> (<code>u</code>) and <code>serve</code> (<code>s</code>).
+This build does not run them.</p>
 <p>Before a group or a command name, <code>--help</code>, <code>-h</code> and <code>help</code> mean the same.
 Several of them in a row count as one. So <code>gossil help help</code> prints the product help, and
 <code>gossil vcs --help open</code> and <code>gossil vcs help help open</code> print the usage of <code>open</code>.</p>
-<p><code>init</code>, <code>new</code>, <code>info</code>, <code>timeline</code> and <code>log</code> print their own help, which the
-sections below describe. Every other command prints its usage line and one
-sentence about what it does. After a command, only a lone <code>--help</code> or <code>-h</code>
-asks for help. With more arguments, the command parses <code>--help</code> by its own
+<p><code>init</code>, <code>new</code>, <code>info</code>, <code>timeline</code>, <code>log</code> and <code>verify</code> print their own help, which the
+sections below describe. So do <code>issue init</code>, <code>issue task create</code>, <code>issue task list</code> and
+<code>issue task show</code>. Every other command prints its usage line and one
+sentence about what it does.</p>
+<p>After a <code>vcs</code> command, only a lone <code>--help</code> or <code>-h</code>
+asks for help. The <a href="#issue-commands">issue section</a> gives the rule after an issue command. With more arguments, the command parses <code>--help</code> by its own
 grammar, so <code>vcs init -- --help</code> creates a file named <code>--help</code>. The word <code>help</code>
 after a command is an ordinary argument, so <code>vcs init help</code> creates a repository
 named <code>help</code>.</p>
@@ -101,15 +115,558 @@ points to the help:</p>
 Run &quot;gossil --help&quot; to list the commands.</code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>An unknown command after <code>vcs</code> gives <code>gossil: unknown vcs command &quot;NAME&quot;</code>, then
 <code>Run &quot;gossil vcs --help&quot; to list the vcs commands.</code> A planned group gives
-<code>gossil: the group &quot;NAME&quot; is planned and not available in this build</code>. A diagnostic
+<code>gossil: the group &quot;NAME&quot; is planned and not available in this build</code>. The
+<a href="#issue-commands">issue section</a> gives the errors of the <code>issue</code> group. A diagnostic
 without its group, such as <code>gossil test-delta-apply</code>, is an unknown command too.
 A help request with an argument after the command name, such as
 <code>vcs help open extra</code> or <code>help vcs open status</code>, fails with status 2. The first
 line on stderr is then <code>Usage: gossil vcs help COMMAND</code>.</p>
 </section>
+<section id="issue-commands" class="level2">
+<h2 class="anchored" data-anchor-id="issue-commands">Issue commands</h2>
+<p>The <code>issue</code> group, or <code>i</code>, recognises every Gest command that the Gossil CLI
+specification lists (CLI-02).
+The top-level commands are <code>artifact</code>, <code>config</code>, <code>generate</code>, <code>init</code>, <code>iteration</code>, <code>migrate</code>, <code>project</code>,
+<code>purge</code>, <code>search</code>, <code>self-update</code>, <code>tag</code>, <code>task</code>, <code>undo</code> and <code>version</code>, with
+their subcommands. They keep the aliases of the Gest source:</p>
+<ul>
+<li><code>a</code>, <code>i</code>, <code>p</code>, <code>t</code> and <code>u</code> stand for <code>artifact</code>, <code>iteration</code>, <code>project</code>, <code>task</code> and <code>undo</code>.</li>
+<li><code>grep</code> stands for <code>search</code>.</li>
+<li><code>new</code>, <code>rm</code>, <code>ls</code>, <code>view</code> and <code>edit</code> stand for <a href="api/delta.html#create"><code>create</code></a>, <code>delete</code>, <code>list</code>, <code>show</code> and <code>update</code>.
+Under <code>iteration</code>, <code>rm</code> stands for <code>remove</code>.</li>
+<li><code>delete</code> stands for <code>unset</code> under <code>meta</code>.</li>
+</ul>
+<p>Help shows the aliases that Gest shows, and hides <code>a</code>, <code>i</code>, <code>t</code>, <code>u</code>, <code>grep</code>
+and <code>delete</code> under <code>meta</code>, as Gest does.</p>
+<p>This build runs <code>init</code>, <code>task create</code>, <code>task list</code> and <code>task show</code>, which the
+<a href="#create-the-gest-project-of-a-checkout">sections below</a> describe. The
+<a href="issues.html">issue guide</a> runs them in one session beside check-ins. The build recognises
+each other command and refuses it:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode text code-with-copy"><code class="sourceCode text">$ gos i task claim lkpunroy
+gossil: issue task claim is not available in this build</code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>The refused command then exits with status 69, the code of an invalid state. It reads and
+writes no file, and it does not open or create a database. The parser checks
+the command names only. Arguments after the last name, such as <code>lkpunroy</code>,
+are not checked.</p>
+<p>A <code>--help</code> or <code>-h</code> among the arguments prints the help of the command. So
+does a cluster of short flags that reaches <code>h</code>, such as <code>-ah</code> after <code>task list</code>. Each letter
+before <code>h</code> must be a flag of the command that takes no value, and no letter can come twice.
+Only <code>v</code> can come twice, because Clap counts it. So <code>-vvh</code> asks for help, and <code>-aah</code> and
+<code>-jjh</code> do not.</p>
+<p>As in Clap, an option that takes a value
+reads the rest of the cluster as its value, so <code>-sh</code> gives the status <code>h</code>.
+Only <code>init</code>, <code>task create</code>, <code>task list</code> and <code>task show</code> read such clusters. After each
+other command, only <code>--help</code> and <code>-h</code> print its help.
+Clap also rejects a letter that repeats a flag of an earlier argument, but this build checks
+each argument on its own. So Gest exits with 2 on <code>task list -a -ah</code>, and this build prints the help.
+After <code>--</code>, <code>--help</code> and <code>-h</code> are ordinary arguments, so the build refuses
+<code>gos i task claim -- -h</code> like any other claim.</p>
+<div class="sd-table">
+<table class="caption-top table">
+<thead>
+<tr>
+<th>Input</th>
+<th>Status</th>
+<th>Message on stderr</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>A recognised command that this build does not run, such as <code>i undo</code> or <code>i t claim</code></td>
+<td>69</td>
+<td><code>gossil: issue PATH is not available in this build</code></td>
+</tr>
+<tr>
+<td><code>artifact</code>, <code>config</code>, <code>generate</code>, <code>iteration</code>, <code>task</code> or a <code>note</code> group without a subcommand</td>
+<td>2</td>
+<td><code>gossil: issue PATH needs a command</code></td>
+</tr>
+<tr>
+<td>An unknown name, such as <code>i frob</code> or <code>i task frob</code></td>
+<td>2</td>
+<td><code>gossil: unknown issue command &quot;NAME&quot;</code></td>
+</tr>
+<tr>
+<td><code>i serve</code> or <code>i s</code></td>
+<td>2</td>
+<td>The unknown-name message, because the root groups <code>ui</code> and <code>serve</code> replace Gest’s server command</td>
+</tr>
+<tr>
+<td>A help request with an argument after a command that has no subcommands, such as <code>i help task create x</code></td>
+<td>2</td>
+<td><code>Usage: gossil issue help COMMAND</code></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p><code>PATH</code> is the canonical command path, such as <code>task create</code>, even when the
+user typed an alias. In the unknown-name message, <code>NAME</code> starts with the
+canonical path of its group, so <code>i t frob</code> gives <code>&quot;task frob&quot;</code>. Each status 2
+message has a second line that points to the help.</p>
+<p>Gest runs <code>project</code>, <code>tag</code> and each <code>meta</code> without a subcommand, so each of
+them gives status 69 when it stands alone. A name after one of them that is
+not its subcommand is an argument, so <code>i p frob</code> also gives status 69. A help
+request reads that name as a command name, not an argument, so <code>i help p frob</code>
+and <code>i help t meta ID</code> give status 2 with the unknown-name message. A <code>--help</code>
+or <code>-h</code> right after <code>project</code>, <code>tag</code> or <code>meta</code> also makes the next name a
+command name. Then <code>i p --help frob</code> and <code>i t meta -h ID</code> give status 2 too. After
+the argument, as in <code>i p frob --help</code>, the <code>--help</code> prints the help of the
+command.</p>
+<p>This build does not yet recognise the global options <code>-v</code>, <code>--no-color</code> and
+<code>--no-pager</code>, or <code>--version</code> at the group root. Before a command name, they
+fail as unknown names. <code>init</code> accepts the first three after its name, as the
+next section says. <code>task list</code> and <code>task show</code> accept <code>--no-color</code> and
+<code>--no-pager</code> after their names, and refuse <code>-v</code> with status 69.</p>
+<section id="create-the-gest-project-of-a-checkout" class="level3">
+<h3 class="anchored" data-anchor-id="create-the-gest-project-of-a-checkout">Create the Gest project of a checkout</h3>
+<p><code>gos i init</code>, or <code>gossil issue init</code>, creates the Gest project of the open
+checkout that holds the current directory. It stores the project as a private
+project ticket, and it binds the checkout to that project. A project ticket is
+the Fossil ticket that holds one Gest project, as the
+<a href="issue-ticket.html">issue ticket guide</a> says. All four forms of executable and group
+run the same command.</p>
+<p>First, make the checkout with <code>vcs init</code> and <code>vcs open --root</code>. Then run <code>init</code>
+in the checkout root or in a folder below it:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode text code-with-copy"><code class="sourceCode text">$ cd /home/alice/project
+$ gos v init /home/alice/project.fossil
+$ gos v open --repository /home/alice/project.fossil --checkout work --root /home/alice/project
+Opened checkout work at /home/alice/project (repository fc0dd44fb5dcb4aaecff68e771149f0698cbec87, head 397b39fc09ae52025628af5f7fbddefae0bbf53301664e2965cc279e89141c4f)
+$ gos i init
+  ✓  initialized project  lkpunroy
+
+  root  /home/alice/project</code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>The short ID is the first 8 letters of the Gest ID of the project. The line
+<code>root</code> names the checkout root. Gest prints the current directory there, and Gossil
+prints the checkout root. The output has no color.</p>
+<p><code>init</code> takes no repository or checkout selection. It finds the nearest <code>.gossil</code>
+marker at or above the current directory, and reads the locator that <code>vcs open</code>
+published. The locator selects the repository and the checkout. The command then
+admits them with the same rules as <code>vcs open</code>, configuration included. It never
+creates a repository, a checkout registration or a locator.</p>
+<p>In one transaction, <code>init</code> writes these rows:</p>
+<ul>
+<li>the rows of a private project ticket, as the
+<a href="issue-ticket.html#bind-a-project-to-a-checkout">issue ticket guide</a> lists them</li>
+<li>one <code>g_project_binding</code> row, with the checkout ID, the Gest ID and the checkout root</li>
+<li>one <code>g_checkout_project</code> row, with the checkout ID and the Gest ID</li>
+</ul>
+<p>The ticket ID is 40 random hexadecimal digits, and the Gest ID is random. The
+date and both timestamps hold the current time. The user is the local login, the
+first nonempty value of <code>GOSSIL_USER</code>, <code>USER</code>, <code>LOGNAME</code> and <code>USERNAME</code>, or else
+<code>root</code>. A failure before the commit leaves every byte of the repository unchanged.</p>
+<p>A second <code>init</code>, or an <code>init</code> in a folder below the root, prints the same message
+for the bound project. It changes no byte. Gest also keeps the project that it
+finds. After <code>init</code>, every <code>vcs</code> command still works, and <code>init</code> works
+both before and after the first commit.</p>
+<p><code>init</code> accepts <code>--local</code>, <code>--no-color</code>, <code>--no-pager</code> and <code>-v</code>, <code>-vv</code> or
+<code>--verbose</code>, and ignores each of them. The locator already selects the
+repository, so <code>--local</code> changes nothing. Every other argument fails with
+status 2:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode text code-with-copy"><code class="sourceCode text">gossil: unexpected argument &quot;--json&quot; for issue init
+Usage: gossil issue init [OPTIONS]</code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>A lone <code>--help</code> or <code>-h</code> prints the help of <code>init</code>. The other exit statuses
+follow CLI-05, the list of exit codes in the Gossil CLI specification:</p>
+<div class="sd-table">
+<table class="caption-top table">
+<thead>
+<tr>
+<th>Case</th>
+<th>Status</th>
+<th>Message on stderr</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Success, also for a checkout with a bound project</td>
+<td>0</td>
+<td>None</td>
+</tr>
+<tr>
+<td>An argument that <code>init</code> does not take</td>
+<td>2</td>
+<td><code>gossil: unexpected argument &quot;X&quot; for issue init</code></td>
+</tr>
+<tr>
+<td>No marker, a marker without a locator, or a repository without <code>vcs open</code></td>
+<td>78</td>
+<td><code>gossil: no open checkout holds this directory; run gos v init and gos v open first</code></td>
+</tr>
+<tr>
+<td>A malformed locator</td>
+<td>78</td>
+<td>The locator error</td>
+</tr>
+<tr>
+<td>A configured data directory that conflicts with the locator, or that holds no <code>gossil.db</code></td>
+<td>78</td>
+<td><code>configured storage conflicts with explicit repository</code></td>
+</tr>
+<tr>
+<td>A repository at an older catalog, or one that lost its Gossil tables</td>
+<td>78</td>
+<td>The message of the <a href="#exit-status-and-errors">exit section</a></td>
+</tr>
+<tr>
+<td>A local login that is not UTF-8</td>
+<td>78</td>
+<td><code>gossil: the local login is not UTF-8; set GOSSIL_USER</code></td>
+</tr>
+<tr>
+<td>A failure of storage or admission, for example a changed binding row</td>
+<td>74</td>
+<td>The storage error, such as <code>unsupported project binding state</code></td>
+</tr>
+<tr>
+<td>A repository that already holds a project ticket, while the checkout has no project</td>
+<td>74</td>
+<td>The refusal below</td>
+</tr>
+<tr>
+<td>A missing repository file, or another I/O failure</td>
+<td>74</td>
+<td>The I/O error</td>
+</tr>
+<tr>
+<td>A failed write of the success message to stdout, after the commit</td>
+<td>74</td>
+<td><code>gossil: issue init kept the project, and stdout failed: ERROR</code></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>For a repository that already holds a project, the storage error holds this text:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode text code-with-copy"><code class="sourceCode text">issue init needs one project creation, a registered checkout with no bound project, and a repository with no project; binding an existing project is not available in this build</code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>This build has these limits:</p>
+<ul>
+<li>The project is private only.</li>
+<li><code>init</code> writes no audit row and no undo history.</li>
+<li>A text field cannot hold <code>[</code>.</li>
+<li><code>init</code> writes no selectors, tags or links.</li>
+<li><code>init</code> does not bind a project that the repository already holds. Gest binds
+the one live project, or refuses several of them as ambiguous. Gossil refuses
+both cases with status 74.</li>
+<li>Repositories of older Gossil versions are not supported.</li>
+</ul>
+</section>
+<section id="create-a-task" class="level3">
+<h3 class="anchored" data-anchor-id="create-a-task">Create a task</h3>
+<p><code>gos i task create TITLE</code>, or <code>gossil issue task create TITLE</code>, stores one private
+task in the Gest project of the open checkout. Run <code>gos i init</code> first. All four
+forms of executable and group run the same command. The aliases <code>new</code> and <code>t</code> work
+as in Gest, so <code>gos i t new TITLE</code> is the same command too:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode text code-with-copy"><code class="sourceCode text">$ gos i task create &quot;Write the docs&quot; -p high -m area=docs
+  ✓  created task  nwlkpqzs
+
+  title  Write the docs</code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>The short ID is the first 8 letters of the Gest ID of the task. The output has no
+color. The text form follows the success message of the pinned Gest source, and
+its exact bytes are provisional. With <code>-q</code> or <code>--quiet</code>, the command prints the
+short ID alone.</p>
+<p>With <code>-j</code> or <code>--json</code>, the command prints the task as Gest’s JSON envelope. The
+envelope has the fields <code>assigned_to</code>, <code>created_at</code>, <code>description</code>, <code>id</code>, <code>metadata</code>,
+<code>priority</code>, <code>project_id</code>, <code>resolved_at</code>, <code>status</code>, <code>title</code> and <code>updated_at</code>, and
+then <code>notes</code>, <code>relationships</code> and <code>tags</code>. The last three are empty lists. The JSON
+status of a task in progress is <code>inprogress</code>, as in Gest. With both <code>--json</code> and
+<code>--quiet</code>, the command prints the JSON.</p>
+<p>Like <code>init</code>, the command finds the repository and the checkout through the locator
+of the nearest <code>.gossil</code> marker. It takes the project from the checkout binding
+that <code>init</code> wrote. In one transaction, it writes the rows of one private task
+ticket, as the <a href="issue-ticket.html#rows-that-one-write-adds">issue ticket guide</a> lists
+them.</p>
+<p>The ticket ID is 40 random hexadecimal digits, and the Gest ID is random. The
+date and both timestamps hold the current time. The user is the local login, as
+for <code>init</code>. A failure before the commit leaves every byte of the repository
+unchanged.</p>
+<p>The command accepts these options of Gest:</p>
+<div class="sd-table">
+<table class="caption-top table">
+<thead>
+<tr>
+<th>Option</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>-d</code>, <code>--description</code></td>
+<td>The description. Without it, the description is empty.</td>
+</tr>
+<tr>
+<td><code>-p</code>, <code>--priority</code></td>
+<td><code>0</code> to <code>4</code>, or <code>critical</code>, <code>high</code>, <code>medium</code>, <code>low</code> or <code>lowest</code> in any case</td>
+</tr>
+<tr>
+<td><code>-s</code>, <code>--status</code></td>
+<td><code>open</code>, <code>in-progress</code>, <code>in_progress</code>, <code>inprogress</code>, <code>done</code> or <code>cancelled</code>, in any case. The default is <code>open</code>. <code>done</code> and <code>cancelled</code> also set <code>resolved_at</code> to the creation time.</td>
+</tr>
+<tr>
+<td><code>-m</code>, <code>--metadata</code></td>
+<td><code>KEY=VALUE</code>, repeatable. A dotted key makes nested objects. <code>true</code>, <code>false</code> and numbers become JSON values, and other values become strings.</td>
+</tr>
+<tr>
+<td><code>--metadata-json</code></td>
+<td>A JSON object, repeatable, merged key by key after the <code>-m</code> pairs</td>
+</tr>
+<tr>
+<td><code>-j</code>, <code>--json</code> and <code>-q</code>, <code>--quiet</code></td>
+<td>The output forms above</td>
+</tr>
+<tr>
+<td><code>-r</code>, <code>--raw</code>, <code>--no-color</code>, <code>--no-pager</code>, <code>-v</code>, <code>--verbose</code></td>
+<td>Accepted, and they change nothing</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>The parser follows the rules of Clap, the Rust parser of arguments that the Gest
+source uses. A short option can take its value in the same word, as in <code>-p1</code>, and a long option after <code>=</code>, as in
+<code>--priority=1</code>. Short flags can share one word, as in <code>-jq</code>. A word after <code>--</code> is
+the title, even when it starts with <code>-</code>.</p>
+<p>A <code>-h</code> inside a word of short flags, as in <code>-jh</code>, prints the help, by the rule of
+the <a href="#issue-commands">issue section</a>. The help options differ from Clap in two cases.
+Clap refuses <code>-d -h T</code>, because <code>-d</code> has no value. This build prints the help.
+Clap also refuses <code>-j -jh T</code>, because <code>-j</code> comes twice. This build prints the help,
+because it checks each word on its own.</p>
+<p>The command refuses these inputs:</p>
+<div class="sd-table">
+<table class="caption-top table">
+<thead>
+<tr>
+<th>Input</th>
+<th>Status</th>
+<th>Message on stderr</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>An unknown option, a second title, a repeated option other than <code>-m</code>, <code>--metadata-json</code>, <code>--tag</code>, <code>-l</code>, <code>--link</code> and <code>-v</code>, or a word that is not UTF-8</td>
+<td>2</td>
+<td><code>gossil: issue task create: PROBLEM</code>, then the usage line</td>
+</tr>
+<tr>
+<td>A missing value, or a separate value that starts with <code>-</code>, such as <code>-p -1</code></td>
+<td>2</td>
+<td><code>gossil: issue task create: &quot;--priority&quot; needs a value</code></td>
+</tr>
+<tr>
+<td>A priority or status that Gest does not accept, such as <code>-p 5</code> or <code>-s closed</code></td>
+<td>2</td>
+<td><code>gossil: issue task create: invalid value for &quot;--priority&quot;: ...</code></td>
+</tr>
+<tr>
+<td><code>--phase</code> without <code>--iteration</code></td>
+<td>2</td>
+<td><code>gossil: issue task create: &quot;--phase&quot; needs &quot;--iteration&quot;</code></td>
+</tr>
+<tr>
+<td><code>--assign</code>, <code>--batch</code>, <code>-i</code> or <code>--iteration</code>, <code>-l</code> or <code>--link</code>, <code>--phase</code> or <code>--tag</code></td>
+<td>69</td>
+<td><code>gossil: issue task create: --assign is not available in this build</code></td>
+</tr>
+<tr>
+<td>No title</td>
+<td>69</td>
+<td><code>gossil: issue task create: reading the title from stdin is not available in this build; give TITLE</code></td>
+</tr>
+<tr>
+<td>A <code>-m</code> pair without <code>=</code>, a key of more than 32 parts, or <code>--metadata-json</code> that is not a JSON object</td>
+<td>64</td>
+<td>The Gest message, such as <code>gossil: issue task create: --metadata-json must be a JSON object</code></td>
+</tr>
+<tr>
+<td>A <code>[</code> in the title, the description or the metadata, including a JSON array</td>
+<td>64</td>
+<td><code>gossil: issue task create: the title contains &quot;[&quot;, ...</code></td>
+</tr>
+<tr>
+<td>A task artifact of more than 65,536 bytes</td>
+<td>64</td>
+<td><code>gossil: issue task create: the task has at least N bytes, more than the 65536 that this build stores</code></td>
+</tr>
+<tr>
+<td>No open checkout</td>
+<td>78</td>
+<td><code>gossil: no open checkout holds this directory; run gos v init and gos v open first</code></td>
+</tr>
+<tr>
+<td>A repository at an older catalog, or one that lost its Gossil tables</td>
+<td>78</td>
+<td>The message of the <a href="#exit-status-and-errors">exit section</a></td>
+</tr>
+<tr>
+<td>A checkout with no project</td>
+<td>78</td>
+<td><code>gossil: this checkout has no Gest project; run gos i init first</code></td>
+</tr>
+<tr>
+<td>A local login that is not UTF-8</td>
+<td>78</td>
+<td><code>gossil: the local login is not UTF-8; set GOSSIL_USER</code></td>
+</tr>
+<tr>
+<td>A failure of storage or admission, or another I/O failure</td>
+<td>74</td>
+<td>The storage or I/O error</td>
+</tr>
+<tr>
+<td>A failure of the JSON output, after the commit</td>
+<td>65</td>
+<td><code>gossil: issue task create kept the task, and JSON output failed: ERROR</code></td>
+</tr>
+<tr>
+<td>A failed write to stdout, after the commit</td>
+<td>74</td>
+<td><code>gossil: issue task create kept the task, and stdout failed: ERROR</code></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>The command checks the usage errors first, then the refused options, then the
+title. It then opens the repository and checks the project. The checks of the
+metadata, of <code>[</code> and of the size of the artifact come last. Gest uses another
+order, and checks the project first, before the title and the metadata.</p>
+<p>The command never reads stdin and never opens an editor. Gest reads the title or
+the description from stdin or from <code>$EDITOR</code> when they are missing. This build
+refuses a missing title and stores an empty description.</p>
+<p>Each command checks what it reads and writes in its own transaction. So a
+command sees each commit that another command made after the open, and needs no
+second open for it. A command can wait for the write lock longer than its
+timeout and refuse with <code>database is locked</code>. Every issue command takes that
+lock, the two read commands included.</p>
+<p>The refusal <code>database is locked</code> comes before the commit. <code>init</code>, <code>task create</code>,
+<code>task list</code> and <code>task show</code> then open the repository again and try once more. A second refusal
+gives 74, so many commands at once can still fail.</p>
+<p>This build has these limits:</p>
+<ul>
+<li>The command stores private tasks only.</li>
+<li>The command writes no audit row and no undo history, so a task that this build
+creates cannot be undone.</li>
+<li>A text field cannot hold <code>[</code>, because Markdown backlinks are not ported.</li>
+<li>The command writes no tags, links, iteration membership or assignment.</li>
+<li>Repositories of older Gossil versions are not supported.</li>
+<li>A task artifact holds at most 65,536 bytes.</li>
+<li>A task needs a project that the repository holds and that is not archived.</li>
+<li>The cost of a write does not grow with the count of tasks. The
+<a href="issue-ticket.html#how-many-issues-a-repository-holds">issue ticket guide</a>
+gives the measured times of each command at 100, 1,000 and 5,000 tasks.</li>
+<li>With many commands at the same time, a command can still refuse with 74 and
+<code>database is locked</code> after its one retry, and it stored nothing. When the
+write of the task waited too long, the message starts with
+<code>gossil: issue task create:</code>. When the opening of the repository waited too
+long, the message is the storage error alone, without that prefix.</li>
+</ul>
+</section>
+<section id="list-the-tasks-of-the-project" class="level3">
+<h3 class="anchored" data-anchor-id="list-the-tasks-of-the-project">List the tasks of the project</h3>
+<p><code>gos i task list</code>, or <code>gos i t ls</code>, prints the tasks of the project that <code>init</code>
+bound to the open checkout. It finds the repository as <code>init</code> does, and it writes
+nothing. The newest task comes first, and the list leaves out each task that is
+<code>done</code> or <code>cancelled</code>:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode text code-with-copy"><code class="sourceCode text">$ gos i task list
+lqrooooo  in-progress  P1    Task o
+lmommmmm  open         P1    Task m</code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>The text output is provisional, as the <a href="issue-read.html#text-output">issue read guide</a>
+says. <code>--json</code> prints the JSON of Gest. The guide gives the order, the filters and
+both forms of output. <code>task list</code> accepts these options:</p>
+<ul>
+<li><code>-a</code> or <code>--all</code> adds the tasks that are <code>done</code> or <code>cancelled</code>.</li>
+<li><code>-s STATUS</code> or <code>--status STATUS</code> keeps the tasks in that status. Without <code>--all</code>, a
+<code>done</code> or <code>cancelled</code> task stays out.</li>
+<li><code>-j</code> or <code>--json</code> prints JSON.</li>
+<li><code>--no-color</code> and <code>--no-pager</code> change nothing.</li>
+</ul>
+<p>The Gest pin is the Gest commit that this build follows. Its other options are
+<code>--assigned-to</code>, <code>--limit</code>, <code>-t</code> or <code>--tag</code>, <code>-q</code> or <code>--quiet</code>, <code>-r</code> or <code>--raw</code>, and
+<code>-v</code> or <code>--verbose</code>. The command exits with status 69 on each of them:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="sourceCode text code-with-copy"><code class="sourceCode text">gossil: issue task list option --limit is not available in this build</code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="show-one-task" class="level3">
+<h3 class="anchored" data-anchor-id="show-one-task">Show one task</h3>
+<p><code>gos i task show ID</code>, or <code>gos i t view ID</code>, prints one task. The ID can be the
+full 32-letter Gest ID or a prefix of it that names one task. The command searches
+the tasks of every project, as Gest does, but it still needs a bound project.
+It accepts <code>-j</code> or <code>--json</code>, <code>--no-color</code> and <code>--no-pager</code>. It refuses <code>-q</code> or
+<code>--quiet</code>, <code>-r</code> or <code>--raw</code>, and <code>-v</code> or <code>--verbose</code> with status 69. The
+<a href="issue-read.html#find-a-task-by-prefix">issue read guide</a> gives the search and the
+output.</p>
+<p>While other commands write, a read can wait too long for the lock, as a write
+can. Then <code>task list</code> and <code>task show</code> open the repository again and read once
+more. They print the output only after the read succeeds, so a second try does
+not print it twice. A second
+refusal gives 74.</p>
+<p>The two read commands exit with these statuses of CLI-05:</p>
+<div class="sd-table">
+<table class="caption-top table">
+<thead>
+<tr>
+<th>Case</th>
+<th>Status</th>
+<th>Message on stderr</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Success</td>
+<td>0</td>
+<td>None</td>
+</tr>
+<tr>
+<td>A parser failure, such as an unknown option, an extra argument or no ID</td>
+<td>2</td>
+<td><code>gossil: </code> and the problem, then the usage line</td>
+</tr>
+<tr>
+<td>An option that this build does not support</td>
+<td>69</td>
+<td><code>gossil: issue task COMMAND option --NAME is not available in this build</code>, where <code>COMMAND</code> is <code>list</code> or <code>show</code></td>
+</tr>
+<tr>
+<td>An invalid prefix, such as <code>L</code></td>
+<td>64</td>
+<td><code>gossil: Id prefix must contain only characters k-z, found &#x27;L&#x27;</code></td>
+</tr>
+<tr>
+<td>A prefix that names no task</td>
+<td>66</td>
+<td><code>gossil: not found: id prefix &#x27;PREFIX&#x27;</code></td>
+</tr>
+<tr>
+<td>A prefix that names more than one task</td>
+<td>66</td>
+<td><code>gossil: ambiguous id prefix &#x27;PREFIX&#x27;: matches N entities</code></td>
+</tr>
+<tr>
+<td>No open checkout holds the directory</td>
+<td>78</td>
+<td><code>gossil: no open checkout holds this directory; run gos v init and gos v open first</code></td>
+</tr>
+<tr>
+<td>The checkout has no bound project</td>
+<td>78</td>
+<td><code>gossil: this checkout has no Gest project; run gos i init first</code></td>
+</tr>
+<tr>
+<td>A failure of storage or admission</td>
+<td>74</td>
+<td>The storage error</td>
+</tr>
+<tr>
+<td>A failed write to stdout</td>
+<td>74</td>
+<td><code>gossil: cannot write the output: ERROR</code></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>The other failures of the locator and the configuration give the statuses that the
+<a href="#create-the-gest-project-of-a-checkout"><code>init</code> table</a> lists. The parser checks the
+arguments before the command opens the repository. So a parser failure or an
+unsupported option exits with 2 or 69 even outside a checkout.</p>
+</section>
+</section>
 <section id="initialize-a-repository" class="level2">
 <h2 class="anchored" data-anchor-id="initialize-a-repository">Initialize a repository</h2>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode sh code-with-copy"><code class="sourceCode sh">just gossil vcs init --admin-user alice --date-override <span class="st">&#x27;2026-11-18 12:34:56&#x27;</span> NEW_REPOSITORY
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10"><pre class="sourceCode sh code-with-copy"><code class="sourceCode sh">just gossil vcs init --admin-user alice --date-override <span class="st">&#x27;2026-11-18 12:34:56&#x27;</span> NEW_REPOSITORY
 just gossil vcs new --sha1 ANOTHER_NEW_REPOSITORY</code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Initialization accepts exactly one destination. Both executable names and both
 group names support <code>init</code> and its <code>new</code> alias. The destination must be new.
@@ -175,7 +732,7 @@ Reopen also admits the supported private history written by the library. The loc
 an owner-local lookup file at <code>ROOT/.gossil/checkout.json</code>. Neither operation
 selects files, creates file history or restores working files. The source supports open and locator recovery. Installation and publication
 require separate delivery evidence.</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode sh code-with-copy"><code class="sourceCode sh">just gossil vcs open --repository PATH --checkout ID --root ROOT</code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb11"><pre class="sourceCode sh code-with-copy"><code class="sourceCode sh">just gossil vcs open --repository PATH --checkout ID --root ROOT</code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="sd-table">
 <table class="caption-top table">
 <thead>
@@ -210,18 +767,22 @@ supply <code>--root</code>. Open requires an existing database and never creates
 The root can contain ordinary files and nested Git repositories. Their bytes
 remain unselected and unchanged. Native VCS open requires no issue, project or
 author initialization. It does not grant Gest project authority.</p>
-<p>The native library admits catalog4 with exactly zero or one registration and
-the supported tracking, scope and private recording history. Catalog1, unrelated
-file history and a second registration are outside this command. The <a href="native-storage.html">storage guide</a> defines those catalog formats.
-Native admission checks the repository and owner binding,
-canonical root, device/inode and complete supported state. The locator cannot
+<p>The native library admits catalog6 with exactly zero or one registration,
+the supported tracking, scope and private recording history, and private issue
+tickets. Open checks only the facts whose cost does not grow with the history.
+<code>gos v verify</code> checks the whole history. Catalog1, unrelated file history and a second registration are outside
+this command. The command refuses a repository at an older Gossil catalog, 2, 4
+or 5, before any effect, with exit 78. The <a href="native-storage.html">storage guide</a>
+defines those catalog formats.</p>
+<p>Native admission checks the repository and owner binding,
+canonical root, device/inode, registration and checkout keys. The locator cannot
 replace those checks. See <a href="native-storage.html#register-one-existing-directory">native storage</a>
 for identity, root and resource limits.</p>
 <section id="reopen-and-recover" class="level3">
 <h3 class="anchored" data-anchor-id="reopen-and-recover">Reopen and recover</h3>
 <p>For an existing registration, omit <code>--root</code> and invoke open from its root or a
 nested directory:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode sh code-with-copy"><code class="sourceCode sh"><span class="bu">cd</span> ROOT
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb12"><pre class="sourceCode sh code-with-copy"><code class="sourceCode sh"><span class="bu">cd</span> ROOT
 /path/to/gos v open --repository PATH --checkout ID</code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Use an absolute database path when changing directories. Open searches from the
 canonical current directory toward the filesystem root and stops at the nearest
@@ -255,7 +816,8 @@ directory, reading <code>.config/gest.toml</code> then <code>.gest.toml</code> i
 nested keys, and key names become lowercase.</li>
 </ol>
 <p>A usable absolute <code>storage.data_dir</code> explicitly selects <code>gossil.db</code> inside that
-directory. Its canonical existing database must match <code>--repository</code>. The exact
+directory. Its canonical existing database must match <code>--repository</code>. A
+directory that holds no <code>gossil.db</code> conflicts too. The exact
 uppercase <code>GEST_STORAGE__DATA_DIR</code> accepts an absolute native-byte path without
 UTF-8 loss. An effective relative path is not an explicit selection and does
 not revive a value from an earlier configuration layer.</p>
@@ -332,7 +894,9 @@ identity against malicious database substitution.</p>
 and returns status 0. <code>HEAD</code> is the shared head, which stays at the empty root
 when the library records private history. Failures return status 1 with a diagnostic on stderr.
 Locator diagnostics name their publication phase. Internal error categories do
-not change this process exit status.</p>
+not change this process exit status. The one exception is a repository at an
+older Gossil catalog, which returns status 78, as
+<a href="#exit-status-and-errors">Exit status and errors</a> says.</p>
 <p>A receipt write failure can occur after
 successful publication. It preserves the committed registration and locator,
 so a failed command does not imply that nothing committed.</p>
@@ -346,7 +910,7 @@ all tracked paths, their pending or recorded state, and their actual scope.
 Use the separate scope and commit commands below to select scopes and record files.</p>
 <p>First, use <code>vcs open</code> to publish or recover the locator.
 Then run these commands from the registered checkout root or one of its descendants:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode sh code-with-copy"><code class="sourceCode sh">/path/to/gos v add --repository /absolute/history.gossil --checkout work --path notes/plan.md --path notes/review.md
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb13"><pre class="sourceCode sh code-with-copy"><code class="sourceCode sh">/path/to/gos v add --repository /absolute/history.gossil --checkout work --path notes/plan.md --path notes/review.md
 /path/to/gos v status --repository /absolute/history.gossil --checkout work</code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Both <code>--repository</code> and <code>--checkout</code> are required exactly once. Repeat <code>--path PATH</code> for each file.
 There are no positional path lists. Paths are exact UTF-8 names relative to the
@@ -378,7 +942,7 @@ rows or counters. A failed batch rolls back its metadata changes.</p>
 <p>Working files are never written. Temporary reads do not create a stored content
 snapshot, a check-in or a recording receipt.</p>
 <p>Both commands print the complete tracked inventory in pathname order:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode text code-with-copy"><code class="sourceCode text">Tracked paths (A: pending addition, R: recorded):
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb14"><pre class="sourceCode text code-with-copy"><code class="sourceCode text">Tracked paths (A: pending addition, R: recorded):
 A	unselected	&quot;notes/plan.md&quot;
 A	unselected	&quot;notes/review.md&quot;</code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Each row starts with <code>A</code> for a pending addition or <code>R</code> for a recorded path.
@@ -405,7 +969,7 @@ infers a repository, checkout or scope. The configuration, marker and identity
 checks described for open also apply.</p>
 <section id="select-immutable-path-scopes" class="level3">
 <h3 class="anchored" data-anchor-id="select-immutable-path-scopes">Select immutable path scopes</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode sh code-with-copy"><code class="sourceCode sh">/path/to/gos v scope --repository /absolute/history.gossil --checkout work --scope private --path notes/plan.md --path notes/review.md</code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb15"><pre class="sourceCode sh code-with-copy"><code class="sourceCode sh">/path/to/gos v scope --repository /absolute/history.gossil --checkout work --scope private --path notes/plan.md --path notes/review.md</code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p><code>--scope shared|private</code> is required exactly once. Supply at least one
 <code>--path PATH</code>; repeat that option for each exact tracked path relative to the
 registered root. The one chosen scope applies to every path in this request.
@@ -422,7 +986,7 @@ requested paths, including choices already stored unchanged.</p>
 </section>
 <section id="record-the-complete-private-tree" class="level3">
 <h3 class="anchored" data-anchor-id="record-the-complete-private-tree">Record the complete private tree</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="sourceCode sh code-with-copy"><code class="sourceCode sh">/path/to/gos v commit --repository /absolute/history.gossil --checkout work --scope private --all-tracked --user alice --comment <span class="st">&#x27;Save notes&#x27;</span> --date-override <span class="st">&#x27;2026-11-21T12:00:00&#x27;</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb16"><pre class="sourceCode sh code-with-copy"><code class="sourceCode sh">/path/to/gos v commit --repository /absolute/history.gossil --checkout work --scope private --all-tracked --user alice --comment <span class="st">&#x27;Save notes&#x27;</span> --date-override <span class="st">&#x27;2026-11-21T12:00:00&#x27;</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="sd-table">
 <table class="caption-top table">
 <thead>
@@ -471,7 +1035,7 @@ strictly later than every parent under native SQL date conversion. Actor, commen
 and date text must be UTF-8 without NUL. Comments containing <code>[</code> are refused,
 including on a no-change request. This restriction narrows Fossil’s comment grammar.</p>
 <p>The command prints one of these lines, followed by a newline:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10"><pre class="sourceCode text code-with-copy"><code class="sourceCode text">Recorded private check-in: HASH
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb17"><pre class="sourceCode text code-with-copy"><code class="sourceCode text">Recorded private check-in: HASH
 No changes</code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p><code>HASH</code> is the new native check-in hash. An unchanged tree returns <code>No changes</code>
 without a new receipt or any changed head, counter, content or classification.
@@ -505,9 +1069,9 @@ later than the stored parents. After a durable commit, that retry prints
 <h2 class="anchored" data-anchor-id="short-names">Short names</h2>
 <p>The <code>gos</code> executable runs the same implementation as <code>gossil</code>. Both accept <code>v</code>
 as a short name for <code>vcs</code>. For example, this runs the same round-trip check:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb11"><pre class="sourceCode sh code-with-copy"><code class="sourceCode sh">cargo run --locked --bin gos -- v test-delta FILE1 FILE2</code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb18"><pre class="sourceCode sh code-with-copy"><code class="sourceCode sh">cargo run --locked --bin gos -- v test-delta FILE1 FILE2</code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Use either executable with either group name for initialization, native open,
-add/status, scope/commit, info, timeline/log, the three delta diagnostics and
+add/status, scope/commit, info, timeline/log, verify, the three delta diagnostics and
 the prepared glob diagnostic.
 Usage messages use fixed spellings regardless of the invocation alias.
 Add and status use <code>gos v</code>, and the other command usage messages use <code>gossil vcs</code>.
@@ -516,9 +1080,27 @@ The usage lines of the help all use <code>gossil vcs</code>.</p>
 <section id="exit-status-and-errors" class="level2">
 <h2 class="anchored" data-anchor-id="exit-status-and-errors">Exit status and errors</h2>
 <p>Success and help return status 0. Usage, input, delta and output failures return status 1
-with one diagnostic line on stderr. An unknown group or command returns status 2,
+with one diagnostic line on stderr. A recognised issue command that this build does not run returns status 69,
+as the <a href="#issue-commands">issue section</a> says. <code>issue init</code> returns the
+<a href="#create-the-gest-project-of-a-checkout">statuses of CLI-05</a>, such as 78 and 74, and so do
+<a href="#create-a-task"><code>issue task create</code></a>, <a href="#list-the-tasks-of-the-project"><code>issue task list</code></a>
+and <a href="#show-one-task"><code>issue task show</code></a>. An unknown group or command returns status 2,
 as the <a href="#get-help">help section</a> says. A help request with an argument after
 the command name also returns status 2, with two lines on stderr.</p>
+<p>A repository whose catalog marker names an older Gossil catalog, 2, 4 or 5,
+returns status 78 before any effect. The three lines on stderr name the
+repository, the catalog found and catalog6, and say to create a new repository
+with <code>gos v init</code>. The CAT-07 message of the specification also names <code>gos i init</code>.
+In this build <code>gos i init</code> makes no repository, so the message leaves it out.
+The catalog marker is the <code>storage_version</code> value of the <code>g_storage</code> table, and
+not the <code>.gossil</code> checkout marker.</p>
+<p>Open, <code>verify</code> and every command that reads a repository check the catalog marker
+before they set any SQLite pragma that writes to the file. So a plain SQLite file, a
+stock Fossil repository or a file at an older catalog keeps every byte, and its header too.</p>
+<p>A stock <code>fossil rebuild</code> drops every table that Fossil does not know, so it
+drops each <code>g_</code> table. A repository that holds Fossil tables but no Gossil
+tables returns status 78 before any effect, with this message:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb19"><pre class="sourceCode text code-with-copy"><code class="sourceCode text">this repository has lost its Gossil tables (was `fossil rebuild` run on it?); restore it from a backup</code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Missing input reports <code>no such file: PATH</code>.
 An output-open failure reports <code>unable to open file &quot;PATH&quot; for writing</code>.
 Invalid delta application reports <code>Delta application failed.</code>.
@@ -541,13 +1123,13 @@ acceptance rules are in the <a href="conformance.html">runner guide</a>.</p>
 <section id="inspect-current-recorded-checkout-identity" class="level2">
 <h2 class="anchored" data-anchor-id="inspect-current-recorded-checkout-identity">Inspect current recorded checkout identity</h2>
 <p>Run <code>info</code> from the registered root or a descendant with a complete checkout locator:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb12"><pre class="sourceCode sh code-with-copy"><code class="sourceCode sh">/path/to/gossil vcs info --repository /absolute/history.gossil --checkout work
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb20"><pre class="sourceCode sh code-with-copy"><code class="sourceCode sh">/path/to/gossil vcs info --repository /absolute/history.gossil --checkout work
 /path/to/gos v info --repository /absolute/history.gossil --checkout work</code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Both executable names accept both <code>vcs</code> and <code>v</code>. Repository and checkout selections
 are required exactly once. The command accepts no revision argument, hash prefix,
 tag, <code>--root</code> or <code>--json</code>. Standalone <code>--help</code> or <code>-h</code> succeeds without reading a checkout.</p>
 <p>Success prints exactly five lines in this order:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb13"><pre class="sourceCode text code-with-copy"><code class="sourceCode text">repository: &quot;/absolute/history.gossil&quot;
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb21"><pre class="sourceCode text code-with-copy"><code class="sourceCode text">repository: &quot;/absolute/history.gossil&quot;
 local-root: &quot;/absolute/work&quot;
 checkout: FULL_CURRENT_NATIVE_ID
 shared-head: FULL_SHARED_NATIVE_ID
@@ -579,11 +1161,13 @@ are outside this qualification.</p>
 </section>
 <section id="planned-commands" class="level2">
 <h2 class="anchored" data-anchor-id="planned-commands">Planned commands</h2>
-<p>Broader version-control commands and Gest task commands are planned. Neither
-<code>gossil</code> nor <code>gos</code> accepts them, and each fails with status 2, as the
-<a href="#get-help">help section</a> says. The short names above apply to initialization and the
+<p>Broader version-control commands are planned. Neither <code>gossil</code> nor <code>gos</code>
+accepts them, and each fails with status 2, as the <a href="#get-help">help section</a>
+says. This build recognises the Gest commands other than <code>init</code>, <code>task create</code>, <code>task list</code> and
+<code>task show</code>, and refuses them with status 69, as the
+<a href="#issue-commands">issue section</a> says. The short names above apply to initialization and the
 three delta diagnostics, the prepared glob diagnostic, native open, add/status,
-scope/commit, info and timeline/log. Shared
+scope/commit, info, timeline/log and verify. Shared
 recording, changing scopes, removal, rename, materialization, sync and Gest
 record associations remain unsupported.</p>
 </section>
@@ -591,7 +1175,7 @@ record associations remain unsupported.</p>
 <h2 class="anchored" data-anchor-id="read-complete-recorded-ancestry">Read complete recorded ancestry</h2>
 <p>Run from the registered checkout root or a descendant after <code>vcs open</code> has
 published a complete matching locator:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb14"><pre class="sourceCode sh code-with-copy"><code class="sourceCode sh">just gossil vcs timeline --repository REPO --checkout ID
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb22"><pre class="sourceCode sh code-with-copy"><code class="sourceCode sh">just gossil vcs timeline --repository REPO --checkout ID
 just gossil v log --checkout ID --repository REPO</code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Replace <code>REPO</code> and <code>ID</code> with the existing database and exact checkout identity.
 Both selectors are required, each once, with separate values in either order.
@@ -614,13 +1198,19 @@ reformatting.</p>
 exactly once, last. Only the root has <code>private: false</code>. Before private recording,
 the root is the sole row.</p>
 <p>Opening uses existing-locator admission and publishes or repairs no locator.
-The API then authenticates the complete supported history in its own transaction.
+The API then walks every manifest of the chain in its own transaction. It
+refuses an event whose user or comment is not the U or C card of its
+manifest, and a chain whose length differs from the generation.
 Neither operation reads working-file contents. Pending additions and dirty or
 deleted working files do not change the recorded output. Missing checkout,
 corrupt or unsupported state and exhausted bounds fail without a partial history.</p>
 <p>Opening admission, the API operation and serialization each have a separate
-finite allowance. They do not form one aggregate budget for the whole invocation.
-For serialization, N counts the UTF-8 source bytes of all four string values,
+finite allowance. They do not form one aggregate budget for the whole invocation.</p>
+<p>The API operation parses every manifest of the chain under one parser ledger of
+4,096 cards. A check-in of one file has about 8 cards, so <code>timeline</code> and <code>log</code> refuse
+a chain of about 500 such check-ins with exit 1 and <code>recording native artifact validation</code>. <code>status</code>, <code>commit</code> and <code>gos v verify</code> still admit that repository.
+Earlier releases had the same bound.</p>
+<p>For serialization, N counts the UTF-8 source bytes of all four string values,
 including each hash once. The checked worst-case bound adds <code>6*N</code> to the exact syntax overhead.
 That overhead is 61 bytes per private row or 62 per root row and includes keys,
 quotes, punctuation, boolean and LF. The cumulative bound must fit the
@@ -630,17 +1220,70 @@ space once before serializing the complete response.</p>
 <p>The API records its result and completes its checked transaction before the
 adapter prepares output. Stdout receives no bytes until complete preflight and
 serialization succeed. Success exits 0. Failures exit 1 with a diagnostic and
-retain the original cause. A stdout write failure can leave partial stdout.</p>
+retain the original cause. A repository at an older Gossil catalog exits 78. A stdout write failure can leave partial stdout.</p>
 <p>The read preserves logical database state and working files. This contract makes
 no claim that physical database bytes remain identical.</p>
 <p>See <a href="development-plan.html#recorded-ancestry-cli-qualification">qualification</a>
 before treating this source command as released or installed. General Fossil
 timeline behavior and <code>cat</code> remain separate work.</p>
 </section>
+<section id="verify-a-repository" class="level2">
+<h2 class="anchored" data-anchor-id="verify-a-repository">Verify a repository</h2>
+<p>Run the full proof of a repository, or the proof of one issue:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb23"><pre class="sourceCode sh code-with-copy"><code class="sourceCode sh">gos v verify --repository REPO
+gos v verify --repository REPO --issue ID</code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>The command takes <code>--repository</code> once and <code>--issue</code> at most once, in either order.
+Each value must be UTF-8 text of 1 to 4096 bytes, without NUL. Any other value gives the exit status 1.
+The four forms <code>gossil vcs verify</code>, <code>gossil v verify</code>, <code>gos vcs verify</code> and
+<code>gos v verify</code> all run it. A lone <code>--help</code> or <code>-h</code> prints the usage line
+<code>Usage: gossil vcs verify --repository REPO [--issue ID]</code>. The command changes no byte
+of the repository.</p>
+<p>Without <code>--issue</code>, the command replays every check-in and every issue artifact. It
+compares each native and typed table with that replay. Open and the other commands
+do not. They check only the facts that each one reads, as
+<a href="native-storage.html#check-a-repository">check a repository</a> says. On success the
+command prints one line and exits 0:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb24"><pre class="sourceCode text code-with-copy"><code class="sourceCode text">verified: 1 check-ins, 4 issues, 15 tables compared</code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>The first count gives the private check-ins and the second the task and project
+creations. The third count gives the table comparisons that passed. Each
+comparison covers a whole table, so the third count does not grow with each new issue
+or check-in.</p>
+<p><code>--issue ID</code> takes a Gest ID or a prefix of one. Unlike <code>issue task show</code>, it does not prefer open
+tasks. The prefix must match exactly one task or project in the <code>combined</code> scope, whatever its status.</p>
+<p>The command proves one task or project from its own rows. The command replays the one
+artifact of the issue and compares its <code>event</code>, <code>tagxref</code>, <code>ticket</code>, <code>ticketchng</code> and
+typed rows with that replay. It replays no other artifact. For a task, it checks only
+that a typed project row with its project ID exists. On success it prints
+<code>verified issue ID: ticket K</code> and exits 0, where <code>K</code> is the ticket ID.</p>
+<p><code>--issue</code> checks only a subset of the repository. It proves the rows that belong to
+the issue and that an index reaches. The rows are its artifact, ticket, change row, event, tag, tag row, private
+mark, typed row and, for a task, its project. It does not claim that no other row in the repository
+names the issue. Only <code>gos v verify</code> without <code>--issue</code> makes that claim.</p>
+<p>The proof of one issue reads its rows by an index or a primary key. The one exception is a
+scan of the ticket table to find the ticket of the ID.</p>
+<p>The proof also checks that each table that the full proof keeps empty in every repository has no row, with one fixed
+query per table. A repository with no checkout must also keep <code>unsent</code>, <code>filename</code>, <code>mlink</code>, <code>plink</code>,
+<code>g_path_scope</code>, <code>g_project_binding</code> and <code>g_checkout_project</code> empty. Only the full proof
+checks those seven whole tables. The proof of one issue does not
+see a row that no index of the issue reaches, or a typed row in another scope. The full proof
+refuses those rows.</p>
+<p>The proof of one issue refuses a task whose project the repository does not hold, which
+the full proof admits. See <a href="issue-ticket.html#the-proof-of-one-issue">the proof of one issue</a>.</p>
+<p>The statuses follow CLI-05. A failed proof prints on stderr the fixed refusal of the
+first check that fails, such as <code>stored issue rows differ from the ticket artifact</code>.
+The command then exits with 74, the status of a database value that is not valid. An invalid prefix
+exits with 64. A prefix that names no issue, or more than one, exits with 66, with
+the messages of <code>issue task show</code>.</p>
+<p>A usage error or a failed write to stdout exits with 1. A repository at an older Gossil catalog exits with 78.</p>
+<p>The proof bounds each artifact and each row by the limits of the CLI. Only
+<code>timeline</code> and <code>log</code> set a bound on the whole history, as the section on them says. The time of the full proof grows with the
+count of issues and check-ins. A stock <code>fossil rebuild</code> drops the Gossil tables,
+and then the command exits with 78, as every command does.</p>
+</section>
 <section id="inspect-a-fossil-glob-list" class="level2">
 <h2 class="anchored" data-anchor-id="inspect-a-fossil-glob-list">Inspect a Fossil glob list</h2>
 <p>The source accepts all four forms:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb15"><pre class="sourceCode text code-with-copy"><code class="sourceCode text">gossil vcs test-glob PATTERN STRING ...
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb25"><pre class="sourceCode text code-with-copy"><code class="sourceCode text">gossil vcs test-glob PATTERN STRING ...
 gossil v test-glob PATTERN STRING ...
 gos vcs test-glob PATTERN STRING ...
 gos v test-glob PATTERN STRING ...</code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
@@ -654,7 +1297,7 @@ Missing arguments fail with <code>Usage: gossil vcs test-glob PATTERN STRING ...
 for every alias.</p>
 <p>For <code>PATTERN</code> equal to <code>*.rs,src/*</code> and candidates <code>src/lib.rs</code> and <code>notes.md</code>,
 the source-defined output is:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb16"><pre class="sourceCode text code-with-copy"><code class="sourceCode text">SQL expression: (x GLOB &#x27;*.rs&#x27; OR x GLOB &#x27;src/*&#x27;)
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb26"><pre class="sourceCode text code-with-copy"><code class="sourceCode text">SQL expression: (x GLOB &#x27;*.rs&#x27; OR x GLOB &#x27;src/*&#x27;)
 pattern[0] = [*.rs]
 pattern[1] = [src/*]
 1 1 src/lib.rs
@@ -688,4 +1331,4 @@ without <code>--root</code>, add explicit files, select private scope and commit
 paths. Use <code>info</code> to inspect the recorded checkout identity. Follow the <a href="getting-started.html#record-private-files-from-source">source walkthrough</a>
 and preserve durable state when a command reports an output failure.</p>
 </section>
-<nav class="page-navigation"><div class="nav-page nav-page-previous"><a href="getting-started.html" class="pagination-link"><i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">Get started</span></a></div><div class="nav-page nav-page-next"><a href="working-with-repositories.html" class="pagination-link"><span class="nav-page-text">Working with repositories</span> <i class="bi bi-arrow-right-short"></i></a></div></nav></main></div></body></html>
+<nav class="page-navigation"><div class="nav-page nav-page-previous"><a href="getting-started.html" class="pagination-link"><i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">Get started</span></a></div><div class="nav-page nav-page-next"><a href="issues.html" class="pagination-link"><span class="nav-page-text">Track issues beside your files</span> <i class="bi bi-arrow-right-short"></i></a></div></nav></main></div></body></html>

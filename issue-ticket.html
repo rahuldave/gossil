@@ -1,0 +1,389 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="generator" content="smalldocs-0.5.13"><meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes"><title>Store a private issue ticket – Gossil</title><link rel="icon" href="site_libs/themes/atelier/logo.svg"><link rel="stylesheet" href="site_libs/themes/atelier/atelier.css" data-mode="light" class="quarto-color-scheme" id="quarto-bootstrap-light" media="not all and (prefers-color-scheme: dark)"><link rel="stylesheet" href="site_libs/themes/atelier/atelier-dark.css" data-mode="dark" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap-dark" media="(prefers-color-scheme: dark)"><link rel="stylesheet" href="site_libs/bootstrap-icons/bootstrap-icons.min.css"><link rel="stylesheet" href="site_libs/smalldocs.css"><meta name="smalldocs:offset" content="./"><script src="site_libs/bootstrap/bootstrap.bundle.min.js"></script><script src="site_libs/fuse/fuse.min.js"></script><script src="site_libs/smalldocs.js" defer></script><script>(function(){var d=document.documentElement,s=null;try{s=localStorage.getItem('smalldocs-scheme')}catch(e){}var alt=s?s==='alternate':!!(window.matchMedia&&matchMedia('(prefers-color-scheme: dark)').matches);var ls=document.querySelectorAll('link.quarto-color-scheme');if(alt)d.dataset.scheme='alternate';if(s)ls.forEach(function(l){var on=l.classList.contains('quarto-color-alternate')===alt;if(on)l.setAttribute('blocking','render');l.media=on?'all':'not all'});var on=ls[alt?1:0];if(on&&on.dataset.mode==='dark')d.classList.add('quarto-dark')})();</script></head><body class="nav-sidebar floating nav-fixed"><header id="quarto-header" class="headroom sticky-top"><nav class="navbar navbar-expand-lg sd-navbar-default"><div class="navbar-container container-fluid"><div class="navbar-brand-container mx-auto"><a class="navbar-brand" href="index.html"><span class="navbar-title">Gossil</span></a></div><button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button><div class="collapse navbar-collapse" id="navbarCollapse"><ul class="navbar-nav navbar-nav-scroll me-auto"><li class="nav-item"><a class="nav-link" href="getting-started.html"><span class="menu-text">Start</span></a></li><li class="nav-item"><a class="nav-link" href="concepts.html"><span class="menu-text">Library concepts</span></a></li><li class="nav-item"><a class="nav-link" href="cli.html"><span class="menu-text">CLI</span></a></li><li class="nav-item"><a class="nav-link" href="api/index.html"><span class="menu-text">Rust API</span></a></li><li class="nav-item"><a class="nav-link" href="development-plan.html"><span class="menu-text">Development</span></a></li></ul><ul class="navbar-nav navbar-nav-scroll ms-auto"><li class="nav-item compact"><a class="nav-link" href="https://github.com/rahuldave/gossil" aria-label="github"><i class="bi bi-github" role="img"></i></a></li><li class="nav-item compact"><a class="quarto-color-scheme-toggle nav-link" href="" title="Toggle dark mode" onclick="window.smalldocsToggleScheme(); return false;"><i class="bi"></i></a></li></ul><div class="quarto-navbar-tools"><div class="smalldocs-search" id="quarto-search"><i class="bi bi-search" aria-hidden="true"></i><input type="search" class="form-control form-control-sm" placeholder="Search" aria-label="Search" autocomplete="off"><div class="smalldocs-search-results dropdown-menu"></div></div></div></div></div></nav><nav class="quarto-secondary-nav"><div class="container-fluid d-flex"><button type="button" class="quarto-btn-toggle btn" aria-controls="quarto-sidebar" aria-label="Toggle sidebar navigation"><i class="bi bi-layout-text-sidebar-reverse"></i></button><nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="issues.html">Guides</a></li><li class="breadcrumb-item"><a href="issue-ticket.html">Store a private issue ticket</a></li></ol></nav></div></nav></header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article has-sidebar has-margin"><nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto"><div class="sidebar-menu-container"><ul class="list-unstyled mt-1"><li class="sidebar-item"><div class="sidebar-item-container"><a href="index.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Gossil</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="getting-started.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Get started</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="cli.html" class="sidebar-item-text sidebar-link"><span class="menu-text">CLI reference</span></a></div></li><li class="sidebar-item sidebar-item-section"><div class="sidebar-item-container"><a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true"><span class="menu-text">Guides</span></a><a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section"><i class="bi bi-chevron-right ms-2"></i></a></div><ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show"><li class="sidebar-item"><div class="sidebar-item-container"><a href="issues.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Track issues beside your files</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="working-with-repositories.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Working with repositories</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="compare-with-git.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Compare Gossil with Git</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="concepts.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Library concepts</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="examples.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Rust library examples</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="delta-encoder.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Bounded delta encoder</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="delta-decoder.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Bounded delta decoder</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="blob-primitives.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Byte digests and packed blobs</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="artifact-checksum.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Artifact byte checksums</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="token-codec.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Fossil token bytes</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="glob.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Bounded Fossil glob port</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="file-path.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Lexical file paths</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="history.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Check-in graph paths</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="git-reader.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Git reader</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="artifact-parser.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Artifact parser</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="diff.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Compare normalized byte lines</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="task-ticket.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Emit a task creation artifact</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="gest-ticket.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Emit artifact and project creation tickets</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="issue-ticket.html" class="sidebar-item-text sidebar-link active" aria-current="page"><span class="menu-text">Store a private issue ticket</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="issue-read.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Read tasks with task list and task show</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="local-storage.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Local database ownership</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="native-storage.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Native local storage</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="local-records.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Strict local records and metered queries</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="gest-task-values.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Gest task values</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="gest-project-values.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Gest project values</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="gest-author-values.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Gest author values</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="gest-artifact-values.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Gest artifact values</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="gest-iteration-values.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Gest iteration values</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="gest-tag-values.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Gest tag values</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="gest-note-values.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Gest note values</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="gest-relationship-values.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Gest relationship values</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="gest-entity-tag-values.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Gest entity tag values</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="gest-iteration-task-values.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Gest iteration task values</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="gest-model.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Gest model</span></a></div></li></ul></li><li class="sidebar-item sidebar-item-section"><div class="sidebar-item-container"><a class="sidebar-item-text sidebar-link" href="api/index.html"><span class="menu-text">Rust API</span></a><a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Toggle section"><i class="bi bi-chevron-right ms-2"></i></a></div><ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show"><li class="sidebar-item"><div class="sidebar-item-container"><a href="api/artifact.html" class="sidebar-item-text sidebar-link"><span class="menu-text">artifact</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="api/artifact_checksum.html" class="sidebar-item-text sidebar-link"><span class="menu-text">artifact_checksum</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="api/compression.html" class="sidebar-item-text sidebar-link"><span class="menu-text">compression</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="api/content_hash.html" class="sidebar-item-text sidebar-link"><span class="menu-text">content_hash</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="api/delta.html" class="sidebar-item-text sidebar-link"><span class="menu-text">delta</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="api/diff.html" class="sidebar-item-text sidebar-link"><span class="menu-text">diff</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="api/file_path.html" class="sidebar-item-text sidebar-link"><span class="menu-text">file_path</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="api/gest_artifact_values.html" class="sidebar-item-text sidebar-link"><span class="menu-text">gest_artifact_values</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="api/gest_author_values.html" class="sidebar-item-text sidebar-link"><span class="menu-text">gest_author_values</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="api/gest_entity_tag_values.html" class="sidebar-item-text sidebar-link"><span class="menu-text">gest_entity_tag_values</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="api/gest_iteration_task_values.html" class="sidebar-item-text sidebar-link"><span class="menu-text">gest_iteration_task_values</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="api/gest_iteration_values.html" class="sidebar-item-text sidebar-link"><span class="menu-text">gest_iteration_values</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="api/gest_note_values.html" class="sidebar-item-text sidebar-link"><span class="menu-text">gest_note_values</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="api/gest_project_values.html" class="sidebar-item-text sidebar-link"><span class="menu-text">gest_project_values</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="api/gest_relationship_values.html" class="sidebar-item-text sidebar-link"><span class="menu-text">gest_relationship_values</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="api/gest_tag_values.html" class="sidebar-item-text sidebar-link"><span class="menu-text">gest_tag_values</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="api/gest_task_values.html" class="sidebar-item-text sidebar-link"><span class="menu-text">gest_task_values</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="api/gest_ticket.html" class="sidebar-item-text sidebar-link"><span class="menu-text">gest_ticket</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="api/git_reader.html" class="sidebar-item-text sidebar-link"><span class="menu-text">git_reader</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="api/glob.html" class="sidebar-item-text sidebar-link"><span class="menu-text">glob</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="api/gossil.html" class="sidebar-item-text sidebar-link"><span class="menu-text">gossil</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="api/history.html" class="sidebar-item-text sidebar-link"><span class="menu-text">history</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="api/native_date.html" class="sidebar-item-text sidebar-link"><span class="menu-text">native_date</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="api/product.html" class="sidebar-item-text sidebar-link"><span class="menu-text">product</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="api/storage.html" class="sidebar-item-text sidebar-link"><span class="menu-text">storage</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="api/task_ticket.html" class="sidebar-item-text sidebar-link"><span class="menu-text">task_ticket</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="api/token_codec.html" class="sidebar-item-text sidebar-link"><span class="menu-text">token_codec</span></a></div></li><li class="sidebar-item sidebar-item-section"><div class="sidebar-item-container"><a class="sidebar-item-text sidebar-link" href="api/gest_model/index.html"><span class="menu-text">gest_model</span></a><a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="false" aria-label="Toggle section"><i class="bi bi-chevron-right ms-2"></i></a></div><ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth2"><li class="sidebar-item"><div class="sidebar-item-container"><a href="api/gest_model/artifact.html" class="sidebar-item-text sidebar-link"><span class="menu-text">artifact</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="api/gest_model/author.html" class="sidebar-item-text sidebar-link"><span class="menu-text">author</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="api/gest_model/entity_tag.html" class="sidebar-item-text sidebar-link"><span class="menu-text">entity_tag</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="api/gest_model/iteration.html" class="sidebar-item-text sidebar-link"><span class="menu-text">iteration</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="api/gest_model/note.html" class="sidebar-item-text sidebar-link"><span class="menu-text">note</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="api/gest_model/primitives.html" class="sidebar-item-text sidebar-link"><span class="menu-text">primitives</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="api/gest_model/project.html" class="sidebar-item-text sidebar-link"><span class="menu-text">project</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="api/gest_model/relationship.html" class="sidebar-item-text sidebar-link"><span class="menu-text">relationship</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="api/gest_model/tag.html" class="sidebar-item-text sidebar-link"><span class="menu-text">tag</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="api/gest_model/task.html" class="sidebar-item-text sidebar-link"><span class="menu-text">task</span></a></div></li></ul></li></ul></li><li class="sidebar-item sidebar-item-section"><div class="sidebar-item-container"><a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true"><span class="menu-text">Development</span></a><a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true" aria-label="Toggle section"><i class="bi bi-chevron-right ms-2"></i></a></div><ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show"><li class="sidebar-item"><div class="sidebar-item-container"><a href="development-plan.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Development and contributing</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="conformance.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Inherited-test runner</span></a></div></li><li class="sidebar-item"><div class="sidebar-item-container"><a href="libsql-wrapper.html" class="sidebar-item-text sidebar-link"><span class="menu-text">Exact libsql TEXT retrieval</span></a></div></li></ul></li></ul></div></nav><div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item"></div><div id="quarto-margin-sidebar" class="sidebar margin-sidebar"><nav id="TOC" role="doc-toc" class="toc-active"><h2 id="toc-title">On this page</h2><ul><li><a href="#write-and-read-a-ticket" id="toc-write-and-read-a-ticket" class="nav-link" data-scroll-target="#write-and-read-a-ticket">Write and read a ticket</a></li><li><a href="#bind-a-project-to-a-checkout" id="toc-bind-a-project-to-a-checkout" class="nav-link" data-scroll-target="#bind-a-project-to-a-checkout">Bind a project to a checkout</a></li><li><a href="#list-every-issue" id="toc-list-every-issue" class="nav-link" data-scroll-target="#list-every-issue">List every issue</a></li><li><a href="#how-the-full-proof-checks-issues" id="toc-how-the-full-proof-checks-issues" class="nav-link" data-scroll-target="#how-the-full-proof-checks-issues">How the full proof checks issues</a></li><li><a href="#the-proof-of-one-issue" id="toc-the-proof-of-one-issue" class="nav-link" data-scroll-target="#the-proof-of-one-issue">The proof of one issue</a></li><li><a href="#rows-that-one-write-adds" id="toc-rows-that-one-write-adds" class="nav-link" data-scroll-target="#rows-that-one-write-adds">Rows that one write adds</a></li><li><a href="#shapes-that-the-writer-refuses" id="toc-shapes-that-the-writer-refuses" class="nav-link" data-scroll-target="#shapes-that-the-writer-refuses">Shapes that the writer refuses</a></li><li><a href="#limits-of-this-build" id="toc-limits-of-this-build" class="nav-link" data-scroll-target="#limits-of-this-build">Limits of this build</a></li><li><a href="#how-many-issues-a-repository-holds" id="toc-how-many-issues-a-repository-holds" class="nav-link" data-scroll-target="#how-many-issues-a-repository-holds">How many issues a repository holds</a></li><li><a href="#tests" id="toc-tests" class="nav-link" data-scroll-target="#tests">Tests</a></li><li><a href="#recommendations" id="toc-recommendations" class="nav-link" data-scroll-target="#recommendations">Recommendations</a></li></ul></nav></div><main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="issues.html">Guides</a></li><li class="breadcrumb-item"><a href="issue-ticket.html">Store a private issue ticket</a></li></ol></nav><div class="quarto-title"><h1 class="title">Store a private issue ticket</h1></div><div class="quarto-title-meta"></div></header><p>The issue ticket writer stores one Gest task or project in a native repository, so that stock Fossil
+2.29 can read the ticket, check it and rebuild it. A ticket is the Fossil record of a piece of work.
+Gossil writes each Gest task and project as a ticket, and the <a href="task-ticket.html">task ticket</a> and
+<a href="gest-ticket.html">Gest ticket</a> emitters make its creation artifact. A creation artifact is the first and
+only artifact of a ticket in this build.</p>
+<p>The writer is a library method of <a href="api/storage.html#LocalOwnerRepository"><code>LocalOwnerRepository</code></a> in <code>src/storage/issue_ticket.rs</code>. A second
+method, <code>init_private_project</code>, writes a project and binds it to the registered checkout. The command
+<a href="cli.html#create-the-gest-project-of-a-checkout"><code>gos i init</code></a> calls that method, and
+<a href="cli.html#create-a-task"><code>gos i task create</code></a> calls <code>create_private_issue</code> for a task in the bound
+project. The repository must be at catalog 6, the newest catalog of Gossil storage.</p>
+<section id="write-and-read-a-ticket" class="level2">
+<h2 class="anchored" data-anchor-id="write-and-read-a-ticket">Write and read a ticket</h2>
+<p>Emit the creation artifact first, with <a href="api/task_ticket.html#task_creation_bytes"><code>task_creation_bytes</code></a> or <a href="api/gest_ticket.html#project_creation_bytes"><code>project_creation_bytes</code></a>. Then give the
+bytes to the writer, with explicit limits:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span class="kw">use</span> gossil::storage::{IssueLimits, PathScope, PrivateIssueRequest};
+
+<span class="kw">let</span> limits <span class="op">=</span> IssueLimits { admission, sql_rows: <span class="dv">100_000</span>, sql_bytes: <span class="dv">64</span> <span class="op">&lt;</span><span class="op">&lt;</span> <span class="dv">20</span> };
+<span class="kw">let</span> request <span class="op">=</span> PrivateIssueRequest { artifact: <span class="kw">&amp;</span>bytes, scope: PathScope::Private };
+<span class="kw">let</span> stored <span class="op">=</span> owner.create_private_issue(request, limits).<span class="cf">await</span><span class="op">?</span>;
+<span class="kw">let</span> read <span class="op">=</span> owner.read_private_issue(<span class="op">&amp;</span>stored.ticket_id, limits).<span class="cf">await</span><span class="op">?</span>;
+<span class="fu">assert_eq!</span>(read.record, stored.record);</code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><code>admission</code> holds the content and parser limits that the whole call shares. <code>sql_rows</code> and <code>sql_bytes</code> limit
+the rows and bytes that the SQL queries of one call can return. The result names the ticket ID, which is
+the K card, and the native name of the artifact. It also holds the validated <a href="api/gest_task_values.html#TaskValues"><code>TaskValues</code></a> or
+<a href="api/gest_project_values.html#ProjectValues"><code>ProjectValues</code></a>.</p>
+<p><code>read_private_issue</code> runs the checks of each command, which the
+<a href="native-storage.html#check-a-repository">native storage guide</a> lists. Then it reads the artifact that the
+<code>tkt-</code> tag of the ticket ID names, parses it and returns its record. It compares no row and writes
+nothing.</p>
+<p><code>create_private_issue</code> runs the same checks before its write and again after it, in the same
+transaction and under the same limits. It parses its artifact and checks that it is one canonical
+creation. It checks through an index that no row holds its ticket ID, tag, artifact or Gest ID. A task also
+needs a project that the repository holds and that is not archived. Each check uses an index, so the
+cost of a write does not grow with the count of issues.</p>
+</section>
+<section id="bind-a-project-to-a-checkout" class="level2">
+<h2 class="anchored" data-anchor-id="bind-a-project-to-a-checkout">Bind a project to a checkout</h2>
+<p><code>init_private_project</code> stores one project creation and binds it to the registered checkout, in one
+exclusive transaction:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span class="kw">use</span> gossil::storage::ProjectInitRequest;
+
+<span class="kw">let</span> request <span class="op">=</span> ProjectInitRequest { artifact: <span class="kw">&amp;</span>bytes, checkout_id: <span class="st">&quot;</span><span class="st">work</span><span class="st">&quot;</span> };
+<span class="kw">let</span> stored <span class="op">=</span> owner.init_private_project(request, limits).<span class="cf">await</span><span class="op">?</span>;
+<span class="kw">let</span> project <span class="op">=</span> owner.bound_project(<span class="st">&quot;</span><span class="st">work</span><span class="st">&quot;</span>, limits).<span class="cf">await</span><span class="op">?</span>;
+<span class="fu">assert!</span>(project.is_some());</code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>The method writes the rows that <code>create_private_issue</code> writes for a project, as the section
+<a href="#rows-that-one-write-adds">rows that one write adds</a> lists them. It also writes two binding rows:</p>
+<ul>
+<li><strong>g_project_binding</strong> gets the checkout ID, the Gest ID of the project and the exact root of the
+checkout.</li>
+<li><strong>g_checkout_project</strong> gets the checkout ID and the Gest ID of the project.</li>
+</ul>
+<p>Like <code>create_private_issue</code>, the method runs the checks of each command before and after its write. Before it
+changes anything, it refuses an artifact that is not one project creation, a checkout that is not registered and
+a checkout that already has a project. It also refuses a repository that already holds a project
+ticket, for example one that <code>create_private_issue</code> wrote. The refusal for these cases is
+<code>issue init needs one project creation, a registered checkout with no bound project, and a repository with no project; binding an existing project is not available in this build</code>. A failure before the
+commit leaves every byte of the repository files unchanged.</p>
+<p><code>bound_project</code> returns the Gest ID of the project bound to a checkout, or <code>None</code> when the checkout has
+no binding. It runs the checks of each command first, and it writes nothing.
+<code>bound_project</code> does not use the SQL limits in <code>limits</code>.</p>
+</section>
+<section id="list-every-issue" class="level2">
+<h2 class="anchored" data-anchor-id="list-every-issue">List every issue</h2>
+<p><code>list_private_issues</code> returns every task and project of the repository, in the order of the receipts
+that stored them:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode rust code-with-copy"><code class="sourceCode rust"><span class="kw">let</span> issues <span class="op">=</span> owner.list_private_issues(limits).<span class="cf">await</span><span class="op">?</span>;
+<span class="cf">for</span> issue <span class="kw">in</span> <span class="op">&amp;</span>issues {
+    <span class="fu">println!</span>(<span class="st">&quot;</span><span class="st">{} {}</span><span class="st">&quot;</span>, issue.ticket_id, issue.native_name);
+}</code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>The call runs the checks of each command first. Then it reads each <code>combined</code> typed row with its
+ticket ID and artifact name. It replays no artifact, so it passes under a parser entry ceiling of one.
+It writes nothing. An empty repository gives an empty list. The SQL row ceiling of <a href="api/storage.html#IssueLimits"><code>IssueLimits</code></a> bounds
+the count of issues, and the parser input ceiling bounds the width of one row.</p>
+<p>The cost of the list grows with the count of issues, and not with the rest of the repository. The list
+does not compare the typed rows with the artifacts. <code>gos v verify</code> does.</p>
+<p>The <code>issue task list</code> handler reads the tasks through this call. The <code>issue task show</code> handler does
+not use it. It finds one task with <code>find_task</code> and proves it with <code>verify_issue</code>. The
+<a href="issue-read.html">issue read guide</a> gives the output of both commands.</p>
+</section>
+<section id="how-the-full-proof-checks-issues" class="level2">
+<h2 class="anchored" data-anchor-id="how-the-full-proof-checks-issues">How the full proof checks issues</h2>
+<p>The full proof of <code>gos v verify</code> finds each issue from its <code>tkt-</code> tag, parses its artifact again and derives every row from it.
+The <code>ticket</code>, <code>ticketchng</code>, <code>g_gest_tasks</code> and <code>g_gest_projects</code> tables must hold exactly the derived rows.
+The <code>event</code>, <code>tagxref</code>, <code>tag</code>, <code>blob</code>, <code>private</code>, <code>leaf</code>, <code>unclustered</code> and <code>rcvfrom</code> tables
+must hold exactly the rows of the check-ins and of the issues, with nothing else. The <code>unsent</code> table may
+hold any subset of the rows that replay gives, because a stock <code>fossil push</code> or <code>fossil sync</code> that sends
+nothing deletes rows from it. If any of these tables holds another row, for example a changed or extra
+row, the full proof refuses the repository.</p>
+<p>Issues and private check-ins can come in any order in one repository. Each check-in and each issue owns
+one receipt, and the receipts after the root’s have no gaps. Tags above the 12 built-in tags take their
+IDs in the order of the receipts that created them. So the full proof looks up the private branch tag by
+name. A Gest ID names one task or one project. The full proof refuses a project that reuses the Gest ID of a task,
+and a second ticket with the same ticket ID.</p>
+<p>The checkout fingerprint names a receipt. Registration takes the newest receipt, so when an issue comes
+before registration, the fingerprint names the receipt of that issue. After the first check-in, the
+fingerprint must name the receipt of the selected check-in, and open refuses an older fingerprint.</p>
+</section>
+<section id="the-proof-of-one-issue" class="level2">
+<h2 class="anchored" data-anchor-id="the-proof-of-one-issue">The proof of one issue</h2>
+<p><a href="api/storage.html#LocalOwnerRepository.verify_issue"><code>LocalOwnerRepository::verify_issue</code></a> proves one task or project from its own rows, and
+<a href="cli.html#verify-a-repository"><code>gos v verify --issue ID</code></a> runs it. It first finds the one ticket whose
+<code>gest_id</code> holds the ID.</p>
+<p>The proof of one issue checks only a subset of the repository. It proves the rows that
+belong to the issue and that an index reaches. The rows are its artifact, ticket, change row, event, tag, tag row,
+private mark, typed row and, for a task, its project. It does not claim that no other row in the
+repository names the issue. Only the full proof, <code>gos v verify</code> without <code>--issue</code>, makes that claim.</p>
+<p>It then checks that each table that the full proof keeps empty in every repository has no row, for example <code>delta</code>,
+<code>cherrypick</code>, <code>g_gest_notes</code> and <code>g_gest_relationships</code>. The check takes one fixed query per table. A row
+in one of these tables makes the proof refuse with <code>unsupported nonempty catalog6 table:</code> and the name
+of the table. A repository with no checkout must also keep <code>unsent</code>, <code>filename</code>, <code>mlink</code>, <code>plink</code>,
+<code>g_path_scope</code>, <code>g_project_binding</code> and <code>g_checkout_project</code> empty. The proof does not check those
+seven whole tables. It refuses only an <code>unsent</code>, <code>mlink</code> or <code>plink</code> row that names the issue, as the next
+paragraphs say, and only the full proof refuses every other row there.</p>
+<p>The <code>tkt-K</code> tag must then have one <code>tagxref</code> row. The RID of that row must name a
+private blob with a local receive record. The proof does not look for another blob with the same
+receipt, because no index reaches such a blob. The full proof refuses a shared receipt.</p>
+<p>No row of the <code>unsent</code>, <code>unclustered</code>, <code>leaf</code>, <code>phantom</code>, <code>orphan</code> or <code>backlink</code> table may name that
+blob. The same holds for an <code>attachment</code> row whose target is K, and for a <code>g_public_receipt</code> row with
+the hash of the blob. No <code>mlink</code> row may have the blob as its <code>mid</code>, <code>fid</code> or <code>pid</code>, and no <code>plink</code> row
+may have it as its <code>pid</code> or <code>cid</code>. No index reaches <code>mlink.pmid</code> or <code>plink.baseid</code>, so the proof does not check them.</p>
+<p>The proof replays the one artifact, which must be a canonical creation with this K. The <code>event</code>, <code>tagxref</code>, <code>ticket</code> and <code>ticketchng</code> rows of the issue must equal the replay.
+So must its typed row in the <code>combined</code> scope. The typed table of the other kind must hold no
+<code>combined</code> row with the Gest ID of the issue.</p>
+<p>For a task, the proof checks only that a <code>combined</code> project row with its project ID exists. When none
+exists, it refuses with <code>a stored task names a project that the repository does not hold</code>. The full
+proof admits such a task. The writer refuses it, so only a change outside Gossil can make one.</p>
+<p>The proof replays no other artifact. It reads the rows of this issue by an index or a primary key,
+except for the one lookup of the ticket by its Gest ID, which scans the <code>ticket</code> table. So apart from that
+lookup, the cost of the proof does not grow with the repository.</p>
+<p>The proof does not see a row that no index of the issue reaches, for example an unrelated tag or a
+ticket row without an artifact. It does not see a typed row in another scope either. Only the full proof,
+<code>gos v verify</code> without <code>--issue</code>, refuses those rows.</p>
+</section>
+<section id="rows-that-one-write-adds" class="level2">
+<h2 class="anchored" data-anchor-id="rows-that-one-write-adds">Rows that one write adds</h2>
+<p>The writer adds these rows in one exclusive transaction:</p>
+<ul>
+<li><strong>rcvfrom</strong> gets one local receipt, with <code>uid</code> 0, a NULL nonce and a NULL IP address.</li>
+<li><strong>blob</strong> gets the artifact, with <code>rcvid</code> set to that receipt, and <strong>private</strong> marks it.</li>
+<li><strong>tag</strong> gets <code>tkt-K</code> with the next free <code>tagid</code>, and <strong>tagxref</strong> gets
+<code>(tagid, 1, rid, rid, NULL, mtime, rid)</code>.</li>
+<li><strong>ticket</strong> and <strong>ticketchng</strong> get the decoded J fields as text, as Fossil <code>ticket_insert</code> writes them.</li>
+<li><strong>event</strong> gets one row of type <code>t</code>. Its comment is <code>New ticket [K16|K10] &lt;i&gt;title&lt;/i&gt;.</code>, where K16
+and K10 are the first 16 and 10 characters of K. The title is HTML-escaped, and a project has no title,
+so its comment holds <code>&lt;i&gt;&lt;/i&gt;</code>.</li>
+<li><strong>g_gest_tasks</strong> or <strong>g_gest_projects</strong> gets the typed row, with the scope key <code>combined</code>.</li>
+</ul>
+<p>The writer adds no <code>unclustered</code> row, no <code>unsent</code> row and no <code>backlink</code> row. Stock Fossil writes the same
+rows for a private ticket, except a <code>modreq</code> row for moderation, which Gossil does not write. The three
+local audit tables <code>transactions</code>, <code>transaction_events</code> and <code>g_command_audit</code> stay empty.</p>
+<p>Tag IDs above 12 follow the order of the writes. When a ticket comes before the first check-in, that
+ticket takes <code>tagid</code> 13, and the first check-in gives its branch tag the next free number. When the
+first check-in comes before the first ticket, its branch tag takes 13, and the first ticket takes 14.</p>
+</section>
+<section id="shapes-that-the-writer-refuses" class="level2">
+<h2 class="anchored" data-anchor-id="shapes-that-the-writer-refuses">Shapes that the writer refuses</h2>
+<p>The writer accepts one complete task or project creation for each ticket ID. It refuses each other shape
+as not supported in this build, and the refusal leaves every table unchanged:</p>
+<ul>
+<li>a second artifact for a ticket ID that the repository holds</li>
+<li>a task whose Gest ID a project holds, or a project whose Gest ID a task holds</li>
+<li>a change to a ticket, a ticket attachment or an artifact that is not a ticket</li>
+<li>an artifact that the emitter does not write again byte for byte, for example one with an unknown field</li>
+<li>a J value that contains <code>[</code>, because Gossil has no port of the Markdown backlinks of Fossil</li>
+<li>a request with a scope other than private</li>
+</ul>
+</section>
+<section id="limits-of-this-build" class="level2">
+<h2 class="anchored" data-anchor-id="limits-of-this-build">Limits of this build</h2>
+<p>Issues are private only. A write can fail and roll back after its checks passed. The next command runs
+its checks again in its own transaction, so a failed write does not lock out the stored tickets.</p>
+<p>Open and each command accept the binding tables <code>g_project_binding</code> and <code>g_checkout_project</code> in two states only.
+In the first, both tables are empty. In the second, each table holds the one row that
+<code>init_private_project</code> writes. Both rows then name the registered checkout and the Gest ID of one
+project that is not archived. The row of <code>g_project_binding</code> also holds the exact root of the
+checkout, and each ID must be text. Open refuses every other state with
+<code>unsupported project binding state</code>, and so does each command.</p>
+<p>In a repository without a checkout registration, open refuses every binding row.</p>
+<p>The tables <code>g_identity</code> and <code>g_contributor</code> stay empty, and the full proof refuses a row in either of
+them.
+The writer writes no audit row and no undo history. <code>init_private_project</code> does not bind a project that
+the repository already holds.</p>
+<p>The writer writes no selectors, tags of Gest or links. The scope key is the literal <code>combined</code>, and not
+the full key of the specification, because the full key needs selectors.</p>
+</section>
+<section id="how-many-issues-a-repository-holds" class="level2">
+<h2 class="anchored" data-anchor-id="how-many-issues-a-repository-holds">How many issues a repository holds</h2>
+<p>No command reads the whole repository, so no count of issues makes a write refuse. <code>task create</code>,
+<code>status</code> and <code>commit</code> each read only the rows that they need, by an index. <code>task show</code> finds its ticket
+by a scan of the <code>ticket</code> table, since no index holds the Gest ID, and then replays only its one
+artifact. <code>task list</code> reads every typed row, and <code>gos v verify</code> replays every artifact, so their cost
+grows with the count of issues. The scan of <code>task show</code> is cheap, as the times below show.</p>
+<p><code>just issue-capacity</code> stores 5,000 tasks in a release build and times each command at 100, 1,000 and
+5,000 tasks. One run on macOS, with 8 CPUs and load averages of about 9 before and 7 after, gave these
+times in milliseconds:</p>
+<div class="sd-table">
+<table class="caption-top table">
+<thead>
+<tr>
+<th>Tasks</th>
+<th>create</th>
+<th>list</th>
+<th>show</th>
+<th>status</th>
+<th>commit</th>
+<th>verify</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>100</td>
+<td>15</td>
+<td>15</td>
+<td>15</td>
+<td>13</td>
+<td>17</td>
+<td>101</td>
+</tr>
+<tr>
+<td>1,000</td>
+<td>15</td>
+<td>23</td>
+<td>16</td>
+<td>13</td>
+<td>17</td>
+<td>860</td>
+</tr>
+<tr>
+<td>5,000</td>
+<td>15</td>
+<td>68</td>
+<td>16</td>
+<td>13</td>
+<td>19</td>
+<td>4,267</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>The times of create, show, status and commit stay flat. The times of list and verify grow with the count
+of tasks.</p>
+<p><code>gos i task create</code> refuses a task artifact of more than 65,536 bytes.</p>
+</section>
+<section id="tests" class="level2">
+<h2 class="anchored" data-anchor-id="tests">Tests</h2>
+<p><code>tests/issue_ticket.rs</code> checks a task and a project end to end (GEST-T01). It also checks the metadata,
+priority and status values that one creation can hold (part of GEST-T02), and each refused shape.</p>
+<p>The unit controls in <code>tests/support/storage_issue_ticket.rs</code> inject a failure after each write step.
+They check that every byte of the repository files stays the same (GEST-T08). They also check that
+the full proof refuses a changed or extra row in each admitted table, for example a <code>tagxref</code> row with no
+RID. They check too that the full proof refuses a project that reuses the Gest ID of a task, while open
+and the read of the project admit it.</p>
+<p>For each changed row, the ticket reader, the list and the next write refuse only a change to a fact that
+each one reads. For example, the reader refuses a second artifact under the tag, and the write refuses a
+missing project row. A new open admits each change, because none is a fact that open reads. No case
+changes a byte of the repository files.</p>
+<p>Each of the 29 cases of a changed row also runs the proof of one issue on the task and on the project.
+It checks the exact result of each proof. In 22 of the cases, at least one of the two proofs refuses.</p>
+<p>In the other 7 cases, both proofs admit the change and only the full proof refuses it. Those 7 cases add
+a row that no index of the issue reaches. Examples are an unrelated tag, a second event of the ticket
+and a change row of the artifact under another ticket. One of the 7 cases adds a second typed row in
+another scope.</p>
+<p>In the case of an artifact whose K is not the K of its tag, the proof of the K of the tag also refuses,
+with <code>stored issue rows differ from the ticket artifact</code>.</p>
+<p><code>the_proof_has_no_total_ceiling</code> stores a project and two tasks. It sets total content ceilings of 64 bytes
+and a parser ceiling of 20 entries, far below what the whole repository needs. Under them <code>verify</code> passes and counts 0
+check-ins and 3 issues. A parser input ceiling of 64 bytes makes <code>verify</code> refuse.</p>
+<p>Under the same small ceilings, <code>verify_issue</code> proves a task and a project, and <code>find_issue</code> finds each of them by a prefix.
+<code>find_issue</code> refuses the prefixes <code>&quot;&quot;</code>, <code>&quot;a&quot;</code> and 33 letters with <code>invalid issue ID prefix</code>. No step
+changes a byte.</p>
+<p>Most cases of <code>the_issue_proof_refuses_each_row_that_names_its_artifact</code> add one row that names the
+task, by its artifact or by its Gest ID. A <code>phantom</code>, <code>orphan</code>, <code>delta</code>, <code>cherrypick</code>, <code>g_gest_notes</code> or
+<code>g_gest_relationships</code> row makes the proof of the task refuse with the message of that nonempty table.
+An <code>mlink</code> row with the artifact as its <code>mid</code>, <code>fid</code> or <code>pid</code> makes it refuse with <code>stored issue rows differ from the ticket artifact</code>. So does a <code>plink</code> row with the artifact as its <code>pid</code> or <code>cid</code>. So do a
+<code>g_public_receipt</code> row with the hash of the artifact and a <code>combined</code> project row with the Gest ID of the task.</p>
+<p>One more case deletes the ticket row of the task, which gives the same refusal. The test also checks the
+exact refusal of the full proof for each case.</p>
+<p>Other tamper tests of check-ins, tracking, scopes and the timeline take the exact refusal of the full
+proof from <code>tests/fixtures/tamper-refusals.tsv</code>. Each line of that table holds a tamper statement, a tab
+and the first line of the refusal. <code>assert_refusal</code> in <code>tests/support/proof.rs</code> fails on a statement
+that the table does not hold, or on a different message.</p>
+<p><code>only_the_full_proof_refuses_rows_that_no_index_reaches</code> adds each of these in turn:</p>
+<ul>
+<li>a second blob under the receipt of the task</li>
+<li>an <code>mlink</code> row whose <code>pmid</code> is the task artifact</li>
+<li>a <code>plink</code> row whose <code>baseid</code> is the task artifact</li>
+</ul>
+<p>The proof of the task admits each, and <code>verify</code> refuses each.</p>
+<p><code>a_task_needs_its_project</code> checks that the writer refuses a task whose project the repository does not
+hold, or holds archived, and changes no byte. Then it deletes the typed row of the project. The proof of
+the task and <code>verify_issue</code> both refuse the task with the message of a missing project. <code>verify_issue</code>
+also refuses an ID that no ticket holds.</p>
+<p>The unit test <code>a_per_artifact_parser_ledger_does_not_accumulate</code> in
+<code>src/storage/repository.rs</code> checks that a per-artifact parser ledger keeps its whole allowance after each
+parse, and still refuses one artifact over its ceiling.</p>
+<p><code>tests/vcs_verify_cli.rs</code> checks <code>gos v verify</code> in all four forms. It checks the exact summary
+<code>verified: 1 check-ins, 4 issues, 15 tables compared</code>. It proves one task by its full ID and by a prefix,
+and the project by a prefix. It checks the usage line and the status of a usage error. It also checks the statuses of an invalid,
+missing or ambiguous prefix, and the exact count of an ambiguous prefix.</p>
+<p>A changed typed row makes both forms exit with status 74 and the fixed message. Open admits the row,
+so the proof itself refuses it.</p>
+<p><code>open_refuses_each_fact_that_it_reads</code> changes one fact that open reads in each case. The cases are a
+wrong catalog marker, a wrong fingerprint, a missing <code>server-code</code> or <code>project-code</code> config row, a
+missing owner row, a wrong checkout count and lost Gossil tables. <code>verify</code> and <code>status</code> each refuse
+at open, before their own work, and print the same message, and neither changes a byte. Lost tables give exit
+78 to both. Lost tables also make <code>gos i task list</code> and <code>gos i task show</code> exit with 78 and the same
+message.</p>
+<p><code>verify_counts_no_check_in_and_refuses_an_older_catalog</code> checks a repository without a commit. It prints
+<code>verified: 0 check-ins, 3 issues, 15 tables compared</code>. With stdout closed, the command exits with 1 and
+prints <code>gossil: unable to write the summary: </code>. A repository at catalog 4 makes both forms exit with 78
+and print three lines. No case changes a byte of the repository.</p>
+<p>Further unit controls cover <code>init_private_project</code>. A failure injected after each write step, the
+binding step included, leaves every byte unchanged and the checkout unbound. The method refuses a task,
+an unknown checkout, a bound checkout, a repository that holds an unbound project and a repository
+without a registration.</p>
+<p>Open refuses each changed, missing or extra binding row, a binding to a
+task or to an archived project, and a value that is not text. Before each change, the list call returns
+all three issues of the bound repository. After the change, the reader of the binding, the list call and
+a new open each refuse with <code>unsupported project binding state</code>.</p>
+<p><code>tests/issue_init_cli.rs</code> checks the command <code>gos i init</code> in all four forms, its second run, its
+refusals and the <code>vcs</code> commands before and after it. <code>tests/issue_task_cli.rs</code> checks
+<code>gos i task create</code> in the same way, and reads each stored task back with <code>read_private_issue</code>. It
+also creates a task in each of the four forms. Then it checks that <code>gos i task list --json</code> lists all
+four, and that <code>gos i task show --json</code> shows the stored ID, title and priority of each. It runs two
+<code>task create</code> commands at the same time, four times, and requires that both exit with 0.</p>
+<p>A further test in <code>tests/issue_task_cli.rs</code> holds the write lock for 7 seconds. A <code>task list</code> and a
+<code>task show</code> that start meanwhile retry and exit with 0. Then the test runs a <code>task create</code> beside a
+<code>task list</code>.</p>
+<p>The unit tests of <code>src/product/issue_task.rs</code> inject a failure after each write step of a new task. Then
+they check that every byte of the repository stays unchanged (GEST-T08).</p>
+<p>A further unit test there opens a second owner, and then the first owner commits. The second owner
+needs no second open. <code>task create</code> writes its task, and <code>gos i init</code> finds the project of the first
+owner. When no project is bound and the write of an init refuses, the init exits with 74 and the
+message of the write, and stores no project.</p>
+<p>A unit control in <code>src/storage/repository/recorded_history.rs</code> measures the charge of the checks of
+each command at 3, 6 and 12 issues, and checks that it stays the same. Further unit controls there check
+that repeated owner checks charge the schema once per admission. They also check that the ledger charges
+exactly the TEXT and BLOB bytes of a result.</p>
+<p>A unit control in <code>src/storage/content.rs</code> checks that the ledger charges a surface once per admission,
+and later only its growth. It also checks that the ledger charges and holds nothing for a refused
+reservation.</p>
+<p><code>tests/issue_capacity.rs</code> uses the ceilings of the CLI. Its ordinary test stores 300 tasks, then runs
+<code>task create</code>, <code>task list</code>, <code>task show</code>, <code>status</code>, <code>commit</code> and <code>verify</code>, and checks the output of
+each. The ignored test stores 5,000 tasks and prints the time of each command at 100, 1,000 and 5,000
+tasks. <code>just issue-capacity</code> runs the ignored test in a release build.</p>
+<p>A unit control lists two tasks and two projects in receipt order under a parser entry ceiling of one, and
+checks that the list changes no row. It finds the least SQL row ceiling under which the list passes, and
+checks that one more task makes the list refuse under that ceiling. It also checks that <code>find_task</code>
+refuses an empty prefix, a prefix of 33 letters and a prefix outside the letters k to z, with
+<code>invalid issue ID prefix</code>. A further control stores the ID of each task as a blob. A prefix still
+matches such an ID, and then <code>find_task</code> refuses the task with
+<code>a stored typed row does not hold a valid task or project</code> and changes no row of any table. In each
+of its three orders, the CAT-T07 subset below also lists the issues after each step.</p>
+<p>The CAT-T07 subset in <code>tests/issue_ticket.rs</code> writes issues and check-ins in three orders. In the first,
+an issue comes before the checkout is registered. In the second, issues come before the first check-in,
+and in the third, issues come after check-ins. After each step, a new open admits the repository, and
+the commands <code>status</code>, <code>add</code>, <code>commit</code> and <code>timeline</code> work.</p>
+<p>With check-ins between the issues, the
+full proof still refuses a changed issue, tag or receipt row, for example swapped tag IDs or swapped
+receipts. Open admits each change but one, the swapped receipt of the selected check-in, because that
+is the only fact among them that open reads. A further test checks which receipt the fingerprint names
+before and after the first check-in.</p>
+<p><code>just issue-ticket-interop</code> runs the stock Fossil check with the pinned Fossil 2.29 at <code>7e8ecf0ce4</code>. It
+writes a task and a project, then requires these results of stock Fossil:</p>
+<ol>
+<li><code>fossil test-integrity --parse</code> reports 0 errors.</li>
+<li><code>fossil ticket show</code> returns each J value byte for byte.</li>
+<li><code>fossil test-ticket-rebuild all</code> and <code>fossil rebuild</code> each write the same ticket, change, event, tag,
+private, unclustered, unsent and backlink rows as Gossil.</li>
+</ol>
+<p>It then writes check-ins with <code>gos</code> and an issue between them. On that repository, stock Fossil must
+report 0 errors from <code>fossil test-integrity --parse</code>. It must list both check-ins and the new ticket in
+<code>fossil timeline</code>, and show the ticket in <code>fossil ticket show</code>. <code>just catalog-interop</code> runs this check too.</p>
+<p>Last, the recipe runs the ignored test <code>stock_fossil_reads_a_repository_after_issue_init</code> in
+<code>tests/issue_init_cli.rs</code>. The test runs <code>gos v init</code>, <code>gos v open</code>, <code>gos i init</code>, <code>gos i task create</code>,
+one commit and a second <code>gos i task create</code>. Stock Fossil must then report 0 errors from
+<code>fossil test-integrity --parse</code>, and <code>fossil ticket show</code> must show the private project and both tasks.</p>
+<p>The comparison counts event times in whole milliseconds. Fossil formats <code>event.mtime</code> with its own
+conversion, which adds noise after the ninth decimal place of the Julian day. The comment bytes must be
+equal. If the reference is absent, the recipe exits 5, which means <code>not-run</code> and not a pass.</p>
+</section>
+<section id="recommendations" class="level2">
+<h2 class="anchored" data-anchor-id="recommendations">Recommendations</h2>
+<p>Validate a record with its converter, emit its creation artifact, and store it with
+<code>create_private_issue</code>. Bind a project to a checkout only with <code>init_private_project</code>. Run
+<code>just issue-ticket-interop</code> after a change to the writer, and report <code>not-run</code> apart from a pass.</p>
+</section>
+<nav class="page-navigation"><div class="nav-page nav-page-previous"><a href="gest-ticket.html" class="pagination-link"><i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">Emit artifact and project creation tickets</span></a></div><div class="nav-page nav-page-next"><a href="issue-read.html" class="pagination-link"><span class="nav-page-text">Read tasks with task list and task show</span> <i class="bi bi-arrow-right-short"></i></a></div></nav></main></div></body></html>
