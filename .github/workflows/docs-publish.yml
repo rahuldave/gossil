@@ -35,14 +35,18 @@ jobs:
       - uses: actions/checkout@v4
       - uses: astral-sh/setup-uv@v6
       - uses: extractions/setup-just@v3
+      # smalldocs runs rustdoc with cargo +nightly-2026-11-12, the toolchain of the section api of docs/_smalldocs.yml,
+      # not the toolchain file of the project, and with RUSTUP_AUTO_INSTALL=0. So this step installs it first. The
+      # starter of the docs role finds the toolchain in that config; Gossil names it here, as check.yml does.
       - name: Install pinned rustdoc JSON generator
         run: rustup toolchain install nightly-2026-11-12 --profile minimal
       - name: Install jlog, the shell of the recipes
-        # The tag v0.3.0 of jlog is the commit d4b712b. install.sh comes from the tag. It downloads the release binary,
-        # checks its SHA-256 and puts it in ~/.local/bin. The step shell bash has pipefail, so a failed download fails.
+        # The tag v0.5.0 of jlog is the commit 224a622a27920256e3d6ad6a8363c9ea96078a20. install.sh comes from that
+        # commit. It downloads the release binary, checks it against the .sha256 of the same release and puts it in ~/.local/bin. The step shell bash
+        # has pipefail, so a failed download fails.
         shell: bash
         run: |
-          curl -fsSL https://raw.githubusercontent.com/rahuldave/jlog/v0.3.0/scripts/install.sh | sh -s -- --tag v0.3.0
+          curl -fsSL https://raw.githubusercontent.com/rahuldave/jlog/224a622a27920256e3d6ad6a8363c9ea96078a20/scripts/install.sh | sh -s -- --tag v0.5.0
           echo "$HOME/.local/bin" >> "$GITHUB_PATH"
       - name: Set the git user for the push to gh-pages
         run: |

@@ -34,7 +34,8 @@ smalldocs builds the site. `just install docs` turns the role on, and
   the skill.
 - **`.github/workflows/docs-publish.yml`**, once. After a push to `main`, it
   runs `just docs-publish`. `just uninstall docs` removes it while you have
-  not changed it.
+  not changed it. The section "The Rust step of the workflow" below gives
+  its step for the API pages of a Rust crate.
 - **A line in `.gitignore`** for the folder of the built site, `_site` in
   the folder `docs`.
 - **The recipes** of `.agents/skills/docs/docs.just`, which the index of
@@ -72,3 +73,31 @@ settings of the repository.
 
 Run `just docs-publish` only from the workflow, or when the person asks. It
 pushes to GitHub.
+
+## The Rust step of the workflow
+
+`just docs-publish` runs smalldocs. smalldocs runs cargo only with the
+toolchain of its `api` section, never with the toolchain file of the project,
+and it builds in a temporary folder. So the workflow keeps no cache of Rust,
+and it does not install the toolchain of the project.
+
+smalldocs runs rustdoc only for a section `api` with `language: rust` in the
+config of the site. It then runs `cargo +TOOLCHAIN`, with the `toolchain` of
+that section, which is `nightly` by default. It does not install a missing
+toolchain. Its build goes into a temporary folder, not into `target/`.
+
+So the step "Install the Rust toolchain of the API pages" reads the config
+with the load of smalldocs. It runs `rustup toolchain install --profile
+minimal` for the toolchain of each such section. A site with no such section
+installs nothing. A config that smalldocs cannot read installs nothing, and
+the publish then reports the error. A toolchain name gets no install when it
+has a character other than a letter, a digit, `.`, `_` or `-`, or when it
+starts with no letter or digit. smalldocs then says that the toolchain is
+missing.
+
+The step and the recipes use the same version of smalldocs. When you change
+the version in `docs.just`, change it in the workflow too.
+
+A `pre-render` script of the config that runs cargo uses the toolchain file
+of the project. The workflow does not install that toolchain, so add a step
+`rustup toolchain install` before the step "Publish".

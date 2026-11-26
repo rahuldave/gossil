@@ -21,6 +21,7 @@ import os
 from pathlib import Path
 import re
 import shlex
+import shutil
 import subprocess
 import sys
 import tempfile
@@ -474,6 +475,21 @@ def write_launcher(launcher, helper):
     return launcher
 
 
+# With this variable set to 1, the step integration runs its tests with cargo nextest, a test runner that runs the
+# tests of every test binary at the same time, each in a process of its own.
+NEXTEST = 'JNPROFILE_RUST_NEXTEST'
+
+
+def coverage_command(step):
+    """The cargo llvm-cov command of STEP: COVERAGE, or for integration with NEXTEST set to 1, cargo llvm-cov nextest.
+
+    nextest fails a run with no test by default, and the step passes it, as cargo test does.
+    """
+    if step == 'integration' and os.environ.get(NEXTEST, '').strip() == '1':
+        return [*COVERAGE[:2], 'nextest', *COVERAGE[3:], '--no-tests=pass']
+    return COVERAGE
+
+
 def run_tests(step, args):
     """Run the tests of STEP with coverage into target/llvm-cov/STEP.lcov, with ARGS for cargo llvm-cov test.
 
@@ -513,7 +529,7 @@ def run_tests(step, args):
                JNPROFILE_PRIOR_RUSTC_WRAPPER=os.environ.get('RUSTC_WRAPPER', ''))
     for number, selection in enumerate(runs):
         parts.append(REPORTS / f'{step}.part{number}.lcov')
-        command = [*COVERAGE, *selection, '--lcov', '--output-path', parts[-1].as_posix(), *args]
+        command = [*coverage_command(step), *selection, '--lcov', '--output-path', parts[-1].as_posix(), *args]
         print(shlex.join(command), flush=True)
         code = subprocess.run(command, env=env).returncode
         if code:
@@ -996,6 +1012,11 @@ def test_paths(paths):
     if not commands:
         print('test-paths: no file in the folder tests of a package, so no test ran', flush=True)
         return NO_TEST
+    return run_test_commands(commands)
+
+
+def run_test_commands(commands):
+    """Run the cargo test COMMANDS of test_commands, and return the exit code of test_paths for their results."""
     ran, codes = 0, set()
     for command in commands:
         print(shlex.join(command), flush=True)
@@ -1029,6 +1050,375 @@ def test_paths(paths):
         print('test-paths: the test targets hold no test that is not ignored, so no test ran', flush=True)
         return NO_TEST
     return PASSED
+
+
+def module_path(path, folder):
+    """The module path of the source file PATH of a library whose root file is in FOLDER, as ['a', 'b'], else None.
+
+    For src/lib.rs, a file src/a/b.rs or src/a/b/mod.rs gives ['a', 'b'], and the root src/lib.rs gives []. A file
+    outside FOLDER gives None.
+    """
+    try:
+        parts = list(Path(os.path.realpath(path)).relative_to(folder).parts)
+    except ValueError:
+        return None
+    if parts[-1] == 'mod.rs':
+        parts = parts[:-1]
+    elif parts[-1].endswith('.rs'):
+        parts[-1] = parts[-1][:-3]
+    return [] if parts in (['lib'], ['main']) else parts
+
+
+def first_segments(text, name):
+    """The first segment of each path that TEXT names in the crate NAME: store for name::store::get or name::{store}.
+
+    A use group is read to its end, nested groups too, so name::{a::b, c::{d}} gives a and c. Returns None when TEXT
+    names the crate with no path after it, such as use name; or name::{self}, which reaches every module.
+    """
+    found = set()
+    for match in re.finditer(rf'(?<![\w:]){re.escape(name)}\s*::\s*(\{{|r#\w+|\w+)', text):
+        head = match.group(1)
+        if head != '{':
+            found.add(head.removeprefix('r#'))
+            continue
+        depth, item, at = 1, '', match.end()
+        while at < len(text) and depth:
+            char = text[at]
+            depth += {'{': 1, '}': -1}.get(char, 0)
+            if depth == 1 and char == ',' or depth == 0:
+                first = re.match(r'\s*(r#\w+|\w+)', item)
+                if first:
+                    found.add(first.group(1).removeprefix('r#'))
+                item = ''
+            elif depth >= 1:
+                item += char
+            at += 1
+    if 'self' in found or re.search(rf'(?<![\w:])use\s+{re.escape(name)}\s*;', text):
+        return None
+    return found
+
+
+def library_names(packages, library):
+    """The names that the tests of each package give the library LIBRARY, a pair of package name and crate name.
+
+    The crate name counts in its own package. In another package, a dependency on it counts by its rename, as in
+    a = { package = "app" }, or else by the crate name.
+    """
+    package, crate = library
+    names = {}
+    for other in packages:
+        own = {crate} if other['name'] == package else set()
+        for dependency in other.get('dependencies', []):
+            if dependency.get('name') == package and dependency.get('path'):
+                own.add((dependency.get('rename') or crate).replace('-', '_'))
+        names[other['id']] = own
+    return names
+
+
+# The kinds of test target that integration runs, and the option of cargo test that names each one.
+KINDS = {'test': '--test', 'example': '--example', 'bench': '--bench'}
+
+
+def dep_info_at(path, root):
+    """The files of the dep-info file PATH, whose relative paths are relative to the folder ROOT, as real paths."""
+    try:
+        first = Path(path).read_text(errors='replace').split('\n\n')[0].replace('\\ ', '\0')
+    except OSError:
+        return set()
+    _, _, deps = first.partition(': ')
+    return {os.path.realpath(Path(root) / name.replace('\0', ' ')) for name in deps.split() if name}
+
+
+def integration_changed(args):
+    """Run, without coverage, the test targets that a change of the tree may break, and return the code of test-paths.
+
+    It builds the test targets with cargo test --no-run, and reads the files of each one from its dep-info file,
+    which rustc writes: its own files, by mod, #[path] or include!, and the files that include_str! reads. A target
+    counts in each of these cases:
+
+    - one of its files changed;
+    - it names a changed module of a library of the workspace by the first segment of the path, so app::store
+      counts for src/store.rs and src/store/disk.rs, or names the crate with no path, or by an alias of use or
+      extern crate;
+    - it runs a binary with env!("CARGO_BIN_EXE_name") of a package whose library or binaries changed;
+    - the Cargo.toml or build.rs of its package changed, or Cargo.lock.
+
+    The changes are those against HEAD, staged, unstaged or untracked, of any file. It prints the targets it runs,
+    with the reason, and those it skips. ARGS go to each cargo test. It is no step of just check, so it gates
+    nothing, and with no target to run it passes.
+    """
+    done = subprocess.run(['cargo', 'metadata', '--no-deps', '--format-version', '1'], capture_output=True, text=True)
+    if done.returncode:
+        sys.stderr.write(done.stderr)
+        print('integration-changed: cargo metadata failed', file=sys.stderr, flush=True)
+        return RUNNER
+    meta = json.loads(done.stdout)
+    packages, root = meta['packages'], Path(os.path.realpath(meta['workspace_root']))
+    tracked = git('diff', '-z', '--name-only', '--relative', '--diff-filter=d', 'HEAD').stdout.split('\0')
+    untracked = git('ls-files', '-z', '--others', '--exclude-standard').stdout.split('\0')
+    top_folder = top()
+    changed = {os.path.realpath(top_folder / path) for path in tracked + untracked if path}
+    try:
+        runs = selections('integration')
+    except SystemExit as error:
+        print(error, file=sys.stderr, flush=True)
+        return RUNNER
+    if not runs:
+        print('integration-changed: the workspace has no test target, so no test ran', flush=True)
+        return PASSED
+    artifacts = []
+    for selection in runs:
+        build = subprocess.run(['cargo', 'test', '--no-run', '--all-features', '--locked', '--message-format=json',
+                                *selection], capture_output=True, text=True, cwd=root)
+        for line in build.stdout.splitlines():
+            try:
+                message = json.loads(line)
+            except ValueError:
+                continue
+            if message.get('reason') == 'compiler-message':
+                sys.stderr.write(message.get('message', {}).get('rendered') or '')
+            elif message.get('reason') == 'compiler-artifact':
+                artifacts.append(message)
+        if build.returncode:
+            sys.stderr.write(build.stderr[-4000:])
+            print('integration-changed: the test targets did not build', file=sys.stderr, flush=True)
+            return outcome(build.returncode, build.stderr)
+    by_id = {package['id']: package for package in packages}
+    # The folders where rustc writes the dep-info of a binary: deps in the old layout of the build folder, and
+    # build/PACKAGE/HASH/out, one per unit, in the new one. Each is beside a test executable.
+    unit_folders = {Path(a['executable']).parent for a in artifacts
+                    if a.get('profile', {}).get('test') and a.get('executable')}
+    tests, test_infos = [], set()
+    for artifact in artifacts:
+        kind = artifact['target']['kind']
+        if artifact.get('profile', {}).get('test') and artifact.get('executable') and kind[0] in KINDS:
+            info = Path(artifact['executable'] + '.d')
+            test_infos.add(info)
+            files = dep_info_at(info, root)
+            tests.append((artifact['package_id'], (KINDS[kind[0]], artifact['target']['name']), files))
+    # The files of each library and binary, from the dep-info files of their crate names in the folder deps. A
+    # unit-test build of the same crate name only adds files of that crate.
+    owned = {}
+    for artifact in artifacts:
+        kind = artifact['target']['kind']
+        if artifact.get('profile', {}).get('test') or 'custom-build' in kind or kind[0] in ('example', 'bench'):
+            continue
+        crate = artifact['target']['name'].replace('-', '_')
+        key = 'bin' if 'bin' in kind else 'lib'
+        files = set()
+        if key == 'lib':
+            # The library: deps/CRATE-HASH.d, with the hash of its file libCRATE-HASH.rlib.
+            for name in artifact.get('filenames', []):
+                found = re.fullmatch(rf'lib{re.escape(crate)}-(\w+)\.\w+', Path(name).name)
+                if found:
+                    files |= dep_info_at(Path(name).parent / f'{crate}-{found.group(1)}.d', root)
+        else:
+            # A binary: each CRATE.d or CRATE-*.d in a folder of the units of its package, since cargo names no
+            # hash for it. A unit-test build of the library under the same crate name only adds files of that
+            # package.
+            known = {Path(name).parent / f'{crate}-{m.group(1)}.d' for name in
+                     (f for a in artifacts for f in a.get('filenames', []))
+                     for m in [re.fullmatch(rf'lib{re.escape(crate)}-(\w+)\.\w+', Path(name).name)] if m}
+            folders = set()
+            for folder in unit_folders:
+                if folder.name == 'deps':
+                    folders.add(folder)
+                elif folder.name == 'out' and folder.parent.parent.name == by_id[artifact['package_id']]['name']:
+                    folders |= {unit / 'out' for unit in folder.parent.parent.iterdir()}
+            for folder in folders:
+                for info in [*folder.glob(f'{crate}-*.d'), folder / f'{crate}.d']:
+                    if info.is_file() and info not in test_infos and info not in known:
+                        files |= dep_info_at(info, root)
+        owned[(artifact['package_id'], key, artifact['target']['name'])] = (files, artifact['target'])
+    reasons = {(package_id, name): [] for package_id, name, _ in tests}
+    for package_id, name, files in tests:
+        for path in sorted(files & changed):
+            reasons[(package_id, name)].append(os.path.relpath(path, top_folder))
+    # Cargo.lock and the Cargo.toml of the workspace, as a virtual manifest with [workspace.dependencies],
+    # [profile] or [patch], reach every target.
+    workspace_files = {os.path.realpath(root / 'Cargo.lock'): 'Cargo.lock'}
+    if not any(os.path.realpath(package['manifest_path']) == os.path.realpath(root / 'Cargo.toml')
+               for package in packages):
+        workspace_files[os.path.realpath(root / 'Cargo.toml')] = 'Cargo.toml of the workspace'
+    for package_id, name, _ in tests:
+        folder = Path(by_id[package_id]['manifest_path']).parent
+        for special in ('Cargo.toml', 'build.rs'):
+            if os.path.realpath(folder / special) in changed:
+                reasons[(package_id, name)].append(os.path.relpath(folder / special, top_folder))
+        for path, shown in workspace_files.items():
+            if path in changed:
+                reasons[(package_id, name)].append(shown)
+    touched_packages = set()
+    for (package_id, key, target_name), (files, target) in owned.items():
+        hit = files & changed
+        if not hit:
+            continue
+        touched_packages.add(package_id)
+        if key != 'lib':
+            continue
+        crate = target_name.replace('-', '_')
+        names = library_names(packages, (by_id[package_id]['name'], crate))
+        folder = Path(os.path.realpath(target['src_path'])).parent
+        # The first segment of each changed module; a file that is no module, as one that include_str! reads,
+        # counts as the root of the crate, ().
+        segments = {tuple((module_path(path, folder) or [])[:1]) if path.endswith('.rs') else () for path in hit}
+        shown = ', '.join(sorted('::'.join(segment) or 'crate' for segment in segments))
+        for test_id, test_name, test_files in tests:
+            text = '\n'.join(Path(f).read_text(errors='replace') for f in sorted(test_files) if f.endswith('.rs')
+                             and Path(f).is_file())
+            aliases = set(names.get(test_id, set()))
+            for alias in list(aliases):
+                aliases |= set(re.findall(rf'(?<![\w:])(?:use|extern\s+crate)\s+{re.escape(alias)}\s+as\s+(\w+)',
+                                          text))
+            for alias in sorted(aliases):
+                named = first_segments(text, alias)
+                if named is None and re.search(rf'(?<![\w:]){re.escape(alias)}\b', text) or named and any(
+                        not segment or segment[0] in named for segment in segments):
+                    reasons[(test_id, test_name)].append(f'{alias}: {shown}')
+                    break
+    for test_id, test_name, test_files in tests:
+        text = '\n'.join(Path(f).read_text(errors='replace') for f in sorted(test_files) if f.endswith('.rs')
+                         and Path(f).is_file())
+        for (package_id, key, target_name), _ in owned.items():
+            if key == 'bin' and package_id in touched_packages and re.search(
+                    rf'CARGO_BIN_EXE_{re.escape(target_name)}(?![\w-])', text):
+                reasons[(test_id, test_name)].append(f'the binary {target_name}')
+    chosen = sorted(key for key, why in reasons.items() if why)
+    for package_id, (option, name) in chosen:
+        why = ', '.join(dict.fromkeys(reasons[(package_id, (option, name))]))
+        print(f'integration-changed: runs {by_id[package_id]["name"]} {option} {name}, for {why}', flush=True)
+    for package_id, (option, name) in sorted(key for key, why in reasons.items() if not why):
+        print(f'integration-changed: skips {by_id[package_id]["name"]} {option} {name}', flush=True)
+    if not chosen:
+        print('integration-changed: no test target holds, names or runs a changed file, so no test ran', flush=True)
+        return PASSED
+    commands = {}
+    for package_id, (option, name) in chosen:
+        commands.setdefault(package_id, []).extend([option, name])
+    return run_test_commands([['cargo', 'test', '--locked', '--all-features', '--package', package_id, *targets, *args]
+                              for package_id, targets in commands.items()])
+def install_root():
+    """The folder that cargo install writes to: CARGO_INSTALL_ROOT, else CARGO_HOME, else ~/.cargo."""
+    root = os.environ.get('CARGO_INSTALL_ROOT') or os.environ.get('CARGO_HOME')
+    return Path(root) if root else Path.home() / '.cargo'
+
+
+def installed_versions(root, package):
+    """Map each binary that cargo install put in ROOT to the version it recorded, from ROOT/.crates2.json.
+
+    A binary of the package named PACKAGE wins over one of the same name from another package.
+    """
+    try:
+        installs = json.loads((root / '.crates2.json').read_text()).get('installs', {})
+    except (OSError, ValueError, AttributeError):
+        return {}
+    versions = {}
+    for key, entry in installs.items():
+        parts = key.split(' ')
+        if len(parts) >= 2 and isinstance(entry, dict):
+            for name in entry.get('bins', []):
+                if parts[0] == package or name not in versions:
+                    versions[name] = parts[1]
+    return versions
+
+
+# The copies that install-bin saved, by binary, in the install root, so it removes only a copy it made itself.
+SAVED = '.jnprofile-rust-install-bin.json'
+
+
+def saved_copies(root):
+    """The record SAVED in ROOT: the name of the file of each binary, mapped to the name of its saved copy."""
+    try:
+        record = json.loads((root / SAVED).read_text())
+    except (OSError, ValueError):
+        return {}
+    if not isinstance(record, dict):
+        return {}
+    return {k: v for k, v in record.items() if isinstance(k, str) and isinstance(v, str)}
+
+
+def install_bin(argv):
+    """Build the release binaries of the project with cargo install, and keep one old copy of each binary it replaces.
+
+    ARGV is the names of binaries, then, after --, options for cargo install, such as --features x. With no name,
+    it installs every binary of the package of the root Cargo.toml, else of the only package that has binaries.
+    cargo installs into install_root, which the command names with --root, and builds in the target folder of the
+    workspace, so the release build is used again. Before cargo replaces a binary of another version, the step
+    copies it to NAME-VERSION, its version from .crates2.json. After cargo succeeds, it removes the copy that it
+    saved the time before, which its record SAVED names, so it never removes a file that it did not make. The same
+    version again saves no copy and removes none. Returns the exit code of the first cargo that fails.
+    """
+    names, extra = (argv[:argv.index('--')], argv[argv.index('--') + 1:]) if '--' in argv else (argv, [])
+    done = subprocess.run(['cargo', 'metadata', '--no-deps', '--format-version', '1'], capture_output=True, text=True)
+    if done.returncode:
+        sys.stderr.write(done.stderr)
+        print('install-bin: cargo metadata failed', file=sys.stderr, flush=True)
+        return 1
+    meta = json.loads(done.stdout)
+    packages = [(package, [target['name'] for target in package['targets'] if 'bin' in target['kind']])
+                for package in meta['packages']]
+    if names:
+        chosen = [(package, [n for n in bins if n in names]) for package, bins in packages]
+        chosen = [(package, bins) for package, bins in chosen if bins]
+        missing = set(names) - {n for _, bins in chosen for n in bins}
+        if missing:
+            print(f'install-bin: no binary named {", ".join(sorted(missing))} in the workspace', file=sys.stderr)
+            return 1
+    else:
+        top_manifest = os.path.realpath(Path(meta['workspace_root']) / 'Cargo.toml')
+        own = [(package, bins) for package, bins in packages
+               if bins and os.path.realpath(package['manifest_path']) == top_manifest]
+        having = [(package, bins) for package, bins in packages if bins]
+        chosen = own or (having if len(having) == 1 else [])
+        if not chosen:
+            listed = ', '.join(n for _, bins in having for n in bins) or 'none'
+            print(f'install-bin: name the binaries to install, since no single package holds them: {listed}',
+                  file=sys.stderr)
+            return 1
+    if git('status', '--porcelain').stdout.strip():
+        print('install-bin: the working tree has changes that no commit holds, and cargo builds them too', flush=True)
+    root = install_root()
+    folder = root / 'bin'
+    for package, bins in chosen:
+        versions, made, record = installed_versions(root, package['name']), {}, saved_copies(root)
+        for name in bins:
+            for file in (name, f'{name}.exe'):
+                old = versions.get(name)
+                if not (folder / file).is_file() or old == package['version']:
+                    continue
+                if old is None:
+                    print(f'install-bin: keeps no copy of {file}, since cargo install recorded no version of it',
+                          flush=True)
+                    continue
+                stem, suffix = (file[:-4], '.exe') if file.endswith('.exe') else (file, '')
+                copy = folder / f'{stem}-{old}{suffix}'
+                existed = copy.exists()
+                if existed and record.get(file) != copy.name:
+                    print(f'install-bin: keeps no copy of {file}, since {copy} is a file that it did not make',
+                          flush=True)
+                    continue
+                shutil.copy2(folder / file, copy)
+                made[file] = (copy, existed)
+                print(f'install-bin: kept the old {file} as {copy}', flush=True)
+        command = ['cargo', 'install', '--locked', '--force', '--root', str(root), '--path',
+                   str(Path(package['manifest_path']).parent), *[arg for name in bins for arg in ('--bin', name)],
+                   *extra]
+        print(shlex.join(command), flush=True)
+        code = subprocess.run(command).returncode
+        if code:
+            for copy, existed in made.values():
+                if not existed:
+                    copy.unlink(missing_ok=True)
+            return code
+        record = saved_copies(root)
+        for file, (copy, _) in made.items():
+            before = record.get(file)
+            if before and before != copy.name and (folder / before).is_file():
+                (folder / before).unlink()
+            record[file] = copy.name
+        if made:
+            (root / SAVED).write_text(json.dumps(record, indent=1, sort_keys=True) + '\n')
+    return 0
 
 
 def outcome(code, out):
@@ -1578,6 +1968,10 @@ def main(argv):
         return coverage()
     if argv == ['docs']:
         return docs()
+    if argv[:1] == ['integration-changed']:
+        return integration_changed(argv[1:])
+    if argv[:1] == ['install-bin']:
+        return install_bin(argv[1:])
     if argv[:1] == ['test-paths']:
         return test_paths(argv[1:])
     if argv in (['toml'], ['toml', '--check']):
@@ -1601,6 +1995,8 @@ def main(argv):
         own = rust_config(argv[1], argv[2], False)
         return own if isinstance(own, int) else 0
     print('usage: steps.py run STEP [ARG...] | fresh STEP | quick-test [ARG...] | coverage | docs | '
+          'integration-changed [ARG...] | '
+          'install-bin [BIN...] [-- ARG...] | '
           'test-paths [PATH...] | toml [--check] | '
           'ran prose [ARG...] | begin prose [ARG...] | stamp prose | api check | api prose [--base REF] | '
           'version | pages DOCS OUT [FILE...] | config DOCS OUT, where STEP is test or integration', file=sys.stderr)
