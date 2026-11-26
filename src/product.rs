@@ -746,8 +746,8 @@ mod tests {
         }
         assert_eq!(
             help::command(OsStr::new("log")).unwrap(),
-            "Usage: gossil vcs timeline|log --repository REPO --checkout ID\n\n\
-             Print the complete recorded ancestry as NDJSON.\nNames: timeline, log.\n"
+            "Usage: gossil vcs timeline|log --repository REPO --checkout ID [-n|--limit N] [--offset P]\n\n\
+             Print recorded check-ins as NDJSON, newest first, 20 unless --limit says otherwise.\nNames: timeline, log.\n"
         );
     }
 

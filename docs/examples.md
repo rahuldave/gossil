@@ -73,7 +73,7 @@ Use the explicit C-string function when zero-byte truncation is required.
 For asynchronous storage examples, see [local storage](local-storage.md).
 The [artifact parser guide](artifact-parser.md) shows the date-provider boundary.
 
-## Read complete recorded ancestry
+## Read recorded ancestry
 
 Use an existing `LocalOwnerRepository` and explicit finite `AdmissionLimits`.
 This helper propagates `StorageError` and returns every supported ancestor:
@@ -92,13 +92,21 @@ async fn recorded_history(
 Replace `work` with an existing checkout ID. Rows preserve native date, actor
 and comment bytes, and full verified hashes. The current check-in comes first;
 the shared empty root comes last. The shared empty root alone is a valid result before private
-recording. A missing checkout or exhausted bound returns an error rather than
-an empty or truncated history.
+recording. A missing checkout or an artifact over its ceiling returns an error
+rather than an empty or truncated history.
+
+To read one page, call `recorded_timeline_page` with an offset and a limit.
+`owner.recorded_timeline_page("work", 20, 20, limits)` skips the newest 20
+entries and returns the next 20 at most. The read stops at the end of the
+page, so it reads `offset + limit` manifests at most. A limit of 0 returns
+every remaining entry and reads the whole chain.
 
 See [native storage](native-storage.md#read-recorded-checkout-ancestry)
 for admission, transaction and ownership limits. To read the same ancestry from
-the source CLI, use [timeline or log](cli.md#read-complete-recorded-ancestry)
+the source CLI, use [timeline or log](cli.md#read-recorded-ancestry)
 with explicit repository and checkout selectors and an existing matching locator.
+The CLI prints 20 entries unless `--limit` says otherwise, and `--limit 0` prints
+them all.
 The CLI preserves metadata as JSON strings; the API fields remain byte vectors.
 
 ## Match a bounded glob list

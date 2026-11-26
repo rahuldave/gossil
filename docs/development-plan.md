@@ -379,7 +379,7 @@ and do not establish a full pass for the later CLI tree.
 
 The source `src/vcs_timeline.rs` adapter exposes complete recorded ancestry
 through both executable names, both group names and `timeline` or `log`.
-[The CLI reference](cli.md#read-complete-recorded-ancestry) defines explicit
+[The CLI reference](cli.md#read-recorded-ancestry) defines explicit
 selectors, existing-locator admission, exact NDJSON and separate opening, API
 and serialization allowances. This checkpoint implements no filters, truncation,
 working-file content reads or locator publication.
@@ -400,6 +400,16 @@ No broader Fossil parity is claimed. `cat` remains separate issue 18 work;
 issue 17 remains open. Neither issue is completed by these ancestry commands.
 The later accepted timeline delivery at `4250b873` completed the `v0.8.0`
 release. That delivery is separate from the prepared glob source below.
+
+A later source change makes the commands print one page, 20 entries by default,
+with `-n`/`--limit` and `--offset` as in Fossil. It adds
+`LocalOwnerRepository::recorded_timeline_page`, which gives each manifest the
+ceilings of one artifact and sets no ceiling on the whole chain. Before it, one
+parser ledger covered the whole chain, and the commands refused a history of
+about 455 one-file check-ins. `just timeline-capacity` makes 5,000 one-file
+check-ins in a release build, and times `timeline`, `log`, `status`, `commit`
+and `verify` at 1,000 and at 5,000 check-ins. The checkpoint results above do not qualify this
+change.
 
 ## Glob source checkpoint and pending qualification
 

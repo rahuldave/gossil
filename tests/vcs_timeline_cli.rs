@@ -628,7 +628,8 @@ fn strict_selectors_grammar_and_storage_free_help() {
         vec!["--repository", repo, "--checkout", "missing"],
         vec!["--repository", repo, "--checkout", ""],
         vec!["--repository", repo, "--checkout", "work", "unexpected"],
-        vec!["--repository", repo, "--checkout", "work", "--limit", "1"],
+        vec!["--repository", repo, "--checkout", "work", "--limit", "x"],
+        vec!["--repository", repo, "--checkout", "work", "--offset", "-1"],
         vec!["--repository", repo, "--checkout", "work", "--root", "."],
         vec![
             "--repository",

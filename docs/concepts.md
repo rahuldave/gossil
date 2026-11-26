@@ -226,9 +226,13 @@ the user and comment of each event against the U and C cards of its manifest, in
 the same transaction. It reads no working-file contents and
 returns no partial result when a bound fails. See the
 [recorded ancestry contract](native-storage.md#read-recorded-checkout-ancestry).
-The source [timeline and log commands](cli.md#read-complete-recorded-ancestry)
-print those rows as compact NDJSON after existing-locator admission and checked
-API completion. Opening, the API and serialization have separate finite bounds.
+
+The library reader `recorded_timeline_page` returns one page of that ancestry.
+It reads the manifests only up to the end of the page.
+The source [timeline and log commands](cli.md#read-recorded-ancestry)
+print one page as compact NDJSON after existing-locator admission and checked
+API completion. The page is 20 entries unless `--limit` and `--offset` choose
+another, as in Fossil. Opening, the API and serialization have separate finite bounds.
 
 ## Glob lists and SQL expressions
 

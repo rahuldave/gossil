@@ -126,13 +126,16 @@ Broader crosslinks, shared recording, sync and Gest integration remain planned w
 The library also exposes `recorded_timeline` and `RecordedCheckin` for complete
 current-first native ancestry, with the immutable shared root last. It preserves
 full hashes and exact native metadata bytes, and checks each event user and
-comment against the U and C cards of its manifest, within one transaction and
-shared operation ledgers. It reads no working-file contents and
+comment against the U and C cards of its manifest, within one transaction. It
+reads no working-file contents and
 makes no durable mutation.
 
 The source CLI exposes `timeline` and `log` through
 both executable and group aliases. It requires explicit repository and checkout
-selections and an existing matching locator, then prints complete ordered NDJSON.
+selections and an existing matching locator, then prints one page of ordered
+NDJSON: 20 entries, or the page that `-n`/`--limit` and `--offset` choose, as in
+Fossil. `recorded_timeline_page` reads only the manifests up to the end of the
+page, each under the ceilings of one artifact, with no ceiling on the whole chain.
 Opening admission, the API operation and serialization have separate finite
 allowances. See
 `docs/native-storage.md` and `docs/development-plan.md` for the contract and

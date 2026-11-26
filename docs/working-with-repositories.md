@@ -34,8 +34,8 @@ as the source authority.
 These commands require that preview's installed `gos` or `gossil` executable.
 The source CLI supports `init`, native `open`, add, status, scope and private
 commit with the [explicit source grammar](cli.md#select-scopes-and-record-private-files).
-Its [timeline and log grammar](cli.md#read-complete-recorded-ancestry) differs
-from the preview. It accepts neither `--limit` nor `--json`. The source also
+Its [timeline and log grammar](cli.md#read-recorded-ancestry) differs
+from the preview. It accepts `-n` or `--limit` and `--offset`, but not `--json`. The source also
 rejects the preview's commit grammar and has no diff command.
 The generated Rust API on this site does not describe the preview's additional storage methods.
 
@@ -328,10 +328,11 @@ For a stored history view, library callers can use
 It returns the complete current-first ancestry, including the shared root last.
 Pending additions and dirty or deleted working files do not alter these records.
 
-The source [timeline and log commands](cli.md#read-complete-recorded-ancestry)
+The source [timeline and log commands](cli.md#read-recorded-ancestry)
 print those records as compact NDJSON. They require both explicit selectors and
 a complete matching locator. Their grammar differs from the installed preview
-above. They accept neither `--limit` nor `--json`. These source commands supply
+above. They print 20 entries unless `--limit` and `--offset` choose another page,
+and they do not accept `--json`. These source commands supply
 no new evidence about the installed preview or its reopen behavior.
 
 ## Glob matching and explicit file tracking

@@ -460,18 +460,25 @@ their native and typed crosslinks are implemented.
 
 ## Read recorded checkout ancestry
 
-`LocalOwnerRepository::recorded_timeline(checkout, limits)` returns a complete
-`Vec<RecordedCheckin>` for an explicit existing catalog6 checkout. Each row has
+`LocalOwnerRepository::recorded_timeline_page(checkout, offset, limit, limits)`
+returns one page of the ancestry of an explicit existing catalog6 checkout, as a
+`Vec<RecordedCheckin>`. The page skips the newest `offset` entries and then holds
+at most `limit` entries. A `limit` of 0 holds every remaining entry, as in
+`fossil timeline`. `LocalOwnerRepository::recorded_timeline(checkout, limits)`
+returns the whole chain, as the page with offset 0 and limit 0. Each row has
 `hash: String`, `date: Vec<u8>`, `actor: Vec<u8>`, `comment: Vec<u8>` and
-`private: bool`. The generated [Rust API](api/index.qmd) gives the exact signature.
+`private: bool`. The generated [Rust API](api/index.qmd) gives the exact signatures.
 
-Results start with the current private check-in and follow its ancestors to the
-immutable shared empty root S. The root occurs exactly once, last, with
-`private == false`; every private row has `private == true`. Before any private
-recording, S is the sole row. The reader follows ancestry rather than sorting
-rows by date. Accepted recordings have strictly increasing dates. A commit
-checks the date of its parent, and the full proof refuses equal or backward
-dates anywhere in the history.
+The ancestry starts with the current private check-in and follows its ancestors
+to the immutable shared empty root S. The root is the last entry, with
+`private == false`; every private row has `private == true`. A page holds S only
+when the page reaches it. Before any private recording, S is the sole entry. An
+offset past S gives an empty page.
+
+The reader follows ancestry rather than
+sorting rows by date. Accepted recordings have strictly increasing dates. A
+commit checks the date of its parent, and the full proof refuses equal or
+backward dates anywhere in the history.
 
 Hashes are full verified native identities. Dates preserve native D-card bytes;
 actor and comment preserve the decoded native U-card and C-card bytes exactly.
@@ -479,21 +486,30 @@ The supported metadata is UTF-8 without NUL, but these public fields remain byte
 vectors. The reader does not normalize dates, abbreviate hashes or use edited
 display metadata.
 
-The reader walks every manifest of the chain and reads the
-event row of each check-in. It refuses an event whose user or comment is not
-the U or C card of its manifest, and a chain whose length differs from the
-generation. It reads no file content. The full proof of `gos v verify` checks
-the rest of each event row.
+The reader walks the manifests from the current check-in to the end of the page.
+It reads the manifests of the skipped entries too, because each manifest names
+its parent. It reads the event row of each entry of the page, and refuses an
+event whose user or comment is not the U or C card of its manifest. A walk that
+passes the generation of the checkout is refused. A walk that reaches S also
+refuses a chain whose length is not the generation.
+
+It reads no file content,
+and nothing past the end of the page. The full proof of `gos v verify` checks
+the rest of each event row, and every manifest.
 
 One transaction runs the checks of each command, walks the manifests and reads
-their event rows, under one content budget and one parser ledger. The complete
-result capacity is charged before allocation. The ledger covers the whole chain,
-so the parser limits bound the length of the history that the timeline can read.
-Under the CLI limits that is about 500 check-ins of one file.
+the event rows of the page. Each manifest has the parser ceilings of one artifact,
+and each SQL row the ceilings of one row. The read has no ceiling on the whole
+chain, as the full proof has none. The page bounds the work. It reads at most
+`offset + limit` manifests and `limit` event rows. The result capacity is charged
+before allocation.
 
-Success returns the entire ancestry only after checked transaction completion.
-There is no truncation or successful empty history. Missing checkout, changed
-authority, unsupported or corrupt state, invalid or exhausted limits, allocation,
+Versions up to 0.17.0 parsed the whole chain under one parser
+ledger, which refused about 455 one-file check-ins.
+
+Success returns the page only after checked transaction completion. There is no
+truncation inside a page. Missing checkout, changed authority, unsupported or
+corrupt state, invalid limits, an artifact or row over its ceiling, allocation,
 provider and transaction failures return `StorageError`. The first operation
 cause and separate cleanup failure retain their existing precedence.
 
@@ -501,12 +517,13 @@ This operation reads no working-file contents, makes no durable mutation and
 publishes no locator. Pending additions and dirty or deleted working files do
 not change its recorded result.
 
-The source [timeline and log commands](cli.md#read-complete-recorded-ancestry)
-expose this reader as complete compact NDJSON. Existing-locator opening admission
-is separate from the API operation. Serialization has a third finite allowance
-derived from the unchanged CLI decoded-content limit. No whole-invocation
-aggregate budget is claimed. Revision selection, filters and broader Fossil
-timeline behavior remain deferred.
+The source [timeline and log commands](cli.md#read-recorded-ancestry)
+expose this reader as compact NDJSON, 20 entries unless `--limit` says otherwise.
+Existing-locator opening admission is separate from the API operation.
+Serialization has a third finite allowance of one row, derived from the
+unchanged CLI decoded-content limit. No whole-invocation aggregate budget is
+claimed. Revision selection, filters and broader Fossil timeline behavior remain
+deferred.
 
 ## Schema and remaining work
 
@@ -533,8 +550,8 @@ tickets beside private check-ins, and the project binding that `issue init` writ
 `LocalOwnerRepository::verify` runs the full proof on demand, and
 `verify_issue` proves one issue from its own rows. Both read in a transaction that
 they roll back, so they change nothing. Each proof bounds each artifact and each row.
-No proof sets a bound on the whole repository. The timeline is the one command
-that does, because it parses its whole chain under one ledger. The command
+No proof sets a bound on the whole repository, and the timeline sets none on
+the whole chain. The command
 [`gos v verify`](cli.md#verify-a-repository) runs both proofs.
 
 The required object

@@ -6,7 +6,7 @@ and has three delta file diagnostics. The prepared source also has a
 [focused source checkpoint](glob.md#current-source-status). This source checkout also has
 [explicit add and tracked status](#add-explicit-paths-and-inspect-pending-additions),
 plus [scope selection and private recording](#select-scopes-and-record-private-files)
-and [complete recorded ancestry](#read-complete-recorded-ancestry).
+and [recorded ancestry in pages](#read-recorded-ancestry).
 `gos` is an alias for `gossil`, and `v` is an alias for `vcs`.
 The [`issue` group](#issue-commands), or `i`, recognises each Gest command.
 This build runs [`issue init`](#create-the-gest-project-of-a-checkout),
@@ -956,28 +956,51 @@ scope/commit, info, timeline/log and verify. Shared
 recording, changing scopes, removal, rename, materialization, sync and Gest
 record associations remain unsupported.
 
-## Read complete recorded ancestry
+## Read recorded ancestry
 
 Run from the registered checkout root or a descendant after `vcs open` has
 published a complete matching locator:
 
 ```sh
 just gossil vcs timeline --repository REPO --checkout ID
-just gossil v log --checkout ID --repository REPO
+just gossil v log --checkout ID --repository REPO -n 50 --offset 20
 ```
 
 Replace `REPO` and `ID` with the existing database and exact checkout identity.
-Both selectors are required, each once, with separate values in either order.
+Both selectors are required, each once, with separate values in any order.
 Repository text is bounded to 4096 UTF-8 bytes and checkout text to 1024 bytes.
 Empty values, NUL, invalid UTF-8, duplicate or unknown options, positional
-arguments and `--name=value` forms fail. There are no filters, revision selectors,
-`--limit` or `--json` options. Output is always complete newline-delimited JSON (NDJSON), with one object per line.
+arguments and `--name=value` forms fail. There are no filters, revision selectors
+or `--json` options. Output is always newline-delimited JSON (NDJSON), with one
+object per line.
+
+The output is one page of the ancestry, newest first. These options choose the
+page, as they do in `fossil timeline`:
+
+| Option | Meaning |
+|---|---|
+| `-n N` or `--limit N` | Print at most N entries. A negative N prints at most -N lines, and each entry is one line, so it prints -N entries. 0 prints every entry. |
+| `--offset P` | Skip the newest P entries. |
+
+Without `--limit`, the command prints 20 entries. The Gossil specification
+names no default, so Gossil uses the default of Fossil 2.29, which is 20 lines. Each value
+is a decimal integer. `--limit` takes an optional `-`, and `--offset` takes no
+sign. Each option can appear at most once. A bad value exits 1 with
+`timeline --limit requires an integer` or
+`timeline --offset requires a nonnegative integer`.
+
+To get the next page, add the page size to `--offset`. For example,
+`-n 20 --offset 20` prints entries 21 to 40. `--limit 0` prints the whole chain.
+An offset past the shared root prints nothing and exits 0.
+
+Versions up to 0.17.0 printed the whole chain by default. A script that needs
+the whole chain now passes `--limit 0`.
 
 The eight forms are `gossil vcs timeline`, `gossil vcs log`, `gossil v timeline`,
 `gossil v log`, `gos vcs timeline`, `gos vcs log`, `gos v timeline` and `gos v log`.
-They emit identical bytes for the same admitted history. Standalone `--help` or
-`-h` after either command prints usage and exits 0 without opening storage.
-Help combined with selectors fails.
+They emit identical bytes for the same admitted history and options. Standalone
+`--help` or `-h` after either command prints usage and exits 0 without opening
+storage. Help combined with selectors fails.
 
 Each compact JSON object has the keys `hash`, `date`, `actor`, `comment` and
 `private`, in exactly that order. The first four values are strings, and `private` is a boolean.
@@ -986,32 +1009,41 @@ identities. Strict UTF-8 conversion and standard JSON escaping preserve the exac
 native date and decoded actor and comment, without normalization or date
 reformatting.
 
-The current check-in comes first and the immutable shared root occurs
-exactly once, last. Only the root has `private: false`. Before private recording,
-the root is the sole row.
+The current check-in comes first. The immutable shared root is the last entry of
+the chain, and the only one with `private: false`. A page prints the root only
+when the page reaches it. Before private recording, the root is the sole entry.
 
 Opening uses existing-locator admission and publishes or repairs no locator.
-The API then walks every manifest of the chain in its own transaction. It
-refuses an event whose user or comment is not the U or C card of its
-manifest, and a chain whose length differs from the generation.
-Neither operation reads working-file contents. Pending additions and dirty or
-deleted working files do not change the recorded output. Missing checkout,
-corrupt or unsupported state and exhausted bounds fail without a partial history.
+The API then walks the manifests from the current check-in to the end of the
+page, in its own transaction. It reads the skipped manifests too, because each
+manifest names its parent. It refuses an event of the page whose user or comment
+is not the U or C card of its manifest. A walk that passes the generation of the
+checkout is refused. A walk that reaches the shared root also refuses a chain
+whose length is not the generation.
+
+A manifest or event row past the end of the page is not read, so only
+[`gos v verify`](#verify-a-repository) refuses one that is bad. Neither operation
+reads working-file contents. Pending additions and
+dirty or deleted working files do not change the recorded output. Missing
+checkout, corrupt or unsupported state and exhausted bounds fail without a
+partial page.
 
 Opening admission, the API operation and serialization each have a separate
 finite allowance. They do not form one aggregate budget for the whole invocation.
 
-The API operation parses every manifest of the chain under one parser ledger of
-4,096 cards. A check-in of one file has about 8 cards, so `timeline` and `log` refuse
-a chain of about 500 such check-ins with exit 1 and `recording native artifact
-validation`. `status`, `commit` and `gos v verify` still admit that repository.
-Earlier releases had the same bound.
+The API operation gives each manifest the parser ceilings of one artifact and
+each row the ceilings of one row, and it has no ceiling on the whole chain. The
+cost of a page follows its offset and limit, not the length of the history.
+Versions up to 0.17.0 parsed the whole chain under one ledger of 4,096 cards,
+and refused with `recording native artifact validation` at about 455 one-file
+check-ins, or 75 check-ins of 50 files.
 
-For serialization, N counts the UTF-8 source bytes of all four string values,
-including each hash once. The checked worst-case bound adds `6*N` to the exact syntax overhead.
-That overhead is 61 bytes per private row or 62 per root row and includes keys,
-quotes, punctuation, boolean and LF. The cumulative bound must fit the
-CLI decoded-content limit and the platform allocation limit.
+For serialization, N counts the UTF-8 source bytes of all four string values of
+a row, including the hash once. The checked worst-case bound of a row adds `6*N`
+to the exact syntax overhead. That overhead is 61 bytes per private row or 62 per
+root row and includes keys, quotes, punctuation, boolean and LF. The bound of each
+row must fit the CLI decoded-content limit. The sum of the bounds must fit the
+platform allocation limit.
 
 The adapter reserves
 space once before serializing the complete response.
@@ -1025,8 +1057,8 @@ The read preserves logical database state and working files. This contract makes
 no claim that physical database bytes remain identical.
 
 See [qualification](development-plan.md#recorded-ancestry-cli-qualification)
-before treating this source command as released or installed. General Fossil
-timeline behavior and `cat` remain separate work.
+before treating this source command as released or installed. Fossil's other
+timeline options, such as a starting check-in, and `cat` remain separate work.
 
 ## Verify a repository
 
@@ -1094,8 +1126,8 @@ the messages of `issue task show`.
 
 A usage error or a failed write to stdout exits with 1. A repository at an older Gossil catalog exits with 78.
 
-The proof bounds each artifact and each row by the limits of the CLI. Only
-`timeline` and `log` set a bound on the whole history, as the section on them says. The time of the full proof grows with the
+The proof bounds each artifact and each row by the limits of the CLI. No
+command sets a bound on the whole history. The time of the full proof grows with the
 count of issues and check-ins. A stock `fossil rebuild` drops the Gossil tables,
 and then the command exits with 78, as every command does.
 
