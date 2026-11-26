@@ -46,6 +46,9 @@ pub enum PrivateRecordingOutcome {
         view: CheckoutView,
         /// Full native identity of the newly committed private manifest.
         native_name: String,
+        /// The tracked paths whose content differs from the same path in the parent,
+        /// in pathname order. They are the files that this check-in stored.
+        changed: Vec<String>,
     },
 }
 
@@ -98,10 +101,20 @@ impl LocalOwnerRepository {
             || std::str::from_utf8(request.actor).is_err()
             || std::str::from_utf8(request.comment).is_err()
             || request.paths.is_empty()
-            || request.paths.len() > tracking.paths
         {
             return Err(StorageError::state("unsupported private recording request"));
         }
+        if request.paths.len() > tracking.paths {
+            return Err(StorageError::state(format!(
+                "the checkout tracks {} files, more than the {} files that one checkout may track",
+                request.paths.len(),
+                tracking.paths
+            )));
+        }
+        // Commit refuses the same files that add refuses, with the same message.
+        let largest = tracking
+            .retained_bytes
+            .min(u64::from(limits.content.max_output_bytes));
         let mut unique = BTreeSet::new();
         for path in request.paths {
             capture::checked_path(path, tracking)?;
@@ -164,14 +177,18 @@ impl LocalOwnerRepository {
             let mut observed = Vec::new();
             let mut files = Vec::new();
             let mut receipt = None;
+            let mut stored = Vec::new();
             for path in &paths {
-                let captured = capture::capture_budget(&root,path,&protected,tracking,tracking.retained_bytes,&mut work)?;
-                let hash = native_name(&captured.bytes,&mut work)?;
+                let mut captured = capture::capture_budget(&root,path,&protected,tracking,largest,&mut work)?;
+                // Take the bytes, so that the store frees them before SQLite copies the envelope.
+                let bytes = std::mem::take(&mut captured.bytes);
+                let hash = native_name(&bytes,&mut work)?;
                 let rid = match current.get(path.as_str()) {
                     Some(old) if old.hash == hash => old.rid,
                     _ => {
+                        stored.push(path.clone());
                         let receipt = match receipt { Some(receipt) => receipt, None => *receipt.insert(tx.recording_receipt(&mut work).await?) };
-                        tx.recording_put(&self.principal,&hash,&captured.bytes,receipt,limits,&mut work).await?
+                        tx.recording_put(&self.principal,&hash,bytes,receipt,limits,&mut work).await?
                     }
                 };
                 files.push(RecordedFile { path:path.clone(), hash, rid, mode:captured.mode });
@@ -229,7 +246,7 @@ impl LocalOwnerRepository {
             tx.check_recording_state(&self.principal, limits, &mut work).await?;
             recording_boundary(RecordingPhase::Poststate)?;
             let view=tx.read_checkout_view_budgeted(&self.principal,checkout,&mut work).await?;
-            Ok(PrivateRecordingOutcome::Recorded{view,native_name:name})
+            Ok(PrivateRecordingOutcome::Recorded{view,native_name:name,changed:stored})
         }.await;
         let result = tx.record(result);
         tx.commit().await?;
@@ -274,16 +291,17 @@ impl WriteTransaction<'_> {
         &mut self,
         principal: &crate::storage::policy::Principal,
         name: &str,
-        bytes: &[u8],
+        bytes: impl Into<std::borrow::Cow<'_, [u8]>>,
         receipt: i64,
         limits: AdmissionLimits,
         work: &mut Budget,
     ) -> Result<i64, StorageError> {
+        let bytes = bytes.into();
         if bytes.len() as u64 > u64::from(limits.content.max_output_bytes) {
             return Err(StorageError::state("recording content output limit"));
         }
         work.charge_decoded(bytes.len())?;
-        self.verify_content_name(name, bytes)?;
+        self.verify_content_name(name, &bytes)?;
         let existing = bounded_rows(
             self,
             "SELECT rid FROM blob WHERE uuid=?1",
@@ -298,7 +316,7 @@ impl WriteTransaction<'_> {
             let old = self
                 .read_recording_content_budget(principal, name, work)
                 .await?;
-            require_same_content(&old, bytes)?;
+            require_same_content(&old, &bytes)?;
             return Ok(rid);
         }
         if bounded_scalar(
@@ -319,14 +337,27 @@ impl WriteTransaction<'_> {
                 .ok_or_else(|| StorageError::state("recording compression work overflow"))?,
         )?;
         let ceiling = work.packed_output_ceiling();
-        let packed = crate::compression::pack_bounded(bytes, -1, ceiling)
-            .map_err(|e| StorageError::caused("recording compression", e))?;
+        // The ceiling is the only failure that a real input meets.
+        let packed = crate::compression::pack_bounded(&bytes, -1, ceiling).map_err(|e| {
+            StorageError::caused(
+                format!(
+                    "the content {name} of {} bytes does not compress into the {ceiling} bytes that one stored artifact may have",
+                    bytes.len()
+                ),
+                e,
+            )
+        })?;
         work.charge_stored(packed.len())?;
+        // Free owned bytes before SQLite copies the envelope, so the peak holds the
+        // envelope, its bound copy and the record, and not the file as well.
+        let size = bytes.len() as i64;
+        drop(bytes);
+        release_freed_memory(size);
         self.recording_execute(
             "INSERT INTO blob(rcvid,size,uuid,content) VALUES(?1,?2,?3,?4)",
             vec![
                 Value::Integer(receipt),
-                Value::Integer(bytes.len() as i64),
+                Value::Integer(size),
                 Value::Text(name.into()),
                 Value::Blob(packed),
             ],
@@ -410,6 +441,38 @@ fn recording_boundary(phase: RecordingPhase) -> Result<(), StorageError> {
     let _ = phase;
     Ok(())
 }
+/// The size, in bytes, from which commit returns the freed bytes of a file to the
+/// system at once.
+#[cfg(target_os = "macos")]
+const RELEASE_BYTES: i64 = 16 << 20;
+
+/// Return the freed bytes of a large file to the system before SQLite copies its
+/// envelope. The macOS allocator keeps a freed block of up to about 128 MiB resident
+/// for reuse, and the copies of SQLite are a little larger, so they cannot reuse it.
+/// Without the release, a commit of a file of 100 MB peaks at about 4.1 times the
+/// file, and with it at about 3.1 times. Other systems need no release.
+/// # Arguments
+/// * `size` - The size of the freed file.
+fn release_freed_memory(size: i64) {
+    #[cfg(target_os = "macos")]
+    if size >= RELEASE_BYTES {
+        unsafe extern "C" {
+            /// Ask a malloc zone, or every zone for a null zone, to return free pages.
+            fn malloc_zone_pressure_relief(
+                zone: *mut libc::c_void,
+                goal: libc::size_t,
+            ) -> libc::size_t;
+        }
+        // SAFETY: a null zone asks every zone for relief, and a goal of 0 asks for as
+        // much as each can give; the call frees no live allocation.
+        unsafe {
+            malloc_zone_pressure_relief(std::ptr::null_mut(), 0);
+        }
+    }
+    #[cfg(not(target_os = "macos"))]
+    let _ = size;
+}
+
 #[cfg(test)]
 thread_local! {
     /// A synchronous thread-local selector; no environment or public authority.
@@ -964,7 +1027,12 @@ mod rollback_controls {
             .recording_put(&owner.principal, &name, bytes, 2, limits, &mut work)
             .await
             .unwrap_err();
-        assert_eq!(error.operation, "recording compression");
+        assert_eq!(
+            error.operation,
+            format!(
+                "the content {name} of 31 bytes does not compress into the 1 bytes that one stored artifact may have"
+            )
+        );
         assert_eq!(
             tx.query("SELECT rid,rcvid,size,uuid,content FROM blob ORDER BY rid")
                 .await

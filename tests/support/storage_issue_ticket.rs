@@ -536,8 +536,8 @@ async fn verify_refuses_each_changed_issue_row() {
 #[tokio::test]
 /// The list call reads the typed rows and replays no artifact, so it passes under a
 /// parser entry ceiling of one. It returns the tasks and projects in receipt order
-/// and changes nothing. Its row ceiling bounds the count of issues, and a bad task
-/// prefix refuses before any read.
+/// and changes nothing. No ceiling bounds the count of issues or their total content.
+/// The ceiling of one row still binds, and a bad task prefix refuses before any read.
 async fn the_list_reads_every_issue_in_receipt_order() {
     let temp = tempfile::tempdir().unwrap();
     let path = temp.path().join("repo");
@@ -557,18 +557,20 @@ async fn the_list_reads_every_issue_in_receipt_order() {
     let mut one = limits();
     one.admission.parser.entries = 1;
     assert_eq!(owner.list_private_issues(one).await.unwrap(), stored);
-    // The row ceiling bounds the count of typed rows that the list reads. Find the
-    // least ceiling that passes. Each smaller one refuses, and changes nothing.
+    // No ceiling bounds the count of typed rows that the list reads.
     let mut few = limits();
     few.sql_rows = 1;
-    let listed = loop {
-        match owner.list_private_issues(few).await {
-            Ok(listed) => break listed,
-            Err(error) => assert_eq!(error.to_string(), "recording SQL count limit"),
-        }
-        few.sql_rows += 1;
-    };
+    let listed = owner.list_private_issues(few).await.unwrap();
     assert_eq!(listed, stored);
+    // No total content ceiling bounds the list either, as in `verify`.
+    let mut totals = limits();
+    totals.admission.content.max_total_stored_bytes = 64;
+    totals.admission.content.max_total_decoded_bytes = 64;
+    assert_eq!(owner.list_private_issues(totals).await.unwrap(), stored);
+    // The ceiling of one row still binds.
+    let mut row = limits();
+    row.admission.parser.input_bytes = 16;
+    assert!(owner.list_private_issues(row).await.is_err());
     assert_eq!(snapshot(&mut owner).await, before);
     // A prefix that is empty, too long or not in the k to z alphabet refuses before
     // any read.
@@ -585,7 +587,7 @@ async fn the_list_reads_every_issue_in_receipt_order() {
         );
     }
     assert_eq!(snapshot(&mut owner).await, before);
-    // One more task needs more rows, so the least ceiling of four issues refuses it.
+    // One more task is listed too, with the same small row ceiling.
     create_with(
         &mut owner,
         &artifact_for("0000000000000000000000000000000000000004", "o"),
@@ -593,14 +595,7 @@ async fn the_list_reads_every_issue_in_receipt_order() {
     )
     .await
     .unwrap();
-    assert_eq!(
-        owner
-            .list_private_issues(few)
-            .await
-            .unwrap_err()
-            .to_string(),
-        "recording SQL count limit"
-    );
+    assert_eq!(owner.list_private_issues(few).await.unwrap().len(), 5);
 }
 
 #[tokio::test]

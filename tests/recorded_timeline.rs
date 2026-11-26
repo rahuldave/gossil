@@ -195,7 +195,9 @@ impl Fixture {
     /// Panics on failure or unexpected NoChange.
     async fn changed(&mut self, paths: &[&str], date: &[u8]) -> String {
         match self.record(paths, date, b"fixture").await.unwrap() {
-            PrivateRecordingOutcome::Recorded { view, native_name } => {
+            PrivateRecordingOutcome::Recorded {
+                view, native_name, ..
+            } => {
                 self.view = view;
                 native_name
             }
@@ -497,7 +499,9 @@ async fn full_ancestry_metadata_and_order_survive_dirty_deleted_pending_and_reop
         .await
         .unwrap();
     let second = match outcome {
-        PrivateRecordingOutcome::Recorded { view, native_name } => {
+        PrivateRecordingOutcome::Recorded {
+            view, native_name, ..
+        } => {
             f.view = view;
             native_name
         }

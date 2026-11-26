@@ -168,7 +168,7 @@ fn row_bound(previous: usize, source: usize, private: bool) -> Result<usize, Err
 /// the output has no ceiling that a long history reaches.
 /// # Arguments
 /// * `rows` - Complete checked API result in native ancestry order.
-/// * `limit` - Separate finite output capacity of one row, derived from the existing CLI limits.
+/// * `limit` - Separate output capacity of one row, from the total decoded ceiling of the CLI.
 /// # Returns
 /// Complete worst-case capacity before any output buffer allocation.
 /// # Errors
@@ -234,8 +234,9 @@ fn write_output(mut writer: impl Write, output: &[u8]) -> Result<(), Error> {
 /// # Errors
 /// Preserves selector, admission, checked API, capacity, UTF-8, serializer and stdout causes.
 /// Opening admission and the API each own separate operation ledgers; serialization
-/// owns a separate finite capacity of one row, derived from the unchanged CLI
-/// content limit.
+/// owns a separate capacity of one row, the total decoded ceiling of the CLI,
+/// [`crate::storage::UNMETERED`]. A lock timeout runs the command once more through
+/// [`crate::vcs_open::retry_locked`].
 /// # Panics
 /// Panics if called from an already running Tokio runtime.
 pub(crate) fn run(args: &[OsString]) -> Result<(), Error> {
@@ -250,13 +251,25 @@ pub(crate) fn run(args: &[OsString]) -> Result<(), Error> {
     };
     let rows = tokio::runtime::Builder::new_current_thread()
         .build()?
-        .block_on(async {
-            let (mut owner, view) = crate::vcs_open::admit_existing(repository, checkout).await?;
-            owner
-                .recorded_timeline_page(&view.checkout_id, offset, limit, crate::vcs_open::limits())
-                .await
-                .map_err(Error::from)
-        })?;
+        .block_on(crate::vcs_open::retry_locked(
+            || {
+                let (repository, checkout) = (repository.clone(), checkout.clone());
+                async move {
+                    let (mut owner, view) =
+                        crate::vcs_open::admit_existing(repository, checkout).await?;
+                    owner
+                        .recorded_timeline_page(
+                            &view.checkout_id,
+                            offset,
+                            limit,
+                            crate::vcs_open::limits(),
+                        )
+                        .await
+                        .map_err(Error::from)
+                }
+            },
+            |error: &Error| crate::vcs_open::is_locked(&**error),
+        ))?;
     let capacity = usize::try_from(crate::vcs_open::limits().content.max_total_decoded_bytes)?;
     let output = serialize(&rows, capacity)?;
     write_output(std::io::stdout().lock(), &output)

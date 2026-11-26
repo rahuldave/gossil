@@ -330,21 +330,24 @@ impl Parent {
 /// Refuses exhausted bounds, allocation or I/O failures and changes during the read.
 /// # Arguments
 /// * `file` - Open regular-file descriptor read from its current offset.
+/// * `path` - The tracked path of the file, for the refusal of a file that is too large.
 /// * `ceiling` - Maximum allowed byte length for this file.
 /// * `buffer` - Nonzero maximum size of each read buffer.
 /// # Returns
 /// Complete observed bytes and descriptor facts unchanged across the read.
 pub(super) fn read(
     file: &mut File,
+    path: &str,
     ceiling: u64,
     buffer: usize,
 ) -> Result<(Vec<u8>, Facts), StorageError> {
-    read_inner(file, ceiling, buffer, None)
+    read_inner(file, path, ceiling, buffer, None)
 }
 
 /// Charge complete file storage and read buffers before allocating either.
 /// # Arguments
 /// * `file` - Open regular descriptor at its initial offset.
+/// * `path` - The tracked path of the file, for the refusal of a file that is too large.
 /// * `ceiling` - Remaining retained file-byte allowance.
 /// * `buffer` - Maximum temporary read-buffer size.
 /// * `work` - Borrowed complete operation ledger.
@@ -354,16 +357,18 @@ pub(super) fn read(
 /// Refuses exhausted work, unstable descriptors, allocation and I/O errors.
 pub(super) fn read_budget(
     file: &mut File,
+    path: &str,
     ceiling: u64,
     buffer: usize,
     work: &mut crate::storage::content::Budget,
 ) -> Result<(Vec<u8>, Facts), StorageError> {
-    read_inner(file, ceiling, buffer, Some(work))
+    read_inner(file, path, ceiling, buffer, Some(work))
 }
 
 /// Perform the shared bounded read after optionally reserving its work.
 /// # Arguments
 /// * `file` - Open regular descriptor.
+/// * `path` - The tracked path of the file, for the refusal of a file that is too large.
 /// * `ceiling` - Maximum retained file bytes.
 /// * `buffer` - Nonzero read-buffer ceiling.
 /// * `work` - Optional complete recording ledger.
@@ -373,14 +378,19 @@ pub(super) fn read_budget(
 /// Refuses finite limits, unstable descriptors and I/O errors.
 fn read_inner(
     file: &mut File,
+    path: &str,
     ceiling: u64,
     buffer: usize,
     work: Option<&mut crate::storage::content::Budget>,
 ) -> Result<(Vec<u8>, Facts), StorageError> {
     let before = Facts::read(file)?;
-    if before.size > ceiling || buffer == 0 {
-        return Err(StorageError::state("checkout read exceeds finite limit"));
+    if before.size > ceiling {
+        return Err(StorageError::state(format!(
+            "the file {path:?} has {} bytes, more than the {ceiling} bytes that one file may have",
+            before.size
+        )));
     }
+    // The caller refuses a zero buffer with its other tracking ceilings.
     let length = usize::try_from(before.size)
         .map_err(|_| StorageError::state("checkout read size overflow"))?;
     if let Some(work) = work {

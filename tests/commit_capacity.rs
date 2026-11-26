@@ -9,17 +9,28 @@
 //! and each row. Each command reads each file once and holds the bytes of one file
 //! at a time.
 //!
-//! The ordinary tests run the CLI in a debug build: 300 small files, past every old
-//! ceiling, and 12 files of the largest size. The ignored tests make the capacity
-//! targets in a release build (`just commit-capacity`), and give a check-in of
-//! 1,000 files to the pinned stock Fossil (`just commit-oracle`).
+//! The ordinary tests run the CLI in a debug build. They check these cases:
+//!
+//! - 300 small files, past every old ceiling.
+//! - 3 files of 1 MiB and one byte, past the old file ceiling.
+//! - The refusal of a sparse file one byte over the ceiling of 2,147,418,109 bytes,
+//!   in `add` and in `commit`.
+//! - The warning above 20,000,000 bytes.
+//! - A commit that waits behind a held write lock.
+//!
+//! The ignored tests make the capacity targets in a release build
+//! (`just commit-capacity`), and give a check-in of 1,000 files to the pinned stock
+//! Fossil (`just commit-oracle`). `tests/limits_capacity.rs` compares Gossil with
+//! Fossil and Git (`just limits-capacity`).
 use std::collections::BTreeMap;
 use std::path::{Path, PathBuf};
 use std::process::Output;
 use std::time::{Duration, Instant};
 
-/// The largest file that a commit stores: the content ceiling of one artifact.
-const LARGEST: usize = 1 << 20;
+/// The largest file that `add` reads and a commit stores, the largest file that stock Fossil reads.
+const CEILING: u64 = 2_147_418_109;
+/// The largest file before this change, 1 MiB.
+const OLD_CEILING: usize = 1 << 20;
 /// The paths that one `add` or `scope` names in the capacity test.
 const BATCH: usize = 1000;
 
@@ -190,26 +201,60 @@ fn verify(home: &Path) -> String {
     ))
 }
 
+/// One file below the fixture home: its bytes, or for a file over 1 MiB, such as a
+/// sparse file at the ceiling, its size, modification time and inode.
+#[derive(Debug, PartialEq, Eq)]
+enum Seen {
+    /// The bytes of a small file.
+    Bytes(Vec<u8>),
+    /// The size, modification time and inode of a large file.
+    Facts(u64, std::time::SystemTime, u64),
+}
+
 /// Read every file below the fixture home: the repository, its sidecars, the locator
 /// and the checkout.
 /// # Arguments
 /// * `home` - The fixture home.
 /// # Returns
-/// The bytes of each file, by path.
-fn every_byte(home: &Path) -> BTreeMap<PathBuf, Vec<u8>> {
+/// What was seen of each file, by path.
+fn every_byte(home: &Path) -> BTreeMap<PathBuf, Seen> {
+    use std::os::unix::fs::MetadataExt;
     let mut all = BTreeMap::new();
     let mut pending = vec![home.to_path_buf()];
     while let Some(dir) = pending.pop() {
         for entry in std::fs::read_dir(dir).unwrap() {
             let path = entry.unwrap().path();
-            if path.is_dir() {
+            let meta = std::fs::metadata(&path).unwrap();
+            if meta.is_dir() {
                 pending.push(path);
+            } else if meta.len() > OLD_CEILING as u64 {
+                let facts = Seen::Facts(meta.len(), meta.modified().unwrap(), meta.ino());
+                all.insert(path, facts);
             } else {
-                all.insert(path.clone(), std::fs::read(&path).unwrap());
+                all.insert(path.clone(), Seen::Bytes(std::fs::read(&path).unwrap()));
             }
         }
     }
     all
+}
+
+/// Make a sparse file of `size` bytes, so that no test writes gigabytes.
+/// # Arguments
+/// * `path` - The file.
+/// * `size` - Its length.
+fn sparse(path: &Path, size: u64) {
+    std::fs::File::create(path).unwrap().set_len(size).unwrap();
+}
+
+/// Give the refusal of a file over the ceiling.
+/// # Arguments
+/// * `name` - The tracked path.
+/// # Returns
+/// The message of `add` and of `commit`.
+fn over_ceiling(name: &str) -> String {
+    format!(
+        "the file \"{name}\" has 2147418110 bytes, more than the 2147418109 bytes that one file may have"
+    )
 }
 
 /// Require a refusal with exit 1, no output and the exact diagnostic `message`.
@@ -257,18 +302,19 @@ fn three_hundred_small_files_commit_twice() {
 }
 
 #[test]
-/// Twelve files of the largest size commit twice and verify. The old ceiling was 5.
+/// Three files of 1 MiB and one byte, past the old ceiling of 1 MiB, commit twice and
+/// verify.
 /// # Panics
 /// Panics if a command refuses.
-fn twelve_files_of_the_largest_size_commit_twice() {
+fn files_past_the_old_ceiling_commit_twice() {
     let temp = tempfile::tempdir().unwrap();
     let home = temp.path();
-    let names = fixture(home, 12, LARGEST);
+    let names = fixture(home, 3, OLD_CEILING + 1);
     track(home, &names, names.len());
     ok(commit(home, 21));
-    let mut changed = content(99, LARGEST);
+    let mut changed = content(99, OLD_CEILING + 1);
     changed[0] = b'X';
-    std::fs::write(home.join("root").join(&names[3]), changed).unwrap();
+    std::fs::write(home.join("root").join(&names[1]), changed).unwrap();
     ok(commit(home, 22));
     assert_eq!(
         verify(home),
@@ -277,29 +323,139 @@ fn twelve_files_of_the_largest_size_commit_twice() {
 }
 
 #[test]
-/// A file one byte over the largest size is refused, alone or after 99 stored files,
-/// and no byte of the repository, its sidecars or the checkout changes.
+/// A sparse file one byte over the ceiling is refused by `add`, alone or in a batch
+/// of 200, and by `commit` after it grew past the ceiling, after 99 stored files.
+/// Each refusal names the file, its size and the ceiling, reads none of its bytes and
+/// changes no byte of the repository, its sidecars or the checkout.
 /// # Panics
-/// Panics if the commit passes, gives another message or changes a byte.
-fn a_file_over_the_ceiling_is_refused_and_changes_no_byte() {
-    for (files, large) in [(1, 0), (200, 99)] {
+/// Panics if a command passes, gives another message or changes a byte.
+fn a_file_over_the_ceiling_is_refused_by_add_and_commit_and_changes_no_byte() {
+    for files in [1, 200] {
         let temp = tempfile::tempdir().unwrap();
         let home = temp.path();
         let names = fixture(home, files, 20);
-        std::fs::write(
-            home.join("root").join(&names[large]),
-            content(large, LARGEST + 1),
-        )
-        .unwrap();
-        track(home, &names, names.len());
+        let large = files / 2;
+        sparse(&home.join("root").join(&names[large]), CEILING + 1);
         let before = every_byte(home);
-        refused(commit(home, 21), "recording content output limit");
+        let mut add = vec!["add"];
+        for name in &names {
+            add.extend(["--path", name]);
+        }
+        refused(vcs(home, &add), &over_ceiling(&names[large]));
         assert_eq!(every_byte(home), before);
-        assert_eq!(
-            verify(home),
-            "verified: 0 check-ins, 0 issues, 15 tables compared\n"
-        );
     }
+    let temp = tempfile::tempdir().unwrap();
+    let home = temp.path();
+    let names = fixture(home, 200, 20);
+    track(home, &names, names.len());
+    sparse(&home.join("root").join(&names[99]), CEILING + 1);
+    let before = every_byte(home);
+    refused(commit(home, 21), &over_ceiling(&names[99]));
+    assert_eq!(every_byte(home), before);
+    assert_eq!(
+        verify(home),
+        "verified: 0 check-ins, 0 issues, 15 tables compared\n"
+    );
+}
+
+#[test]
+/// A file over 20,000,000 bytes gives one warning line on stderr in `add` and in a
+/// commit that stores it, as Fossil asks before such a commit, and no question. A
+/// commit with no change, or one that stores only another file, gives no warning.
+/// # Panics
+/// Panics if a command refuses, or a warning is missing or extra.
+fn a_large_file_gives_a_warning_and_no_question() {
+    let temp = tempfile::tempdir().unwrap();
+    let home = temp.path();
+    let names = fixture(home, 1, 20);
+    sparse(&home.join("root").join("large.bin"), 20_000_001);
+    let warning = "warning: the file \"large.bin\" has 20000001 bytes, more than 20000000\n";
+    let mut add = vec!["add", "--path", "large.bin"];
+    add.extend(["--path", &names[0]]);
+    let out = vcs(home, &add);
+    assert!(out.status.success());
+    assert_eq!(String::from_utf8_lossy(&out.stderr), warning);
+    ok(vcs(
+        home,
+        &[
+            "scope",
+            "--scope",
+            "private",
+            "--path",
+            "large.bin",
+            "--path",
+            &names[0],
+        ],
+    ));
+    let out = commit(home, 21);
+    assert!(
+        out.status.success(),
+        "{}",
+        String::from_utf8_lossy(&out.stderr)
+    );
+    assert_eq!(String::from_utf8_lossy(&out.stderr), warning);
+    assert_eq!(ok(commit(home, 22)), "No changes\n");
+    // A check-in that stores only the small file gives no warning for the large one.
+    std::fs::write(home.join("root").join(&names[0]), b"changed").unwrap();
+    let out = commit(home, 23);
+    assert!(
+        out.status.success(),
+        "{}",
+        String::from_utf8_lossy(&out.stderr)
+    );
+    assert_eq!(String::from_utf8_lossy(&out.stderr), "");
+}
+
+#[test]
+/// A commit that starts while another connection holds the write lock for 7 seconds,
+/// past the old busy timeout of 5 seconds, waits within the timeout of 15 seconds and
+/// succeeds.
+/// # Panics
+/// Panics if the commit ends before the lock goes, or refuses.
+fn a_commit_waits_behind_a_held_write_lock() {
+    let temp = tempfile::tempdir().unwrap();
+    let home = temp.path();
+    let names = fixture(home, 3, 20);
+    track(home, &names, names.len());
+    let runtime = tokio::runtime::Builder::new_current_thread()
+        .build()
+        .unwrap();
+    let database = runtime
+        .block_on(libsql::Builder::new_local(home.join("repo")).build())
+        .unwrap();
+    let holder = database.connect().unwrap();
+    runtime
+        .block_on(holder.execute("BEGIN IMMEDIATE", ()))
+        .unwrap();
+    let repo = home.join("repo");
+    let mut child = std::process::Command::new(env!("CARGO_BIN_EXE_gos"))
+        .env("HOME", home)
+        .env("GOSSIL_USER", "tester")
+        .current_dir(home.join("root"))
+        .args(["v", "commit", "--repository"])
+        .arg(&repo)
+        .args([
+            "--checkout",
+            "work",
+            "--scope",
+            "private",
+            "--all-tracked",
+            "--user",
+            "tester",
+            "--comment",
+            "wait",
+            "--date-override",
+            "2026-11-21T12:00:00",
+        ])
+        .stdout(std::process::Stdio::piped())
+        .stderr(std::process::Stdio::piped())
+        .spawn()
+        .unwrap();
+    std::thread::sleep(Duration::from_secs(7));
+    assert!(child.try_wait().unwrap().is_none());
+    runtime.block_on(holder.execute("ROLLBACK", ())).unwrap();
+    drop(holder);
+    assert!(ok(child.wait_with_output().unwrap()).starts_with("Recorded private check-in: "));
 }
 
 #[test]

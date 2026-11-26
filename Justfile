@@ -122,6 +122,10 @@ timeline-capacity:
 commit-capacity:
     cargo test --release --test commit_capacity capacity_targets -- --ignored --exact --nocapture
 
+# On macOS only, compare gos with the pinned Fossil and git on the same trees in a release build: the source tree of Gossil, 20,000 files, random files of 100 MB and 250 MB, a file at the ceiling that stock Fossil reads back, a file over the ceiling, a task of 1 MB and a lock held for 20 s; print one Markdown table for each case.
+limits-capacity:
+    cargo test --release --test limits_capacity -- --ignored --nocapture --test-threads 1 --skip random_file_of_600_mb --skip random_file_of_999_mb
+
 # Give a check-in of 1,000 files to the pinned Fossil reference: test-integrity and the file list of the check-in; exit 5 means not-run.
 commit-oracle:
     #!/usr/bin/env bash

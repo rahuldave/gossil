@@ -116,12 +116,12 @@ impl WriteTransaction<'_> {
     /// The read replays no artifact. It reads each `combined` typed row, and the
     /// ticket, tag and blob rows that give its ticket ID and artifact name.
     /// # Arguments
-    /// * `limits` - The row ceiling, and the width of one row.
+    /// * `limits` - The width of one row.
     /// * `work` - The ledger of the operation.
     /// # Returns
     /// The tasks and projects.
     /// # Errors
-    /// Refuses more rows than the ceiling, a row that does not hold a valid task or
+    /// Refuses a row wider than the ceiling, a row that does not hold a valid task or
     /// project, exhausted work and SQL failures.
     pub(super) async fn read_typed_issues(
         &mut self,
@@ -132,7 +132,8 @@ impl WriteTransaction<'_> {
             self,
             TYPED_ROWS,
             vec![],
-            usize::try_from(limits.sql_rows).unwrap_or(usize::MAX),
+            // The list has no ceiling on its count of issues.
+            usize::MAX,
             limits.admission.parser.input_bytes,
             work,
         )

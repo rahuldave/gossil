@@ -230,7 +230,10 @@ pub(super) fn build_private_manifest(
         }
     }
     if total > max {
-        return Err(StorageError::state("private manifest output limit"));
+        return Err(StorageError::state(format!(
+            "the check-in manifest of {} files needs {total} bytes, more than the {max} bytes of one manifest",
+            spec.files.len()
+        )));
     }
     // Account output, every temporary encoded token, checksum scan and its hex
     // allocation together before any allocation. Input retention belongs to capture.

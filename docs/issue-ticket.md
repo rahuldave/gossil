@@ -90,8 +90,11 @@ for issue in &issues {
 
 The call runs the checks of each command first. Then it reads each `combined` typed row with its
 ticket ID and artifact name. It replays no artifact, so it passes under a parser entry ceiling of one.
-It writes nothing. An empty repository gives an empty list. The SQL row ceiling of `IssueLimits` bounds
-the count of issues, and the parser input ceiling bounds the width of one row.
+It writes nothing. An empty repository gives an empty list.
+
+The ceilings bound each row, and not the whole list, as in `gos v verify`. No ceiling bounds the count
+of issues or their total content. The list does not use the SQL ceilings of `IssueLimits`. The parser
+input ceiling bounds the width of one row.
 
 The cost of the list grows with the count of issues, and not with the rest of the repository. The list
 does not compare the typed rows with the artifacts. `gos v verify` does.
@@ -241,7 +244,11 @@ times in milliseconds:
 The times of create, show, status and commit stay flat. The times of list and verify grow with the count
 of tasks.
 
-`gos i task create` refuses a task artifact of more than 65,536 bytes.
+`gos i task create` refuses a task artifact of more than 2,147,418,109 bytes, the ceiling of every
+artifact. `tests/issue_task_cli.rs` creates, shows and lists a task with a description of 120,000 bytes.
+That size is over 65,536 bytes, the ceiling of earlier versions, and under the 131,072 bytes that Linux
+allows for one argument. On macOS only, the capacity run `just limits-capacity` also creates a task of
+1 MB.
 
 ## Tests
 
@@ -348,8 +355,9 @@ four, and that `gos i task show --json` shows the stored ID, title and priority 
 `task create` commands at the same time, four times, and requires that both exit with 0.
 
 A further test in `tests/issue_task_cli.rs` holds the write lock for 7 seconds. A `task list` and a
-`task show` that start meanwhile retry and exit with 0. Then the test runs a `task create` beside a
-`task list`.
+`task show` that start meanwhile wait for the lock. Each gets it within the busy timeout of 15 seconds,
+the time that a connection waits for a held lock, and exits with 0. Then the test runs a `task create`
+beside a `task list`.
 
 The unit tests of `src/product/issue_task.rs` inject a failure after each write step of a new task. Then
 they check that every byte of the repository stays unchanged (GEST-T08).
@@ -374,11 +382,13 @@ each. The ignored test stores 5,000 tasks and prints the time of each command at
 tasks. `just issue-capacity` runs the ignored test in a release build.
 
 A unit control lists two tasks and two projects in receipt order under a parser entry ceiling of one, and
-checks that the list changes no row. It finds the least SQL row ceiling under which the list passes, and
-checks that one more task makes the list refuse under that ceiling. It also checks that `find_task`
-refuses an empty prefix, a prefix of 33 letters and a prefix outside the letters k to z, with
-`invalid issue ID prefix`. A further control stores the ID of each task as a blob. A prefix still
-matches such an ID, and then `find_task` refuses the task with
+checks that the list changes no row. The list also passes under a SQL row ceiling of one and under
+total content ceilings of 64 bytes. It refuses under a parser input ceiling of 16 bytes, which one row
+exceeds. After one more task, the list still passes under the SQL row ceiling of one.
+
+The same control checks that `find_task` refuses an empty prefix, a prefix of 33 letters and a prefix
+outside the letters k to z, with `invalid issue ID prefix`. A further control stores the ID of each
+task as a blob. A prefix still matches such an ID, and then `find_task` refuses the task with
 `a stored typed row does not hold a valid task or project` and changes no row of any table. In each
 of its three orders, the CAT-T07 subset below also lists the issues after each step.
 

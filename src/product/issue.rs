@@ -124,7 +124,7 @@ pub(crate) fn limits() -> IssueLimits {
 }
 
 /// The text inside the storage refusal of a command that waited for the write lock past its timeout.
-const LOCKED: &str = "database is locked";
+pub(crate) const LOCKED: &str = crate::vcs_open::LOCKED;
 
 /// Say whether a failure is one that a second attempt may get past.
 /// # Arguments
@@ -138,12 +138,9 @@ fn retryable(failure: &IssueFailure) -> bool {
 
 /// Run one attempt of an issue command, and run it once more after a lock timeout.
 ///
-/// Every issue command takes the write lock, and so do the reads. So a command can
-/// wait for that lock past its timeout and refuse with [`LOCKED`]. A second attempt opens
-/// the repository again. Each command checks what it reads in its own transaction,
-/// so a commit of another process between two commands needs no retry. The handlers
-/// of `init`, `task create`, `task list` and `task show` each run inside this
-/// function.
+/// The handlers of `init`, `task create`, `task list` and `task show` each run
+/// inside this function. It passes the test of an issue failure to
+/// [`crate::vcs_open::retry_locked`], the retry of every command.
 ///
 /// # Arguments
 /// * `attempt` - Opens the repository and runs the command, each time it is called.
@@ -152,15 +149,12 @@ fn retryable(failure: &IssueFailure) -> bool {
 /// # Errors
 /// Gives the failure of the first attempt when it is not a lock timeout, and the
 /// failure of the second attempt otherwise.
-pub(crate) async fn retry_locked<T, F, A>(mut attempt: A) -> Result<T, IssueFailure>
+pub(crate) async fn retry_locked<T, F, A>(attempt: A) -> Result<T, IssueFailure>
 where
     A: FnMut() -> F,
     F: std::future::Future<Output = Result<T, IssueFailure>>,
 {
-    match attempt().await {
-        Err(failure) if retryable(&failure) => attempt().await,
-        result => result,
-    }
+    crate::vcs_open::retry_locked(attempt, retryable).await
 }
 
 /// Return the local login, for the U card of a new ticket.

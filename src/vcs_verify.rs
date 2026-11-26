@@ -156,7 +156,12 @@ pub(crate) fn run(args: &[OsString]) -> ExitCode {
         Ok(Request::Verify { repository, issue }) => tokio::runtime::Builder::new_current_thread()
             .build()
             .map_err(|error| fail(74, error.to_string()))
-            .and_then(|runtime| runtime.block_on(verify(repository, issue))),
+            .and_then(|runtime| {
+                runtime.block_on(crate::vcs_open::retry_locked(
+                    || verify(repository.clone(), issue.clone()),
+                    retryable,
+                ))
+            }),
     };
     let result = result.and_then(|text| {
         std::io::stdout()
@@ -176,10 +181,30 @@ pub(crate) fn run(args: &[OsString]) -> ExitCode {
     }
 }
 
+/// Say whether a failed attempt of `verify` waited for the lock past its timeout, so
+/// that one more attempt may pass.
+/// # Arguments
+/// * `failure` - The failure of one attempt.
+/// # Returns
+/// True for a storage failure, status 74, whose message holds `database is locked`.
+fn retryable(failure: &Failure) -> bool {
+    failure.status == 74 && failure.message.contains(crate::vcs_open::LOCKED)
+}
+
 #[cfg(test)]
 /// Check the argument grammar without storage.
 mod tests {
     use super::*;
+
+    #[test]
+    /// Only a storage failure that names the lock timeout is tried again.
+    /// # Panics
+    /// Panics if another failure is retried, or the lock timeout is not.
+    fn only_a_lock_timeout_is_retried() {
+        assert!(retryable(&fail(74, "storage: database is locked".into())));
+        assert!(!retryable(&fail(74, "storage: corrupt".into())));
+        assert!(!retryable(&fail(78, "database is locked".into())));
+    }
 
     /// Turn string slices into arguments.
     fn os(values: &[&str]) -> Vec<OsString> {

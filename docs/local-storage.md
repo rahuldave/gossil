@@ -50,8 +50,9 @@ An empty path retains SQLite's temporary-database behavior and fails the require
 WAL check.
 
 Every file open sets and reads back WAL, foreign keys ON, `synchronous=FULL`
-and a 5000 ms busy timeout. WAL is SQLite's write-ahead journal mode.
-An open fails if configuration differs from these requirements.
+and a 15,000 ms busy timeout, the value that Fossil sets. WAL is SQLite's
+write-ahead journal mode. A `fossil commit` behind a held lock still fails at
+once, so only Gossil waits. An open fails if configuration differs from these requirements.
 
 `begin_write(&mut self)` takes the connection before it issues `BEGIN IMMEDIATE`.
 The returned `WriteTransaction`, the transaction owner, exclusively borrows the store.

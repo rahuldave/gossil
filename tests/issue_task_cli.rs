@@ -277,6 +277,23 @@ fn created(id: &str, title: &str) -> String {
 }
 
 #[test]
+/// A task with a description of 120,000 bytes, over the old ceiling of 65,536 bytes
+/// and under the 131,072 bytes that Linux allows for one argument, is created, shown
+/// and listed.
+fn a_task_of_120_kb_is_created_and_read_back() {
+    let temp = tempfile::tempdir().unwrap();
+    let home = temp.path();
+    bound(home);
+    let description = "word ".repeat(24_000);
+    ok(home, &["i", "task", "create", "Large", "-d", &description]);
+    let ids = task_ids(&home.join("repo"));
+    assert_eq!(ids.len(), 1);
+    let shown = ok(home, &["i", "task", "show", &ids[0][..8], "--json"]);
+    assert!(shown.contains(&description), "{}", &shown[..200]);
+    assert!(ok(home, &["i", "task", "list"]).contains("Large"));
+}
+
+#[test]
 /// Tasks that `task create` stores, in each of the four forms, are listed by `task list`
 /// and shown by `task show` in each form, in JSON, with the stored ID, title and priority.
 fn created_tasks_read_back_through_list_and_show() {
@@ -332,10 +349,8 @@ fn created_tasks_read_back_through_list_and_show() {
 
 #[test]
 /// A `task list` and a `task show` that start while another connection holds the write
-/// lock for 7 seconds both succeed. The first attempt of each waits the 5-second busy
-/// timeout and refuses with `database is locked`; the second attempt gets the lock
-/// once it goes. Without the retry, both exit 74. A `task create` beside a `task list`
-/// also both succeed.
+/// lock for 7 seconds both succeed. Each waits within the busy timeout of 15 seconds.
+/// A `task create` beside a `task list` also both succeed.
 fn reads_retry_after_a_held_write_lock() {
     let temp = tempfile::tempdir().unwrap();
     let home = temp.path();
@@ -366,7 +381,7 @@ fn reads_retry_after_a_held_write_lock() {
         spawn(&["i", "task", "show", &id[..8], "--json"]),
     ];
     std::thread::sleep(std::time::Duration::from_secs(7));
-    // Both reads are still blocked past the 5-second timeout of their first attempt.
+    // Both reads are still waiting for the lock.
     for child in &mut children {
         assert!(child.try_wait().unwrap().is_none());
     }

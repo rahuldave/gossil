@@ -329,7 +329,7 @@ The command refuses these inputs:
 | No title | 69 | `gossil: issue task create: reading the title from stdin is not available in this build; give TITLE` |
 | A `-m` pair without `=`, a key of more than 32 parts, or `--metadata-json` that is not a JSON object | 64 | The Gest message, such as `gossil: issue task create: --metadata-json must be a JSON object` |
 | A `[` in the title, the description or the metadata, including a JSON array | 64 | `gossil: issue task create: the title contains "[", ...` |
-| A task artifact of more than 65,536 bytes | 64 | `gossil: issue task create: the task has at least N bytes, more than the 65536 that this build stores` |
+| A task artifact of more than 2,147,418,109 bytes, the ceiling of one artifact | 64 | `gossil: issue task create: the task has at least N bytes, more than the 2147418109 bytes of one artifact` |
 | No open checkout | 78 | `gossil: no open checkout holds this directory; run gos v init and gos v open first` |
 | A repository at an older catalog, or one that lost its Gossil tables | 78 | The message of the [exit section](#exit-status-and-errors) |
 | A checkout with no project | 78 | `gossil: this checkout has no Gest project; run gos i init first` |
@@ -353,9 +353,12 @@ second open for it. A command can wait for the write lock longer than its
 timeout and refuse with `database is locked`. Every issue command takes that
 lock, the two read commands included.
 
-The refusal `database is locked` comes before the commit. `init`, `task create`,
-`task list` and `task show` then open the repository again and try once more. A second refusal
-gives 74, so many commands at once can still fail.
+A command waits up to 15 seconds for the lock. Fossil sets the same timeout, but
+a `fossil commit` behind a held lock fails at once. The refusal
+`database is locked` comes before the commit. After it, `init`, `task create`,
+`task list` and `task show` open the repository again and try once more. So a
+command waits up to about 30 seconds in all. A second refusal gives 74, so many commands
+at once can still fail.
 
 This build has these limits:
 
@@ -365,7 +368,11 @@ This build has these limits:
 - A text field cannot hold `[`, because Markdown backlinks are not ported.
 - The command writes no tags, links, iteration membership or assignment.
 - Repositories of older Gossil versions are not supported.
-- A task artifact holds at most 65,536 bytes.
+- A task artifact holds at most 2,147,418,109 bytes, the ceiling of every
+  artifact. The arguments of one command set the real ceiling of the text.
+  `ARG_MAX` is 1,048,576 bytes on macOS, and Linux refuses one argument of more
+  than 131,072 bytes. The tests create a task of 120,000 bytes on every system,
+  and a task of 1 MB on macOS only.
 - A task needs a project that the repository holds and that is not archived.
 - The cost of a write does not grow with the count of tasks. The
   [issue ticket guide](issue-ticket.md#how-many-issues-a-repository-holds)
@@ -680,13 +687,25 @@ without following symlinks, and their identities are rechecked before commit.
 Keep the filesystem namespace stable during the command. These checks do not
 promise protection against hostile concurrent replacement.
 
-The CLI bounds the complete tracked inventory and each batch to 16,384 paths.
-Each path has at most 4096 bytes and 128 components. A check-in manifest has
-at most 1 MiB. A commit reaches that ceiling before the limit of paths, near
-10,000 files with paths of 30 bytes.
+Each path has at most 4096 bytes and 128 components. The CLI bounds the tracked
+set and each batch to 1,073,709,054 paths, the ceiling on the cards of one
+manifest. So a commit reaches the ceiling on the size of the manifest first. A
+check-in manifest has at most 2,147,418,109 bytes, the ceiling of every artifact.
+A manifest of that size holds about 20,000,000 files with paths of 30 bytes.
+The arguments of one command set the real ceiling of one batch, and `ARG_MAX`
+is 1,048,576 bytes on macOS.
 
 Add reads each file once to check it, and keeps the bytes of one file at a time.
-It refuses a file over 64 MiB and uses a 64 KiB read buffer.
+It uses a 64 KiB read buffer. Add and commit share one file ceiling, so add never
+accepts a file that commit refuses for its size. But commit can still refuse a
+file when its compressed envelope is over the ceiling of one stored envelope.
+An incompressible file of more than about 999,700,000 bytes is an example.
+
+For each file over 20,000,000 bytes, add prints a warning line on stderr. Commit
+prints the same line for each such file whose content differs from the parent
+check-in, and not for an unchanged file. See
+[Size and count limits](#size-and-count-limits).
+
 The final recheck compares the identity, size and times of each file and of each
 directory on its path. It reads no file a second time. On a filesystem with
 coarse times, a write of the same size in the same tick as the read is not
@@ -816,14 +835,14 @@ no `--path`, and scope accepts no recording metadata or `--all-tracked`.
 Both executable names and both group names use the same grammar.
 
 Checkout IDs are nonempty UTF-8, bounded to 1024 bytes. Scope selection and
-recording use the tracking limits above. Those limits allow 16,384 paths, 4096 bytes per
-path, 128 components, 64 MiB for the read of one file and a 64 KiB read buffer.
+recording use the tracking limits above.
 
 Commit reads, hashes and stores one file at a time, so its memory follows the
-largest file and not the sum of the files. The content ceiling of one artifact
-is 1 MiB, 1,048,576 bytes. Commit refuses a tracked file of 1,048,577 bytes or
-more with `recording content output limit`, and a manifest over 1 MiB with
-`private manifest output limit`. A refusal changes no byte of the repository.
+largest file and not the sum of the files. Commit frees the bytes of a file
+before SQLite copies its compressed envelope. So at its peak, commit holds the
+envelope, the copy that SQLite binds and the record that SQLite writes, about 3
+times the largest file. The table of [Size and count limits](#size-and-count-limits)
+gives each ceiling and its refusal. A refusal changes no byte of the repository.
 
 If a file has the same hash as its path in the parent check-in, commit reuses
 the stored row. It does not read the stored content of that file from the
@@ -832,7 +851,35 @@ files that changed.
 
 Versions up to 0.18.0 charged the whole command to one ledger. Under the CLI
 ceilings, add and commit refused about 70 small files, or 6 files of 1 MB, with
-`total decoded content limit`.
+`total decoded content limit`. Versions up to 0.18.1 refused a file over 1 MiB.
+Those versions also refused an incompressible file of exactly 1 MiB, with
+`recording compression`.
+
+### Size and count limits
+
+Each ceiling bounds one file, one artifact or one row, except the ceiling of one
+timeline page. No other ceiling bounds a whole command. The facts of Fossil come
+from its source at `7e8ecf0ce4` and runs of Fossil 2.29. The facts of Git come
+from the documentation of Git 2.54.0. On macOS, `just limits-capacity` runs the
+same steps in `gos`, in the pinned Fossil and in Git, and prints the time, memory
+and disk size of each case.
+
+| Limit | Gossil | Fossil 2.29 | Git |
+|---|---|---|---|
+| Largest file in `add` and `commit` | 2,147,418,109 bytes; one more is refused with `the file "PATH" has N bytes, more than the 2147418109 bytes that one file may have` | No ceiling of its own; `fossil commit` of 2,147,000,000 bytes stops with `out of memory`, and `fossil test-integrity` reads a file of at most 2,147,418,109 bytes | No ceiling |
+| Largest stored envelope of one file | 999,998,976 bytes, so an incompressible file fits up to about 999,700,000 bytes; more is refused with `the content HASH of N bytes does not compress into the 999998976 bytes that one stored artifact may have` | One SQLite value of 1,000,000,000 bytes | No ceiling; a file over 512 MiB is streamed |
+| Warning for a large file | A line on stderr above 20,000,000 bytes, and no question; a commit warns only for a file whose content changed | A question above 20,000,000 bytes | None |
+| Size of one manifest, task or other artifact | 2,147,418,109 bytes; a larger manifest is refused with `the check-in manifest of N files needs M bytes, more than the 2147418109 bytes of one manifest` | The ceiling of one stored value | No ceiling |
+| Cards and entries of one artifact | 1,073,709,054, half the artifact ceiling, so they never bind first | No ceiling | Not applicable |
+| Tracked files and paths in one `add` or `scope` | 1,073,709,054; a command that names more paths is refused with `add names more than the M paths that one command may name` or `scope names more than the M paths that one command may name`, and an add that makes the checkout track more is refused with `the checkout would track N files, more than the M files that one checkout may track` | No ceiling | No ceiling |
+| Size of one task | The artifact ceiling | No ceiling of its own; `fossil ticket add` with a comment of 1 MB stopped with a segmentation fault | No issue tracker |
+| `task list` | No ceiling on the count of tasks or on the whole list; each row has the artifact ceiling | No total | Not applicable |
+| Memory of one `timeline` page | 1 GiB of check-in records older than the newest check-in, which the page always keeps outside the ceiling; a page that would hold more is refused with `this page would hold more than 1 GiB of check-in records in memory; use a smaller --offset or --limit` | No memory ceiling | No memory ceiling |
+| Wait for a held write lock | 15,000 ms, then one retry, about 30 s in all | Sets 15,000 ms, but `fossil commit` behind a held lock fails at once | Fails at once on `index.lock` |
+
+A commit holds the whole file in memory, as Fossil does. Git streams a file of
+more than 512 MiB, its `core.bigFileThreshold`.
+
 The [library contract](native-storage.md#private-recording-library) defines those
 ceilings, immutable history checks, protected files and rollback guarantees.
 
@@ -881,6 +928,19 @@ not the `.gossil` checkout marker.
 Open, `verify` and every command that reads a repository check the catalog marker
 before they set any SQLite pragma that writes to the file. So a plain SQLite file, a
 stock Fossil repository or a file at an older catalog keeps every byte, and its header too.
+
+Each command waits up to 15 seconds for the write lock that another process
+holds. When the wait ends with `database is locked`, the transaction that waited is
+rolled back. Every command that opens an existing repository then opens it again and tries
+once more, except `vcs open`. A first registration of `vcs open` makes the
+`.gossil` directory before it waits, so a second attempt would find an
+incomplete marker. `vcs init` makes a new file, which no other process holds. A
+second refusal returns the usual failure status of the command.
+
+`vcs add` adds the files in one transaction. Then it reads the list that it
+prints in three more transactions. When one of those three waits the full 15
+seconds, the files are already added. The second attempt is still safe, because
+add skips each path that is already tracked.
 
 A stock `fossil rebuild` drops every table that Fossil does not know, so it
 drops each `g_` table. A repository that holds Fossil tables but no Gossil
@@ -1051,8 +1111,19 @@ Opening admission, the API operation and serialization each have a separate
 finite allowance. They do not form one aggregate budget for the whole invocation.
 
 The API operation gives each manifest the parser ceilings of one artifact and
-each row the ceilings of one row, and it has no ceiling on the whole chain. The
-cost of a page follows its offset and limit, not the length of the history.
+each row the ceilings of one row. It has no parser or content ceiling on the
+whole chain. The cost of a page follows its offset and limit, not the length of
+the history.
+
+A page keeps in memory each manifest that it walks, and the parse of each, until
+it prints. The older check-ins hold at most 1 GiB together, and the newest
+check-in does not count toward that ceiling. A page that would hold more refuses
+with `this page would hold more than 1 GiB of check-in records in memory; use a
+smaller --offset or --limit`. So a large newest check-in is always shown, and it
+leaves the whole 1 GiB to the older ones. An older check-in whose manifest has more than about 250 MB cannot
+be shown yet. A check-in of 5,000 files with short paths takes about 1.8 MiB,
+so on such a tree the ceiling binds past an offset of about 570.
+
 Versions up to 0.17.0 parsed the whole chain under one ledger of 4,096 cards,
 and refused with `recording native artifact validation` at about 455 one-file
 check-ins, or 75 check-ins of 50 files.
@@ -1061,8 +1132,8 @@ For serialization, N counts the UTF-8 source bytes of all four string values of
 a row, including the hash once. The checked worst-case bound of a row adds `6*N`
 to the exact syntax overhead. That overhead is 61 bytes per private row or 62 per
 root row and includes keys, quotes, punctuation, boolean and LF. The bound of each
-row must fit the CLI decoded-content limit. The sum of the bounds must fit the
-platform allocation limit.
+row must fit the total decoded ceiling of the CLI, 2^60 bytes, which no row
+reaches. The sum of the bounds must fit the platform allocation limit.
 
 The adapter reserves
 space once before serializing the complete response.
@@ -1098,8 +1169,14 @@ of the repository.
 Without `--issue`, the command replays every check-in and every issue artifact. It
 compares each native and typed table with that replay. Open and the other commands
 do not. They check only the facts that each one reads, as
-[check a repository](native-storage.md#check-a-repository) says. On success the
-command prints one line and exits 0:
+[check a repository](native-storage.md#check-a-repository) says.
+
+In one run, the proof decodes and hashes each stored file content once. A later
+check-in that names the same content reuses that row. The proof keeps nothing
+from one run to the next. Unlike a page of the timeline, the proof has no
+ceiling on the memory of the check-ins that it walks.
+
+On success the command prints one line and exits 0:
 
 ```text
 verified: 1 check-ins, 4 issues, 15 tables compared

@@ -97,7 +97,7 @@ The command exits with 74 when open, its checks or the proof of the task refuse 
 when the command cannot write the output.
 
 Both commands take the write lock of the repository, as every issue command does. A read can wait for
-that lock past its timeout and refuse with `database is locked`. Then the command opens the repository
+that lock past its timeout of 15 seconds and refuse with `database is locked`. Then the command opens the repository
 again and tries once more. After a second refusal, it exits with 74. A commit of another process between
 two commands needs no retry, because each command checks what it reads in its own transaction.
 
@@ -173,10 +173,9 @@ changed.
 both commands in each form. It compares the listed IDs with the stored IDs as a set.
 
 A further test in that file holds the write lock from another connection for 7 seconds. A `task list`
-and a `task show` that start meanwhile both exit with 0 and print the task. The first attempt of each
-waits the 5-second busy timeout and refuses, and the second attempt gets the lock. Without the retry,
-both commands exit with 74. The test then runs a `task create` and a `task list` at the same time, and
-both exit with 0.
+and a `task show` that start meanwhile both exit with 0 and print the task. Each gets the lock within the busy
+timeout of 15 seconds. The unit test of `crate::vcs_open::retry_locked` checks the one retry after a
+timeout. The test then runs a `task create` and a `task list` at the same time, and both exit with 0.
 
 The unit controls in `tests/support/product_issue_read.rs` check the parsers, the lookup, the selection
 and the exact bytes of each printer. Further controls build a catalog 6 repository through the library,

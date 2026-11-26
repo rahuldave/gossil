@@ -82,11 +82,13 @@ each other recognised command with status 69.
 writes a private project ticket and its binding in one transaction. The shared
 helper `open_issue_repository` in `src/product/issue.rs` opens the repository of
 an issue command through the published locator, and `IssueFailure` maps errors
-to the CLI-05 statuses 78 and 74. `retry_locked` runs a command once more after
-a `database is locked` refusal. `issue task create` writes
+to the CLI-05 statuses 78 and 74. `retry_locked` in `src/vcs_open.rs` runs
+each command that opens an existing repository, except `vcs open`, a second
+time after a `database is locked` refusal, which comes after the busy timeout
+of 15,000 ms. `issue task create` writes
 one private task in the bound project. It refuses the Gest options that this
-build lacks with status 69. It refuses a `[` and a task artifact over 65,536
-bytes with status 64.
+build lacks with status 69. It refuses a `[` and a task artifact over the
+artifact ceiling of 2,147,418,109 bytes with status 64.
 
 Native local storage supports checkout-free initialization, then one library
 checkout registration at the empty root. Open checks only the facts whose cost

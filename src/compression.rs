@@ -84,16 +84,46 @@ fn append(output: &mut Vec<u8>, bytes: &[u8]) -> Result<(), BlobError> {
 /// # Errors
 /// Returns a stored-length or allocation error before an append exceeds its ceiling.
 fn append_packed(output: &mut Vec<u8>, bytes: &[u8], max_stored: usize) -> Result<(), BlobError> {
-    output
+    let length = output
         .len()
         .checked_add(bytes.len())
         .filter(|length| *length <= max_stored)
         .ok_or(BlobError::Limit)?;
-    output
-        .try_reserve_exact(bytes.len())
-        .map_err(BlobError::Allocation)?;
+    if length > output.capacity() {
+        // Doubling keeps the copies of a large envelope linear, and the capacity never
+        // passes the ceiling.
+        let capacity = length
+            .max(output.capacity().saturating_mul(2))
+            .min(max_stored);
+        output
+            .try_reserve_exact(capacity - output.len())
+            .map_err(BlobError::Allocation)?;
+    }
     output.extend_from_slice(bytes);
     Ok(())
+}
+
+/// Give the largest envelope that [`pack`] can return for an input of `input` bytes.
+///
+/// The bound is the four-byte header plus `mz_compressBound` of miniz, the backend of
+/// the zlib stream. That bound is the larger of 128 bytes plus 110% of the input, and
+/// 128 bytes plus the input plus 5 bytes for each 31 KiB of stored blocks. Incompressible
+/// input stays within it at every level.
+/// # Arguments
+/// * `input` - The length of the input.
+/// # Returns
+/// The bound, saturated at `u64::MAX`.
+/// # Examples
+/// ```
+/// let input = vec![7u8; 1000];
+/// let bound = gossil::compression::packed_bound(1000);
+/// assert!(gossil::compression::pack(&input, -1).unwrap().len() as u64 <= bound);
+/// ```
+pub const fn packed_bound(input: u64) -> u64 {
+    let grown = input.saturating_add(input / 10);
+    let stored = input.saturating_add((input / (31 * 1024) + 1) * 5);
+    let larger = if grown > stored { grown } else { stored };
+    larger.saturating_add(128 + 4)
 }
 
 /// Pack one byte slice with zlib's default level or a level from zero to nine.
@@ -189,7 +219,13 @@ fn pack_parts(
         _ => return Err(BlobError::Level),
     };
     let length = input_length(first.len(), second.len())?;
+    // One reservation of the bound avoids the copies and the slack of growth. Pages
+    // that the stream never writes stay untouched, so they cost no resident memory.
+    let bound = usize::try_from(packed_bound(u64::from(length))).unwrap_or(usize::MAX);
     let mut output = Vec::new();
+    output
+        .try_reserve_exact(bound.min(max_stored))
+        .map_err(BlobError::Allocation)?;
     append_packed(&mut output, &length.to_be_bytes(), max_stored)?;
     let mut stream = Compress::new(compression, true);
     for (part, finish) in [(first, false), (second, true)] {
@@ -248,7 +284,13 @@ pub fn unpack(input: &[u8], max_output: usize) -> Result<Unpacked, BlobError> {
     if capacity > max_output {
         return Err(BlobError::Limit);
     }
+    // The header gives the decoded length, as Fossil sizes its blob from it. One exact
+    // reservation avoids the copies and the slack of growth. Pages that the stream
+    // never writes cost no resident memory.
     let mut output = Vec::new();
+    output
+        .try_reserve_exact(capacity)
+        .map_err(BlobError::Allocation)?;
     let mut stream = Decompress::new(true);
     loop {
         let mut chunk = [0; 8192];
@@ -281,6 +323,27 @@ mod tests {
     use super::*;
 
     #[test]
+    /// Appends past the capacity double it, never past the ceiling, and an append past
+    /// the ceiling is refused with the buffer unchanged.
+    fn appends_grow_by_doubling_up_to_the_ceiling() {
+        let mut output = Vec::new();
+        append_packed(&mut output, &[1; 10], 100).unwrap();
+        assert!(output.capacity() >= 10);
+        let before = output.capacity();
+        append_packed(&mut output, &vec![2; before - 9], 100).unwrap();
+        assert!(output.capacity() >= (2 * before).min(100));
+        assert!(output.capacity() <= 100.max(output.len()));
+        let length = output.len();
+        append_packed(&mut output, &vec![3; 100 - length], 100).unwrap();
+        assert_eq!(output.len(), 100);
+        assert!(matches!(
+            append_packed(&mut output, &[4], 100),
+            Err(BlobError::Limit)
+        ));
+        assert_eq!(output.len(), 100);
+    }
+
+    #[test]
     /// Stored ceilings include the header and are checked before each vector growth.
     fn bounded_packing_header_and_stream_boundaries() {
         for input in [
@@ -296,6 +359,31 @@ mod tests {
             ));
             assert!(matches!(pack_bounded(&input, 0, 3), Err(BlobError::Limit)));
         }
+    }
+
+    #[test]
+    /// Incompressible input of each size packs within [`packed_bound`] at each level,
+    /// and a ceiling of the bound admits it.
+    fn incompressible_input_packs_within_the_bound() {
+        let mut state = 0x9e37_79b9_7f4a_7c15_u64;
+        let noise: Vec<u8> = (0..(1 << 20) + 7)
+            .map(|_| {
+                state ^= state << 13;
+                state ^= state >> 7;
+                state ^= state << 17;
+                state as u8
+            })
+            .collect();
+        for size in [0, 1, 4, 5, 100, 31 * 1024, 65_536, 1 << 20, (1 << 20) + 7] {
+            let bound = usize::try_from(packed_bound(size as u64)).unwrap();
+            for level in [-1, 0, 1, 6, 9] {
+                let packed = pack_bounded(&noise[..size], level, bound).unwrap();
+                assert!(packed.len() >= size, "size {size} level {level}");
+                assert_eq!(packed, pack(&noise[..size], level).unwrap());
+            }
+        }
+        assert_eq!(packed_bound(0), 137);
+        assert_eq!(packed_bound(u64::MAX), u64::MAX);
     }
 
     #[test]

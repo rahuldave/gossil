@@ -207,8 +207,8 @@ fn capture_inner(
     let mut file = parent.regular(&name)?;
     reject_protected(&file, protected)?;
     let (bytes, facts) = match work {
-        Some(work) => unix::read_budget(&mut file, remaining, limits.io_buffer_bytes, work)?,
-        None => unix::read(&mut file, remaining, limits.io_buffer_bytes)?,
+        Some(work) => unix::read_budget(&mut file, path, remaining, limits.io_buffer_bytes, work)?,
+        None => unix::read(&mut file, path, remaining, limits.io_buffer_bytes)?,
     };
     parent.recheck(root)?;
     let live = parent.regular(&name)?;

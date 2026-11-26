@@ -493,10 +493,13 @@ with `-n`/`--limit` and `--offset` as in Fossil. It adds
 `LocalOwnerRepository::recorded_timeline_page`, which gives each manifest the
 ceilings of one artifact and sets no ceiling on the whole chain. Before it, one
 parser ledger covered the whole chain, and the commands refused a history of
-about 455 one-file check-ins. `just timeline-capacity` makes 5,000 one-file
-check-ins in a release build, and times `timeline`, `log`, `status`, `commit`
-and `verify` at 1,000 and at 5,000 check-ins. The checkpoint results above do not qualify this
-change.
+about 455 one-file check-ins. A later change limits one page to 1 GiB of older
+manifests and their parses, and does not count the newest check-in toward that
+ceiling.
+
+`just timeline-capacity` makes 5,000 one-file check-ins in a release build, and
+times `timeline`, `log`, `status`, `commit` and `verify` at 1,000 and at 5,000
+check-ins. The checkpoint results above do not qualify this change.
 
 ## Glob source checkpoint and pending qualification
 

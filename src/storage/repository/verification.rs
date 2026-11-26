@@ -14,7 +14,10 @@ use crate::storage::content::{Budget, Limits};
 use libsql::Value;
 
 /// The total content ceiling of a proof, which no real repository reaches.
-const UNMETERED: u64 = 1 << 60;
+///
+/// The CLI gives it as the two total ceilings of every command, so that the
+/// ceilings of one artifact and one row bound each command.
+pub(crate) const UNMETERED: u64 = 1 << 60;
 
 /// Count the rows of the tables that the proof reads whole.
 ///
@@ -62,8 +65,9 @@ pub enum IssueMatch {
 
 /// Give the ceilings of a proof: the caller's ceilings of one artifact, and no total.
 ///
-/// The timeline uses the same ledgers, so that a page has no ceiling on the whole
-/// chain either.
+/// The timeline uses the same ledgers, so that a page has no parser or content
+/// ceiling on the whole chain either. Its only bound on the whole page is the
+/// memory that it keeps, [`PAGE_RETAINED_BYTES`](super::recorded_history::PAGE_RETAINED_BYTES).
 /// # Arguments
 /// * `limits` - The caller's ceilings.
 /// # Returns
